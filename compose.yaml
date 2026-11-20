@@ -1,0 +1,101 @@
+# REOS local services. Start with `pnpm dev:up` (or `pnpm dev:setup` the first time).
+#
+# Every port binds to 127.0.0.1 only, so nothing is reachable from your network.
+# Ports clash with something else? Set FORWARD_*_PORT in a root .env file.
+# Data persists in named volumes; `pnpm dev:reset` wipes them.
+
+name: reos
+
+services:
+  postgres:
+    # Production: Aurora PostgreSQL 17 with pgvector.
+    image: pgvector/pgvector:0.8.7-pg17
+    environment:
+      POSTGRES_USER: reos
+      POSTGRES_PASSWORD: reos-local
+      POSTGRES_DB: reos
+    ports:
+      - '127.0.0.1:${FORWARD_DB_PORT:-5432}:5432'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/10-reos.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U reos -d reos']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    # Production: ElastiCache (Redis OSS 7).
+    image: redis:7.4-alpine
+    command: ['redis-server', '--appendonly', 'yes']
+    ports:
+      - '127.0.0.1:${FORWARD_REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.57.0
+    environment:
+      MEILI_MASTER_KEY: reos-local-master-key
+      MEILI_ENV: development
+      MEILI_NO_ANALYTICS: 'true'
+    ports:
+      - '127.0.0.1:${FORWARD_MEILISEARCH_PORT:-7700}:7700'
+    volumes:
+      - meilisearch:/meili_data
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -fsS http://127.0.0.1:7700/health || wget -qO- http://127.0.0.1:7700/health']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  mailpit:
+    # Catches every e-mail the app sends: http://localhost:8025
+    image: axllent/mailpit:v1.34.0
+    ports:
+      - '127.0.0.1:${FORWARD_MAILPIT_PORT:-1025}:1025'
+      - '127.0.0.1:${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+    healthcheck:
+      test: ['CMD', '/mailpit', 'readyz']
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  s3:
+    # S3-compatible storage (production: Amazon S3). MinIO stopped publishing
+    # community images in October 2025, so we use SeaweedFS. Local only, so it
+    # runs without authentication.
+    image: chrislusf/seaweedfs:4.54
+    command: ['server', '-s3', '-dir=/data', '-ip.bind=0.0.0.0', '-master.volumeSizeLimitMB=256', '-volume.max=0']
+    ports:
+      - '127.0.0.1:${FORWARD_S3_PORT:-8333}:8333'
+    volumes:
+      - s3:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'wget -qO- http://127.0.0.1:8333/healthz || wget -qO /dev/null http://127.0.0.1:8333/']
+      interval: 3s
+      timeout: 3s
+      retries: 40
+
+  s3-bucket:
+    # One-off: creates the `reos` bucket, then exits. Run by `pnpm dev:up`
+    # (`docker compose run --rm s3-bucket`), so it's kept out of plain `up`.
+    image: curlimages/curl:8.23.0
+    profiles: ['setup']
+    depends_on:
+      s3:
+        condition: service_healthy
+    command: ['sh', '-c', 'curl -fsS -X PUT http://s3:8333/reos || curl -fsS -o /dev/null http://s3:8333/reos']
+    restart: 'no'
+
+volumes:
+  postgres:
+  redis:
+  meilisearch:
+  s3:

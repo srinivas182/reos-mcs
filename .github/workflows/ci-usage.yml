@@ -28,4 +28,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           MONTH: ${{ inputs.month }}
-        run: node scripts/ci-usage.mjs $MONTH
+        run: node scripts/ci-usage.mjs "$MONTH"

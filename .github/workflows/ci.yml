@@ -35,6 +35,7 @@ jobs:
     outputs:
       platform: ${{ steps.filter.outputs.platform }}
       mobile: ${{ steps.filter.outputs.mobile }}
+      devenv: ${{ steps.filter.outputs.devenv }}
     steps:
       - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
@@ -56,6 +57,17 @@ jobs:
             mobile:
               - *shared
               - 'apps/mobile/**'
+            devenv:
+              - 'compose.yaml'
+              - 'docker/**'
+              - '.devcontainer/**'
+              - 'scripts/dev-*.sh'
+              - 'scripts/devcontainer-setup.sh'
+              - 'apps/platform/.env.example'
+              - 'apps/platform/database/**'
+              - 'apps/platform/config/filesystems.php'
+              - 'apps/platform/config/database.php'
+              - '.github/workflows/ci.yml'
 
   platform-quick:
     name: Platform quick checks
@@ -89,6 +101,14 @@ jobs:
         run: pnpm check
       - name: Web types
         run: pnpm types:check
+      - name: API contract is up to date
+        run: |
+          php artisan scramble:export
+          pnpm --filter @reos/api-client generate
+          if ! git diff --exit-code -- ../../packages/api-client; then
+            echo "::error::The API changed but packages/api-client wasn't regenerated. Run 'pnpm api:generate' and commit the result."
+            exit 1
+          fi
 
   platform-tests:
     name: Platform tests
@@ -99,6 +119,30 @@ jobs:
     defaults:
       run:
         working-directory: apps/platform
+    # Tests run on the same database engine and cache as production.
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.7-pg17
+        env:
+          POSTGRES_USER: reos
+          POSTGRES_PASSWORD: reos-ci
+          POSTGRES_DB: reos_testing
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U reos" --health-interval 3s --health-timeout 3s --health-retries 20
+      redis:
+        image: redis:7.4-alpine
+        ports: ['6379:6379']
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: reos_testing
+      DB_USERNAME: reos
+      DB_PASSWORD: reos-ci
+      REDIS_HOST: 127.0.0.1
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-platform
@@ -106,7 +150,12 @@ jobs:
           php-version: ${{ env.PHP_VERSION }}
       - name: Build web assets
         run: pnpm build
-      - name: Pest (parallel)
+      - name: Migrations run forwards and backwards on PostgreSQL
+        run: |
+          php artisan migrate --force
+          php artisan migrate:rollback --force
+          php artisan migrate --force --seed
+      - name: Pest (parallel, PostgreSQL)
         run: vendor/bin/pest --parallel
 
   mobile-quick:
@@ -141,10 +190,37 @@ jobs:
       - name: Jest
         run: pnpm test --ci
 
+  dev-environment:
+    name: Dev environment
+    needs: changes
+    if: needs.changes.outputs.devenv == 'true' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-platform
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+      - name: Start services exactly as developers do
+        run: bash scripts/dev-up.sh
+      - name: Migrate and seed
+        working-directory: apps/platform
+        run: php artisan migrate --seed --force
+      - name: Verify every service end to end
+        run: bash scripts/dev-verify.sh
+      - name: Dev container image builds with the PHP extensions we need
+        run: |
+          docker compose -f compose.yaml -f .devcontainer/compose.devcontainer.yaml build workspace
+          docker compose -f compose.yaml -f .devcontainer/compose.devcontainer.yaml run --rm --no-deps workspace \
+            sh -c 'php -v && php -m | grep -E "^(pdo_pgsql|redis|intl|bcmath)$" | wc -l | grep -qx 4'
+      - name: Service logs on failure
+        if: failure()
+        run: docker compose logs --tail=80
+
   result:
     name: CI result
     if: always()
-    needs: [changes, platform-quick, platform-tests, mobile-quick, mobile-tests]
+    needs: [changes, platform-quick, platform-tests, mobile-quick, mobile-tests, dev-environment]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

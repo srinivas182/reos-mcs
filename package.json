@@ -13,7 +13,13 @@
         "types:check": "turbo run types:check",
         "test": "turbo run test",
         "prepare": "lefthook install",
-        "ci:usage": "node scripts/ci-usage.mjs"
+        "ci:usage": "node scripts/ci-usage.mjs",
+        "api:generate": "pnpm --filter @reos/platform api:export && pnpm --filter @reos/api-client generate",
+        "dev:setup": "bash scripts/dev-setup.sh",
+        "dev:doctor": "bash scripts/dev-doctor.sh",
+        "dev:up": "bash scripts/dev-up.sh",
+        "dev:down": "docker compose down",
+        "dev:reset": "docker compose down --volumes && bash scripts/dev-up.sh"
     },
     "devDependencies": {
         "lefthook": "^2.2.2",

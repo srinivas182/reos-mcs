@@ -10,7 +10,7 @@ runs:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ inputs.php-version }}
-        extensions: mbstring, pdo_sqlite, intl, bcmath
+        extensions: mbstring, pdo_sqlite, pdo_pgsql, redis, intl, bcmath
         coverage: none
         tools: composer:v2
 

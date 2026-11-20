@@ -1,34 +1,31 @@
 /**
- * Minimal REOS API helper for Sprint 1.
+ * The mobile app's single REOS API client.
  *
- * Sprint 1.3 replaces hand-written types with the client generated from the
- * platform's OpenAPI document (packages/api-client).
+ * Every request and response type comes from @reos/api-client, which is
+ * generated from the platform's OpenAPI document; never hand-write them.
  */
+import { createApiClient, type ApiClient, type Schemas } from '@reos/api-client';
 
-export type Health = {
-  status: 'ok';
-  app: string;
-  version: string;
-  time: string;
-};
+export type Health = Schemas['HealthResource'];
 
 export const apiBaseUrl = (): string =>
-  (process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:8000').replace(/\/+$/, '');
+  `${(process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:8000').replace(/\/+$/, '')}/api/v1`;
 
-export async function fetchHealth(fetcher: typeof fetch = fetch): Promise<Health> {
-  const response = await fetcher(`${apiBaseUrl()}/api/v1/health`, {
-    headers: { Accept: 'application/json' },
-  });
+let client: ApiClient | undefined;
 
-  if (!response.ok) {
+/** Shared client; tests pass their own `fetch` through `createApiClient`. */
+export const api = (): ApiClient => (client ??= createApiClient({ baseUrl: apiBaseUrl() }));
+
+export async function fetchHealth(apiClient: ApiClient = api()): Promise<Health> {
+  const { data, response } = await apiClient.GET('/health');
+
+  if (!response.ok || data === undefined) {
     throw new Error(`Health check failed with status ${response.status}`);
   }
 
-  const body = (await response.json()) as Partial<Health>;
-
-  if (body.status !== 'ok' || typeof body.app !== 'string') {
+  if (data.status !== 'ok') {
     throw new Error('Unexpected health response');
   }
 
-  return body as Health;
+  return data;
 }

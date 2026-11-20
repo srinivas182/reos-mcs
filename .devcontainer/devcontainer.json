@@ -1,0 +1,42 @@
+{
+  "name": "REOS",
+  "dockerComposeFile": ["../compose.yaml", "compose.devcontainer.yaml"],
+  "service": "workspace",
+  "runServices": ["workspace", "postgres", "redis", "meilisearch", "mailpit", "s3"],
+  "workspaceFolder": "/workspaces/reos-mcs",
+  "shutdownAction": "stopCompose",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "vscode",
+      "installZsh": false
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+      "pnpmVersion": "10.28.0"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "remoteUser": "vscode",
+  "postCreateCommand": "bash scripts/devcontainer-setup.sh",
+  "forwardPorts": [8000, 5173, 8025, 8081, 7700],
+  "portsAttributes": {
+    "8000": { "label": "REOS web app", "onAutoForward": "openBrowser" },
+    "5173": { "label": "Vite" },
+    "8025": { "label": "Mailpit (e-mail inbox)" },
+    "8081": { "label": "Expo (mobile)" },
+    "7700": { "label": "Meilisearch" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "open-southeners.laravel-pint",
+        "laravel.vscode-laravel",
+        "bradlc.vscode-tailwindcss",
+        "dbaeumer.vscode-eslint",
+        "expo.vscode-expo-tools",
+        "editorconfig.editorconfig"
+      ]
+    }
+  }
+}

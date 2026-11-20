@@ -1,0 +1,24 @@
+{
+  "name": "@reos/api-client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Typed REOS REST API client, generated from the platform's OpenAPI document",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./openapi.json": "./openapi.json"
+  },
+  "scripts": {
+    "generate": "openapi-typescript openapi.json --output src/schema.d.ts --root-types --enum",
+    "types:check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.17.0"
+  },
+  "devDependencies": {
+    "@reos/config": "workspace:*",
+    "openapi-typescript": "^7.13.0",
+    "typescript": "~6.0.3"
+  }
+}

@@ -7,7 +7,10 @@ Read `README.md` and `docs/adr/` first.
 - Static analysis: PHPStan level 9 must pass. Don't add baseline entries; fix the types.
 - Tests: Pest for PHP (feature tests for every endpoint), Jest for mobile. Every change ships with tests.
 - Web: Inertia + React + TypeScript + Tailwind, shadcn/ui components, Wayfinder for routes.
-- Mobile: Expo Router, functional components, shared tokens from `@reos/tokens`. Talk to the server only through the REST API.
+- Mobile: Expo Router, functional components, shared tokens from `@reos/tokens`. Talk to the server only through `@reos/api-client`; never hand-write request or response types.
+- API contract: after changing any `/api/v1` endpoint, run `pnpm api:generate` and commit `packages/api-client`. CI fails if it's stale. Document endpoints with PHPDoc (Scramble reads it).
+- Demo data: personas live in `database/seeders/Demo/Personas.php`; keep them in step with the journey documents.
+- Local services: `compose.yaml` (PostgreSQL 17 + pgvector, Redis, Meilisearch, Mailpit, SeaweedFS S3). Tests in CI run on PostgreSQL.
 - Design standard: minimum 16pt body text, 48pt touch targets, plain language, high contrast; luxury, calm and modern.
 - Security: never commit secrets, `.env` files or signing keys. Validate all input, escape output, rate-limit public endpoints.
 - Branches: `sNN.N-short-name`. Open pull requests as drafts (quick checks only) and mark them ready once for the full suite. "CI result" must be green before merging. See `docs/ci.md`.
