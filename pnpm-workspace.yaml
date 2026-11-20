@@ -1,0 +1,7 @@
+packages:
+    - apps/*
+    - packages/*
+
+# Inertia's core must be resolvable from the platform's Vite build.
+publicHoistPattern:
+    - '@inertiajs/core'

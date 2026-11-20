@@ -1,0 +1,18 @@
+/* REOS design tokens for the web app. Mirrors src/index.ts. */
+:root {
+    --reos-navy: #0f172a;
+    --reos-blue: #2952cc;
+    --reos-blue-strong: #1e3fa3;
+    --reos-blue-tint: #e8eefc;
+    --reos-sky: #93c5fd;
+    --reos-page: #f6f7f9;
+    --reos-surface: #ffffff;
+    --reos-border: #e3e7ee;
+    --reos-muted: #475569;
+    --reos-subtle: #64748b;
+    --reos-success: #15803d;
+    --reos-warning: #b45309;
+    --reos-danger: #b42318;
+    --reos-radius-md: 12px;
+    --reos-touch-target: 48px;
+}

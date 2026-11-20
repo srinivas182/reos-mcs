@@ -1,0 +1,19 @@
+{
+    "name": "reos",
+    "private": true,
+    "description": "REOS (Real Estate OS) monorepo: Laravel platform and web app, Expo mobile app, shared packages",
+    "packageManager": "pnpm@10.28.0",
+    "engines": {
+        "node": ">=22.12"
+    },
+    "scripts": {
+        "dev": "turbo run dev --parallel",
+        "build": "turbo run build",
+        "check": "turbo run check",
+        "types:check": "turbo run types:check",
+        "test": "turbo run test"
+    },
+    "devDependencies": {
+        "turbo": "^2.5.0"
+    }
+}
