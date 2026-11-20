@@ -18,7 +18,8 @@
     "settingsDescription": "Administra tu perfil y tu cuenta",
     "profile": "Perfil",
     "security": "Seguridad",
-    "appearance": "Apariencia e idioma"
+    "appearance": "Apariencia e idioma",
+    "integrations": "Integraciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -119,5 +120,156 @@
     "you": "Tú",
     "assistant": "Compañero de estudio de REOS",
     "source": "Fuente: {{source}}"
+  },
+  "integrations": {
+    "title": "Integraciones",
+    "description": "Conecte los servicios que usa REOS. Cada uno funciona con datos de demostración hasta que agregue las claves y lo active.",
+    "searchLabel": "Buscar integraciones",
+    "searchPlaceholder": "Buscar por nombre o propósito",
+    "summary": "{{configured}} de {{total}} tienen claves",
+    "noResults": {
+      "title": "Ninguna integración coincide",
+      "description": "Pruebe otra palabra o borre la búsqueda.",
+      "action": "Borrar búsqueda"
+    },
+    "back": "Todas las integraciones",
+    "personalData": "Maneja datos personales",
+    "kinds": {
+      "integration": "Integración",
+      "platform_service": "Servicio de la plataforma"
+    },
+    "categories": {
+      "calendar_email": "Calendario y correo",
+      "voice": "Voz",
+      "payments": "Pagos",
+      "notifications": "Notificaciones",
+      "video": "Video",
+      "ai": "IA",
+      "crm": "CRM",
+      "transactions": "Transacciones",
+      "esignature": "Firma electrónica",
+      "mls": "Datos de MLS",
+      "lookups": "Consultas e informes",
+      "social": "Redes sociales",
+      "maps": "Mapas",
+      "accounting": "Contabilidad",
+      "association": "Asociación",
+      "operations": "Supervisión",
+      "platform": "Plataforma",
+      "regulatory": "Normativa"
+    },
+    "mode": {
+      "label": "Cómo funciona",
+      "off": "Apagado",
+      "simulator": "Datos de demostración",
+      "sandbox": "Cuenta de prueba",
+      "live": "En vivo",
+      "offHint": "Apagado. Se ocultan las funciones que lo necesitan.",
+      "simulatorHint": "Datos de demostración realistas. No necesita claves.",
+      "sandboxHint": "El sistema de prueba del proveedor, con sus claves de prueba.",
+      "liveHint": "Datos reales, con sus claves en vivo.",
+      "needsSandboxKeys": "Primero agregue las claves de prueba.",
+      "needsLiveKeys": "Primero agregue las claves en vivo.",
+      "noTestSystem": "Este servicio no tiene sistema de prueba.",
+      "changed": "Ahora funciona con: {{mode}}"
+    },
+    "approval": {
+      "label": "Aprobación del proveedor",
+      "not_started": "Sin solicitar",
+      "applied": "Solicitada",
+      "in_review": "En revisión",
+      "approved": "Aprobada",
+      "blocked": "Bloqueada",
+      "not_needed": "No se necesita"
+    },
+    "keys": {
+      "sandboxTitle": "Claves de prueba",
+      "liveTitle": "Claves en vivo",
+      "sandboxDescription": "De la cuenta de sandbox o de desarrollador del proveedor.",
+      "liveDescription": "De la cuenta de producción del proveedor. Solo se usan cuando el servicio funciona en vivo.",
+      "status": {
+        "saved": "Claves guardadas",
+        "missing": "Todavía sin claves"
+      },
+      "savedEnding": "Guardada, termina en {{last4}}",
+      "savedHidden": "Guardada",
+      "keepHint": "Déjelo en blanco para conservar el valor guardado.",
+      "optional": "opcional",
+      "save": "Guardar claves",
+      "savedToast": "Claves guardadas",
+      "remove": "Quitar claves",
+      "removeTitle": "¿Quitar estas claves?",
+      "removeBody": "REOS deja de usarlas de inmediato. Si el servicio las estaba usando, vuelve a los datos de demostración. Para volver a conectarlo, pegue las claves otra vez.",
+      "removedToast": "Claves quitadas",
+      "noneNeeded": "No necesita claves. Este servicio usa datos públicos.",
+      "encrypted": "Las claves están cifradas. Después de guardarlas, solo se muestran los últimos cuatro caracteres.",
+      "show": "Mostrar clave",
+      "hide": "Ocultar clave"
+    },
+    "redirect": {
+      "label": "Dirección de redirección",
+      "hint": "Agregue esta dirección a la aplicación en la consola de desarrolladores del proveedor.",
+      "copy": "Copiar",
+      "copied": "Copiada"
+    },
+    "accounts": {
+      "platform": "Usa la cuenta propia de REOS.",
+      "user": "Después de guardar estas claves, cada persona conecta su propia cuenta desde su configuración.",
+      "tenant": "Después de guardar estas claves, cada correduría o escuela conecta su propia cuenta desde su configuración."
+    },
+    "setup": {
+      "title": "Cómo obtener acceso de prueba"
+    },
+    "environments": {
+      "sandbox": "de prueba",
+      "live": "en vivo"
+    },
+    "activity": {
+      "title": "Cambios recientes",
+      "empty": "Todavía no hay cambios",
+      "credentialsUpdated": "{{actor}} actualizó las claves {{environment}}: {{fields}}",
+      "credentialsRemoved": "{{actor}} quitó las claves {{environment}}",
+      "modeChanged": "{{actor}} cambió cómo funciona de {{from}} a {{to}}",
+      "unknownActor": "Alguien",
+      "emptyDescription": "Aquí aparecen los cambios en las claves y en cómo funciona este servicio, con quién los hizo."
+    },
+    "fields": {
+      "client_id": "ID de cliente",
+      "client_secret": "Secreto de cliente",
+      "client_key": "Clave de cliente",
+      "api_key": "Clave de API",
+      "api_secret": "Secreto de API",
+      "secret_key": "Clave secreta",
+      "publishable_key": "Clave publicable",
+      "webhook_secret": "Secreto de firma del webhook",
+      "webhook_id": "ID del webhook",
+      "access_key_id": "ID de clave de acceso",
+      "secret_access_key": "Clave de acceso secreta",
+      "region": "Región",
+      "account_sid": "SID de la cuenta",
+      "auth_token": "Token de autenticación",
+      "from_number": "Número de teléfono de envío",
+      "from_email": "Correo electrónico de envío",
+      "access_token": "Token de acceso",
+      "access_token_id": "ID del token de acceso",
+      "dsn": "DSN del servidor",
+      "browser_dsn": "DSN de la aplicación web",
+      "mobile_dsn": "DSN de la aplicación móvil",
+      "project_key": "Clave de API del proyecto",
+      "host": "Dirección del host",
+      "otlp_endpoint": "Punto de conexión OTLP",
+      "instance_id": "ID de instancia",
+      "server_url": "Dirección del servidor",
+      "api_login_id": "ID de inicio de sesión de API",
+      "transaction_key": "Clave de transacción",
+      "signature_key": "Clave de firma",
+      "integration_key": "Clave de integración",
+      "private_key": "Clave privada RSA",
+      "system_name": "Nombre del sistema",
+      "system_key": "Clave del sistema",
+      "app_id": "ID de la aplicación",
+      "app_secret": "Secreto de la aplicación",
+      "model_id": "ID del modelo"
+    }
   }
 }

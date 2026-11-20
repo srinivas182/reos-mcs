@@ -13,6 +13,38 @@
     "entries": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/entry" } }
   },
   "$defs": {
+    "connection": {
+      "description": "How the super admin connects this service in Settings › Integrations (Sprint 2.4). The product reads it from the generated catalogue.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["auth", "accounts", "fields"],
+      "properties": {
+        "auth": {
+          "description": "oauth2 shows the redirect address to register with the vendor; aws uses an IAM access key; none = public data, no keys.",
+          "enum": ["api_key", "oauth2", "aws", "none"]
+        },
+        "accounts": {
+          "description": "Whose account the data comes from once the keys are saved: REOS's own (platform), each person connects their own (user), or each brokerage or school connects its own (tenant).",
+          "enum": ["platform", "user", "tenant"]
+        },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/field" } }
+      }
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key"],
+      "properties": {
+        "key": {
+          "description": "Field name. Its label is integrations.fields.<key> in packages/i18n.",
+          "enum": ["client_id", "client_secret", "client_key", "api_key", "api_secret", "secret_key", "publishable_key", "webhook_secret", "webhook_id", "access_key_id", "secret_access_key", "region", "account_sid", "auth_token", "from_number", "from_email", "access_token", "access_token_id", "dsn", "browser_dsn", "mobile_dsn", "project_key", "host", "otlp_endpoint", "instance_id", "server_url", "api_login_id", "transaction_key", "signature_key", "integration_key", "private_key", "system_name", "system_key", "app_id", "app_secret", "model_id"]
+        },
+        "secret": { "description": "Encrypted and never shown again after saving (only the last four characters).", "type": "boolean" },
+        "required": { "description": "Defaults to true.", "type": "boolean" },
+        "kind": { "description": "Input type and validation. Defaults to text.", "enum": ["text", "url", "email", "phone", "multiline"] },
+        "default": { "type": "string" }
+      }
+    },
     "entry": {
       "type": "object",
       "additionalProperties": false,
@@ -71,7 +103,8 @@
         "cost": { "type": "string" },
         "notes": { "type": "string" },
         "fallback": { "type": "string" },
-        "sources": { "type": "array", "items": { "type": "string", "format": "uri" } }
+        "sources": { "type": "array", "items": { "type": "string", "format": "uri" } },
+        "connection": { "$ref": "#/$defs/connection" }
       },
       "allOf": [
         { "if": { "properties": { "kind": { "const": "integration" } } }, "then": { "properties": { "launch": { "enum": ["enabled", "beta", "coming_soon"] } } } },

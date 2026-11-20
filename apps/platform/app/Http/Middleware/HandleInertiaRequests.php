@@ -41,6 +41,9 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
+                'can' => [
+                    'manageIntegrations' => $request->user()?->can('manage-integrations') ?? false,
+                ],
             ],
             'preferences' => [
                 'appearance' => View::shared('appearance', 'system'),

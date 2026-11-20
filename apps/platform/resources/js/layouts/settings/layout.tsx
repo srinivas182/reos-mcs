@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import Heading from '@/components/heading';
@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
+import { index as integrations } from '@/routes/integrations';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
@@ -14,11 +15,22 @@ import type { NavItem } from '@/types';
 export default function SettingsLayout({ children }: PropsWithChildren) {
     const { isCurrentOrParentUrl } = useCurrentUrl();
     const { t } = useTranslation();
+    const { auth } = usePage().props;
 
     const sidebarNavItems: NavItem[] = [
         { title: t('nav.profile'), href: edit(), icon: null },
         { title: t('nav.security'), href: editSecurity(), icon: null },
         { title: t('nav.appearance'), href: editAppearance(), icon: null },
+        // Super admins only (the server enforces it too).
+        ...(auth.can.manageIntegrations
+            ? [
+                  {
+                      title: t('nav.integrations'),
+                      href: integrations(),
+                      icon: null,
+                  },
+              ]
+            : []),
     ];
 
     return (

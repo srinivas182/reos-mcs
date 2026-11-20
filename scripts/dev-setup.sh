@@ -24,6 +24,8 @@ if [ ! -f apps/platform/.env ]; then
 else
   echo "Keeping your existing .env"
 fi
+# Idempotent: adds the integration-keys encryption key only if it's missing.
+(cd apps/platform && php artisan reos:credentials:key --ansi)
 
 step "Creating the database and demo logins"
 (cd apps/platform && php artisan migrate --seed --force)

@@ -21,9 +21,13 @@ function workspace(edit = (yaml) => yaml) {
   return dir;
 }
 
+let extraEnv = {};
+
 function run(dir, ...args) {
   try {
-    const stdout = execFileSync(process.execPath, [script, ...args], { env: { ...process.env, REGISTER_DIR: dir }, encoding: 'utf8', stdio: 'pipe' });
+    // Temporary workspaces also get their own catalogue; the real register checks the committed one.
+    const env = { ...process.env, REGISTER_DIR: dir, ...(dir === source ? {} : { CATALOGUE_PATH: join(dir, 'catalogue.json') }), ...extraEnv };
+    const stdout = execFileSync(process.execPath, [script, ...args], { env, encoding: 'utf8', stdio: 'pipe' });
     return { ok: true, out: stdout };
   } catch (error) {
     return { ok: false, out: `${error.stdout}${error.stderr}` };
@@ -100,4 +104,45 @@ test('--status reports late items using today\'s date', () => {
   const result = run(source, '--status');
   assert.ok(result.ok, result.out);
   assert.match(result.out, /Late \(should already be filed\)/);
+});
+
+test('writes the product catalogue with every connectable service and its fields', () => {
+  const dir = workspace();
+  assert.ok(run(dir).ok);
+  const catalogue = JSON.parse(readFileSync(join(dir, 'catalogue.json'), 'utf8'));
+  const ids = catalogue.entries.map((e) => e.id);
+  assert.ok(ids.includes('google-workspace') && ids.includes('sentry'));
+  assert.ok(!ids.includes('github'), 'vendor accounts are not in the product catalogue');
+  const google = catalogue.entries.find((e) => e.id === 'google-workspace');
+  assert.deepEqual(google.connection.fields[1], { key: 'client_secret', secret: true, required: true, kind: 'text', default: null });
+});
+
+test('--check fails when the product catalogue is stale', () => {
+  const dir = workspace();
+  run(dir);
+  writeFileSync(join(dir, 'catalogue.json'), '{}\n');
+  const result = run(dir, '--check');
+  assert.equal(result.ok, false);
+  assert.match(result.out, /catalogue\.json is out of date/);
+});
+
+test('every integration needs a connection block', () => {
+  const dir = workspace((yaml) => yaml.replace(/(  - id: stripe\n[\s\S]*?)    connection:\n[\s\S]*?(?=    personal_data:)/, '$1'));
+  const result = run(dir);
+  assert.equal(result.ok, false);
+  assert.match(result.out, /\[stripe\] needs a connection block/);
+});
+
+test('every connection field needs a translated label', () => {
+  const dir = workspace();
+  const i18n = join(dir, 'en.json');
+  writeFileSync(i18n, JSON.stringify({ integrations: { fields: { client_id: 'Client ID' } } }));
+  extraEnv = { I18N_PATH: i18n };
+  try {
+    const result = run(dir);
+    assert.equal(result.ok, false);
+    assert.match(result.out, /field "client_secret" has no label/);
+  } finally {
+    extraEnv = {};
+  }
 });

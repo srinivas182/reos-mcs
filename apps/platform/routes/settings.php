@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Settings\AppearanceController;
+use App\Http\Controllers\Settings\IntegrationController;
+use App\Http\Controllers\Settings\IntegrationCredentialController;
+use App\Http\Controllers\Settings\IntegrationModeController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 /* @chisel-password-confirmation */
@@ -33,6 +36,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('throttle:30,1')
         ->name('appearance.update');
 });
+
+// Integration Hub (Sprint 2.4): super admin only, and the password must have
+// been confirmed recently, because these pages hold the platform's vendor keys.
+Route::middleware(['auth', 'verified', 'can:manage-integrations', RequirePassword::class])
+    ->prefix('settings/integrations')
+    ->name('integrations.')
+    ->group(function () {
+        Route::get('/', [IntegrationController::class, 'index'])->name('index');
+        Route::get('{integration}', [IntegrationController::class, 'show'])->name('show');
+
+        Route::middleware('throttle:30,1')->group(function () {
+            Route::put('{integration}/keys/{environment}', [IntegrationCredentialController::class, 'update'])->name('keys.update')->whereIn('environment', ['sandbox', 'live']);
+            Route::delete('{integration}/keys/{environment}', [IntegrationCredentialController::class, 'destroy'])->name('keys.destroy')->whereIn('environment', ['sandbox', 'live']);
+            Route::patch('{integration}/mode', [IntegrationModeController::class, 'update'])->name('mode.update');
+        });
+    });
 
 /* @chisel-passkeys */
 Route::get('.well-known/passkey-endpoints', function () {

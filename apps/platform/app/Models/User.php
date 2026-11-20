@@ -30,6 +30,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Appearance $appearance
  * @property TextSize $text_size
  * @property Locale $locale
+ * @property bool $is_super_admin
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -49,6 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         'appearance' => 'system',
         'text_size' => 'standard',
         'locale' => 'en',
+        'is_super_admin' => false,
     ];
 
     /**
@@ -64,6 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'appearance' => Appearance::class,
             'text_size' => TextSize::class,
             'locale' => Locale::class,
+            'is_super_admin' => 'boolean',
             /* @chisel-2fa */
             'two_factor_confirmed_at' => 'datetime',
             /* @end-chisel-2fa */

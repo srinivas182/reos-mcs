@@ -18,7 +18,8 @@
     "settingsDescription": "Manage your profile and account settings",
     "profile": "Profile",
     "security": "Security",
-    "appearance": "Appearance and language"
+    "appearance": "Appearance and language",
+    "integrations": "Integrations"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -119,5 +120,156 @@
     "you": "You",
     "assistant": "REOS study mate",
     "source": "Source: {{source}}"
+  },
+  "integrations": {
+    "title": "Integrations",
+    "description": "Connect the services REOS uses. Each one runs on demo data until you add keys and switch it on.",
+    "searchLabel": "Search integrations",
+    "searchPlaceholder": "Search by name or purpose",
+    "summary": "{{configured}} of {{total}} have keys",
+    "noResults": {
+      "title": "No integrations match",
+      "description": "Try another word, or clear the search.",
+      "action": "Clear search"
+    },
+    "back": "All integrations",
+    "personalData": "Handles personal data",
+    "kinds": {
+      "integration": "Integration",
+      "platform_service": "Platform service"
+    },
+    "categories": {
+      "calendar_email": "Calendar and email",
+      "voice": "Voice",
+      "payments": "Payments",
+      "notifications": "Notifications",
+      "video": "Video",
+      "ai": "AI",
+      "crm": "CRM",
+      "transactions": "Transactions",
+      "esignature": "E-signature",
+      "mls": "MLS data",
+      "lookups": "Lookups and reporting",
+      "social": "Social",
+      "maps": "Maps",
+      "accounting": "Accounting",
+      "association": "Association",
+      "operations": "Monitoring",
+      "platform": "Platform",
+      "regulatory": "Regulatory"
+    },
+    "mode": {
+      "label": "How it runs",
+      "off": "Off",
+      "simulator": "Demo data",
+      "sandbox": "Test account",
+      "live": "Live",
+      "offHint": "Switched off. Features that need it are hidden.",
+      "simulatorHint": "Realistic demo data. No keys needed.",
+      "sandboxHint": "The vendor's test system, with your test keys.",
+      "liveHint": "Real data, with your live keys.",
+      "needsSandboxKeys": "Add test keys first.",
+      "needsLiveKeys": "Add live keys first.",
+      "noTestSystem": "This service has no test system.",
+      "changed": "Now running on: {{mode}}"
+    },
+    "approval": {
+      "label": "Vendor approval",
+      "not_started": "Not applied",
+      "applied": "Applied",
+      "in_review": "In review",
+      "approved": "Approved",
+      "blocked": "Blocked",
+      "not_needed": "Not needed"
+    },
+    "keys": {
+      "sandboxTitle": "Test keys",
+      "liveTitle": "Live keys",
+      "sandboxDescription": "From the vendor's sandbox or developer account.",
+      "liveDescription": "From the vendor's production account. Used only when the service runs live.",
+      "status": {
+        "saved": "Keys saved",
+        "missing": "No keys yet"
+      },
+      "savedEnding": "Saved, ends in {{last4}}",
+      "savedHidden": "Saved",
+      "keepHint": "Leave blank to keep the saved value.",
+      "optional": "optional",
+      "save": "Save keys",
+      "savedToast": "Keys saved",
+      "remove": "Remove keys",
+      "removeTitle": "Remove these keys?",
+      "removeBody": "REOS stops using them straight away. If the service was using them, it goes back to demo data. To reconnect, paste the keys again.",
+      "removedToast": "Keys removed",
+      "noneNeeded": "No keys needed. This service uses public data.",
+      "encrypted": "Keys are encrypted. After saving, only the last four characters are shown.",
+      "show": "Show key",
+      "hide": "Hide key"
+    },
+    "redirect": {
+      "label": "Redirect address",
+      "hint": "Add this address to the app in the vendor's developer console.",
+      "copy": "Copy",
+      "copied": "Copied"
+    },
+    "accounts": {
+      "platform": "Uses REOS's own account.",
+      "user": "After you save these keys, each person connects their own account from their settings.",
+      "tenant": "After you save these keys, each brokerage or school connects its own account from their settings."
+    },
+    "setup": {
+      "title": "Getting test access"
+    },
+    "environments": {
+      "sandbox": "test",
+      "live": "live"
+    },
+    "activity": {
+      "title": "Recent changes",
+      "empty": "No changes yet",
+      "credentialsUpdated": "{{actor}} updated the {{environment}} keys: {{fields}}",
+      "credentialsRemoved": "{{actor}} removed the {{environment}} keys",
+      "modeChanged": "{{actor}} changed how it runs from {{from}} to {{to}}",
+      "unknownActor": "Someone",
+      "emptyDescription": "Changes to keys and how this service runs appear here, with who made them."
+    },
+    "fields": {
+      "client_id": "Client ID",
+      "client_secret": "Client secret",
+      "client_key": "Client key",
+      "api_key": "API key",
+      "api_secret": "API secret",
+      "secret_key": "Secret key",
+      "publishable_key": "Publishable key",
+      "webhook_secret": "Webhook signing secret",
+      "webhook_id": "Webhook ID",
+      "access_key_id": "Access key ID",
+      "secret_access_key": "Secret access key",
+      "region": "Region",
+      "account_sid": "Account SID",
+      "auth_token": "Auth token",
+      "from_number": "Sending phone number",
+      "from_email": "Sending email address",
+      "access_token": "Access token",
+      "access_token_id": "Access token ID",
+      "dsn": "Server DSN",
+      "browser_dsn": "Web app DSN",
+      "mobile_dsn": "Phone app DSN",
+      "project_key": "Project API key",
+      "host": "Host address",
+      "otlp_endpoint": "OTLP endpoint",
+      "instance_id": "Instance ID",
+      "server_url": "Server address",
+      "api_login_id": "API login ID",
+      "transaction_key": "Transaction key",
+      "signature_key": "Signature key",
+      "integration_key": "Integration key",
+      "private_key": "RSA private key",
+      "system_name": "System name",
+      "system_key": "System key",
+      "app_id": "App ID",
+      "app_secret": "App secret",
+      "model_id": "Model ID"
+    }
   }
 }

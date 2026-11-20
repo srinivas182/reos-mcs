@@ -11,6 +11,8 @@ export type ChoiceTile<T extends string> = {
     icon?: LucideIcon;
     /** Optional preview drawn inside the tile (for example a sample of text). */
     preview?: ReactNode;
+    /** Shown but not selectable; say why in `description`. */
+    disabled?: boolean;
 };
 
 type ChoiceTilesProps<T extends string> = {
@@ -53,12 +55,20 @@ export function ChoiceTiles<T extends string>({
         }
 
         event.preventDefault();
-        const next = (index + step + options.length) % options.length;
-        const option = options[next];
 
-        if (option) {
-            onChange(option.value);
-            refs.current[next]?.focus();
+        // Skip tiles that can't be chosen, like a native radio group does.
+        for (let offset = 1; offset < options.length; offset++) {
+            const next =
+                (index + step * offset + options.length * offset) %
+                options.length;
+            const option = options[next];
+
+            if (option && !option.disabled) {
+                onChange(option.value);
+                refs.current[next]?.focus();
+
+                return;
+            }
         }
     };
 
@@ -86,11 +96,12 @@ export function ChoiceTiles<T extends string>({
                             role="radio"
                             aria-checked={selected}
                             tabIndex={selected ? 0 : -1}
+                            disabled={option.disabled}
                             onClick={() => onChange(option.value)}
                             onKeyDown={(event) => move(event, index)}
                             className={cn(
                                 'relative flex min-h-touch flex-col items-start gap-1 rounded-reos-md border-2 bg-card p-4 text-left transition-colors',
-                                'hover:border-primary/60',
+                                'hover:border-primary/60 disabled:cursor-not-allowed disabled:border-dashed disabled:bg-muted disabled:hover:border-border',
                                 selected
                                     ? 'border-primary bg-accent'
                                     : 'border-border',

@@ -75,6 +75,7 @@ jobs:
               - 'packages/tokens/**'
               - 'packages/i18n/**'
               - 'apps/platform/lang/**'
+              - 'apps/platform/resources/integrations/**'
               - 'package.json'
               - 'pnpm-lock.yaml'
               - '.github/workflows/ci.yml'

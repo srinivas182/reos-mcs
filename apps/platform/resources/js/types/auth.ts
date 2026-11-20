@@ -14,6 +14,10 @@ export type User = {
 
 export type Auth = {
     user: User;
+    /** What the signed-in person may do (from the server's gates). */
+    can: {
+        manageIntegrations: boolean;
+    };
 };
 
 /* @chisel-passkeys */

@@ -10,7 +10,15 @@ const options = [
     { value: 'largest', label: 'Largest' },
 ] as const;
 
-function Harness() {
+function Harness({
+    choices = options,
+}: {
+    choices?: readonly {
+        value: 'standard' | 'large' | 'largest';
+        label: string;
+        disabled?: boolean;
+    }[];
+}) {
     const [value, setValue] = useState<'standard' | 'large' | 'largest'>(
         'standard',
     );
@@ -19,7 +27,7 @@ function Harness() {
         <ChoiceTiles
             label="Text size"
             value={value}
-            options={options}
+            options={choices}
             onChange={setValue}
         />
     );
@@ -81,5 +89,28 @@ describe('ChoiceTiles', () => {
             .getAllByRole('radio')
             .filter((radio) => radio.getAttribute('tabindex') === '0');
         expect(tabbable).toHaveLength(1);
+    });
+
+    it('skips tiles that cannot be chosen yet', async () => {
+        render(
+            <Harness
+                choices={[
+                    { value: 'standard', label: 'Standard' },
+                    { value: 'large', label: 'Large', disabled: true },
+                    { value: 'largest', label: 'Largest' },
+                ]}
+            />,
+        );
+
+        expect(screen.getByRole('radio', { name: /Large$/ })).toBeDisabled();
+
+        await userEvent.tab();
+        await userEvent.keyboard('{ArrowRight}');
+
+        expect(screen.getByRole('radio', { name: /Largest/ })).toHaveAttribute(
+            'aria-checked',
+            'true',
+        );
+        expect(screen.getByRole('radio', { name: /Largest/ })).toHaveFocus();
     });
 });

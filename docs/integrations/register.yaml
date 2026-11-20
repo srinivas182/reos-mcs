@@ -35,6 +35,12 @@ entries:
       status: not_started
     sandbox: Test users on an unverified Google Cloud project (up to 100) until verification is approved.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API. Reading the inbox (restricted Gmail scopes) needs a yearly CASA security assessment by a Google-approved assessor, a paid third-party service.
     notes: >-
@@ -63,6 +69,12 @@ entries:
       status: not_started
     sandbox: Microsoft 365 Developer Program tenant.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API.
     notes: Microsoft Entra multi-tenant app with publisher verification (needs a Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting.
@@ -84,6 +96,13 @@ entries:
       status: not_started
     sandbox: Same AWS account (staging).
     credentials: platform
+    connection:
+      auth: aws
+      accounts: platform
+      fields:
+        - { key: access_key_id }
+        - { key: secret_access_key, secret: true }
+        - { key: region, default: us-east-2 }
     personal_data: true
     cost: Pay per minute / per character.
 
@@ -103,6 +122,13 @@ entries:
       status: not_started
     sandbox: Stripe test mode.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: publishable_key }
+        - { key: secret_key, secret: true }
+        - { key: webhook_secret, secret: true }
     personal_data: true
     cost: Per-transaction fees; Stripe Tax and Billing add a percentage.
     notes: Account must be in the client's Texas entity. Card data never touches REOS (Stripe Checkout).
@@ -122,6 +148,13 @@ entries:
       status: not_started
     sandbox: Stripe test mode with test connected accounts.
     credentials: both
+    connection:
+      auth: oauth2
+      accounts: tenant
+      fields:
+        - { key: client_id }
+        - { key: secret_key, secret: true }
+        - { key: webhook_secret, secret: true }
     personal_data: true
     cost: Per-payout and per-active-account fees.
     notes: Platform profile and connected-account onboarding review by Stripe before live payouts.
@@ -141,6 +174,13 @@ entries:
       status: not_started
     sandbox: PayPal developer sandbox.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: platform
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
+        - { key: webhook_id, required: false }
     personal_data: true
     cost: Per-transaction fees.
     notes: PayPal Business account; advanced card processing needs PayPal's approval.
@@ -160,6 +200,13 @@ entries:
       status: not_started
     sandbox: Authorize.net sandbox account (free, instant).
     credentials: both
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields:
+        - { key: api_login_id }
+        - { key: transaction_key, secret: true }
+        - { key: signature_key, secret: true }
     personal_data: true
     cost: Monthly gateway fee plus per-transaction fees; needs a merchant account.
     notes: Use Accept Hosted so card data never touches REOS.
@@ -180,6 +227,11 @@ entries:
       status: not_started
     sandbox: Development builds.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: access_token, secret: true, required: false }
     personal_data: false
     cost: Included with Expo.
     notes: Needs the Apple push key and Firebase project from the store accounts.
@@ -199,6 +251,14 @@ entries:
       status: not_started
     sandbox: SES sandbox (verified recipients only).
     credentials: platform
+    connection:
+      auth: aws
+      accounts: platform
+      fields:
+        - { key: access_key_id }
+        - { key: secret_access_key, secret: true }
+        - { key: region, default: us-east-2 }
+        - { key: from_email, kind: email, default: hello@reos.com }
     personal_data: true
     cost: Per 1,000 emails.
     notes: Request production access; set up SPF, DKIM and DMARC on the product domain.
@@ -218,6 +278,13 @@ entries:
       status: not_started
     sandbox: Twilio test credentials and a trial number.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: account_sid }
+        - { key: auth_token, secret: true }
+        - { key: from_number, kind: phone }
     personal_data: true
     cost: Per message plus one-off and monthly 10DLC registration fees.
     notes: >-
@@ -243,6 +310,13 @@ entries:
       status: not_started
     sandbox: Free tier project.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: server_url, kind: url }
+        - { key: api_key }
+        - { key: api_secret, secret: true }
     personal_data: true
     cost: Per participant-minute.
 
@@ -261,6 +335,13 @@ entries:
       status: not_started
     sandbox: Mux test environment.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: access_token_id }
+        - { key: secret_key, secret: true }
+        - { key: webhook_secret, secret: true }
     personal_data: false
     cost: Per minute encoded, stored and delivered.
 
@@ -279,6 +360,11 @@ entries:
       status: not_started
     sandbox: Trial workspace; API needs an Enterprise plan.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: api_key, secret: true }
     personal_data: true
     cost: Enterprise plan (quote).
     notes: Instructor avatar consent template must be signed before any instructor likeness is used.
@@ -299,6 +385,14 @@ entries:
       status: not_started
     sandbox: Staging AWS account, us-east-2.
     credentials: platform
+    connection:
+      auth: aws
+      accounts: platform
+      fields:
+        - { key: access_key_id }
+        - { key: secret_access_key, secret: true }
+        - { key: region, default: us-east-2 }
+        - { key: model_id }
     personal_data: true
     cost: Per token.
     notes: Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer data.
@@ -318,6 +412,13 @@ entries:
       status: not_started
     sandbox: Staging AWS account.
     credentials: platform
+    connection:
+      auth: aws
+      accounts: platform
+      fields:
+        - { key: access_key_id }
+        - { key: secret_access_key, secret: true }
+        - { key: region, default: us-east-2 }
     personal_data: true
     cost: Per page.
 
@@ -338,6 +439,12 @@ entries:
       status: not_started
     sandbox: Free trial account; register a system key.
     credentials: tenant
+    connection:
+      auth: api_key
+      accounts: user
+      fields:
+        - { key: system_name, default: REOS }
+        - { key: system_key, secret: true }
     personal_data: true
     cost: Free API; agents use their own Follow Up Boss plan.
     fallback: CSV import; email forwarding.
@@ -358,6 +465,12 @@ entries:
       status: not_started
     sandbox: Partner sandbox on approval.
     credentials: tenant
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Partner terms on application.
     fallback: CSV import.
@@ -378,6 +491,12 @@ entries:
       status: not_started
     sandbox: Partner sandbox on approval.
     credentials: tenant
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Partner terms on application.
     fallback: CSV import.
@@ -398,6 +517,12 @@ entries:
       status: not_started
     sandbox: Free Developer Edition org.
     credentials: tenant
+    connection:
+      auth: oauth2
+      accounts: tenant
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free to connect; AppExchange listing (optional, later) needs a paid security review.
 
@@ -418,6 +543,12 @@ entries:
       status: not_started
     sandbox: Partner sandbox on approval.
     credentials: both
+    connection:
+      auth: oauth2
+      accounts: tenant
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Partner terms on application.
     fallback: Email forwarding of deal documents.
@@ -438,6 +569,12 @@ entries:
       status: not_started
     sandbox: Partner sandbox on approval.
     credentials: tenant
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Partner terms on application.
 
@@ -457,6 +594,12 @@ entries:
       status: not_started
     sandbox: Partner sandbox on approval.
     credentials: tenant
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields:
+        - { key: api_key }
+        - { key: api_secret, secret: true }
     personal_data: true
     cost: Partner terms on application.
 
@@ -476,6 +619,13 @@ entries:
       status: not_started
     sandbox: Free developer (demo) account.
     credentials: tenant
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: integration_key }
+        - { key: secret_key, secret: true }
+        - { key: private_key, secret: true, kind: multiline, required: false }
     personal_data: true
     cost: Free to integrate; signers use the customer's DocuSign plan.
     notes: Production go-live review after enough successful calls in the demo environment.
@@ -497,6 +647,13 @@ entries:
       status: not_started
     sandbox: Bridge test dataset.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: platform
+      fields:
+        - { key: server_url, kind: url }
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: false
     cost: MLS licence fees per feed type (IDX, VOW, back office) plus Bridge terms.
     notes: Delivered through the Bridge API (dataset `har`). Needs a licensed broker of record as sponsor. HAR and SABOR share listings with each other's subscribers (since May 2023).
@@ -520,6 +677,13 @@ entries:
       status: not_started
     sandbox: Trestle test feed.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: platform
+      fields:
+        - { key: server_url, kind: url }
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: false
     cost: MLS licence fees plus Trestle terms.
     notes: NTREIS presents Trestle (Cotality) as its Web API feed. Needs a broker sponsor.
@@ -542,6 +706,13 @@ entries:
       status: not_started
     sandbox: On approval.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: platform
+      fields:
+        - { key: server_url, kind: url }
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: false
     cost: Pricing given by MLS Grid after registration.
     notes: Register with MLS Grid first (Unlock MLS's admin tool), with at least one active Unlock subscriber signed up; then deliver through MLS Grid, Trestle or Bridge. Contact mlsdata@unlockmls.com.
@@ -564,6 +735,13 @@ entries:
       status: not_started
     sandbox: To confirm with SABOR.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: platform
+      fields:
+        - { key: server_url, kind: url }
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: false
     cost: SABOR IDX data feed fee plus vendor terms.
     notes: Delivery vendor not published; confirm with SABOR's MLS department (SABOR runs connectMLS and publishes a third-party vendor agreement).
@@ -586,6 +764,10 @@ entries:
       status: not_started
     sandbox: Public data.
     credentials: none
+    connection:
+      auth: none
+      accounts: platform
+      fields: []
     personal_data: true
     cost: Free public data.
     notes: Use TREC's published licence-holder data files rather than scraping the search pages.
@@ -606,6 +788,10 @@ entries:
       status: not_started
     sandbox: None; test with TREC's guidance before go-live.
     credentials: tenant
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields: []
     personal_data: true
     cost: Per TREC's provider rules.
     notes: Open question in the PRD (school vs REOS submits). Needs the school's education-provider account.
@@ -625,6 +811,10 @@ entries:
       status: not_started
     sandbox: Public lookup site.
     credentials: none
+    connection:
+      auth: none
+      accounts: platform
+      fields: []
     personal_data: true
     cost: To confirm.
     notes: Confirm an allowed automated route with NMLS before building; the public lookup's terms may restrict automated queries.
@@ -645,6 +835,10 @@ entries:
       status: not_started
     sandbox: Public data.
     credentials: none
+    connection:
+      auth: none
+      accounts: platform
+      fields: []
     personal_data: true
     cost: Free public data (to confirm).
     fallback: Manual verification.
@@ -683,6 +877,12 @@ entries:
       status: not_started
     sandbox: Development-mode app with test users.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: app_id }
+        - { key: app_secret, secret: true }
     personal_data: true
     cost: Free API.
     notes: Business verification of the client's company, then app review for each publishing permission with screencasts.
@@ -702,6 +902,12 @@ entries:
       status: not_started
     sandbox: Development app.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API.
     notes: Posting as a member is self-serve; company pages and analytics need Community Management API approval. Launches as beta per the PRD.
@@ -721,6 +927,12 @@ entries:
       status: not_started
     sandbox: Same Google Cloud project as Google Workspace.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API.
     notes: API access request form; covered by the same OAuth verification as Google Workspace.
@@ -740,6 +952,12 @@ entries:
       status: not_started
     sandbox: Same Google Cloud project; unverified apps upload as private.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API; request a quota increase for scale.
     notes: Uploads stay private until the API audit is passed.
@@ -759,6 +977,12 @@ entries:
       status: not_started
     sandbox: Sandbox app; unaudited apps can only post privately.
     credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_key }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API.
     notes: Content Posting API audit before public posting.
@@ -779,6 +1003,11 @@ entries:
       status: not_started
     sandbox: Free tier.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: access_token, secret: true }
     personal_data: false
     cost: Free tier, then per map load.
 
@@ -797,6 +1026,12 @@ entries:
       status: not_started
     sandbox: Intuit developer sandbox company.
     credentials: tenant
+    connection:
+      auth: oauth2
+      accounts: tenant
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API.
     notes: Production keys need Intuit's app assessment questionnaire.
@@ -817,6 +1052,10 @@ entries:
       status: not_started
     sandbox: Ask for a test environment of the membership system.
     credentials: tenant
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields: []
     personal_data: true
     cost: Contract.
     notes: Open PRD question which membership system and fields. Data-sharing agreement and security review usually precede access; start the conversation now.
@@ -837,6 +1076,13 @@ entries:
       status: not_started
     sandbox: Separate staging project.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: dsn, kind: url }
+        - { key: browser_dsn, kind: url, required: false }
+        - { key: mobile_dsn, kind: url, required: false }
     personal_data: true
     # Code ships switched off in Sprint 2.4; the super admin turns it on in Settings once the account exists.
     cost: Team plan.
@@ -857,6 +1103,12 @@ entries:
       status: not_started
     sandbox: Separate staging project.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: project_key }
+        - { key: host, kind: url, default: https://us.i.posthog.com }
     personal_data: true
     # Code ships switched off in Sprint 2.4; the super admin turns it on in Settings once the account exists.
     cost: Usage-based; generous free tier.
@@ -877,6 +1129,13 @@ entries:
       status: not_started
     sandbox: Staging stack.
     credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: otlp_endpoint, kind: url }
+        - { key: instance_id }
+        - { key: access_token, secret: true }
     personal_data: false
     # Code ships switched off in Sprint 2.4; the super admin turns it on in Settings once the account exists.
     cost: Grafana Cloud free tier or self-hosted.
