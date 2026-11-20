@@ -7,9 +7,7 @@ use App\Http\Controllers\Settings\IntegrationCredentialController;
 use App\Http\Controllers\Settings\IntegrationModeController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
-/* @chisel-password-confirmation */
-use Illuminate\Auth\Middleware\RequirePassword;
-/* @end-chisel-password-confirmation */
+use App\Http\Middleware\ConfirmIdentity;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
@@ -23,10 +21,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('settings/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('settings/security', [SecurityController::class, 'edit'])
-        /* @chisel-password-confirmation */
-        ->middleware(RequirePassword::class)
-        /* @end-chisel-password-confirmation */
+        ->middleware(ConfirmIdentity::class)
         ->name('security.edit');
+    Route::delete('settings/devices/{device}', [SecurityController::class, 'destroyDevice'])
+        ->whereNumber('device')
+        ->middleware('throttle:30,1')
+        ->name('devices.destroy');
 
     Route::put('settings/password', [SecurityController::class, 'update'])
         ->middleware('throttle:6,1')
@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Integration Hub (Sprint 2.4): super admin only, and the password must have
 // been confirmed recently, because these pages hold the platform's vendor keys.
-Route::middleware(['auth', 'verified', 'can:manage-integrations', RequirePassword::class])
+Route::middleware(['auth', 'verified', 'can:manage-integrations', ConfirmIdentity::class])
     ->prefix('settings/integrations')
     ->name('integrations.')
     ->group(function () {

@@ -16,6 +16,7 @@ export type User = {
 
 export type Auth = {
     user: User;
+    hasPassword: boolean;
     /** What the signed-in person may do (from the server's gates). */
     can: {
         manageIntegrations: boolean;

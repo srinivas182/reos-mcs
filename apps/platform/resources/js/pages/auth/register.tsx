@@ -1,72 +1,102 @@
 import { Form, Head } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
+import type { SignInOptionsAvailable } from '@/components/sign-in-options';
+import {
+    OrDivider,
+    PhoneSignIn,
+    ProviderButtons,
+} from '@/components/sign-in-options';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { i18n } from '@/lib/i18n';
 import { login } from '@/routes';
 import { store } from '@/routes/register';
 
 type Props = {
     passwordRules: string;
+    signInOptions: SignInOptionsAvailable;
 };
 
-export default function Register({ passwordRules }: Props) {
+/** Create an account: Google, Apple or phone in one tap, or email and password. */
+export default function Register({ passwordRules, signInOptions }: Props) {
+    const { t } = useTranslation();
+    const quick =
+        signInOptions.google || signInOptions.apple || signInOptions.phone;
+
     return (
         <>
-            <Head title="Register" />
-            <Form
-                {...store.form()}
-                resetOnSuccess={['password', 'password_confirmation']}
-                disableWhileProcessing
-                className="flex flex-col gap-6"
-            >
-                {({ processing, errors }) => (
+            <Head title={t('signIn.register.title')} />
+
+            <div className="space-y-6">
+                {quick ? (
                     <>
-                        <div className="grid gap-6">
+                        <div className="space-y-3">
+                            <ProviderButtons available={signInOptions} />
+                            {signInOptions.phone ? <PhoneSignIn /> : null}
+                        </div>
+                        <OrDivider />
+                    </>
+                ) : null}
+
+                <Form
+                    {...store.form()}
+                    resetOnSuccess={['password', 'password_confirmation']}
+                    disableWhileProcessing
+                    className="space-y-5"
+                >
+                    {({ processing, errors }) => (
+                        <>
                             <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
+                                <Label htmlFor="name">
+                                    {t('signIn.common.name')}
+                                </Label>
                                 <Input
                                     id="name"
                                     type="text"
                                     required
-                                    autoFocus
-                                    tabIndex={1}
                                     autoComplete="name"
                                     name="name"
-                                    placeholder="Full name"
+                                    aria-invalid={
+                                        errors.name ? true : undefined
+                                    }
                                 />
-                                <InputError
-                                    message={errors.name}
-                                    className="mt-2"
-                                />
+                                <InputError message={errors.name} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">
+                                    {t('signIn.common.email')}
+                                </Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     required
-                                    tabIndex={2}
                                     autoComplete="email"
                                     name="email"
-                                    placeholder="email@example.com"
+                                    placeholder={t(
+                                        'signIn.common.emailPlaceholder',
+                                    )}
+                                    aria-invalid={
+                                        errors.email ? true : undefined
+                                    }
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">
+                                    {t('signIn.common.password')}
+                                </Label>
                                 <PasswordInput
                                     id="password"
                                     required
-                                    tabIndex={3}
                                     autoComplete="new-password"
                                     name="password"
-                                    placeholder="Password"
                                     passwordrules={passwordRules}
                                 />
                                 <InputError message={errors.password} />
@@ -74,15 +104,13 @@ export default function Register({ passwordRules }: Props) {
 
                             <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation">
-                                    Confirm password
+                                    {t('signIn.common.confirmPassword')}
                                 </Label>
                                 <PasswordInput
                                     id="password_confirmation"
                                     required
-                                    tabIndex={4}
                                     autoComplete="new-password"
                                     name="password_confirmation"
-                                    placeholder="Confirm password"
                                     passwordrules={passwordRules}
                                 />
                                 <InputError
@@ -92,29 +120,32 @@ export default function Register({ passwordRules }: Props) {
 
                             <Button
                                 type="submit"
-                                className="mt-2 w-full"
-                                tabIndex={5}
+                                className="w-full"
                                 data-test="register-user-button"
                             >
                                 {processing && <Spinner />}
-                                Create account
+                                {t('signIn.register.submit')}
                             </Button>
-                        </div>
+                        </>
+                    )}
+                </Form>
 
-                        <div className="text-center text-sm text-muted-foreground">
-                            Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
-                                Log in
-                            </TextLink>
-                        </div>
-                    </>
-                )}
-            </Form>
+                <p className="text-center text-muted-foreground">
+                    {t('signIn.register.haveAccount')}{' '}
+                    <TextLink href={login()}>
+                        {t('signIn.register.signIn')}
+                    </TextLink>
+                </p>
+            </div>
         </>
     );
 }
 
 Register.layout = {
-    title: 'Create an account',
-    description: 'Enter your details below to create your account',
+    get title() {
+        return i18n.t('signIn.register.title');
+    },
+    get description() {
+        return i18n.t('signIn.register.description');
+    },
 };

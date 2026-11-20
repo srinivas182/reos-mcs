@@ -343,12 +343,141 @@
       "subject": "Su cuenta de REOS se eliminará",
       "body": "Nos pidió eliminar su cuenta de REOS. Cerramos su sesión en todos los dispositivos, y la cuenta y sus datos se eliminarán el {{date}}.",
       "changeMind": "¿Cambió de opinión? Solo inicie sesión otra vez antes de esa fecha y su cuenta se conservará."
+    },
+    "devices": {
+      "signedOut": "Se cerró la sesión de {{device}}."
+    },
+    "confirm": {
+      "signInAgain": "Por su seguridad, vuelva a iniciar sesión para abrir esa página."
     }
   },
   "signIn": {
     "demo": {
       "title": "Inicio de sesión de demostración",
       "description": "Aquí el inicio de sesión con {{provider}} usa datos de demostración. Elija con quién iniciar sesión."
+    },
+    "brand": {
+      "poweredBy": "con tecnología de REOS",
+      "welcomeBack": "Bienvenido de nuevo a su centro de aprendizaje y negocios.",
+      "welcomeNew": "Una sola cuenta para aprender, su negocio y todo su equipo."
+    },
+    "common": {
+      "email": "Correo electrónico",
+      "emailPlaceholder": "nombre@ejemplo.com",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "name": "Nombre completo",
+      "or": "o",
+      "continue": "Continuar",
+      "backToSignIn": "Volver a iniciar sesión",
+      "signOut": "Cerrar sesión",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña"
+    },
+    "login": {
+      "title": "Iniciar sesión",
+      "description": "Una sola cuenta para la web y la aplicación, en todos sus roles.",
+      "submit": "Iniciar sesión",
+      "forgot": "¿Olvidó su contraseña?",
+      "remember": "Mantener la sesión iniciada en este dispositivo",
+      "noAccount": "¿Es nuevo en REOS?",
+      "createAccount": "Crear una cuenta",
+      "securityNote": "El inicio de sesión en dos pasos es obligatorio para corredores y administradores de escuelas y asociaciones. Los dispositivos nuevos se confirman por correo electrónico."
+    },
+    "providers": {
+      "google": "Continuar con Google",
+      "apple": "Continuar con Apple",
+      "phone": "Continuar con teléfono",
+      "passkey": "Llave de acceso",
+      "passkeyLoading": "Revisando su llave de acceso…"
+    },
+    "phone": {
+      "label": "Número de celular",
+      "hint": "Formato internacional, por ejemplo +1 512 555 0100.",
+      "send": "Enviar código",
+      "codeLabel": "Código de seis dígitos",
+      "codeHint": "Enviamos un código a {{phone}}. Funciona durante 10 minutos.",
+      "verify": "Iniciar sesión",
+      "resend": "Enviar un código nuevo",
+      "useEmail": "Usar correo electrónico"
+    },
+    "register": {
+      "title": "Cree su cuenta",
+      "description": "Toma un minuto. Use la misma cuenta en la web y en la aplicación.",
+      "submit": "Crear cuenta",
+      "haveAccount": "¿Ya tiene una cuenta?",
+      "signIn": "Iniciar sesión"
+    },
+    "forgot": {
+      "title": "¿Olvidó su contraseña?",
+      "description": "Escriba su correo electrónico y le enviaremos un enlace para elegir una nueva.",
+      "submit": "Enviarme un enlace",
+      "rememberIt": "¿La recordó?"
+    },
+    "reset": {
+      "title": "Elija una contraseña nueva",
+      "description": "Use al menos 12 caracteres. Una frase corta funciona bien.",
+      "submit": "Guardar contraseña nueva"
+    },
+    "verify": {
+      "title": "Revise su correo electrónico",
+      "description": "Le enviamos un enlace para confirmar su dirección. Ábralo en cualquier dispositivo para continuar.",
+      "resend": "Enviar el enlace otra vez",
+      "sent": "Un enlace nuevo va en camino a su correo electrónico."
+    },
+    "confirm": {
+      "title": "Confirme que es usted",
+      "description": "Esta parte de REOS contiene configuraciones sensibles. Escriba su contraseña para continuar.",
+      "passkey": "Confirmar con una llave de acceso",
+      "orPassword": "o use su contraseña",
+      "submit": "Confirmar"
+    },
+    "twoFactor": {
+      "title": "Inicio de sesión en dos pasos",
+      "codeDescription": "Escriba el código de seis dígitos de su aplicación de autenticación.",
+      "recoveryDescription": "Escriba uno de sus códigos de recuperación.",
+      "recoveryPlaceholder": "Código de recuperación",
+      "useRecovery": "Usar un código de recuperación",
+      "useCode": "Usar un código de autenticación",
+      "orYouCan": "o"
+    }
+  },
+  "settings": {
+    "security": {
+      "title": "Seguridad",
+      "password": {
+        "title": "Contraseña",
+        "description": "Use una contraseña larga que no use en ningún otro lugar.",
+        "addTitle": "Agregar una contraseña",
+        "addDescription": "Usted inicia sesión con su teléfono, Google o Apple. Agregue una contraseña para iniciar sesión también con su correo electrónico.",
+        "current": "Contraseña actual",
+        "new": "Contraseña nueva",
+        "save": "Guardar contraseña"
+      },
+      "passwordSaved": "Contraseña guardada.",
+      "devices": {
+        "title": "Sus dispositivos",
+        "description": "Teléfonos y tabletas con sesión iniciada en REOS. Cierre la sesión de cualquiera que no reconozca.",
+        "empty": "Todavía no hay teléfonos ni tabletas",
+        "emptyDescription": "Cuando inicie sesión en la aplicación de REOS, el dispositivo aparecerá aquí.",
+        "lastUsed": "Último uso {{time}}",
+        "signedIn": "Sesión iniciada {{time}}",
+        "thisDevice": "Este dispositivo",
+        "signOut": "Cerrar sesión",
+        "browsers": "Navegadores que ha usado",
+        "browserSeen": "Visto por última vez {{time}}"
+      }
+    },
+    "deleteAccount": {
+      "title": "Eliminar cuenta",
+      "description": "Su cuenta y sus datos se eliminan 30 días después de que lo pida. Inicie sesión otra vez antes de esa fecha para conservarla.",
+      "button": "Eliminar mi cuenta",
+      "confirmTitle": "¿Eliminar su cuenta?",
+      "confirmBody": "Cerraremos su sesión en todos los dispositivos ahora. Su cuenta y sus datos se eliminan en 30 días, a menos que inicie sesión otra vez antes de esa fecha.",
+      "understand": "Entiendo que mi cuenta se eliminará en 30 días",
+      "passwordLabel": "Escriba su contraseña para confirmar",
+      "submit": "Eliminar cuenta",
+      "cancel": "Conservar mi cuenta"
     }
   }
 }
