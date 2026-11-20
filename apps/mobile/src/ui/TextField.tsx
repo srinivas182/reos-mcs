@@ -53,7 +53,7 @@ const styles = StyleSheet.create((theme) => ({
   field: { gap: theme.space.xs },
   input: {
     minHeight: theme.touch,
-    borderRadius: theme.radius.md,
+    borderRadius: theme.m.radius.option,
     borderWidth: 1,
     borderColor: theme.colors.borderControl,
     backgroundColor: theme.colors.surface,

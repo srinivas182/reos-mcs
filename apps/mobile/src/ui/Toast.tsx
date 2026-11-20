@@ -96,7 +96,7 @@ const styles = StyleSheet.create((theme, rt) => ({
     minHeight: theme.touch + 8,
     paddingLeft: theme.space.lg,
     paddingRight: theme.space.sm,
-    borderRadius: theme.radius.md,
+    borderRadius: theme.m.radius.card,
     backgroundColor: theme.colors.text,
   },
   message: { flex: 1, color: theme.colors.surface },

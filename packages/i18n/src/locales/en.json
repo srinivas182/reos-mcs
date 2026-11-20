@@ -85,5 +85,39 @@
     "unreachable": "Can't reach the REOS server right now.",
     "displaySettings": "Display and language",
     "displaySettingsHint": "Theme, text size and language"
+  },
+  "tabs": {
+    "today": "Today",
+    "learn": "Learn",
+    "practice": "Practice",
+    "ask": "Ask",
+    "deals": "Deals",
+    "mentors": "Mentors",
+    "agents": "Agents",
+    "approvals": "Approvals",
+    "recruit": "Recruit",
+    "brokerage": "Brokerage",
+    "messages": "Messages",
+    "community": "Community",
+    "profile": "Profile",
+    "classes": "Classes",
+    "sessions": "Sessions",
+    "students": "Students",
+    "mentees": "Mentees",
+    "me": "Me",
+    "withCount": "{{label}}, {{count}} new"
+  },
+  "ask": {
+    "voice": "Ask by voice",
+    "placeholder": "Ask anything"
+  },
+  "options": {
+    "correct": "Correct answer",
+    "incorrect": "Your answer, incorrect"
+  },
+  "chat": {
+    "you": "You",
+    "assistant": "REOS study mate",
+    "source": "Source: {{source}}"
   }
 }

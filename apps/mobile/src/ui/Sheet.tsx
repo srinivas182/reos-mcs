@@ -42,8 +42,8 @@ const styles = StyleSheet.create((theme, rt) => ({
   sheet: {
     maxHeight: '85%',
     backgroundColor: theme.colors.surface,
-    borderTopLeftRadius: theme.radius.lg,
-    borderTopRightRadius: theme.radius.lg,
+    borderTopLeftRadius: theme.m.radius.hero,
+    borderTopRightRadius: theme.m.radius.hero,
     paddingBottom: rt.insets.bottom + theme.space.lg,
   },
   handle: { alignSelf: 'center', width: 40, height: 5, borderRadius: 3, backgroundColor: theme.colors.border, marginTop: theme.space.sm },

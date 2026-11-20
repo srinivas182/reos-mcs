@@ -12,6 +12,7 @@ import {
   fontWeight,
   lineHeight,
   minTouchTarget,
+  mobile,
   radius,
   spacing,
   themes as tokenThemes,
@@ -26,6 +27,8 @@ export type Theme = {
   radius: typeof radius;
   type: { size: typeof fontSize; lineHeight: typeof lineHeight; weight: typeof fontWeight };
   touch: number;
+  /** Shapes and sizes from the mobile journey screens (cards 18, buttons 16 and 54 tall, tiles 14, gutter 20). */
+  m: typeof mobile;
   /** The person's text-size multiplier. */
   scale: number;
   /** A font size or line height scaled by the text-size choice (rounded to whole points). */
@@ -39,6 +42,7 @@ const build = (name: ThemeName, scale = 1): Theme => ({
   radius,
   type: { size: fontSize, lineHeight, weight: fontWeight },
   touch: minTouchTarget,
+  m: mobile,
   scale,
   font: (points) => Math.round(points * scale),
 });
