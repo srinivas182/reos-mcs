@@ -12,6 +12,7 @@ use App\Integrations\IntegrationDefinition;
 use App\Integrations\IntegrationMode;
 use App\Integrations\IntegrationStatus;
 use App\Models\AuditEvent;
+use App\Models\IntegrationCheck;
 use App\Models\IntegrationSetting;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
@@ -46,20 +47,19 @@ final readonly class IntegrationHub
      */
     public function overview(): array
     {
-        $modes = IntegrationSetting::query()->pluck('mode', 'integration_id');
+        $settings = IntegrationSetting::query()->get()->keyBy('integration_id');
         $saved = $this->vault->saved();
 
         return array_map(fn (IntegrationDefinition $definition): array => [
             'definition' => $definition,
-            'status' => $this->buildStatus($definition, $modes->get($definition->id), $saved[$definition->id] ?? []),
+            'status' => $this->buildStatus($settings->get($definition->id), $saved[$definition->id] ?? []),
         ], $this->catalogue->all());
     }
 
     public function status(IntegrationDefinition $definition): IntegrationStatus
     {
         return $this->buildStatus(
-            $definition,
-            IntegrationSetting::query()->find($definition->id)?->mode,
+            IntegrationSetting::query()->find($definition->id),
             array_values(array_filter(
                 CredentialEnvironment::cases(),
                 fn (CredentialEnvironment $environment): bool => $this->hasCompleteKeys($definition, $environment),
@@ -89,8 +89,40 @@ final readonly class IntegrationHub
             IntegrationMode::Sandbox->value => $definition->hasTestSystem()
                 ? $needsKeys(CredentialEnvironment::Sandbox, 'integrations.mode.needsSandboxKeys')
                 : 'integrations.mode.noTestSystem',
-            IntegrationMode::Live->value => $needsKeys(CredentialEnvironment::Live, 'integrations.mode.needsLiveKeys'),
+            IntegrationMode::Live->value => $needsKeys(CredentialEnvironment::Live, 'integrations.mode.needsLiveKeys')
+                ?? $this->liveCheckReason($definition),
         ];
+    }
+
+    /**
+     * Live needs a check of the current live keys that didn't fail. Services
+     * with no keys (public data) need no check.
+     */
+    private function liveCheckReason(IntegrationDefinition $definition): ?string
+    {
+        if (! $definition->needsKeys()) {
+            return null;
+        }
+
+        $check = $this->latestCheck($definition, CredentialEnvironment::Live);
+        $keysSaved = $this->vault->updatedAt($definition->id, CredentialEnvironment::Live);
+
+        if ($check === null || ($keysSaved !== null && $check->created_at->lt($keysSaved))) {
+            return 'integrations.mode.needsLiveTest';
+        }
+
+        return $check->outcome->allowsLive() ? null : 'integrations.mode.liveTestFailed';
+    }
+
+    /** The most recent check of one environment's keys. */
+    public function latestCheck(IntegrationDefinition $definition, CredentialEnvironment $environment): ?IntegrationCheck
+    {
+        return IntegrationCheck::query()
+            ->with('checker:id,name')
+            ->where('integration_id', $definition->id)
+            ->where('environment', $environment)
+            ->latest('id')
+            ->first();
     }
 
     public function setMode(IntegrationDefinition $definition, IntegrationMode $mode, ?User $actor): void
@@ -101,16 +133,18 @@ final readonly class IntegrationHub
             throw new InvalidArgumentException("{$definition->id} can't run as {$mode->value} yet ({$reason}).");
         }
 
-        $from = $this->mode($definition);
+        $status = $this->status($definition);
+        $from = $status->mode;
 
-        if ($from === $mode) {
+        if ($from === $mode && $status->pausedAt === null) {
             return;
         }
 
         DB::transaction(function () use ($definition, $mode, $from, $actor): void {
+            // Choosing a mode is a fresh start: it also lifts an automatic pause.
             IntegrationSetting::query()->updateOrCreate(
                 ['integration_id' => $definition->id],
-                ['mode' => $mode, 'updated_by' => $actor?->id],
+                ['mode' => $mode, 'consecutive_failures' => 0, 'paused_at' => null, 'updated_by' => $actor?->id],
             );
 
             $this->audit->record('integration.mode_changed', self::AUDIT_SUBJECT, $definition->id, [
@@ -276,12 +310,13 @@ final readonly class IntegrationHub
     /**
      * @param  list<CredentialEnvironment>  $environments  environments with saved keys
      */
-    private function buildStatus(IntegrationDefinition $definition, mixed $mode, array $environments): IntegrationStatus
+    private function buildStatus(?IntegrationSetting $setting, array $environments): IntegrationStatus
     {
         return new IntegrationStatus(
-            mode: $mode instanceof IntegrationMode ? $mode : self::DEFAULT_MODE,
+            mode: $setting === null ? self::DEFAULT_MODE : $setting->mode,
             hasSandboxKeys: in_array(CredentialEnvironment::Sandbox, $environments, true),
             hasLiveKeys: in_array(CredentialEnvironment::Live, $environments, true),
+            pausedAt: $setting?->paused_at,
         );
     }
 

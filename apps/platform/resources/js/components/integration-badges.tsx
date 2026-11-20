@@ -22,12 +22,29 @@ const approvalTone: Record<ApprovalStatus, string> = {
 /** How an integration runs: Off, Demo data, Test account or Live. */
 export function ModeBadge({
     mode,
+    paused = false,
     className,
 }: {
     mode: IntegrationMode;
+    /** Paused by health checks: shown instead of the chosen mode. */
+    paused?: boolean;
     className?: string;
 }) {
     const { t } = useTranslation();
+
+    if (paused) {
+        return (
+            <Badge
+                variant="outline"
+                className={cn(
+                    'border-transparent bg-reos-tone-danger-bg text-reos-tone-danger-fg',
+                    className,
+                )}
+            >
+                {t('integrations.mode.paused')}
+            </Badge>
+        );
+    }
 
     return (
         <Badge

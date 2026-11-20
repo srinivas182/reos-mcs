@@ -12,6 +12,7 @@ use App\Models\IntegrationSetting;
 use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
@@ -29,7 +30,7 @@ function confirmed(): array
 
 const STRIPE_LIVE = [
     'publishable_key' => 'example-publishable-key-0001',
-    'secret_key' => 'example-secret-key-value-9876',
+    'secret_key' => 'sk_live_fake-0000-0000-9876',
     'webhook_secret' => 'example-webhook-secret-4321',
 ];
 
@@ -106,7 +107,7 @@ describe('keys', function () {
             ->assertSessionHasNoErrors();
 
         $payload = IntegrationCredential::query()->sole()->payload;
-        expect($payload)->not->toContain('example-secret-key')
+        expect($payload)->not->toContain('fake-0000-0000-9876')
             ->and(fn () => decrypt($payload, false))->toThrow(DecryptException::class)
             ->and(app(CredentialVault::class)->get('stripe', CredentialEnvironment::Live))->toBe(STRIPE_LIVE);
 
@@ -118,7 +119,7 @@ describe('keys', function () {
                 ->where('integration.credentials.live.publishable_key', ['saved' => true, 'value' => 'example-publishable-key-0001', 'last4' => null])
                 ->where('integration.credentials.live.secret_key', ['saved' => true, 'value' => null, 'last4' => '9876'])
                 ->where('integration.credentials.sandbox.secret_key', ['saved' => false, 'value' => null, 'last4' => null]))
-            ->assertDontSee('example-secret-key-value-9876', false);
+            ->assertDontSee('sk_live_fake-0000-0000-9876', false);
     });
 
     it('records which fields changed and who changed them, never the values', function () {
@@ -132,7 +133,7 @@ describe('keys', function () {
             ->and($event->subject_id)->toBe('stripe')
             ->and($event->actor_id)->toBe($admin->id)
             ->and($event->properties)->toBe(['environment' => 'live', 'fields' => ['publishable_key', 'secret_key', 'webhook_secret']])
-            ->and(json_encode($event->getAttributes()))->not->toContain('example-secret-key');
+            ->and(json_encode($event->getAttributes()))->not->toContain('fake-0000-0000-9876');
     });
 
     it('keeps a saved secret when the field is left blank', function () {
@@ -182,6 +183,9 @@ describe('keys', function () {
         $admin = admin();
         $this->actingAs($admin)->withSession(confirmed())
             ->put(route('integrations.keys.update', ['stripe', 'live']), ['values' => STRIPE_LIVE]);
+        Http::fake(['api.stripe.com/*' => Http::response(['available' => []])]);
+        $this->actingAs($admin)->withSession(confirmed())
+            ->post(route('integrations.checks.store', ['stripe', 'live']));
         $this->actingAs($admin)->withSession(confirmed())
             ->patch(route('integrations.mode.update', 'stripe'), ['mode' => 'live'])
             ->assertSessionHasNoErrors();
@@ -194,6 +198,7 @@ describe('keys', function () {
             ->and(IntegrationSetting::query()->find('stripe')?->mode)->toBe(IntegrationMode::Simulator)
             ->and(AuditEvent::query()->orderBy('id')->pluck('action')->all())->toBe([
                 'integration.credentials_updated',
+                'integration.checked',
                 'integration.mode_changed',
                 'integration.credentials_removed',
                 'integration.mode_changed',

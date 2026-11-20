@@ -171,7 +171,10 @@
       "needsSandboxKeys": "Add test keys first.",
       "needsLiveKeys": "Add live keys first.",
       "noTestSystem": "This service has no test system.",
-      "changed": "Now running on: {{mode}}"
+      "changed": "Now running on: {{mode}}",
+      "needsLiveTest": "Test the live keys first.",
+      "liveTestFailed": "The last test of the live keys failed. Fix them and test again.",
+      "paused": "Paused"
     },
     "approval": {
       "label": "Vendor approval",
@@ -231,7 +234,15 @@
       "credentialsRemoved": "{{actor}} removed the {{environment}} keys",
       "modeChanged": "{{actor}} changed how it runs from {{from}} to {{to}}",
       "unknownActor": "Someone",
-      "emptyDescription": "Changes to keys and how this service runs appear here, with who made them."
+      "emptyDescription": "Changes to keys and how this service runs appear here, with who made them.",
+      "checked": "{{actor}} tested the {{environment}} keys: {{outcome}}",
+      "resumed": "{{actor}} switched it back on with a passing test",
+      "paused": "REOS paused it after {{count}} failed health checks",
+      "outcomes": {
+        "passed": "connected",
+        "failed": "failed",
+        "unverified": "keys complete"
+      }
     },
     "fields": {
       "client_id": "Client ID",
@@ -270,6 +281,39 @@
       "app_id": "App ID",
       "app_secret": "App secret",
       "model_id": "Model ID"
+    },
+    "checks": {
+      "test": "Test connection",
+      "testing": "Testing…",
+      "never": "Not tested yet.",
+      "checkedAt": "Tested {{time}}",
+      "checkedBy": "Tested {{time}} by {{name}}",
+      "scheduled": "Health check {{time}}",
+      "passed": "Connected. The vendor accepted these keys.",
+      "rejected": "The vendor rejected these keys. Check they were copied in full and belong to this account.",
+      "wrongEnvironment": "These look like keys for the other system. Test keys go in Test keys, live keys in Live keys.",
+      "unreachable": "Couldn't reach the vendor. Try again in a few minutes.",
+      "vendorError": "The vendor answered with an error (code {{status}}). Try again later.",
+      "invalidFormat": "The {{field}} doesn't look right. Copy it again from the vendor.",
+      "missingKeys": "Some required keys are missing.",
+      "unexpected": "Something went wrong while testing. The team has been told.",
+      "noAutomaticCheck": "Keys look complete. An automatic check comes with this connection's build (sprint {{sprint}}).",
+      "formatOnly": "The addresses look right. They are confirmed when the first error report arrives.",
+      "publicData": "Uses public data, so there are no keys to check."
+    },
+    "paused": {
+      "title": "Paused after repeated failures",
+      "body": "Health checks kept failing, so REOS stopped using this service at {{time}}. Features that need it are hidden. Test the keys it runs on to switch it back on.",
+      "resumed": "Back on"
+    },
+    "notifications": {
+      "paused": {
+        "subject": "{{name}} was paused",
+        "body": "REOS paused {{name}} after {{count}} failed health checks in a row. Features that use it are hidden until it works again.",
+        "reason": "Last result: {{reason}}",
+        "action": "Open the integration",
+        "resume": "Fix the keys if needed, then press Test connection. A passing test switches it back on."
+      }
     }
   }
 }

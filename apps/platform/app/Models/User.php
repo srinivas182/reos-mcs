@@ -7,6 +7,7 @@ use App\Enums\Locale;
 use App\Enums\TextSize;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -36,7 +37,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  */
 #[Fillable(['name', 'email', 'password', 'appearance', 'text_size', 'locale'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
+class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
@@ -52,6 +53,12 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
         'locale' => 'en',
         'is_super_admin' => false,
     ];
+
+    /** Emails and notifications go out in the person's chosen language. */
+    public function preferredLocale(): string
+    {
+        return $this->locale->value;
+    }
 
     /**
      * Get the attributes that should be cast.

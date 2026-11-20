@@ -35,7 +35,12 @@ REOS needs about 40 outside services (calendar and email, payments, CRMs, transa
 ## Plan
 
 - **2.4a (this change):** catalogue, keys, modes, audit log, super-admin access.
-- **2.4b:** a driver interface per integration (Simulator, Sandbox, Live), Test connection, health checks every 15 minutes, auto-pause; Live then also needs a passing test.
+- **2.4b (done):** checks.
+  - **Test connection:** each vendor's tester makes the cheapest harmless request it offers. That means reading the account (Stripe, Twilio), swapping a made-up OAuth code (Google, Microsoft: `invalid_grant` means the client keys are good), asking for flags (PostHog) or sending an empty batch (Grafana). Sentry gets a format check only, because a test event would create a real issue. Every other vendor gets "keys complete" until its own sprint adds a tester to `TesterRegistry`.
+  - **Results** are stored in `integration_checks` for 30 days. They hold only a translation key and parameters, never response bodies.
+  - **Live** needs a check of the current live keys that didn't fail. Services with no keys need no check.
+  - **Health checks** (`reos:integrations:health`, every 15 minutes) check services running on vendor systems whose tester contacts the vendor.
+  - **Pausing:** after 3 failures in a row the service is paused and the super admins get an email. A paused service acts as **Off**, never as demo data, so nothing pretends to work. A passing Test connection, or choosing a mode, switches it back on.
 - **2.4c:** Sentry, PostHog and Grafana switched on from here; web and phone read the switches from `/api/v1`.
 
 ## Alternatives considered

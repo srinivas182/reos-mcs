@@ -10,6 +10,7 @@ use App\Integrations\CredentialEnvironment;
 use App\Integrations\IntegrationDefinition;
 use App\Integrations\IntegrationMode;
 use App\Integrations\IntegrationStatus;
+use App\Models\IntegrationCheck;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,12 +23,14 @@ final class IntegrationDetailResource extends JsonResource
     /**
      * @param  array<value-of<IntegrationMode>, string|null>  $modes
      * @param  array<value-of<CredentialEnvironment>, array<string, array{saved: bool, value: string|null, last4: string|null}>>  $credentials
+     * @param  array<value-of<CredentialEnvironment>, IntegrationCheck|null>  $checks  latest check per environment
      */
     public function __construct(
         private readonly IntegrationDefinition $definition,
         private readonly IntegrationStatus $status,
         private readonly array $modes,
         private readonly array $credentials,
+        private readonly array $checks,
     ) {
         parent::__construct($definition);
     }
@@ -55,6 +58,10 @@ final class IntegrationDetailResource extends JsonResource
                 'default' => $field->default,
             ], $this->definition->fields),
             'credentials' => $this->credentials,
+            'checks' => array_map(
+                static fn (?IntegrationCheck $check): ?array => $check === null ? null : (new IntegrationCheckResource($check))->resolve($request),
+                $this->checks,
+            ),
             'modes' => array_map(
                 static fn (string $mode, ?string $reason): array => ['value' => $mode, 'available' => $reason === null, 'reason' => $reason],
                 array_keys($this->modes),
