@@ -8,7 +8,8 @@
     "close": "Cerrar",
     "save": "Guardar",
     "cancel": "Cancelar",
-    "tryAgain": "Intentar de nuevo"
+    "tryAgain": "Intentar de nuevo",
+    "offline": "Estás sin conexión. Nos pondremos al día cuando vuelvas a conectarte."
   },
   "nav": {
     "menu": "Menú",
@@ -69,6 +70,10 @@
       },
       "es": {
         "description": "Usa REOS en español"
+      },
+      "device": {
+        "label": "Idioma de mi teléfono",
+        "description": "Inglés o español, según tu teléfono"
       }
     },
     "savedNote": "Tus preferencias se guardan en tu cuenta y te acompañan en todos tus dispositivos. El ajuste de texto de tu teléfono o computadora también se aplica."
@@ -77,6 +82,8 @@
     "eyebrow": "REAL ESTATE OS",
     "tagline": "Estudia, obtén tu licencia, cumple con los requisitos y crece, todo en una sola app.",
     "connected": "Conectado a {{app}} · versión {{version}}",
-    "unreachable": "No podemos conectar con el servidor de REOS en este momento."
+    "unreachable": "No podemos conectar con el servidor de REOS en este momento.",
+    "displaySettings": "Pantalla e idioma",
+    "displaySettingsHint": "Tema, tamaño del texto e idioma"
   }
 }

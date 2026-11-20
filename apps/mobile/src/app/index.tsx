@@ -1,25 +1,23 @@
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-
-import { colors, fontSize, minTouchTarget, radius, spacing } from '@reos/tokens';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { fetchHealth, type Health } from '@/lib/api';
+import { Button, Text } from '@/ui';
 
-type State =
-  | { kind: 'loading' }
-  | { kind: 'ok'; health: Health }
-  | { kind: 'error'; message: string };
+type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
 
 /**
- * Sprint 1 placeholder home screen: shows the REOS brand and proves the app
- * can reach the platform API. Replaced by onboarding in Sprint 3.
+ * Sprint 1–2 placeholder home screen: shows the REOS brand, proves the app can
+ * reach the platform API, and opens display settings. Replaced by onboarding
+ * in Sprint 3.
  */
 export default function HomeScreen() {
   const { t } = useTranslation();
+  const { theme } = useUnistyles();
   const [state, setState] = useState<State>({ kind: 'loading' });
-
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -44,70 +42,58 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.screen}>
+    <ScrollView contentContainerStyle={styles.screen}>
       <View style={styles.hero}>
-        <Text style={styles.eyebrow} accessibilityRole="text">
+        <Text variant="caption" weight="bold" tone="action" style={styles.eyebrow}>
           {t('mobile.eyebrow')}
         </Text>
-        <Text style={styles.title} accessibilityRole="header">
-          {t('common.appName')}
-        </Text>
-        <Text style={styles.subtitle}>
+        <Text variant="display">{t('common.appName')}</Text>
+        <Text variant="bodyLarge" tone="body">
           {t('mobile.tagline')}
         </Text>
       </View>
 
       <View style={styles.card} accessibilityLiveRegion="polite">
-        {state.kind === 'loading' && <ActivityIndicator color={colors.sky} />}
-        {state.kind === 'ok' && (
-          <Text style={styles.status}>
-            {t('mobile.connected', { app: state.health.app, version: state.health.version })}
-          </Text>
-        )}
+        {state.kind === 'loading' && <ActivityIndicator color={theme.colors.action} />}
+        {state.kind === 'ok' && <Text>{t('mobile.connected', { app: state.health.app, version: state.health.version })}</Text>}
         {state.kind === 'error' && (
           <>
-            <Text style={styles.status}>{t('mobile.unreachable')}</Text>
-            <Pressable
-              accessibilityRole="button"
-              onPress={retry}
-              style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
-              <Text style={styles.buttonText}>{t('common.tryAgain')}</Text>
-            </Pressable>
+            <Text>{t('mobile.unreachable')}</Text>
+            <Button label={t('common.tryAgain')} onPress={retry} />
           </>
         )}
       </View>
-    </SafeAreaView>
+
+      <Button
+        label={t('mobile.displaySettings')}
+        accessibilityHint={t('mobile.displaySettingsHint')}
+        variant="outline"
+        onPress={() => router.push('/settings')}
+      />
+      {__DEV__ ? <Button label="Component gallery (dev)" variant="ghost" onPress={() => router.push('/design')} /> : null}
+    </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create((theme, rt) => ({
   screen: {
-    flex: 1,
-    backgroundColor: colors.navy,
-    paddingHorizontal: spacing.xl,
-    justifyContent: 'space-between',
-    paddingVertical: spacing.xxl,
+    flexGrow: 1,
+    gap: theme.space.xl,
+    paddingTop: rt.insets.top + theme.space.xxxl,
+    paddingBottom: rt.insets.bottom + theme.space.xl,
+    paddingHorizontal: theme.space.xl,
+    backgroundColor: theme.colors.page,
   },
-  hero: { marginTop: spacing.xxl * 2, gap: spacing.md },
-  eyebrow: { color: colors.sky, fontSize: fontSize.caption, fontWeight: '700', letterSpacing: 1 },
-  title: { color: colors.surface, fontSize: 56, fontWeight: '800' },
-  subtitle: { color: '#CBD5E1', fontSize: fontSize.bodyLarge, lineHeight: 26 },
+  hero: { gap: theme.space.md },
+  eyebrow: { letterSpacing: 1 },
   card: {
-    backgroundColor: '#1E293B',
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    gap: spacing.md,
+    gap: theme.space.md,
+    padding: theme.space.lg,
     minHeight: 72,
     justifyContent: 'center',
+    borderRadius: theme.radius.lg,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
   },
-  status: { color: colors.surface, fontSize: fontSize.body },
-  button: {
-    minHeight: minTouchTarget,
-    borderRadius: radius.md,
-    backgroundColor: colors.blue,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonPressed: { opacity: 0.85 },
-  buttonText: { color: colors.surface, fontSize: fontSize.body, fontWeight: '600' },
-});
+}));

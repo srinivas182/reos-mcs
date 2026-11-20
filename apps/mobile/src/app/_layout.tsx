@@ -1,21 +1,31 @@
+// Themes must be registered before any StyleSheet is created.
+import '@/ui/unistyles';
+
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { I18nextProvider } from 'react-i18next';
+import { useUnistyles } from 'react-native-unistyles';
 
-import { colors } from '@reos/tokens';
+import { deviceLocale, i18n } from '@/lib/i18n';
+import { initPreferences, OfflineBanner, ToastProvider } from '@/ui';
 
-import { i18n } from '@/lib/i18n';
+initPreferences(deviceLocale);
 
 export default function RootLayout() {
+  const { theme } = useUnistyles();
+
   return (
     <I18nextProvider i18n={i18n}>
-      <StatusBar style="light" />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          contentStyle: { backgroundColor: colors.navy },
-        }}
-      />
+      <ToastProvider>
+        <StatusBar style={theme.name === 'dark' ? 'light' : 'dark'} />
+        <OfflineBanner />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: theme.colors.page },
+          }}
+        />
+      </ToastProvider>
     </I18nextProvider>
   );
 }

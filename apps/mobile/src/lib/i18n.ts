@@ -6,4 +6,6 @@ import { getLocales } from 'expo-localization';
  * Spanish, else English). From Sprint 3 the signed-in person's saved language
  * wins, the same as on the web.
  */
-export const i18n = createI18n(toLocale(getLocales()[0]?.languageTag));
+export const deviceLocale = toLocale(getLocales()[0]?.languageTag);
+
+export const i18n = createI18n(deviceLocale);

@@ -40,6 +40,7 @@ In a second terminal, for the mobile app:
 
 ```bash
 cd apps/mobile
+npx expo run:ios     # or run:android: builds the development app once (Expo Go isn't supported)
 EXPO_PUBLIC_API_URL=http://<your-machine-ip>:8000 pnpm dev
 ```
 
