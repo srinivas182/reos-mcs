@@ -42,6 +42,8 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
+                // People who signed up with a phone, Google or Apple have no password.
+                'hasPassword' => $request->user()?->password !== null,
                 'can' => [
                     'manageIntegrations' => $request->user()?->can('manage-integrations') ?? false,
                 ],

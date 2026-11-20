@@ -2,6 +2,7 @@ import type { UrlMethodPair } from '@inertiajs/core';
 import { router } from '@inertiajs/react';
 import { usePasskeyVerify } from '@laravel/passkeys/react';
 import { KeyRound } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -15,6 +16,8 @@ type Props = {
     label?: string;
     loadingLabel?: string;
     separator?: string;
+    /** Draw the "or" line below the button (off when the page lays it out). */
+    withSeparator?: boolean;
 };
 
 export default function PasskeyVerify({
@@ -22,7 +25,9 @@ export default function PasskeyVerify({
     label,
     loadingLabel,
     separator,
+    withSeparator = true,
 }: Props = {}) {
+    const { t } = useTranslation();
     const { verify, isLoading, error, isSupported } = usePasskeyVerify({
         ...(routes && {
             routes: {
@@ -49,26 +54,32 @@ export default function PasskeyVerify({
                     onClick={verify}
                     disabled={isLoading}
                 >
-                    {isLoading ? <Spinner /> : <KeyRound className="h-4 w-4" />}
+                    {isLoading ? (
+                        <Spinner />
+                    ) : (
+                        <KeyRound aria-hidden className="size-5" />
+                    )}
                     {isLoading
-                        ? (loadingLabel ?? 'Authenticating...')
-                        : (label ?? 'Sign in with a passkey')}
+                        ? (loadingLabel ?? t('signIn.providers.passkeyLoading'))
+                        : (label ?? t('signIn.providers.passkey'))}
                 </Button>
                 {error && (
                     <InputError message={error} className="text-center" />
                 )}
             </div>
 
-            <div className="relative my-6">
-                <div className="absolute inset-0 flex items-center">
-                    <Separator className="w-full" />
+            {withSeparator ? (
+                <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <Separator className="w-full" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">
+                            {separator ?? t('signIn.common.or')}
+                        </span>
+                    </div>
                 </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-background px-2 text-muted-foreground">
-                        {separator ?? 'Or continue with email'}
-                    </span>
-                </div>
-            </div>
+            ) : null}
         </>
     );
 }

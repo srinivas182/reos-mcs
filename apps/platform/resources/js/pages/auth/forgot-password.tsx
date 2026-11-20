@@ -1,6 +1,7 @@
-// Components
 import { Form, Head } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 import { LoaderCircle } from 'lucide-react';
+import { i18n } from '@/lib/i18n';
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
@@ -10,14 +11,19 @@ import { login } from '@/routes';
 import { email } from '@/routes/password';
 
 export default function ForgotPassword({ status }: { status?: string }) {
+    const { t } = useTranslation();
+
     return (
         <>
-            <Head title="Forgot password" />
+            <Head title={t('signIn.forgot.title')} />
 
             {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                <p
+                    role="status"
+                    className="mb-4 rounded-reos-md bg-reos-tone-success-bg p-4 text-center font-medium text-reos-tone-success-fg"
+                >
                     {status}
-                </div>
+                </p>
             )}
 
             <div className="space-y-6">
@@ -25,14 +31,18 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">
+                                    {t('signIn.common.email')}
+                                </Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     name="email"
-                                    autoComplete="off"
+                                    autoComplete="email"
                                     autoFocus
-                                    placeholder="email@example.com"
+                                    placeholder={t(
+                                        'signIn.common.emailPlaceholder',
+                                    )}
                                 />
 
                                 <InputError message={errors.email} />
@@ -47,23 +57,29 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                     {processing && (
                                         <LoaderCircle className="h-4 w-4 animate-spin" />
                                     )}
-                                    Email password reset link
+                                    {t('signIn.forgot.submit')}
                                 </Button>
                             </div>
                         </>
                     )}
                 </Form>
 
-                <div className="space-x-1 text-center text-sm text-muted-foreground">
-                    <span>Or, return to</span>
-                    <TextLink href={login()}>log in</TextLink>
-                </div>
+                <p className="text-center text-muted-foreground">
+                    {t('signIn.forgot.rememberIt')}{' '}
+                    <TextLink href={login()}>
+                        {t('signIn.common.backToSignIn')}
+                    </TextLink>
+                </p>
             </div>
         </>
     );
 }
 
 ForgotPassword.layout = {
-    title: 'Forgot password',
-    description: 'Enter your email to receive a password reset link',
+    get title() {
+        return i18n.t('signIn.forgot.title');
+    },
+    get description() {
+        return i18n.t('signIn.forgot.description');
+    },
 };

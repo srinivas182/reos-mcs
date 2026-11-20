@@ -17,6 +17,11 @@ class PasswordUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        // People without a password yet (phone, Google or Apple sign-up) can add one.
+        if ($this->user()?->password === null) {
+            return ['password' => $this->passwordRules()];
+        }
+
         return [
             'current_password' => $this->currentPasswordRules(),
             'password' => $this->passwordRules(),

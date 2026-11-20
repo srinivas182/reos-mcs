@@ -1,68 +1,104 @@
-import { Form, Head } from '@inertiajs/react';
+import { Form, Head, usePage } from '@inertiajs/react';
+import { ShieldCheck } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
+/* @chisel-passkeys */
+import PasskeyVerify from '@/components/passkey-verify';
+/* @end-chisel-passkeys */
 import PasswordInput from '@/components/password-input';
+import type { SignInOptionsAvailable } from '@/components/sign-in-options';
+import {
+    OrDivider,
+    PhoneSignIn,
+    ProviderButtons,
+} from '@/components/sign-in-options';
 import TextLink from '@/components/text-link';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
+import { i18n } from '@/lib/i18n';
 /* @chisel-registration */
 import { register } from '@/routes';
 /* @end-chisel-registration */
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
-/* @chisel-passkeys */
-import PasskeyVerify from '@/components/passkey-verify';
-/* @end-chisel-passkeys */
 
 type Props = {
     status?: string;
     canResetPassword: boolean;
+    signInOptions: SignInOptionsAvailable;
+    phoneCodeSentTo?: string | null;
 };
 
-export default function Login({ status, canResetPassword }: Props) {
+/** Sign in (journey screen w002): email and password, Google, Apple, phone, passkey. */
+export default function Login({
+    status,
+    canResetPassword,
+    signInOptions,
+    phoneCodeSentTo,
+}: Props) {
+    const { t } = useTranslation();
+    const { errors } = usePage<{ errors: Record<string, string> }>().props;
+
     return (
         <>
-            <Head title="Log in" />
+            <Head title={t('signIn.login.title')} />
 
-            {/* @chisel-passkeys */}
-            <PasskeyVerify />
-            {/* @end-chisel-passkeys */}
+            <div className="space-y-6">
+                {status ? (
+                    <Alert>
+                        <AlertDescription>{status}</AlertDescription>
+                    </Alert>
+                ) : null}
 
-            <Form
-                {...store.form()}
-                resetOnSuccess={['password']}
-                className="flex flex-col gap-6"
-            >
-                {({ processing, errors }) => (
-                    <>
-                        <div className="grid gap-6">
+                {errors.sign_in ? (
+                    <Alert variant="destructive">
+                        <AlertDescription>{errors.sign_in}</AlertDescription>
+                    </Alert>
+                ) : null}
+
+                <Form
+                    {...store.form()}
+                    resetOnSuccess={['password']}
+                    className="space-y-5"
+                >
+                    {({ processing, errors: formErrors }) => (
+                        <>
                             <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
+                                <Label htmlFor="email">
+                                    {t('signIn.common.email')}
+                                </Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     name="email"
                                     required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="email"
-                                    placeholder="email@example.com"
+                                    autoFocus={!phoneCodeSentTo}
+                                    autoComplete="email webauthn"
+                                    placeholder={t(
+                                        'signIn.common.emailPlaceholder',
+                                    )}
+                                    aria-invalid={
+                                        formErrors.email ? true : undefined
+                                    }
                                 />
-                                <InputError message={errors.email} />
+                                <InputError message={formErrors.email} />
                             </div>
 
                             <div className="grid gap-2">
                                 <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
+                                    <Label htmlFor="password">
+                                        {t('signIn.common.password')}
+                                    </Label>
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
                                             className="ml-auto text-sm"
-                                            tabIndex={5}
                                         >
-                                            Forgot your password?
+                                            {t('signIn.login.forgot')}
                                         </TextLink>
                                     )}
                                 </div>
@@ -70,56 +106,72 @@ export default function Login({ status, canResetPassword }: Props) {
                                     id="password"
                                     name="password"
                                     required
-                                    tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
                                 />
-                                <InputError message={errors.password} />
+                                <InputError message={formErrors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
+                            <div className="flex items-center gap-3">
                                 <Checkbox
                                     id="remember"
                                     name="remember"
-                                    tabIndex={3}
+                                    defaultChecked
                                 />
-                                <Label htmlFor="remember">Remember me</Label>
+                                <Label htmlFor="remember">
+                                    {t('signIn.login.remember')}
+                                </Label>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full"
-                                tabIndex={4}
+                                className="w-full"
                                 disabled={processing}
                                 data-test="login-button"
                             >
                                 {processing && <Spinner />}
-                                Log in
+                                {t('signIn.login.submit')}
                             </Button>
-                        </div>
+                        </>
+                    )}
+                </Form>
 
-                        {/* @chisel-registration */}
-                        <div className="text-center text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <TextLink href={register()} tabIndex={5}>
-                                Sign up
-                            </TextLink>
-                        </div>
-                        {/* @end-chisel-registration */}
-                    </>
-                )}
-            </Form>
+                <OrDivider />
 
-            {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
-                    {status}
+                <div className="space-y-3">
+                    <ProviderButtons available={signInOptions} />
+                    {signInOptions.phone ? (
+                        <PhoneSignIn sentTo={phoneCodeSentTo} />
+                    ) : null}
+                    {/* @chisel-passkeys */}
+                    <PasskeyVerify withSeparator={false} />
+                    {/* @end-chisel-passkeys */}
                 </div>
-            )}
+
+                <Alert className="border-transparent bg-reos-tone-info-bg text-reos-tone-info-fg">
+                    <ShieldCheck aria-hidden />
+                    <AlertDescription className="text-reos-tone-info-fg">
+                        {t('signIn.login.securityNote')}
+                    </AlertDescription>
+                </Alert>
+
+                {/* @chisel-registration */}
+                <p className="text-center text-muted-foreground">
+                    {t('signIn.login.noAccount')}{' '}
+                    <TextLink href={register()}>
+                        {t('signIn.login.createAccount')}
+                    </TextLink>
+                </p>
+                {/* @end-chisel-registration */}
+            </div>
         </>
     );
 }
 
 Login.layout = {
-    title: 'Log in to your account',
-    description: 'Enter your email and password below to log in',
+    get title() {
+        return i18n.t('signIn.login.title');
+    },
+    get description() {
+        return i18n.t('signIn.login.description');
+    },
 };

@@ -1,4 +1,6 @@
 import { Form, Head } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
+import { i18n } from '@/lib/i18n';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import { Button } from '@/components/ui/button';
@@ -14,9 +16,11 @@ type Props = {
 };
 
 export default function ResetPassword({ token, email, passwordRules }: Props) {
+    const { t } = useTranslation();
+
     return (
         <>
-            <Head title="Reset password" />
+            <Head title={t('signIn.reset.title')} />
 
             <Form
                 {...update.form()}
@@ -26,7 +30,9 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                 {({ processing, errors }) => (
                     <div className="grid gap-6">
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
+                            <Label htmlFor="email">
+                                {t('signIn.common.email')}
+                            </Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -43,14 +49,15 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                         </div>
 
                         <div className="grid gap-2">
-                            <Label htmlFor="password">Password</Label>
+                            <Label htmlFor="password">
+                                {t('signIn.common.password')}
+                            </Label>
                             <PasswordInput
                                 id="password"
                                 name="password"
                                 autoComplete="new-password"
                                 className="mt-1 block w-full"
                                 autoFocus
-                                placeholder="Password"
                                 passwordrules={passwordRules}
                             />
                             <InputError message={errors.password} />
@@ -58,14 +65,13 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
 
                         <div className="grid gap-2">
                             <Label htmlFor="password_confirmation">
-                                Confirm password
+                                {t('signIn.common.confirmPassword')}
                             </Label>
                             <PasswordInput
                                 id="password_confirmation"
                                 name="password_confirmation"
                                 autoComplete="new-password"
                                 className="mt-1 block w-full"
-                                placeholder="Confirm password"
                                 passwordrules={passwordRules}
                             />
                             <InputError
@@ -81,7 +87,7 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
                             data-test="reset-password-button"
                         >
                             {processing && <Spinner />}
-                            Reset password
+                            {t('signIn.reset.submit')}
                         </Button>
                     </div>
                 )}
@@ -91,6 +97,10 @@ export default function ResetPassword({ token, email, passwordRules }: Props) {
 }
 
 ResetPassword.layout = {
-    title: 'Reset password',
-    description: 'Please enter your new password below',
+    get title() {
+        return i18n.t('signIn.reset.title');
+    },
+    get description() {
+        return i18n.t('signIn.reset.description');
+    },
 };

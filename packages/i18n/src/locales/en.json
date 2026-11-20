@@ -343,12 +343,141 @@
       "subject": "Your REOS account will be deleted",
       "body": "You asked us to delete your REOS account. We've signed you out everywhere, and the account and its data will be deleted on {{date}}.",
       "changeMind": "Changed your mind? Just sign in again before then and your account stays."
+    },
+    "devices": {
+      "signedOut": "{{device}} was signed out."
+    },
+    "confirm": {
+      "signInAgain": "For your safety, please sign in again to open that page."
     }
   },
   "signIn": {
     "demo": {
       "title": "Demo sign-in",
       "description": "{{provider}} sign-in runs on demo data here. Choose who to sign in as."
+    },
+    "brand": {
+      "poweredBy": "powered by REOS",
+      "welcomeBack": "Welcome back to your learning and business hub.",
+      "welcomeNew": "One account for learning, your business and your whole team."
+    },
+    "common": {
+      "email": "Email",
+      "emailPlaceholder": "name@example.com",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "name": "Full name",
+      "or": "or",
+      "continue": "Continue",
+      "backToSignIn": "Back to sign in",
+      "signOut": "Sign out",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "login": {
+      "title": "Sign in",
+      "description": "One account for the web and the app, in every role you hold.",
+      "submit": "Sign in",
+      "forgot": "Forgot password?",
+      "remember": "Keep me signed in on this device",
+      "noAccount": "New to REOS?",
+      "createAccount": "Create an account",
+      "securityNote": "Two-step sign-in is required for brokers, school and association admins. New devices are confirmed by email."
+    },
+    "providers": {
+      "google": "Continue with Google",
+      "apple": "Continue with Apple",
+      "phone": "Continue with phone",
+      "passkey": "Passkey",
+      "passkeyLoading": "Checking your passkey…"
+    },
+    "phone": {
+      "label": "Mobile number",
+      "hint": "International format, for example +1 512 555 0100.",
+      "send": "Send code",
+      "codeLabel": "Six-digit code",
+      "codeHint": "We texted a code to {{phone}}. It works for 10 minutes.",
+      "verify": "Sign in",
+      "resend": "Send a new code",
+      "useEmail": "Use email instead"
+    },
+    "register": {
+      "title": "Create your account",
+      "description": "It takes a minute. Use the same account on the web and in the app.",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "forgot": {
+      "title": "Forgot your password?",
+      "description": "Enter your email and we'll send you a link to choose a new one.",
+      "submit": "Email me a reset link",
+      "rememberIt": "Remembered it?"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "description": "Use at least 12 characters. A short sentence works well.",
+      "submit": "Save new password"
+    },
+    "verify": {
+      "title": "Check your email",
+      "description": "We emailed you a link to confirm your address. Open it on any device to continue.",
+      "resend": "Send the link again",
+      "sent": "A new link is on its way to your email."
+    },
+    "confirm": {
+      "title": "Confirm it's you",
+      "description": "This part of REOS holds sensitive settings. Enter your password to continue.",
+      "passkey": "Confirm with a passkey",
+      "orPassword": "or use your password",
+      "submit": "Confirm"
+    },
+    "twoFactor": {
+      "title": "Two-step sign-in",
+      "codeDescription": "Enter the six-digit code from your authenticator app.",
+      "recoveryDescription": "Enter one of your recovery codes.",
+      "recoveryPlaceholder": "Recovery code",
+      "useRecovery": "Use a recovery code",
+      "useCode": "Use an authenticator code",
+      "orYouCan": "or"
+    }
+  },
+  "settings": {
+    "security": {
+      "title": "Security",
+      "password": {
+        "title": "Password",
+        "description": "Use a long password you don't use anywhere else.",
+        "addTitle": "Add a password",
+        "addDescription": "You sign in with your phone, Google or Apple. Add a password to sign in with your email too.",
+        "current": "Current password",
+        "new": "New password",
+        "save": "Save password"
+      },
+      "passwordSaved": "Password saved.",
+      "devices": {
+        "title": "Your devices",
+        "description": "Phones and tablets signed in to REOS. Sign out any you don't recognise.",
+        "empty": "No phones or tablets yet",
+        "emptyDescription": "When you sign in on the REOS app, the device appears here.",
+        "lastUsed": "Last used {{time}}",
+        "signedIn": "Signed in {{time}}",
+        "thisDevice": "This device",
+        "signOut": "Sign out",
+        "browsers": "Browsers you've used",
+        "browserSeen": "Last seen {{time}}"
+      }
+    },
+    "deleteAccount": {
+      "title": "Delete account",
+      "description": "Your account and its data are deleted 30 days after you ask. Sign in again before then to keep it.",
+      "button": "Delete my account",
+      "confirmTitle": "Delete your account?",
+      "confirmBody": "We'll sign you out on every device now. Your account and its data are deleted in 30 days unless you sign in again before then.",
+      "understand": "I understand my account will be deleted in 30 days",
+      "passwordLabel": "Enter your password to confirm",
+      "submit": "Delete account",
+      "cancel": "Keep my account"
     }
   }
 }
