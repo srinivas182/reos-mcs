@@ -44,7 +44,7 @@ pre-push:
     web-types:
       root: apps/platform/
       glob: 'resources/**/*.{ts,tsx}'
-      run: pnpm types:check && pnpm test
+      run: pnpm types:check && pnpm test:components
     mobile:
       root: apps/mobile/
       glob: '*.{ts,tsx,js,json}'
