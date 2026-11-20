@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\JsonResponse;
+use App\Http\Resources\HealthResource;
 
 /**
  * Lightweight liveness endpoint used by the web app, the mobile app,
@@ -13,13 +13,20 @@ use Illuminate\Http\JsonResponse;
  */
 final class HealthController extends Controller
 {
-    public function __invoke(): JsonResponse
+    /**
+     * Check the API is up.
+     *
+     * Returns the application name, deployed version and server time.
+     * Needs no authentication and never touches the database.
+     *
+     * @unauthenticated
+     */
+    public function __invoke(): HealthResource
     {
-        return response()->json([
-            'status' => 'ok',
-            'app' => config('app.name'),
-            'version' => config('reos.version'),
-            'time' => now()->toIso8601String(),
+        return new HealthResource([
+            'app' => config()->string('app.name'),
+            'version' => config()->string('reos.version'),
+            'time' => now(),
         ]);
     }
 }

@@ -1,0 +1,79 @@
+{
+    "openapi": "3.1.2",
+    "info": {
+        "title": "REOS API",
+        "version": "1.0.0",
+        "description": "The REOS REST API used by the mobile app and partner integrations. Version 1 lives under `/api/v1`; breaking changes go to a new version (see ADR 0003)."
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api/v1",
+            "description": "Local"
+        }
+    ],
+    "paths": {
+        "/health": {
+            "get": {
+                "operationId": "health",
+                "description": "Returns the application name, deployed version and server time.\nNeeds no authentication and never touches the database.",
+                "summary": "Check the API is up",
+                "tags": [
+                    "Health"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`HealthResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthResource"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HealthResource": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "description": "Always `ok` when the application can serve requests.",
+                        "const": "ok"
+                    },
+                    "app": {
+                        "type": "string",
+                        "description": "Application name.",
+                        "examples": [
+                            "REOS"
+                        ]
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Deployed REOS version.",
+                        "examples": [
+                            "0.1.0-dev"
+                        ]
+                    },
+                    "time": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Server time (ISO 8601)."
+                    }
+                },
+                "required": [
+                    "status",
+                    "app",
+                    "version",
+                    "time"
+                ],
+                "title": "HealthResource"
+            }
+        }
+    }
+}

@@ -1,25 +1,36 @@
+import { createApiClient } from '@reos/api-client';
+
 import { apiBaseUrl, fetchHealth } from '@/lib/api';
 
-const respond = (status: number, body: unknown) =>
-  jest.fn().mockResolvedValue({
-    ok: status >= 200 && status < 300,
-    status,
-    json: () => Promise.resolve(body),
-  }) as unknown as typeof fetch;
+const clientReturning = (status: number, body: unknown) => {
+  const fetch = jest.fn(async (_request: Request) =>
+    new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } }),
+  );
+
+  return { fetch, client: createApiClient({ baseUrl: apiBaseUrl(), fetch }) };
+};
 
 describe('fetchHealth', () => {
-  it('returns the platform health when the API is up', async () => {
-    const fetcher = respond(200, { status: 'ok', app: 'REOS', version: '0.1.0-dev', time: 'now' });
+  it('calls the versioned health endpoint and returns the typed body', async () => {
+    const { fetch, client } = clientReturning(200, {
+      status: 'ok',
+      app: 'REOS',
+      version: '0.1.0-dev',
+      time: '2026-12-07T09:00:00+00:00',
+    });
 
-    await expect(fetchHealth(fetcher)).resolves.toMatchObject({ status: 'ok', app: 'REOS' });
-    expect(fetcher).toHaveBeenCalledWith(`${apiBaseUrl()}/api/v1/health`, expect.any(Object));
+    await expect(fetchHealth(client)).resolves.toMatchObject({ status: 'ok', app: 'REOS' });
+
+    const request = fetch.mock.calls[0]?.[0];
+    expect(request?.url).toBe('http://localhost:8000/api/v1/health');
+    expect(request?.headers.get('Accept')).toBe('application/json');
   });
 
   it('throws on a server error', async () => {
-    await expect(fetchHealth(respond(503, {}))).rejects.toThrow('status 503');
+    await expect(fetchHealth(clientReturning(503, { message: 'down' }).client)).rejects.toThrow('status 503');
   });
 
   it('throws on an unexpected body', async () => {
-    await expect(fetchHealth(respond(200, { status: 'down' }))).rejects.toThrow('Unexpected');
+    await expect(fetchHealth(clientReturning(200, { status: 'down' }).client)).rejects.toThrow('Unexpected');
   });
 });

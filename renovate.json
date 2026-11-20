@@ -1,61 +1,175 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":semanticCommitsDisabled", "helpers:pinGitHubActionDigestsToSemver"],
+  "extends": [
+    "config:recommended",
+    ":semanticCommitsDisabled",
+    "helpers:pinGitHubActionDigestsToSemver"
+  ],
   "timezone": "Asia/Kolkata",
-  "schedule": ["before 9am on monday"],
+  "schedule": [
+    "before 9am on monday"
+  ],
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
   "branchPrefix": "deps/",
-  "labels": ["dependencies"],
+  "labels": [
+    "dependencies"
+  ],
   "rangeStrategy": "bump",
-  "lockFileMaintenance": { "enabled": true, "schedule": ["before 9am on the first day of the month"] },
-  "vulnerabilityAlerts": { "enabled": true, "schedule": ["at any time"], "labels": ["security"] },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": [
+      "before 9am on the first day of the month"
+    ]
+  },
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "schedule": [
+      "at any time"
+    ],
+    "labels": [
+      "security"
+    ]
+  },
   "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
       "description": "Laravel framework and first-party packages together",
-      "matchManagers": ["composer"],
-      "matchPackageNames": ["laravel/**", "inertiajs/**", "larastan/**"],
+      "matchManagers": [
+        "composer"
+      ],
+      "matchPackageNames": [
+        "laravel/**",
+        "inertiajs/**",
+        "larastan/**"
+      ],
       "groupName": "Laravel"
     },
     {
       "description": "Pest and PHP quality tools together",
-      "matchManagers": ["composer"],
-      "matchPackageNames": ["pestphp/**", "phpstan/**", "laravel/pint", "mockery/**", "nunomaduro/**"],
+      "matchManagers": [
+        "composer"
+      ],
+      "matchPackageNames": [
+        "pestphp/**",
+        "phpstan/**",
+        "laravel/pint",
+        "mockery/**",
+        "nunomaduro/**"
+      ],
       "groupName": "PHP quality tools"
     },
     {
       "description": "Expo SDK packages move together; SDK upgrades are planned by hand, never automatic",
-      "matchFileNames": ["apps/mobile/package.json"],
-      "matchPackageNames": ["expo", "expo-**", "@expo/**", "react-native", "react-native-**", "@react-native/**", "jest-expo", "eslint-config-expo", "react", "react-dom", "@types/react"],
+      "matchFileNames": [
+        "apps/mobile/package.json"
+      ],
+      "matchPackageNames": [
+        "expo",
+        "expo-**",
+        "@expo/**",
+        "react-native",
+        "react-native-**",
+        "@react-native/**",
+        "jest-expo",
+        "eslint-config-expo",
+        "react",
+        "react-dom",
+        "@types/react"
+      ],
       "groupName": "Expo SDK",
-      "matchUpdateTypes": ["patch"]
+      "matchUpdateTypes": [
+        "patch"
+      ]
     },
     {
       "description": "Expo and React Native minor/major upgrades go through a planned SDK upgrade sprint",
-      "matchFileNames": ["apps/mobile/package.json"],
-      "matchPackageNames": ["expo", "expo-**", "@expo/**", "react-native", "react-native-**", "@react-native/**", "jest-expo", "eslint-config-expo", "react", "react-dom", "@types/react"],
-      "matchUpdateTypes": ["minor", "major"],
+      "matchFileNames": [
+        "apps/mobile/package.json"
+      ],
+      "matchPackageNames": [
+        "expo",
+        "expo-**",
+        "@expo/**",
+        "react-native",
+        "react-native-**",
+        "@react-native/**",
+        "jest-expo",
+        "eslint-config-expo",
+        "react",
+        "react-dom",
+        "@types/react"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "major"
+      ],
       "enabled": false
     },
     {
       "description": "Web front-end toolchain together",
-      "matchFileNames": ["apps/platform/package.json"],
-      "matchPackageNames": ["@inertiajs/**", "react", "react-dom", "@types/react", "@types/react-dom", "tailwindcss", "@tailwindcss/**", "vite-plus", "@laravel/**", "laravel-vite-plugin"],
+      "matchFileNames": [
+        "apps/platform/package.json"
+      ],
+      "matchPackageNames": [
+        "@inertiajs/**",
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom",
+        "tailwindcss",
+        "@tailwindcss/**",
+        "vite-plus",
+        "@laravel/**",
+        "laravel-vite-plugin"
+      ],
       "groupName": "Web toolchain"
     },
     {
       "description": "GitHub Actions in one weekly PR",
-      "matchManagers": ["github-actions"],
+      "matchManagers": [
+        "github-actions"
+      ],
       "groupName": "GitHub Actions"
     },
     {
       "description": "Low-risk dev-only patches merge themselves once CI is green",
-      "matchDepTypes": ["devDependencies", "require-dev"],
-      "matchUpdateTypes": ["patch"],
+      "matchDepTypes": [
+        "devDependencies",
+        "require-dev"
+      ],
+      "matchUpdateTypes": [
+        "patch"
+      ],
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true
+    },
+    {
+      "description": "Local service and CI service images together",
+      "matchManagers": [
+        "docker-compose",
+        "dockerfile",
+        "github-actions"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "groupName": "Local services (Docker images)"
+    },
+    {
+      "description": "Keep PostgreSQL on 17 and Redis on 7 to match production; major upgrades are planned by hand",
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "pgvector/pgvector",
+        "redis"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
     }
   ]
 }

@@ -20,7 +20,7 @@ if (!token || !repo) {
   process.exit(1);
 }
 
-const month = process.argv[2] ?? (() => {
+const month = process.argv[2] || (() => {
   const d = new Date();
   d.setUTCDate(1);
   d.setUTCMonth(d.getUTCMonth() - 1);

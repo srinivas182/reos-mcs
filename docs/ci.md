@@ -11,10 +11,13 @@ Goal: catch problems on your own machine first, then spend GitHub Actions minute
 | Draft pull request | **Quick checks only**: Pint, PHPStan level 9, web lint and types, mobile lint and types. |
 | Pull request ready for review (and later pushes to it) | Quick checks, then **full tests**: web build and Pest (parallel) for the platform, Jest for mobile. |
 | Docs-only change (`docs/**`, `*.md`) | Nothing runs except the "CI result" gate. |
+| Change to the dev environment (`compose.yaml`, `.devcontainer/`, `scripts/dev-*`, migrations, seeders, `.env.example`) | Also the **Dev environment** job: starts the Compose services the way developers do, migrates and seeds, runs `pnpm dev:verify`, and builds the dev container image. |
 | Merge to `main` | Nothing runs: the pull request already proved it. |
 | A newer push to the same PR | The older run is cancelled automatically. |
 
 Only the touched apps run: a mobile-only change skips all PHP, a platform-only change skips mobile. Changes to `packages/**`, the lockfile, the root workspace files or `ci.yml` run both apps.
+
+Platform tests run on **PostgreSQL 17 + pgvector and Redis** (the production engines), after checking migrations roll forward, back and forward again. The quick checks also fail if the API changed without `pnpm api:generate`.
 
 Every job stops after 12 minutes. A typical full run is 2 to 7 minutes.
 

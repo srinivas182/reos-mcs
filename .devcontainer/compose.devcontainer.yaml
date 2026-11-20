@@ -1,0 +1,29 @@
+# Adds the workspace container to compose.yaml for the dev container / Codespaces.
+# Paths are relative to the repo root (the first compose file's folder).
+services:
+  workspace:
+    build:
+      context: .devcontainer
+      dockerfile: Dockerfile
+    command: ['sleep', 'infinity']
+    volumes:
+      - .:/workspaces/reos-mcs:cached
+    environment:
+      # Inside the container, services are reached by name, not 127.0.0.1.
+      # Real environment variables win over apps/platform/.env.
+      DB_HOST: postgres
+      REDIS_HOST: redis
+      MAIL_HOST: mailpit
+      MEILISEARCH_HOST: http://meilisearch:7700
+      AWS_ENDPOINT: http://s3:8333
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+      mailpit:
+        condition: service_healthy
+      s3:
+        condition: service_healthy
