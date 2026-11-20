@@ -7,6 +7,7 @@ namespace App\Integrations\Credentials;
 use App\Integrations\CredentialEnvironment;
 use App\Models\IntegrationCredential;
 use App\Models\User;
+use Carbon\CarbonInterface;
 use JsonException;
 use RuntimeException;
 
@@ -49,6 +50,15 @@ final readonly class DatabaseCredentialVault implements CredentialVault
                 'updated_by' => $actor?->id,
             ],
         );
+    }
+
+    public function updatedAt(string $integrationId, CredentialEnvironment $environment): ?CarbonInterface
+    {
+        return IntegrationCredential::query()
+            ->where('integration_id', $integrationId)
+            ->where('environment', $environment)
+            ->first(['updated_at'])
+            ?->updated_at;
     }
 
     public function forget(string $integrationId, CredentialEnvironment $environment): void

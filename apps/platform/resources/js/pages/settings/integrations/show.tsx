@@ -1,6 +1,7 @@
 import { Form, Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ArrowLeft,
+    CirclePause,
     CircleSlash,
     FlaskConical,
     History,
@@ -12,6 +13,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import IntegrationCredentialController from '@/actions/App/Http/Controllers/Settings/IntegrationCredentialController';
+import { CheckStatus } from '@/components/check-status';
 import { ChoiceTiles } from '@/components/choice-tiles';
 import type { ChoiceTile } from '@/components/choice-tiles';
 import { CopyField } from '@/components/copy-field';
@@ -20,7 +22,7 @@ import { EmptyState } from '@/components/empty-state';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import { ApprovalBadge, ModeBadge } from '@/components/integration-badges';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -35,6 +37,7 @@ import {
 import { i18n } from '@/lib/i18n';
 import { undoToast } from '@/lib/undo-toast';
 import { index } from '@/routes/integrations';
+import { store as storeCheck } from '@/routes/integrations/checks';
 import { update as updateMode } from '@/routes/integrations/mode';
 import type {
     AuditActivity,
@@ -89,7 +92,10 @@ export default function IntegrationShow({ integration, activity }: Props) {
                     />
 
                     <div className="flex flex-wrap gap-2">
-                        <ModeBadge mode={integration.mode} />
+                        <ModeBadge
+                            mode={integration.mode}
+                            paused={integration.paused_at !== null}
+                        />
                         <Badge variant="outline">
                             {t(
                                 `integrations.categories.${integration.category}`,
@@ -108,6 +114,26 @@ export default function IntegrationShow({ integration, activity }: Props) {
                             {t(`integrations.accounts.${integration.accounts}`)}
                         </AlertDescription>
                     </Alert>
+
+                    {integration.paused_at ? (
+                        <Alert variant="destructive">
+                            <CirclePause aria-hidden />
+                            <AlertTitle>
+                                {t('integrations.paused.title')}
+                            </AlertTitle>
+                            <AlertDescription>
+                                {t('integrations.paused.body', {
+                                    time: new Intl.DateTimeFormat(
+                                        i18n.language,
+                                        {
+                                            dateStyle: 'medium',
+                                            timeStyle: 'short',
+                                        },
+                                    ).format(new Date(integration.paused_at)),
+                                })}
+                            </AlertDescription>
+                        </Alert>
+                    ) : null}
                 </div>
 
                 <ModeChooser integration={integration} />
@@ -188,7 +214,8 @@ function ModeChooser({ integration }: { integration: IntegrationDetail }) {
                 ? t(reason)
                 : t(`integrations.mode.${value}Hint`),
             icon: modeIcons[value],
-            disabled: !available,
+            // The current mode stays focusable even if its keys changed since.
+            disabled: !available && value !== integration.mode,
         }),
     );
 
@@ -292,10 +319,18 @@ function KeysForm({
                             {t('integrations.keys.encrypted')}
                         </p>
 
+                        <CheckStatus check={integration.checks[environment]} />
+
                         <div className="flex flex-wrap gap-3">
                             <Button type="submit" disabled={processing}>
                                 {t('integrations.keys.save')}
                             </Button>
+                            {saved ? (
+                                <TestConnection
+                                    integration={integration}
+                                    environment={environment}
+                                />
+                            ) : null}
                             {saved ? (
                                 <RemoveKeys
                                     integration={integration}
@@ -307,6 +342,43 @@ function KeysForm({
                 )}
             </Form>
         </section>
+    );
+}
+
+/** Checks the saved keys with the vendor (a harmless, read-only request). */
+function TestConnection({
+    integration,
+    environment,
+}: {
+    integration: IntegrationDetail;
+    environment: CredentialEnvironment;
+}) {
+    const { t } = useTranslation();
+    const [testing, setTesting] = useState(false);
+
+    return (
+        <Button
+            type="button"
+            variant="secondary"
+            disabled={testing}
+            aria-busy={testing}
+            onClick={() =>
+                router.post(
+                    storeCheck({ integration: integration.id, environment })
+                        .url,
+                    {},
+                    {
+                        preserveScroll: true,
+                        onStart: () => setTesting(true),
+                        onFinish: () => setTesting(false),
+                    },
+                )
+            }
+        >
+            {testing
+                ? t('integrations.checks.testing')
+                : t('integrations.checks.test')}
+        </Button>
     );
 }
 
@@ -402,6 +474,20 @@ function ActivityList({ activity }: { activity: AuditActivity[] }) {
                 return t('integrations.activity.credentialsRemoved', {
                     actor,
                     environment,
+                });
+            case 'integration.checked':
+                return t('integrations.activity.checked', {
+                    actor,
+                    environment,
+                    outcome: t(
+                        `integrations.activity.outcomes.${event.properties.outcome ?? 'failed'}`,
+                    ),
+                });
+            case 'integration.resumed':
+                return t('integrations.activity.resumed', { actor });
+            case 'integration.paused':
+                return t('integrations.activity.paused', {
+                    count: event.properties.failures ?? 3,
                 });
             case 'integration.mode_changed':
                 return t('integrations.activity.modeChanged', {

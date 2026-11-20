@@ -19,6 +19,7 @@ export const Modes: Story = {
             <ModeBadge mode="simulator" />
             <ModeBadge mode="sandbox" />
             <ModeBadge mode="live" />
+            <ModeBadge mode="live" paused />
         </div>
     ),
 };

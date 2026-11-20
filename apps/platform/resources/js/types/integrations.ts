@@ -39,7 +39,34 @@ export type IntegrationSummary = {
     personal_data: boolean;
     needs_keys: boolean;
     mode: IntegrationMode;
+    /** Set when health checks paused it; features then treat it as Off. */
+    paused_at: string | null;
     keys: Record<CredentialEnvironment, boolean>;
+};
+
+export type CheckOutcome = 'passed' | 'failed' | 'unverified';
+
+export type CheckMessage =
+    | 'integrations.checks.passed'
+    | 'integrations.checks.rejected'
+    | 'integrations.checks.wrongEnvironment'
+    | 'integrations.checks.unreachable'
+    | 'integrations.checks.vendorError'
+    | 'integrations.checks.invalidFormat'
+    | 'integrations.checks.missingKeys'
+    | 'integrations.checks.unexpected'
+    | 'integrations.checks.noAutomaticCheck'
+    | 'integrations.checks.formatOnly'
+    | 'integrations.checks.publicData';
+
+export type IntegrationCheck = {
+    outcome: CheckOutcome;
+    message: CheckMessage;
+    parameters: Record<string, string | number>;
+    trigger: 'manual' | 'scheduled';
+    checked_by: string | null;
+    duration_ms: number | null;
+    created_at: string;
 };
 
 export type IntegrationFieldKind =
@@ -66,6 +93,8 @@ export type SavedCredential = {
 export type ModeReason =
     | 'integrations.mode.needsSandboxKeys'
     | 'integrations.mode.needsLiveKeys'
+    | 'integrations.mode.needsLiveTest'
+    | 'integrations.mode.liveTestFailed'
     | 'integrations.mode.noTestSystem';
 
 export type IntegrationDetail = IntegrationSummary & {
@@ -77,6 +106,7 @@ export type IntegrationDetail = IntegrationSummary & {
     redirect_url: string | null;
     fields: IntegrationField[];
     credentials: Record<CredentialEnvironment, Record<string, SavedCredential>>;
+    checks: Record<CredentialEnvironment, IntegrationCheck | null>;
     modes: {
         value: IntegrationMode;
         available: boolean;
@@ -89,13 +119,18 @@ export type AuditActivity = {
     action:
         | 'integration.credentials_updated'
         | 'integration.credentials_removed'
-        | 'integration.mode_changed';
+        | 'integration.mode_changed'
+        | 'integration.checked'
+        | 'integration.resumed'
+        | 'integration.paused';
     actor: string | null;
     properties: {
         environment?: CredentialEnvironment;
         fields?: string[];
         from?: IntegrationMode;
         to?: IntegrationMode;
+        outcome?: CheckOutcome;
+        failures?: number;
     };
     created_at: string;
 };

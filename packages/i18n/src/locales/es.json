@@ -171,7 +171,10 @@
       "needsSandboxKeys": "Primero agregue las claves de prueba.",
       "needsLiveKeys": "Primero agregue las claves en vivo.",
       "noTestSystem": "Este servicio no tiene sistema de prueba.",
-      "changed": "Ahora funciona con: {{mode}}"
+      "changed": "Ahora funciona con: {{mode}}",
+      "needsLiveTest": "Primero pruebe las claves en vivo.",
+      "liveTestFailed": "La última prueba de las claves en vivo falló. Corríjalas y vuelva a probar.",
+      "paused": "En pausa"
     },
     "approval": {
       "label": "Aprobación del proveedor",
@@ -231,7 +234,15 @@
       "credentialsRemoved": "{{actor}} quitó las claves {{environment}}",
       "modeChanged": "{{actor}} cambió cómo funciona de {{from}} a {{to}}",
       "unknownActor": "Alguien",
-      "emptyDescription": "Aquí aparecen los cambios en las claves y en cómo funciona este servicio, con quién los hizo."
+      "emptyDescription": "Aquí aparecen los cambios en las claves y en cómo funciona este servicio, con quién los hizo.",
+      "checked": "{{actor}} probó las claves {{environment}}: {{outcome}}",
+      "resumed": "{{actor}} lo volvió a activar con una prueba exitosa",
+      "paused": "REOS lo puso en pausa después de {{count}} revisiones automáticas fallidas",
+      "outcomes": {
+        "passed": "conectado",
+        "failed": "falló",
+        "unverified": "claves completas"
+      }
     },
     "fields": {
       "client_id": "ID de cliente",
@@ -270,6 +281,39 @@
       "app_id": "ID de la aplicación",
       "app_secret": "Secreto de la aplicación",
       "model_id": "ID del modelo"
+    },
+    "checks": {
+      "test": "Probar conexión",
+      "testing": "Probando…",
+      "never": "Todavía sin probar.",
+      "checkedAt": "Probado {{time}}",
+      "checkedBy": "Probado {{time}} por {{name}}",
+      "scheduled": "Revisión automática {{time}}",
+      "passed": "Conectado. El proveedor aceptó estas claves.",
+      "rejected": "El proveedor rechazó estas claves. Verifique que se copiaron completas y que son de esta cuenta.",
+      "wrongEnvironment": "Parecen claves del otro sistema. Las claves de prueba van en Claves de prueba y las claves en vivo en Claves en vivo.",
+      "unreachable": "No se pudo contactar al proveedor. Vuelva a intentarlo en unos minutos.",
+      "vendorError": "El proveedor respondió con un error (código {{status}}). Vuelva a intentarlo más tarde.",
+      "invalidFormat": "El campo {{field}} no parece correcto. Cópielo otra vez desde el proveedor.",
+      "missingKeys": "Faltan algunas claves obligatorias.",
+      "unexpected": "Algo salió mal durante la prueba. Ya se avisó al equipo.",
+      "noAutomaticCheck": "Las claves parecen completas. La revisión automática llega con la construcción de esta conexión (sprint {{sprint}}).",
+      "formatOnly": "Las direcciones parecen correctas. Se confirman cuando llegue el primer informe de error.",
+      "publicData": "Usa datos públicos, así que no hay claves que revisar."
+    },
+    "paused": {
+      "title": "En pausa por fallas repetidas",
+      "body": "Las revisiones automáticas siguieron fallando, así que REOS dejó de usar este servicio a las {{time}}. Se ocultan las funciones que lo necesitan. Pruebe las claves que usa para volver a activarlo.",
+      "resumed": "Activo de nuevo"
+    },
+    "notifications": {
+      "paused": {
+        "subject": "{{name}} quedó en pausa",
+        "body": "REOS puso en pausa {{name}} después de {{count}} revisiones automáticas fallidas seguidas. Las funciones que lo usan se ocultan hasta que vuelva a funcionar.",
+        "reason": "Último resultado: {{reason}}",
+        "action": "Abrir la integración",
+        "resume": "Corrija las claves si hace falta y pulse Probar conexión. Una prueba exitosa lo vuelve a activar."
+      }
     }
   }
 }

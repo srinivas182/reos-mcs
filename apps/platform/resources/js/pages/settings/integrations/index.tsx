@@ -156,7 +156,10 @@ function IntegrationRow({ integration }: { integration: IntegrationSummary }) {
                     </span>
                 ) : null}
             </span>
-            <ModeBadge mode={integration.mode} />
+            <ModeBadge
+                mode={integration.mode}
+                paused={integration.paused_at !== null}
+            />
             <ChevronRight
                 aria-hidden
                 className="size-5 shrink-0 text-muted-foreground"

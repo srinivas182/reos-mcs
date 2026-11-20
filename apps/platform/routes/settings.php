@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Settings\AppearanceController;
+use App\Http\Controllers\Settings\IntegrationCheckController;
 use App\Http\Controllers\Settings\IntegrationController;
 use App\Http\Controllers\Settings\IntegrationCredentialController;
 use App\Http\Controllers\Settings\IntegrationModeController;
@@ -51,6 +52,12 @@ Route::middleware(['auth', 'verified', 'can:manage-integrations', RequirePasswor
             Route::delete('{integration}/keys/{environment}', [IntegrationCredentialController::class, 'destroy'])->name('keys.destroy')->whereIn('environment', ['sandbox', 'live']);
             Route::patch('{integration}/mode', [IntegrationModeController::class, 'update'])->name('mode.update');
         });
+
+        // Each test calls the vendor, so it has its own, lower limit.
+        Route::post('{integration}/checks/{environment}', [IntegrationCheckController::class, 'store'])
+            ->middleware('throttle:10,1')
+            ->name('checks.store')
+            ->whereIn('environment', ['sandbox', 'live']);
     });
 
 /* @chisel-passkeys */

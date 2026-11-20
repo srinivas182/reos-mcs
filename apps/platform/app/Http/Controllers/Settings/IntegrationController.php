@@ -33,9 +33,11 @@ final class IntegrationController extends Controller
     {
         $status = $hub->status($integration);
         $credentials = [];
+        $checks = [];
 
         foreach (CredentialEnvironment::cases() as $environment) {
             $credentials[$environment->value] = $hub->maskedCredentials($integration, $environment);
+            $checks[$environment->value] = $hub->latestCheck($integration, $environment);
         }
 
         return Inertia::render('settings/integrations/show', [
@@ -44,6 +46,7 @@ final class IntegrationController extends Controller
                 $status,
                 $hub->modeAvailability($integration, $status),
                 $credentials,
+                $checks,
             ))->resolve($request),
             'activity' => $hub->activity($integration)
                 ->map(static fn (AuditEvent $event): array => (new AuditEventResource($event))->resolve($request))

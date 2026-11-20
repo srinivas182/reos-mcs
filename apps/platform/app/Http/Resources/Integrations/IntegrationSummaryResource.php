@@ -34,6 +34,7 @@ final class IntegrationSummaryResource extends JsonResource
             'personal_data' => $this->definition->personalData,
             'needs_keys' => $this->definition->needsKeys(),
             'mode' => $this->status->mode->value,
+            'paused_at' => $this->status->pausedAt?->toIso8601String(),
             'keys' => [
                 'sandbox' => $this->status->hasSandboxKeys,
                 'live' => $this->status->hasLiveKeys,

@@ -6,6 +6,7 @@ namespace App\Integrations\Credentials;
 
 use App\Integrations\CredentialEnvironment;
 use App\Models\User;
+use Carbon\CarbonInterface;
 
 /**
  * Where integration keys are kept. Today the database (encrypted with
@@ -27,6 +28,9 @@ interface CredentialVault
      * @param  array<string, string>  $values
      */
     public function put(string $integrationId, CredentialEnvironment $environment, array $values, ?User $actor): void;
+
+    /** When these keys were last saved, or null when there are none. */
+    public function updatedAt(string $integrationId, CredentialEnvironment $environment): ?CarbonInterface;
 
     public function forget(string $integrationId, CredentialEnvironment $environment): void;
 
