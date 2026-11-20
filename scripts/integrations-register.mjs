@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * REOS integrations register: validate docs/integrations/register.yaml and
- * render docs/integrations/README.md from it.
+ * REOS integrations register: validate docs/integrations/register.yaml, render
+ * docs/integrations/README.md from it, and write the product's catalogue
+ * (apps/platform/resources/integrations/catalogue.json) that Settings ›
+ * Integrations reads, so the docs and the product can't disagree.
  *
  *   node scripts/integrations-register.mjs            # validate and write README.md
  *   node scripts/integrations-register.mjs --check    # validate; fail if README.md is stale (CI)
@@ -10,7 +12,7 @@
  * The rendered README depends only on the YAML (never on today's date), so CI
  * gives the same answer on every machine.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -23,6 +25,11 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = process.env.REGISTER_DIR ? resolve(process.env.REGISTER_DIR) : resolve(root, 'docs/integrations');
 const yamlPath = resolve(dir, 'register.yaml');
 const readmePath = resolve(dir, 'README.md');
+// CATALOGUE_PATH and I18N_PATH let the tests write and read temporary copies.
+const cataloguePath = process.env.CATALOGUE_PATH
+  ? resolve(process.env.CATALOGUE_PATH)
+  : resolve(root, 'apps/platform/resources/integrations/catalogue.json');
+const i18nPath = process.env.I18N_PATH ? resolve(process.env.I18N_PATH) : resolve(root, 'packages/i18n/src/locales/en.json');
 const mode = process.argv[2] ?? '--write';
 
 const LABELS = {
@@ -67,6 +74,7 @@ if (!validate(register)) {
   fail(`register.yaml doesn't match the schema:\n${problems.join('\n')}`);
 }
 
+const fieldLabels = JSON.parse(readFileSync(i18nPath, 'utf8'))?.integrations?.fields ?? {};
 const errors = [];
 const seen = new Set();
 for (const entry of register.entries) {
@@ -77,6 +85,22 @@ for (const entry of register.entries) {
   }
   const { applied_on: applied, approved_on: approved } = entry.access;
   if (applied && approved && approved < applied) errors.push(`[${entry.id}] approved_on is before applied_on`);
+
+  // Every service REOS talks to gets a place in Settings › Integrations.
+  const connectable = ['integration', 'platform_service'].includes(entry.kind);
+  if (connectable && !entry.connection && entry.access.status !== 'not_needed') {
+    errors.push(`[${entry.id}] needs a connection block (how it is set up in Settings › Integrations)`);
+  }
+  if (!connectable && entry.connection) errors.push(`[${entry.id}] only integrations and platform services have a connection block`);
+  if (entry.connection) {
+    const { auth, fields } = entry.connection;
+    if (auth === 'none' && fields.length) errors.push(`[${entry.id}] auth none cannot have fields`);
+    const keys = fields.map((f) => f.key);
+    if (new Set(keys).size !== keys.length) errors.push(`[${entry.id}] has a connection field twice`);
+    for (const field of fields) {
+      if (!fieldLabels[field.key]) errors.push(`[${entry.id}] field "${field.key}" has no label: add integrations.fields.${field.key} to packages/i18n`);
+    }
+  }
 }
 if (errors.length) fail(`register.yaml has problems:\n  ${errors.join('\n  ')}`);
 
@@ -220,6 +244,43 @@ for (const e of entries) {
 
 const rendered = `${out.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd()}\n`;
 
+// ── Product catalogue (read by the platform's Integration Hub) ───────────────
+// Only what the product needs; the register stays the place to edit.
+const catalogue = `${JSON.stringify(
+  {
+    generated_from: 'docs/integrations/register.yaml',
+    updated: register.updated,
+    entries: entries
+      .filter((e) => e.connection)
+      .map((e) => ({
+        id: e.id,
+        name: e.name,
+        kind: e.kind,
+        category: e.category,
+        purpose: e.purpose,
+        launch: e.launch,
+        build_sprint: e.build.sprint,
+        owner: e.owner,
+        access_status: e.access.status,
+        personal_data: e.personal_data,
+        sandbox: e.sandbox,
+        connection: {
+          auth: e.connection.auth,
+          accounts: e.connection.accounts,
+          fields: e.connection.fields.map((f) => ({
+            key: f.key,
+            secret: f.secret ?? false,
+            required: f.required ?? true,
+            kind: f.kind ?? 'text',
+            default: f.default ?? null,
+          })),
+        },
+      })),
+  },
+  null,
+  2,
+)}\n`;
+
 if (mode === '--check') {
   let current = '';
   try {
@@ -228,10 +289,19 @@ if (mode === '--check') {
     // Missing README is reported below.
   }
   if (current !== rendered) fail('docs/integrations/README.md is out of date. Run `pnpm integrations:render` and commit it.');
-  console.log(`✔ Integrations register valid (${entries.length} entries) and README.md up to date.`);
+  let currentCatalogue = '';
+  try {
+    currentCatalogue = readFileSync(cataloguePath, 'utf8');
+  } catch {
+    // Missing catalogue is reported below.
+  }
+  if (currentCatalogue !== catalogue) fail('apps/platform/resources/integrations/catalogue.json is out of date. Run `pnpm integrations:render` and commit it.');
+  console.log(`✔ Integrations register valid (${entries.length} entries); README.md and the product catalogue are up to date.`);
 } else if (mode === '--write') {
   writeFileSync(readmePath, rendered);
-  console.log(`✔ Rendered docs/integrations/README.md (${entries.length} entries, ${actions.length} open actions).`);
+  mkdirSync(dirname(cataloguePath), { recursive: true });
+  writeFileSync(cataloguePath, catalogue);
+  console.log(`✔ Rendered docs/integrations/README.md (${entries.length} entries, ${actions.length} open actions) and the product catalogue.`);
 } else {
   fail(`Unknown option ${mode}. Use --check, --status or no option.`);
 }

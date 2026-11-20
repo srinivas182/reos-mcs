@@ -23,7 +23,7 @@ pre-commit:
       stage_fixed: true
     integrations-register:
       glob: 'docs/integrations/register.{yaml,schema.json}'
-      run: pnpm -s integrations:render && git add docs/integrations/README.md
+      run: pnpm -s integrations:render && git add docs/integrations/README.md apps/platform/resources/integrations/catalogue.json
     translations:
       glob: 'packages/i18n/src/locales/*.json'
       run: pnpm --filter @reos/i18n -s build && git add apps/platform/lang/*.json

@@ -72,3 +72,11 @@ it('skips demo logins when the full seeder runs in production', function () {
 
     expect(User::query()->count())->toBe(0);
 });
+
+it('makes only the operations persona a super admin', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $admins = User::query()->where('is_super_admin', true)->pluck('email')->all();
+
+    expect($admins)->toBe(['ops@demo.reos.test']);
+});

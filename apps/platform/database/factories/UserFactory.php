@@ -48,6 +48,16 @@ class UserFactory extends Factory
         ]);
     }
 
+    /**
+     * A platform super administrator (Integration Hub access).
+     */
+    public function superAdmin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_super_admin' => true,
+        ]);
+    }
+
     /* @chisel-2fa */
     /**
      * Indicate that the model has two-factor authentication configured.

@@ -15,6 +15,7 @@ How REOS stores, shares and rotates every key, token and password for the servic
    | Mobile signing (Apple, Google) | EAS credentials (managed by Expo) | Mobile lead and DevOps |
    | CI | GitHub Actions environment secrets, scoped per environment | Workflows only |
 
+   **Until the AWS account exists** (decision 20 November 2026, [ADR 0009](../adr/0009-integration-hub.md)): staging and production vendor keys are entered by the super admin in **Settings › Integrations**. They are stored encrypted with `REOS_CREDENTIALS_KEY` (kept in 1Password **REOS – Production**, never in git) and every change is audited. They move to Secrets Manager behind the same screen when AWS is ready.
 3. **Production keys never reach a laptop.** No one copies a production secret to a local file. Debugging production uses staging keys or read-only roles.
 4. **Every credential has an owner and an account owner.** The register's `owner` field says who holds the vendor account; the vault entry names the engineer responsible for rotation. Accounts are opened in the client's legal entity (billing and ownership), with Mayura invited as admins, never sharing a login.
 5. **Least privilege.** Request only the scopes a feature needs (for example Gmail send before Gmail read; see the register). One key per environment and per service; never reuse a key across staging and production.

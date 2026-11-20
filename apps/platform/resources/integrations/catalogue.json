@@ -1,0 +1,1436 @@
+{
+  "generated_from": "docs/integrations/register.yaml",
+  "updated": "2026-11-20",
+  "entries": [
+    {
+      "id": "google-workspace",
+      "name": "Google Calendar and Gmail",
+      "kind": "integration",
+      "category": "calendar_email",
+      "purpose": "Two-way calendar and email for every role.",
+      "launch": "enabled",
+      "build_sprint": 4,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Test users on an unverified Google Cloud project (up to 100) until verification is approved.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "microsoft-365",
+      "name": "Microsoft 365 (Outlook calendar and mail)",
+      "kind": "integration",
+      "category": "calendar_email",
+      "purpose": "Two-way Outlook calendar and mail.",
+      "launch": "enabled",
+      "build_sprint": 4,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Microsoft 365 Developer Program tenant.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "aws-speech",
+      "name": "Amazon Transcribe and Polly (speech)",
+      "kind": "platform_service",
+      "category": "voice",
+      "purpose": "Voice to-dos and notes (speech to text) and audio-only lessons (text to speech).",
+      "launch": "not_applicable",
+      "build_sprint": 4,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Same AWS account (staging).",
+      "connection": {
+        "auth": "aws",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_key_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_access_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "region",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "us-east-2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "stripe",
+      "name": "Stripe (Checkout, Billing, Tax)",
+      "kind": "integration",
+      "category": "payments",
+      "purpose": "Web checkout, subscriptions, invoices and Texas sales tax.",
+      "launch": "enabled",
+      "build_sprint": 5,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Stripe test mode.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "publishable_key",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "webhook_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "stripe-connect",
+      "name": "Stripe Connect (payouts)",
+      "kind": "integration",
+      "category": "payments",
+      "purpose": "Payouts to schools, instructors and mentors; tenants can connect their own Stripe account.",
+      "launch": "enabled",
+      "build_sprint": 5,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Stripe test mode with test connected accounts.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "webhook_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "paypal",
+      "name": "PayPal",
+      "kind": "integration",
+      "category": "payments",
+      "purpose": "Alternative web checkout, switchable per state and product.",
+      "launch": "enabled",
+      "build_sprint": 5,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "PayPal developer sandbox.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "webhook_id",
+            "secret": false,
+            "required": false,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "authorize-net",
+      "name": "Authorize.net",
+      "kind": "integration",
+      "category": "payments",
+      "purpose": "Gateway for associations and brokerages that already bank through Authorize.net.",
+      "launch": "enabled",
+      "build_sprint": 5,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Authorize.net sandbox account (free, instant).",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "api_login_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "transaction_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "signature_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "expo-push",
+      "name": "Expo push notifications (APNs, FCM)",
+      "kind": "platform_service",
+      "category": "notifications",
+      "purpose": "Push notifications to the iOS and Android apps.",
+      "launch": "not_applicable",
+      "build_sprint": 6,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "Development builds.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_token",
+            "secret": true,
+            "required": false,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "amazon-ses",
+      "name": "Amazon SES (email)",
+      "kind": "platform_service",
+      "category": "notifications",
+      "purpose": "Transactional email, digests and the morning brief.",
+      "launch": "not_applicable",
+      "build_sprint": 6,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "SES sandbox (verified recipients only).",
+      "connection": {
+        "auth": "aws",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_key_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_access_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "region",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "us-east-2"
+          },
+          {
+            "key": "from_email",
+            "secret": false,
+            "required": true,
+            "kind": "email",
+            "default": "hello@reos.com"
+          }
+        ]
+      }
+    },
+    {
+      "id": "twilio-sms",
+      "name": "Twilio SMS",
+      "kind": "platform_service",
+      "category": "notifications",
+      "purpose": "SMS alerts and codes, with quiet hours.",
+      "launch": "not_applicable",
+      "build_sprint": 6,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Twilio test credentials and a trial number.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "account_sid",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "auth_token",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "from_number",
+            "secret": false,
+            "required": true,
+            "kind": "phone",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "livekit",
+      "name": "LiveKit Cloud",
+      "kind": "platform_service",
+      "category": "video",
+      "purpose": "Mentor sessions and live classes (rooms, whiteboard, consented recording).",
+      "launch": "not_applicable",
+      "build_sprint": 6,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Free tier project.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "server_url",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "api_key",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "api_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mux",
+      "name": "Mux Video",
+      "kind": "platform_service",
+      "category": "video",
+      "purpose": "Lesson video streaming and offline download.",
+      "launch": "not_applicable",
+      "build_sprint": 5,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "Mux test environment.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_token_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "webhook_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "synthesia",
+      "name": "Synthesia (AI avatar lessons; HeyGen fallback)",
+      "kind": "platform_service",
+      "category": "ai",
+      "purpose": "Render AI avatar lesson videos from approved scripts.",
+      "launch": "not_applicable",
+      "build_sprint": 7,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Trial workspace; API needs an Enterprise plan.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "aws-bedrock-claude",
+      "name": "Claude on Amazon Bedrock",
+      "kind": "platform_service",
+      "category": "ai",
+      "purpose": "AI answers with sources, course drafting, contract review, role-play.",
+      "launch": "not_applicable",
+      "build_sprint": 7,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Staging AWS account, us-east-2.",
+      "connection": {
+        "auth": "aws",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_key_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_access_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "region",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "us-east-2"
+          },
+          {
+            "key": "model_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "aws-textract",
+      "name": "Amazon Textract",
+      "kind": "platform_service",
+      "category": "ai",
+      "purpose": "Read uploaded CE certificates and licences.",
+      "launch": "not_applicable",
+      "build_sprint": 10,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Staging AWS account.",
+      "connection": {
+        "auth": "aws",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_key_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_access_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "region",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "us-east-2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "follow-up-boss",
+      "name": "Follow Up Boss",
+      "kind": "integration",
+      "category": "crm",
+      "purpose": "Two-way contacts, notes and tasks; newest change wins.",
+      "launch": "enabled",
+      "build_sprint": 7,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Free trial account; register a system key.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "system_name",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "REOS"
+          },
+          {
+            "key": "system_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "boldtrail",
+      "name": "kvCORE / BoldTrail",
+      "kind": "integration",
+      "category": "crm",
+      "purpose": "Two-way contacts, notes and tasks.",
+      "launch": "enabled",
+      "build_sprint": 7,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "lofty",
+      "name": "Lofty",
+      "kind": "integration",
+      "category": "crm",
+      "purpose": "Two-way contacts, notes and tasks.",
+      "launch": "enabled",
+      "build_sprint": 8,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "salesforce",
+      "name": "Salesforce",
+      "kind": "integration",
+      "category": "crm",
+      "purpose": "Contacts, leads, tasks and activities for brokerages on Salesforce.",
+      "launch": "enabled",
+      "build_sprint": 8,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Free Developer Edition org.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "lone-wolf",
+      "name": "Lone Wolf Transactions",
+      "kind": "integration",
+      "category": "transactions",
+      "purpose": "Deals, documents and deadlines; deadline alerts; coordinator sharing.",
+      "launch": "enabled",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "dotloop",
+      "name": "dotloop",
+      "kind": "integration",
+      "category": "transactions",
+      "purpose": "Loops, documents and deadlines.",
+      "launch": "enabled",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "skyslope",
+      "name": "SkySlope",
+      "kind": "integration",
+      "category": "transactions",
+      "purpose": "Files, documents and deadlines.",
+      "launch": "enabled",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "api_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "docusign",
+      "name": "DocuSign",
+      "kind": "integration",
+      "category": "esignature",
+      "purpose": "Send, track and store signatures from REOS.",
+      "launch": "enabled",
+      "build_sprint": 9,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Free developer (demo) account.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "integration_key",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "private_key",
+            "secret": true,
+            "required": false,
+            "kind": "multiline",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mls-har",
+      "name": "HAR MLS (Houston)",
+      "kind": "integration",
+      "category": "mls",
+      "purpose": "Agents' listings for posts, CMAs, public pages and open houses.",
+      "launch": "enabled",
+      "build_sprint": 10,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "Bridge test dataset.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "server_url",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mls-ntreis",
+      "name": "NTREIS (North Texas)",
+      "kind": "integration",
+      "category": "mls",
+      "purpose": "Agents' listings for posts, CMAs, public pages and open houses.",
+      "launch": "enabled",
+      "build_sprint": 10,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "Trestle test feed.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "server_url",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mls-unlock",
+      "name": "Unlock MLS / ACTRIS (Austin)",
+      "kind": "integration",
+      "category": "mls",
+      "purpose": "Agents' listings for posts, CMAs, public pages and open houses.",
+      "launch": "enabled",
+      "build_sprint": 10,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "On approval.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "server_url",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mls-sabor",
+      "name": "SABOR MLS (San Antonio)",
+      "kind": "integration",
+      "category": "mls",
+      "purpose": "Agents' listings for posts, CMAs, public pages and open houses.",
+      "launch": "enabled",
+      "build_sprint": 10,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "To confirm with SABOR.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "server_url",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "trec-licence",
+      "name": "TREC licence lookup",
+      "kind": "integration",
+      "category": "lookups",
+      "purpose": "Verify agent, broker and inspector licences in seconds.",
+      "launch": "enabled",
+      "build_sprint": 10,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Public data.",
+      "connection": {
+        "auth": "none",
+        "accounts": "platform",
+        "fields": []
+      }
+    },
+    {
+      "id": "trec-ce-reporting",
+      "name": "TREC CE completion reporting",
+      "kind": "integration",
+      "category": "lookups",
+      "purpose": "Report CE completions to TREC (by the school, or REOS on its behalf).",
+      "launch": "enabled",
+      "build_sprint": 11,
+      "owner": "nelle",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "None; test with TREC's guidance before go-live.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": []
+      }
+    },
+    {
+      "id": "nmls-lookup",
+      "name": "NMLS Consumer Access",
+      "kind": "integration",
+      "category": "lookups",
+      "purpose": "Verify mortgage loan officer licences for service providers.",
+      "launch": "enabled",
+      "build_sprint": 10,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Public lookup site.",
+      "connection": {
+        "auth": "none",
+        "accounts": "platform",
+        "fields": []
+      }
+    },
+    {
+      "id": "tdi-lookup",
+      "name": "Texas Department of Insurance licence lookup",
+      "kind": "integration",
+      "category": "lookups",
+      "purpose": "Verify insurance agent licences for service providers.",
+      "launch": "enabled",
+      "build_sprint": 10,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Public data.",
+      "connection": {
+        "auth": "none",
+        "accounts": "platform",
+        "fields": []
+      }
+    },
+    {
+      "id": "meta",
+      "name": "Instagram and Facebook",
+      "kind": "integration",
+      "category": "social",
+      "purpose": "Post, schedule and read insights.",
+      "launch": "enabled",
+      "build_sprint": 11,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Development-mode app with test users.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "app_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "app_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "kind": "integration",
+      "category": "social",
+      "purpose": "Post to profiles and company pages; insights.",
+      "launch": "beta",
+      "build_sprint": 11,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Development app.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "google-business-profile",
+      "name": "Google Business Profile",
+      "kind": "integration",
+      "category": "social",
+      "purpose": "Posts and insights on the agent's Google listing.",
+      "launch": "enabled",
+      "build_sprint": 11,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Same Google Cloud project as Google Workspace.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "kind": "integration",
+      "category": "social",
+      "purpose": "Short video posting and insights.",
+      "launch": "enabled",
+      "build_sprint": 11,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Same Google Cloud project; unverified apps upload as private.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok",
+      "kind": "integration",
+      "category": "social",
+      "purpose": "Short video posting and insights.",
+      "launch": "enabled",
+      "build_sprint": 11,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Sandbox app; unaudited apps can only post privately.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_key",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "mapbox",
+      "name": "Mapbox",
+      "kind": "platform_service",
+      "category": "maps",
+      "purpose": "Provider service areas on a map.",
+      "launch": "not_applicable",
+      "build_sprint": 15,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "Free tier.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_token",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "quickbooks-online",
+      "name": "QuickBooks Online",
+      "kind": "integration",
+      "category": "accounting",
+      "purpose": "Export split sheets and payouts for brokerages.",
+      "launch": "enabled",
+      "build_sprint": 17,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Intuit developer sandbox company.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "texas-realtors-membership",
+      "name": "Texas REALTORS® single sign-on and member data (NRDS)",
+      "kind": "integration",
+      "category": "association",
+      "purpose": "Members sign in with their association login; member records, CE and programs stay in sync.",
+      "launch": "enabled",
+      "build_sprint": 18,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Ask for a test environment of the membership system.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": []
+      }
+    },
+    {
+      "id": "sentry",
+      "name": "Sentry",
+      "kind": "platform_service",
+      "category": "operations",
+      "purpose": "Error tracking for web, API and mobile.",
+      "launch": "not_applicable",
+      "build_sprint": 19,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Separate staging project.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "dsn",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "browser_dsn",
+            "secret": false,
+            "required": false,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "mobile_dsn",
+            "secret": false,
+            "required": false,
+            "kind": "url",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "posthog",
+      "name": "PostHog",
+      "kind": "platform_service",
+      "category": "operations",
+      "purpose": "Product analytics, funnels and session insights.",
+      "launch": "not_applicable",
+      "build_sprint": 19,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Separate staging project.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "project_key",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "host",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": "https://us.i.posthog.com"
+          }
+        ]
+      }
+    },
+    {
+      "id": "grafana-otel",
+      "name": "OpenTelemetry and Grafana",
+      "kind": "platform_service",
+      "category": "operations",
+      "purpose": "Tracing, metrics and dashboards.",
+      "launch": "not_applicable",
+      "build_sprint": 19,
+      "owner": "mayura",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "Staging stack.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "otlp_endpoint",
+            "secret": false,
+            "required": true,
+            "kind": "url",
+            "default": null
+          },
+          {
+            "key": "instance_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "access_token",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    }
+  ]
+}

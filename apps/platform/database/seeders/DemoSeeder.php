@@ -27,7 +27,7 @@ final class DemoSeeder extends Seeder
         $password = Hash::make(config()->string('reos.demo_password'));
 
         foreach (Personas::all() as $persona) {
-            User::query()->updateOrCreate(
+            $user = User::query()->updateOrCreate(
                 ['email' => $persona->email],
                 [
                     'name' => $persona->name,
@@ -35,6 +35,9 @@ final class DemoSeeder extends Seeder
                     'email_verified_at' => now(),
                 ],
             );
+
+            // Not mass assignable on purpose; Sprint 3 replaces this with roles.
+            $user->forceFill(['is_super_admin' => $persona->role === 'super_admin'])->save();
         }
     }
 }
