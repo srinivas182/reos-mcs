@@ -1,5 +1,5 @@
 import { X } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -42,12 +42,6 @@ export function TourStep({
     const nextRef = useRef<HTMLButtonElement>(null);
     const last = step === total;
 
-    useEffect(() => {
-        if (open) {
-            nextRef.current?.focus();
-        }
-    }, [open]);
-
     return (
         <Popover
             open={open}
@@ -56,6 +50,11 @@ export function TourStep({
             <PopoverAnchor asChild>{children}</PopoverAnchor>
             <PopoverContent
                 side={side}
+                // Start on the main action (Next or Done), not the close button the popover would pick.
+                onOpenAutoFocus={(event) => {
+                    event.preventDefault();
+                    nextRef.current?.focus();
+                }}
                 className="w-80 space-y-3 p-5"
                 aria-label={`Tour step ${step} of ${total}: ${title}`}
             >

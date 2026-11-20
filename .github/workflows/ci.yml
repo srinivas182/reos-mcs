@@ -165,7 +165,19 @@ jobs:
           php artisan migrate --force --seed
       - name: Pest (parallel, PostgreSQL)
         run: vendor/bin/pest --parallel
-      - name: Web component tests (Vitest)
+      - name: Playwright Chromium cache
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install Chromium for story tests
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Install Chromium system libraries (cached browser)
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+      - name: Web component and Storybook tests (Vitest, axe accessibility on every story)
         run: pnpm test
 
   mobile-quick:
