@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Integrations;
 
+use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Checks\CheckTrigger;
 use App\Integrations\Checks\TesterRegistry;
 use App\Models\IntegrationSetting;
@@ -62,6 +63,7 @@ final readonly class HealthMonitor
             }
 
             $setting->forceFill(['paused_at' => now()])->save();
+            IntegrationSettingsChanged::dispatch($definition->id);
             $summary['paused']++;
 
             $this->audit->record('integration.paused', IntegrationHub::AUDIT_SUBJECT, $definition->id, [

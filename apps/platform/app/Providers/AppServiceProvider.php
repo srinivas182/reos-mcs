@@ -2,15 +2,19 @@
 
 namespace App\Providers;
 
+use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Catalogue;
 use App\Integrations\Credentials\CredentialCipher;
 use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\Credentials\DatabaseCredentialVault;
 use App\Models\User;
+use App\Monitoring\MonitoringRuntime;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -36,6 +40,9 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(CredentialVault::class, DatabaseCredentialVault::class);
+
+        // One per worker, so it remembers which settings it last applied.
+        $this->app->singleton(MonitoringRuntime::class);
     }
 
     /**
@@ -58,6 +65,11 @@ class AppServiceProvider extends ServiceProvider
 
         Route::bind('integration', fn (string $id) => $this->app->make(Catalogue::class)->find($id)
             ?? throw new NotFoundHttpException);
+
+        // Monitoring (2.4c): forget cached settings when an integration
+        // changes; queue workers apply them before each job, like requests do.
+        Event::listen(IntegrationSettingsChanged::class, fn () => $this->app->make(MonitoringRuntime::class)->forget());
+        Queue::before(fn () => $this->app->make(MonitoringRuntime::class)->apply());
     }
 
     /**

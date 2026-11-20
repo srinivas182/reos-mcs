@@ -5,6 +5,8 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme, setSignedIn } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import { i18n } from '@/lib/i18n';
+import type { MonitoringConfig } from '@/lib/monitoring';
+import { identify, startMonitoring, trackPageView } from '@/lib/monitoring';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
@@ -45,10 +47,17 @@ void createInertiaApp({
 // sync: preference changes are saved to the account only when signed in.
 initializeTheme();
 router.on('navigate', (event) => {
-    setSignedIn(
-        Boolean(
-            (event.detail.page.props as { auth?: { user?: unknown } }).auth
-                ?.user,
-        ),
-    );
+    const { page } = event.detail;
+    const props = page.props as {
+        auth?: { user?: { id: number } | null };
+        monitoring?: MonitoringConfig;
+    };
+
+    setSignedIn(Boolean(props.auth?.user));
+
+    // Error tracking and analytics, if switched on in Settings › Integrations.
+    void startMonitoring(props.monitoring).then(() => {
+        identify(props.auth?.user?.id ?? null);
+        trackPageView(page.url);
+    });
 });

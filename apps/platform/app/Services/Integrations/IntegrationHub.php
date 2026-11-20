@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Integrations;
 
+use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Catalogue;
 use App\Integrations\ConnectionField;
 use App\Integrations\CredentialEnvironment;
@@ -151,6 +152,8 @@ final readonly class IntegrationHub
                 'from' => $from->value,
                 'to' => $mode->value,
             ], $actor);
+
+            IntegrationSettingsChanged::dispatch($definition->id);
         });
     }
 
@@ -230,6 +233,8 @@ final readonly class IntegrationHub
                 'environment' => $environment->value,
                 'fields' => $changed,
             ], $actor);
+
+            IntegrationSettingsChanged::dispatch($definition->id);
         });
     }
 
@@ -251,6 +256,8 @@ final readonly class IntegrationHub
             $this->audit->record('integration.credentials_removed', self::AUDIT_SUBJECT, $definition->id, [
                 'environment' => $environment->value,
             ], $actor);
+
+            IntegrationSettingsChanged::dispatch($definition->id);
 
             if ($mode === $environment->mode()) {
                 IntegrationSetting::query()->updateOrCreate(

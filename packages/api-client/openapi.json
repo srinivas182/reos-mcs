@@ -12,6 +12,48 @@
         }
     ],
     "paths": {
+        "/app-config": {
+            "get": {
+                "operationId": "app-config",
+                "description": "Public values only (Sentry DSN, PostHog project key), the same ones a\nbrowser receives. `null` means the service is switched off.",
+                "summary": "Get the app's runtime settings",
+                "tags": [
+                    "AppConfig"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`AppConfigResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AppConfigResource"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
         "/health": {
             "get": {
                 "operationId": "health",
@@ -38,6 +80,66 @@
     },
     "components": {
         "schemas": {
+            "AppConfigResource": {
+                "type": "object",
+                "properties": {
+                    "environment": {
+                        "type": "string",
+                        "description": "Server environment, used to tag errors and events.",
+                        "examples": [
+                            "production"
+                        ]
+                    },
+                    "release": {
+                        "type": "string",
+                        "description": "Deployed REOS version.",
+                        "examples": [
+                            "0.1.0-dev"
+                        ]
+                    },
+                    "sentry": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "Error tracking, or `null` when switched off.",
+                        "properties": {
+                            "dsn": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "dsn"
+                        ]
+                    },
+                    "posthog": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "Product analytics, or `null` when switched off.",
+                        "properties": {
+                            "key": {
+                                "type": "string"
+                            },
+                            "host": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "key",
+                            "host"
+                        ]
+                    }
+                },
+                "required": [
+                    "environment",
+                    "release",
+                    "sentry",
+                    "posthog"
+                ],
+                "title": "AppConfigResource"
+            },
             "HealthResource": {
                 "type": "object",
                 "properties": {

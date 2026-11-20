@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Integrations;
 
+use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Checks\CheckResult;
 use App\Integrations\Checks\CheckTrigger;
 use App\Integrations\Checks\TesterRegistry;
@@ -94,5 +95,7 @@ final readonly class ConnectionChecker
         $this->audit->record('integration.resumed', IntegrationHub::AUDIT_SUBJECT, $definition->id, [
             'mode' => $setting->mode->value,
         ], $actor);
+
+        IntegrationSettingsChanged::dispatch($definition->id);
     }
 }
