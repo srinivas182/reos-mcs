@@ -36,6 +36,7 @@ jobs:
       platform: ${{ steps.filter.outputs.platform }}
       mobile: ${{ steps.filter.outputs.mobile }}
       devenv: ${{ steps.filter.outputs.devenv }}
+      repo-scripts: ${{ steps.filter.outputs.repo-scripts }}
     steps:
       - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
@@ -67,6 +68,12 @@ jobs:
               - 'apps/platform/database/**'
               - 'apps/platform/config/filesystems.php'
               - 'apps/platform/config/database.php'
+              - '.github/workflows/ci.yml'
+            repo-scripts:
+              - 'scripts/**'
+              - 'docs/integrations/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
               - '.github/workflows/ci.yml'
 
   platform-quick:
@@ -217,10 +224,27 @@ jobs:
         if: failure()
         run: docker compose logs --tail=80
 
+  repo-scripts:
+    # Cheap (no PHP), so it runs on drafts too.
+    name: Repo scripts and integrations register
+    needs: changes
+    if: needs.changes.outputs.repo-scripts == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-node
+      - name: Integrations register is valid and README.md is current
+        run: pnpm integrations:check
+      - name: Script tests
+        run: pnpm test:scripts
+      - name: Shell scripts (shellcheck)
+        run: shellcheck scripts/*.sh
+
   result:
     name: CI result
     if: always()
-    needs: [changes, platform-quick, platform-tests, mobile-quick, mobile-tests, dev-environment]
+    needs: [changes, platform-quick, platform-tests, mobile-quick, mobile-tests, dev-environment, repo-scripts]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

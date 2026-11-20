@@ -21,6 +21,9 @@ pre-commit:
       glob: 'resources/**/*.{ts,tsx,css}'
       run: pnpm check:fix
       stage_fixed: true
+    integrations-register:
+      glob: 'docs/integrations/register.{yaml,schema.json}'
+      run: pnpm -s integrations:render && git add docs/integrations/README.md
     mobile-lint:
       root: apps/mobile/
       glob: '*.{ts,tsx,js}'

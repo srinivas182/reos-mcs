@@ -10,8 +10,9 @@ Goal: catch problems on your own machine first, then spend GitHub Actions minute
 | `git push` | Lefthook pre-push, only for apps you changed: PHPStan, Pest (parallel), web types, mobile types and Jest. |
 | Draft pull request | **Quick checks only**: Pint, PHPStan level 9, web lint and types, mobile lint and types. |
 | Pull request ready for review (and later pushes to it) | Quick checks, then **full tests**: web build and Pest (parallel) for the platform, Jest for mobile. |
-| Docs-only change (`docs/**`, `*.md`) | Nothing runs except the "CI result" gate. |
+| Docs-only change (`docs/**`, `*.md`, except `docs/integrations/`) | Nothing runs except the "CI result" gate. |
 | Change to the dev environment (`compose.yaml`, `.devcontainer/`, `scripts/dev-*`, migrations, seeders, `.env.example`) | Also the **Dev environment** job: starts the Compose services the way developers do, migrates and seeds, runs `pnpm dev:verify`, and builds the dev container image. |
+| Change to `scripts/` or `docs/integrations/` | **Repo scripts** job (drafts too, about 30 seconds): integrations register valid and its README current, script tests, shellcheck. |
 | Merge to `main` | Nothing runs: the pull request already proved it. |
 | A newer push to the same PR | The older run is cancelled automatically. |
 

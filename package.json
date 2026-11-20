@@ -19,10 +19,17 @@
         "dev:doctor": "bash scripts/dev-doctor.sh",
         "dev:up": "bash scripts/dev-up.sh",
         "dev:down": "docker compose down",
-        "dev:reset": "docker compose down --volumes && bash scripts/dev-up.sh"
+        "dev:reset": "docker compose down --volumes && bash scripts/dev-up.sh",
+        "integrations:render": "node scripts/integrations-register.mjs",
+        "integrations:check": "node scripts/integrations-register.mjs --check",
+        "integrations:status": "node scripts/integrations-register.mjs --status",
+        "test:scripts": "node --test 'scripts/__tests__/*.test.mjs'"
     },
     "devDependencies": {
+        "ajv": "^8.20.0",
+        "ajv-formats": "^3.0.1",
         "lefthook": "^2.2.2",
-        "turbo": "^2.5.0"
+        "turbo": "^2.5.0",
+        "yaml": "^2.9.1"
     }
 }

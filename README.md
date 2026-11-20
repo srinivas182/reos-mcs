@@ -15,6 +15,7 @@ This is a private, proprietary repository owned by Mayura Consultancy Services.
 | `packages/api-client` | Typed REST client generated from the platform's OpenAPI document |
 | `docs/adr` | Architecture decision records |
 | `docs/sprints` | Sprint specifications |
+| `docs/integrations` | Integrations register (every integration, vendor account and approval, with owners and dates) and credentials policy |
 
 The mobile app talks to the platform only through the versioned REST API. There is no Node back end.
 
@@ -81,6 +82,7 @@ Roles and permissions arrive in Sprint 2; until then every login sees the same a
 | `pnpm check` | Lint and format checks |
 | `pnpm types:check` | TypeScript checks |
 | `pnpm test` | JavaScript tests |
+| `pnpm integrations:status` | What's late or due in the integrations register, as of today |
 | `pnpm api:generate` | Re-export the OpenAPI document and regenerate `@reos/api-client` after changing an API endpoint |
 | `composer test` (in `apps/platform`) | Pint, PHPStan level 9, Pest |
 
