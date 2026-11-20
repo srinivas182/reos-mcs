@@ -113,7 +113,14 @@ jobs:
       - name: Web types
         run: pnpm types:check
       - name: API contract is up to date
+        # Scramble reads model columns from the database, so it gets a
+        # throwaway SQLite one with the migrations applied.
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: /tmp/scramble.sqlite
         run: |
+          touch /tmp/scramble.sqlite
+          php artisan migrate --force --no-interaction --quiet
           php artisan scramble:export
           pnpm --filter @reos/api-client generate
           if ! git diff --exit-code -- ../../packages/api-client; then
