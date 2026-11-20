@@ -11,3 +11,5 @@ parameters:
         - routes/
 
     level: 9
+
+    tmpDir: storage/phpstan

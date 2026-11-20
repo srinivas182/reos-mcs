@@ -10,4 +10,5 @@ Read `README.md` and `docs/adr/` first.
 - Mobile: Expo Router, functional components, shared tokens from `@reos/tokens`. Talk to the server only through the REST API.
 - Design standard: minimum 16pt body text, 48pt touch targets, plain language, high contrast; luxury, calm and modern.
 - Security: never commit secrets, `.env` files or signing keys. Validate all input, escape output, rate-limit public endpoints.
-- Branches: `sNN.N-short-name`. Pull requests need green CI.
+- Branches: `sNN.N-short-name`. Open pull requests as drafts (quick checks only) and mark them ready once for the full suite. "CI result" must be green before merging. See `docs/ci.md`.
+- Git hooks (Lefthook) run on commit and push; don't skip them except in an emergency.

@@ -1,0 +1,31 @@
+name: CI minutes report
+
+on:
+  schedule:
+    - cron: '30 3 1 * *' # 09:00 IST on the 1st of each month: report for the previous month
+  workflow_dispatch:
+    inputs:
+      month:
+        description: Month to report (YYYY-MM). Leave empty for last month.
+        required: false
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: scripts
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+      - name: Build report
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MONTH: ${{ inputs.month }}
+        run: node scripts/ci-usage.mjs $MONTH
