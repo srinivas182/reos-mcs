@@ -2,7 +2,7 @@
 
 **Goal:** by the end of the sprint, every merge to `main` deploys to a private staging site on AWS. The web and mobile apps share one design system that matches the journey documents, is easy for older and non-technical users, and works in English and Spanish. Mobile builds reach TestFlight and Play internal testing without anyone touching a laptop. Every request and screen view is traceable.
 
-**Status:** draft for approval. Nothing in this sprint is built until it's approved.
+**Status:** approved 20 November 2026. Decisions: Unistyles 3 for mobile styling, Cloudflare Access for staging, Grafana Cloud for observability. Build order: 2.2 and 2.4 now; 2.1 and 2.3 when the AWS, domain, Apple and Google accounts exist.
 
 ## 1. Dependencies and capacity
 
@@ -103,7 +103,7 @@ Benchmarks from the sprint plan: Follow Up Boss, Lofty and AceableAgent for the 
 - swipe actions with visible alternatives (swiping is never the only way)
 - pull to refresh, offline banner and haptics
 
-**Mobile styling (decision needed):** I recommend **Unistyles 3** (stable; supports React Native 0.85+; themes, breakpoints and text scaling built in; no runtime cost). NativeWind 5 would let us share Tailwind classes with the web, but it is still a release candidate tested on Expo SDK 57, not 58. Plain StyleSheet is the fallback.
+**Mobile styling (decided: Unistyles 3):** **Unistyles 3** (stable; supports React Native 0.85+; themes, breakpoints and text scaling built in; no runtime cost). NativeWind 5 would let us share Tailwind classes with the web, but it is still a release candidate tested on Expo SDK 57, not 58. Plain StyleSheet is the fallback.
 
 **Storybook:**
 
@@ -198,12 +198,12 @@ Benchmarks from the sprint plan: Follow Up Boss, Lofty and AceableAgent for the 
 | Staging cost creep | Budget alarm, scale-to-minimum schedule, Aurora auto-pause |
 | NativeWind/Unistyles churn | ADR with the chosen library; components wrap it, so a later switch touches `packages/ui-native` only |
 
-## 6. Decisions needed before build
+## 6. Decisions (approved 20 November 2026)
 
-1. **Mobile styling:** Unistyles 3 (recommended), NativeWind 5 release candidate, or plain StyleSheet.
-2. **Staging access:** Cloudflare Access with email codes (recommended) or a shared password.
-3. **Observability:** Grafana Cloud (recommended; a free tier to start) or self-hosted Grafana on AWS.
-4. **Account timing:** the expected dates for AWS, the domain, Apple and Google, so I can tell whether the fallback paths are needed.
+1. **Mobile styling:** Unistyles 3.
+2. **Staging access:** Cloudflare Access with email codes.
+3. **Observability:** Grafana Cloud (free tier to start).
+4. **Account timing:** still open. The expected dates for AWS, the domain, Apple and Google decide whether the fallback paths in section 1 are needed.
 
 ## Sources
 
