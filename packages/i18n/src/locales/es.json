@@ -1,0 +1,82 @@
+{
+  "common": {
+    "appName": "REOS",
+    "undo": "Deshacer",
+    "undone": "Se deshizo",
+    "next": "Siguiente",
+    "done": "Listo",
+    "close": "Cerrar",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "tryAgain": "Intentar de nuevo"
+  },
+  "nav": {
+    "menu": "Menú",
+    "dashboard": "Inicio",
+    "settings": "Configuración",
+    "settingsDescription": "Administra tu perfil y tu cuenta",
+    "profile": "Perfil",
+    "security": "Seguridad",
+    "appearance": "Apariencia e idioma"
+  },
+  "tour": {
+    "stepOf": "Paso {{step}} de {{total}}",
+    "stepLabel": "Paso {{step}} de {{total}} del recorrido: {{title}}",
+    "skip": "Omitir recorrido",
+    "skipLabel": "Omitir el recorrido"
+  },
+  "appearance": {
+    "pageTitle": "Apariencia e idioma",
+    "description": "Elige el tema, el tamaño de texto y el idioma que te resulten más cómodos",
+    "theme": "Tema",
+    "themes": {
+      "system": {
+        "label": "Igual que mi dispositivo",
+        "description": "Claro u oscuro, según tu dispositivo"
+      },
+      "light": {
+        "label": "Claro",
+        "description": "Luminoso y limpio"
+      },
+      "dark": {
+        "label": "Oscuro",
+        "description": "Más cómodo para la vista de noche"
+      },
+      "contrast": {
+        "label": "Alto contraste",
+        "description": "El mayor contraste, para baja visión o pleno sol"
+      }
+    },
+    "textSize": "Tamaño del texto",
+    "textSizes": {
+      "standard": {
+        "label": "Normal",
+        "description": "Nuestro tamaño habitual"
+      },
+      "large": {
+        "label": "Grande",
+        "description": "15 % más grande en todo"
+      },
+      "largest": {
+        "label": "Muy grande",
+        "description": "30 % más grande en todo"
+      }
+    },
+    "language": "Idioma",
+    "languages": {
+      "en": {
+        "description": "Use REOS in English"
+      },
+      "es": {
+        "description": "Usa REOS en español"
+      }
+    },
+    "savedNote": "Tus preferencias se guardan en tu cuenta y te acompañan en todos tus dispositivos. El ajuste de texto de tu teléfono o computadora también se aplica."
+  },
+  "mobile": {
+    "eyebrow": "REAL ESTATE OS",
+    "tagline": "Estudia, obtén tu licencia, cumple con los requisitos y crece, todo en una sola app.",
+    "connected": "Conectado a {{app}} · versión {{version}}",
+    "unreachable": "No podemos conectar con el servidor de REOS en este momento."
+  }
+}

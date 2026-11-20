@@ -1,0 +1,28 @@
+{
+    "name": "@reos/i18n",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "description": "REOS translations (English and Spanish) shared by web, mobile and Laravel",
+    "main": "src/index.ts",
+    "types": "src/index.ts",
+    "exports": {
+        ".": "./src/index.ts",
+        "./locales/*": "./src/locales/*"
+    },
+    "scripts": {
+        "build": "node scripts/check.ts --write",
+        "check": "node scripts/check.ts",
+        "test": "node --test 'test/*.test.ts'",
+        "types:check": "tsc --noEmit"
+    },
+    "devDependencies": {
+        "@reos/config": "workspace:*",
+        "@types/node": "^22",
+        "typescript": "~6.0.3",
+        "i18next": "^27.2.2"
+    },
+    "peerDependencies": {
+        "i18next": ">=27"
+    }
+}

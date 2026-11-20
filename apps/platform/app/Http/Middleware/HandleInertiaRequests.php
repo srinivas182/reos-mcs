@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
             'preferences' => [
                 'appearance' => View::shared('appearance', 'system'),
                 'textSize' => View::shared('textSize', 'standard'),
+                'locale' => app()->getLocale(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

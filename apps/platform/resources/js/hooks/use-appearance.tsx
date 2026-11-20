@@ -1,19 +1,21 @@
 import { router } from '@inertiajs/react';
 import { useSyncExternalStore } from 'react';
+import { isLocale, type Locale } from '@reos/i18n';
 import type { TextSize } from '@reos/tokens';
+import { i18n } from '@/lib/i18n';
 import { update as updateAppearanceRoute } from '@/routes/appearance';
 
 /**
- * Theme and text-size preferences (Sprint 2.2b).
+ * Theme, text-size and language preferences (Sprint 2.2b, 2.2c).
  *
- * The server renders `<html>` with the saved choice (`class="dark"`,
+ * The server renders `<html>` with the saved choice (`lang`, `class="dark"`,
  * `data-theme`, `data-text-size`), so the first paint is already right. This
  * store reads those attributes on start, applies changes instantly, keeps a
  * device cookie for signed-out pages, and saves to the account when signed in.
  */
 export type ResolvedAppearance = 'light' | 'dark' | 'contrast';
 export type Appearance = ResolvedAppearance | 'system';
-export type { TextSize };
+export type { Locale, TextSize };
 
 export const appearances: readonly Appearance[] = [
     'system',
@@ -27,14 +29,16 @@ export type UseAppearanceReturn = {
     readonly appearance: Appearance;
     readonly resolvedAppearance: ResolvedAppearance;
     readonly textSize: TextSize;
+    readonly locale: Locale;
     readonly updateAppearance: (mode: Appearance) => void;
     readonly updateTextSize: (size: TextSize) => void;
+    readonly updateLocale: (locale: Locale) => void;
 };
 
-type State = { appearance: Appearance; textSize: TextSize };
+type State = { appearance: Appearance; textSize: TextSize; locale: Locale };
 
 const listeners = new Set<() => void>();
-let state: State = { appearance: 'system', textSize: 'standard' };
+let state: State = { appearance: 'system', textSize: 'standard', locale: 'en' };
 let signedIn = false;
 
 const isBrowser = (): boolean => typeof window !== 'undefined';
@@ -53,7 +57,7 @@ const setCookie = (name: string, value: string, days = 365): void => {
     document.cookie = `${name}=${value};path=/;max-age=${days * 86400};SameSite=Lax`;
 };
 
-const apply = ({ appearance, textSize }: State): void => {
+const apply = ({ appearance, textSize, locale }: State): void => {
     if (!isBrowser()) {
         return;
     }
@@ -71,6 +75,11 @@ const apply = ({ appearance, textSize }: State): void => {
     }
 
     html.dataset.textSize = textSize;
+    html.lang = locale;
+
+    if (i18n.language !== locale) {
+        void i18n.changeLanguage(locale);
+    }
 };
 
 const notify = (): void => listeners.forEach((listener) => listener());
@@ -105,6 +114,7 @@ export function initializeTheme(options: { signedIn?: boolean } = {}): void {
         textSize: isTextSize(html.dataset.textSize)
             ? html.dataset.textSize
             : 'standard',
+        locale: isLocale(html.lang) ? html.lang : 'en',
     };
 
     apply(state);
@@ -123,7 +133,11 @@ export function setSignedIn(value: boolean): void {
 }
 
 const save = (
-    change: Partial<{ appearance: Appearance; text_size: TextSize }>,
+    change: Partial<{
+        appearance: Appearance;
+        text_size: TextSize;
+        locale: Locale;
+    }>,
 ): void => {
     if (!signedIn) {
         return;
@@ -159,11 +173,21 @@ export function useAppearance(): UseAppearanceReturn {
         save({ text_size: textSize });
     };
 
+    const updateLocale = (locale: Locale): void => {
+        state = { ...state, locale };
+        setCookie('locale', locale);
+        apply(state);
+        notify();
+        save({ locale });
+    };
+
     return {
         appearance: current.appearance,
         resolvedAppearance: resolve(current.appearance),
         textSize: current.textSize,
+        locale: current.locale,
         updateAppearance,
         updateTextSize,
+        updateLocale,
     } as const;
 }

@@ -103,11 +103,13 @@ export function ChoiceTiles<T extends string>({
                                         className="size-5 shrink-0"
                                     />
                                 ) : null}
-                                {option.label}
+                                <span className="min-w-0 flex-1">
+                                    {option.label}
+                                </span>
                                 {selected ? (
                                     <Check
                                         aria-hidden
-                                        className="ml-auto size-5 shrink-0 text-primary"
+                                        className="size-5 shrink-0 text-primary"
                                     />
                                 ) : null}
                             </span>
