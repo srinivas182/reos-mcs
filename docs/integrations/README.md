@@ -27,15 +27,6 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | Apply by | Item | Owner | How | Lead (est.) | Needed by | Status |
 | --- | --- | --- | --- | --- | --- | --- |
 | ⚠ 9 Nov 2026 | [Google Calendar and Gmail](#google-workspace) | Client + Mayura | OAuth verification | 10 wk | S4 (18 Jan 2027) | Not started |
-| 23 Nov 2026 | [Apple Developer Program (organisation)](#apple-developer) | Client | Vendor review | 4 wk | S2 (21 Dec 2026) | Not started |
-| 7 Dec 2026 | [Google Play Console (organisation)](#google-play) | Client | Vendor review | 2 wk | S2 (21 Dec 2026) | Not started |
-| 14 Dec 2026 | [AWS organisation](#aws-organisation) | Client | Self-serve | 1 wk | S2 (21 Dec 2026) | Not started |
-| 14 Dec 2026 | [Cloudflare](#cloudflare) | Client | Self-serve | 1 wk | S2 (21 Dec 2026) | Not started |
-| 14 Dec 2026 | [Expo organisation (EAS)](#expo) | Mayura | Self-serve | 1 wk | S2 (21 Dec 2026) | Not started |
-| 14 Dec 2026 | [OpenTelemetry and Grafana](#grafana-otel) | Mayura | Self-serve | 1 wk | S2 (21 Dec 2026) | Not started |
-| 14 Dec 2026 | [PostHog](#posthog) | Mayura | Self-serve | 1 wk | S2 (21 Dec 2026) | Not started |
-| 14 Dec 2026 | [Product domain](#product-domain) | Client | Self-serve | 1 wk | S2 (21 Dec 2026) | Not started |
-| 14 Dec 2026 | [Sentry](#sentry) | Mayura | Self-serve | 1 wk | S2 (21 Dec 2026) | Not started |
 | 18 Dec 2026 † | [Follow Up Boss](#follow-up-boss) | Client + Mayura | Partner application | 4 wk | S7 (1 Mar 2027) | Not started |
 | 18 Dec 2026 † | [kvCORE / BoldTrail](#boldtrail) | Client + Mayura | Partner application | 8 wk | S7 (1 Mar 2027) | Not started |
 | 18 Dec 2026 † | [Lofty](#lofty) | Client + Mayura | Partner application | 6 wk | S8 (15 Mar 2027) | Not started |
@@ -53,6 +44,8 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 18 Dec 2026 † | [TREC approval of REOS-delivered courses](#trec-course-approvals) | Nelle | Agreement | 16 wk | S19 (16 Aug 2027) | Not started |
 | 28 Dec 2026 | [Microsoft 365 (Outlook calendar and mail)](#microsoft-365) | Client + Mayura | Vendor review | 3 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Amazon Transcribe and Polly (speech)](#aws-speech) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
+| 11 Jan 2027 | [Cloudflare](#cloudflare) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
+| 11 Jan 2027 | [Product domain (reos.com)](#product-domain) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Authorize.net](#authorize-net) | Client | Partner application | 3 wk | S5 (1 Feb 2027) | Not started |
 | 18 Jan 2027 | [PayPal](#paypal) | Client | Self-serve | 2 wk | S5 (1 Feb 2027) | Not started |
 | 18 Jan 2027 | [Stripe Connect (payouts)](#stripe-connect) | Client | Self-serve | 2 wk | S5 (1 Feb 2027) | Not started |
@@ -60,6 +53,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 25 Jan 2027 | [Mux Video](#mux) | Mayura | Self-serve | 1 wk | S5 (1 Feb 2027) | Not started |
 | 25 Jan 2027 | [Stripe (Checkout, Billing, Tax)](#stripe) | Client | Self-serve | 1 wk | S5 (1 Feb 2027) | Not started |
 | 8 Feb 2027 | [Amazon SES (email)](#amazon-ses) | Client | Vendor review | 1 wk | S6 (15 Feb 2027) | Not started |
+| 8 Feb 2027 | [AWS organisation](#aws-organisation) | Client | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [Expo push notifications (APNs, FCM)](#expo-push) | Mayura | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [LiveKit Cloud](#livekit) | Mayura | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [Synthesia (AI avatar lessons; HeyGen fallback)](#synthesia) | Client | Agreement | 3 wk | S7 (1 Mar 2027) | Not started |
@@ -76,6 +70,12 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 10 May 2027 | [RESPA counsel review](#respa-review) | Client | Agreement | 6 wk | S15 (21 Jun 2027) | Not started |
 | 14 Jun 2027 | [Mapbox](#mapbox) | Mayura | Self-serve | 1 wk | S15 (21 Jun 2027) | Not started |
 | 28 Jun 2027 | [QuickBooks Online](#quickbooks-online) | Client + Mayura | Vendor review | 3 wk | S17 (19 Jul 2027) | Not started |
+| 19 Jul 2027 | [Apple Developer Program (organisation)](#apple-developer) | Client | Vendor review | 4 wk | S19 (16 Aug 2027) | Not started |
+| 2 Aug 2027 | [Google Play Console (organisation)](#google-play) | Client | Vendor review | 2 wk | S19 (16 Aug 2027) | Not started |
+| 9 Aug 2027 | [Expo organisation (EAS)](#expo) | Mayura | Self-serve | 1 wk | S19 (16 Aug 2027) | Not started |
+| 9 Aug 2027 | [OpenTelemetry and Grafana](#grafana-otel) | Mayura | Self-serve | 1 wk | S19 (16 Aug 2027) | Not started |
+| 9 Aug 2027 | [PostHog](#posthog) | Mayura | Self-serve | 1 wk | S19 (16 Aug 2027) | Not started |
+| 9 Aug 2027 | [Sentry](#sentry) | Mayura | Self-serve | 1 wk | S19 (16 Aug 2027) | Not started |
 
 ## Catalogue at the pilot
 
@@ -177,9 +177,9 @@ Services REOS runs on. Users never connect these themselves, so they have no cat
 | [Claude on Amazon Bedrock](#aws-bedrock-claude) | AI answers with sources, course drafting, contract review, role-play. | Client | S7 (1 Mar 2027) | Not started |
 | [Amazon Textract](#aws-textract) | Read uploaded CE certificates and licences. | Client | S10 (12 Apr 2027) | Not started |
 | [Mapbox](#mapbox) | Provider service areas on a map. | Mayura | S15 (21 Jun 2027) | Not started |
-| [Sentry](#sentry) | Error tracking for web, API and mobile. | Mayura | S2 (21 Dec 2026) | Not started |
-| [PostHog](#posthog) | Product analytics, funnels and session insights. | Mayura | S2 (21 Dec 2026) | Not started |
-| [OpenTelemetry and Grafana](#grafana-otel) | Tracing, metrics and dashboards. | Mayura | S2 (21 Dec 2026) | Not started |
+| [Sentry](#sentry) | Error tracking for web, API and mobile. | Mayura | S19 (16 Aug 2027) | Not started |
+| [PostHog](#posthog) | Product analytics, funnels and session insights. | Mayura | S19 (16 Aug 2027) | Not started |
+| [OpenTelemetry and Grafana](#grafana-otel) | Tracing, metrics and dashboards. | Mayura | S19 (16 Aug 2027) | Not started |
 
 ## Vendor accounts
 
@@ -188,12 +188,12 @@ Accounts the build and release process needs.
 | Item | Purpose | Owner | Needed by | Status |
 | --- | --- | --- | --- | --- |
 | [GitHub repository and Actions](#github) | Source code, pull requests and CI. | Client | S1 (7 Dec 2026) | Approved |
-| [Product domain](#product-domain) | Web app, API, email sender and tenant custom domains. | Client | S2 (21 Dec 2026) | Not started |
-| [AWS organisation](#aws-organisation) | Staging and production cells in us-east-2, recovery in us-west-2. | Client | S2 (21 Dec 2026) | Not started |
-| [Cloudflare](#cloudflare) | DNS, WAF and custom domains for tenants (Cloudflare for SaaS). | Client | S2 (21 Dec 2026) | Not started |
-| [Apple Developer Program (organisation)](#apple-developer) | TestFlight and App Store releases; push notification key. | Client | S2 (21 Dec 2026) | Not started |
-| [Google Play Console (organisation)](#google-play) | Android internal testing and Play Store releases. | Client | S2 (21 Dec 2026) | Not started |
-| [Expo organisation (EAS)](#expo) | Mobile builds, store submission and over-the-air updates. | Mayura | S2 (21 Dec 2026) | Not started |
+| [Product domain (reos.com)](#product-domain) | Web app, API, email sender and tenant custom domains. | Client | S4 (18 Jan 2027) | Not started |
+| [AWS organisation](#aws-organisation) | Sandbox access for AWS services from Sprint 6 (SES, Bedrock, Textract, speech); staging and production cells in us-east-2 before the pilot. | Client | S6 (15 Feb 2027) | Not started |
+| [Cloudflare](#cloudflare) | DNS for reos.com (domain verification, public privacy page) from Sprint 4; WAF and tenant custom domains when staging is built. | Client | S4 (18 Jan 2027) | Not started |
+| [Apple Developer Program (organisation)](#apple-developer) | TestFlight and App Store releases; push notification key. | Client | S19 (16 Aug 2027) | Not started |
+| [Google Play Console (organisation)](#google-play) | Android internal testing and Play Store releases. | Client | S19 (16 Aug 2027) | Not started |
+| [Expo organisation (EAS)](#expo) | Mobile builds, store submission and over-the-air updates. | Mayura | S19 (16 Aug 2027) | Not started |
 
 ## Outside approvals
 
@@ -770,12 +770,12 @@ Members sign in with their association login; member records, CE and programs st
 ### Sentry
 <a id="sentry"></a>
 
-**Platform service** · Operations · built in 2.3 (sprint 2)
+**Platform service** · Operations · built in 19.1 (sprint 19)
 
 Error tracking for web, API and mobile.
 
 - **Owner:** Mayura
-- **Access:** Self-serve, about 1 week; needed by S2 (21 Dec 2026); apply by 14 Dec 2026. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S19 (16 Aug 2027); apply by 9 Aug 2027. Status: Not started.
 - **Sandbox:** Separate staging project.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Team plan.
@@ -784,12 +784,12 @@ Error tracking for web, API and mobile.
 ### PostHog
 <a id="posthog"></a>
 
-**Platform service** · Operations · built in 2.4 (sprint 2)
+**Platform service** · Operations · built in 19.1 (sprint 19)
 
 Product analytics, funnels and session insights.
 
 - **Owner:** Mayura
-- **Access:** Self-serve, about 1 week; needed by S2 (21 Dec 2026); apply by 14 Dec 2026. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S19 (16 Aug 2027); apply by 9 Aug 2027. Status: Not started.
 - **Sandbox:** Separate staging project.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Usage-based; generous free tier.
@@ -798,12 +798,12 @@ Product analytics, funnels and session insights.
 ### OpenTelemetry and Grafana
 <a id="grafana-otel"></a>
 
-**Platform service** · Operations · built in 2.4 (sprint 2)
+**Platform service** · Operations · built in 19.1 (sprint 19)
 
 Tracing, metrics and dashboards.
 
 - **Owner:** Mayura
-- **Access:** Self-serve, about 1 week; needed by S2 (21 Dec 2026); apply by 14 Dec 2026. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S19 (16 Aug 2027); apply by 9 Aug 2027. Status: Not started.
 - **Sandbox:** Staging stack.
 - **Credentials:** REOS app keys · **Personal data:** no
 - **Cost:** Grafana Cloud free tier or self-hosted.
@@ -822,29 +822,29 @@ Source code, pull requests and CI.
 - **Cost:** Free; GitHub Pro or Team needed for rulesets to be enforced once the repository is private.
 - **Notes:** Repository srinivas182/reos-mcs with CI, Lefthook, Renovate and a `main` ruleset.
 
-### Product domain
+### Product domain (reos.com)
 <a id="product-domain"></a>
 
-**Vendor account** · Platform · built in 2.1 (sprint 2)
+**Vendor account** · Platform · built in B4.1 (sprint 4)
 
 Web app, API, email sender and tenant custom domains.
 
 - **Owner:** Client
-- **Access:** Self-serve, about 1 week; needed by S2 (21 Dec 2026); apply by 14 Dec 2026. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S4 (18 Jan 2027); apply by 11 Jan 2027. Status: Not started.
 - **Sandbox:** Not needed.
 - **Credentials:** None · **Personal data:** no
 - **Cost:** Domain registration.
-- **Notes:** Decide the name (for example reos.com); SES, Twilio 10DLC and Meta verification all need it live with a privacy policy.
+- **Notes:** Decided 20 Nov 2026: reos.com is the working domain; Nelle may change it before launch. Ownership is not confirmed yet. Every four-letter .com is registered, so confirm the client owns or can buy reos.com. Google, Meta and the MLSs verify ownership through DNS, and each needs a live public page with a privacy policy and terms before review.
 
 ### AWS organisation
 <a id="aws-organisation"></a>
 
-**Vendor account** · Platform · built in 2.1 (sprint 2)
+**Vendor account** · Platform · built in 19.1 (sprint 19)
 
-Staging and production cells in us-east-2, recovery in us-west-2.
+Sandbox access for AWS services from Sprint 6 (SES, Bedrock, Textract, speech); staging and production cells in us-east-2 before the pilot.
 
 - **Owner:** Client
-- **Access:** Self-serve, about 1 week; needed by S2 (21 Dec 2026); apply by 14 Dec 2026. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S6 (15 Feb 2027); apply by 8 Feb 2027. Status: Not started.
 - **Sandbox:** Separate staging account.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Usage.
@@ -853,12 +853,12 @@ Staging and production cells in us-east-2, recovery in us-west-2.
 ### Cloudflare
 <a id="cloudflare"></a>
 
-**Vendor account** · Platform · built in 2.1 (sprint 2)
+**Vendor account** · Platform · built in B4.1 (sprint 4)
 
-DNS, WAF and custom domains for tenants (Cloudflare for SaaS).
+DNS for reos.com (domain verification, public privacy page) from Sprint 4; WAF and tenant custom domains when staging is built.
 
 - **Owner:** Client
-- **Access:** Self-serve, about 1 week; needed by S2 (21 Dec 2026); apply by 14 Dec 2026. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S4 (18 Jan 2027); apply by 11 Jan 2027. Status: Not started.
 - **Sandbox:** Staging zone.
 - **Credentials:** REOS app keys · **Personal data:** no
 - **Cost:** Pro or Business plan plus Cloudflare for SaaS per custom hostname.
@@ -866,12 +866,12 @@ DNS, WAF and custom domains for tenants (Cloudflare for SaaS).
 ### Apple Developer Program (organisation)
 <a id="apple-developer"></a>
 
-**Vendor account** · Platform · built in 2.3 (sprint 2)
+**Vendor account** · Platform · built in 19.2 (sprint 19)
 
 TestFlight and App Store releases; push notification key.
 
 - **Owner:** Client
-- **Access:** Vendor review, about 4 weeks; needed by S2 (21 Dec 2026); apply by 23 Nov 2026. Status: Not started.
+- **Access:** Vendor review, about 4 weeks; needed by S19 (16 Aug 2027); apply by 19 Jul 2027. Status: Not started.
 - **Sandbox:** Not needed.
 - **Credentials:** REOS app keys · **Personal data:** no
 - **Cost:** Yearly membership fee.
@@ -880,12 +880,12 @@ TestFlight and App Store releases; push notification key.
 ### Google Play Console (organisation)
 <a id="google-play"></a>
 
-**Vendor account** · Platform · built in 2.3 (sprint 2)
+**Vendor account** · Platform · built in 19.2 (sprint 19)
 
 Android internal testing and Play Store releases.
 
 - **Owner:** Client
-- **Access:** Vendor review, about 2 weeks; needed by S2 (21 Dec 2026); apply by 7 Dec 2026. Status: Not started.
+- **Access:** Vendor review, about 2 weeks; needed by S19 (16 Aug 2027); apply by 2 Aug 2027. Status: Not started.
 - **Sandbox:** Not needed.
 - **Credentials:** REOS app keys · **Personal data:** no
 - **Cost:** One-off registration fee.
@@ -894,12 +894,12 @@ Android internal testing and Play Store releases.
 ### Expo organisation (EAS)
 <a id="expo"></a>
 
-**Vendor account** · Platform · built in 2.3 (sprint 2)
+**Vendor account** · Platform · built in 19.2 (sprint 19)
 
 Mobile builds, store submission and over-the-air updates.
 
 - **Owner:** Mayura
-- **Access:** Self-serve, about 1 week; needed by S2 (21 Dec 2026); apply by 14 Dec 2026. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S19 (16 Aug 2027); apply by 9 Aug 2027. Status: Not started.
 - **Sandbox:** Not needed.
 - **Credentials:** REOS app keys · **Personal data:** no
 - **Cost:** EAS Production plan.
