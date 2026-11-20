@@ -17,8 +17,12 @@ class ProfileDeleteRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'password' => $this->currentPasswordRules(),
-        ];
+        $user = $this->user();
+
+        // People who signed up with a phone, Google or Apple have no password;
+        // they confirm by ticking "I understand" instead.
+        return $user !== null && $user->password === null
+            ? ['confirm' => ['accepted']]
+            : ['password' => $this->currentPasswordRules()];
     }
 }

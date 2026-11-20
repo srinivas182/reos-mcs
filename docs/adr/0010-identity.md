@@ -30,6 +30,21 @@ The journeys ask for one-tap sign-in on the phone (Apple, Google or a phone code
    - **Never in production:** there, a sign-in option on demo data is treated as switched off.
 6. **Errors** (`SignInFailed`) answer in the person's language with a stable `reason` key, and are never reported to Sentry. Every sign-in, sign-out, device revocation and failed code is in the audit log.
 
+7. **Web sign-in with Google and Apple** uses OpenID Connect: state, nonce and PKCE (PKCE for Google only, since Apple doesn't support it).
+   - The ID token goes through the same check as the phone app's.
+   - The callback addresses are the ones Settings › Integrations shows: `/integrations/{google-sign-in|apple-sign-in}/callback`. CSRF-exempt, protected by the one-time `state`.
+   - Apple answers with a cross-site POST, which doesn't carry the SameSite=Lax session cookie. The answer is held for five minutes and handed to a same-site GET.
+   - People with two-step turned on still answer its challenge.
+   - On demo data the flow goes to a persona picker (`auth/demo-sign-in`), outside production only.
+8. **Web phone-code sign-in** uses the same `PhoneSignIn` service, so people who signed up on the phone with a number can use the web app.
+9. **Browsers are devices too.**
+   - A `reos_device` cookie identifies each browser, and every web sign-in (Fortify's `Login` event) goes through `SignInRecorder`, like the app. The same new-device email applies.
+10. **Deleting an account.**
+    - People are signed out everywhere at once; the account is deleted after 30 days by `reos:accounts:purge`, daily.
+    - Signing in again before then cancels it.
+    - Browsers signed in before the request are signed out by `EnsureAccountActive`.
+    - The app needs a sign-in from the last 15 minutes (`DELETE /api/v1/me`); the web needs the password, or a confirmation for people without one.
+
 ## Consequences
 
 - **Web sign-in pages** (A3.1b) add Google and Apple with Socialite's redirect flow, on the same `social_accounts` links.
