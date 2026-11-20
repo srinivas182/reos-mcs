@@ -1,5 +1,6 @@
 import { X } from 'lucide-react';
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,6 +40,7 @@ export function TourStep({
     onSkip,
     side = 'bottom',
 }: TourStepProps) {
+    const { t } = useTranslation();
     const nextRef = useRef<HTMLButtonElement>(null);
     const last = step === total;
 
@@ -56,17 +58,17 @@ export function TourStep({
                     nextRef.current?.focus();
                 }}
                 className="w-80 space-y-3 p-5"
-                aria-label={`Tour step ${step} of ${total}: ${title}`}
+                aria-label={t('tour.stepLabel', { step, total, title })}
             >
                 <div className="flex items-start justify-between gap-2">
                     <p className="text-caption font-semibold text-primary">
-                        Step {step} of {total}
+                        {t('tour.stepOf', { step, total })}
                     </p>
                     <Button
                         variant="ghost"
                         size="icon-sm"
                         onClick={onSkip}
-                        aria-label="Skip the tour"
+                        aria-label={t('tour.skipLabel')}
                     >
                         <X />
                     </Button>
@@ -77,10 +79,10 @@ export function TourStep({
                 <p className="text-body text-muted-foreground">{body}</p>
                 <div className="flex justify-between gap-3 pt-1">
                     <Button variant="ghost" onClick={onSkip}>
-                        Skip tour
+                        {t('tour.skip')}
                     </Button>
                     <Button ref={nextRef} onClick={onNext}>
-                        {last ? 'Done' : 'Next'}
+                        {last ? t('common.done') : t('common.next')}
                     </Button>
                 </div>
             </PopoverContent>

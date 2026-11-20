@@ -13,7 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cookie;
 
 /**
- * Saves a person's theme and text size to their account, so the choice follows
+ * Saves a person's theme, text size and language to their account, so the choice follows
  * them to every device. The cookies let the very first paint use the right
  * theme before the account is loaded (no flash).
  */
@@ -21,13 +21,14 @@ final class AppearanceController extends Controller
 {
     public function update(AppearanceUpdateRequest $request, #[CurrentUser] User $user): RedirectResponse
     {
-        /** @var array{appearance?: string, text_size?: string} $preferences */
+        /** @var array{appearance?: string, text_size?: string, locale?: string} $preferences */
         $preferences = $request->validated();
 
         $user->fill($preferences)->save();
 
         Cookie::queue(HandleAppearance::APPEARANCE_COOKIE, $user->appearance->value, HandleAppearance::COOKIE_MINUTES);
         Cookie::queue(HandleAppearance::TEXT_SIZE_COOKIE, $user->text_size->value, HandleAppearance::COOKIE_MINUTES);
+        Cookie::queue(HandleAppearance::LOCALE_COOKIE, $user->locale->value, HandleAppearance::COOKIE_MINUTES);
 
         return back();
     }

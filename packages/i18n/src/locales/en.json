@@ -1,0 +1,82 @@
+{
+  "common": {
+    "appName": "REOS",
+    "undo": "Undo",
+    "undone": "Undone",
+    "next": "Next",
+    "done": "Done",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "tryAgain": "Try again"
+  },
+  "nav": {
+    "menu": "Menu",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "settingsDescription": "Manage your profile and account settings",
+    "profile": "Profile",
+    "security": "Security",
+    "appearance": "Appearance and language"
+  },
+  "tour": {
+    "stepOf": "Step {{step}} of {{total}}",
+    "stepLabel": "Tour step {{step}} of {{total}}: {{title}}",
+    "skip": "Skip tour",
+    "skipLabel": "Skip the tour"
+  },
+  "appearance": {
+    "pageTitle": "Appearance and language",
+    "description": "Choose a theme, text size and language that are comfortable for you",
+    "theme": "Theme",
+    "themes": {
+      "system": {
+        "label": "Match my device",
+        "description": "Light or dark, as your device is set"
+      },
+      "light": {
+        "label": "Light",
+        "description": "Bright and clean"
+      },
+      "dark": {
+        "label": "Dark",
+        "description": "Easier on the eyes at night"
+      },
+      "contrast": {
+        "label": "Calm high contrast",
+        "description": "Strongest contrast, for low vision or sunlight"
+      }
+    },
+    "textSize": "Text size",
+    "textSizes": {
+      "standard": {
+        "label": "Standard",
+        "description": "Our normal text size"
+      },
+      "large": {
+        "label": "Large",
+        "description": "15% larger everywhere"
+      },
+      "largest": {
+        "label": "Largest",
+        "description": "30% larger everywhere"
+      }
+    },
+    "language": "Language",
+    "languages": {
+      "en": {
+        "description": "Use REOS in English"
+      },
+      "es": {
+        "description": "Usa REOS en español"
+      }
+    },
+    "savedNote": "Your choices are saved to your account, so they follow you to every device. Your phone or computer's own text setting still applies on top."
+  },
+  "mobile": {
+    "eyebrow": "REAL ESTATE OS",
+    "tagline": "Learn, get licensed, stay compliant and grow, all in one app.",
+    "connected": "Connected to {{app}} · version {{version}}",
+    "unreachable": "Can't reach the REOS server right now."
+  }
+}

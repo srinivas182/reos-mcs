@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { colors, fontSize, minTouchTarget, radius, spacing } from '@reos/tokens';
 
@@ -16,6 +17,7 @@ type State =
  * can reach the platform API. Replaced by onboarding in Sprint 3.
  */
 export default function HomeScreen() {
+  const { t } = useTranslation();
   const [state, setState] = useState<State>({ kind: 'loading' });
 
   const [attempt, setAttempt] = useState(0);
@@ -45,13 +47,13 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.screen}>
       <View style={styles.hero}>
         <Text style={styles.eyebrow} accessibilityRole="text">
-          REAL ESTATE OS
+          {t('mobile.eyebrow')}
         </Text>
         <Text style={styles.title} accessibilityRole="header">
-          REOS
+          {t('common.appName')}
         </Text>
         <Text style={styles.subtitle}>
-          Learn, get licensed, stay compliant and grow, all in one app.
+          {t('mobile.tagline')}
         </Text>
       </View>
 
@@ -59,17 +61,17 @@ export default function HomeScreen() {
         {state.kind === 'loading' && <ActivityIndicator color={colors.sky} />}
         {state.kind === 'ok' && (
           <Text style={styles.status}>
-            Connected to {state.health.app} · version {state.health.version}
+            {t('mobile.connected', { app: state.health.app, version: state.health.version })}
           </Text>
         )}
         {state.kind === 'error' && (
           <>
-            <Text style={styles.status}>Can&apos;t reach the REOS server right now.</Text>
+            <Text style={styles.status}>{t('mobile.unreachable')}</Text>
             <Pressable
               accessibilityRole="button"
               onPress={retry}
               style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}>
-              <Text style={styles.buttonText}>Try again</Text>
+              <Text style={styles.buttonText}>{t('common.tryAgain')}</Text>
             </Pressable>
           </>
         )}

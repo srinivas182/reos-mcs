@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Appearance;
+use App\Enums\Locale;
 use App\Enums\TextSize;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -28,10 +29,11 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $remember_token
  * @property Appearance $appearance
  * @property TextSize $text_size
+ * @property Locale $locale
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'appearance', 'text_size'])]
+#[Fillable(['name', 'email', 'password', 'appearance', 'text_size', 'locale'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {
@@ -46,6 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     protected $attributes = [
         'appearance' => 'system',
         'text_size' => 'standard',
+        'locale' => 'en',
     ];
 
     /**
@@ -60,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'password' => 'hashed',
             'appearance' => Appearance::class,
             'text_size' => TextSize::class,
+            'locale' => Locale::class,
             /* @chisel-2fa */
             'two_factor_confirmed_at' => 'datetime',
             /* @end-chisel-2fa */

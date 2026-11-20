@@ -1,15 +1,24 @@
 import type { Decorator, Preview } from '@storybook/react-vite';
 import { useEffect } from 'react';
+import { I18nextProvider } from 'react-i18next';
 import '../resources/css/app.css';
 import { TooltipProvider } from '../resources/js/components/ui/tooltip';
+import { i18n } from '../resources/js/lib/i18n';
 
 type Theme = 'light' | 'dark' | 'contrast';
 type TextSize = 'standard' | 'large' | 'largest';
+type Locale = 'en' | 'es';
 
-/** Applies the toolbar's theme and text size exactly as the app does on <html>. */
+/** Applies the toolbar's theme, text size and language exactly as the app does on <html>. */
 const withAppearance: Decorator = (Story, context) => {
     const theme = context.globals.theme as Theme;
     const textSize = context.globals.textSize as TextSize;
+    const locale = context.globals.locale as Locale;
+
+    useEffect(() => {
+        document.documentElement.lang = locale;
+        void i18n.changeLanguage(locale);
+    }, [locale]);
 
     useEffect(() => {
         const html = document.documentElement;
@@ -19,17 +28,31 @@ const withAppearance: Decorator = (Story, context) => {
     }, [theme, textSize]);
 
     return (
-        <TooltipProvider delayDuration={0}>
-            <div className="bg-background p-6 text-foreground">
-                <Story />
-            </div>
-        </TooltipProvider>
+        <I18nextProvider i18n={i18n}>
+            <TooltipProvider delayDuration={0}>
+                <div className="bg-background p-6 text-foreground">
+                    <Story />
+                </div>
+            </TooltipProvider>
+        </I18nextProvider>
     );
 };
 
 const preview: Preview = {
     decorators: [withAppearance],
     globalTypes: {
+        locale: {
+            description: 'Language',
+            toolbar: {
+                title: 'Language',
+                icon: 'globe',
+                items: [
+                    { value: 'en', title: 'English' },
+                    { value: 'es', title: 'Español' },
+                ],
+                dynamicTitle: true,
+            },
+        },
         theme: {
             description: 'Colour theme',
             toolbar: {
@@ -57,7 +80,7 @@ const preview: Preview = {
             },
         },
     },
-    initialGlobals: { theme: 'light', textSize: 'standard' },
+    initialGlobals: { theme: 'light', textSize: 'standard', locale: 'en' },
     parameters: {
         layout: 'fullscreen',
         // Any accessibility violation fails the story's test (CI blocks the merge).

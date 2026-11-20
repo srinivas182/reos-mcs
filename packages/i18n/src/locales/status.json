@@ -1,0 +1,4 @@
+{
+  "en": { "source": true, "review": "Source language. Copy follows the plain-language rules in docs/sprints/S02-spec.md." },
+  "es": { "source": false, "review": "Machine-assisted draft, reviewed by the team. Professional translation (US Spanish) required before the pilot." }
+}
