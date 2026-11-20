@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Monitoring\MonitoringRuntime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
@@ -50,6 +51,8 @@ class HandleInertiaRequests extends Middleware
                 'textSize' => View::shared('textSize', 'standard'),
                 'locale' => app()->getLocale(),
             ],
+            // Public settings for browser error tracking and analytics (2.4c).
+            'monitoring' => fn () => app(MonitoringRuntime::class)->clientConfig('web'),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

@@ -41,7 +41,20 @@ REOS needs about 40 outside services (calendar and email, payments, CRMs, transa
   - **Live** needs a check of the current live keys that didn't fail. Services with no keys need no check.
   - **Health checks** (`reos:integrations:health`, every 15 minutes) check services running on vendor systems whose tester contacts the vendor.
   - **Pausing:** after 3 failures in a row the service is paused and the super admins get an email. A paused service acts as **Off**, never as demo data, so nothing pretends to work. A passing Test connection, or choosing a mode, switches it back on.
-- **2.4c:** Sentry, PostHog and Grafana switched on from here; web and phone read the switches from `/api/v1`.
+- **2.4c (done):** monitoring, switched on from here.
+  - **When it sends:** a service sends data only when it runs on test or live keys and isn't paused. Demo data and Off send nothing.
+  - **Where settings are held:** `MonitoringRuntime` works them out and caches them until an `IntegrationSettingsChanged` event.
+  - **Picking up changes without a restart:** each request (the `TraceRequests` middleware) and each queued job re-applies the settings when they changed. It rebinds the Sentry client and rebuilds the tracer, so Octane and queue workers follow a change without a restart.
+  - **Server:**
+    - `sentry/sentry-laravel` reports unhandled exceptions with no personal data.
+    - OpenTelemetry sends one span per request to Grafana over OTLP/HTTP (JSON): method, route pattern, status and duration. No query strings or user data.
+    - If the settings can't be read (database down), monitoring stays off and the request carries on; `/api/v1/health` keeps working.
+  - **Web:** gets public values only (DSNs, the PostHog project key) as the `monitoring` page prop. `@sentry/react` and `posthog-js` are loaded only when switched on.
+  - **Phone:** reads `GET /api/v1/app-config` at launch and starts `@sentry/react-native` or `posthog-react-native`, so no app release is needed.
+  - **Privacy defaults everywhere:**
+    - Sentry collects no user info, cookies, headers, bodies or query strings.
+    - PostHog masks text and attributes, has no session recording, respects Do Not Track, and identifies people by REOS id only.
+  - **Phone source maps:** the Sentry Expo plugin uploads source maps once 2.3 (EAS builds) sets `SENTRY_ORG`, `SENTRY_PROJECT` and `SENTRY_AUTH_TOKEN`.
 
 ## Alternatives considered
 

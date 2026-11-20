@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\HealthController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,3 +10,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('health', HealthController::class)->name('api.health');
+
+Route::get('app-config', AppConfigController::class)
+    ->middleware('throttle:60,1')
+    ->name('api.app-config');

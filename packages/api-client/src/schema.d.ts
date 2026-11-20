@@ -4,6 +4,27 @@
  */
 
 export interface paths {
+    "/app-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the app's runtime settings
+         * @description Public values only (Sentry DSN, PostHog project key), the same ones a
+         *     browser receives. `null` means the service is switched off.
+         */
+        get: operations["app-config"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -29,6 +50,28 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AppConfigResource */
+        AppConfigResource: {
+            /**
+             * @description Server environment, used to tag errors and events.
+             * @example production
+             */
+            environment: string;
+            /**
+             * @description Deployed REOS version.
+             * @example 0.1.0-dev
+             */
+            release: string;
+            /** @description Error tracking, or `null` when switched off. */
+            sentry: {
+                dsn: string;
+            } | null;
+            /** @description Product analytics, or `null` when switched off. */
+            posthog: {
+                key: string;
+                host: string;
+            } | null;
+        };
         /** HealthResource */
         HealthResource: {
             /**
@@ -59,9 +102,42 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type $defs = Record<string, never>;
 export interface operations {
+    "app-config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `AppConfigResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AppConfigResource"];
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     health: {
         parameters: {
             query?: never;
