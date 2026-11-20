@@ -1,4 +1,14 @@
 {
     "extends": "@reos/config/tsconfig.base.json",
-    "include": ["src"]
+    "include": [
+        "src",
+        "scripts",
+        "test"
+    ],
+    "compilerOptions": {
+        "allowImportingTsExtensions": true,
+        "types": [
+            "node"
+        ]
+    }
 }
