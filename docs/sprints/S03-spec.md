@@ -2,7 +2,7 @@
 
 **Goal:** by the end of the sprint, anyone can try REOS (free quiz, no account), sign up in one tap on the phone or the web, hold several roles and switch between them, and connect their own tools. The "Connections" screen is driven by the integrations register, so a tool's status changes without an app release.
 
-**Status:** draft for approval, 20 November 2026. Source: REOS Sprint Plan v1.0 (Sprint 3: A3.1–A3.3, B3.1–B3.2), REOS Project Requirements Document v1.0 (identity and security), and the candidate, agent and shared journey screens.
+**Status:** decisions taken 20 November 2026 (section 6). Source: REOS Sprint Plan v1.0 (Sprint 3: A3.1–A3.3, B3.1–B3.2), REOS Project Requirements Document v1.0 (identity and security), and the candidate, agent and shared journey screens.
 
 ## 0. What Sprint 2 already delivered (scope adjusted)
 
@@ -21,7 +21,7 @@ Team B has spare capacity from this. It goes to the register gap (section 3, B3.
 | --- | --- | --- | --- |
 | Google Cloud OAuth client for **sign-in** (openid, email and profile only; no Google verification needed for these scopes) | A3.1 | Client with Mayura | Built and tested against mocked ID tokens. Switched on in Settings › Integrations when keys arrive |
 | Apple Developer account (Sign in with Apple needs it) | A3.1 | Client | Built and tested against mocked ID tokens. App Store guideline 4.8 asks apps that offer Google sign-in to also offer a privacy-friendly login: one that limits data to name and email, lets people hide their email, and doesn't track for ads. Sign in with Apple meets that, and the journeys include it. So a late account can hold up the **iOS release**, not the build |
-| SMS for phone codes (Twilio, register entry `twilio-sms`) | A3.1 | Client | Runs on the Simulator: codes appear in Mailpit and the log on development and staging |
+| SMS for phone codes (Twilio Verify, added to the register) | A3.1 | Client | Runs on the Simulator: codes appear in Mailpit and the log on development and staging |
 | Google Calendar keys (sample connector) | B3.1 | Client with Mayura | The sample connector runs on demo data; the sandbox check runs once keys exist |
 
 ## 2. Market leaders: what they do, where they fall short, what we do
@@ -174,18 +174,18 @@ Benchmarks from the sprint plan: AceableAgent, The CE Shop and Follow Up Boss fo
 | Risk | Mitigation |
 | --- | --- |
 | Apple Developer account late | Apple sign-in built and tested on mocked tokens and switched on later; Android and the web go first |
-| SMS cost and fraud (SMS pumping) on public phone sign-in | Rate limits per number, device and IP; country allow-list (US first); Twilio Verify fraud guard if chosen (decision 3) |
+| SMS cost and fraud (SMS pumping) on public phone sign-in | Rate limits per number, device and IP; country allow-list (US first); Twilio Verify's fraud guard (decision 3) |
 | Roles pulled ahead of tenancy | A minimal organisations table now, built so A4.1 extends it rather than migrating data |
 | Vendor OAuth approvals not ready | Every connector runs on the Simulator; the Google Calendar sandbox proves the real path |
 | Two teams touching auth and connections at once | One ADR per area agreed on day 1; shared `/api/v1/me` contract frozen early |
 
-## 6. Decisions needed
+## 6. Decisions (20 November 2026)
 
-1. **Roles and permissions library:** `spatie/laravel-permission` with its "teams" feature, where a team is an organisation (recommended: widely used, policy-friendly, Laravel 13 support), or our own tables.
-2. **Organisations now:** a minimal organisations table pulled forward from A4.1 so roles are scoped from the start (recommended), or global roles until Sprint 4 (cheaper now, but every role is migrated later).
-3. **Phone codes:** Twilio Verify (recommended: it handles code delivery, retries and SMS-pumping protection) or our own codes sent through Twilio SMS (cheaper per message, more to build and protect). Either way it's a register entry and runs on the Simulator until keys exist.
-4. **Phone tokens:** Sanctum per-device tokens (recommended: simple, revocable, already in the stack), or full OAuth 2 with Passport (only needed if third parties sign in with REOS accounts, which isn't planned).
-5. **Association single sign-on (SAML or OpenID Connect):** the PRD lists it, but the sprint plan doesn't place it. Recommended: add it to A4.2 (branded sign-in) once Texas REALTORS says which system its members use.
+1. **Roles and permissions:** `spatie/laravel-permission` with "teams", where a team is an organisation.
+2. **Organisations:** a minimal organisations table now (pulled from A4.1), so every role belongs to an organisation from the start.
+3. **Phone codes:** Twilio Verify (code delivery, retries and SMS-pumping protection). It's added to the register and runs on the Simulator until keys exist.
+4. **Phone tokens:** Sanctum per-device tokens (the default recommendation; no third-party sign-in with REOS accounts is planned).
+5. **Association single sign-on:** built in A4.2 (branded sign-in) once Texas REALTORS confirms which system its members use.
 
 ## Sources
 
