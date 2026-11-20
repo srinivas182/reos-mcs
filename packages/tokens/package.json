@@ -7,13 +7,20 @@
     "types": "src/index.ts",
     "exports": {
         ".": "./src/index.ts",
-        "./tokens.css": "./src/tokens.css"
+        "./tokens.css": "./src/generated/tokens.css",
+        "./tailwind.css": "./src/generated/tailwind.css",
+        "./swatches.json": "./src/generated/swatches.json"
     },
     "scripts": {
+        "build": "node scripts/build.ts",
+        "check": "node scripts/build.ts --check",
+        "test": "node --test 'test/*.test.ts'",
         "types:check": "tsc --noEmit"
     },
     "devDependencies": {
         "@reos/config": "workspace:*",
-        "typescript": "^5.9.3"
-    }
+        "typescript": "~6.0.3",
+        "@types/node": "^22"
+    },
+    "type": "module"
 }

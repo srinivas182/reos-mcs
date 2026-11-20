@@ -72,6 +72,7 @@ jobs:
             repo-scripts:
               - 'scripts/**'
               - 'docs/integrations/**'
+              - 'packages/tokens/**'
               - 'package.json'
               - 'pnpm-lock.yaml'
               - '.github/workflows/ci.yml'
@@ -226,7 +227,7 @@ jobs:
 
   repo-scripts:
     # Cheap (no PHP), so it runs on drafts too.
-    name: Repo scripts and integrations register
+    name: Repo scripts, tokens and integrations register
     needs: changes
     if: needs.changes.outputs.repo-scripts == 'true'
     runs-on: ubuntu-latest
@@ -238,6 +239,8 @@ jobs:
         run: pnpm integrations:check
       - name: Script tests
         run: pnpm test:scripts
+      - name: Design tokens (contrast, sizes, generated CSS current)
+        run: pnpm --filter @reos/tokens test
       - name: Shell scripts (shellcheck)
         run: shellcheck scripts/*.sh
 
