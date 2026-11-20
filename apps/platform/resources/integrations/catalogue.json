@@ -3,6 +3,133 @@
   "updated": "2026-11-20",
   "entries": [
     {
+      "id": "google-sign-in",
+      "name": "Sign in with Google",
+      "kind": "platform_service",
+      "category": "identity",
+      "purpose": "One-tap sign-in with a Google account on the phone and the web.",
+      "launch": "not_applicable",
+      "build_sprint": 3,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Any Google account; the OAuth consent screen stays in testing until launch. Only openid, email and profile scopes, so no Google verification is needed.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "ios_client_id",
+            "secret": false,
+            "required": false,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "apple-sign-in",
+      "name": "Sign in with Apple",
+      "kind": "platform_service",
+      "category": "identity",
+      "purpose": "One-tap sign-in with an Apple ID on the phone and the web, with Hide My Email.",
+      "launch": "not_applicable",
+      "build_sprint": 3,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Any Apple ID on a development build. Needs the Apple Developer account (apple-developer) first.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "team_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "key_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "private_key",
+            "secret": true,
+            "required": true,
+            "kind": "multiline",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "twilio-verify",
+      "name": "Twilio Verify (phone sign-in codes)",
+      "kind": "platform_service",
+      "category": "identity",
+      "purpose": "Sends and checks the six-digit codes for phone sign-in and two-step checks, with fraud protection.",
+      "launch": "not_applicable",
+      "build_sprint": 3,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Twilio test credentials; Verify sends to verified numbers on a trial account.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "account_sid",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "auth_token",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "verify_service_sid",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
       "id": "google-workspace",
       "name": "Google Calendar and Gmail",
       "kind": "integration",

@@ -10,6 +10,7 @@ export type ApprovalStatus =
     | 'blocked'
     | 'not_needed';
 export type IntegrationCategory =
+    | 'identity'
     | 'calendar_email'
     | 'voice'
     | 'payments'

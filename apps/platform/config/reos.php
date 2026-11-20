@@ -27,4 +27,12 @@ return [
         'previous_credentials_keys' => array_values(array_filter(explode(',', (string) env('REOS_CREDENTIALS_PREVIOUS_KEYS', '')))),
     ],
 
+    /*
+    | The phone app's identifiers (Apple sign-in tokens are issued to the
+    | bundle id). Must match apps/mobile/app.json.
+    */
+    'mobile' => [
+        'bundle_id' => env('REOS_MOBILE_BUNDLE_ID', 'com.reos.app'),
+    ],
+
 ];

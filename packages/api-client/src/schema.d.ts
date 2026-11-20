@@ -46,6 +46,142 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/{provider}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sign in with Google or Apple
+         * @description Send the ID token the provider's SDK returned. Creates the account on
+         *     first sign-in, or joins an existing account with the same verified
+         *     email. Returns a bearer token for this device.
+         */
+        post: operations["auth.identity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get the signed-in person */
+        get: operations["me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List the devices signed in to this account */
+        get: operations["me.devices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/devices/{device}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Sign out a device
+         * @description Use the current device's id to sign out here, or another id to sign
+         *     out a lost or old phone.
+         */
+        delete: operations["me.devices.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign out this device */
+        post: operations["auth.sign-out"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/phone/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a sign-in code
+         * @description Texts a six-digit code to the number, valid for 10 minutes. Limited per
+         *     number and per network to stop abuse.
+         */
+        post: operations["auth.phone.start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/phone/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check the code and sign in
+         * @description Creates the account on first sign-in. Five wrong codes lock the number
+         *     for 15 minutes.
+         */
+        post: operations["auth.phone.verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -72,6 +208,18 @@ export interface components {
                 host: string;
             } | null;
         };
+        /** DeviceResource */
+        DeviceResource: {
+            id: number;
+            name: string;
+            /** @description ios, android or web. */
+            platform: string | null;
+            app_version: string | null;
+            last_used_at: string | null;
+            signed_in_at: string | null;
+            /** @description The device making this request. */
+            current: boolean;
+        };
         /** HealthResource */
         HealthResource: {
             /**
@@ -95,15 +243,151 @@ export interface components {
              */
             time: string;
         };
+        /**
+         * IdentityProvider
+         * @description One-tap sign-in providers, and their entries in the integrations register.
+         * @enum {string}
+         */
+        IdentityProvider: IdentityProvider;
+        /** IdentitySignInRequest */
+        IdentitySignInRequest: {
+            /** @description The ID token the Google or Apple SDK returned on the phone. */
+            id_token: string;
+            /** @description Apple shares the person's name only on their first sign-in; the app passes it on. */
+            name?: string | null;
+            device: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                /** @enum {string} */
+                platform: IdentitySignInRequestDevicePlatform;
+                app_version?: string | null;
+            };
+        };
+        /** MeResource */
+        MeResource: {
+            id: number;
+            /** @description Null until the person gives it (phone sign-ups give it in setup). */
+            name: string | null;
+            email: string | null;
+            email_verified: boolean;
+            phone: string | null;
+            has_password: boolean;
+            /** @description How this person can sign in. */
+            sign_in_methods: string[];
+            /** @enum {string} */
+            locale: MeResourceLocale;
+            /** @enum {string} */
+            appearance: MeResourceAppearance;
+            /** @enum {string} */
+            text_size: MeResourceText_size;
+        };
+        /** PhoneStartRequest */
+        PhoneStartRequest: {
+            /**
+             * @description Phone number in international format.
+             * @example +15125550100
+             */
+            phone: string;
+        };
+        /** PhoneVerifyRequest */
+        PhoneVerifyRequest: {
+            phone: string;
+            /** @description The six-digit code from the text message. */
+            code: string;
+            device: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                /** @enum {string} */
+                platform: PhoneVerifyRequestDevicePlatform;
+                app_version?: string | null;
+            };
+        };
+        /** SignInResource */
+        SignInResource: {
+            /** @description Bearer token for this device. Keep it in secure storage. */
+            token: string;
+            /** @constant */
+            token_type: "Bearer";
+            /** @description True when this person had never signed in on this device before. */
+            new_device: boolean;
+            /** @description True when this sign-in created the account (show the 60-second setup). */
+            new_account: boolean;
+            user: components["schemas"]["MeResource"];
+        };
     };
-    responses: never;
+    responses: {
+        /** @description Not found */
+        ModelNotFoundException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Validation error */
+        ValidationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Errors overview. */
+                    message: string;
+                    /** @description A detailed description of each field that failed validation. */
+                    errors: {
+                        [key: string]: string[];
+                    };
+                };
+            };
+        };
+        /** @description Unauthenticated */
+        AuthenticationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+        /** @description Not found */
+        NotFoundHttpException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
+    };
     parameters: never;
     requestBodies: never;
     headers: never;
     pathItems: never;
 }
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
+export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
+export type SchemaMeResource = components['schemas']['MeResource'];
+export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
+export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaSignInResource = components['schemas']['SignInResource'];
+export type ResponseModelNotFoundException = components['responses']['ModelNotFoundException'];
+export type ResponseValidationException = components['responses']['ValidationException'];
+export type ResponseAuthenticationException = components['responses']['AuthenticationException'];
+export type ResponseNotFoundHttpException = components['responses']['NotFoundHttpException'];
 export type $defs = Record<string, never>;
 export interface operations {
     "app-config": {
@@ -158,4 +442,230 @@ export interface operations {
             };
         };
     };
+    "auth.identity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The provider ID */
+                provider: components["schemas"]["IdentityProvider"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IdentitySignInRequest"];
+            };
+        };
+        responses: {
+            /** @description `SignInResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignInResource"];
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    me: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `MeResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `DeviceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["DeviceResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.devices.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                device: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["NotFoundHttpException"];
+        };
+    };
+    "auth.sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "auth.phone.start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneStartRequest"];
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "auth.phone.verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneVerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description `SignInResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignInResource"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+}
+export enum IdentityProvider {
+    google = "google",
+    apple = "apple"
+}
+export enum IdentitySignInRequestDevicePlatform {
+    ios = "ios",
+    android = "android",
+    web = "web"
+}
+export enum MeResourceLocale {
+    en = "en",
+    es = "es"
+}
+export enum MeResourceAppearance {
+    system = "system",
+    light = "light",
+    dark = "dark",
+    contrast = "contrast"
+}
+export enum MeResourceText_size {
+    standard = "standard",
+    large = "large",
+    largest = "largest"
+}
+export enum PhoneVerifyRequestDevicePlatform {
+    ios = "ios",
+    android = "android",
+    web = "web"
 }

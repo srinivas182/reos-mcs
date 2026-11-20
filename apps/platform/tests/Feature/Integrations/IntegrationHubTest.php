@@ -86,7 +86,7 @@ describe('the list', function () {
             ->assertInertia(fn (Assert $page) => $page
                 ->component('settings/integrations/index')
                 ->has('integrations', count($catalogue))
-                ->where('integrations.0.id', 'google-workspace')
+                ->where('integrations.0.id', 'google-sign-in')
                 ->where('integrations.0.mode', 'simulator')
                 ->where('integrations.0.keys', ['sandbox' => false, 'live' => false])
                 ->where('integrations.0.needs_keys', true));
