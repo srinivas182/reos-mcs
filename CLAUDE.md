@@ -10,7 +10,7 @@ Read `README.md` and `docs/adr/` first.
 - Storybook: every shared component gets a `*.stories.tsx` with realistic REOS content. Stories are tests: they render in Chromium with axe, and any accessibility violation fails CI. Run `pnpm storybook` in `apps/platform`.
 - Language: never hard-code user-facing text. Add English to `packages/i18n/src/locales/en.json` and Spanish to `es.json` in the same change (CI fails if Spanish is missing or placeholders differ), then use `t('key')` (web/mobile) or `__('key')` (Laravel). Keep keys out of Laravel's own groups (`auth`, `validation`, `passwords`, `pagination`).
 - Web: Inertia + React + TypeScript + Tailwind, shadcn/ui components, Wayfinder for routes.
-- Mobile: Expo Router, functional components, shared tokens from `@reos/tokens`. Talk to the server only through `@reos/api-client`; never hand-write request or response types.
+- Mobile: Expo Router, functional components, UI from `@/ui` (Unistyles 3 themes built from `@reos/tokens`; never hard-code colours or sizes; use `theme.font()` for text). Development builds only (no Expo Go). Talk to the server only through `@reos/api-client`; never hand-write request or response types.
 - API contract: after changing any `/api/v1` endpoint, run `pnpm api:generate` and commit `packages/api-client`. CI fails if it's stale. Document endpoints with PHPDoc (Scramble reads it).
 - Demo data: personas live in `database/seeders/Demo/Personas.php`; keep them in step with the journey documents.
 - Local services: `compose.yaml` (PostgreSQL 17 + pgvector, Redis, Meilisearch, Mailpit, SeaweedFS S3). Tests in CI run on PostgreSQL.

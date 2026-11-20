@@ -19,14 +19,14 @@ describe('HomeScreen', () => {
   afterEach(() => i18n.changeLanguage('en'));
 
   it('shows the API connection in English', async () => {
-    renderHome();
+    await renderHome();
     await waitFor(() => expect(screen.getByText('Connected to REOS · version 0.1.0-dev')).toBeOnTheScreen());
     expect(screen.getByRole('header', { name: 'REOS' })).toBeOnTheScreen();
   });
 
   it('speaks Spanish when the phone does', async () => {
     await i18n.changeLanguage('es');
-    renderHome();
+    await renderHome();
     await waitFor(() => expect(screen.getByText('Conectado a REOS · versión 0.1.0-dev')).toBeOnTheScreen());
   });
 });

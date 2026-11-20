@@ -8,7 +8,8 @@
     "close": "Close",
     "save": "Save",
     "cancel": "Cancel",
-    "tryAgain": "Try again"
+    "tryAgain": "Try again",
+    "offline": "You're offline. We'll catch up when you're back."
   },
   "nav": {
     "menu": "Menu",
@@ -69,6 +70,10 @@
       },
       "es": {
         "description": "Usa REOS en español"
+      },
+      "device": {
+        "label": "My phone's language",
+        "description": "English or Spanish, as your phone is set"
       }
     },
     "savedNote": "Your choices are saved to your account, so they follow you to every device. Your phone or computer's own text setting still applies on top."
@@ -77,6 +82,8 @@
     "eyebrow": "REAL ESTATE OS",
     "tagline": "Learn, get licensed, stay compliant and grow, all in one app.",
     "connected": "Connected to {{app}} · version {{version}}",
-    "unreachable": "Can't reach the REOS server right now."
+    "unreachable": "Can't reach the REOS server right now.",
+    "displaySettings": "Display and language",
+    "displaySettingsHint": "Theme, text size and language"
   }
 }
