@@ -1,55 +1,44 @@
 import { localeNames, supportedLocales, type Locale } from '@reos/i18n';
 import type { TextSize } from '@reos/tokens';
 import { router } from 'expo-router';
-import { ScrollView, View } from 'react-native';
+import { ArrowLeft } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native-unistyles';
 
-import { Button, ChoiceTiles, setPreferences, Text, usePreferences, type Appearance, type ChoiceTile } from '@/ui';
+import { IconButton, OptionGroup, Screen, ScreenHeader, SectionTitle, setPreferences, usePreferences, type Appearance, type Option } from '@/ui';
 
 const appearances: readonly Appearance[] = ['system', 'light', 'dark', 'contrast'];
 const sizes: readonly TextSize[] = ['standard', 'large', 'largest'];
 
-/** Display and language: the same choices as the web app's Appearance and language page. */
+/** Display and language: theme, text size and language, as option rows (journey settings pattern). */
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const preferences = usePreferences();
 
-  const themeOptions: ChoiceTile<Appearance>[] = appearances.map((value) => ({
+  const themeOptions: Option<Appearance>[] = appearances.map((value) => ({
     value,
     label: t(`appearance.themes.${value}.label`),
     description: t(`appearance.themes.${value}.description`),
   }));
-  const sizeOptions: ChoiceTile<TextSize>[] = sizes.map((value) => ({
+  const sizeOptions: Option<TextSize>[] = sizes.map((value) => ({
     value,
     label: t(`appearance.textSizes.${value}.label`),
     description: t(`appearance.textSizes.${value}.description`),
   }));
-  const languageOptions: ChoiceTile<Locale | 'device'>[] = [
+  const languageOptions: Option<Locale | 'device'>[] = [
     { value: 'device', label: t('appearance.languages.device.label'), description: t('appearance.languages.device.description') },
     ...supportedLocales.map((value) => ({ value, label: localeNames[value], description: t(`appearance.languages.${value}.description`) })),
   ];
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <Button label={t('common.close')} variant="ghost" onPress={() => router.back()} />
-      </View>
-      <Text variant="headline">{t('appearance.pageTitle')}</Text>
-      <ChoiceTiles label={t('appearance.language')} value={preferences.locale} options={languageOptions} onChange={(locale) => setPreferences({ locale })} />
-      <ChoiceTiles label={t('appearance.theme')} value={preferences.appearance} options={themeOptions} onChange={(appearance) => setPreferences({ appearance })} />
-      <ChoiceTiles label={t('appearance.textSize')} value={preferences.textSize} options={sizeOptions} onChange={(textSize) => setPreferences({ textSize })} />
-    </ScrollView>
+    <Screen>
+      <IconButton icon={ArrowLeft} label={t('common.close')} onPress={() => router.back()} />
+      <ScreenHeader title={t('appearance.pageTitle')} />
+      <SectionTitle>{t('appearance.language')}</SectionTitle>
+      <OptionGroup label={t('appearance.language')} options={languageOptions} value={preferences.locale} onChange={(locale) => setPreferences({ locale })} />
+      <SectionTitle>{t('appearance.theme')}</SectionTitle>
+      <OptionGroup label={t('appearance.theme')} options={themeOptions} value={preferences.appearance} onChange={(appearance) => setPreferences({ appearance })} />
+      <SectionTitle>{t('appearance.textSize')}</SectionTitle>
+      <OptionGroup label={t('appearance.textSize')} options={sizeOptions} value={preferences.textSize} onChange={(textSize) => setPreferences({ textSize })} />
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create((theme, rt) => ({
-  screen: {
-    gap: theme.space.xl,
-    paddingTop: rt.insets.top + theme.space.md,
-    paddingBottom: rt.insets.bottom + theme.space.xl,
-    paddingHorizontal: theme.space.xl,
-    backgroundColor: theme.colors.page,
-  },
-  header: { alignItems: 'flex-start', marginLeft: -theme.space.lg },
-}));

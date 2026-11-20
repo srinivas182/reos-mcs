@@ -85,5 +85,39 @@
     "unreachable": "No podemos conectar con el servidor de REOS en este momento.",
     "displaySettings": "Pantalla e idioma",
     "displaySettingsHint": "Tema, tamaño del texto e idioma"
+  },
+  "tabs": {
+    "today": "Hoy",
+    "learn": "Aprender",
+    "practice": "Practicar",
+    "ask": "Preguntar",
+    "deals": "Operaciones",
+    "mentors": "Mentores",
+    "agents": "Agentes",
+    "approvals": "Aprobaciones",
+    "recruit": "Reclutar",
+    "brokerage": "Correduría",
+    "messages": "Mensajes",
+    "community": "Comunidad",
+    "profile": "Perfil",
+    "classes": "Clases",
+    "sessions": "Sesiones",
+    "students": "Alumnos",
+    "mentees": "Aprendices",
+    "me": "Yo",
+    "withCount": "{{label}}, {{count}} nuevos"
+  },
+  "ask": {
+    "voice": "Preguntar por voz",
+    "placeholder": "Pregunta lo que quieras"
+  },
+  "options": {
+    "correct": "Respuesta correcta",
+    "incorrect": "Tu respuesta, incorrecta"
+  },
+  "chat": {
+    "you": "Tú",
+    "assistant": "Compañero de estudio de REOS",
+    "source": "Fuente: {{source}}"
   }
 }

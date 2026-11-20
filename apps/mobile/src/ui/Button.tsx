@@ -1,34 +1,50 @@
 import * as Haptics from 'expo-haptics';
-import type { ReactNode } from 'react';
+import type { LucideIcon } from 'lucide-react-native';
 import { ActivityIndicator, Pressable, View, type PressableProps } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import type { SemanticColors } from '@reos/tokens';
+
+import { Icon } from './Icon';
 import { Text } from './Text';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
-export type ButtonSize = 'default' | 'large';
+/**
+ * - `primary`: blue, 54 pt (the journeys' main button)
+ * - `secondary`: white with a border, 50 pt
+ * - `onHero`: white button on a dark hero card ("Start drill")
+ * - `ghost`: text only
+ * - `destructive`: red, for things that can't be undone
+ * - `warning`: dark amber, the action inside an amber nudge ("Book" a tutor)
+ */
+export type ButtonVariant = 'primary' | 'secondary' | 'onHero' | 'ghost' | 'destructive' | 'warning';
 
 export type ButtonProps = Omit<PressableProps, 'children'> & {
   /** Verb first: "Book session", not "Submit". */
   label: string;
   variant?: ButtonVariant;
-  /** `large` (56 pt) for the one main action on a screen; `default` is 48 pt. */
-  size?: ButtonSize;
-  icon?: ReactNode;
+  icon?: LucideIcon;
+  /** Icon after the label (for "Continue →"). */
+  trailingIcon?: LucideIcon;
   loading?: boolean;
+  /** Stretch to the full width (the default for main actions at the bottom of a screen). */
   fullWidth?: boolean;
 };
 
-/**
- * The app's button: at least 48 × 48 points, a light haptic tap on press, a
- * spinner while loading (and announced as busy), and a clear pressed state.
- */
-export function Button({ label, variant = 'primary', size = 'default', icon, loading = false, fullWidth = false, disabled, onPress, ...props }: ButtonProps) {
+const textColor: Record<ButtonVariant, keyof SemanticColors> = {
+  primary: 'onAction',
+  secondary: 'text',
+  onHero: 'heroBg',
+  ghost: 'action',
+  destructive: 'onDanger',
+  warning: 'toneWarningBg',
+};
+
+/** The journeys' button: 54 pt, rounded 16, a light haptic tap, busy state while loading. */
+export function Button({ label, variant = 'primary', icon, trailingIcon, loading = false, fullWidth = false, disabled, onPress, ...props }: ButtonProps) {
   const { theme } = useUnistyles();
-  // Unistyles reserves the variant name `default`, so the default size is "no size variant".
-  styles.useVariants({ variant, size: size === 'large' ? 'large' : undefined });
+  styles.useVariants({ variant });
   const inactive = disabled || loading;
-  const textTone = variant === 'primary' ? 'onAction' : variant === 'destructive' ? 'onAction' : variant === 'ghost' || variant === 'outline' ? 'action' : 'default';
+  const color = textColor[variant];
 
   return (
     <Pressable
@@ -36,7 +52,7 @@ export function Button({ label, variant = 'primary', size = 'default', icon, loa
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!inactive, busy: loading }}
       disabled={inactive}
-      hitSlop={8}
+      hitSlop={4}
       onPress={(event) => {
         void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         onPress?.(event);
@@ -45,13 +61,14 @@ export function Button({ label, variant = 'primary', size = 'default', icon, loa
       {...props}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' || variant === 'destructive' ? theme.colors.onAction : theme.colors.action} />
+        <ActivityIndicator color={theme.colors[color]} />
       ) : (
         <View style={styles.content}>
-          {icon}
-          <Text variant={size === 'large' ? 'bodyLarge' : 'body'} weight="semibold" tone={textTone} style={variant === 'destructive' ? styles.onDanger : undefined}>
+          {icon ? <Icon icon={icon} color={color} size={20} /> : null}
+          <Text weight={variant === 'secondary' ? 'semibold' : 'bold'} style={styles.label(color)}>
             {label}
           </Text>
+          {trailingIcon ? <Icon icon={trailingIcon} color={color} size={20} /> : null}
         </View>
       )}
     </Pressable>
@@ -60,9 +77,8 @@ export function Button({ label, variant = 'primary', size = 'default', icon, loa
 
 const styles = StyleSheet.create((theme) => ({
   button: {
-    minHeight: theme.touch,
-    minWidth: theme.touch,
-    borderRadius: theme.radius.md,
+    minHeight: theme.m.buttonHeight,
+    borderRadius: theme.m.radius.button,
     paddingHorizontal: theme.space.xl,
     alignItems: 'center',
     justifyContent: 'center',
@@ -71,19 +87,17 @@ const styles = StyleSheet.create((theme) => ({
     variants: {
       variant: {
         primary: { backgroundColor: theme.colors.action },
-        secondary: { backgroundColor: theme.colors.surfaceMuted },
-        outline: { backgroundColor: theme.colors.surface, borderColor: theme.colors.borderControl },
-        ghost: { backgroundColor: 'transparent' },
+        secondary: { minHeight: theme.m.secondaryButtonHeight, backgroundColor: theme.colors.surface, borderColor: theme.colors.borderControl },
+        onHero: { backgroundColor: theme.colors.heroText },
+        ghost: { minHeight: theme.touch, backgroundColor: 'transparent', paddingHorizontal: theme.space.md },
         destructive: { backgroundColor: theme.colors.danger },
-      },
-      size: {
-        large: { minHeight: 56, paddingHorizontal: theme.space.xxl },
+        warning: { minHeight: theme.touch, backgroundColor: theme.colors.toneWarningFg, borderRadius: theme.m.radius.pill, paddingHorizontal: theme.space.lg },
       },
     },
   },
   content: { flexDirection: 'row', alignItems: 'center', gap: theme.space.sm },
+  label: (color: keyof SemanticColors) => ({ color: theme.colors[color] }),
   fullWidth: { alignSelf: 'stretch' },
   pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
   inactive: { opacity: 0.5 },
-  onDanger: { color: theme.colors.onDanger },
 }));

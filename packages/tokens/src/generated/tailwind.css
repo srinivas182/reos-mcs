@@ -27,6 +27,22 @@
     --color-reos-danger-surface: var(--reos-danger-surface);
     --color-reos-on-danger: var(--reos-on-danger);
     --color-reos-scrim: var(--reos-scrim);
+    --color-reos-tone-success-bg: var(--reos-tone-success-bg);
+    --color-reos-tone-success-fg: var(--reos-tone-success-fg);
+    --color-reos-tone-warning-bg: var(--reos-tone-warning-bg);
+    --color-reos-tone-warning-fg: var(--reos-tone-warning-fg);
+    --color-reos-tone-danger-bg: var(--reos-tone-danger-bg);
+    --color-reos-tone-danger-fg: var(--reos-tone-danger-fg);
+    --color-reos-tone-info-bg: var(--reos-tone-info-bg);
+    --color-reos-tone-info-fg: var(--reos-tone-info-fg);
+    --color-reos-tone-neutral-bg: var(--reos-tone-neutral-bg);
+    --color-reos-tone-neutral-fg: var(--reos-tone-neutral-fg);
+    --color-reos-hero-bg: var(--reos-hero-bg);
+    --color-reos-hero-text: var(--reos-hero-text);
+    --color-reos-hero-muted: var(--reos-hero-muted);
+    --color-reos-hero-accent: var(--reos-hero-accent);
+    --color-reos-hero-progress: var(--reos-hero-progress);
+    --color-reos-hero-track: var(--reos-hero-track);
 
     --text-caption: 0.875rem;
     --text-caption--line-height: 1.25rem;

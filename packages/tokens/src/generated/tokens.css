@@ -24,6 +24,22 @@
     --reos-danger-surface: #FEF3F2;
     --reos-on-danger: #FFFFFF;
     --reos-scrim: rgba(15, 23, 42, 0.55);
+    --reos-tone-success-bg: #DCFCE7;
+    --reos-tone-success-fg: #14532D;
+    --reos-tone-warning-bg: #FEF3C7;
+    --reos-tone-warning-fg: #78350F;
+    --reos-tone-danger-bg: #FEE2E2;
+    --reos-tone-danger-fg: #7F1D1D;
+    --reos-tone-info-bg: #E8EEFC;
+    --reos-tone-info-fg: #1E3FA3;
+    --reos-tone-neutral-bg: #F1F5F9;
+    --reos-tone-neutral-fg: #334155;
+    --reos-hero-bg: #0F172A;
+    --reos-hero-text: #FFFFFF;
+    --reos-hero-muted: #CBD5E1;
+    --reos-hero-accent: #93C5FD;
+    --reos-hero-progress: #4ADE80;
+    --reos-hero-track: #334155;
 
     /* shadcn/ui names */
     --background: var(--reos-page);
@@ -84,6 +100,22 @@
     --reos-danger-surface: #450A0A;
     --reos-on-danger: #0B1120;
     --reos-scrim: rgba(0, 0, 0, 0.7);
+    --reos-tone-success-bg: #052E16;
+    --reos-tone-success-fg: #86EFAC;
+    --reos-tone-warning-bg: #422006;
+    --reos-tone-warning-fg: #FCD34D;
+    --reos-tone-danger-bg: #450A0A;
+    --reos-tone-danger-fg: #FCA5A5;
+    --reos-tone-info-bg: #1A2650;
+    --reos-tone-info-fg: #A9BEFF;
+    --reos-tone-neutral-bg: #1E293B;
+    --reos-tone-neutral-fg: #CBD5E1;
+    --reos-hero-bg: #1E293B;
+    --reos-hero-text: #F8FAFC;
+    --reos-hero-muted: #CBD5E1;
+    --reos-hero-accent: #93C5FD;
+    --reos-hero-progress: #4ADE80;
+    --reos-hero-track: #334155;
 
     /* shadcn/ui names */
     --background: var(--reos-page);
@@ -143,6 +175,22 @@
     --reos-danger-surface: #FEF3F2;
     --reos-on-danger: #FFFFFF;
     --reos-scrim: rgba(0, 0, 0, 0.75);
+    --reos-tone-success-bg: #F0FDF4;
+    --reos-tone-success-fg: #14532D;
+    --reos-tone-warning-bg: #FEF3C7;
+    --reos-tone-warning-fg: #78350F;
+    --reos-tone-danger-bg: #FEF3F2;
+    --reos-tone-danger-fg: #7F1D1D;
+    --reos-tone-info-bg: #E8EEFC;
+    --reos-tone-info-fg: #14307F;
+    --reos-tone-neutral-bg: #EEF1F5;
+    --reos-tone-neutral-fg: #0F172A;
+    --reos-hero-bg: #000000;
+    --reos-hero-text: #FFFFFF;
+    --reos-hero-muted: #FFFFFF;
+    --reos-hero-accent: #BFD3FF;
+    --reos-hero-progress: #4ADE80;
+    --reos-hero-track: #475569;
 
     /* shadcn/ui names */
     --background: var(--reos-page);

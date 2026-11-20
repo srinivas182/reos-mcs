@@ -41,7 +41,7 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     gap: theme.space.md,
     padding: theme.space.xl,
-    borderRadius: theme.radius.lg,
+    borderRadius: theme.m.radius.card,
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: theme.colors.border,

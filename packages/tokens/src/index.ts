@@ -94,6 +94,29 @@ export type SemanticColors = {
   onDanger: string;
   /** Overlay behind dialogs and sheets. */
   scrim: string;
+
+  /* Tinted chips and icon tiles (mobile journeys: on track, due soon, overdue, info, neutral). */
+  toneSuccessBg: string;
+  toneSuccessFg: string;
+  toneWarningBg: string;
+  toneWarningFg: string;
+  toneDangerBg: string;
+  toneDangerFg: string;
+  toneInfoBg: string;
+  toneInfoFg: string;
+  toneNeutralBg: string;
+  toneNeutralFg: string;
+
+  /* Dark hero cards (readiness, smart drill, today's focus). */
+  heroBg: string;
+  heroText: string;
+  heroMuted: string;
+  /** Eyebrows and highlights on hero cards. */
+  heroAccent: string;
+  /** Progress ring fill on hero cards. */
+  heroProgress: string;
+  /** Progress ring track on hero cards. */
+  heroTrack: string;
 };
 
 export const themes: Record<ThemeName, SemanticColors> = {
@@ -119,6 +142,22 @@ export const themes: Record<ThemeName, SemanticColors> = {
     dangerSurface: palette.red50,
     onDanger: palette.white,
     scrim: 'rgba(15, 23, 42, 0.55)',
+    toneSuccessBg: '#DCFCE7',
+    toneSuccessFg: palette.green800,
+    toneWarningBg: palette.amber100,
+    toneWarningFg: palette.amber900,
+    toneDangerBg: '#FEE2E2',
+    toneDangerFg: palette.red900,
+    toneInfoBg: palette.blue100,
+    toneInfoFg: palette.blue700,
+    toneNeutralBg: '#F1F5F9',
+    toneNeutralFg: palette.slate700,
+    heroBg: palette.navy900,
+    heroText: palette.white,
+    heroMuted: palette.slate300,
+    heroAccent: palette.blue300,
+    heroProgress: palette.green400,
+    heroTrack: palette.slate700,
   },
   dark: {
     page: palette.navy950,
@@ -142,6 +181,22 @@ export const themes: Record<ThemeName, SemanticColors> = {
     dangerSurface: palette.red950,
     onDanger: palette.navy950,
     scrim: 'rgba(0, 0, 0, 0.7)',
+    toneSuccessBg: palette.green950,
+    toneSuccessFg: '#86EFAC',
+    toneWarningBg: palette.amber950,
+    toneWarningFg: palette.amber300,
+    toneDangerBg: palette.red950,
+    toneDangerFg: '#FCA5A5',
+    toneInfoBg: palette.blue900,
+    toneInfoFg: palette.blue200,
+    toneNeutralBg: palette.slate800,
+    toneNeutralFg: palette.slate300,
+    heroBg: palette.slate800,
+    heroText: '#F8FAFC',
+    heroMuted: palette.slate300,
+    heroAccent: palette.blue300,
+    heroProgress: palette.green400,
+    heroTrack: palette.slate700,
   },
   /** Calm, high-contrast theme for low vision and bright sunlight. */
   contrast: {
@@ -166,6 +221,22 @@ export const themes: Record<ThemeName, SemanticColors> = {
     dangerSurface: palette.red50,
     onDanger: palette.white,
     scrim: 'rgba(0, 0, 0, 0.75)',
+    toneSuccessBg: palette.green50,
+    toneSuccessFg: palette.green800,
+    toneWarningBg: palette.amber100,
+    toneWarningFg: palette.amber900,
+    toneDangerBg: palette.red50,
+    toneDangerFg: palette.red900,
+    toneInfoBg: palette.blue100,
+    toneInfoFg: '#14307F',
+    toneNeutralBg: palette.slate100,
+    toneNeutralFg: palette.navy900,
+    heroBg: palette.black,
+    heroText: palette.white,
+    heroMuted: palette.white,
+    heroAccent: '#BFD3FF',
+    heroProgress: palette.green400,
+    heroTrack: palette.slate600,
   },
 };
 
@@ -197,6 +268,15 @@ export const contrastPairs: ReadonlyArray<{ fg: keyof SemanticColors; bg: keyof 
   { fg: 'borderControl', bg: 'surface', min: 3 },
   { fg: 'focus', bg: 'surface', min: 3 },
   { fg: 'focus', bg: 'page', min: 3 },
+  { fg: 'toneSuccessFg', bg: 'toneSuccessBg', min: 4.5 },
+  { fg: 'toneWarningFg', bg: 'toneWarningBg', min: 4.5 },
+  { fg: 'toneDangerFg', bg: 'toneDangerBg', min: 4.5 },
+  { fg: 'toneInfoFg', bg: 'toneInfoBg', min: 4.5 },
+  { fg: 'toneNeutralFg', bg: 'toneNeutralBg', min: 4.5 },
+  { fg: 'heroText', bg: 'heroBg', min: 4.5 },
+  { fg: 'heroMuted', bg: 'heroBg', min: 4.5 },
+  { fg: 'heroAccent', bg: 'heroBg', min: 4.5 },
+  { fg: 'heroProgress', bg: 'heroBg', min: 3 },
 ];
 
 /* ── Type ──────────────────────────────────────────────────────────────────── */
@@ -290,6 +370,23 @@ export const focusRing = { width: 3, offset: 2 } as const;
 
 /** Minimum touch target in points (accessibility: large, easy taps). */
 export const minTouchTarget = 48;
+
+/**
+ * Mobile shapes and sizes from the mobile journey screens (390-point frames).
+ * The web app uses `radius`; the phone app uses these.
+ */
+export const mobile = {
+  /** Screen side padding. */
+  gutter: 20,
+  radius: { card: 18, hero: 20, button: 16, tile: 14, option: 14, pill: 999 },
+  /** Primary buttons are 54 points tall in the journeys; secondary 50 (both above the 48 minimum). */
+  buttonHeight: 54,
+  secondaryButtonHeight: 50,
+  /** Icon tiles in list rows and feature cards. */
+  iconTile: 44,
+  avatar: 48,
+  tabBarIcon: 22,
+} as const;
 
 /* ── Backwards-compatible aliases (Sprint 1 names) ─────────────────────────── */
 
