@@ -1,0 +1,1051 @@
+# REOS integrations register: the single source of truth for every
+# integration, platform service, vendor account and outside approval REOS needs.
+#
+# Edit this file, then run `pnpm integrations:render` (the pre-commit hook does
+# it for you). README.md in this folder is generated from it; CI fails if the two
+# disagree or this file breaks the schema (register.schema.json).
+#
+# From Sprint 3 (B3.2) this file also seeds the back-office integration and
+# payment-gateway catalogue, so the docs and the product can't disagree.
+#
+# Lead times are estimates for planning; replace them with the vendor's answer
+# once an application is filed. Status values are updated by whoever owns the item.
+
+version: 1
+updated: 2026-11-20
+sprint_one_starts: 2026-12-07 # sprints are 2 weeks; sprint N starts 14 × (N − 1) days later
+pilot: 2027-09-14
+
+entries:
+  # ── Calendar, email and voice ───────────────────────────────────────────────
+  - id: google-workspace
+    name: Google Calendar and Gmail
+    kind: integration
+    category: calendar_email
+    purpose: Two-way calendar and email for every role.
+    launch: enabled
+    build: { sprint: 4, item: B4.1 }
+    owner: client_with_mayura
+    access:
+      route: oauth_verification
+      lead_time_weeks: 10
+      needed_by_sprint: 4
+      status: not_started
+    sandbox: Test users on an unverified Google Cloud project (up to 100) until verification is approved.
+    credentials: platform
+    personal_data: true
+    cost: Free API. Reading the inbox (restricted Gmail scopes) needs a yearly CASA security assessment by a Google-approved assessor, a paid third-party service.
+    notes: >-
+      Calendar and sending mail (gmail.send) need standard OAuth verification only. Reading or
+      labelling the inbox (gmail.readonly, gmail.modify) is a restricted scope: Google requires a
+      CASA Tier 2 assessment, renewed every 12 months, which takes several weeks. Recommendation:
+      launch with calendar + send + a forwarding address for inbound mail, and file for restricted
+      scopes in parallel.
+    fallback: Forward-to-REOS address for inbound mail; ICS calendar feed.
+    sources:
+      - https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification
+      - https://developer.nylas.com/docs/cookbook/use-cases/build/google-oauth-scopes/
+
+  - id: microsoft-365
+    name: Microsoft 365 (Outlook calendar and mail)
+    kind: integration
+    category: calendar_email
+    purpose: Two-way Outlook calendar and mail.
+    launch: enabled
+    build: { sprint: 4, item: B4.2 }
+    owner: client_with_mayura
+    access:
+      route: app_review
+      lead_time_weeks: 3
+      needed_by_sprint: 4
+      status: not_started
+    sandbox: Microsoft 365 Developer Program tenant.
+    credentials: platform
+    personal_data: true
+    cost: Free API.
+    notes: Microsoft Entra multi-tenant app with publisher verification (needs a Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting.
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview
+
+  - id: aws-speech
+    name: Amazon Transcribe and Polly (speech)
+    kind: platform_service
+    category: voice
+    purpose: Voice to-dos and notes (speech to text) and audio-only lessons (text to speech).
+    launch: not_applicable
+    build: { sprint: 4, item: B4.3 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 4
+      status: not_started
+    sandbox: Same AWS account (staging).
+    credentials: platform
+    personal_data: true
+    cost: Pay per minute / per character.
+
+  # ── Payments ────────────────────────────────────────────────────────────────
+  - id: stripe
+    name: Stripe (Checkout, Billing, Tax)
+    kind: integration
+    category: payments
+    purpose: Web checkout, subscriptions, invoices and Texas sales tax.
+    launch: enabled
+    build: { sprint: 5, item: B5.1 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 5
+      status: not_started
+    sandbox: Stripe test mode.
+    credentials: platform
+    personal_data: true
+    cost: Per-transaction fees; Stripe Tax and Billing add a percentage.
+    notes: Account must be in the client's Texas entity. Card data never touches REOS (Stripe Checkout).
+
+  - id: stripe-connect
+    name: Stripe Connect (payouts)
+    kind: integration
+    category: payments
+    purpose: Payouts to schools, instructors and mentors; tenants can connect their own Stripe account.
+    launch: enabled
+    build: { sprint: 5, item: B5.2 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 2
+      needed_by_sprint: 5
+      status: not_started
+    sandbox: Stripe test mode with test connected accounts.
+    credentials: both
+    personal_data: true
+    cost: Per-payout and per-active-account fees.
+    notes: Platform profile and connected-account onboarding review by Stripe before live payouts.
+
+  - id: paypal
+    name: PayPal
+    kind: integration
+    category: payments
+    purpose: Alternative web checkout, switchable per state and product.
+    launch: enabled
+    build: { sprint: 5, item: B5.2 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 2
+      needed_by_sprint: 5
+      status: not_started
+    sandbox: PayPal developer sandbox.
+    credentials: platform
+    personal_data: true
+    cost: Per-transaction fees.
+    notes: PayPal Business account; advanced card processing needs PayPal's approval.
+
+  - id: authorize-net
+    name: Authorize.net
+    kind: integration
+    category: payments
+    purpose: Gateway for associations and brokerages that already bank through Authorize.net.
+    launch: enabled
+    build: { sprint: 5, item: B5.2 }
+    owner: client
+    access:
+      route: partner_application
+      lead_time_weeks: 3
+      needed_by_sprint: 5
+      status: not_started
+    sandbox: Authorize.net sandbox account (free, instant).
+    credentials: both
+    personal_data: true
+    cost: Monthly gateway fee plus per-transaction fees; needs a merchant account.
+    notes: Use Accept Hosted so card data never touches REOS.
+
+  # ── Notifications and messaging ─────────────────────────────────────────────
+  - id: expo-push
+    name: Expo push notifications (APNs, FCM)
+    kind: platform_service
+    category: notifications
+    purpose: Push notifications to the iOS and Android apps.
+    launch: not_applicable
+    build: { sprint: 6, item: B6.2 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 6
+      status: not_started
+    sandbox: Development builds.
+    credentials: platform
+    personal_data: false
+    cost: Included with Expo.
+    notes: Needs the Apple push key and Firebase project from the store accounts.
+
+  - id: amazon-ses
+    name: Amazon SES (email)
+    kind: platform_service
+    category: notifications
+    purpose: Transactional email, digests and the morning brief.
+    launch: not_applicable
+    build: { sprint: 6, item: B6.2 }
+    owner: client
+    access:
+      route: app_review
+      lead_time_weeks: 1
+      needed_by_sprint: 6
+      status: not_started
+    sandbox: SES sandbox (verified recipients only).
+    credentials: platform
+    personal_data: true
+    cost: Per 1,000 emails.
+    notes: Request production access; set up SPF, DKIM and DMARC on the product domain.
+
+  - id: twilio-sms
+    name: Twilio SMS
+    kind: platform_service
+    category: notifications
+    purpose: SMS alerts and codes, with quiet hours.
+    launch: not_applicable
+    build: { sprint: 6, item: B6.2 }
+    owner: client
+    access:
+      route: app_review
+      lead_time_weeks: 4
+      needed_by_sprint: 6
+      status: not_started
+    sandbox: Twilio test credentials and a trial number.
+    credentials: platform
+    personal_data: true
+    cost: Per message plus one-off and monthly 10DLC registration fees.
+    notes: >-
+      US A2P 10DLC brand registration (up to about a week) and campaign vetting (8–10 business
+      days per submission; a rejection restarts it). Needs a live privacy policy and terms on the
+      product domain first.
+    sources:
+      - https://help.justcall.io/en/articles/15516614-what-are-the-timelines-and-processes-for-10dlc-approval
+
+  # ── Video and media ─────────────────────────────────────────────────────────
+  - id: livekit
+    name: LiveKit Cloud
+    kind: platform_service
+    category: video
+    purpose: Mentor sessions and live classes (rooms, whiteboard, consented recording).
+    launch: not_applicable
+    build: { sprint: 6, item: B6.3 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 6
+      status: not_started
+    sandbox: Free tier project.
+    credentials: platform
+    personal_data: true
+    cost: Per participant-minute.
+
+  - id: mux
+    name: Mux Video
+    kind: platform_service
+    category: video
+    purpose: Lesson video streaming and offline download.
+    launch: not_applicable
+    build: { sprint: 5, item: A5.3 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 5
+      status: not_started
+    sandbox: Mux test environment.
+    credentials: platform
+    personal_data: false
+    cost: Per minute encoded, stored and delivered.
+
+  - id: synthesia
+    name: Synthesia (AI avatar lessons; HeyGen fallback)
+    kind: platform_service
+    category: ai
+    purpose: Render AI avatar lesson videos from approved scripts.
+    launch: not_applicable
+    build: { sprint: 7, item: A7.3 }
+    owner: client
+    access:
+      route: contract
+      lead_time_weeks: 3
+      needed_by_sprint: 7
+      status: not_started
+    sandbox: Trial workspace; API needs an Enterprise plan.
+    credentials: platform
+    personal_data: true
+    cost: Enterprise plan (quote).
+    notes: Instructor avatar consent template must be signed before any instructor likeness is used.
+    fallback: HeyGen API; human-recorded video if TREC approval of avatar courses is delayed.
+
+  - id: aws-bedrock-claude
+    name: Claude on Amazon Bedrock
+    kind: platform_service
+    category: ai
+    purpose: AI answers with sources, course drafting, contract review, role-play.
+    launch: not_applicable
+    build: { sprint: 7, item: A7.3 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 7
+      status: not_started
+    sandbox: Staging AWS account, us-east-2.
+    credentials: platform
+    personal_data: true
+    cost: Per token.
+    notes: Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer data.
+
+  - id: aws-textract
+    name: Amazon Textract
+    kind: platform_service
+    category: ai
+    purpose: Read uploaded CE certificates and licences.
+    launch: not_applicable
+    build: { sprint: 10, item: B10.3 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 10
+      status: not_started
+    sandbox: Staging AWS account.
+    credentials: platform
+    personal_data: true
+    cost: Per page.
+
+  # ── CRM ─────────────────────────────────────────────────────────────────────
+  - id: follow-up-boss
+    name: Follow Up Boss
+    kind: integration
+    category: crm
+    purpose: Two-way contacts, notes and tasks; newest change wins.
+    launch: enabled
+    build: { sprint: 7, item: B7.2 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 4
+      needed_by_sprint: 7
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Free trial account; register a system key.
+    credentials: tenant
+    personal_data: true
+    cost: Free API; agents use their own Follow Up Boss plan.
+    fallback: CSV import; email forwarding.
+
+  - id: boldtrail
+    name: kvCORE / BoldTrail
+    kind: integration
+    category: crm
+    purpose: Two-way contacts, notes and tasks.
+    launch: enabled
+    build: { sprint: 7, item: B7.3 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 8
+      needed_by_sprint: 7
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: CSV import.
+
+  - id: lofty
+    name: Lofty
+    kind: integration
+    category: crm
+    purpose: Two-way contacts, notes and tasks.
+    launch: enabled
+    build: { sprint: 8, item: B8.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 6
+      needed_by_sprint: 8
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: CSV import.
+
+  - id: salesforce
+    name: Salesforce
+    kind: integration
+    category: crm
+    purpose: Contacts, leads, tasks and activities for brokerages on Salesforce.
+    launch: enabled
+    build: { sprint: 8, item: B8.2 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 2
+      needed_by_sprint: 8
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Free Developer Edition org.
+    credentials: tenant
+    personal_data: true
+    cost: Free to connect; AppExchange listing (optional, later) needs a paid security review.
+
+  # ── Transactions and e-signature ────────────────────────────────────────────
+  - id: lone-wolf
+    name: Lone Wolf Transactions
+    kind: integration
+    category: transactions
+    purpose: Deals, documents and deadlines; deadline alerts; coordinator sharing.
+    launch: enabled
+    build: { sprint: 9, item: B9.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 10
+      needed_by_sprint: 9
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: both
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: Email forwarding of deal documents.
+
+  - id: dotloop
+    name: dotloop
+    kind: integration
+    category: transactions
+    purpose: Loops, documents and deadlines.
+    launch: enabled
+    build: { sprint: 9, item: B9.2 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 6
+      needed_by_sprint: 9
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    personal_data: true
+    cost: Partner terms on application.
+
+  - id: skyslope
+    name: SkySlope
+    kind: integration
+    category: transactions
+    purpose: Files, documents and deadlines.
+    launch: enabled
+    build: { sprint: 9, item: B9.2 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 6
+      needed_by_sprint: 9
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    personal_data: true
+    cost: Partner terms on application.
+
+  - id: docusign
+    name: DocuSign
+    kind: integration
+    category: esignature
+    purpose: Send, track and store signatures from REOS.
+    launch: enabled
+    build: { sprint: 9, item: B9.3 }
+    owner: mayura
+    access:
+      route: app_review
+      lead_time_weeks: 2
+      needed_by_sprint: 9
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Free developer (demo) account.
+    credentials: tenant
+    personal_data: true
+    cost: Free to integrate; signers use the customer's DocuSign plan.
+    notes: Production go-live review after enough successful calls in the demo environment.
+
+  # ── MLS data (RESO Web API) ─────────────────────────────────────────────────
+  - id: mls-har
+    name: HAR MLS (Houston)
+    kind: integration
+    category: mls
+    purpose: Agents' listings for posts, CMAs, public pages and open houses.
+    launch: enabled
+    build: { sprint: 10, item: B10.1 }
+    owner: client
+    access:
+      route: data_licence
+      lead_time_weeks: 8
+      needed_by_sprint: 10
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Bridge test dataset.
+    credentials: platform
+    personal_data: false
+    cost: MLS licence fees per feed type (IDX, VOW, back office) plus Bridge terms.
+    notes: Delivered through the Bridge API (dataset `har`). Needs a licensed broker of record as sponsor. HAR and SABOR share listings with each other's subscribers (since May 2023).
+    sources:
+      - https://www.reso.org/web-api-examples/mls/houston-assoc-of-realtors
+      - https://sabor.com/News-Events-and-Education/News/SABOR-News/SABOR-and-HAR-Datashare
+
+  - id: mls-ntreis
+    name: NTREIS (North Texas)
+    kind: integration
+    category: mls
+    purpose: Agents' listings for posts, CMAs, public pages and open houses.
+    launch: enabled
+    build: { sprint: 10, item: B10.1 }
+    owner: client
+    access:
+      route: data_licence
+      lead_time_weeks: 8
+      needed_by_sprint: 10
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Trestle test feed.
+    credentials: platform
+    personal_data: false
+    cost: MLS licence fees plus Trestle terms.
+    notes: NTREIS presents Trestle (Cotality) as its Web API feed. Needs a broker sponsor.
+    sources:
+      - https://ntreis.net/?p=10255
+
+  - id: mls-unlock
+    name: Unlock MLS / ACTRIS (Austin)
+    kind: integration
+    category: mls
+    purpose: Agents' listings for posts, CMAs, public pages and open houses.
+    launch: enabled
+    build: { sprint: 10, item: B10.1 }
+    owner: client
+    access:
+      route: data_licence
+      lead_time_weeks: 6
+      needed_by_sprint: 10
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: On approval.
+    credentials: platform
+    personal_data: false
+    cost: Pricing given by MLS Grid after registration.
+    notes: Register with MLS Grid first (Unlock MLS's admin tool), with at least one active Unlock subscriber signed up; then deliver through MLS Grid, Trestle or Bridge. Contact mlsdata@unlockmls.com.
+    sources:
+      - https://www.unlockmls.com/data-licensing
+
+  - id: mls-sabor
+    name: SABOR MLS (San Antonio)
+    kind: integration
+    category: mls
+    purpose: Agents' listings for posts, CMAs, public pages and open houses.
+    launch: enabled
+    build: { sprint: 10, item: B10.1 }
+    owner: client
+    access:
+      route: data_licence
+      lead_time_weeks: 8
+      needed_by_sprint: 10
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: To confirm with SABOR.
+    credentials: platform
+    personal_data: false
+    cost: SABOR IDX data feed fee plus vendor terms.
+    notes: Delivery vendor not published; confirm with SABOR's MLS department (SABOR runs connectMLS and publishes a third-party vendor agreement).
+    sources:
+      - https://SABOR.COM/-/media/Project/SABOR/SABOR/SABOR/PDFs/MLS/3RD-PARTY-VENDOR.pdf
+
+  # ── Lookups and regulatory reporting ────────────────────────────────────────
+  - id: trec-licence
+    name: TREC licence lookup
+    kind: integration
+    category: lookups
+    purpose: Verify agent, broker and inspector licences in seconds.
+    launch: enabled
+    build: { sprint: 10, item: B10.3 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 10
+      status: not_started
+    sandbox: Public data.
+    credentials: none
+    personal_data: true
+    cost: Free public data.
+    notes: Use TREC's published licence-holder data files rather than scraping the search pages.
+
+  - id: trec-ce-reporting
+    name: TREC CE completion reporting
+    kind: integration
+    category: lookups
+    purpose: Report CE completions to TREC (by the school, or REOS on its behalf).
+    launch: enabled
+    build: { sprint: 11, item: A11.3 }
+    owner: nelle
+    access:
+      route: contract
+      lead_time_weeks: 6
+      needed_by_sprint: 11
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: None; test with TREC's guidance before go-live.
+    credentials: tenant
+    personal_data: true
+    cost: Per TREC's provider rules.
+    notes: Open question in the PRD (school vs REOS submits). Needs the school's education-provider account.
+
+  - id: nmls-lookup
+    name: NMLS Consumer Access
+    kind: integration
+    category: lookups
+    purpose: Verify mortgage loan officer licences for service providers.
+    launch: enabled
+    build: { sprint: 10, item: B10.3 }
+    owner: mayura
+    access:
+      route: contract
+      lead_time_weeks: 4
+      needed_by_sprint: 10
+      status: not_started
+    sandbox: Public lookup site.
+    credentials: none
+    personal_data: true
+    cost: To confirm.
+    notes: Confirm an allowed automated route with NMLS before building; the public lookup's terms may restrict automated queries.
+    fallback: Manual verification by REOS staff with a screenshot on file.
+
+  - id: tdi-lookup
+    name: Texas Department of Insurance licence lookup
+    kind: integration
+    category: lookups
+    purpose: Verify insurance agent licences for service providers.
+    launch: enabled
+    build: { sprint: 10, item: B10.3 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 2
+      needed_by_sprint: 10
+      status: not_started
+    sandbox: Public data.
+    credentials: none
+    personal_data: true
+    cost: Free public data (to confirm).
+    fallback: Manual verification.
+
+  - id: pearson-vue
+    name: Pearson VUE (Texas exam booking)
+    kind: integration
+    category: lookups
+    purpose: Hand-off link to book the Texas licence exam; no API.
+    launch: enabled
+    build: { sprint: 10, item: A10.3 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 10
+      status: not_needed
+    sandbox: Not needed.
+    credentials: none
+    personal_data: false
+    cost: None.
+
+  # ── Social channels ─────────────────────────────────────────────────────────
+  - id: meta
+    name: Instagram and Facebook
+    kind: integration
+    category: social
+    purpose: Post, schedule and read insights.
+    launch: enabled
+    build: { sprint: 11, item: B11.1 }
+    owner: client_with_mayura
+    access:
+      route: app_review
+      lead_time_weeks: 6
+      needed_by_sprint: 11
+      status: not_started
+    sandbox: Development-mode app with test users.
+    credentials: platform
+    personal_data: true
+    cost: Free API.
+    notes: Business verification of the client's company, then app review for each publishing permission with screencasts.
+
+  - id: linkedin
+    name: LinkedIn
+    kind: integration
+    category: social
+    purpose: Post to profiles and company pages; insights.
+    launch: beta
+    build: { sprint: 11, item: B11.2 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 8
+      needed_by_sprint: 11
+      status: not_started
+    sandbox: Development app.
+    credentials: platform
+    personal_data: true
+    cost: Free API.
+    notes: Posting as a member is self-serve; company pages and analytics need Community Management API approval. Launches as beta per the PRD.
+
+  - id: google-business-profile
+    name: Google Business Profile
+    kind: integration
+    category: social
+    purpose: Posts and insights on the agent's Google listing.
+    launch: enabled
+    build: { sprint: 11, item: B11.2 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 4
+      needed_by_sprint: 11
+      status: not_started
+    sandbox: Same Google Cloud project as Google Workspace.
+    credentials: platform
+    personal_data: true
+    cost: Free API.
+    notes: API access request form; covered by the same OAuth verification as Google Workspace.
+
+  - id: youtube
+    name: YouTube
+    kind: integration
+    category: social
+    purpose: Short video posting and insights.
+    launch: enabled
+    build: { sprint: 11, item: B11.3 }
+    owner: client_with_mayura
+    access:
+      route: oauth_verification
+      lead_time_weeks: 6
+      needed_by_sprint: 11
+      status: not_started
+    sandbox: Same Google Cloud project; unverified apps upload as private.
+    credentials: platform
+    personal_data: true
+    cost: Free API; request a quota increase for scale.
+    notes: Uploads stay private until the API audit is passed.
+
+  - id: tiktok
+    name: TikTok
+    kind: integration
+    category: social
+    purpose: Short video posting and insights.
+    launch: enabled
+    build: { sprint: 11, item: B11.3 }
+    owner: client_with_mayura
+    access:
+      route: app_review
+      lead_time_weeks: 6
+      needed_by_sprint: 11
+      status: not_started
+    sandbox: Sandbox app; unaudited apps can only post privately.
+    credentials: platform
+    personal_data: true
+    cost: Free API.
+    notes: Content Posting API audit before public posting.
+
+  # ── Accounting, maps, association ───────────────────────────────────────────
+  - id: mapbox
+    name: Mapbox
+    kind: platform_service
+    category: maps
+    purpose: Provider service areas on a map.
+    launch: not_applicable
+    build: { sprint: 15, item: B15.2 }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 15
+      status: not_started
+    sandbox: Free tier.
+    credentials: platform
+    personal_data: false
+    cost: Free tier, then per map load.
+
+  - id: quickbooks-online
+    name: QuickBooks Online
+    kind: integration
+    category: accounting
+    purpose: Export split sheets and payouts for brokerages.
+    launch: enabled
+    build: { sprint: 17, item: B17.3 }
+    owner: client_with_mayura
+    access:
+      route: app_review
+      lead_time_weeks: 3
+      needed_by_sprint: 17
+      status: not_started
+    sandbox: Intuit developer sandbox company.
+    credentials: tenant
+    personal_data: true
+    cost: Free API.
+    notes: Production keys need Intuit's app assessment questionnaire.
+
+  - id: texas-realtors-membership
+    name: Texas REALTORS® single sign-on and member data (NRDS)
+    kind: integration
+    category: association
+    purpose: Members sign in with their association login; member records, CE and programs stay in sync.
+    launch: enabled
+    build: { sprint: 18, item: A18.1 }
+    owner: client
+    access:
+      route: contract
+      lead_time_weeks: 16
+      needed_by_sprint: 18
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Ask for a test environment of the membership system.
+    credentials: tenant
+    personal_data: true
+    cost: Contract.
+    notes: Open PRD question which membership system and fields. Data-sharing agreement and security review usually precede access; start the conversation now.
+
+  # ── Operations ──────────────────────────────────────────────────────────────
+  - id: sentry
+    name: Sentry
+    kind: platform_service
+    category: operations
+    purpose: Error tracking for web, API and mobile.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.3' }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Separate staging project.
+    credentials: platform
+    personal_data: true
+    cost: Team plan.
+    notes: Scrub personal data before sending; US data region.
+
+  - id: posthog
+    name: PostHog
+    kind: platform_service
+    category: operations
+    purpose: Product analytics, funnels and session insights.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.4' }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Separate staging project.
+    credentials: platform
+    personal_data: true
+    cost: Usage-based; generous free tier.
+    notes: US cloud; respect consent and Texas privacy law (TDPSA).
+
+  - id: grafana-otel
+    name: OpenTelemetry and Grafana
+    kind: platform_service
+    category: operations
+    purpose: Tracing, metrics and dashboards.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.4' }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Staging stack.
+    credentials: platform
+    personal_data: false
+    cost: Grafana Cloud free tier or self-hosted.
+
+  # ── Vendor accounts (no catalogue entry) ────────────────────────────────────
+  - id: github
+    name: GitHub repository and Actions
+    kind: account
+    category: platform
+    purpose: Source code, pull requests and CI.
+    launch: not_applicable
+    build: { sprint: 1, item: '1.1' }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 1
+      status: approved
+      applied_on: 2026-11-19
+      approved_on: 2026-11-20
+    sandbox: Not needed.
+    credentials: platform
+    personal_data: false
+    cost: Free; GitHub Pro or Team needed for rulesets to be enforced once the repository is private.
+    notes: Repository srinivas182/reos-mcs with CI, Lefthook, Renovate and a `main` ruleset.
+
+  - id: product-domain
+    name: Product domain
+    kind: account
+    category: platform
+    purpose: Web app, API, email sender and tenant custom domains.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.1' }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Not needed.
+    credentials: none
+    personal_data: false
+    cost: Domain registration.
+    notes: Decide the name (for example reos.com); SES, Twilio 10DLC and Meta verification all need it live with a privacy policy.
+
+  - id: aws-organisation
+    name: AWS organisation
+    kind: account
+    category: platform
+    purpose: Staging and production cells in us-east-2, recovery in us-west-2.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.1' }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Separate staging account.
+    credentials: platform
+    personal_data: true
+    cost: Usage.
+    notes: Billing in the client's name; Mayura gets admin roles through IAM Identity Center, never root keys.
+
+  - id: cloudflare
+    name: Cloudflare
+    kind: account
+    category: platform
+    purpose: DNS, WAF and custom domains for tenants (Cloudflare for SaaS).
+    launch: not_applicable
+    build: { sprint: 2, item: '2.1' }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Staging zone.
+    credentials: platform
+    personal_data: false
+    cost: Pro or Business plan plus Cloudflare for SaaS per custom hostname.
+
+  - id: apple-developer
+    name: Apple Developer Program (organisation)
+    kind: account
+    category: platform
+    purpose: TestFlight and App Store releases; push notification key.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.3' }
+    owner: client
+    access:
+      route: app_review
+      lead_time_weeks: 4
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Not needed.
+    credentials: platform
+    personal_data: false
+    cost: Yearly membership fee.
+    notes: Organisation enrolment needs a D-U-N-S number for the client's legal entity; request it first.
+
+  - id: google-play
+    name: Google Play Console (organisation)
+    kind: account
+    category: platform
+    purpose: Android internal testing and Play Store releases.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.3' }
+    owner: client
+    access:
+      route: app_review
+      lead_time_weeks: 2
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Not needed.
+    credentials: platform
+    personal_data: false
+    cost: One-off registration fee.
+    notes: Organisation identity verification (D-U-N-S also used here).
+
+  - id: expo
+    name: Expo organisation (EAS)
+    kind: account
+    category: platform
+    purpose: Mobile builds, store submission and over-the-air updates.
+    launch: not_applicable
+    build: { sprint: 2, item: '2.3' }
+    owner: mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 2
+      status: not_started
+    sandbox: Not needed.
+    credentials: platform
+    personal_data: false
+    cost: EAS Production plan.
+
+  # ── Outside approvals ───────────────────────────────────────────────────────
+  - id: trec-course-approvals
+    name: TREC approval of REOS-delivered courses
+    kind: approval
+    category: regulatory
+    purpose: Courses count for qualifying education and CE only once TREC approves them, including AI avatar delivery.
+    launch: not_applicable
+    build: { sprint: 7, item: A7.1 }
+    owner: nelle
+    access:
+      route: contract
+      lead_time_weeks: 16
+      needed_by_sprint: 19
+      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
+      status: not_started
+    sandbox: Not applicable.
+    credentials: none
+    personal_data: false
+    cost: TREC course filing fees.
+    notes: Biggest schedule risk in the PRD; start with Nelle's existing approved courses in phase 0.
+    fallback: Launch with human-recorded video for approved courses.
+
+  - id: respa-review
+    name: RESPA counsel review
+    kind: approval
+    category: regulatory
+    purpose: Confirm provider plans and rewards are RESPA-safe before the provider marketplace is built.
+    launch: not_applicable
+    build: { sprint: 15, item: B15.2 }
+    owner: client
+    access:
+      route: contract
+      lead_time_weeks: 6
+      needed_by_sprint: 15
+      status: not_started
+    sandbox: Not applicable.
+    credentials: none
+    personal_data: false
+    cost: Legal fees.
