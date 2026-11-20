@@ -26,6 +26,19 @@ final readonly class SignInOptions
         ];
     }
 
+    /**
+     * Whether a provider runs on demo data (outside production): the phone
+     * app then signs in through the browser's persona picker, even for Apple.
+     */
+    public function demo(string $integration): bool
+    {
+        $definition = $this->catalogue->find($integration);
+
+        return $definition !== null
+            && ! app()->isProduction()
+            && $this->hub->status($definition)->effectiveMode() === IntegrationMode::Simulator;
+    }
+
     private function usable(string $integration): bool
     {
         $definition = $this->catalogue->find($integration);

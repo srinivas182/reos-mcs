@@ -14,7 +14,7 @@ jest.mock('posthog-react-native', () => ({
   },
 }));
 
-const off = { environment: 'production', release: '1.0.0', sentry: null, posthog: null };
+const off = { environment: 'production', release: '1.0.0', sentry: null, posthog: null, sign_in: { google: true, apple: true, phone: true, demo: false } };
 
 const clientReturning = (status: number, body: unknown) => {
   const fetch = jest.fn(async (_request: Request) =>

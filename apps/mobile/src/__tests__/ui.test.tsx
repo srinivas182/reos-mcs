@@ -7,7 +7,7 @@ import { I18nextProvider } from 'react-i18next';
 import { i18n } from '@/lib/i18n';
 import { Calculator } from 'lucide-react-native';
 
-import { AskBar, Button, Callout, ChatBubble, Chip, EmptyState, ListRow, OfflineBanner, OptionGroup, PillGroup, ProgressBar, ProgressRing, Sheet, SwitchRow, TabBar, Text, TextField, ToastProvider, useUndoToast } from '@/ui';
+import { AskBar, Button, Callout, ChatBubble, Chip, CodeInput, EmptyState, ListRow, OfflineBanner, OptionGroup, PillGroup, ProgressBar, ProgressRing, Sheet, SwitchRow, TabBar, Text, TextField, ToastProvider, useUndoToast } from '@/ui';
 
 const wrap = async (ui: ReactNode) => render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
 
@@ -292,5 +292,19 @@ describe('withAlpha', () => {
     const { withAlpha } = jest.requireActual<typeof import('@/ui/tones')>('@/ui/tones');
     expect(withAlpha('#15803D', 0.25)).toBe('rgba(21, 128, 61, 0.25)');
     expect(withAlpha('not-a-colour', 0.5)).toBe('not-a-colour');
+  });
+});
+
+describe('CodeInput', () => {
+  it('is one labelled field that keeps digits only', async () => {
+    const onChange = jest.fn();
+    await render(<CodeInput label="Six-digit code" value="48" onChange={onChange} />);
+
+    const field = screen.getByLabelText('Six-digit code');
+    expect(field.props.textContentType).toBe('oneTimeCode');
+    expect(field.props.autoComplete).toBe('sms-otp');
+
+    await fireEvent.changeText(field, '48-29 13 7');
+    expect(onChange).toHaveBeenCalledWith('482913');
   });
 });

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Identity\IdentityProvider;
 use App\Identity\WebOAuth;
 use App\Services\Identity\AccountResolver;
+use App\Services\Identity\AppSignInHandoff;
 use App\Services\Identity\WebSignIn;
 use Database\Seeders\Demo\Persona;
 use Database\Seeders\Demo\Personas;
@@ -22,12 +23,19 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /** "Continue with Google" and "Continue with Apple" on the web. */
 final class SocialSignInController extends Controller
 {
-    public function redirect(IdentityProvider $provider, Request $request, WebOAuth $oauth): RedirectResponse
+    public function redirect(IdentityProvider $provider, Request $request, WebOAuth $oauth, AppSignInHandoff $app): RedirectResponse
     {
+        // Started from the phone app (system browser with a PKCE challenge)?
+        $app->begin($request);
+
+        if (! $app->pending($request) && $request->user() !== null) {
+            return redirect()->route('dashboard');
+        }
+
         return redirect()->away($oauth->start($provider, $request));
     }
 
-    public function callback(Request $request, WebOAuth $oauth, AccountResolver $accounts, WebSignIn $signIn): RedirectResponse
+    public function callback(Request $request, WebOAuth $oauth, AccountResolver $accounts, WebSignIn $signIn, AppSignInHandoff $app): RedirectResponse
     {
         $provider = str_contains($request->path(), 'apple') ? IdentityProvider::Apple : IdentityProvider::Google;
 
@@ -46,7 +54,11 @@ final class SocialSignInController extends Controller
             $request->merge(is_array($answer) ? $answer : []);
         }
         ['claims' => $claims, 'name' => $name] = $oauth->finish($provider, $request);
-        ['user' => $user] = $accounts->fromIdentity($claims, $name);
+        ['user' => $user, 'created' => $created] = $accounts->fromIdentity($claims, $name);
+
+        if ($app->pending($request)) {
+            return redirect()->away($app->finish($request, $user, $provider->value, $created));
+        }
 
         return $signIn->complete($request, $user, $provider->value);
     }

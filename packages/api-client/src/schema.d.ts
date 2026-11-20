@@ -25,6 +25,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Swap a browser sign-in code for a device token
+         * @description The app opens `/auth/{google|apple}/redirect?app_challenge=…` in the
+         *     system browser. When the person has signed in, the browser returns to
+         *     `reos://auth?code=…`. Send that code with the PKCE verifier. Codes work
+         *     once, for two minutes.
+         */
+        post: operations["auth.exchange"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -215,6 +238,16 @@ export interface components {
                 key: string;
                 host: string;
             } | null;
+            /**
+             * @description Which sign-in buttons to show. `demo` means Google and Apple run
+             *     on demo data: sign in through the browser's persona picker.
+             */
+            sign_in: {
+                google: boolean;
+                apple: boolean;
+                phone: boolean;
+                demo: boolean;
+            };
         };
         /** DeviceResource */
         DeviceResource: {
@@ -227,6 +260,21 @@ export interface components {
             signed_in_at: string | null;
             /** @description The device making this request. */
             current: boolean;
+        };
+        /** ExchangeSignInRequest */
+        ExchangeSignInRequest: {
+            /** @description The one-time code the browser returned to the app with. */
+            code: string;
+            /** @description The PKCE verifier the app created before opening the browser. */
+            code_verifier: string;
+            device: {
+                /** Format: uuid */
+                id: string;
+                name: string;
+                /** @enum {string} */
+                platform: "ios" | "android" | "web";
+                app_version?: string | null;
+            };
         };
         /** HealthResource */
         HealthResource: {
@@ -256,7 +304,7 @@ export interface components {
          * @description One-tap sign-in providers, and their entries in the integrations register.
          * @enum {string}
          */
-        IdentityProvider: IdentityProvider;
+        IdentityProvider: "google" | "apple";
         /** IdentitySignInRequest */
         IdentitySignInRequest: {
             /** @description The ID token the Google or Apple SDK returned on the phone. */
@@ -268,7 +316,7 @@ export interface components {
                 id: string;
                 name: string;
                 /** @enum {string} */
-                platform: IdentitySignInRequestDevicePlatform;
+                platform: "ios" | "android" | "web";
                 app_version?: string | null;
             };
         };
@@ -284,11 +332,11 @@ export interface components {
             /** @description How this person can sign in. */
             sign_in_methods: string[];
             /** @enum {string} */
-            locale: MeResourceLocale;
+            locale: "en" | "es";
             /** @enum {string} */
-            appearance: MeResourceAppearance;
+            appearance: "system" | "light" | "dark" | "contrast";
             /** @enum {string} */
-            text_size: MeResourceText_size;
+            text_size: "standard" | "large" | "largest";
         };
         /** PhoneStartRequest */
         PhoneStartRequest: {
@@ -308,7 +356,7 @@ export interface components {
                 id: string;
                 name: string;
                 /** @enum {string} */
-                platform: PhoneVerifyRequestDevicePlatform;
+                platform: "ios" | "android" | "web";
                 app_version?: string | null;
             };
         };
@@ -386,7 +434,9 @@ export interface components {
 }
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
+export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
+export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
@@ -416,6 +466,43 @@ export interface operations {
                     "application/json": components["schemas"]["AppConfigResource"];
                 };
             };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "auth.exchange": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExchangeSignInRequest"];
+            };
+        };
+        responses: {
+            /** @description `SignInResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignInResource"];
+                };
+            };
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -678,33 +765,4 @@ export interface operations {
             };
         };
     };
-}
-export enum IdentityProvider {
-    google = "google",
-    apple = "apple"
-}
-export enum IdentitySignInRequestDevicePlatform {
-    ios = "ios",
-    android = "android",
-    web = "web"
-}
-export enum MeResourceLocale {
-    en = "en",
-    es = "es"
-}
-export enum MeResourceAppearance {
-    system = "system",
-    light = "light",
-    dark = "dark",
-    contrast = "contrast"
-}
-export enum MeResourceText_size {
-    standard = "standard",
-    large = "large",
-    largest = "largest"
-}
-export enum PhoneVerifyRequestDevicePlatform {
-    ios = "ios",
-    android = "android",
-    web = "web"
 }

@@ -33,6 +33,8 @@ return [
     */
     'mobile' => [
         'bundle_id' => env('REOS_MOBILE_BUNDLE_ID', 'com.reos.app'),
+        // Where browser sign-in returns to the app (scheme in apps/mobile/app.json).
+        'redirect' => env('REOS_MOBILE_REDIRECT', 'reos://auth'),
     ],
 
 ];

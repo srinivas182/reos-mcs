@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AppConfigResource;
 use App\Monitoring\MonitoringRuntime;
+use App\Services\Identity\SignInOptions;
 
 /**
  * Settings the phone app reads when it starts: which error tracking and
@@ -23,8 +24,16 @@ final class AppConfigController extends Controller
      *
      * @unauthenticated
      */
-    public function __invoke(MonitoringRuntime $runtime): AppConfigResource
+    public function __invoke(MonitoringRuntime $runtime, SignInOptions $signIn): AppConfigResource
     {
-        return new AppConfigResource($runtime->clientConfig('mobile'));
+        $options = $signIn->available();
+
+        return new AppConfigResource([
+            ...$runtime->clientConfig('mobile'),
+            'sign_in' => [
+                ...$options,
+                'demo' => $signIn->demo('google-sign-in') || $signIn->demo('apple-sign-in'),
+            ],
+        ]);
     }
 }

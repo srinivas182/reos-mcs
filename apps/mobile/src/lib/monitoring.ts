@@ -35,6 +35,11 @@ export async function fetchAppConfig(client: ApiClient = api()): Promise<AppConf
   }
 }
 
+let config: Promise<AppConfig | null> | undefined;
+
+/** The app's settings for this launch (fetched once; sign-in buttons and monitoring both use it). */
+export const appConfig = (): Promise<AppConfig | null> => (config ??= fetchAppConfig());
+
 /** Starts whatever is switched on. Runs once per app launch. */
 export function startMonitoring(config: AppConfig | null): void {
   if (started || config === null) {
@@ -81,4 +86,5 @@ export function identify(userId: number | null): void {
 export function resetMonitoring(): void {
   analytics = null;
   started = false;
+  config = undefined;
 }

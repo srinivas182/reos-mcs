@@ -54,6 +54,61 @@
                 "security": []
             }
         },
+        "/auth/exchange": {
+            "post": {
+                "operationId": "auth.exchange",
+                "description": "The app opens `/auth/{google|apple}/redirect?app_challenge=\u2026` in the\nsystem browser. When the person has signed in, the browser returns to\n`reos://auth?code=\u2026`. Send that code with the PKCE verifier. Codes work\nonce, for two minutes.",
+                "summary": "Swap a browser sign-in code for a device token",
+                "tags": [
+                    "ExchangeSignIn"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExchangeSignInRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`SignInResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignInResource"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
         "/health": {
             "get": {
                 "operationId": "health",
@@ -444,13 +499,38 @@
                             "key",
                             "host"
                         ]
+                    },
+                    "sign_in": {
+                        "type": "object",
+                        "description": "Which sign-in buttons to show. `demo` means Google and Apple run\non demo data: sign in through the browser's persona picker.",
+                        "properties": {
+                            "google": {
+                                "type": "boolean"
+                            },
+                            "apple": {
+                                "type": "boolean"
+                            },
+                            "phone": {
+                                "type": "boolean"
+                            },
+                            "demo": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "google",
+                            "apple",
+                            "phone",
+                            "demo"
+                        ]
                     }
                 },
                 "required": [
                     "environment",
                     "release",
                     "sentry",
-                    "posthog"
+                    "posthog",
+                    "sign_in"
                 ],
                 "title": "AppConfigResource"
             },
@@ -503,6 +583,62 @@
                     "current"
                 ],
                 "title": "DeviceResource"
+            },
+            "ExchangeSignInRequest": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "The one-time code the browser returned to the app with.",
+                        "minLength": 48,
+                        "maxLength": 48
+                    },
+                    "code_verifier": {
+                        "type": "string",
+                        "description": "The PKCE verifier the app created before opening the browser.",
+                        "minLength": 43,
+                        "maxLength": 128
+                    },
+                    "device": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "name": {
+                                "type": "string",
+                                "maxLength": 100
+                            },
+                            "platform": {
+                                "type": "string",
+                                "enum": [
+                                    "ios",
+                                    "android",
+                                    "web"
+                                ]
+                            },
+                            "app_version": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 40
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "platform"
+                        ]
+                    }
+                },
+                "required": [
+                    "code",
+                    "code_verifier",
+                    "device"
+                ],
+                "title": "ExchangeSignInRequest"
             },
             "HealthResource": {
                 "type": "object",

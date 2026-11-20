@@ -104,6 +104,7 @@ it('gives the web and phone apps their own public settings, never secrets', func
             'release' => config('reos.version'),
             'sentry' => ['dsn' => SENTRY_KEYS['mobile_dsn']],
             'posthog' => ['key' => 'phc_public_key', 'host' => 'https://us.i.posthog.com'],
+            'sign_in' => ['google' => true, 'apple' => true, 'phone' => true, 'demo' => true],
         ]);
 });
 
