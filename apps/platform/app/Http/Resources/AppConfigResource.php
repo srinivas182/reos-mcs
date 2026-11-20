@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * Runtime settings returned by `GET /api/v1/app-config`.
  *
- * @property-read array{environment: string, release: string, sentry: array{dsn: string}|null, posthog: array{key: string, host: string}|null} $resource
+ * @property-read array{environment: string, release: string, sentry: array{dsn: string}|null, posthog: array{key: string, host: string}|null, sign_in: array{google: bool, apple: bool, phone: bool, demo: bool}} $resource
  */
 final class AppConfigResource extends JsonResource
 {
@@ -18,7 +18,7 @@ final class AppConfigResource extends JsonResource
     public static $wrap = null;
 
     /**
-     * @return array{environment: string, release: string, sentry: array{dsn: string}|null, posthog: array{key: string, host: string}|null}
+     * @return array{environment: string, release: string, sentry: array{dsn: string}|null, posthog: array{key: string, host: string}|null, sign_in: array{google: bool, apple: bool, phone: bool, demo: bool}}
      */
     public function toArray(Request $request): array
     {
@@ -47,6 +47,13 @@ final class AppConfigResource extends JsonResource
              * @var array{key: string, host: string}|null
              */
             'posthog' => $this->resource['posthog'],
+            /**
+             * Which sign-in buttons to show. `demo` means Google and Apple run
+             * on demo data: sign in through the browser's persona picker.
+             *
+             * @var array{google: bool, apple: bool, phone: bool, demo: bool}
+             */
+            'sign_in' => $this->resource['sign_in'],
         ];
     }
 }

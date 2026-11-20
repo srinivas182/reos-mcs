@@ -5,6 +5,7 @@ use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\TraceRequests;
 use App\Identity\SignInFailed;
+use App\Services\Identity\AppSignInHandoff;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -51,6 +52,13 @@ return Application::configure(basePath: dirname(__DIR__))
 
             if ($request->expectsJson()) {
                 return response()->json(['message' => $message, 'reason' => $e->reason], $e->status);
+            }
+
+            // Started from the phone app: back to the app, which shows the reason.
+            $handoff = app(AppSignInHandoff::class);
+
+            if ($handoff->pending($request)) {
+                return redirect()->away($handoff->fail($request, $e->reason));
             }
 
             // On the web, show it on the sign-in page (codes next to the code box).

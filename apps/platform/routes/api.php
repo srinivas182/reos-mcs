@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AppConfigController;
+use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
 use App\Http\Controllers\Api\HealthController;
@@ -25,6 +26,9 @@ Route::prefix('auth')->name('api.auth.')->group(function () {
         ->whereIn('provider', ['google', 'apple'])
         ->middleware('throttle:sign-in')
         ->name('identity');
+    Route::post('exchange', ExchangeSignInController::class)
+        ->middleware('throttle:sign-in')
+        ->name('exchange');
     Route::post('phone/start', [PhoneSignInController::class, 'start'])
         ->middleware('throttle:phone-code')
         ->name('phone.start');

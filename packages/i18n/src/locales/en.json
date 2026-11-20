@@ -9,7 +9,8 @@
     "save": "Save",
     "cancel": "Cancel",
     "tryAgain": "Try again",
-    "offline": "You're offline. We'll catch up when you're back."
+    "offline": "You're offline. We'll catch up when you're back.",
+    "back": "Back"
   },
   "nav": {
     "menu": "Menu",
@@ -85,7 +86,86 @@
     "connected": "Connected to {{app}} · version {{version}}",
     "unreachable": "Can't reach the REOS server right now.",
     "displaySettings": "Display and language",
-    "displaySettingsHint": "Theme, text size and language"
+    "displaySettingsHint": "Theme, text size and language",
+    "signIn": {
+      "welcomeBack": "Welcome back",
+      "subtitle": "Sign in the same way you did before.",
+      "apple": "Continue with Apple",
+      "google": "Continue with Google",
+      "phone": "Continue with phone",
+      "newHere": "New here? Any of these creates your free account.",
+      "unavailable": "Sign-in isn't available right now. Check your connection and try again.",
+      "phoneTitle": "Your mobile number",
+      "phoneHint": "We'll text you a six-digit code. Include your country code, like +1 for the US.",
+      "phoneLabel": "Mobile number",
+      "phoneInvalid": "Enter the number with its country code, like +1 512 555 0100.",
+      "sendCode": "Send code",
+      "code": {
+        "title": "Enter the code",
+        "sentTo": "We texted a 6-digit code to {{phone}}.",
+        "autofill": "The code fills in automatically from your messages.",
+        "label": "Six-digit code",
+        "resendIn": "Resend in 0:{{seconds}}",
+        "resend": "Send a new code",
+        "sent": "New code sent.",
+        "wait": "Please wait a minute before asking for another code.",
+        "why": "Two-step check is required for new devices and for payments."
+      }
+    },
+    "biometric": {
+      "title": "Use Face ID to open REOS?",
+      "titleAndroid": "Use your fingerprint or face to open REOS?",
+      "body": "Faster than signing in. Your face data stays on your phone.",
+      "use": "Use Face ID",
+      "useAndroid": "Use fingerprint or face",
+      "notNow": "Not now",
+      "androidNote": "Android uses fingerprint or face unlock the same way.",
+      "prompt": "Open REOS",
+      "locked": "REOS is locked",
+      "unlock": "Unlock",
+      "otherWay": "Sign in another way",
+      "setting": "Use Face ID or fingerprint",
+      "settingHint": "Open REOS without signing in each time."
+    },
+    "newDevice": {
+      "title": "Signed in on a new phone",
+      "synced": "Everything is here: your plan, progress, flashcards and certificates.",
+      "faceId": "Face ID",
+      "setUp": "Set up",
+      "on": "On",
+      "notifications": "Notifications",
+      "turnOn": "Turn on",
+      "yourDevices": "Your devices",
+      "thisPhone": "{{name}} · this phone",
+      "now": "now",
+      "emailNote": "We email you whenever a new device signs in.",
+      "done": "Continue"
+    },
+    "devices": {
+      "title": "Your devices",
+      "signOut": "Sign out",
+      "signedOut": "{{device}} was signed out.",
+      "lastUsed": "Last used {{time}}"
+    },
+    "deleteAccount": {
+      "title": "Delete account",
+      "intro": "This deletes your REOS account and its data. You have 30 days to change your mind: just sign in again.",
+      "beforeYouGo": "Before you go",
+      "download": "Download your certificates and progress",
+      "membership": "Cancel your membership on reos.com",
+      "kept": "Records we must keep by law (such as CE completions reported to TREC) are kept, and nothing else.",
+      "delete": "Delete my account",
+      "keep": "Keep my account",
+      "signInAgain": "For your safety, sign in again, then delete your account.",
+      "done": "Your account will be deleted in 30 days. Sign in before then to keep it."
+    },
+    "account": {
+      "title": "Account",
+      "devices": "Your devices",
+      "signOut": "Sign out",
+      "delete": "Delete account",
+      "display": "Display and language"
+    }
   },
   "tabs": {
     "today": "Today",

@@ -9,7 +9,8 @@
     "save": "Guardar",
     "cancel": "Cancelar",
     "tryAgain": "Intentar de nuevo",
-    "offline": "Estás sin conexión. Nos pondremos al día cuando vuelvas a conectarte."
+    "offline": "Estás sin conexión. Nos pondremos al día cuando vuelvas a conectarte.",
+    "back": "Atrás"
   },
   "nav": {
     "menu": "Menú",
@@ -85,7 +86,86 @@
     "connected": "Conectado a {{app}} · versión {{version}}",
     "unreachable": "No podemos conectar con el servidor de REOS en este momento.",
     "displaySettings": "Pantalla e idioma",
-    "displaySettingsHint": "Tema, tamaño del texto e idioma"
+    "displaySettingsHint": "Tema, tamaño del texto e idioma",
+    "signIn": {
+      "welcomeBack": "Bienvenido de nuevo",
+      "subtitle": "Inicie sesión de la misma forma que antes.",
+      "apple": "Continuar con Apple",
+      "google": "Continuar con Google",
+      "phone": "Continuar con teléfono",
+      "newHere": "¿Es nuevo? Cualquiera de estas opciones crea su cuenta gratis.",
+      "unavailable": "El inicio de sesión no está disponible en este momento. Revise su conexión e inténtelo de nuevo.",
+      "phoneTitle": "Su número de celular",
+      "phoneHint": "Le enviaremos un código de seis dígitos. Incluya el código de su país, como +1 para EE. UU.",
+      "phoneLabel": "Número de celular",
+      "phoneInvalid": "Escriba el número con el código de país, como +1 512 555 0100.",
+      "sendCode": "Enviar código",
+      "code": {
+        "title": "Escriba el código",
+        "sentTo": "Enviamos un código de 6 dígitos a {{phone}}.",
+        "autofill": "El código se completa automáticamente desde sus mensajes.",
+        "label": "Código de seis dígitos",
+        "resendIn": "Reenviar en 0:{{seconds}}",
+        "resend": "Enviar un código nuevo",
+        "sent": "Código nuevo enviado.",
+        "wait": "Espere un minuto antes de pedir otro código.",
+        "why": "La verificación en dos pasos es obligatoria para dispositivos nuevos y pagos."
+      }
+    },
+    "biometric": {
+      "title": "¿Usar Face ID para abrir REOS?",
+      "titleAndroid": "¿Usar su huella o rostro para abrir REOS?",
+      "body": "Es más rápido que iniciar sesión. Los datos de su rostro se quedan en su teléfono.",
+      "use": "Usar Face ID",
+      "useAndroid": "Usar huella o rostro",
+      "notNow": "Ahora no",
+      "androidNote": "Android usa el desbloqueo con huella o rostro de la misma forma.",
+      "prompt": "Abrir REOS",
+      "locked": "REOS está bloqueado",
+      "unlock": "Desbloquear",
+      "otherWay": "Iniciar sesión de otra forma",
+      "setting": "Usar Face ID o huella",
+      "settingHint": "Abra REOS sin iniciar sesión cada vez."
+    },
+    "newDevice": {
+      "title": "Sesión iniciada en un teléfono nuevo",
+      "synced": "Todo está aquí: su plan, progreso, tarjetas de estudio y certificados.",
+      "faceId": "Face ID",
+      "setUp": "Configurar",
+      "on": "Activado",
+      "notifications": "Notificaciones",
+      "turnOn": "Activar",
+      "yourDevices": "Sus dispositivos",
+      "thisPhone": "{{name}} · este teléfono",
+      "now": "ahora",
+      "emailNote": "Le enviamos un correo cada vez que un dispositivo nuevo inicia sesión.",
+      "done": "Continuar"
+    },
+    "devices": {
+      "title": "Sus dispositivos",
+      "signOut": "Cerrar sesión",
+      "signedOut": "Se cerró la sesión de {{device}}.",
+      "lastUsed": "Último uso {{time}}"
+    },
+    "deleteAccount": {
+      "title": "Eliminar cuenta",
+      "intro": "Esto elimina su cuenta de REOS y sus datos. Tiene 30 días para cambiar de opinión: solo inicie sesión otra vez.",
+      "beforeYouGo": "Antes de irse",
+      "download": "Descargue sus certificados y su progreso",
+      "membership": "Cancele su membresía en reos.com",
+      "kept": "Se conservan los registros que la ley exige (como los cursos de CE reportados a TREC), y nada más.",
+      "delete": "Eliminar mi cuenta",
+      "keep": "Conservar mi cuenta",
+      "signInAgain": "Por su seguridad, vuelva a iniciar sesión y luego elimine su cuenta.",
+      "done": "Su cuenta se eliminará en 30 días. Inicie sesión antes de esa fecha para conservarla."
+    },
+    "account": {
+      "title": "Cuenta",
+      "devices": "Sus dispositivos",
+      "signOut": "Cerrar sesión",
+      "delete": "Eliminar cuenta",
+      "display": "Pantalla e idioma"
+    }
   },
   "tabs": {
     "today": "Hoy",

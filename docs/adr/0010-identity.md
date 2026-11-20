@@ -45,9 +45,18 @@ The journeys ask for one-tap sign-in on the phone (Apple, Google or a phone code
     - Browsers signed in before the request are signed out by `EnsureAccountActive`.
     - The app needs a sign-in from the last 15 minutes (`DELETE /api/v1/me`); the web needs the password, or a confirmation for people without one.
 
+11. **The phone app's Google sign-in** (and Apple's on Android) runs in the system browser, not an embedded web view.
+    - The app sends a PKCE challenge to `/auth/{provider}/redirect?app=1`. After the provider answers, the server issues a one-time code (60 seconds, single use) and returns to `reos://auth?code=…`.
+    - The app exchanges the code and its verifier at `POST /api/v1/auth/exchange` for its device token. A stolen code is useless without the verifier.
+    - On iOS, Apple sign-in uses the native sheet (`expo-apple-authentication`) and posts the ID token as in point 4.
+12. **Face ID or fingerprint to reopen the app** is optional and set up after the first sign-in.
+    - The token stays in the secure store either way; the lock only gates showing it. If biometrics fail or are removed, the person signs in again.
+    - A 401 from the server clears the token and returns to sign-in.
+    - `GET /api/v1/app-config` tells the app which sign-in options are switched on, so it never shows a button that will fail.
+
 ## Consequences
 
 - **Web sign-in pages** (A3.1b) add Google and Apple with Socialite's redirect flow, on the same `social_accounts` links.
-- **Phone screens** (A3.1c) keep the token in `expo-secure-store` and offer Face ID to reopen the app.
+- **Phone screens** (A3.1c) follow the mobile journey: sign-in, phone, code, new device, Face ID, lock, devices and delete account.
 - **iOS release:** Apple sign-in needs the Apple Developer account. Until then iOS can't ship (guideline 4.8 wants a privacy-friendly login next to Google); Android and the web can.
 - **`users.name` and `users.email` are nullable.** Code that shows a person's name falls back to "there" or their phone's last digits.
