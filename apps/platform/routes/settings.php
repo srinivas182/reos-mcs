@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Settings\AppearanceController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 /* @chisel-password-confirmation */
@@ -28,6 +29,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('user-password.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
+    Route::patch('settings/appearance', [AppearanceController::class, 'update'])
+        ->middleware('throttle:30,1')
+        ->name('appearance.update');
 });
 
 /* @chisel-passkeys */

@@ -41,7 +41,7 @@
     --accent: var(--reos-action-tint);
     --accent-foreground: var(--reos-text);
     --destructive: var(--reos-danger);
-    --destructive-foreground: var(--reos-on-danger);
+    --destructive-foreground: var(--reos-danger);
     --border: var(--reos-border);
     --input: var(--reos-border-control);
     --ring: var(--reos-focus);
@@ -101,7 +101,7 @@
     --accent: var(--reos-action-tint);
     --accent-foreground: var(--reos-text);
     --destructive: var(--reos-danger);
-    --destructive-foreground: var(--reos-on-danger);
+    --destructive-foreground: var(--reos-danger);
     --border: var(--reos-border);
     --input: var(--reos-border-control);
     --ring: var(--reos-focus);
@@ -160,7 +160,7 @@
     --accent: var(--reos-action-tint);
     --accent-foreground: var(--reos-text);
     --destructive: var(--reos-danger);
-    --destructive-foreground: var(--reos-on-danger);
+    --destructive-foreground: var(--reos-danger);
     --border: var(--reos-border);
     --input: var(--reos-border-control);
     --ring: var(--reos-focus);
