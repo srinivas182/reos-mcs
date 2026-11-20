@@ -165,6 +165,8 @@ jobs:
           php artisan migrate --force --seed
       - name: Pest (parallel, PostgreSQL)
         run: vendor/bin/pest --parallel
+      - name: Web component tests (Vitest)
+        run: pnpm test
 
   mobile-quick:
     name: Mobile quick checks

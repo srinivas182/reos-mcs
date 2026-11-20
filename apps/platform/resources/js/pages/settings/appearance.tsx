@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import AppearanceTabs from '@/components/appearance-tabs';
+import AppearanceSettings from '@/components/appearance-settings';
 import Heading from '@/components/heading';
 import { edit as editAppearance } from '@/routes/appearance';
 
@@ -14,9 +14,9 @@ export default function Appearance() {
                 <Heading
                     variant="small"
                     title="Appearance settings"
-                    description="Update the appearance settings for your account"
+                    description="Choose a theme and text size that are comfortable for you"
                 />
-                <AppearanceTabs />
+                <AppearanceSettings />
             </div>
         </>
     );

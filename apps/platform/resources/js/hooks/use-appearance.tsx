@@ -1,56 +1,79 @@
+import { router } from '@inertiajs/react';
 import { useSyncExternalStore } from 'react';
+import type { TextSize } from '@reos/tokens';
+import { update as updateAppearanceRoute } from '@/routes/appearance';
 
-export type ResolvedAppearance = 'light' | 'dark';
+/**
+ * Theme and text-size preferences (Sprint 2.2b).
+ *
+ * The server renders `<html>` with the saved choice (`class="dark"`,
+ * `data-theme`, `data-text-size`), so the first paint is already right. This
+ * store reads those attributes on start, applies changes instantly, keeps a
+ * device cookie for signed-out pages, and saves to the account when signed in.
+ */
+export type ResolvedAppearance = 'light' | 'dark' | 'contrast';
 export type Appearance = ResolvedAppearance | 'system';
+export type { TextSize };
+
+export const appearances: readonly Appearance[] = [
+    'system',
+    'light',
+    'dark',
+    'contrast',
+];
+export const textSizes: readonly TextSize[] = ['standard', 'large', 'largest'];
 
 export type UseAppearanceReturn = {
     readonly appearance: Appearance;
     readonly resolvedAppearance: ResolvedAppearance;
+    readonly textSize: TextSize;
     readonly updateAppearance: (mode: Appearance) => void;
+    readonly updateTextSize: (size: TextSize) => void;
 };
+
+type State = { appearance: Appearance; textSize: TextSize };
 
 const listeners = new Set<() => void>();
-let currentAppearance: Appearance = 'system';
+let state: State = { appearance: 'system', textSize: 'standard' };
+let signedIn = false;
 
-const prefersDark = (): boolean => {
-    if (typeof window === 'undefined') {
-        return false;
-    }
+const isBrowser = (): boolean => typeof window !== 'undefined';
 
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-};
+const prefersDark = (): boolean =>
+    isBrowser() && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+const resolve = (appearance: Appearance): ResolvedAppearance =>
+    appearance === 'system' ? (prefersDark() ? 'dark' : 'light') : appearance;
 
 const setCookie = (name: string, value: string, days = 365): void => {
-    if (typeof document === 'undefined') {
+    if (!isBrowser()) {
         return;
     }
 
-    const maxAge = days * 24 * 60 * 60;
-    document.cookie = `${name}=${value};path=/;max-age=${maxAge};SameSite=Lax`;
+    document.cookie = `${name}=${value};path=/;max-age=${days * 86400};SameSite=Lax`;
 };
 
-const getStoredAppearance = (): Appearance => {
-    if (typeof window === 'undefined') {
-        return 'system';
-    }
-
-    return (localStorage.getItem('appearance') as Appearance) || 'system';
-};
-
-const isDarkMode = (appearance: Appearance): boolean => {
-    return appearance === 'dark' || (appearance === 'system' && prefersDark());
-};
-
-const applyTheme = (appearance: Appearance): void => {
-    if (typeof document === 'undefined') {
+const apply = ({ appearance, textSize }: State): void => {
+    if (!isBrowser()) {
         return;
     }
 
-    const isDark = isDarkMode(appearance);
+    const html = document.documentElement;
+    const resolved = resolve(appearance);
 
-    document.documentElement.classList.toggle('dark', isDark);
-    document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+    html.classList.toggle('dark', resolved === 'dark');
+    html.style.colorScheme = resolved === 'dark' ? 'dark' : 'light';
+
+    if (appearance === 'system') {
+        delete html.dataset.theme;
+    } else {
+        html.dataset.theme = appearance;
+    }
+
+    html.dataset.textSize = textSize;
 };
+
+const notify = (): void => listeners.forEach((listener) => listener());
 
 const subscribe = (callback: () => void) => {
     listeners.add(callback);
@@ -58,58 +81,89 @@ const subscribe = (callback: () => void) => {
     return () => listeners.delete(callback);
 };
 
-const notify = (): void => listeners.forEach((listener) => listener());
+const isAppearance = (value: unknown): value is Appearance =>
+    typeof value === 'string' &&
+    (appearances as readonly string[]).includes(value);
 
-const mediaQuery = (): MediaQueryList | null => {
-    if (typeof window === 'undefined') {
-        return null;
-    }
+const isTextSize = (value: unknown): value is TextSize =>
+    typeof value === 'string' &&
+    (textSizes as readonly string[]).includes(value);
 
-    return window.matchMedia('(prefers-color-scheme: dark)');
-};
-
-const handleSystemThemeChange = (): void => applyTheme(currentAppearance);
-
-export function initializeTheme(): void {
-    if (typeof window === 'undefined') {
+/** Reads the server-rendered choice from `<html>`. Call once before rendering. */
+export function initializeTheme(options: { signedIn?: boolean } = {}): void {
+    if (!isBrowser()) {
         return;
     }
 
-    if (!localStorage.getItem('appearance')) {
-        localStorage.setItem('appearance', 'system');
-        setCookie('appearance', 'system');
-    }
+    signedIn = options.signedIn ?? false;
 
-    currentAppearance = getStoredAppearance();
-    applyTheme(currentAppearance);
+    const html = document.documentElement;
+    const theme = html.dataset.theme;
 
-    // Set up system theme change listener
-    mediaQuery()?.addEventListener('change', handleSystemThemeChange);
-}
-
-export function useAppearance(): UseAppearanceReturn {
-    const appearance: Appearance = useSyncExternalStore(
-        subscribe,
-        () => currentAppearance,
-        () => 'system',
-    );
-
-    const resolvedAppearance: ResolvedAppearance = isDarkMode(appearance)
-        ? 'dark'
-        : 'light';
-
-    const updateAppearance = (mode: Appearance): void => {
-        currentAppearance = mode;
-
-        // Store in localStorage for client-side persistence...
-        localStorage.setItem('appearance', mode);
-
-        // Store in cookie for SSR...
-        setCookie('appearance', mode);
-
-        applyTheme(mode);
-        notify();
+    state = {
+        appearance: isAppearance(theme) ? theme : 'system',
+        textSize: isTextSize(html.dataset.textSize)
+            ? html.dataset.textSize
+            : 'standard',
     };
 
-    return { appearance, resolvedAppearance, updateAppearance } as const;
+    apply(state);
+
+    window
+        .matchMedia('(prefers-color-scheme: dark)')
+        .addEventListener('change', () => {
+            apply(state);
+            notify();
+        });
+}
+
+/** Tells the store whether changes should also be saved to the account. */
+export function setSignedIn(value: boolean): void {
+    signedIn = value;
+}
+
+const save = (
+    change: Partial<{ appearance: Appearance; text_size: TextSize }>,
+): void => {
+    if (!signedIn) {
+        return;
+    }
+
+    router.patch(updateAppearanceRoute().url, change, {
+        preserveScroll: true,
+        preserveState: true,
+        showProgress: false,
+    });
+};
+
+export function useAppearance(): UseAppearanceReturn {
+    const current = useSyncExternalStore(
+        subscribe,
+        () => state,
+        () => state,
+    );
+
+    const updateAppearance = (appearance: Appearance): void => {
+        state = { ...state, appearance };
+        setCookie('appearance', appearance);
+        apply(state);
+        notify();
+        save({ appearance });
+    };
+
+    const updateTextSize = (textSize: TextSize): void => {
+        state = { ...state, textSize };
+        setCookie('text_size', textSize);
+        apply(state);
+        notify();
+        save({ text_size: textSize });
+    };
+
+    return {
+        appearance: current.appearance,
+        resolvedAppearance: resolve(current.appearance),
+        textSize: current.textSize,
+        updateAppearance,
+        updateTextSize,
+    } as const;
 }

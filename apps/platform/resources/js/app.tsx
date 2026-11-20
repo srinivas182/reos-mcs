@@ -1,7 +1,7 @@
-import { createInertiaApp } from '@inertiajs/react';
+import { createInertiaApp, router } from '@inertiajs/react';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { initializeTheme } from '@/hooks/use-appearance';
+import { initializeTheme, setSignedIn } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
 import SettingsLayout from '@/layouts/settings/layout';
@@ -32,9 +32,19 @@ void createInertiaApp({
         );
     },
     progress: {
-        color: '#4B5563',
+        // REOS action blue (packages/tokens).
+        color: '#2952CC',
     },
 });
 
-// This will set light / dark mode on load...
+// Applies the server-rendered theme and text size, then keeps the account in
+// sync: preference changes are saved to the account only when signed in.
 initializeTheme();
+router.on('navigate', (event) => {
+    setSignedIn(
+        Boolean(
+            (event.detail.page.props as { auth?: { user?: unknown } }).auth
+                ?.user,
+        ),
+    );
+});

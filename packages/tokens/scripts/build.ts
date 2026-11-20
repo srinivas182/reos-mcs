@@ -49,7 +49,8 @@ const shadcn: Record<string, keyof SemanticColors> = {
   accent: 'actionTint',
   'accent-foreground': 'text',
   destructive: 'danger',
-  'destructive-foreground': 'onDanger',
+  // shadcn uses this as red text on light backgrounds (menus, alerts), not text on a red fill.
+  'destructive-foreground': 'danger',
   border: 'border',
   input: 'borderControl',
   ring: 'focus',

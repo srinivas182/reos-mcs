@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark']) @if($theme ?? null) data-theme="{{ $theme }}" @endif data-text-size="{{ $textSize ?? 'standard' }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,15 +19,11 @@
             })();
         </script>
 
-        {{-- Inline style to set the HTML background color based on our theme in app.css --}}
+        {{-- Page background before CSS loads, per theme (values from packages/tokens) --}}
         <style>
-            html {
-                background-color: oklch(1 0 0);
-            }
-
-            html.dark {
-                background-color: oklch(0.145 0 0);
-            }
+            html { background-color: #F6F7F9; }
+            html.dark { background-color: #0B1120; }
+            html[data-theme='contrast'] { background-color: #FFFFFF; }
         </style>
 
         <link rel="icon" href="/favicon.ico" sizes="any">
