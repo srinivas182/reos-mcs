@@ -7,7 +7,6 @@ namespace App\Services\Identity;
 use App\Identity\DeviceInfo;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
-use App\Notifications\NewDeviceSignIn;
 use App\Services\Audit\AuditLogger;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -18,27 +17,15 @@ use Illuminate\Support\Facades\DB;
  */
 final readonly class DeviceSessions
 {
-    public function __construct(private AuditLogger $audit) {}
+    public function __construct(private AuditLogger $audit, private SignInRecorder $recorder) {}
 
     /**
      * @return array{token: string, new_device: bool}
      */
     public function issue(User $user, DeviceInfo $device, string $method, bool $newAccount): array
     {
-        [$token, $newDevice] = DB::transaction(function () use ($user, $device): array {
+        $token = DB::transaction(function () use ($user, $device): string {
             $user->tokens()->where('device_id', $device->id)->delete();
-
-            $known = DB::table('known_devices')->where('user_id', $user->id)->where('device_id', $device->id)->exists();
-            $hadOthers = DB::table('known_devices')->where('user_id', $user->id)->exists();
-
-            DB::table('known_devices')->upsert([[
-                'user_id' => $user->id,
-                'device_id' => $device->id,
-                'name' => $device->name,
-                'platform' => $device->platform,
-                'first_seen_at' => now(),
-                'last_seen_at' => now(),
-            ]], ['user_id', 'device_id'], ['name', 'platform', 'last_seen_at']);
 
             $token = $user->createToken($device->name);
             $token->accessToken->forceFill([
@@ -47,20 +34,10 @@ final readonly class DeviceSessions
                 'app_version' => $device->appVersion,
             ])->save();
 
-            return [$token->plainTextToken, ! $known && $hadOthers];
+            return $token->plainTextToken;
         });
 
-        $this->audit->record('auth.signed_in', 'user', (string) $user->id, [
-            'method' => $method,
-            'device' => $device->name,
-            'platform' => $device->platform,
-            'new_account' => $newAccount,
-            'new_device' => $newDevice,
-        ], $user);
-
-        if ($newDevice && $user->email !== null) {
-            $user->notify(new NewDeviceSignIn($device, $method));
-        }
+        $newDevice = $this->recorder->record($user, $device, $method, $newAccount);
 
         return ['token' => $token, 'new_device' => $newDevice];
     }

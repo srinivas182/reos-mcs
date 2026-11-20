@@ -36,7 +36,10 @@ final readonly class IdentityTokenVerifier
         private Cache $cache,
     ) {}
 
-    public function verify(IdentityProvider $provider, string $token): IdentityClaims
+    /**
+     * @param  string|null  $nonce  for web sign-in: the nonce REOS put in the request
+     */
+    public function verify(IdentityProvider $provider, string $token, ?string $nonce = null): IdentityClaims
     {
         $definition = $this->catalogue->find($provider->integrationId());
         $mode = $definition === null ? IntegrationMode::Off : $this->hub->status($definition)->effectiveMode();
@@ -74,6 +77,10 @@ final readonly class IdentityTokenVerifier
 
         if (! in_array($payload['aud'] ?? null, $audiences, true)) {
             throw SignInFailed::invalidToken('Token not issued for REOS');
+        }
+
+        if ($nonce !== null && ! hash_equals($nonce, is_string($payload['nonce'] ?? null) ? $payload['nonce'] : '')) {
+            throw SignInFailed::invalidToken('Nonce mismatch');
         }
 
         $subject = $payload['sub'] ?? null;

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Models\User;
+use App\Services\Identity\AccountDeletion;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -46,13 +47,14 @@ class ProfileController extends Controller
     }
 
     /**
-     * Delete the user's profile.
+     * Ask to delete the account: signed out everywhere now, deleted after
+     * 30 days unless the person signs in again before then.
      */
-    public function destroy(ProfileDeleteRequest $request, #[CurrentUser] User $user): RedirectResponse
+    public function destroy(ProfileDeleteRequest $request, #[CurrentUser] User $user, AccountDeletion $deletion): RedirectResponse
     {
-        Auth::logout();
+        $deletion->request($user);
 
-        $user->delete();
+        Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

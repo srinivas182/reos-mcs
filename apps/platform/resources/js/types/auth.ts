@@ -1,7 +1,9 @@
 export type User = {
     id: number;
-    name: string;
-    email: string;
+    /** Null until given: people who sign up with a phone give it in setup. */
+    name: string | null;
+    email: string | null;
+    phone?: string | null;
     avatar?: string;
     email_verified_at: string | null;
     /* @chisel-2fa */

@@ -328,13 +328,27 @@
       "wrongCode": "That code isn't right, or it has expired. Check it and try again.",
       "locked": "Too many wrong codes. Try again in {{minutes}} minutes.",
       "codeNotSent": "We couldn't send a code just now. Try again in a minute.",
-      "codeNotChecked": "We couldn't check the code just now. Try again in a minute."
+      "codeNotChecked": "We couldn't check the code just now. Try again in a minute.",
+      "cancelled": "Sign-in was cancelled. You can try again or choose another way.",
+      "providerUnreachable": "We couldn't reach the sign-in service just now. Try again in a minute.",
+      "recentSignInRequired": "For your safety, please sign in again, then delete your account."
     },
     "newDevice": {
       "subject": "New sign-in to your REOS account",
       "body": "Your account was just signed in on {{device}}.",
       "when": "When: {{time}}",
       "notYou": "If this wasn't you, open REOS, go to Settings › Your devices and sign that device out, then contact support."
+    },
+    "deletion": {
+      "subject": "Your REOS account will be deleted",
+      "body": "You asked us to delete your REOS account. We've signed you out everywhere, and the account and its data will be deleted on {{date}}.",
+      "changeMind": "Changed your mind? Just sign in again before then and your account stays."
+    }
+  },
+  "signIn": {
+    "demo": {
+      "title": "Demo sign-in",
+      "description": "{{provider}} sign-in runs on demo data here. Choose who to sign in as."
     }
   }
 }

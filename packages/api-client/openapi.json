@@ -168,6 +168,41 @@
                         "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
+            },
+            "delete": {
+                "operationId": "me.destroy",
+                "description": "Signs out every device now and deletes the account after 30 days;\nsigning in again before then keeps it. Needs a sign-in from the last\n15 minutes: otherwise answers 403 with reason\n`identity.errors.recentSignInRequired`, and the app asks the person to\nsign in again first.",
+                "summary": "Delete my account",
+                "tags": [
+                    "Me"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
             }
         },
         "/me/devices": {

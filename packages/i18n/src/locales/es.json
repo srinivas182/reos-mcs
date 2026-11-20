@@ -328,13 +328,27 @@
       "wrongCode": "Ese código no es correcto o ya venció. Revíselo e inténtelo de nuevo.",
       "locked": "Demasiados códigos incorrectos. Inténtelo de nuevo en {{minutes}} minutos.",
       "codeNotSent": "No pudimos enviar un código en este momento. Inténtelo en un minuto.",
-      "codeNotChecked": "No pudimos revisar el código en este momento. Inténtelo en un minuto."
+      "codeNotChecked": "No pudimos revisar el código en este momento. Inténtelo en un minuto.",
+      "cancelled": "Se canceló el inicio de sesión. Puede volver a intentarlo o elegir otra forma.",
+      "providerUnreachable": "No pudimos contactar el servicio de inicio de sesión en este momento. Inténtelo en un minuto.",
+      "recentSignInRequired": "Por su seguridad, vuelva a iniciar sesión y luego elimine su cuenta."
     },
     "newDevice": {
       "subject": "Nuevo inicio de sesión en su cuenta de REOS",
       "body": "Se acaba de iniciar sesión en su cuenta desde {{device}}.",
       "when": "Cuándo: {{time}}",
       "notYou": "Si no fue usted, abra REOS, vaya a Configuración › Sus dispositivos y cierre la sesión de ese dispositivo; luego comuníquese con soporte."
+    },
+    "deletion": {
+      "subject": "Su cuenta de REOS se eliminará",
+      "body": "Nos pidió eliminar su cuenta de REOS. Cerramos su sesión en todos los dispositivos, y la cuenta y sus datos se eliminarán el {{date}}.",
+      "changeMind": "¿Cambió de opinión? Solo inicie sesión otra vez antes de esa fecha y su cuenta se conservará."
+    }
+  },
+  "signIn": {
+    "demo": {
+      "title": "Inicio de sesión de demostración",
+      "description": "Aquí el inicio de sesión con {{provider}} usa datos de demostración. Elija con quién iniciar sesión."
     }
   }
 }

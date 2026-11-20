@@ -28,6 +28,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Carbon|null $email_verified_at
  * @property string|null $phone
  * @property Carbon|null $phone_verified_at
+ * @property Carbon|null $deletion_requested_at
  * @property string|null $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -95,6 +96,7 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         return [
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
+            'deletion_requested_at' => 'datetime',
             'password' => 'hashed',
             'appearance' => Appearance::class,
             'text_size' => TextSize::class,

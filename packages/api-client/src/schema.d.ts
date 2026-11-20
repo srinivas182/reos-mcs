@@ -79,7 +79,15 @@ export interface paths {
         get: operations["me"];
         put?: never;
         post?: never;
-        delete?: never;
+        /**
+         * Delete my account
+         * @description Signs out every device now and deletes the account after 30 days;
+         *     signing in again before then keeps it. Needs a sign-in from the last
+         *     15 minutes: otherwise answers 403 with reason
+         *     `identity.errors.recentSignInRequired`, and the app asks the person to
+         *     sign in again first.
+         */
+        delete: operations["me.destroy"];
         options?: never;
         head?: never;
         patch?: never;
@@ -502,6 +510,37 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
     };
     "me.devices": {

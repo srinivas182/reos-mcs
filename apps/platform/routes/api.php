@@ -35,6 +35,7 @@ Route::prefix('auth')->name('api.auth.')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', [MeController::class, 'show'])->name('api.me');
+    Route::delete('me', [MeController::class, 'destroy'])->middleware('throttle:sign-in')->name('api.me.destroy');
     Route::get('me/devices', [MeController::class, 'devices'])->name('api.me.devices');
     Route::delete('me/devices/{device}', [MeController::class, 'revokeDevice'])->whereNumber('device')->name('api.me.devices.destroy');
     Route::post('auth/sign-out', [MeController::class, 'signOut'])->name('api.auth.sign-out');
