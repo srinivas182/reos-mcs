@@ -11,6 +11,7 @@ use App\Integrations\Checks\Testers\PostHogTester;
 use App\Integrations\Checks\Testers\SentryTester;
 use App\Integrations\Checks\Testers\StripeTester;
 use App\Integrations\Checks\Testers\TwilioTester;
+use App\Integrations\Checks\Testers\TwilioVerifyTester;
 use Closure;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Http\Client\Factory;
@@ -39,6 +40,8 @@ final class TesterRegistry
 
         return [
             'google-workspace' => $oauth('https://oauth2.googleapis.com/token'),
+            'google-sign-in' => $oauth('https://oauth2.googleapis.com/token'),
+            'twilio-verify' => static fn (Container $c): ConnectionTester => $c->make(TwilioVerifyTester::class),
             'microsoft-365' => $oauth('https://login.microsoftonline.com/common/oauth2/v2.0/token'),
             'stripe' => static fn (Container $c): ConnectionTester => $c->make(StripeTester::class),
             'stripe-connect' => static fn (Container $c): ConnectionTester => $c->make(StripeTester::class),

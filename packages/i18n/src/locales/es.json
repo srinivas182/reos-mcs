@@ -139,6 +139,7 @@
       "platform_service": "Servicio de la plataforma"
     },
     "categories": {
+      "identity": "Inicio de sesión",
       "calendar_email": "Calendario y correo",
       "voice": "Voz",
       "payments": "Pagos",
@@ -280,7 +281,11 @@
       "system_key": "Clave del sistema",
       "app_id": "ID de la aplicación",
       "app_secret": "Secreto de la aplicación",
-      "model_id": "ID del modelo"
+      "model_id": "ID del modelo",
+      "ios_client_id": "ID de cliente de iOS",
+      "team_id": "ID del equipo",
+      "key_id": "ID de la clave",
+      "verify_service_sid": "SID del servicio Verify"
     },
     "checks": {
       "test": "Probar conexión",
@@ -314,6 +319,22 @@
         "action": "Abrir la integración",
         "resume": "Corrija las claves si hace falta y pulse Probar conexión. Una prueba exitosa lo vuelve a activar."
       }
+    }
+  },
+  "identity": {
+    "errors": {
+      "unavailable": "Esta forma de iniciar sesión todavía no está disponible. Pruebe otra.",
+      "invalidToken": "No pudimos confirmar su inicio de sesión. Inténtelo de nuevo.",
+      "wrongCode": "Ese código no es correcto o ya venció. Revíselo e inténtelo de nuevo.",
+      "locked": "Demasiados códigos incorrectos. Inténtelo de nuevo en {{minutes}} minutos.",
+      "codeNotSent": "No pudimos enviar un código en este momento. Inténtelo en un minuto.",
+      "codeNotChecked": "No pudimos revisar el código en este momento. Inténtelo en un minuto."
+    },
+    "newDevice": {
+      "subject": "Nuevo inicio de sesión en su cuenta de REOS",
+      "body": "Se acaba de iniciar sesión en su cuenta desde {{device}}.",
+      "when": "Cuándo: {{time}}",
+      "notYou": "Si no fue usted, abra REOS, vaya a Configuración › Sus dispositivos y cierre la sesión de ese dispositivo; luego comuníquese con soporte."
     }
   }
 }

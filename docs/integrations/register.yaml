@@ -19,6 +19,95 @@ sprint_one_starts: 2026-12-07 # sprints are 2 weeks; sprint N starts 14 × (N �
 pilot: 2027-09-14
 
 entries:
+  # ── Sign-in ─────────────────────────────────────────────────────────────────
+  - id: google-sign-in
+    name: Sign in with Google
+    kind: platform_service
+    category: identity
+    purpose: One-tap sign-in with a Google account on the phone and the web.
+    launch: not_applicable
+    build: { sprint: 3, item: A3.1 }
+    owner: client_with_mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 3
+      status: not_started
+    sandbox: Any Google account; the OAuth consent screen stays in testing until launch. Only openid, email and profile scopes, so no Google verification is needed.
+    credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
+        - { key: ios_client_id, required: false }
+    personal_data: true
+    cost: Free.
+    notes: >-
+      Separate OAuth client from the Calendar and Gmail integration (google-workspace), so sign-in
+      never waits for the restricted-scope verification. The phone app asks Google for an ID token
+      for the web client ID; iOS also needs its own iOS client ID.
+
+  - id: apple-sign-in
+    name: Sign in with Apple
+    kind: platform_service
+    category: identity
+    purpose: One-tap sign-in with an Apple ID on the phone and the web, with Hide My Email.
+    launch: not_applicable
+    build: { sprint: 3, item: A3.1 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 0
+      needed_by_sprint: 3
+      status: not_started
+    sandbox: Any Apple ID on a development build. Needs the Apple Developer account (apple-developer) first.
+    credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: team_id }
+        - { key: key_id }
+        - { key: private_key, secret: true, kind: multiline }
+    personal_data: true
+    cost: Free with the Apple Developer membership.
+    notes: >-
+      client_id is the Services ID used on the web; the phone app's bundle identifier is also
+      accepted as an audience. App Store guideline 4.8 asks apps that offer Google sign-in to also
+      offer a privacy-friendly login, which this meets.
+    fallback: Android and the web launch with Google and phone sign-in; iOS waits for this entry.
+
+  - id: twilio-verify
+    name: Twilio Verify (phone sign-in codes)
+    kind: platform_service
+    category: identity
+    purpose: Sends and checks the six-digit codes for phone sign-in and two-step checks, with fraud protection.
+    launch: not_applicable
+    build: { sprint: 3, item: A3.1 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 3
+      status: not_started
+    sandbox: Twilio test credentials; Verify sends to verified numbers on a trial account.
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: account_sid }
+        - { key: auth_token, secret: true }
+        - { key: verify_service_sid }
+    personal_data: true
+    cost: Per successful verification plus the message fee; Fraud Guard included.
+    notes: >-
+      Verify uses Twilio's pre-registered senders, so phone sign-in doesn't wait for the 10DLC
+      registration that twilio-sms needs. Decision 3 in the Sprint 3 spec.
+
   # ── Calendar, email and voice ───────────────────────────────────────────────
   - id: google-workspace
     name: Google Calendar and Gmail

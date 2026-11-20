@@ -139,6 +139,7 @@
       "platform_service": "Platform service"
     },
     "categories": {
+      "identity": "Sign-in",
       "calendar_email": "Calendar and email",
       "voice": "Voice",
       "payments": "Payments",
@@ -280,7 +281,11 @@
       "system_key": "System key",
       "app_id": "App ID",
       "app_secret": "App secret",
-      "model_id": "Model ID"
+      "model_id": "Model ID",
+      "ios_client_id": "iOS client ID",
+      "team_id": "Team ID",
+      "key_id": "Key ID",
+      "verify_service_sid": "Verify service SID"
     },
     "checks": {
       "test": "Test connection",
@@ -314,6 +319,22 @@
         "action": "Open the integration",
         "resume": "Fix the keys if needed, then press Test connection. A passing test switches it back on."
       }
+    }
+  },
+  "identity": {
+    "errors": {
+      "unavailable": "This way of signing in isn't available yet. Try another one.",
+      "invalidToken": "We couldn't confirm your sign-in. Please try again.",
+      "wrongCode": "That code isn't right, or it has expired. Check it and try again.",
+      "locked": "Too many wrong codes. Try again in {{minutes}} minutes.",
+      "codeNotSent": "We couldn't send a code just now. Try again in a minute.",
+      "codeNotChecked": "We couldn't check the code just now. Try again in a minute."
+    },
+    "newDevice": {
+      "subject": "New sign-in to your REOS account",
+      "body": "Your account was just signed in on {{device}}.",
+      "when": "When: {{time}}",
+      "notYou": "If this wasn't you, open REOS, go to Settings › Your devices and sign that device out, then contact support."
     }
   }
 }

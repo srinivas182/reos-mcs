@@ -11,13 +11,13 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 |  | Count |
 | --- | --- |
 | Integrations users connect (catalogue) | 30 (29 enabled, 1 beta, 0 coming soon at the pilot) |
-| Platform services REOS runs on | 13 |
+| Platform services REOS runs on | 16 |
 | Vendor accounts | 7 |
 | Outside approvals | 2 |
 | Access approved | 1 |
 | Filed and waiting | 0 |
 | Blocked | 0 |
-| Not started | 50 |
+| Not started | 53 |
 | Already past their apply-by date on 20 Nov 2026 | **1** |
 
 ## Action list: file in this order
@@ -42,7 +42,10 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 18 Dec 2026 † | [TREC CE completion reporting](#trec-ce-reporting) | Nelle | Agreement | 6 wk | S11 (26 Apr 2027) | Not started |
 | 18 Dec 2026 † | [Texas REALTORS® single sign-on and member data (NRDS)](#texas-realtors-membership) | Client | Agreement | 16 wk | S18 (2 Aug 2027) | Not started |
 | 18 Dec 2026 † | [TREC approval of REOS-delivered courses](#trec-course-approvals) | Nelle | Agreement | 16 wk | S19 (16 Aug 2027) | Not started |
+| 28 Dec 2026 | [Sign in with Google](#google-sign-in) | Client + Mayura | Self-serve | 1 wk | S3 (4 Jan 2027) | Not started |
+| 28 Dec 2026 | [Twilio Verify (phone sign-in codes)](#twilio-verify) | Client | Self-serve | 1 wk | S3 (4 Jan 2027) | Not started |
 | 28 Dec 2026 | [Microsoft 365 (Outlook calendar and mail)](#microsoft-365) | Client + Mayura | Vendor review | 3 wk | S4 (18 Jan 2027) | Not started |
+| 4 Jan 2027 | [Sign in with Apple](#apple-sign-in) | Client | Self-serve | 0 wk | S3 (4 Jan 2027) | Not started |
 | 11 Jan 2027 | [Amazon Transcribe and Polly (speech)](#aws-speech) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Cloudflare](#cloudflare) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Product domain (reos.com)](#product-domain) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
@@ -167,6 +170,9 @@ Services REOS runs on. Users never connect these themselves, so they have no cat
 
 | Item | Purpose | Owner | Needed by | Status |
 | --- | --- | --- | --- | --- |
+| [Sign in with Google](#google-sign-in) | One-tap sign-in with a Google account on the phone and the web. | Client + Mayura | S3 (4 Jan 2027) | Not started |
+| [Sign in with Apple](#apple-sign-in) | One-tap sign-in with an Apple ID on the phone and the web, with Hide My Email. | Client | S3 (4 Jan 2027) | Not started |
+| [Twilio Verify (phone sign-in codes)](#twilio-verify) | Sends and checks the six-digit codes for phone sign-in and two-step checks, with fraud protection. | Client | S3 (4 Jan 2027) | Not started |
 | [Amazon Transcribe and Polly (speech)](#aws-speech) | Voice to-dos and notes (speech to text) and audio-only lessons (text to speech). | Client | S4 (18 Jan 2027) | Not started |
 | [Expo push notifications (APNs, FCM)](#expo-push) | Push notifications to the iOS and Android apps. | Mayura | S6 (15 Feb 2027) | Not started |
 | [Amazon SES (email)](#amazon-ses) | Transactional email, digests and the morning brief. | Client | S6 (15 Feb 2027) | Not started |
@@ -205,6 +211,49 @@ Regulatory and legal sign-offs with fixed lead times.
 | [RESPA counsel review](#respa-review) | Confirm provider plans and rewards are RESPA-safe before the provider marketplace is built. | Client | S15 (21 Jun 2027) | Not started |
 
 ## Details
+
+### Sign in with Google
+<a id="google-sign-in"></a>
+
+**Platform service** · Sign-in · built in A3.1 (sprint 3)
+
+One-tap sign-in with a Google account on the phone and the web.
+
+- **Owner:** Client + Mayura
+- **Access:** Self-serve, about 1 week; needed by S3 (4 Jan 2027); apply by 28 Dec 2026. Status: Not started.
+- **Sandbox:** Any Google account; the OAuth consent screen stays in testing until launch. Only openid, email and profile scopes, so no Google verification is needed.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Free.
+- **Notes:** Separate OAuth client from the Calendar and Gmail integration (google-workspace), so sign-in never waits for the restricted-scope verification. The phone app asks Google for an ID token for the web client ID; iOS also needs its own iOS client ID.
+
+### Sign in with Apple
+<a id="apple-sign-in"></a>
+
+**Platform service** · Sign-in · built in A3.1 (sprint 3)
+
+One-tap sign-in with an Apple ID on the phone and the web, with Hide My Email.
+
+- **Owner:** Client
+- **Access:** Self-serve, about 0 weeks; needed by S3 (4 Jan 2027); apply by 4 Jan 2027. Status: Not started.
+- **Sandbox:** Any Apple ID on a development build. Needs the Apple Developer account (apple-developer) first.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Free with the Apple Developer membership.
+- **Notes:** client_id is the Services ID used on the web; the phone app's bundle identifier is also accepted as an audience. App Store guideline 4.8 asks apps that offer Google sign-in to also offer a privacy-friendly login, which this meets.
+- **Fallback:** Android and the web launch with Google and phone sign-in; iOS waits for this entry.
+
+### Twilio Verify (phone sign-in codes)
+<a id="twilio-verify"></a>
+
+**Platform service** · Sign-in · built in A3.1 (sprint 3)
+
+Sends and checks the six-digit codes for phone sign-in and two-step checks, with fraud protection.
+
+- **Owner:** Client
+- **Access:** Self-serve, about 1 week; needed by S3 (4 Jan 2027); apply by 28 Dec 2026. Status: Not started.
+- **Sandbox:** Twilio test credentials; Verify sends to verified numbers on a trial account.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Per successful verification plus the message fee; Fraud Guard included.
+- **Notes:** Verify uses Twilio's pre-registered senders, so phone sign-in doesn't wait for the 10DLC registration that twilio-sms needs. Decision 3 in the Sprint 3 spec.
 
 ### Google Calendar and Gmail
 <a id="google-workspace"></a>

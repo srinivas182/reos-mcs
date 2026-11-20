@@ -37,7 +37,7 @@
       "properties": {
         "key": {
           "description": "Field name. Its label is integrations.fields.<key> in packages/i18n.",
-          "enum": ["client_id", "client_secret", "client_key", "api_key", "api_secret", "secret_key", "publishable_key", "webhook_secret", "webhook_id", "access_key_id", "secret_access_key", "region", "account_sid", "auth_token", "from_number", "from_email", "access_token", "access_token_id", "dsn", "browser_dsn", "mobile_dsn", "project_key", "host", "otlp_endpoint", "instance_id", "server_url", "api_login_id", "transaction_key", "signature_key", "integration_key", "private_key", "system_name", "system_key", "app_id", "app_secret", "model_id"]
+          "enum": ["client_id", "client_secret", "client_key", "api_key", "api_secret", "secret_key", "publishable_key", "webhook_secret", "webhook_id", "access_key_id", "secret_access_key", "region", "account_sid", "auth_token", "from_number", "from_email", "access_token", "access_token_id", "dsn", "browser_dsn", "mobile_dsn", "project_key", "host", "otlp_endpoint", "instance_id", "server_url", "api_login_id", "transaction_key", "signature_key", "integration_key", "private_key", "system_name", "system_key", "app_id", "app_secret", "model_id", "ios_client_id", "team_id", "key_id", "verify_service_sid"]
         },
         "secret": { "description": "Encrypted and never shown again after saving (only the last four characters).", "type": "boolean" },
         "required": { "description": "Defaults to true.", "type": "boolean" },
@@ -54,7 +54,7 @@
         "name": { "type": "string", "minLength": 2 },
         "kind": { "enum": ["integration", "platform_service", "account", "approval"] },
         "category": {
-          "enum": ["calendar_email", "voice", "payments", "notifications", "video", "ai", "crm", "transactions", "esignature", "mls", "lookups", "social", "maps", "accounting", "association", "operations", "platform", "regulatory"]
+          "enum": ["identity", "calendar_email", "voice", "payments", "notifications", "video", "ai", "crm", "transactions", "esignature", "mls", "lookups", "social", "maps", "accounting", "association", "operations", "platform", "regulatory"]
         },
         "purpose": { "type": "string", "minLength": 5 },
         "launch": {

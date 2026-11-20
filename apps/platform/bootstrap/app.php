@@ -3,6 +3,7 @@
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\TraceRequests;
+use App\Identity\SignInFailed;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -33,6 +34,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         // Reports to Sentry only when it is switched on in Settings › Integrations.
         Integration::handles($exceptions);
+
+        // Sign-in problems answer in the person's language, never with internals.
+        $exceptions->dontReport(SignInFailed::class);
+        $exceptions->render(fn (SignInFailed $e) => response()->json([
+            'message' => __($e->reason, $e->parameters),
+            'reason' => $e->reason,
+        ], $e->status));
 
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),

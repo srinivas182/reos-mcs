@@ -35,7 +35,7 @@ const mode = process.argv[2] ?? '--write';
 const LABELS = {
   kind: { integration: 'Integration', platform_service: 'Platform service', account: 'Vendor account', approval: 'Outside approval' },
   category: {
-    calendar_email: 'Calendar and email', voice: 'Voice', payments: 'Payments', notifications: 'Notifications', video: 'Video',
+    identity: 'Sign-in', calendar_email: 'Calendar and email', voice: 'Voice', payments: 'Payments', notifications: 'Notifications', video: 'Video',
     ai: 'AI', crm: 'CRM', transactions: 'Transactions', esignature: 'E-signature', mls: 'MLS data', lookups: 'Lookups and reporting',
     social: 'Social', maps: 'Maps', accounting: 'Accounting', association: 'Association', operations: 'Operations',
     platform: 'Platform', regulatory: 'Regulatory',

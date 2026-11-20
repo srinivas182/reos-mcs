@@ -76,6 +76,285 @@
                 },
                 "security": []
             }
+        },
+        "/auth/{provider}": {
+            "post": {
+                "operationId": "auth.identity",
+                "description": "Send the ID token the provider's SDK returned. Creates the account on\nfirst sign-in, or joins an existing account with the same verified\nemail. Returns a bearer token for this device.",
+                "summary": "Sign in with Google or Apple",
+                "tags": [
+                    "IdentitySignIn"
+                ],
+                "parameters": [
+                    {
+                        "name": "provider",
+                        "in": "path",
+                        "required": true,
+                        "description": "The provider ID",
+                        "schema": {
+                            "$ref": "#/components/schemas/IdentityProvider"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/IdentitySignInRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`SignInResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignInResource"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/me": {
+            "get": {
+                "operationId": "me",
+                "summary": "Get the signed-in person",
+                "tags": [
+                    "Me"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`MeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MeResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/devices": {
+            "get": {
+                "operationId": "me.devices",
+                "summary": "List the devices signed in to this account",
+                "tags": [
+                    "Me"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `DeviceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DeviceResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/devices/{device}": {
+            "delete": {
+                "operationId": "me.devices.destroy",
+                "description": "Use the current device's id to sign out here, or another id to sign\nout a lost or old phone.",
+                "summary": "Sign out a device",
+                "tags": [
+                    "Me"
+                ],
+                "parameters": [
+                    {
+                        "name": "device",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFoundHttpException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/auth/sign-out": {
+            "post": {
+                "operationId": "auth.sign-out",
+                "summary": "Sign out this device",
+                "tags": [
+                    "Me"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/auth/phone/start": {
+            "post": {
+                "operationId": "auth.phone.start",
+                "description": "Texts a six-digit code to the number, valid for 10 minutes. Limited per\nnumber and per network to stop abuse.",
+                "summary": "Send a sign-in code",
+                "tags": [
+                    "PhoneSignIn"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PhoneStartRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": ""
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/auth/phone/verify": {
+            "post": {
+                "operationId": "auth.phone.verify",
+                "description": "Creates the account on first sign-in. Five wrong codes lock the number\nfor 15 minutes.",
+                "summary": "Check the code and sign in",
+                "tags": [
+                    "PhoneSignIn"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PhoneVerifyRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`SignInResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SignInResource"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
         }
     },
     "components": {
@@ -140,6 +419,56 @@
                 ],
                 "title": "AppConfigResource"
             },
+            "DeviceResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "platform": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "ios, android or web."
+                    },
+                    "app_version": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_used_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "signed_in_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "current": {
+                        "type": "boolean",
+                        "description": "The device making this request."
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "platform",
+                    "app_version",
+                    "last_used_at",
+                    "signed_in_at",
+                    "current"
+                ],
+                "title": "DeviceResource"
+            },
             "HealthResource": {
                 "type": "object",
                 "properties": {
@@ -175,6 +504,338 @@
                     "time"
                 ],
                 "title": "HealthResource"
+            },
+            "IdentityProvider": {
+                "type": "string",
+                "description": "One-tap sign-in providers, and their entries in the integrations register.\n",
+                "enum": [
+                    "google",
+                    "apple"
+                ],
+                "title": "IdentityProvider"
+            },
+            "IdentitySignInRequest": {
+                "type": "object",
+                "properties": {
+                    "id_token": {
+                        "type": "string",
+                        "description": "The ID token the Google or Apple SDK returned on the phone.",
+                        "maxLength": 8192
+                    },
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Apple shares the person's name only on their first sign-in; the app passes it on.",
+                        "maxLength": 255
+                    },
+                    "device": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "name": {
+                                "type": "string",
+                                "maxLength": 100
+                            },
+                            "platform": {
+                                "type": "string",
+                                "enum": [
+                                    "ios",
+                                    "android",
+                                    "web"
+                                ]
+                            },
+                            "app_version": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 40
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "platform"
+                        ]
+                    }
+                },
+                "required": [
+                    "id_token",
+                    "device"
+                ],
+                "title": "IdentitySignInRequest"
+            },
+            "MeResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Null until the person gives it (phone sign-ups give it in setup)."
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "email_verified": {
+                        "type": "boolean"
+                    },
+                    "phone": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "has_password": {
+                        "type": "boolean"
+                    },
+                    "sign_in_methods": {
+                        "type": "array",
+                        "description": "How this person can sign in.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "locale": {
+                        "type": "string",
+                        "enum": [
+                            "en",
+                            "es"
+                        ]
+                    },
+                    "appearance": {
+                        "type": "string",
+                        "enum": [
+                            "system",
+                            "light",
+                            "dark",
+                            "contrast"
+                        ]
+                    },
+                    "text_size": {
+                        "type": "string",
+                        "enum": [
+                            "standard",
+                            "large",
+                            "largest"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "email_verified",
+                    "phone",
+                    "has_password",
+                    "sign_in_methods",
+                    "locale",
+                    "appearance",
+                    "text_size"
+                ],
+                "title": "MeResource"
+            },
+            "PhoneStartRequest": {
+                "type": "object",
+                "properties": {
+                    "phone": {
+                        "type": "string",
+                        "description": "Phone number in international format.",
+                        "pattern": "^\\+[1-9][0-9]{7,14}$",
+                        "examples": [
+                            "+15125550100"
+                        ]
+                    }
+                },
+                "required": [
+                    "phone"
+                ],
+                "title": "PhoneStartRequest"
+            },
+            "PhoneVerifyRequest": {
+                "type": "object",
+                "properties": {
+                    "phone": {
+                        "type": "string",
+                        "pattern": "^\\+[1-9][0-9]{7,14}$"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "The six-digit code from the text message."
+                    },
+                    "device": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "format": "uuid"
+                            },
+                            "name": {
+                                "type": "string",
+                                "maxLength": 100
+                            },
+                            "platform": {
+                                "type": "string",
+                                "enum": [
+                                    "ios",
+                                    "android",
+                                    "web"
+                                ]
+                            },
+                            "app_version": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 40
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "platform"
+                        ]
+                    }
+                },
+                "required": [
+                    "phone",
+                    "code",
+                    "device"
+                ],
+                "title": "PhoneVerifyRequest"
+            },
+            "SignInResource": {
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "description": "Bearer token for this device. Keep it in secure storage."
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "const": "Bearer"
+                    },
+                    "new_device": {
+                        "type": "boolean",
+                        "description": "True when this person had never signed in on this device before."
+                    },
+                    "new_account": {
+                        "type": "boolean",
+                        "description": "True when this sign-in created the account (show the 60-second setup)."
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/MeResource"
+                    }
+                },
+                "required": [
+                    "token",
+                    "token_type",
+                    "new_device",
+                    "new_account",
+                    "user"
+                ],
+                "title": "SignInResource"
+            }
+        },
+        "responses": {
+            "ModelNotFoundException": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthenticationException": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "NotFoundHttpException": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
             }
         }
     }
