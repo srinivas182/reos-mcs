@@ -1,0 +1,4 @@
+{
+    "extends": "@reos/config/tsconfig.base.json",
+    "include": ["src"]
+}
