@@ -13,6 +13,8 @@
 
 version: 1
 updated: 2026-11-20
+# Decisions 20 Nov 2026: domain reos.com (working choice; Nelle may change it before launch);
+# staging (2.1) and TestFlight/Play (2.3) move to just before the pilot.
 sprint_one_starts: 2026-12-07 # sprints are 2 weeks; sprint N starts 14 × (N − 1) days later
 pilot: 2027-09-14
 
@@ -826,16 +828,17 @@ entries:
     category: operations
     purpose: Error tracking for web, API and mobile.
     launch: not_applicable
-    build: { sprint: 2, item: '2.3' }
+    build: { sprint: 19, item: '19.1' }
     owner: mayura
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 2
+      needed_by_sprint: 19
       status: not_started
     sandbox: Separate staging project.
     credentials: platform
     personal_data: true
+    # Code ships switched off in Sprint 2.4; the super admin turns it on in Settings once the account exists.
     cost: Team plan.
     notes: Scrub personal data before sending; US data region.
 
@@ -845,16 +848,17 @@ entries:
     category: operations
     purpose: Product analytics, funnels and session insights.
     launch: not_applicable
-    build: { sprint: 2, item: '2.4' }
+    build: { sprint: 19, item: '19.1' }
     owner: mayura
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 2
+      needed_by_sprint: 19
       status: not_started
     sandbox: Separate staging project.
     credentials: platform
     personal_data: true
+    # Code ships switched off in Sprint 2.4; the super admin turns it on in Settings once the account exists.
     cost: Usage-based; generous free tier.
     notes: US cloud; respect consent and Texas privacy law (TDPSA).
 
@@ -864,16 +868,17 @@ entries:
     category: operations
     purpose: Tracing, metrics and dashboards.
     launch: not_applicable
-    build: { sprint: 2, item: '2.4' }
+    build: { sprint: 19, item: '19.1' }
     owner: mayura
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 2
+      needed_by_sprint: 19
       status: not_started
     sandbox: Staging stack.
     credentials: platform
     personal_data: false
+    # Code ships switched off in Sprint 2.4; the super admin turns it on in Settings once the account exists.
     cost: Grafana Cloud free tier or self-hosted.
 
   # ── Vendor accounts (no catalogue entry) ────────────────────────────────────
@@ -899,36 +904,40 @@ entries:
     notes: Repository srinivas182/reos-mcs with CI, Lefthook, Renovate and a `main` ruleset.
 
   - id: product-domain
-    name: Product domain
+    name: Product domain (reos.com)
     kind: account
     category: platform
     purpose: Web app, API, email sender and tenant custom domains.
     launch: not_applicable
-    build: { sprint: 2, item: '2.1' }
+    build: { sprint: 4, item: B4.1 }
     owner: client
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 2
+      needed_by_sprint: 4
       status: not_started
     sandbox: Not needed.
     credentials: none
     personal_data: false
     cost: Domain registration.
-    notes: Decide the name (for example reos.com); SES, Twilio 10DLC and Meta verification all need it live with a privacy policy.
+    notes: >-
+      Decided 20 Nov 2026: reos.com is the working domain; Nelle may change it before launch.
+      Ownership is not confirmed yet. Every four-letter .com is registered, so confirm the client
+      owns or can buy reos.com. Google, Meta and the MLSs verify ownership through DNS, and each needs
+      a live public page with a privacy policy and terms before review.
 
   - id: aws-organisation
     name: AWS organisation
     kind: account
     category: platform
-    purpose: Staging and production cells in us-east-2, recovery in us-west-2.
+    purpose: Sandbox access for AWS services from Sprint 6 (SES, Bedrock, Textract, speech); staging and production cells in us-east-2 before the pilot.
     launch: not_applicable
-    build: { sprint: 2, item: '2.1' }
+    build: { sprint: 19, item: '19.1' }
     owner: client
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 2
+      needed_by_sprint: 6
       status: not_started
     sandbox: Separate staging account.
     credentials: platform
@@ -940,14 +949,14 @@ entries:
     name: Cloudflare
     kind: account
     category: platform
-    purpose: DNS, WAF and custom domains for tenants (Cloudflare for SaaS).
+    purpose: DNS for reos.com (domain verification, public privacy page) from Sprint 4; WAF and tenant custom domains when staging is built.
     launch: not_applicable
-    build: { sprint: 2, item: '2.1' }
+    build: { sprint: 4, item: B4.1 }
     owner: client
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 2
+      needed_by_sprint: 4
       status: not_started
     sandbox: Staging zone.
     credentials: platform
@@ -960,12 +969,12 @@ entries:
     category: platform
     purpose: TestFlight and App Store releases; push notification key.
     launch: not_applicable
-    build: { sprint: 2, item: '2.3' }
+    build: { sprint: 19, item: '19.2' }
     owner: client
     access:
       route: app_review
       lead_time_weeks: 4
-      needed_by_sprint: 2
+      needed_by_sprint: 19
       status: not_started
     sandbox: Not needed.
     credentials: platform
@@ -979,12 +988,12 @@ entries:
     category: platform
     purpose: Android internal testing and Play Store releases.
     launch: not_applicable
-    build: { sprint: 2, item: '2.3' }
+    build: { sprint: 19, item: '19.2' }
     owner: client
     access:
       route: app_review
       lead_time_weeks: 2
-      needed_by_sprint: 2
+      needed_by_sprint: 19
       status: not_started
     sandbox: Not needed.
     credentials: platform
@@ -998,12 +1007,12 @@ entries:
     category: platform
     purpose: Mobile builds, store submission and over-the-air updates.
     launch: not_applicable
-    build: { sprint: 2, item: '2.3' }
+    build: { sprint: 19, item: '19.2' }
     owner: mayura
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 2
+      needed_by_sprint: 19
       status: not_started
     sandbox: Not needed.
     credentials: platform

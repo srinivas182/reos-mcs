@@ -2,7 +2,16 @@
 
 **Goal:** by the end of the sprint, every merge to `main` deploys to a private staging site on AWS. The web and mobile apps share one design system that matches the journey documents, is easy for older and non-technical users, and works in English and Spanish. Mobile builds reach TestFlight and Play internal testing without anyone touching a laptop. Every request and screen view is traceable.
 
-**Status:** approved 20 November 2026. Decisions: Unistyles 3 for mobile styling, Cloudflare Access for staging, Grafana Cloud for observability. Build order: 2.2 and 2.4 now; 2.1 and 2.3 when the AWS, domain, Apple and Google accounts exist.
+**Status:** approved 20 November 2026; plan updated the same evening:
+
+| Part | Status |
+| --- | --- |
+| 2.2a–d Design tokens, web components, Storybook, English and Spanish, first mobile components | Merged (#6–#10) |
+| **2.2e Mobile kit from the mobile journeys** (added) | Next. The mobile app follows the mobile journey screens, not the web set: per-role bottom tabs, the Ask bar with voice, chips, pills, progress rings and bars, dark hero cards, option rows, chat bubbles, 54-point buttons. The web and mobile apps share only the brand (colours, type, accessibility rules). |
+| 2.4 Monitoring and analytics | After 2.2e. Code ships switched off; the super admin enters keys and switches each service on in **Settings › Monitoring** (encrypted, audited), with no deploy or app release needed. |
+| 2.1 Staging on AWS, 2.3 TestFlight and Play | **Moved to just before the pilot** (decision 20 November 2026). Earlier needs: the reos.com domain and a public privacy page by Sprint 4 (integration reviews); AWS sandbox access by Sprint 6; a small preview environment when Nelle's first usability check is due (about Sprint 6). |
+
+Original approval note: Decisions: Unistyles 3 for mobile styling, Cloudflare Access for staging, Grafana Cloud for observability. Build order: 2.2 and 2.4 now; 2.1 and 2.3 when the AWS, domain, Apple and Google accounts exist.
 
 ## 1. Dependencies and capacity
 
