@@ -58,7 +58,7 @@ Sprint 1.3 replaces these steps with a single Docker Compose environment and dem
 
 ## Working agreement
 
-- Branch from `main` as `sNN.N-short-name`; open a pull request; CI must be green before merging.
+- Branch from `main` as `sNN.N-short-name`; open a draft pull request, mark it ready once for the full test run, and merge only when **CI result** is green (see `docs/ci.md`).
 - Every change ships with tests. Controllers stay thin; business logic lives in services and domain classes.
 - Design standard: luxury, modern and calm; easy for non-technical and older users (16pt minimum body text, 48pt touch targets, plain language).
 - Read `CLAUDE.md` and `docs/adr` before making structural changes.

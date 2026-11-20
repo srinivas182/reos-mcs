@@ -1,0 +1,48 @@
+# Git hooks: catch problems on your machine before CI spends minutes on them.
+# Installed automatically by `pnpm install` (the root "prepare" script).
+# Skip in an emergency with `LEFTHOOK=0 git commit ...`; CI still checks everything.
+
+pre-commit:
+  parallel: true
+  commands:
+    block-secrets:
+      glob: '{**/.env,**/.env.*,**/*.pem,**/*.p12,**/*.jks,**/*.keystore,**/*.mobileprovision}'
+      exclude: '**/.env.example'
+      run: |
+        echo "Refusing to commit secrets or signing files: {staged_files}"
+        exit 1
+    php-style:
+      root: apps/platform/
+      glob: '*.php'
+      run: vendor/bin/pint {staged_files}
+      stage_fixed: true
+    web-lint:
+      root: apps/platform/
+      glob: 'resources/**/*.{ts,tsx,css}'
+      run: pnpm check:fix
+      stage_fixed: true
+    mobile-lint:
+      root: apps/mobile/
+      glob: '*.{ts,tsx,js}'
+      run: pnpm exec eslint --fix --max-warnings=0 {staged_files}
+      stage_fixed: true
+
+pre-push:
+  parallel: true
+  commands:
+    php-static:
+      root: apps/platform/
+      glob: '*.php'
+      run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+    php-tests:
+      root: apps/platform/
+      glob: '*.{php,ts,tsx}'
+      run: vendor/bin/pest --parallel
+    web-types:
+      root: apps/platform/
+      glob: 'resources/**/*.{ts,tsx}'
+      run: pnpm types:check
+    mobile:
+      root: apps/mobile/
+      glob: '*.{ts,tsx,js,json}'
+      run: pnpm types:check && pnpm test --ci

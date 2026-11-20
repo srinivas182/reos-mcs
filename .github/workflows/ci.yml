@@ -1,94 +1,160 @@
+# REOS CI. See docs/ci.md for the rules this file implements.
+#
+# - Draft PRs run only the quick checks (style, lint, static analysis, types).
+# - The full suite (tests and builds) runs when the PR is ready for review,
+#   and on every later push to a ready PR.
+# - Only the parts touched by the change run: docs-only changes run nothing.
+# - Nothing runs again on main after merging; superseded runs are cancelled.
+# - Every job has a 12-minute ceiling so a stuck runner can't burn minutes.
+# - "CI result" is the single required check for branch protection.
+
 name: CI
 
 on:
   pull_request:
-  push:
-    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
+  pull-requests: read
+
+env:
+  PHP_VERSION: '8.5'
+  FULL_RUN: ${{ github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false }}
 
 jobs:
-  platform:
-    name: Platform (PHP + web)
+  changes:
+    name: Detect changes
     runs-on: ubuntu-latest
+    timeout-minutes: 3
+    outputs:
+      platform: ${{ steps.filter.outputs.platform }}
+      mobile: ${{ steps.filter.outputs.mobile }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            shared: &shared
+              - 'packages/**'
+              - 'package.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'turbo.json'
+              - '.nvmrc'
+              - '.github/workflows/ci.yml'
+              - '.github/actions/**'
+            platform:
+              - *shared
+              - 'apps/platform/**'
+            mobile:
+              - *shared
+              - 'apps/mobile/**'
+
+  platform-quick:
+    name: Platform quick checks
+    needs: changes
+    if: needs.changes.outputs.platform == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
     defaults:
       run:
         working-directory: apps/platform
     steps:
       - uses: actions/checkout@v5
-
-      - uses: shivammathur/setup-php@v2
+      - uses: ./.github/actions/setup-platform
         with:
-          php-version: '8.5'
-          extensions: mbstring, pdo_sqlite, intl, bcmath
-          coverage: none
+          php-version: ${{ env.PHP_VERSION }}
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
+      - name: PHPStan result cache
+        uses: actions/cache@v4
         with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install JavaScript dependencies
-        working-directory: .
-        run: pnpm install --frozen-lockfile
-
-      - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist --no-progress
-
-      - name: Prepare environment
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-
-      - name: Build web assets
-        run: pnpm build
+          path: apps/platform/storage/phpstan
+          key: phpstan-${{ hashFiles('apps/platform/composer.lock', 'apps/platform/phpstan.neon') }}-${{ github.sha }}
+          restore-keys: phpstan-${{ hashFiles('apps/platform/composer.lock', 'apps/platform/phpstan.neon') }}-
 
       - name: Pint
         run: vendor/bin/pint --test
-
-      - name: PHPStan
+      - name: PHPStan (level 9)
         run: vendor/bin/phpstan analyse --no-progress --memory-limit=1G
+      - name: Generate Wayfinder routes
+        run: php artisan wayfinder:generate --with-form
+      - name: Web lint and format
+        run: pnpm check
+      - name: Web types
+        run: pnpm types:check
 
-      - name: Pest
-        run: vendor/bin/pest
-
-      - name: Web lint and types
-        run: |
-          pnpm check
-          pnpm types:check
-
-  mobile:
-    name: Mobile
+  platform-tests:
+    name: Platform tests
+    needs: [changes, platform-quick]
+    if: needs.changes.outputs.platform == 'true' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
     runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: apps/platform
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-platform
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+      - name: Build web assets
+        run: pnpm build
+      - name: Pest (parallel)
+        run: vendor/bin/pest --parallel
+
+  mobile-quick:
+    name: Mobile quick checks
+    needs: changes
+    if: needs.changes.outputs.mobile == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
     defaults:
       run:
         working-directory: apps/mobile
     steps:
       - uses: actions/checkout@v5
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        working-directory: .
-        run: pnpm install --frozen-lockfile
-
+      - uses: ./.github/actions/setup-node
       - name: Lint
         run: pnpm check
-
       - name: Types
         run: pnpm types:check
 
-      - name: Tests
+  mobile-tests:
+    name: Mobile tests
+    needs: [changes, mobile-quick]
+    if: needs.changes.outputs.mobile == 'true' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/setup-node
+      - name: Jest
         run: pnpm test --ci
+
+  result:
+    name: CI result
+    if: always()
+    needs: [changes, platform-quick, platform-tests, mobile-quick, mobile-tests]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Summarise
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          echo "Full run: $FULL_RUN"
+          echo "$RESULTS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          if echo "$RESULTS" | jq -e 'to_entries | map(.value.result) | any(. == "failure" or . == "cancelled")' > /dev/null; then
+            echo "::error::One or more CI jobs failed."
+            exit 1
+          fi

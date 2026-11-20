@@ -1,0 +1,43 @@
+name: Set up the platform app
+description: PHP with extensions, cached Composer dependencies, Node and pnpm, and a test .env.
+inputs:
+  php-version:
+    description: PHP version
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        extensions: mbstring, pdo_sqlite, intl, bcmath
+        coverage: none
+        tools: composer:v2
+
+    - name: Composer cache directory
+      id: composer-cache
+      shell: bash
+      run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+      working-directory: apps/platform
+
+    - uses: actions/cache@v4
+      with:
+        path: |
+          ${{ steps.composer-cache.outputs.dir }}
+          apps/platform/vendor
+        key: composer-${{ runner.os }}-${{ inputs.php-version }}-${{ hashFiles('apps/platform/composer.lock') }}
+        restore-keys: composer-${{ runner.os }}-${{ inputs.php-version }}-
+
+    - name: Install Composer dependencies
+      shell: bash
+      working-directory: apps/platform
+      run: composer install --no-interaction --prefer-dist --no-progress
+
+    - uses: ./.github/actions/setup-node
+
+    - name: Prepare environment
+      shell: bash
+      working-directory: apps/platform
+      run: |
+        cp .env.example .env
+        php artisan key:generate
