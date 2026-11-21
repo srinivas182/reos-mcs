@@ -73,8 +73,8 @@ enum Role: string
     {
         return match ($this) {
             self::Candidate => [OrganisationType::School, OrganisationType::Platform],
-            self::Agent => [OrganisationType::Brokerage, OrganisationType::Platform],
-            self::Broker => [OrganisationType::Brokerage],
+            self::Agent => [OrganisationType::Brokerage, OrganisationType::Team, OrganisationType::Platform],
+            self::Broker => [OrganisationType::Brokerage, OrganisationType::Team],
             self::Mentor => [OrganisationType::Brokerage, OrganisationType::School],
             self::Instructor, self::SchoolAdmin => [OrganisationType::School],
             self::Provider => [OrganisationType::ProviderBusiness, OrganisationType::Platform],

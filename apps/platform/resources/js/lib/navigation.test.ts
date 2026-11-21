@@ -7,9 +7,10 @@ const menu = (role: RoleName | null) =>
     roleNavigation(role).map((item) => [item.label, toUrl(item.href)]);
 
 describe('roleNavigation (web journey, Navigation by role)', () => {
-    it('gives the super admin the back office, People included', () => {
+    it('gives the super admin the back office, Tenants and People included', () => {
         expect(menu('super_admin')).toEqual([
             ['overview', '/dashboard'],
+            ['tenants', '/admin/tenants'],
             ['people', '/admin/people'],
             ['states', '/admin/states'],
             ['integrations', '/admin/integrations'],

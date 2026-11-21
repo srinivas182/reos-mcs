@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\IntegrationModeController;
 use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\StateController;
+use App\Http\Controllers\Admin\TenantController;
 use App\Http\Middleware\ConfirmIdentity;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use Illuminate\Support\Facades\Route;
@@ -76,4 +77,20 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:states.ma
     ->group(function () {
         Route::get('/', [StateController::class, 'index'])->name('index');
         Route::patch('{state}', [StateController::class, 'update'])->middleware('throttle:30,1')->name('update');
+    });
+
+// Tenants (A4.1b, web journey screens 59 and 60): every organisation. Super
+// admin only, with two-step and a recent password confirmation; every change
+// is audited.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:tenants.manage', ConfirmIdentity::class])
+    ->prefix('admin/tenants')
+    ->name('tenants.')
+    ->group(function () {
+        Route::get('/', [TenantController::class, 'index'])->name('index');
+        Route::get('export', [TenantController::class, 'export'])->middleware('throttle:10,1')->name('export');
+        Route::post('/', [TenantController::class, 'store'])->middleware('throttle:30,1')->name('store');
+        Route::get('{tenant}', [TenantController::class, 'show'])->whereNumber('tenant')->name('show');
+        Route::get('{tenant}/{tab}', [TenantController::class, 'show'])->whereNumber('tenant')->whereIn('tab', TenantController::TABS)->name('tab');
+        Route::patch('{tenant}', [TenantController::class, 'update'])->whereNumber('tenant')->middleware('throttle:30,1')->name('update');
+        Route::put('{tenant}/status', [TenantController::class, 'status'])->whereNumber('tenant')->middleware('throttle:30,1')->name('status');
     });

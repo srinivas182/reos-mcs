@@ -30,7 +30,8 @@ export type OrganisationType =
     | 'brokerage'
     | 'school'
     | 'association'
-    | 'provider_business';
+    | 'provider_business'
+    | 'team';
 
 /** One role a person holds, in one organisation. */
 export type Membership = {

@@ -33,9 +33,11 @@ return new class extends Migration
             $table->json('features')->nullable()->after('limits');
         });
 
+        // The same rule as new tenants: the name, with the id added only on a clash.
         DB::table('organisations')->orderBy('id')->each(function (object $organisation): void {
-            $base = Str::slug((string) $organisation->name) ?: 'tenant';
-            DB::table('organisations')->where('id', $organisation->id)->update(['slug' => Str::limit($base, 50, '').'-'.$organisation->id]);
+            $base = Str::limit(Str::slug((string) $organisation->name) ?: 'tenant', 50, '');
+            $taken = DB::table('organisations')->where('slug', $base)->exists();
+            DB::table('organisations')->where('id', $organisation->id)->update(['slug' => $taken ? $base.'-'.$organisation->id : $base]);
         });
 
         // Connections and sign-ins in progress belong to a person or to an

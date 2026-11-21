@@ -32,7 +32,8 @@
     "userMenu": "Menú de la cuenta de {{name}}",
     "state": "Estado: {{state}}",
     "states": "Estados",
-    "connections": "Conexiones"
+    "connections": "Conexiones",
+    "tenants": "Organizaciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -733,7 +734,8 @@
       "brokerage": "Agencia inmobiliaria",
       "school": "Escuela",
       "association": "Asociación",
-      "provider_business": "Empresa"
+      "provider_business": "Empresa",
+      "team": "Equipo"
     },
     "errors": {
       "notHeld": "Usted no tiene ese rol. Pídaselo a su administrador si lo necesita.",
@@ -1477,6 +1479,225 @@
       "rateLimit": "Límite de uso",
       "perMinute_one": "{{count}} por minuto · cola equitativa",
       "perMinute_other": "{{count}} por minuto · cola equitativa"
+    }
+  },
+  "tenants": {
+    "title": "Organizaciones",
+    "description": "Cada organización tiene su propia marca, dominio, configuración y límite de datos",
+    "filter": "Filtrar",
+    "newTenant": "Nueva organización",
+    "export": "Exportar CSV",
+    "all": "Todas",
+    "clear": "Quitar filtros",
+    "apply": "Aplicar",
+    "search": "Buscar por nombre",
+    "columns": {
+      "tenant": "Organización",
+      "type": "Tipo",
+      "state": "Estado",
+      "plan": "Plan",
+      "users": "Usuarios",
+      "domain": "Dominio",
+      "cell": "Celda",
+      "status": "Situación"
+    },
+    "types": {
+      "association": "Asociación",
+      "brokerage": "Agencia",
+      "school": "Escuela",
+      "provider_business": "Proveedor de servicios",
+      "team": "Equipo"
+    },
+    "teamIn": "Equipo · en {{parent}}",
+    "plans": {
+      "enterprise": "Empresarial",
+      "association": "Asociación",
+      "brokerage": "Agencia",
+      "school": "Escuela",
+      "partner": "Socio",
+      "inherits": "Heredado"
+    },
+    "planSeats_one": "{{plan}} · {{count}} puesto",
+    "planSeats_other": "{{plan}} · {{count}} puestos",
+    "trialLeft_one": "Prueba · queda {{count}} día",
+    "trialLeft_other": "Prueba · quedan {{count}} días",
+    "statuses": {
+      "active": "Activa",
+      "trial": "Prueba",
+      "suspended": "Suspendida",
+      "archived": "Archivada"
+    },
+    "rlsNote": "La seguridad a nivel de fila mantiene separados los datos de cada organización en la base de datos compartida. Una organización se puede mover a su propia celda sin interrupciones.",
+    "emptyTitle": "Ninguna organización coincide",
+    "emptyBody": "Pruebe otro filtro o cree la primera organización para este estado.",
+    "created": "{{name}} está lista.",
+    "saved": "Se guardaron los cambios de {{name}}.",
+    "statusChanged": {
+      "active": "{{name}} está activa de nuevo.",
+      "trial": "{{name}} está en prueba.",
+      "suspended": "{{name}} está suspendida. Sus usuarios perdieron el acceso.",
+      "archived": "{{name}} está archivada."
+    },
+    "new": {
+      "title": "Nueva organización",
+      "intro": "La organización recibe su propia dirección para iniciar sesión. Después se invita a su propietario y a sus usuarios.",
+      "name": "Nombre",
+      "type": "Tipo",
+      "parent": "Agencia a la que pertenece",
+      "states": "Estados",
+      "plan": "Plan",
+      "seats": "Puestos (opcional)",
+      "seatsHint": "Déjelo vacío para no poner límite.",
+      "trial": "Días de prueba (opcional)",
+      "create": "Crear organización",
+      "choose": "Elija…"
+    },
+    "show": {
+      "description": "Organización de tipo {{type}} · creada el {{date}} · propietario: {{owner}}",
+      "noOwner": "todavía sin propietario",
+      "back": "Todas las organizaciones",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "tabs": {
+        "overview": "Resumen",
+        "plan": "Plan y facturación",
+        "features": "Funciones",
+        "integrations": "Integraciones",
+        "domain": "Dominio",
+        "privacy": "Datos y privacidad",
+        "audit": "Auditoría"
+      },
+      "tabsLabel": "Secciones de la organización"
+    },
+    "overview": {
+      "status": "Situación",
+      "owner": "Propietario",
+      "members": "Usuarios",
+      "seats": "Puestos",
+      "seatsUsed": "{{used}} de {{seats}} en uso",
+      "seatsUnlimited": "{{used}} · sin límite",
+      "almostFull_one": "Casi completo: queda {{count}} puesto",
+      "almostFull_other": "Casi completo: quedan {{count}} puestos",
+      "full": "Todos los puestos están en uso. Las nuevas invitaciones esperan hasta que se agreguen puestos.",
+      "lastActive": "Última actividad",
+      "never": "Todavía no",
+      "problems": "Conexiones que necesitan atención",
+      "noProblems": "Ninguna",
+      "states": "Estados",
+      "parent": "Forma parte de",
+      "teams": "Equipos",
+      "suspendedBecause": "Suspendida: {{reason}}",
+      "archivedBecause": "Archivada: {{reason}}"
+    },
+    "status": {
+      "suspend": "Suspender",
+      "archive": "Archivar",
+      "restore": "Reactivar",
+      "suspendTitle": "¿Suspender {{name}}?",
+      "suspendBody": "Sus usuarios pierden el acceso de inmediato y lo recuperan cuando la reactive. No se elimina nada.",
+      "archiveTitle": "¿Archivar {{name}}?",
+      "archiveBody": "La organización se cierra. Sus datos se conservan hasta que termine el período de retención.",
+      "reason": "Motivo (queda en el registro de auditoría)",
+      "confirmSuspend": "Suspender",
+      "confirmArchive": "Archivar",
+      "keep": "Mantenerla activa"
+    },
+    "plan": {
+      "title": "Plan",
+      "plan": "Plan",
+      "trialEnds": "La prueba termina",
+      "seats": "Puestos",
+      "seatsHint": "Déjelo vacío para no poner límite.",
+      "payer": "Quién paga los puestos",
+      "payers": {
+        "organisation": "Paga la organización",
+        "member": "Paga cada usuario"
+      },
+      "creditsPerSeat": "Créditos de IA por puesto al mes",
+      "pooled": "Compartir los créditos entre los puestos",
+      "candidatePool": "Créditos para candidatos patrocinados",
+      "billingNote": "Los precios, las facturas y las formas de pago llegan con Planes y precios."
+    },
+    "features": {
+      "title": "Funciones de esta organización",
+      "defaultOn": "Activada de forma predeterminada",
+      "defaultOff": "Desactivada de forma predeterminada",
+      "beta": "Beta",
+      "addOn": "Complemento del plan",
+      "betaHint": "Se activa desde Funciones y versiones",
+      "names": {
+        "virtual_broker": "Bróker virtual",
+        "contract_review": "Revisión de contratos",
+        "provider_marketplace": "Mercado de proveedores",
+        "recruiting_agents": "Reclutamiento de agentes con licencia",
+        "ai_video_lessons": "Lecciones en video con IA para capacitar a la agencia",
+        "spanish_ui": "Interfaz en español"
+      }
+    },
+    "limits": {
+      "title": "Límites y datos",
+      "seats": "Puestos",
+      "seatsValue": "{{seats}} · {{payer}}",
+      "noLimit": "Sin límite",
+      "aiCredits": "Créditos de IA",
+      "aiCreditsValue": "{{value}} por puesto al mes",
+      "pooledSuffix": " · compartidos",
+      "candidatePool": "Fondo para candidatos",
+      "rateLimit": "Límite de solicitudes a la API",
+      "rateValue": "{{value}} solicitudes por minuto",
+      "queueWeight": "Prioridad en la cola",
+      "weights": {
+        "low": "Baja",
+        "standard": "Normal",
+        "high": "Alta"
+      },
+      "region": "Región de datos",
+      "regionValue": "{{region}} · los datos permanecen en EE. UU.",
+      "retention": "Retención",
+      "retentionValue": "Registros {{years}} años · usuarios eliminados {{days}} días",
+      "supportNote": "El acceso de soporte necesita el consentimiento del propietario de la organización, dura 60 minutos y queda en su registro de auditoría.",
+      "credits_one": "{{value}} crédito",
+      "credits_other": "{{value}} créditos"
+    },
+    "integrations": {
+      "hidden": "Herramientas que esta organización oculta a sus usuarios",
+      "noneHidden": "No oculta ninguna.",
+      "connections": "Conectadas por esta organización",
+      "noConnections": "Todavía no hay herramientas conectadas para toda la organización.",
+      "catalogue": "Abrir el catálogo de integraciones",
+      "states": {
+        "active": "Al día",
+        "reconnect_needed": "Requiere iniciar sesión",
+        "failing": "Con errores"
+      }
+    },
+    "domain": {
+      "address": "Dirección para iniciar sesión",
+      "custom": "Dominio propio",
+      "customNote": "La organización conecta su propio dominio en Marca y dominio. Su situación aparece aquí cuando esté configurado.",
+      "teamNote": "Los equipos y los proveedores de servicios inician sesión en la app de REOS y en la dirección de la organización a la que pertenecen."
+    },
+    "privacy": {
+      "region": "Región de datos",
+      "cell": "Celda",
+      "cellNote": "Cada celda es una copia independiente de los servidores de REOS. Una organización se puede mover a su propia celda sin interrupciones.",
+      "logs": "Conservar registros durante (años)",
+      "deleted": "Conservar usuarios eliminados durante (días)",
+      "logsHint": "Al menos 4 años, por las normas estatales de conservación de registros."
+    },
+    "audit": {
+      "title": "Registro de auditoría",
+      "empty": "Todavía no hay cambios.",
+      "when": "Cuándo",
+      "who": "Quién",
+      "what": "Qué",
+      "system": "REOS",
+      "changed": "Cambió: {{fields}}",
+      "actions": {
+        "tenant.created": "Creó la organización",
+        "tenant.updated": "Cambió la configuración",
+        "tenant.status_changed": "Cambió la situación: {{from}} → {{to}}"
+      }
     }
   }
 }

@@ -42,6 +42,9 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Waitlist | Lista de espera | |
 | Exam prep | Preparación para el examen | |
 | Seat (paid place in a course) | Puesto | Not "asiento" |
+| Seat (paid user place in a tenant's plan) | Puesto | Same word as for courses |
+| Tenant (super admin screens) | Organización | Not "inquilino": each tenant is an organization |
+| Feature (switch) | Función | |
 | Free quiz | Prueba gratis | |
 | Coming soon (state) | Próximamente | |
 | Connect / Reconnect (a tool) | Conectar / Volver a conectar | |

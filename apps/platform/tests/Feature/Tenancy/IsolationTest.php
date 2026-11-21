@@ -185,12 +185,14 @@ describe('in the app (every database)', function () {
     });
 
     it('never opens a database connection just to change the context', function () {
-        DB::purge();
+        // A PostgreSQL connection that can't connect: changing the context must leave it lazy.
+        config(['database.connections.probe' => ['driver' => 'pgsql', 'host' => '127.0.0.1', 'port' => 1, 'database' => 'none', 'username' => 'none', 'password' => '']]);
+        $probe = DB::connection('probe');
 
-        app(Tenancy::class)->enterPlatform();
         app(Tenancy::class)->enter(5);
-
-        expect(DB::getConnections())->toBe([]);
         app(Tenancy::class)->enterPlatform();
+
+        expect($probe->getRawPdo())->toBeInstanceOf(Closure::class);
+        DB::purge('probe');
     });
 });

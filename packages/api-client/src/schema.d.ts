@@ -813,7 +813,7 @@ export interface components {
         };
         /**
          * OrganisationType
-         * @description Kinds of organisation a role can belong to (A3.2). A4.1 adds the full hierarchy, branding and domains.
+         * @description Kinds of organisation (tenant) a role can belong to (A3.2, A4.1).
          *     | |
          *     |---|
          *     | `platform` <br/> REOS itself: super admins, and people who joined on their own. |
@@ -821,9 +821,10 @@ export interface components {
          *     | `school` <br/>  |
          *     | `association` <br/>  |
          *     | `provider_business` <br/> A lender, inspector, title company or other service business. |
+         *     | `team` <br/> A team inside a brokerage (its parent); it inherits the brokerage's plan. |
          * @enum {string}
          */
-        OrganisationType: "platform" | "brokerage" | "school" | "association" | "provider_business";
+        OrganisationType: "platform" | "brokerage" | "school" | "association" | "provider_business" | "team";
         /** PhoneStartRequest */
         PhoneStartRequest: {
             /**

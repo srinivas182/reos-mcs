@@ -8,6 +8,7 @@ use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\Memberships;
 use Database\Seeders\DatabaseSeeder;
+use Database\Seeders\Demo\DemoTenants;
 use Database\Seeders\Demo\Personas;
 use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -98,7 +99,7 @@ it('gives each persona their roles in their organisation, and can run again', fu
         ->and($roles('linda.park@demo.reos.test'))->toBe(['broker @ Lone Star Realty', 'agent @ Lone Star Realty'])
         ->and($roles('karen.webb@demo.reos.test'))->toBe(['association_admin @ Texas REALTORS®'])
         ->and($roles('ops@demo.reos.test'))->toBe(['super_admin @ REOS platform'])
-        ->and(Organisation::query()->count())->toBe(count(Personas::organisations()));
+        ->and(Organisation::query()->count())->toBe(count(Personas::organisations()) + count(DemoTenants::EXTRA));
 
     foreach (Personas::all() as $persona) {
         expect($roles($persona->email))->not->toBeEmpty();

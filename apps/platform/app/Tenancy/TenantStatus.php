@@ -10,6 +10,9 @@ enum TenantStatus: string
     /** In use. */
     case Active = 'active';
 
+    /** In use on a trial until `trial_ends_at`. */
+    case Trial = 'trial';
+
     /** Signed out and blocked (unpaid or on request); data kept. */
     case Suspended = 'suspended';
 
