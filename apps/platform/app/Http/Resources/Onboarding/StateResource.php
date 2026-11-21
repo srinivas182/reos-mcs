@@ -24,6 +24,8 @@ final class StateResource extends JsonResource
             'status' => $this->resource->status,
             /** People can register and study for this state now; otherwise "Coming soon" with a waitlist. */
             'live' => (bool) $this->resource->status->isLive(),
+            /** People waiting for this state to open. */
+            'waiting' => (int) ($this->resource->waitlist_count ?? 0),
         ];
     }
 }

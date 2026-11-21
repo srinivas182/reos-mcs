@@ -30,7 +30,7 @@ describe('states and the waitlist (journey screens 2–3)', function () {
         $response = $this->getJson('/api/v1/states')->assertOk();
 
         expect($response->json('data'))->toHaveCount(51)
-            ->and($response->json('data.0'))->toBe(['code' => 'TX', 'name' => 'Texas', 'status' => 'live', 'live' => true])
+            ->and($response->json('data.0'))->toBe(['code' => 'TX', 'name' => 'Texas', 'status' => 'live', 'live' => true, 'waiting' => 0])
             ->and($response->json('data.1.live'))->toBeFalse();
     });
 
@@ -40,6 +40,7 @@ describe('states and the waitlist (journey screens 2–3)', function () {
         $this->postJson('/api/v1/states/la/waitlist', ['device_id' => $device])->assertOk()->assertJson(['waiting' => 1]);
         $this->postJson('/api/v1/states/LA/waitlist', ['device_id' => $device])->assertJson(['waiting' => 1]);
         $this->postJson('/api/v1/states/LA/waitlist', ['device_id' => (string) Str::uuid()])->assertJson(['waiting' => 2]);
+        expect(collect($this->getJson('/api/v1/states')->json('data'))->firstWhere('code', 'LA')['waiting'])->toBe(2);
 
         signInOnPhone($this, User::factory()->create());
         $this->postJson('/api/v1/states/LA/waitlist', ['email' => 'maria@example.com'])->assertJson(['waiting' => 3]);

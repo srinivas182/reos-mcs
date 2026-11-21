@@ -531,8 +531,8 @@ export interface components {
             state?: string | null;
             /** @description YYYY-MM, or null for "Not sure". */
             exam_month?: string | null;
-            /** @enum {integer|null} */
-            minutes_per_day?: "10" | "20" | "30" | "45" | "60" | null;
+            /** @description Minutes a day: 10, 20, 30, 45 or 60 ("1 h+"). */
+            minutes_per_day?: number | null;
             locale?: components["schemas"]["Locale"] | null;
             /** @description HH:MM, or null for no reminder. */
             reminder_time?: string | null;
@@ -660,6 +660,8 @@ export interface components {
             status: components["schemas"]["StateStatus"];
             /** @description People can register and study for this state now; otherwise "Coming soon" with a waitlist. */
             live: boolean;
+            /** @description People waiting for this state to open. */
+            waiting: number;
         };
         /**
          * StateStatus

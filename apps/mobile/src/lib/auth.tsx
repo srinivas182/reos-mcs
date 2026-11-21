@@ -19,6 +19,7 @@ import { Platform } from 'react-native';
 
 import { api, webBaseUrl } from '@/lib/api';
 import { i18n } from '@/lib/i18n';
+import { attachDraft, markSignedIn } from '@/lib/onboarding';
 import { biometricAsked, biometricEnabled, clearToken, deviceInfo, loadToken, onSessionExpired, saveToken } from '@/lib/session';
 
 export type Me = Schemas['MeResource'];
@@ -151,12 +152,22 @@ export function AuthProvider({ children, client = api() }: { children: ReactNode
 
   const finish = useCallback(async (data: SignInResponse): Promise<Outcome> => {
     await saveToken(data.token);
+    markSignedIn();
     setUser(data.user);
+
+    // Choices made before sign-up (path, state, free quiz) go to the new account.
+    if (await attachDraft(client).catch(() => false)) {
+      const { data: me } = await client.GET('/me');
+      if (me) {
+        setUser(me);
+      }
+    }
+
     setLanding(data.new_device ? '/new-device' : (await shouldOfferBiometric()) ? '/face-id' : '/');
     setStatus('signedIn');
 
     return { ok: true, newDevice: data.new_device, newAccount: data.new_account };
-  }, []);
+  }, [client]);
 
   const signInWithBrowser = useCallback(
     async (provider: 'google' | 'apple'): Promise<Outcome> => {

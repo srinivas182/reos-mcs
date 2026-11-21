@@ -32,3 +32,11 @@ The mobile journeys (candidate screens 1–11, agent screens 1–3) start withou
 - The phone (A3.3b) and the web (A3.3c) build the journey screens on these endpoints.
 - Notification permission is asked only after a reminder time is picked (on the phone).
 - The free quiz returns answers to the client on purpose: it's a sample for learning, not a graded test.
+- **Phone (A3.3b), from the Candidate Complete Journey screens 1–11.**
+  - A first launch opens **What brings you to REOS?** (screen 1); a phone that has signed in before opens Sign in. Brokers are sent to reos.com, where brokerages are set up.
+  - State (2) → waitlist for states that aren't live (3) → welcome (5) → free quiz (6) → score and sign-up (7). Until sign-up the path, state and answers live only on the phone (`lib/onboarding.ts`, MMKV); they are saved to the account straight after sign-in, then cleared.
+  - A candidate who hasn't finished setup always lands on **Your plan · 3 quick questions** (8), then **Your plan is ready** (9).
+  - The daily reminder is a local notification (`lib/reminders.ts`), scheduled only after a time is chosen.
+  - **Enter a code** (11) takes the code but says codes work from A4.3; nothing is redeemed yet.
+  - `GET /api/v1/states` now includes `waiting` (people on the waitlist not yet told), for "N people in Louisiana are waiting".
+- Known gaps against the journey, on purpose: the score screen has no "exam-ready in about N weeks" line (there is no honest estimate until real courses exist), and the plan's button is "Go to Today" rather than "Start my first lesson" (lessons arrive with A5).

@@ -30,6 +30,7 @@ final readonly class States
     public function all(): Collection
     {
         return State::query()
+            ->withCount(['waitlist' => static fn ($query) => $query->whereNull('notified_at')])
             ->orderByRaw('CASE WHEN status = ? THEN 0 ELSE 1 END', [StateStatus::Live->value])
             ->orderBy('name')
             ->get();

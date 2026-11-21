@@ -39,3 +39,8 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Continuing education (CE) | Educación continua (CE) | Keep "CE" and "TREC" as in English |
 | Integration | Integración | |
 | Demo data | Datos de demostración | |
+| Waitlist | Lista de espera | |
+| Exam prep | Preparación para el examen | |
+| Seat (paid place in a course) | Puesto | Not "asiento" |
+| Free quiz | Prueba gratis | |
+| Coming soon (state) | Próximamente | |
