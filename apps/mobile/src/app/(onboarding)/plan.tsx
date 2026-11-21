@@ -23,27 +23,27 @@ export default function PlanScreen() {
     : null;
 
   const steps = [
-    { title: t('mobile.onboarding.plan.steps.courses'), detail: hours ? t('mobile.onboarding.plan.steps.coursesDetail', { hours }) : t('mobile.onboarding.plan.steps.coursesDetailNoHours') },
-    { title: t('mobile.onboarding.plan.steps.prep'), detail: t('mobile.onboarding.plan.steps.prepDetail') },
-    { title: t('mobile.onboarding.plan.steps.exam'), detail: t('mobile.onboarding.plan.steps.examDetail') },
-    { title: t('mobile.onboarding.plan.steps.license'), detail: t('mobile.onboarding.plan.steps.licenseDetail') },
+    { title: t('onboarding.plan.steps.courses'), detail: hours ? t('onboarding.plan.steps.coursesDetail', { hours }) : t('onboarding.plan.steps.coursesDetailNoHours') },
+    { title: t('onboarding.plan.steps.prep'), detail: t('onboarding.plan.steps.prepDetail') },
+    { title: t('onboarding.plan.steps.exam'), detail: t('onboarding.plan.steps.examDetail') },
+    { title: t('onboarding.plan.steps.license'), detail: t('onboarding.plan.steps.licenseDetail') },
   ];
 
   return (
-    <Screen footer={<View style={styles.footer}><Button label={t('mobile.onboarding.plan.start')} fullWidth onPress={() => router.replace('/')} /></View>}>
-      <Eyebrow>{t('mobile.onboarding.plan.eyebrow')}</Eyebrow>
+    <Screen footer={<View style={styles.footer}><Button label={t('onboarding.plan.start')} fullWidth onPress={() => router.replace('/')} /></View>}>
+      <Eyebrow>{t('onboarding.plan.eyebrow')}</Eyebrow>
       <Text variant="headline" heading>
-        {month ? t('mobile.onboarding.plan.titleMonth', { month }) : t('mobile.onboarding.plan.titleNotSure')}
+        {month ? t('onboarding.plan.titleMonth', { month }) : t('onboarding.plan.titleNotSure')}
       </Text>
 
       <HeroCard style={styles.hero}>
         {days !== null ? (
-          <ProgressRing value={100} label={`${days} ${t('mobile.onboarding.plan.days')}`} size={96}>
+          <ProgressRing value={100} label={`${days} ${t('onboarding.plan.days')}`} size={96}>
             <Text variant="title" style={styles.light}>
               {String(days)}
             </Text>
             <Text variant="caption" style={styles.muted}>
-              {t('mobile.onboarding.plan.days')}
+              {t('onboarding.plan.days')}
             </Text>
           </ProgressRing>
         ) : null}
@@ -51,14 +51,14 @@ export default function PlanScreen() {
           {month ? (
             <>
               <Text variant="caption" style={styles.muted}>
-                {t('mobile.onboarding.plan.targetExam')}
+                {t('onboarding.plan.targetExam')}
               </Text>
               <Text variant="title" style={styles.light}>
                 {month}
               </Text>
             </>
           ) : null}
-          <Text style={styles.muted}>{hours ? t('mobile.onboarding.plan.perDay', { minutes, hours }) : t('mobile.onboarding.plan.perDayNoHours', { minutes })}</Text>
+          <Text style={styles.muted}>{hours ? t('onboarding.plan.perDay', { minutes, hours }) : t('onboarding.plan.perDayNoHours', { minutes })}</Text>
         </View>
       </HeroCard>
 

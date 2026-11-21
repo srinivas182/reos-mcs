@@ -48,8 +48,8 @@ export default function WaitlistScreen() {
     <Screen
       footer={
         <View style={styles.footer}>
-          {joined ? null : <Button label={t('mobile.onboarding.waitlist.join', { state })} loading={busy} fullWidth onPress={() => void join()} />}
-          <Button label={t('mobile.onboarding.waitlist.texasInstead')} variant="secondary" fullWidth onPress={texas} />
+          {joined ? null : <Button label={t('onboarding.waitlist.join', { state })} loading={busy} fullWidth onPress={() => void join()} />}
+          <Button label={t('onboarding.waitlist.texasInstead')} variant="secondary" fullWidth onPress={texas} />
         </View>
       }
     >
@@ -57,29 +57,29 @@ export default function WaitlistScreen() {
         <Icon icon={Globe} color="action" size={28} />
       </View>
       <Text variant="title" heading style={styles.center}>
-        {t('mobile.onboarding.waitlist.title', { state })}
+        {t('onboarding.waitlist.title', { state })}
       </Text>
       <Text tone="muted" style={styles.center}>
-        {t('mobile.onboarding.waitlist.body', { state })}
+        {t('onboarding.waitlist.body', { state })}
       </Text>
 
       <Card>
-        <Eyebrow>{t('mobile.onboarding.waitlist.youGet')}</Eyebrow>
+        <Eyebrow>{t('onboarding.waitlist.youGet')}</Eyebrow>
         {(['early', 'credits', 'say'] as const).map((key) => (
           <View key={key} style={styles.benefit}>
             <Icon icon={Check} color="success" size={20} />
-            <Text style={styles.flex}>{t(`mobile.onboarding.waitlist.${key}`)}</Text>
+            <Text style={styles.flex}>{t(`onboarding.waitlist.${key}`)}</Text>
           </View>
         ))}
       </Card>
 
       {waiting > 0 ? (
         <Text variant="caption" tone="muted" style={styles.center}>
-          {t('mobile.onboarding.waitlist.waiting', { count: waiting, state })}
+          {t('onboarding.waitlist.waiting', { count: waiting, state })}
         </Text>
       ) : null}
-      {joined ? <Callout tone="success" live title={t('mobile.onboarding.waitlist.joined', { state })} /> : null}
-      {failed ? <Callout tone="danger" live title={t('mobile.onboarding.waitlist.joinFailed')} /> : null}
+      {joined ? <Callout tone="success" live title={t('onboarding.waitlist.joined', { state })} /> : null}
+      {failed ? <Callout tone="danger" live title={t('onboarding.waitlist.joinFailed')} /> : null}
     </Screen>
   );
 }

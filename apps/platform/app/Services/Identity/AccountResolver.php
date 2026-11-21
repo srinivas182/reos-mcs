@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Identity;
 
+use App\Enums\Locale;
 use App\Identity\IdentityClaims;
 use App\Models\SocialAccount;
 use App\Models\User;
@@ -41,6 +42,7 @@ final class AccountResolver
                     'name' => $name ?? $claims->name,
                     // An unverified email is never stored as the account's email.
                     'email' => $claims->emailVerified ? $claims->email : null,
+                    'locale' => Locale::current(),
                 ]);
             } elseif ($user->email_verified_at === null) {
                 // Someone signed up with this email but never proved it. The
@@ -79,7 +81,7 @@ final class AccountResolver
             $user = User::query()->where('phone', $phone)->lockForUpdate()->first();
             $created = $user === null;
 
-            $user ??= new User;
+            $user ??= new User(['locale' => Locale::current()]);
             $user->forceFill(['phone' => $phone, 'phone_verified_at' => $user->phone_verified_at ?? now()])->save();
 
             return ['user' => $user, 'created' => $created];

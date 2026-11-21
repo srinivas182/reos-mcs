@@ -40,3 +40,11 @@ The mobile journeys (candidate screens 1–11, agent screens 1–3) start withou
   - **Enter a code** (11) takes the code but says codes work from A4.3; nothing is redeemed yet.
   - `GET /api/v1/states` now includes `waiting` (people on the waitlist not yet told), for "N people in Louisiana are waiting".
 - Known gaps against the journey, on purpose: the score screen has no "exam-ready in about N weeks" line (there is no honest estimate until real courses exist), and the plan's button is "Go to Today" rather than "Start my first lesson" (lessons arrive with A5).
+- **Web (A3.3c), from the Web App Journey screen 1 and the candidate journey's steps.**
+  - **reos.com home** (`/`): top bar with the six audiences, state chip, Sign in and Get started; headline; the "I am" role picker; a sample AI lesson; key numbers. Server-rendered, English and Spanish, with English / Español in the footer.
+  - **A landing page per audience** (`/for/{audience}`). Each says what REOS does for them and leads to sign-up with the path remembered (`/sign-up/{path}`). Associations join with the REOS team, so their page offers Sign in only.
+  - **Becoming an agent on the web** (`/get-started`): state, waitlist (by email), free quiz, score and sign-up, then the three quick questions and the plan. It is the phone's path in the web's own layout, not a copy of the phone screens.
+  - Before an account exists the path, state and answers live in the **session** (`WebDraft`). They are saved to the account at the first sign-in or sign-up, whichever way (`AttachOnboardingDraft` on `Login`). Someone who already chose a path keeps it.
+  - A candidate who hasn't answered the three quick questions is sent to them before the dashboard (`EnsureOnboarded`).
+  - New accounts keep the language the visitor was using (`Locale::current()`), on the web and the phone.
+  - The onboarding words are shared by both front ends (`onboarding.*` in `packages/i18n`); the website's own words are under `site.*`.

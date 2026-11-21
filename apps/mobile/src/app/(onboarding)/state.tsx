@@ -61,13 +61,13 @@ export default function StateScreen() {
   };
 
   return (
-    <Screen footer={<View style={styles.footer}><Button label={t('mobile.onboarding.state.continue', { state: chosen?.name ?? '' })} disabled={!chosen?.live} fullWidth onPress={next} /></View>}>
-      <Eyebrow>{t('mobile.onboarding.state.step', { step: 1, total: 4 })}</Eyebrow>
+    <Screen footer={<View style={styles.footer}><Button label={t('onboarding.state.continue', { state: chosen?.name ?? '' })} disabled={!chosen?.live} fullWidth onPress={next} /></View>}>
+      <Eyebrow>{t('onboarding.state.step', { step: 1, total: 4 })}</Eyebrow>
       <Text variant="headline" heading>
-        {licensed ? t('mobile.onboarding.state.titleLicensed') : t('mobile.onboarding.state.titleCandidate')}
+        {licensed ? t('onboarding.state.titleLicensed') : t('onboarding.state.titleCandidate')}
       </Text>
-      <Text tone="muted">{t('mobile.onboarding.state.subtitle')}</Text>
-      <TextField label={t('mobile.onboarding.state.search')} value={query} onChangeText={setQuery} autoCorrect={false} />
+      <Text tone="muted">{t('onboarding.state.subtitle')}</Text>
+      <TextField label={t('onboarding.state.search')} value={query} onChangeText={setQuery} autoCorrect={false} />
 
       <View accessibilityRole="radiogroup" style={styles.list}>
         {shown.map((state) => {
@@ -78,7 +78,7 @@ export default function StateScreen() {
               key={state.code}
               accessibilityRole="radio"
               accessibilityState={{ checked: isSelected }}
-              accessibilityLabel={`${state.name}, ${state.live ? t('mobile.onboarding.state.live') : t('mobile.onboarding.state.comingSoon')}`}
+              accessibilityLabel={`${state.name}, ${state.live ? t('onboarding.state.live') : t('onboarding.state.comingSoon')}`}
               onPress={() => pick(state)}
               style={({ pressed }) => [styles.row, isSelected && styles.selected, pressed && styles.pressed]}
             >
@@ -93,19 +93,19 @@ export default function StateScreen() {
                 </Text>
                 {state.live ? (
                   <Text variant="caption" tone="muted">
-                    {t('mobile.onboarding.state.liveDetail')}
+                    {t('onboarding.state.liveDetail')}
                   </Text>
                 ) : null}
               </View>
-              <Chip label={state.live ? t('mobile.onboarding.state.live') : t('mobile.onboarding.state.comingSoon')} tone={state.live ? 'success' : 'neutral'} />
+              <Chip label={state.live ? t('onboarding.state.live') : t('onboarding.state.comingSoon')} tone={state.live ? 'success' : 'neutral'} />
               {isSelected ? <Icon icon={Check} color="action" /> : null}
             </Pressable>
           );
         })}
       </View>
-      {query && shown.length === 0 ? <Text tone="muted">{t('mobile.onboarding.state.noResults', { search: query })}</Text> : null}
+      {query && shown.length === 0 ? <Text tone="muted">{t('onboarding.state.noResults', { search: query })}</Text> : null}
       <Text variant="caption" tone="muted">
-        {t('mobile.onboarding.state.note')}
+        {t('onboarding.state.note')}
       </Text>
     </Screen>
   );

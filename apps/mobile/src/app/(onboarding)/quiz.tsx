@@ -50,7 +50,7 @@ export default function QuizScreen() {
   if (failed) {
     return (
       <Screen>
-        <Callout tone="danger" title={t('mobile.onboarding.quiz.loadFailed')} action={<Button label={t('common.tryAgain')} variant="secondary" onPress={() => {
+        <Callout tone="danger" title={t('onboarding.quiz.loadFailed')} action={<Button label={t('common.tryAgain')} variant="secondary" onPress={() => {
               setFailed(false);
               setAttempt((n) => n + 1);
             }} />} />
@@ -103,23 +103,23 @@ export default function QuizScreen() {
     <Screen
       footer={
         <View style={styles.footer}>
-          <Button label={last ? t('mobile.onboarding.quiz.finish') : t('mobile.onboarding.quiz.next')} disabled={!answered} fullWidth onPress={next} />
+          <Button label={last ? t('onboarding.quiz.finish') : t('onboarding.quiz.next')} disabled={!answered} fullWidth onPress={next} />
         </View>
       }
     >
       <View style={styles.top}>
         <Text tone="muted" weight="semibold" style={styles.flex}>
-          {t('mobile.onboarding.quiz.header')}
+          {t('onboarding.quiz.header')}
         </Text>
-        <Chip label={t('mobile.onboarding.quiz.count', { number: index + 1, total: questions.length })} />
+        <Chip label={t('onboarding.quiz.count', { number: index + 1, total: questions.length })} />
       </View>
-      <ProgressBar value={(100 * (index + (answered ? 1 : 0))) / questions.length} label={t('mobile.onboarding.quiz.progress')} />
-      <Eyebrow>{t(`mobile.onboarding.topics.${question.topic}`)}</Eyebrow>
+      <ProgressBar value={(100 * (index + (answered ? 1 : 0))) / questions.length} label={t('onboarding.quiz.progress')} />
+      <Eyebrow>{t(`onboarding.topics.${question.topic}`)}</Eyebrow>
       <Text variant="title" heading>
         {question.question}
       </Text>
       <OptionGroup
-        label={t('mobile.onboarding.quiz.answers')}
+        label={t('onboarding.quiz.answers')}
         lettered
         options={question.options.map((label, i) => ({ value: String(i), label }))}
         value={answered ? String(answer.choice) : null}
@@ -130,8 +130,8 @@ export default function QuizScreen() {
         <Callout
           tone={right ? 'success' : 'danger'}
           live
-          title={right ? t('mobile.onboarding.quiz.correct') : t('mobile.onboarding.quiz.incorrect')}
-          body={`${question.explanation}\n${t('mobile.onboarding.quiz.source', { source: question.source })}`}
+          title={right ? t('onboarding.quiz.correct') : t('onboarding.quiz.incorrect')}
+          body={`${question.explanation}\n${t('onboarding.quiz.source', { source: question.source })}`}
         />
       ) : null}
     </Screen>

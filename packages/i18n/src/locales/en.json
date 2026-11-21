@@ -206,156 +206,6 @@
       "highContrast": "High contrast",
       "highContrastHint": "The strongest contrast, for low vision or bright sun",
       "note": "Works with VoiceOver and TalkBack. Built to WCAG 2.2 AA."
-    },
-    "onboarding": {
-      "path": {
-        "title": "What brings you to REOS?",
-        "subtitle": "Pick one. You can add another role later.",
-        "become_agent": {
-          "title": "I want to become an agent",
-          "subtitle": "Free quiz, courses and exam prep"
-        },
-        "licensed_agent": {
-          "title": "I'm a licensed agent",
-          "subtitle": "CE, renewal, AI help and coaching"
-        },
-        "broker": {
-          "title": "I lead a team or brokerage",
-          "subtitle": "Seats, team progress and recruiting"
-        },
-        "instructor": {
-          "title": "I'm an instructor or coach",
-          "subtitle": "Teach, set your rate, get booked"
-        },
-        "provider": {
-          "title": "I'm a service provider",
-          "subtitle": "Lenders, inspectors, title and more"
-        },
-        "code": "I have a code or invite",
-        "signIn": "Sign in",
-        "brokerTitle": "Set up your team on reos.com",
-        "brokerBody": "Brokerages, teams and associations are set up on the website, where you add seats and invite your agents. Then sign in here with the same account.",
-        "openWebsite": "Open reos.com"
-      },
-      "state": {
-        "step": "Step {{step}} of {{total}}",
-        "titleCandidate": "Where do you want to be licensed?",
-        "titleLicensed": "Where are you licensed?",
-        "subtitle": "Courses, exam prep and rules follow your state. You can add another state later.",
-        "search": "Search states",
-        "liveDetail": "Courses, exam prep and CE available",
-        "live": "Live",
-        "comingSoon": "Coming soon",
-        "note": "REOS is live in Texas first. Other states open one by one.",
-        "continue": "Continue with {{state}}",
-        "noResults": "No state matches “{{search}}”"
-      },
-      "waitlist": {
-        "title": "REOS isn't in {{state}} yet",
-        "body": "We're live in Texas first. Join the waitlist and we'll tell you the day {{state}} opens.",
-        "youGet": "You get",
-        "early": "Early access before public launch",
-        "credits": "50 bonus AI credits when you start",
-        "say": "A say in which courses come first",
-        "waiting_one": "{{count}} person in {{state}} is waiting. More sign-ups open a state sooner.",
-        "waiting_other": "{{count}} people in {{state}} are waiting. More sign-ups open a state sooner.",
-        "join": "Join the {{state}} waitlist",
-        "texasInstead": "I'll study for Texas instead",
-        "joined": "You're on the list. We'll tell you the day {{state}} opens.",
-        "joinFailed": "We couldn't add you just now. Check your connection and try again."
-      },
-      "welcome": {
-        "eyebrow": "{{state}} real estate license",
-        "title": "Become a licensed agent. We'll get you there.",
-        "body": "Courses, exam prep and an AI study mate in one app. Know when you're ready, then pass the first time.",
-        "dailyValue": "5 min",
-        "daily": "daily lessons",
-        "aiValue": "24/7",
-        "ai": "AI study mate",
-        "languagesValue": "EN · ES",
-        "languages": "English, Español",
-        "quiz": "Take the free 2-minute quiz",
-        "haveAccount": "I already have an account",
-        "code": "Have a school, brokerage or association code?"
-      },
-      "quiz": {
-        "header": "Free quiz · no account needed",
-        "count": "{{number}} of {{total}}",
-        "progress": "Quiz progress",
-        "answers": "Answers",
-        "correct": "Correct, nicely done.",
-        "incorrect": "Not quite.",
-        "source": "Source: {{source}}",
-        "next": "Next question",
-        "finish": "See my score",
-        "loadFailed": "We couldn't load the quiz. Check your connection and try again.",
-        "sample": "Sample question"
-      },
-      "score": {
-        "label": "you already know",
-        "strong": "You're off to a strong start.",
-        "start": "A great place to start.",
-        "save": "Save your score and get your free plan"
-      },
-      "levels": {
-        "strong": "Strong",
-        "learning": "Learning",
-        "start_here": "Start here"
-      },
-      "topics": {
-        "agency": "Agency",
-        "contracts": "Contracts",
-        "math": "Real estate math",
-        "ownership": "Property ownership",
-        "finance": "Financing",
-        "state_rules": "Texas rules"
-      },
-      "setup": {
-        "header": "Your plan · 3 quick questions",
-        "time": "1 min",
-        "examTitle": "When would you like to take the exam?",
-        "notSure": "Not sure",
-        "minutesTitle": "How much time a day?",
-        "minutes": "{{count}} min",
-        "hourPlus": "1 h+",
-        "languageTitle": "Learn in",
-        "remindTitle": "Remind me",
-        "remindEvery": "Every day at",
-        "remindNone": "No reminder",
-        "remindChoose": "Choose a reminder time",
-        "build": "Build my plan",
-        "reminderTitle": "Time to study",
-        "reminderBody": "Your {{minutes}} minutes for today are ready.",
-        "notificationsOff": "Notifications are off, so there's no reminder. You can turn them on in your phone's settings."
-      },
-      "plan": {
-        "eyebrow": "Your plan is ready",
-        "titleMonth": "Exam in {{month}}. Here's the road.",
-        "titleNotSure": "Here's your road to a license.",
-        "targetExam": "Target exam",
-        "days": "days",
-        "perDay": "{{minutes}} min a day · {{hours}} hours of courses · exam prep",
-        "perDayNoHours": "{{minutes}} min a day · courses · exam prep",
-        "steps": {
-          "courses": "Qualifying courses",
-          "coursesDetail": "{{hours}} hours",
-          "coursesDetailNoHours": "Your state's required hours",
-          "prep": "Exam prep and simulations",
-          "prepDetail": "Until you're ready",
-          "exam": "Book and pass the exam",
-          "examDetail": "We tell you when to book",
-          "license": "Get sponsored and licensed",
-          "licenseDetail": "Broker offers inside the app"
-        },
-        "start": "Go to Today"
-      },
-      "code": {
-        "title": "Enter a code",
-        "label": "Your code",
-        "placeholder": "For example LSR-2026-KATY",
-        "continue": "Continue",
-        "soon": "Codes from schools, brokerages and associations start working in the next update. Keep your code, and take the free quiz in the meantime."
-      }
     }
   },
   "tabs": {
@@ -959,6 +809,310 @@
       "register": "People can choose it and register in the app and on reos.com.",
       "waitlist": "Its waitlist is kept, so everyone waiting can be told when notifications arrive.",
       "fill": "Fill in the regulator, exam vendor and hours before opening a state."
+    }
+  },
+  "onboarding": {
+    "path": {
+      "title": "What brings you to REOS?",
+      "subtitle": "Pick one. You can add another role later.",
+      "become_agent": {
+        "title": "I want to become an agent",
+        "subtitle": "Free quiz, courses and exam prep"
+      },
+      "licensed_agent": {
+        "title": "I'm a licensed agent",
+        "subtitle": "CE, renewal, AI help and coaching"
+      },
+      "broker": {
+        "title": "I lead a team or brokerage",
+        "subtitle": "Seats, team progress and recruiting"
+      },
+      "instructor": {
+        "title": "I'm an instructor or coach",
+        "subtitle": "Teach, set your rate, get booked"
+      },
+      "provider": {
+        "title": "I'm a service provider",
+        "subtitle": "Lenders, inspectors, title and more"
+      },
+      "code": "I have a code or invite",
+      "signIn": "Sign in",
+      "brokerTitle": "Set up your team on reos.com",
+      "brokerBody": "Brokerages, teams and associations are set up on the website, where you add seats and invite your agents. Then sign in here with the same account.",
+      "openWebsite": "Open reos.com"
+    },
+    "state": {
+      "step": "Step {{step}} of {{total}}",
+      "titleCandidate": "Where do you want to be licensed?",
+      "titleLicensed": "Where are you licensed?",
+      "subtitle": "Courses, exam prep and rules follow your state. You can add another state later.",
+      "search": "Search states",
+      "liveDetail": "Courses, exam prep and CE available",
+      "live": "Live",
+      "comingSoon": "Coming soon",
+      "note": "REOS is live in Texas first. Other states open one by one.",
+      "continue": "Continue with {{state}}",
+      "noResults": "No state matches “{{search}}”"
+    },
+    "waitlist": {
+      "title": "REOS isn't in {{state}} yet",
+      "body": "We're live in Texas first. Join the waitlist and we'll tell you the day {{state}} opens.",
+      "youGet": "You get",
+      "early": "Early access before public launch",
+      "credits": "50 bonus AI credits when you start",
+      "say": "A say in which courses come first",
+      "waiting_one": "{{count}} person in {{state}} is waiting. More sign-ups open a state sooner.",
+      "waiting_other": "{{count}} people in {{state}} are waiting. More sign-ups open a state sooner.",
+      "join": "Join the {{state}} waitlist",
+      "texasInstead": "I'll study for Texas instead",
+      "joined": "You're on the list. We'll tell you the day {{state}} opens.",
+      "joinFailed": "We couldn't add you just now. Check your connection and try again."
+    },
+    "welcome": {
+      "eyebrow": "{{state}} real estate license",
+      "title": "Become a licensed agent. We'll get you there.",
+      "body": "Courses, exam prep and an AI study mate in one app. Know when you're ready, then pass the first time.",
+      "dailyValue": "5 min",
+      "daily": "daily lessons",
+      "aiValue": "24/7",
+      "ai": "AI study mate",
+      "languagesValue": "EN · ES",
+      "languages": "English, Español",
+      "quiz": "Take the free 2-minute quiz",
+      "haveAccount": "I already have an account",
+      "code": "Have a school, brokerage or association code?"
+    },
+    "quiz": {
+      "header": "Free quiz · no account needed",
+      "count": "{{number}} of {{total}}",
+      "progress": "Quiz progress",
+      "answers": "Answers",
+      "correct": "Correct, nicely done.",
+      "incorrect": "Not quite.",
+      "source": "Source: {{source}}",
+      "next": "Next question",
+      "finish": "See my score",
+      "loadFailed": "We couldn't load the quiz. Check your connection and try again.",
+      "sample": "Sample question"
+    },
+    "score": {
+      "label": "you already know",
+      "strong": "You're off to a strong start.",
+      "start": "A great place to start.",
+      "save": "Save your score and get your free plan"
+    },
+    "levels": {
+      "strong": "Strong",
+      "learning": "Learning",
+      "start_here": "Start here"
+    },
+    "topics": {
+      "agency": "Agency",
+      "contracts": "Contracts",
+      "math": "Real estate math",
+      "ownership": "Property ownership",
+      "finance": "Financing",
+      "state_rules": "Texas rules"
+    },
+    "setup": {
+      "header": "Your plan · 3 quick questions",
+      "time": "1 min",
+      "examTitle": "When would you like to take the exam?",
+      "notSure": "Not sure",
+      "minutesTitle": "How much time a day?",
+      "minutes": "{{count}} min",
+      "hourPlus": "1 h+",
+      "languageTitle": "Learn in",
+      "remindTitle": "Remind me",
+      "remindEvery": "Every day at",
+      "remindNone": "No reminder",
+      "remindChoose": "Choose a reminder time",
+      "build": "Build my plan",
+      "reminderTitle": "Time to study",
+      "reminderBody": "Your {{minutes}} minutes for today are ready.",
+      "notificationsOff": "Notifications are off, so there's no reminder. You can turn them on in your phone's settings."
+    },
+    "plan": {
+      "eyebrow": "Your plan is ready",
+      "titleMonth": "Exam in {{month}}. Here's the road.",
+      "titleNotSure": "Here's your road to a license.",
+      "targetExam": "Target exam",
+      "days": "days",
+      "perDay": "{{minutes}} min a day · {{hours}} hours of courses · exam prep",
+      "perDayNoHours": "{{minutes}} min a day · courses · exam prep",
+      "steps": {
+        "courses": "Qualifying courses",
+        "coursesDetail": "{{hours}} hours",
+        "coursesDetailNoHours": "Your state's required hours",
+        "prep": "Exam prep and simulations",
+        "prepDetail": "Until you're ready",
+        "exam": "Book and pass the exam",
+        "examDetail": "We tell you when to book",
+        "license": "Get sponsored and licensed",
+        "licenseDetail": "Broker offers inside the app"
+      },
+      "start": "Go to Today"
+    },
+    "code": {
+      "title": "Enter a code",
+      "label": "Your code",
+      "placeholder": "For example LSR-2026-KATY",
+      "continue": "Continue",
+      "soon": "Codes from schools, brokerages and associations start working in the next update. Keep your code, and take the free quiz in the meantime."
+    }
+  },
+  "site": {
+    "nav": {
+      "label": "Main",
+      "candidates": "For candidates",
+      "agents": "For agents",
+      "brokerages": "For brokerages",
+      "schools": "For schools",
+      "associations": "For associations",
+      "service-providers": "For service providers",
+      "signIn": "Sign in",
+      "getStarted": "Get started",
+      "dashboard": "Go to dashboard",
+      "menu": "Menu",
+      "stateChip": "REOS is live in {{state}}"
+    },
+    "footer": {
+      "language": "Language",
+      "tagline": "Learning, compliance and business tools for real estate careers.",
+      "copyright": "© {{year}} REOS"
+    },
+    "home": {
+      "title": "Real estate careers",
+      "badge": "Now live in {{state}} · other states coming soon",
+      "headline": "The operating system for {{state}} real estate careers.",
+      "intro": "Get licensed, stay compliant and grow your business with AI courses, a virtual broker and every tool in one place. On the web and in the app.",
+      "iAm": "I am",
+      "roles": {
+        "candidates": {
+          "label": "Becoming an agent",
+          "description": "Courses and exam prep"
+        },
+        "agents": {
+          "label": "A licensed agent",
+          "description": "CE, AI tools, mentors"
+        },
+        "brokerages": {
+          "label": "A broker or team leader",
+          "description": "Oversight and recruiting"
+        },
+        "schools": {
+          "label": "An instructor or school",
+          "description": "Teach with AI"
+        },
+        "associations": {
+          "label": "An association",
+          "description": "Member programs"
+        },
+        "service-providers": {
+          "label": "A service provider",
+          "description": "Reach {{state}} agents"
+        }
+      },
+      "lesson": {
+        "tag": "Sample AI lesson · {{state}} contracts",
+        "title": "Principles of Real Estate I · lesson 3",
+        "meta": "English and Spanish"
+      },
+      "stats": {
+        "label": "REOS in numbers",
+        "agentsValue": "140k+",
+        "agents": "{{state}} sales agents",
+        "aiValue": "24/7",
+        "ai": "AI help",
+        "appValue": "1 app",
+        "app": "every role"
+      }
+    },
+    "audience": {
+      "signIn": "I already have an account",
+      "candidates": {
+        "eyebrow": "For candidates",
+        "title": "Become a licensed agent. We'll get you there.",
+        "intro": "Courses, exam prep and an AI study mate on the web and in the app. Know when you're ready, then pass the first time.",
+        "points": {
+          "p1": "Take a free 2-minute quiz, no account needed",
+          "p2": "A study plan that fits your day, in English or Spanish",
+          "p3": "A readiness score, so you book the exam at the right time"
+        },
+        "cta": "Take the free 2-minute quiz"
+      },
+      "agents": {
+        "eyebrow": "For licensed agents",
+        "title": "Stay compliant and grow your business.",
+        "intro": "CE, renewal, AI help and coaching in one place, with your contacts and deals beside them.",
+        "points": {
+          "p1": "CE wallet and renewal reminders",
+          "p2": "An AI virtual broker for questions, day or night",
+          "p3": "Mentors and instructors you can book"
+        },
+        "cta": "Create your account"
+      },
+      "brokerages": {
+        "eyebrow": "For brokers and team leaders",
+        "title": "See every agent's progress in one place.",
+        "intro": "Seats, team progress, compliance and recruiting, with your own branding.",
+        "points": {
+          "p1": "Sponsor candidates and follow their progress",
+          "p2": "CE compliance for the whole team",
+          "p3": "Your policies in the AI virtual broker"
+        },
+        "cta": "Create your account",
+        "note": "Brokerage tools open in stages. Your account will be ready for them."
+      },
+      "schools": {
+        "eyebrow": "For instructors and schools",
+        "title": "Teach with AI, and get booked.",
+        "intro": "Build courses, review AI lessons and run live classes with CE reporting.",
+        "points": {
+          "p1": "Course builder and question bank",
+          "p2": "AI lesson review before anything goes live",
+          "p3": "Live classes and one-to-one sessions"
+        },
+        "cta": "Create your account"
+      },
+      "associations": {
+        "eyebrow": "For associations",
+        "title": "Member programs, events and CE in one place.",
+        "intro": "Your branding and domain, member sync and events with CE credit.",
+        "points": {
+          "p1": "Your own branding and domain",
+          "p2": "Member sync with your association system",
+          "p3": "Events with CE credit"
+        },
+        "note": "Associations join REOS with our team. If you've been invited, sign in to continue."
+      },
+      "service-providers": {
+        "eyebrow": "For service providers",
+        "title": "Reach {{state}} agents who need you.",
+        "intro": "Lenders, inspectors, title and more: a profile agents trust, requests and private chat.",
+        "points": {
+          "p1": "A profile in the agents' service directory",
+          "p2": "Requests and private chat with agents",
+          "p3": "Simple monthly plans"
+        },
+        "cta": "Create your account"
+      }
+    },
+    "getStarted": {
+      "title": "Get started",
+      "stateHelp": "Choose a state",
+      "waitlistEmail": "Email",
+      "waitlistEmailHelp": "We'll write once, the day it opens.",
+      "quizTitle": "Free quiz",
+      "scoreTitle": "Your score",
+      "signUpEmail": "Sign up with email",
+      "setupTitle": "Your plan",
+      "examMonth": "Exam month",
+      "reminderHelp": "Reminders come from the REOS app on your phone.",
+      "reminderTime": "Reminder time",
+      "planTitle": "Your plan is ready",
+      "toDashboard": "Go to my dashboard",
+      "questionOf": "Question {{number}} of {{total}}"
     }
   }
 }

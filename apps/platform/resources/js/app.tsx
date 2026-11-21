@@ -8,6 +8,7 @@ import { i18n } from '@/lib/i18n';
 import type { MonitoringConfig } from '@/lib/monitoring';
 import { identify, startMonitoring, trackPageView } from '@/lib/monitoring';
 import AuthLayout from '@/layouts/auth-layout';
+import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -16,8 +17,10 @@ void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
         switch (true) {
-            case name === 'welcome':
-                return null;
+            case name === 'welcome' ||
+                name.startsWith('public/') ||
+                name.startsWith('get-started/'):
+                return PublicLayout;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):

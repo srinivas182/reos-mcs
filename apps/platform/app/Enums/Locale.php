@@ -24,6 +24,12 @@ enum Locale: string
         return self::tryFrom(Str::of($tag)->lower()->before('-')->before('_')->value());
     }
 
+    /** The language of this request (the visitor's choice, cookie or browser). */
+    public static function current(): self
+    {
+        return self::fromTag(app()->getLocale()) ?? self::English;
+    }
+
     /** @return list<string> */
     public static function values(): array
     {

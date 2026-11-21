@@ -60,11 +60,11 @@ export default function SetupScreen() {
     if (reminder) {
       const scheduled = await scheduleDailyReminder(
         reminder,
-        t('mobile.onboarding.setup.reminderTitle'),
-        t('mobile.onboarding.setup.reminderBody', { minutes }),
+        t('onboarding.setup.reminderTitle'),
+        t('onboarding.setup.reminderBody', { minutes }),
       ).catch(() => false);
       if (!scheduled) {
-        setNotice(t('mobile.onboarding.setup.notificationsOff'));
+        setNotice(t('onboarding.setup.notificationsOff'));
       }
     } else {
       await cancelDailyReminder();
@@ -79,67 +79,67 @@ export default function SetupScreen() {
   };
 
   return (
-    <Screen footer={<View style={styles.footer}><Button label={t('mobile.onboarding.setup.build')} loading={busy} fullWidth onPress={() => void build()} /></View>}>
+    <Screen footer={<View style={styles.footer}><Button label={t('onboarding.setup.build')} loading={busy} fullWidth onPress={() => void build()} /></View>}>
       <View style={styles.top}>
         <Text tone="muted" weight="semibold" style={styles.flex}>
-          {t('mobile.onboarding.setup.header')}
+          {t('onboarding.setup.header')}
         </Text>
-        <Chip label={t('mobile.onboarding.setup.time')} />
+        <Chip label={t('onboarding.setup.time')} />
       </View>
 
       <Text variant="lead" heading>
-        {t('mobile.onboarding.setup.examTitle')}
+        {t('onboarding.setup.examTitle')}
       </Text>
       <PillGroup
-        label={t('mobile.onboarding.setup.examTitle')}
+        label={t('onboarding.setup.examTitle')}
         value={exam}
-        options={[...months.map((value) => ({ value, label: monthName(value) })), { value: 'not_sure', label: t('mobile.onboarding.setup.notSure') }]}
+        options={[...months.map((value) => ({ value, label: monthName(value) })), { value: 'not_sure', label: t('onboarding.setup.notSure') }]}
         onChange={setExam}
       />
 
       <Text variant="lead" heading>
-        {t('mobile.onboarding.setup.minutesTitle')}
+        {t('onboarding.setup.minutesTitle')}
       </Text>
       <PillGroup
-        label={t('mobile.onboarding.setup.minutesTitle')}
+        label={t('onboarding.setup.minutesTitle')}
         value={minutes}
         options={[
-          ...['10', '20', '30', '45'].map((value) => ({ value, label: t('mobile.onboarding.setup.minutes', { count: Number(value) }) })),
-          { value: '60', label: t('mobile.onboarding.setup.hourPlus') },
+          ...['10', '20', '30', '45'].map((value) => ({ value, label: t('onboarding.setup.minutes', { count: Number(value) }) })),
+          { value: '60', label: t('onboarding.setup.hourPlus') },
         ]}
         onChange={setMinutes}
       />
 
       <Text variant="lead" heading>
-        {t('mobile.onboarding.setup.languageTitle')}
+        {t('onboarding.setup.languageTitle')}
       </Text>
       <PillGroup
-        label={t('mobile.onboarding.setup.languageTitle')}
+        label={t('onboarding.setup.languageTitle')}
         value={language}
         options={supportedLocales.map((value) => ({ value, label: localeNames[value] }))}
         onChange={(locale) => setPreferences({ locale })}
       />
 
       <Text variant="lead" heading>
-        {t('mobile.onboarding.setup.remindTitle')}
+        {t('onboarding.setup.remindTitle')}
       </Text>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${t('mobile.onboarding.setup.remindTitle')}: ${reminder ? `${t('mobile.onboarding.setup.remindEvery')} ${timeName(reminder)}` : t('mobile.onboarding.setup.remindNone')}`}
+        accessibilityLabel={`${t('onboarding.setup.remindTitle')}: ${reminder ? `${t('onboarding.setup.remindEvery')} ${timeName(reminder)}` : t('onboarding.setup.remindNone')}`}
         onPress={() => setPicking(true)}
         style={({ pressed }) => [styles.reminder, pressed && styles.pressed]}
       >
         <Icon icon={Clock} color="textMuted" />
-        <Text style={styles.flex}>{reminder ? t('mobile.onboarding.setup.remindEvery') : t('mobile.onboarding.setup.remindNone')}</Text>
+        <Text style={styles.flex}>{reminder ? t('onboarding.setup.remindEvery') : t('onboarding.setup.remindNone')}</Text>
         {reminder ? <Chip label={timeName(reminder)} tone="info" /> : null}
       </Pressable>
       {notice ? <Callout tone="warning" title={notice} live /> : null}
 
-      <Sheet open={picking} onClose={() => setPicking(false)} title={t('mobile.onboarding.setup.remindChoose')}>
+      <Sheet open={picking} onClose={() => setPicking(false)} title={t('onboarding.setup.remindChoose')}>
         <PillGroup
-          label={t('mobile.onboarding.setup.remindChoose')}
+          label={t('onboarding.setup.remindChoose')}
           value={reminder ?? 'none'}
-          options={[...REMINDER_TIMES.map((value) => ({ value, label: timeName(value) })), { value: 'none', label: t('mobile.onboarding.setup.remindNone') }]}
+          options={[...REMINDER_TIMES.map((value) => ({ value, label: timeName(value) })), { value: 'none', label: t('onboarding.setup.remindNone') }]}
           onChange={(value) => {
             setReminder(value === 'none' ? null : value);
             setPicking(false);

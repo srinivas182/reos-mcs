@@ -38,20 +38,7 @@ final readonly class FreeQuiz
      */
     public function record(User $user, ?State $state, array $answers): QuizAttempt
     {
-        $questions = QuizQuestion::query()->findMany(array_column($answers, 'question_id'))->keyBy('id');
-        $scored = [];
-
-        foreach ($answers as $answer) {
-            $question = $questions->get($answer['question_id']);
-
-            if ($question instanceof QuizQuestion) {
-                $scored[] = [
-                    'question_id' => $question->id,
-                    'choice' => $answer['choice'],
-                    'correct' => $answer['choice'] === $question->correct_option,
-                ];
-            }
-        }
+        $scored = $this->score($answers);
 
         return QuizAttempt::query()->create([
             'user_id' => $user->id,
@@ -65,16 +52,53 @@ final readonly class FreeQuiz
     }
 
     /**
+     * Mark each answer right or wrong; answers to unknown questions are dropped.
+     *
+     * @param  list<array{question_id: int, choice: int}>  $answers
+     * @return list<array{question_id: int, choice: int, correct: bool}>
+     */
+    public function score(array $answers): array
+    {
+        $questions = QuizQuestion::query()->findMany(array_column($answers, 'question_id'))->keyBy('id');
+        $scored = [];
+
+        foreach ($answers as $answer) {
+            $question = $questions->get($answer['question_id']);
+
+            if ($question instanceof QuizQuestion) {
+                $scored[] = [
+                    'question_id' => (int) $question->id,
+                    'choice' => $answer['choice'],
+                    'correct' => $answer['choice'] === $question->correct_option,
+                ];
+            }
+        }
+
+        return $scored;
+    }
+
+    /**
      * How each topic went: strong (75%+), learning (40%+) or start here.
      *
      * @return list<array{topic: QuizTopic, level: string}>
      */
     public function topics(QuizAttempt $attempt): array
     {
-        $questions = QuizQuestion::query()->findMany(array_column($attempt->answers, 'question_id'))->keyBy('id');
+        return $this->topicsOf($attempt->answers);
+    }
+
+    /**
+     * The same, for answers not saved yet (the website's free quiz before sign-up).
+     *
+     * @param  list<array{question_id: int, correct: bool}>  $scored
+     * @return list<array{topic: QuizTopic, level: string}>
+     */
+    public function topicsOf(array $scored): array
+    {
+        $questions = QuizQuestion::query()->findMany(array_column($scored, 'question_id'))->keyBy('id');
         $tally = [];
 
-        foreach ($attempt->answers as $answer) {
+        foreach ($scored as $answer) {
             $question = $questions->get($answer['question_id']);
 
             if ($question instanceof QuizQuestion) {
