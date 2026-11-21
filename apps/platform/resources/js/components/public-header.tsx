@@ -3,6 +3,7 @@ import { MapPin, Menu } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { BrandMark } from '@/components/brand-mark';
 import { Button } from '@/components/ui/button';
+import type { LiveStates } from '@/lib/live-states';
 import {
     Sheet,
     SheetContent,
@@ -29,13 +30,13 @@ export type Audience = (typeof AUDIENCES)[number];
  */
 export function PublicHeader({
     name,
-    liveState,
+    liveStates,
     signedIn,
 }: {
     /** The product name next to the mark ("REOS"). */
     name: string;
-    /** The live state shown in the state chip; none hides the chip. */
-    liveState?: string | null;
+    /** The live states, for the state chip; none hides the chip. */
+    liveStates?: LiveStates;
     signedIn: boolean;
 }) {
     const { t } = useTranslation();
@@ -69,15 +70,18 @@ export function PublicHeader({
                 </nav>
 
                 <div className="ml-auto flex items-center gap-3">
-                    {liveState ? (
+                    {liveStates && liveStates.count > 0 ? (
                         <span
-                            className="hidden items-center gap-1.5 rounded-reos-pill bg-muted px-3 py-1 text-sm font-medium text-foreground sm:inline-flex"
-                            title={t('site.nav.stateChip', {
-                                state: liveState,
+                            className="hidden items-center gap-1.5 rounded-reos-pill bg-muted px-3 py-1 text-sm font-medium whitespace-nowrap text-foreground sm:inline-flex"
+                            title={t('site.nav.statesChipLabel', {
+                                states: liveStates.list,
                             })}
                         >
                             <MapPin aria-hidden className="size-4" />
-                            {liveState}
+                            {liveStates.single ??
+                                t('site.nav.statesChip', {
+                                    count: liveStates.count,
+                                })}
                         </span>
                     ) : null}
                     {signedIn ? (

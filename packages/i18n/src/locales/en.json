@@ -974,7 +974,9 @@
       "getStarted": "Get started",
       "dashboard": "Go to dashboard",
       "menu": "Menu",
-      "stateChip": "REOS is live in {{state}}"
+      "statesChip_one": "{{count}} state",
+      "statesChip_other": "{{count}} states",
+      "statesChipLabel": "REOS is live in {{states}}"
     },
     "footer": {
       "language": "Language",
@@ -1010,13 +1012,15 @@
         },
         "service-providers": {
           "label": "A service provider",
-          "description": "Reach {{state}} agents"
+          "description": "Reach {{state}} agents",
+          "descriptionAny": "Reach local agents"
         }
       },
       "lesson": {
         "tag": "Sample AI lesson · {{state}} contracts",
         "title": "Principles of Real Estate I · lesson 3",
-        "meta": "English and Spanish"
+        "meta": "English and Spanish",
+        "tagAny": "Sample AI lesson · Contracts"
       },
       "stats": {
         "label": "REOS in numbers",
@@ -1025,8 +1029,11 @@
         "aiValue": "24/7",
         "ai": "AI help",
         "appValue": "1 app",
-        "app": "every role"
-      }
+        "app": "every role",
+        "statesValue": "{{count}}",
+        "states": "states live"
+      },
+      "headlineAny": "The operating system for real estate careers."
     },
     "audience": {
       "signIn": "I already have an account",
@@ -1095,7 +1102,8 @@
           "p2": "Requests and private chat with agents",
           "p3": "Simple monthly plans"
         },
-        "cta": "Create your account"
+        "cta": "Create your account",
+        "titleAny": "Reach the agents who need you."
       }
     },
     "getStarted": {
