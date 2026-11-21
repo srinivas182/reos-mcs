@@ -1,0 +1,18 @@
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#users('87d349ed')/calendar/events/$entity",
+    "@odata.etag": "W/\"DwAAABYAAABS/NhmmNy2TqjuB2zQxIpXAAAAAA1E\"",
+    "id": "AAMkAGI2TGuLNEW=",
+    "lastModifiedDateTime": "2026-11-21T15:00:01.1234567Z",
+    "changeKey": "DwAAABYAAABS/NhmmNy2TqjuB2zQxIpXAAAAAA1E",
+    "transactionId": "PLACEHOLDER_TRANSACTION",
+    "subject": "Showing — 2218 Elm St",
+    "body": { "contentType": "text", "content": "" },
+    "isAllDay": false,
+    "isCancelled": false,
+    "showAs": "busy",
+    "webLink": "https://outlook.office365.com/owa/?itemid=AAMkAGI2TGuLNEW%3D&exvsurl=1&path=/calendar/item",
+    "start": { "dateTime": "2026-11-24T17:00:00.0000000", "timeZone": "UTC" },
+    "end": { "dateTime": "2026-11-24T17:45:00.0000000", "timeZone": "UTC" },
+    "location": { "displayName": "2218 Elm St, Houston, TX" },
+    "attendees": []
+}

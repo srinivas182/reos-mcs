@@ -13,5 +13,7 @@ final readonly class WebhookDelivery
         public array $connectionIds,
         /** False for pings (for example Google's first "sync" message): acknowledged, nothing to do. */
         public bool $changed = true,
+        /** The tool ended or is about to end its push channels (Microsoft's lifecycle notifications): open new ones. */
+        public bool $channelsLost = false,
     ) {}
 }

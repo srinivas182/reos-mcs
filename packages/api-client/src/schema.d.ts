@@ -1151,7 +1151,7 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar";
+            integration: "google-calendar" | "outlook-calendar";
             history?: components["schemas"]["HistoryRange"] | null;
         };
         /** StateResource */

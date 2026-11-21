@@ -1,0 +1,31 @@
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(event)",
+    "@odata.deltaLink": "https://graph.microsoft.com/v1.0/me/calendar/calendarView/delta?$deltatoken=R0usmci39OQxqJrxK5",
+    "value": [
+        {
+            "@odata.type": "#microsoft.graph.event",
+            "id": "AAMkAGI2TG94AAA=",
+            "@removed": { "reason": "deleted" }
+        },
+        {
+            "@odata.etag": "W/\"ZlnW4RIAV06KYYwlrfNZvQAALfZeRS==\"",
+            "id": "AAMkAGI2TG93AAA=",
+            "lastModifiedDateTime": "2026-11-20T09:00:00.0000000Z",
+            "subject": "Listing appointment — 1402 Heights Blvd (moved)",
+            "body": { "contentType": "text", "content": "Bring the CMA." },
+            "isAllDay": false,
+            "isCancelled": false,
+            "showAs": "busy",
+            "start": {
+                "dateTime": "2026-11-24T18:00:00.0000000",
+                "timeZone": "UTC"
+            },
+            "end": {
+                "dateTime": "2026-11-24T19:00:00.0000000",
+                "timeZone": "UTC"
+            },
+            "location": { "displayName": "1402 Heights Blvd, Houston, TX" },
+            "attendees": []
+        }
+    ]
+}

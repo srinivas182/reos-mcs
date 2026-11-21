@@ -18,12 +18,12 @@ pest()->extend(TestCase::class)->in('Feature');
 const CALENDAR = 'google-calendar';
 
 /** Signs in on the website, then walks the demo sign-in to the callback. Returns the callback response. */
-function connectOnWeb(object $test, User $user, bool $allow = true, ?callable $tamper = null): TestResponse
+function connectOnWeb(object $test, User $user, bool $allow = true, ?callable $tamper = null, string $tool = CALENDAR): TestResponse
 {
-    $start = $test->actingAs($user)->get('/connections/'.CALENDAR.'/connect?history=12m');
+    $start = $test->actingAs($user)->get('/connections/'.$tool.'/connect?history=12m');
     $start->assertRedirect();
     $simulator = (string) $start->headers->get('Location');
-    expect($simulator)->toContain('/connections/simulator/'.CALENDAR);
+    expect($simulator)->toContain('/connections/simulator/'.$tool);
 
     parse_str((string) parse_url($simulator, PHP_URL_QUERY), $query);
     $test->get($simulator)->assertOk()->assertInertia(fn (Assert $page) => $page
@@ -35,7 +35,7 @@ function connectOnWeb(object $test, User $user, bool $allow = true, ?callable $t
         $decision = $tamper($decision);
     }
 
-    $answer = $test->post('/connections/simulator/'.CALENDAR, $decision);
+    $answer = $test->post('/connections/simulator/'.$tool, $decision);
     $answer->assertRedirect();
 
     return $test->get((string) $answer->headers->get('Location'));

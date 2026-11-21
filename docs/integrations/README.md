@@ -45,7 +45,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 21 Dec 2026 | [Zoom](#zoom) | Client + Mayura | Vendor review | 4 wk | S4 (18 Jan 2027) | Not started |
 | 28 Dec 2026 | [Sign in with Google](#google-sign-in) | Client + Mayura | Self-serve | 1 wk | S3 (4 Jan 2027) | Not started |
 | 28 Dec 2026 | [Twilio Verify (phone sign-in codes)](#twilio-verify) | Client | Self-serve | 1 wk | S3 (4 Jan 2027) | Not started |
-| 28 Dec 2026 | [Microsoft 365 (Outlook calendar and mail)](#microsoft-365) | Client + Mayura | Vendor review | 3 wk | S4 (18 Jan 2027) | Not started |
+| 28 Dec 2026 | [Outlook Calendar](#outlook-calendar) | Client + Mayura | Vendor review | 3 wk | S4 (18 Jan 2027) | Not started |
 | 4 Jan 2027 | [Sign in with Apple](#apple-sign-in) | Client | Self-serve | 0 wk | S3 (4 Jan 2027) | Not started |
 | 11 Jan 2027 | [Amazon Transcribe and Polly (speech)](#aws-speech) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Cloudflare](#cloudflare) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
@@ -100,7 +100,7 @@ What users see in **Connections** on day one. Every row is also a back-office ca
 | Integration | Pilot status | Built in | Connects with | Personal data | Access |
 | --- | --- | --- | --- | --- | --- |
 | [Google Calendar](#google-calendar) | Enabled | B4.1 · S4 | REOS app keys | Yes | Not started |
-| [Microsoft 365 (Outlook calendar and mail)](#microsoft-365) | Enabled | B4.2 · S4 | REOS app keys | Yes | Not started |
+| [Outlook Calendar](#outlook-calendar) | Enabled | B4.2 · S4 | REOS app keys | Yes | Not started |
 | [Apple Calendar (iCloud)](#apple-calendar) | Coming soon | B4.1 · S4 | None | Yes | Not needed |
 
 ### Calendar and meetings
@@ -328,20 +328,21 @@ Two-way calendar for every role. Appointments, showings, deadlines and to-do due
 - **Fallback:** Scheduled sync every 15 minutes when push channels can't reach REOS; ICS calendar feed.
 - **Sources:** [1](https://developers.google.com/calendar/api/auth) · [2](https://developers.google.com/calendar/api/guides/push) · [3](https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification)
 
-### Microsoft 365 (Outlook calendar and mail)
-<a id="microsoft-365"></a>
+### Outlook Calendar
+<a id="outlook-calendar"></a>
 
 **Integration** · Calendar and email · built in B4.2 (sprint 4) · pilot status **Enabled**
 
-Two-way Outlook calendar and mail.
+Two-way calendar for Microsoft 365 and Outlook.com. Appointments, showings, deadlines and to-do due dates made in REOS go to the calendar the person picks; changes in Outlook come back live.
 
 - **Owner:** Client + Mayura
 - **Access:** Vendor review, about 3 weeks; needed by S4 (18 Jan 2027); apply by 28 Dec 2026. Status: Not started.
-- **Sandbox:** Microsoft 365 Developer Program tenant.
+- **Sandbox:** Microsoft 365 Developer Program tenant, or a personal Outlook.com account.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Free API.
-- **Notes:** Microsoft Entra multi-tenant app with publisher verification (needs a Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting.
-- **Sources:** [1](https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview)
+- **Notes:** Calendar only (Sprint 4 decision 1): Outlook mail is not read or sent. Microsoft Entra multi-tenant app (the "common" endpoint, so work and personal accounts both sign in) with publisher verification (needs a Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting. Delegated scopes: Calendars.ReadWrite, User.Read and offline_access. Changes come by delta queries per calendar and change-notification subscriptions (up to 7 days, renewed a day early, with lifecycle notifications). Outlook emails guests whenever an event lists them, so REOS adds guests only when the person asks for invitations. The callback address is /integrations/outlook-calendar/callback.
+- **Fallback:** Scheduled sync every 15 minutes when change notifications can't reach REOS.
+- **Sources:** [1](https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview) · [2](https://learn.microsoft.com/en-us/graph/delta-query-events) · [3](https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks) · [4](https://learn.microsoft.com/en-us/graph/api/resources/subscription)
 
 ### Apple Calendar (iCloud)
 <a id="apple-calendar"></a>

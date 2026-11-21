@@ -1,0 +1,11 @@
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#subscriptions/$entity",
+    "id": "7f105c7d-2dc5-4530-97cd-4e7ae6534c07",
+    "resource": "me/events",
+    "applicationId": "24d3b144-21ae-4080-943f-7067b395b913",
+    "changeType": "created,updated,deleted",
+    "clientState": "PLACEHOLDER_CLIENT_STATE",
+    "notificationUrl": "https://app.reos.test/webhooks/outlook-calendar",
+    "lifecycleNotificationUrl": "https://app.reos.test/webhooks/outlook-calendar",
+    "expirationDateTime": "PLACEHOLDER_EXPIRES"
+}

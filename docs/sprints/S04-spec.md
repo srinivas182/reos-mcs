@@ -130,6 +130,7 @@ Benchmarks from the sprint plan: BoldTrail and Lone Wolf for tenant branding; To
 - Delta queries for changes; subscriptions with lifecycle notifications, renewed before they expire.
 - The same REOS calendar, conflict rule and screens as Google. **Outlook mail is not read or sent (decision 1).**
 - **Done when:** same as Google, for Outlook.
+- **As built (ADR 0017):** the register entry is now `outlook-calendar` (work and personal Microsoft accounts). Outlook invites everyone an event lists, so REOS writes guests to Outlook only when the person asks for invitations.
 
 ### B4.3 Voice to-dos and reminders (Team B)
 

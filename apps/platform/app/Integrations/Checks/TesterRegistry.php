@@ -42,7 +42,7 @@ final class TesterRegistry
             'google-calendar' => $oauth('https://oauth2.googleapis.com/token'),
             'google-sign-in' => $oauth('https://oauth2.googleapis.com/token'),
             'twilio-verify' => static fn (Container $c): ConnectionTester => $c->make(TwilioVerifyTester::class),
-            'microsoft-365' => $oauth('https://login.microsoftonline.com/common/oauth2/v2.0/token'),
+            'outlook-calendar' => $oauth('https://login.microsoftonline.com/common/oauth2/v2.0/token'),
             'stripe' => static fn (Container $c): ConnectionTester => $c->make(StripeTester::class),
             'stripe-connect' => static fn (Container $c): ConnectionTester => $c->make(StripeTester::class),
             'twilio-sms' => static fn (Container $c): ConnectionTester => $c->make(TwilioTester::class),

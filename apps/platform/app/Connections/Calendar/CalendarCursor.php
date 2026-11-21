@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace App\Connections\Drivers\GoogleCalendar;
+namespace App\Connections\Calendar;
 
 /**
- * Where a Google Calendar sync stands across several calendars (saved as
+ * Where a calendar sync stands across several calendars (saved as
  * the `events` stream's cursor after every page):
  *
  * - `tokens`: each calendar's `nextSyncToken`, for changes only next time.
  * - `pending`: the calendars still to read in this pass, current first.
  * - `page` and `since`: the current calendar's next page, and the window it
- *   was asked with (Google wants the same question on every page).
+ *   was asked with (tools want the same question on every page).
  *
  * A pass ends when no calendar is pending; the next one starts with every
  * synced calendar again. Calendars no longer synced are dropped.
  */
-final class GoogleCalendarCursor
+final class CalendarCursor
 {
     /**
      * @param  array<string, string>  $tokens
