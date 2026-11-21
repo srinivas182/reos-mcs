@@ -156,7 +156,8 @@ final readonly class CalendarSync
             'title' => $record['title'] ?? null,
             'location' => $record['location'] ?? null,
             'description' => $record['description'] ?? null,
-            'attendees' => array_values(array_filter((array) ($record['attendees'] ?? []), is_string(...))),
+            // A tool that doesn't hold the guests (Outlook without invitations) leaves REOS's list alone.
+            'attendees' => array_key_exists('attendees', $record) ? array_values(array_filter((array) $record['attendees'], is_string(...))) : ($event->attendees ?? []),
             'starts_at' => $record['starts_at'],
             'ends_at' => $record['ends_at'],
             'all_day' => (bool) ($record['all_day'] ?? false),

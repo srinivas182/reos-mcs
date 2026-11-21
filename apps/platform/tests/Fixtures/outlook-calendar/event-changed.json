@@ -1,0 +1,13 @@
+{
+    "@odata.etag": "W/\"DwAAABYAAABS/NhmmNy2TqjuB2zQxIpXAAAAAA5555\"",
+    "id": "AAMkAGI2TGuLNEW=",
+    "lastModifiedDateTime": "PLACEHOLDER_UPDATED",
+    "subject": "Showing — 2218 Elm St (Dana moved it in Outlook)",
+    "body": { "contentType": "text", "content": "" },
+    "isAllDay": false,
+    "isCancelled": false,
+    "start": { "dateTime": "2026-11-24T21:00:00.0000000", "timeZone": "UTC" },
+    "end": { "dateTime": "2026-11-24T21:45:00.0000000", "timeZone": "UTC" },
+    "location": { "displayName": "2218 Elm St, Houston, TX" },
+    "attendees": []
+}

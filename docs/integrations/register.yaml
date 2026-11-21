@@ -177,11 +177,13 @@ entries:
       - https://developers.google.com/calendar/api/guides/push
       - https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification
 
-  - id: microsoft-365
-    name: Microsoft 365 (Outlook calendar and mail)
+  - id: outlook-calendar
+    name: Outlook Calendar
     kind: integration
     category: calendar_email
-    purpose: Two-way Outlook calendar and mail.
+    purpose: >-
+      Two-way calendar for Microsoft 365 and Outlook.com. Appointments, showings, deadlines and to-do due dates
+      made in REOS go to the calendar the person picks; changes in Outlook come back live.
     launch: enabled
     build: { sprint: 4, item: B4.2 }
     owner: client_with_mayura
@@ -190,7 +192,7 @@ entries:
       lead_time_weeks: 3
       needed_by_sprint: 4
       status: not_started
-    sandbox: Microsoft 365 Developer Program tenant.
+    sandbox: Microsoft 365 Developer Program tenant, or a personal Outlook.com account.
     credentials: platform
     connection:
       auth: oauth2
@@ -200,9 +202,20 @@ entries:
         - { key: client_secret, secret: true }
     personal_data: true
     cost: Free API.
-    notes: Microsoft Entra multi-tenant app with publisher verification (needs a Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting.
+    notes: >-
+      Calendar only (Sprint 4 decision 1): Outlook mail is not read or sent. Microsoft Entra multi-tenant app
+      (the "common" endpoint, so work and personal accounts both sign in) with publisher verification (needs a
+      Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting. Delegated
+      scopes: Calendars.ReadWrite, User.Read and offline_access. Changes come by delta queries per calendar and
+      change-notification subscriptions (up to 7 days, renewed a day early, with lifecycle notifications). Outlook
+      emails guests whenever an event lists them, so REOS adds guests only when the person asks for invitations.
+      The callback address is /integrations/outlook-calendar/callback.
+    fallback: Scheduled sync every 15 minutes when change notifications can't reach REOS.
     sources:
       - https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview
+      - https://learn.microsoft.com/en-us/graph/delta-query-events
+      - https://learn.microsoft.com/en-us/graph/change-notifications-delivery-webhooks
+      - https://learn.microsoft.com/en-us/graph/api/resources/subscription
 
   - id: apple-calendar
     name: Apple Calendar (iCloud)

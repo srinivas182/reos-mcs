@@ -1,0 +1,6 @@
+{
+    "error": {
+        "code": "ErrorIrresolvableConflict",
+        "message": "The send or update operation could not be performed because the change key passed in the request does not match the current change key for the item."
+    }
+}

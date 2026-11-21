@@ -40,3 +40,18 @@ Sprint 4 decision 1 keeps calendars only: Gmail and Outlook mail are not read or
 - **Web, agent dashboard (screen 12):** a Today card lists the day's events with the tool each lives in and when, opens any item, and offers New appointment. "Today" is the browser's day: the web app writes its time zone to the `reos_tz` cookie, and Texas time is used until it has (`PersonTimezone`). All-day events match by date, not by UTC hours.
 - **Phone, Today:** agents see the same day as a list of rows, and New appointment opens a sheet. The date moves a day at a time and the start time 15 minutes at a time, with 48-point buttons, and the length is chosen from common durations, so no native date picker is needed.
 - Both show a conflict on its event (what was kept, the other version, Undo until the trail ends), a write that failed (Try again), and an event deleted in the tool after a REOS change (Bring it back). Deleting offers Undo instead of asking first.
+
+## Outlook Calendar (B4.2)
+
+- The register entry `microsoft-365` is now `outlook-calendar` ("Outlook Calendar"): Microsoft 365 work accounts and personal Outlook.com accounts, through the identity platform's `common` endpoint. Scopes are `Calendars.ReadWrite`, `User.Read` and `offline_access`; Outlook mail is not read or sent (decision 1). A migration renames the id in stored rows.
+- `OutlookCalendarDriver` implements the same contracts as Google:
+  - **Sync:** a calendar-view delta query per chosen calendar, from the history start to two years ahead, in UTC. The `@odata.deltaLink` is the calendar's token; `@removed` items are deletions, and a 410 restarts the stream.
+  - **Adding events:** a `transactionId` derived from REOS's id and version, so Graph returns the first event when a retry repeats it.
+  - **Changes:** sent with `If-Match`; a 412 means the conflict rule decides.
+- **Guests:** Outlook emails everyone an event lists, with no way to add guests silently. So REOS writes guests to Outlook only when the person asks for invitations; otherwise they stay on the REOS event. When Outlook sends no guest list, REOS keeps its own.
+- **Push:** a change-notification subscription per calendar for six days (Graph allows up to seven), renewed a day early, with lifecycle notifications.
+  - REOS answers Graph's validation handshake with the token as plain text (`AnswersValidation`).
+  - Notifications are checked with a signed `clientState` that names the connection.
+  - A `reauthorizationRequired` or `subscriptionRemoved` notification clears the connection's channels, so new ones open after the catch-up sync.
+- **No revoke endpoint:** Microsoft has no endpoint to revoke a refresh token. Disconnecting deletes REOS's copy, and the person can remove REOS under their Microsoft account's app permissions.
+- **Simulator:** both tools share one `CalendarSimulator`, and the sync cursor (`CalendarCursor`) is shared too.

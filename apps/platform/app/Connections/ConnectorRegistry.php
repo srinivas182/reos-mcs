@@ -6,6 +6,8 @@ namespace App\Connections;
 
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarDriver;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarSimulator;
+use App\Connections\Drivers\OutlookCalendar\OutlookCalendarDriver;
+use App\Connections\Drivers\OutlookCalendar\OutlookCalendarSimulator;
 use App\Integrations\Catalogue;
 use App\Integrations\CredentialEnvironment;
 use App\Integrations\Credentials\CredentialVault;
@@ -28,10 +30,11 @@ final readonly class ConnectorRegistry
     /** @var array<string, class-string<ConnectorDriver>> */
     private const SIMULATORS = [
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarSimulator::class,
+        OutlookCalendarDriver::INTEGRATION => OutlookCalendarSimulator::class,
     ];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
-    private const CALENDARS = [GoogleCalendarDriver::INTEGRATION];
+    private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
 
     public function __construct(
         private Catalogue $catalogue,
@@ -43,11 +46,13 @@ final readonly class ConnectorRegistry
     /** @var array<string, array{can: list<string>, never: list<string>}> */
     private const CONSENT = [
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::CONSENT,
+        OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
     private const STREAMS = [
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::STREAMS,
+        OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::STREAMS,
     ];
 
     /**
@@ -135,6 +140,7 @@ final readonly class ConnectorRegistry
 
         return match ($integrationId) {
             GoogleCalendarDriver::INTEGRATION => new GoogleCalendarDriver($value('client_id'), $value('client_secret')),
+            OutlookCalendarDriver::INTEGRATION => new OutlookCalendarDriver($value('client_id'), $value('client_secret')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
     }

@@ -297,3 +297,37 @@ describe('disconnecting and housekeeping', function () {
             ->and($connection->mode)->toBe(IntegrationMode::Simulator);
     });
 });
+
+describe('Outlook Calendar (B4.2): done when, the same as Google', function () {
+    it('puts an event made in REOS into Outlook, and brings an edit made in Outlook back', function () {
+        $dana = User::factory()->create(['name' => 'Dana Kim', 'email' => 'dana@example.com']);
+        connectOnWeb($this, $dana, tool: 'outlook-calendar');
+        $connection = Connection::query()->sole();
+
+        $id = $this->actingAs($dana)->postJson('/api/v1/calendar/events', appointment())
+            ->assertCreated()
+            ->assertJsonPath('data.tool', 'Outlook Calendar')
+            ->json('data.id');
+        $event = CalendarEvent::query()->findOrFail($id);
+        expect(SimulatorRecord::query()->where('connection_id', $connection->id)->where('external_id', $event->external_id)->sole()->data['title'])->toBe('Buyer consultation — the Nguyens');
+
+        $this->travel(10)->minutes();
+        $this->artisan('reos:connections:simulate', ['connection' => $connection->id, '--change-event' => 'Consultation moved to Teams', '--event' => $event->external_id])->assertSuccessful();
+        expect($event->fresh()?->title)->toBe('Consultation moved to Teams');
+    });
+
+    it('keeps one calendar for REOS events when Google and Outlook are both connected', function () {
+        $maria = mariaWithCalendar($this);
+        connectOnWeb($this, $maria, tool: 'outlook-calendar');
+        $google = Connection::query()->where('integration_id', 'google-calendar')->sole();
+        $outlook = Connection::query()->where('integration_id', 'outlook-calendar')->sole();
+
+        // The first calendar connected keeps REOS's events; both are read.
+        expect(app(CalendarEvents::class)->target($maria)[0]->id)->toBe($google->id)
+            ->and(CalendarEvent::query()->where('user_id', $maria->id)->distinct()->pluck('source')->sort()->values()->all())->toBe(['google-calendar', 'outlook-calendar']);
+
+        $this->actingAs($maria)->patchJson("/api/v1/connections/{$outlook->id}", ['write_calendar' => 'primary'])->assertOk();
+        expect(app(CalendarEvents::class)->target($maria)[0]->id)->toBe($outlook->id)
+            ->and($google->fresh()?->settings['write_calendar'] ?? null)->toBeNull();
+    });
+});

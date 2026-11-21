@@ -1,0 +1,47 @@
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(event)",
+    "@odata.nextLink": "https://graph.microsoft.com/v1.0/me/calendar/calendarView/delta?$skiptoken=R0usmcCM996atia_s",
+    "value": [
+        {
+            "@odata.etag": "W/\"ZlnW4RIAV06KYYwlrfNZvQAALfZeRQ==\"",
+            "id": "AAMkAGI2TG93AAA=",
+            "lastModifiedDateTime": "2026-11-19T20:14:52.6052153Z",
+            "changeKey": "ZlnW4RIAV06KYYwlrfNZvQAALfZeRQ==",
+            "subject": "Listing appointment — 1402 Heights Blvd",
+            "bodyPreview": "",
+            "body": {
+                "contentType": "html",
+                "content": "<html><body><p>Bring the CMA.<br>Park on the street.</p></body></html>"
+            },
+            "isAllDay": false,
+            "isCancelled": false,
+            "showAs": "busy",
+            "webLink": "https://outlook.office365.com/owa/?itemid=AAMkAGI2TG93AAA%3D&exvsurl=1&path=/calendar/item",
+            "start": {
+                "dateTime": "2026-11-24T16:00:00.0000000",
+                "timeZone": "UTC"
+            },
+            "end": {
+                "dateTime": "2026-11-24T17:00:00.0000000",
+                "timeZone": "UTC"
+            },
+            "location": { "displayName": "1402 Heights Blvd, Houston, TX" },
+            "attendees": [
+                {
+                    "type": "required",
+                    "emailAddress": {
+                        "name": "Pat Hill",
+                        "address": "Pat.Hill@example.com"
+                    }
+                },
+                {
+                    "type": "resource",
+                    "emailAddress": {
+                        "name": "Katy conference room",
+                        "address": "katy-room@lonestarrealty.example"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -3378,7 +3378,8 @@
                         "type": "string",
                         "description": "The tool's register id, for example `google-calendar`.",
                         "enum": [
-                            "google-calendar"
+                            "google-calendar",
+                            "outlook-calendar"
                         ]
                     },
                     "history": {

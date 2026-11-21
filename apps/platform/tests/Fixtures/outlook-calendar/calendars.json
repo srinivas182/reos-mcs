@@ -1,0 +1,23 @@
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#me/calendars(id,name,isDefaultCalendar,canEdit)",
+    "value": [
+        {
+            "id": "AAMkAGI2TGuLAAA=",
+            "name": "Calendar",
+            "isDefaultCalendar": true,
+            "canEdit": true
+        },
+        {
+            "id": "AAMkAGI2TGuLBBB=",
+            "name": "United States holidays",
+            "isDefaultCalendar": false,
+            "canEdit": false
+        },
+        {
+            "id": "AAMkAGI2TGuLCCC=",
+            "name": "Family",
+            "isDefaultCalendar": false,
+            "canEdit": true
+        }
+    ]
+}

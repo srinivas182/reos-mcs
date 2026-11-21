@@ -1,0 +1,26 @@
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#Collection(event)",
+    "@odata.deltaLink": "https://graph.microsoft.com/v1.0/me/calendar/calendarView/delta?$deltatoken=R0usmci39OQxqJrxK4",
+    "value": [
+        {
+            "@odata.etag": "W/\"ZlnW4RIAV06KYYwlrfNZvQAALfZeRR==\"",
+            "id": "AAMkAGI2TG94AAA=",
+            "lastModifiedDateTime": "2026-11-18T10:00:00.0000000Z",
+            "subject": "Texas REALTORS® conference",
+            "body": { "contentType": "text", "content": "" },
+            "isAllDay": true,
+            "isCancelled": false,
+            "showAs": "oof",
+            "start": {
+                "dateTime": "2026-12-03T00:00:00.0000000",
+                "timeZone": "UTC"
+            },
+            "end": {
+                "dateTime": "2026-12-05T00:00:00.0000000",
+                "timeZone": "UTC"
+            },
+            "location": { "displayName": "Austin, TX" },
+            "attendees": []
+        }
+    ]
+}

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Connections;
 
+use App\Connections\AnswersValidation;
 use App\Connections\ConnectorRegistry;
 use App\Connections\SyncTrigger;
 use App\Integrations\IntegrationMode;
@@ -26,6 +27,23 @@ final readonly class WebhookInbox
     public const REFUSED = 'refused';
 
     public function __construct(private ConnectorRegistry $registry) {}
+
+    /**
+     * The tool checking REOS's address before it subscribes (Microsoft
+     * Graph): the plain-text answer, or null when this isn't a check.
+     */
+    public function validation(string $integrationId, Request $request): ?string
+    {
+        $mode = $this->registry->mode($integrationId);
+
+        if (! $this->registry->supports($integrationId) || $mode === IntegrationMode::Off) {
+            return null;
+        }
+
+        $driver = $this->registry->driver($integrationId, $mode);
+
+        return $driver instanceof AnswersValidation ? $driver->validationAnswer($request) : null;
+    }
 
     public function receive(string $integrationId, Request $request): string
     {
@@ -63,6 +81,11 @@ final readonly class WebhookInbox
                 ->get();
 
             foreach ($connections as $connection) {
+                if ($delivery->channelsLost) {
+                    // Opened again after the sync these notifications start.
+                    $connection->forceFill(['meta' => [...$connection->meta, 'channels' => []]])->save();
+                }
+
                 foreach (array_keys($this->registry->driver($integrationId, $mode)->streams()) as $stream) {
                     SyncConnection::dispatch($connection->id, $stream, SyncTrigger::Webhook);
                 }

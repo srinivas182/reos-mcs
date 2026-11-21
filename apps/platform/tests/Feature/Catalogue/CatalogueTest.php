@@ -91,10 +91,10 @@ describe('the people’s library (/api/v1/catalogue)', function () {
 
     it('shows a tool only in its states and to its roles', function () {
         setCatalogue('google-calendar', ['states' => ['LA']]);
-        setCatalogue('microsoft-365', ['roles' => ['broker']]);
+        setCatalogue('outlook-calendar', ['roles' => ['broker']]);
         $agent = catalogueAgent();
 
-        expect(libraryOf($this, $agent))->not->toHaveKeys(['google-calendar', 'microsoft-365']);
+        expect(libraryOf($this, $agent))->not->toHaveKeys(['google-calendar', 'outlook-calendar']);
 
         setCatalogue('google-calendar', ['states' => ['TX', 'LA']]);
         expect(libraryOf($this, $agent))->toHaveKey('google-calendar');

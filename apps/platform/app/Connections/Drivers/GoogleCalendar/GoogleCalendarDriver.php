@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Connections\Drivers\GoogleCalendar;
 
 use App\Connections\Calendar\CalendarChoices;
+use App\Connections\Calendar\CalendarCursor;
 use App\Connections\Calendar\CalendarDriver;
 use App\Connections\Calendar\CalendarInfo;
 use App\Connections\Calendar\CalendarMode;
@@ -131,7 +132,7 @@ final readonly class GoogleCalendarDriver implements CalendarDriver, ConnectorDr
 
     public function fetch(Connection $connection, string $accessToken, string $stream, ?string $cursor, ?CarbonImmutable $since): SyncPage
     {
-        $state = GoogleCalendarCursor::open($cursor, CalendarChoices::synced($connection));
+        $state = CalendarCursor::open($cursor, CalendarChoices::synced($connection));
 
         if ($state->calendar() === null) {
             return new SyncPage([], [], $state->encode(), true);
