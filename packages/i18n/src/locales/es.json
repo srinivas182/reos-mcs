@@ -33,7 +33,8 @@
     "state": "Estado: {{state}}",
     "states": "Estados",
     "connections": "Conexiones",
-    "tenants": "Organizaciones"
+    "tenants": "Organizaciones",
+    "brandingAndDomain": "Marca y dominio"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -518,9 +519,16 @@
       "description": "Aquí el inicio de sesión con {{provider}} usa datos de demostración. Elija con quién iniciar sesión."
     },
     "brand": {
-      "poweredBy": "con tecnología de REOS",
+      "poweredBy": "{{name}} · con tecnología de REOS",
       "welcomeBack": "Bienvenido de nuevo a su centro de aprendizaje y negocios.",
-      "welcomeNew": "Una sola cuenta para aprender, su negocio y todo su equipo."
+      "welcomeNew": "Una sola cuenta para aprender, su negocio y todo su equipo.",
+      "welcome": {
+        "association": "Bienvenido de nuevo al centro de aprendizaje de su asociación.",
+        "brokerage": "Bienvenido de nuevo al centro de aprendizaje y negocios de su agencia.",
+        "school": "Bienvenido de nuevo a su escuela.",
+        "provider_business": "Bienvenido de nuevo a su negocio en REOS.",
+        "team": "Bienvenido de nuevo al centro de aprendizaje y negocios de su equipo."
+      }
     },
     "common": {
       "email": "Correo electrónico",
@@ -1778,6 +1786,60 @@
       "end": "Terminar la sesión de soporte",
       "minutes_one": "{{count}} minuto",
       "minutes_other": "{{count}} minutos"
+    }
+  },
+  "brand": {
+    "saved": "Se guardó la marca. Los usuarios la verán la próxima vez que abran una página.",
+    "logoSaved": "Se guardó el logotipo.",
+    "errors": {
+      "colour": "Escriba un color con seis dígitos hexadecimales, como #1E3A8A.",
+      "contrast": "El texto blanco es difícil de leer sobre este color ({{ratio}}:1; necesita 4.5:1). Pruebe {{suggestion}}, un poco más oscuro.",
+      "logo": "Este archivo no es una imagen que REOS pueda leer. Use PNG, JPEG o WebP."
+    },
+    "page": {
+      "title": "Marca y dominio",
+      "purpose": "Una sola app de REOS, con la marca de su organización para sus usuarios",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "brand": "Marca",
+      "name": "Nombre",
+      "primary": "Color principal",
+      "primaryHint": "El texto blanco debe leerse fácilmente sobre él (al menos 4.5:1).",
+      "contrastOk": "Se lee bien: {{ratio}}:1",
+      "contrastLow": "Difícil de leer: {{ratio}}:1. Pruebe {{suggestion}}.",
+      "useSuggestion": "Usar {{suggestion}}",
+      "appLabel": "Nombre de la app",
+      "appLabelHint": "Cómo se llama la app para sus usuarios, por ejemplo \"Texas REALTORS® Learning\".",
+      "emailFrom": "Nombre del remitente",
+      "emailFromHint": "Los correos salen de la dirección de REOS con este nombre.",
+      "replyTo": "Dirección para respuestas",
+      "logo": "Logotipo",
+      "uploadLogo": "Subir logotipo",
+      "replaceLogo": "Cambiar logotipo",
+      "removeLogo": "Quitar logotipo",
+      "logoHint": "PNG, JPEG o WebP de al menos 64 píxeles. Funciona mejor si es cuadrado.",
+      "membersSee": "Los usuarios ven",
+      "coBranding": "Regla de marca compartida",
+      "seen": {
+        "association": "La marca de la asociación + la de su agencia",
+        "brokerage": "Su marca, en todas las áreas de su agencia",
+        "school": "Su marca en sus cursos y clases",
+        "provider_business": "Su marca en su perfil y sus mensajes",
+        "team": "La marca de su agencia"
+      },
+      "rule": "La marca de la agencia prevalece dentro de las áreas de la agencia",
+      "inherited": "No ha configurado una marca, así que sus usuarios ven la de {{name}}.",
+      "domain": "Dominio propio",
+      "address": "Dirección",
+      "addressHint": "Sus usuarios inician sesión aquí. El siguiente paso es conectar su propio dominio.",
+      "preview": "Vista previa",
+      "previewSignIn": "Página para iniciar sesión",
+      "previewEmail": "Correo",
+      "previewButton": "Continuar",
+      "poweredBy": "{{name}} · con tecnología de REOS",
+      "emailGreeting": "Hola, María:",
+      "emailBody": "Su curso de CE empieza el lunes.",
+      "from": "De: {{name}}"
     }
   }
 }

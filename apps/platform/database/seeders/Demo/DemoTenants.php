@@ -21,7 +21,8 @@ final class DemoTenants
     public function seed(): void
     {
         $settings = [
-            'Texas REALTORS®' => ['plan' => TenantPlan::Enterprise, 'cell' => 'cell-1', 'limits' => null],
+            'Texas REALTORS®' => ['plan' => TenantPlan::Enterprise, 'cell' => 'cell-1', 'limits' => null,
+                'brand' => ['primary' => '#1E3A8A', 'app_label' => 'Texas REALTORS® Learning', 'email_from_name' => 'Texas REALTORS®']],
             'Texas Realty School' => ['plan' => TenantPlan::School, 'cell' => 'cell-2', 'limits' => ['seats' => 40]],
             'Lone Star Realty' => ['plan' => TenantPlan::Brokerage, 'cell' => 'cell-1', 'limits' => ['seats' => 142, 'candidate_pool' => 5000]],
             'Katy Home Loans' => ['plan' => TenantPlan::Partner, 'cell' => 'cell-2', 'limits' => null],
@@ -33,6 +34,8 @@ final class DemoTenants
                 'plan' => $values['plan']->value,
                 'cell' => $values['cell'],
                 'limits' => $values['limits'] === null ? null : json_encode($values['limits']),
+                // The journey's brands (screens 2 and 57).
+                'brand' => isset($values['brand']) ? json_encode($values['brand']) : null,
             ]);
         }
 
