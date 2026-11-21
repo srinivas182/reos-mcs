@@ -13,6 +13,7 @@ use App\Models\CatalogueSetting;
 use App\Models\Connection;
 use App\Models\IntegrationInterest;
 use App\Models\Organisation;
+use App\Models\ToolRequest;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\ActiveRole;
@@ -149,6 +150,29 @@ final readonly class IntegrationCatalogue
         }
 
         return false;
+    }
+
+    /**
+     * The person asks for a tool they can't connect yet: "Notify me" for one
+     * coming soon, "Join beta" for a beta. False when neither applies.
+     */
+    public function askFor(User $user, string $integrationId): bool
+    {
+        $item = collect($this->forUser($user))->first(static fn (array $i): bool => $i['definition']->id === $integrationId);
+
+        if ($item === null || ! in_array($item['action'], [self::ACTION_NOTIFY, self::ACTION_JOIN_BETA], true)) {
+            return false;
+        }
+
+        $this->setInterest($user, $integrationId, $item['action'] === self::ACTION_JOIN_BETA ? IntegrationInterest::BETA : IntegrationInterest::NOTIFY, true);
+
+        return true;
+    }
+
+    /** "My tool isn't listed": counted when choosing what to connect next. */
+    public function requestTool(User $user, string $name, ?string $note): ToolRequest
+    {
+        return ToolRequest::query()->create(['user_id' => $user->id, 'name' => trim($name), 'note' => $note === null || trim($note) === '' ? null : trim($note)]);
     }
 
     /** "Notify me" / "Join beta", or undo it. */

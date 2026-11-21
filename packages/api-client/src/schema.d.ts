@@ -526,6 +526,8 @@ export interface components {
              *     tool people can see has one.
              */
             purpose: string;
+            /** @description The register category, for example `crm` or `transactions` (the website's tabs). */
+            category: string;
             /** @description The library tab: `crm`, `deals`, `calendar`, `leads` or `more`. */
             group: components["schemas"]["LibraryGroup"];
             /**

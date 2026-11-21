@@ -3,6 +3,7 @@ import { RefreshCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { timeAgo } from '@/lib/time-ago';
+import { toolInitials } from '@/lib/tool-initials';
 import { cn } from '@/lib/utils';
 import { connect } from '@/routes/connections';
 
@@ -13,18 +14,6 @@ export type ConnectionAlertItem = {
     account: string | null;
     since: string | null;
 };
-
-/** Two letters for the tool's tile ("Google Calendar and Gmail" → "GC"). */
-function initials(name: string): string {
-    return name
-        .split(/\s+/)
-        .filter(
-            (word) => /^[A-Za-z]/.test(word) && word.toLowerCase() !== 'and',
-        )
-        .slice(0, 2)
-        .map((word) => word[0]?.toUpperCase())
-        .join('');
-}
 
 /**
  * "When a sync breaks" (Connections and Sync journey, screen 26): what stopped,
@@ -52,7 +41,7 @@ export function ConnectionAlert({
                 aria-hidden
                 className="flex size-12 shrink-0 items-center justify-center rounded-reos-md bg-primary font-bold text-primary-foreground"
             >
-                {initials(alert.name)}
+                {toolInitials(alert.name)}
             </span>
             <div className="min-w-0 flex-1 space-y-1">
                 <h2 className="text-title font-semibold text-reos-tone-danger-fg">

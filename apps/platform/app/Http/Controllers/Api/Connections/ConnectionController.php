@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Connections;
 
-use App\Connections\ConnectorRegistry;
-use App\Connections\SyncTrigger;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Connections\StartConnectionRequest;
 use App\Http\Requests\Connections\UpdateConnectionRequest;
 use App\Http\Resources\Connections\ConnectionResource;
-use App\Jobs\SyncConnection;
 use App\Models\Connection;
 use App\Models\OAuthAuthorization;
 use App\Models\User;
@@ -66,16 +63,12 @@ final class ConnectionController extends Controller
      *
      * @response 202 array{queued: bool}
      */
-    public function sync(#[CurrentUser] User $user, Connection $connection, Connections $connections, ConnectorRegistry $registry): JsonResponse
+    public function sync(#[CurrentUser] User $user, Connection $connection, Connections $connections): JsonResponse
     {
         abort_unless($connections->canManage($user, $connection), 404);
 
-        if (! $connections->available($connection->integration_id) || ! $connection->status->syncs()) {
+        if (! $connections->syncNow($connection)) {
             return response()->json(['message' => __('connections.errors.unavailable')], 422);
-        }
-
-        foreach (array_keys($registry->driver($connection->integration_id, $connection->mode)->streams()) as $stream) {
-            SyncConnection::dispatch($connection->id, $stream, SyncTrigger::Manual);
         }
 
         return response()->json(['queued' => true], 202);
@@ -87,23 +80,11 @@ final class ConnectionController extends Controller
      * A new history range syncs again from its start; nothing already synced
      * is lost.
      */
-    public function update(UpdateConnectionRequest $request, #[CurrentUser] User $user, Connection $connection, Connections $connections, ConnectorRegistry $registry): ConnectionResource
+    public function update(UpdateConnectionRequest $request, #[CurrentUser] User $user, Connection $connection, Connections $connections): ConnectionResource
     {
         abort_unless($connections->canManage($user, $connection), 404);
 
-        $history = $request->history();
-
-        if ($history !== $connection->history()) {
-            $connection->forceFill(['settings' => [...$connection->settings, 'history' => $history->value], 'cursors' => []])->save();
-
-            if ($connection->status->syncs() && $connections->available($connection->integration_id)) {
-                foreach (array_keys($registry->driver($connection->integration_id, $connection->mode)->streams()) as $stream) {
-                    SyncConnection::dispatch($connection->id, $stream, SyncTrigger::Manual);
-                }
-            }
-        }
-
-        return new ConnectionResource($connection->fresh());
+        return new ConnectionResource($connections->changeHistory($connection, $request->history())->fresh());
     }
 
     /**

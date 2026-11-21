@@ -4,6 +4,7 @@ use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
 use App\Http\Controllers\Connections\ConnectController;
+use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\Onboarding\GetStartedController;
@@ -37,6 +38,17 @@ Route::get('sign-up/{path}', [GetStartedController::class, 'signUp'])->name('sig
 
 Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
+
+    // Connections (B3.2c, web journey screen 19): the tools this person may use.
+    Route::controller(ConnectionsPageController::class)->prefix('connections')->name('connections.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('tools/{tool}/interest', 'interest')->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1')->name('interest');
+        Route::delete('tools/{tool}/interest', 'forget')->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1')->name('forget');
+        Route::post('requests', 'request')->middleware('throttle:10,60')->name('request');
+        Route::post('{connection}/sync', 'sync')->whereNumber('connection')->middleware('throttle:10,1')->name('sync');
+        Route::patch('{connection}', 'update')->whereNumber('connection')->middleware('throttle:30,1')->name('update');
+        Route::delete('{connection}', 'destroy')->whereNumber('connection')->middleware('throttle:30,1')->name('destroy');
+    });
 });
 
 require __DIR__.'/settings.php';

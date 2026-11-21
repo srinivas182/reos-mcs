@@ -2,6 +2,7 @@ import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import { House, Map as MapIcon, Plug, Settings, Users } from 'lucide-react';
 import { dashboard } from '@/routes';
+import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
 import { edit as profile } from '@/routes/profile';
@@ -16,7 +17,8 @@ export type NavLabel =
     | 'settings'
     | 'people'
     | 'integrations'
-    | 'states';
+    | 'states'
+    | 'connections';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -78,7 +80,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('learnAndCe'),
             planned('serviceProviders'),
             planned('goalsAndRewards'),
-            planned('connections'),
+            item('connections', Plug, connections()),
             item('settings', Settings, profile(), '/settings'),
         ],
         provider: [

@@ -1411,6 +1411,10 @@
                         "type": "string",
                         "description": "The agent-facing line in their language; the register checks every\ntool people can see has one."
                     },
+                    "category": {
+                        "type": "string",
+                        "description": "The register category, for example `crm` or `transactions` (the website's tabs)."
+                    },
                     "group": {
                         "description": "The library tab: `crm`, `deals`, `calendar`, `leads` or `more`.",
                         "$ref": "#/components/schemas/LibraryGroup"
@@ -1480,6 +1484,7 @@
                     "id",
                     "name",
                     "purpose",
+                    "category",
                     "group",
                     "status",
                     "action",

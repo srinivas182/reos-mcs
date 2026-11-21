@@ -26,36 +26,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
-use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia as Assert;
 
 uses(RefreshDatabase::class);
-
-const CALENDAR = 'google-workspace';
-
-/** Signs in on the website, then walks the demo sign-in to the callback. Returns the callback response. */
-function connectOnWeb(object $test, User $user, bool $allow = true, ?callable $tamper = null): TestResponse
-{
-    $start = $test->actingAs($user)->get('/connections/'.CALENDAR.'/connect?history=12m');
-    $start->assertRedirect();
-    $simulator = (string) $start->headers->get('Location');
-    expect($simulator)->toContain('/connections/simulator/'.CALENDAR);
-
-    parse_str((string) parse_url($simulator, PHP_URL_QUERY), $query);
-    $test->get($simulator)->assertOk()->assertInertia(fn (Assert $page) => $page
-        ->component('connections/simulator')
-        ->where('account', $user->email));
-
-    $decision = [...$query, 'allow' => $allow ? '1' : '0'];
-    if ($tamper !== null) {
-        $decision = $tamper($decision);
-    }
-
-    $answer = $test->post('/connections/simulator/'.CALENDAR, $decision);
-    $answer->assertRedirect();
-
-    return $test->get((string) $answer->headers->get('Location'));
-}
 
 /** A phone token for this person; also drops the website sign-in the helper above left behind. */
 function connectionsPhoneToken(User $user): string
@@ -69,7 +42,7 @@ describe('vendor sign-in (OAuth with PKCE) on demo data', function () {
     it('connects Google Calendar from the website and syncs the demo week', function () {
         $maria = User::factory()->create(['email' => 'maria@example.com']);
 
-        connectOnWeb($this, $maria)->assertRedirect('/dashboard')
+        connectOnWeb($this, $maria)->assertRedirect('/connections')
             ->assertSessionHas('connection', ['outcome' => 'connected', 'integration' => CALENDAR, 'reason' => null, 'name' => 'Google Calendar and Gmail']);
 
         $connection = Connection::query()->sole();
@@ -168,7 +141,7 @@ describe('vendor sign-in (OAuth with PKCE) on demo data', function () {
         $this->withToken(connectionsPhoneToken($maria))->postJson('/api/v1/connections', ['integration' => CALENDAR])
             ->assertStatus(422)->assertJson(['message' => 'This tool can\'t be connected right now.']);
         $this->withToken(connectionsPhoneToken($maria))->postJson('/api/v1/connections', ['integration' => 'stripe'])->assertJsonValidationErrors('integration');
-        $this->actingAs($maria)->get('/connections/'.CALENDAR.'/connect')->assertRedirect('/dashboard');
+        $this->actingAs($maria)->get('/connections/'.CALENDAR.'/connect')->assertRedirect('/connections');
     });
 
     it('reconnecting the same account updates it rather than adding another', function () {
