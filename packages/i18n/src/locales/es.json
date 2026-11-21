@@ -974,7 +974,9 @@
       "getStarted": "Comenzar",
       "dashboard": "Ir a mi panel",
       "menu": "Menú",
-      "stateChip": "REOS está disponible en {{state}}"
+      "statesChip_one": "{{count}} estado",
+      "statesChip_other": "{{count}} estados",
+      "statesChipLabel": "REOS está disponible en {{states}}"
     },
     "footer": {
       "language": "Idioma",
@@ -1010,13 +1012,15 @@
         },
         "service-providers": {
           "label": "Proveedor de servicios",
-          "description": "Llegue a los agentes de {{state}}"
+          "description": "Llegue a los agentes de {{state}}",
+          "descriptionAny": "Llegue a agentes locales"
         }
       },
       "lesson": {
         "tag": "Lección de muestra con IA · Contratos en {{state}}",
         "title": "Principios de Bienes Raíces I · lección 3",
-        "meta": "Inglés y español"
+        "meta": "Inglés y español",
+        "tagAny": "Lección de muestra con IA · Contratos"
       },
       "stats": {
         "label": "REOS en cifras",
@@ -1025,8 +1029,11 @@
         "aiValue": "24/7",
         "ai": "ayuda con IA",
         "appValue": "1 app",
-        "app": "para cada rol"
-      }
+        "app": "para cada rol",
+        "statesValue": "{{count}}",
+        "states": "estados disponibles"
+      },
+      "headlineAny": "El sistema operativo para carreras en bienes raíces."
     },
     "audience": {
       "signIn": "Ya tengo una cuenta",
@@ -1095,7 +1102,8 @@
           "p2": "Solicitudes y chat privado con agentes",
           "p3": "Planes mensuales sencillos"
         },
-        "cta": "Crear su cuenta"
+        "cta": "Crear su cuenta",
+        "titleAny": "Llegue a los agentes que lo necesitan."
       }
     },
     "getStarted": {

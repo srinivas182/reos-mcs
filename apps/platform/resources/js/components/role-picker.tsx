@@ -7,7 +7,12 @@ import { audience } from '@/routes';
  * "I am …": the home page's six roles (web journey screen 1). Each opens that
  * role's landing page and sign-up.
  */
-export function RolePicker({ state }: { state: string }) {
+export function RolePicker({
+    state,
+}: {
+    /** The only live state, or null when several are live. */
+    state: string | null;
+}) {
     const { t } = useTranslation();
 
     return (
@@ -35,9 +40,14 @@ export function RolePicker({ state }: { state: string }) {
                                     {t(`site.home.roles.${key}.label`)}
                                 </span>
                                 <span className="block text-sm text-muted-foreground">
-                                    {t(`site.home.roles.${key}.description`, {
-                                        state,
-                                    })}
+                                    {key === 'service-providers' && !state
+                                        ? t(
+                                              'site.home.roles.service-providers.descriptionAny',
+                                          )
+                                        : t(
+                                              `site.home.roles.${key}.description`,
+                                              { state: state ?? '' },
+                                          )}
                                 </span>
                             </span>
                         </Link>

@@ -26,13 +26,17 @@ const question: QuizQuestion = {
     sample: true,
 };
 
+const texas = { single: 'Texas', list: 'Texas', count: 1 };
+
 afterEach(async () => {
     await i18n.changeLanguage('en');
 });
 
 describe('PublicHeader', () => {
     it('shows the audiences, the state chip, Sign in and Get started to visitors', () => {
-        render(<PublicHeader name="REOS" liveState="Texas" signedIn={false} />);
+        render(
+            <PublicHeader name="REOS" liveStates={texas} signedIn={false} />,
+        );
 
         const nav = screen.getByRole('navigation', { name: 'Main' });
         expect(
@@ -48,8 +52,27 @@ describe('PublicHeader', () => {
         ).toHaveAttribute('href', '/#roles');
     });
 
+    it('counts the states once more than one is live', () => {
+        render(
+            <PublicHeader
+                name="REOS"
+                liveStates={{
+                    single: null,
+                    list: 'Florida and Texas',
+                    count: 2,
+                }}
+                signedIn={false}
+            />,
+        );
+
+        expect(screen.getByText('2 states')).toHaveAttribute(
+            'title',
+            'REOS is live in Florida and Texas',
+        );
+    });
+
     it('offers the dashboard instead once signed in', () => {
-        render(<PublicHeader name="REOS" liveState="Texas" signedIn />);
+        render(<PublicHeader name="REOS" liveStates={texas} signedIn />);
 
         expect(
             screen.getByRole('link', { name: 'Go to dashboard' }),
@@ -68,6 +91,12 @@ describe('RolePicker', () => {
         expect(links).toHaveLength(6);
         expect(links[0]).toHaveAttribute('href', '/for/candidates');
         expect(screen.getByText('Reach Texas agents')).toBeInTheDocument();
+    });
+
+    it('names no state when several are live', () => {
+        render(<RolePicker state={null} />);
+
+        expect(screen.getByText('Reach local agents')).toBeInTheDocument();
     });
 
     it('speaks Spanish', async () => {

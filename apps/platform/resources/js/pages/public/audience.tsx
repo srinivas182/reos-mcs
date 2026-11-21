@@ -3,6 +3,7 @@ import { Check } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { Audience } from '@/components/public-header';
 import { Button } from '@/components/ui/button';
+import { liveStateWording } from '@/lib/live-states';
 import { getStarted, login, signUp } from '@/routes';
 
 type Props = { audience: Audience; liveStates: string[] };
@@ -29,8 +30,8 @@ const hasSignUp = (audience: Audience): audience is SignUpAudience =>
  * role's landing page and sign-up"): what REOS does for them, then sign-up.
  */
 export default function AudiencePage({ audience, liveStates }: Props) {
-    const { t } = useTranslation();
-    const state = liveStates[0] ?? '';
+    const { t, i18n } = useTranslation();
+    const state = liveStateWording(liveStates, i18n.language).single;
     const key = `site.audience.${audience}` as const;
     const path = hasSignUp(audience) ? signUpPath[audience] : null;
     const note = t(`${key}.note`, { defaultValue: '' });
@@ -46,7 +47,9 @@ export default function AudiencePage({ audience, liveStates }: Props) {
                         {t(`${key}.eyebrow`)}
                     </p>
                     <h1 className="text-4xl leading-tight font-bold tracking-tight text-balance text-foreground md:text-5xl">
-                        {t(`${key}.title`, { state })}
+                        {audience === 'service-providers' && !state
+                            ? t('site.audience.service-providers.titleAny')
+                            : t(`${key}.title`, { state: state ?? '' })}
                     </h1>
                     <p className="text-lg text-muted-foreground">
                         {t(`${key}.intro`)}

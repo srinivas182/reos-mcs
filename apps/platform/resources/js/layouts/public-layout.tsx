@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PublicHeader } from '@/components/public-header';
 import { useAppearance } from '@/hooks/use-appearance';
+import { liveStateWording } from '@/lib/live-states';
 import { cn } from '@/lib/utils';
 
 /**
@@ -12,7 +13,7 @@ import { cn } from '@/lib/utils';
  * this layout is only for pages before it.
  */
 export default function PublicLayout({ children }: { children: ReactNode }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { name, auth, liveStates } = usePage().props;
     const { locale, updateLocale } = useAppearance();
 
@@ -21,7 +22,7 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
             <PublicHeader
                 name={name}
                 signedIn={Boolean(auth.user)}
-                liveState={liveStates[0] ?? null}
+                liveStates={liveStateWording(liveStates, i18n.language)}
             />
             <main className="flex-1">{children}</main>
             <footer className="border-t border-border">

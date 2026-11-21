@@ -6,7 +6,11 @@ const meta = {
     title: 'Public site/Top bar',
     component: PublicHeader,
     parameters: { layout: 'fullscreen' },
-    args: { name: 'REOS', liveState: 'Texas', signedIn: false },
+    args: {
+        name: 'REOS',
+        liveStates: { single: 'Texas', list: 'Texas', count: 1 },
+        signedIn: false,
+    },
 } satisfies Meta<typeof PublicHeader>;
 
 export default meta;
@@ -17,3 +21,10 @@ export const Visitor: Story = {};
 
 /** Maria Lopez, already signed in, sees "Go to dashboard". */
 export const SignedIn: Story = { args: { signedIn: true } };
+
+/** Once a second state is live, the chip counts them and names them on hover. */
+export const TwoStatesLive: Story = {
+    args: {
+        liveStates: { single: null, list: 'Florida and Texas', count: 2 },
+    },
+};

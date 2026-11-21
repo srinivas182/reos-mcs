@@ -48,3 +48,4 @@ The mobile journeys (candidate screens 1–11, agent screens 1–3) start withou
   - A candidate who hasn't answered the three quick questions is sent to them before the dashboard (`EnsureOnboarded`).
   - New accounts keep the language the visitor was using (`Locale::current()`), on the web and the phone.
   - The onboarding words are shared by both front ends (`onboarding.*` in `packages/i18n`); the website's own words are under `site.*`.
+- **More than one live state (A3.3c follow-up).** With one live state the public site names it ("The operating system for Texas real estate careers"). With several it uses general wording, lists the live states ("Now live in Florida and Texas"), counts them in the state chip and stats, and drops state-specific lines such as "140k+ Texas sales agents" (`lib/live-states.ts`). Per-state pages (reos.com/tx) and a state picker arrive with the state switcher in Sprint 5.

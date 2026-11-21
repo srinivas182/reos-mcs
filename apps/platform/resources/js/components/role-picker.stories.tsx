@@ -13,3 +13,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Texas: Story = {};
+
+/** Several live states: no state named. */
+export const SeveralStates: Story = { args: { state: null } };

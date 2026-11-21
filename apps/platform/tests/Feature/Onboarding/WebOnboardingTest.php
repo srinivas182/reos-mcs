@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use App\Authorization\Role;
+use App\Enums\StateStatus;
 use App\Models\QuizAttempt;
 use App\Models\QuizQuestion;
+use App\Models\State;
 use App\Models\User;
 use App\Services\Authorization\Memberships;
 use App\Services\Onboarding\WebDraft;
@@ -188,4 +190,10 @@ it('keeps the language a visitor was using when they sign up', function () {
     ]);
 
     expect(User::query()->where('email', 'maria.es@example.com')->firstOrFail()->locale->value)->toBe('es');
+});
+
+it('lists every live state for the public site once a second one opens', function () {
+    State::query()->whereKey('FL')->update(['status' => StateStatus::Live]);
+
+    $this->get('/')->assertInertia(fn (Assert $page) => $page->where('liveStates', ['Florida', 'Texas']));
 });
