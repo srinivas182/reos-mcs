@@ -66,7 +66,7 @@ jest.mock('expo-local-authentication', () => ({
   authenticateAsync: jest.fn(async () => ({ success: true })),
 }));
 
-jest.mock('expo-web-browser', () => ({ openAuthSessionAsync: jest.fn(), WebBrowserResultType: { CANCEL: 'cancel', DISMISS: 'dismiss' } }));
+jest.mock('expo-web-browser', () => ({ openAuthSessionAsync: jest.fn(), openBrowserAsync: jest.fn(), WebBrowserResultType: { CANCEL: 'cancel', DISMISS: 'dismiss' } }));
 
 jest.mock('expo-apple-authentication', () => ({
   signInAsync: jest.fn(),

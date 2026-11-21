@@ -213,3 +213,22 @@ describe('phone numbers', () => {
     expect(maskPhone('+442079460958')).toBe('+44 ••••0958');
   });
 });
+
+describe('switching role (Me)', () => {
+  it('asks the server and keeps what it answers', async () => {
+    await saveToken('7|saved');
+    const switched = { ...signInBody().user, active_role: { role: 'agent', organisation_id: 2 } };
+    const { result, calls } = await setup({ 'PUT /me/active-role': () => json(switched) });
+
+    await waitFor(() => expect(result.current.status).toBe('signedIn'));
+    let ok = false;
+    await act(async () => {
+      ok = await result.current.switchRole('agent', 2);
+    });
+
+    expect(ok).toBe(true);
+    expect(result.current.user?.active_role).toEqual({ role: 'agent', organisation_id: 2 });
+    const put = calls.find((c) => c.method === 'PUT');
+    expect(await put?.json()).toEqual({ role: 'agent', organisation_id: 2 });
+  });
+});

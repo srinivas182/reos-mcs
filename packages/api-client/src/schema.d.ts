@@ -372,11 +372,11 @@ export interface components {
              * @description Every role the person holds, each in an organisation. Admin
              *     roles need two-step before they grant anything.
              */
-            roles: unknown[];
+            roles: components["schemas"]["MembershipResource"][];
             /** @description The role in use on this device; null for someone with no role yet. */
             active_role: {
                 role: string;
-                organisation_id: string;
+                organisation_id: number;
             } | null;
             /** @description What the active role allows, such as `learning.study`. */
             permissions: string[];
@@ -384,9 +384,33 @@ export interface components {
                 /** @description An authenticator app or a passkey is set up. */
                 enabled: boolean;
                 /** @description The active role is an admin role that needs two-step first. */
-                required: string;
+                required: boolean;
             };
         };
+        /** MembershipResource */
+        MembershipResource: {
+            role: components["schemas"]["Role"];
+            organisation: {
+                id: number;
+                name: string;
+                type: components["schemas"]["OrganisationType"];
+            };
+            /** @description Admin roles need two-step before they grant anything. */
+            admin: boolean;
+        };
+        /**
+         * OrganisationType
+         * @description Kinds of organisation a role can belong to (A3.2). A4.1 adds the full hierarchy, branding and domains.
+         *     | |
+         *     |---|
+         *     | `platform` <br/> REOS itself: super admins, and people who joined on their own. |
+         *     | `brokerage` <br/>  |
+         *     | `school` <br/>  |
+         *     | `association` <br/>  |
+         *     | `provider_business` <br/> A lender, inspector, title company or other service business. |
+         * @enum {string}
+         */
+        OrganisationType: "platform" | "brokerage" | "school" | "association" | "provider_business";
         /** PhoneStartRequest */
         PhoneStartRequest: {
             /**
@@ -495,6 +519,8 @@ export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
+export type SchemaMembershipResource = components['schemas']['MembershipResource'];
+export type SchemaOrganisationType = components['schemas']['OrganisationType'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
 export type SchemaRole = components['schemas']['Role'];

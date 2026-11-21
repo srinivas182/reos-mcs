@@ -22,7 +22,7 @@ export function ScreenHeader({ overline, title, trailing }: { overline?: string;
 }
 
 /** Initials in a tinted circle (48 pt). Becomes a button when `onPress` is given. */
-export function Avatar({ name, onPress }: { name: string; onPress?: () => void }) {
+export function Avatar({ name, label, onPress }: { name: string; label?: string; onPress?: () => void }) {
   const initials = name
     .split(/\s+/)
     .filter(Boolean)
@@ -31,7 +31,7 @@ export function Avatar({ name, onPress }: { name: string; onPress?: () => void }
     .join('');
 
   return (
-    <Pressable accessibilityRole={onPress ? 'button' : 'image'} accessibilityLabel={name} disabled={!onPress} onPress={onPress} style={styles.avatar}>
+    <Pressable accessibilityRole={onPress ? 'button' : 'image'} accessibilityLabel={label ?? name} disabled={!onPress} onPress={onPress} style={styles.avatar}>
       <Text weight="bold" style={styles.initials}>
         {initials}
       </Text>

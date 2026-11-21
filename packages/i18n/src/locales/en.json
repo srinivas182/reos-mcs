@@ -95,8 +95,6 @@
     "tagline": "Learn, get licensed, stay compliant and grow, all in one app.",
     "connected": "Connected to {{app}} · version {{version}}",
     "unreachable": "Can't reach the REOS server right now.",
-    "displaySettings": "Display and language",
-    "displaySettingsHint": "Theme, text size and language",
     "signIn": {
       "welcomeBack": "Welcome back",
       "subtitle": "Sign in the same way you did before.",
@@ -170,11 +168,43 @@
       "done": "Your account will be deleted in 30 days. Sign in before then to keep it."
     },
     "account": {
-      "title": "Account",
       "devices": "Your devices",
+      "delete": "Delete account"
+    },
+    "me": {
+      "title": "Me",
+      "open": "Open Me",
+      "privacy": "Privacy and my data",
+      "accessibility": "Language and accessibility",
+      "switchRoleTo": "Switch role · {{role}}",
+      "switchRole": "Switch role",
       "signOut": "Sign out",
-      "delete": "Delete account",
-      "display": "Display and language"
+      "twoStepTitle": "Set up two-step to use {{role}}",
+      "twoStepBody": "Admin roles need a second step when you sign in. Set it up on the REOS website in Settings › Security. It takes about a minute.",
+      "openWeb": "Open the website"
+    },
+    "organisations": {
+      "title": "Your organisations",
+      "intro": "Each one sees only what you share with it.",
+      "note": "Switching changes the logo, colours and what's shown first. Your contacts, posts and credits stay yours.",
+      "switched": "You're now working with {{organisation}}."
+    },
+    "roles": {
+      "title": "Switch role",
+      "intro": "Your account, progress and data stay the same in every role.",
+      "switched": "You're now using REOS as {{role}}."
+    },
+    "privacy": {
+      "title": "Privacy and my data",
+      "security": "Sign-in and devices"
+    },
+    "accessibility": {
+      "title": "Language and accessibility",
+      "language": "Language",
+      "textSize": "Text size",
+      "highContrast": "High contrast",
+      "highContrastHint": "The strongest contrast, for low vision or bright sun",
+      "note": "Works with VoiceOver and TalkBack. Built to WCAG 2.2 AA."
     }
   },
   "tabs": {

@@ -45,5 +45,11 @@ One person can be a candidate, an agent, a broker, a mentor, an instructor, a sc
   - The web shell follows the Web App Journey (page 4): a dark sidebar per role (`lib/navigation.ts`, journey order, only built pages shown) with the organisation block, and a top bar with the state chip, the **role chip** (the switcher, `PUT /settings/active-role`) and the person.
   - While an admin role waits for two-step, a banner offers "Set up two-step" or "Use another role", and Security settings puts the two-step choices first.
   - The super admin's back office has its own menu (`/admin/…`): People (added by the Sprint 3 spec) and Integrations, not Settings. People (two-step and a recent password confirmation) finds people by name, email or phone digits, grants roles only in organisations of the right kind, and removes them with Undo. Its "Recent changes" lists role changes only.
-- A3.2c adds the switcher to the phone app's Me tab.
+- **Phone (A3.2c), from the mobile journeys.**
+  - **Me** (screen 16) opens from your initials. It shows the name, then "role · organisation" (tap the organisation for **Your organisations**, screen 150), the settings list, a **Switch role** card and Sign out.
+  - Switching uses `PUT /api/v1/me/active-role` with an Undo toast. This phone remembers the choice.
+  - An admin role without two-step shows a note pointing to the website, where two-step is set up.
+  - **Privacy and my data** (153) holds Your devices, Face ID (189) and Delete account (197).
+  - **Language and accessibility** (192) has English/Español pills, a text-size slider and High contrast. Light or dark follows the phone.
+  - The other Me rows (My goal, Connections, CE wallet, Membership, Downloads, Notifications, Help) arrive with their features.
 - A4.1 adds row-level security per organisation. Until then, organisation scoping is done in policies.

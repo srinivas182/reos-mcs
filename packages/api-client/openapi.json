@@ -882,7 +882,9 @@
                     "roles": {
                         "type": "array",
                         "description": "Every role the person holds, each in an organisation. Admin\nroles need two-step before they grant anything.",
-                        "items": {}
+                        "items": {
+                            "$ref": "#/components/schemas/MembershipResource"
+                        }
                     },
                     "active_role": {
                         "type": [
@@ -895,7 +897,7 @@
                                 "type": "string"
                             },
                             "organisation_id": {
-                                "type": "string"
+                                "type": "integer"
                             }
                         },
                         "required": [
@@ -918,7 +920,7 @@
                                 "description": "An authenticator app or a passkey is set up."
                             },
                             "required": {
-                                "type": "string",
+                                "type": "boolean",
                                 "description": "The active role is an admin role that needs two-step first."
                             }
                         },
@@ -945,6 +947,55 @@
                     "two_step"
                 ],
                 "title": "MeResource"
+            },
+            "MembershipResource": {
+                "type": "object",
+                "properties": {
+                    "role": {
+                        "$ref": "#/components/schemas/Role"
+                    },
+                    "organisation": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "$ref": "#/components/schemas/OrganisationType"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "name",
+                            "type"
+                        ]
+                    },
+                    "admin": {
+                        "type": "boolean",
+                        "description": "Admin roles need two-step before they grant anything."
+                    }
+                },
+                "required": [
+                    "role",
+                    "organisation",
+                    "admin"
+                ],
+                "title": "MembershipResource"
+            },
+            "OrganisationType": {
+                "type": "string",
+                "description": "Kinds of organisation a role can belong to (A3.2). A4.1 adds the full hierarchy, branding and domains.\n| |\n|---|\n| `platform` <br/> REOS itself: super admins, and people who joined on their own. |\n| `brokerage` <br/>  |\n| `school` <br/>  |\n| `association` <br/>  |\n| `provider_business` <br/> A lender, inspector, title company or other service business. |",
+                "enum": [
+                    "platform",
+                    "brokerage",
+                    "school",
+                    "association",
+                    "provider_business"
+                ],
+                "title": "OrganisationType"
             },
             "PhoneStartRequest": {
                 "type": "object",
