@@ -20,6 +20,11 @@ import { CopyField } from '@/components/copy-field';
 import { CredentialField } from '@/components/credential-field';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
+import type { PageTab } from '@/components/page-tabs';
+import { PageTabs } from '@/components/page-tabs';
+import { CatalogueStatusBadge } from '@/components/catalogue-status-badge';
+import { Label } from '@/components/ui/label';
+import { roleName } from '@/lib/roles';
 import InputError from '@/components/input-error';
 import { ApprovalBadge, ModeBadge } from '@/components/integration-badges';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -36,19 +41,32 @@ import {
 } from '@/components/ui/dialog';
 import { i18n } from '@/lib/i18n';
 import { undoToast } from '@/lib/undo-toast';
-import { index } from '@/routes/integrations';
+import {
+    index,
+    pause as pauseRoute,
+    show,
+    tab as tabRoute,
+} from '@/routes/integrations';
+import { update as catalogueRoute } from '@/routes/integrations/catalogue';
 import { store as storeCheck } from '@/routes/integrations/checks';
 import { update as updateMode } from '@/routes/integrations/mode';
 import type {
     AuditActivity,
+    CatalogueDetail,
+    CatalogueStatus,
     CredentialEnvironment,
     IntegrationDetail,
+    IntegrationHealth,
     IntegrationMode,
 } from '@/types';
+import type { Membership } from '@/types/auth';
 
 type Props = {
     integration: IntegrationDetail;
     activity: AuditActivity[];
+    tab: 'availability' | 'credentials' | 'health' | 'changelog';
+    catalogue: CatalogueDetail | null;
+    health: IntegrationHealth;
 };
 
 const modeIcons: Record<IntegrationMode, LucideIcon> = {
@@ -59,119 +77,619 @@ const modeIcons: Record<IntegrationMode, LucideIcon> = {
 };
 
 /**
- * One integration (super admin): how it runs, its test and live keys, the
- * redirect address to register with the vendor, and recent changes.
+ * One integration (super admin, web journey screen 65), in tabs:
+ * Availability (catalogue status, states, roles, plans, beta organizations,
+ * what organizations may do), Credentials (how it runs, keys, the redirect
+ * address), Health (connections and sync) and Changelog. The header holds the
+ * kill switch. Platform services have no Availability tab.
  */
-export default function IntegrationShow({ integration, activity }: Props) {
+export default function IntegrationShow({
+    integration,
+    activity,
+    tab,
+    catalogue,
+    health,
+}: Props) {
     const { t } = useTranslation();
+    const paused = catalogue?.effective === 'paused';
 
-    const environments: CredentialEnvironment[] = integration.has_test_system
-        ? ['sandbox', 'live']
-        : ['live'];
+    const tabs: PageTab[] = [
+        ...(catalogue
+            ? [
+                  {
+                      title: t('catalogue.detailTabs.availability'),
+                      href: show(integration.id),
+                      exact: true,
+                  },
+              ]
+            : []),
+        {
+            title: t('catalogue.detailTabs.credentials'),
+            href: tabRoute({ integration: integration.id, tab: 'credentials' }),
+        },
+        {
+            title: t('catalogue.detailTabs.health'),
+            href: tabRoute({ integration: integration.id, tab: 'health' }),
+        },
+        {
+            title: t('catalogue.detailTabs.changelog'),
+            href: tabRoute({ integration: integration.id, tab: 'changelog' }),
+        },
+    ];
 
     return (
         <>
             <Head title={integration.name} />
 
-            <div className="space-y-10 px-4 py-6 md:px-8">
-                <div className="space-y-4">
-                    <PageHeader
-                        title={integration.name}
-                        description={integration.purpose}
-                        back={
-                            <Link
-                                href={index()}
-                                className="inline-flex min-h-touch items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
+            <div className="space-y-6 px-4 py-6 md:px-8">
+                <PageHeader
+                    title={integration.name}
+                    description={`${t(`integrations.categories.${integration.category}`)} · ${integration.purpose}`}
+                    back={
+                        <Link
+                            href={index()}
+                            className="inline-flex min-h-touch items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
+                        >
+                            <ArrowLeft aria-hidden className="size-5" />
+                            {t('integrations.back')}
+                        </Link>
+                    }
+                    actions={
+                        catalogue ? (
+                            <Button
+                                variant={paused ? 'default' : 'outline'}
+                                onClick={() =>
+                                    router.put(
+                                        pauseRoute(integration.id).url,
+                                        { paused: !paused },
+                                        { preserveScroll: true },
+                                    )
+                                }
                             >
-                                <ArrowLeft aria-hidden className="size-5" />
-                                {t('integrations.back')}
-                            </Link>
-                        }
+                                {paused
+                                    ? t('catalogue.resume')
+                                    : t('catalogue.pause')}
+                            </Button>
+                        ) : null
+                    }
+                />
+
+                <div className="flex flex-wrap gap-2">
+                    {catalogue ? (
+                        <CatalogueStatusBadge status={catalogue.effective} />
+                    ) : null}
+                    <ModeBadge
+                        mode={integration.mode}
+                        paused={integration.paused_at !== null}
                     />
-
-                    <div className="flex flex-wrap gap-2">
-                        <ModeBadge
-                            mode={integration.mode}
-                            paused={integration.paused_at !== null}
-                        />
+                    <ApprovalBadge status={integration.approval} />
+                    {integration.personal_data ? (
                         <Badge variant="outline">
-                            {t(
-                                `integrations.categories.${integration.category}`,
-                            )}
+                            {t('integrations.personalData')}
                         </Badge>
-                        <ApprovalBadge status={integration.approval} />
-                        {integration.personal_data ? (
-                            <Badge variant="outline">
-                                {t('integrations.personalData')}
-                            </Badge>
-                        ) : null}
-                    </div>
-
-                    <Alert>
-                        <AlertDescription>
-                            {t(`integrations.accounts.${integration.accounts}`)}
-                        </AlertDescription>
-                    </Alert>
-
-                    {integration.paused_at ? (
-                        <Alert variant="destructive">
-                            <CirclePause aria-hidden />
-                            <AlertTitle>
-                                {t('integrations.paused.title')}
-                            </AlertTitle>
-                            <AlertDescription>
-                                {t('integrations.paused.body', {
-                                    time: new Intl.DateTimeFormat(
-                                        i18n.language,
-                                        {
-                                            dateStyle: 'medium',
-                                            timeStyle: 'short',
-                                        },
-                                    ).format(new Date(integration.paused_at)),
-                                })}
-                            </AlertDescription>
-                        </Alert>
                     ) : null}
                 </div>
 
-                <ModeChooser integration={integration} />
+                <PageTabs tabs={tabs} label={t('catalogue.detailTabs.label')} />
 
-                {integration.needs_keys ? (
-                    environments.map((environment) => (
-                        <KeysForm
-                            key={environment}
-                            integration={integration}
-                            environment={environment}
+                {tab === 'availability' && catalogue ? (
+                    <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+                        <AvailabilityForm
+                            integrationId={integration.id}
+                            catalogue={catalogue}
                         />
-                    ))
-                ) : integration.auth === 'none' ? (
-                    <p className="text-muted-foreground">
-                        {t('integrations.keys.noneNeeded')}
-                    </p>
+                        <SummaryCard
+                            integration={integration}
+                            catalogue={catalogue}
+                            health={health}
+                        />
+                    </div>
                 ) : null}
 
-                {integration.redirect_url ? (
-                    <CopyField
-                        label={t('integrations.redirect.label')}
-                        hint={t('integrations.redirect.hint')}
-                        value={integration.redirect_url}
-                    />
+                {tab === 'credentials' ? (
+                    <CredentialsPanel integration={integration} />
                 ) : null}
 
-                {integration.has_test_system ? (
-                    <section className="space-y-2">
-                        <h2 className="text-lg font-semibold">
-                            {t('integrations.setup.title')}
-                        </h2>
-                        <p className="text-muted-foreground">
-                            {integration.sandbox_notes}
-                        </p>
-                    </section>
+                {tab === 'health' ? (
+                    <HealthPanel integration={integration} health={health} />
                 ) : null}
 
-                <ActivityList activity={activity} />
+                {tab === 'changelog' ? (
+                    <ActivityList activity={activity} />
+                ) : null}
             </div>
         </>
+    );
+}
+
+function CredentialsPanel({ integration }: { integration: IntegrationDetail }) {
+    const { t } = useTranslation();
+    const environments: CredentialEnvironment[] = integration.has_test_system
+        ? ['sandbox', 'live']
+        : ['live'];
+
+    return (
+        <div className="space-y-10">
+            <Alert>
+                <AlertDescription>
+                    {t(`integrations.accounts.${integration.accounts}`)}
+                </AlertDescription>
+            </Alert>
+
+            <ModeChooser integration={integration} />
+
+            {integration.needs_keys ? (
+                environments.map((environment) => (
+                    <KeysForm
+                        key={environment}
+                        integration={integration}
+                        environment={environment}
+                    />
+                ))
+            ) : integration.auth === 'none' ? (
+                <p className="text-muted-foreground">
+                    {t('integrations.keys.noneNeeded')}
+                </p>
+            ) : null}
+
+            {integration.redirect_url ? (
+                <CopyField
+                    label={t('integrations.redirect.label')}
+                    hint={t('integrations.redirect.hint')}
+                    value={integration.redirect_url}
+                />
+            ) : null}
+
+            {integration.has_test_system ? (
+                <section className="space-y-2">
+                    <h2 className="text-lg font-semibold">
+                        {t('integrations.setup.title')}
+                    </h2>
+                    <p className="text-muted-foreground">
+                        {integration.sandbox_notes}
+                    </p>
+                </section>
+            ) : null}
+        </div>
+    );
+}
+
+function HealthPanel({
+    integration,
+    health,
+}: {
+    integration: IntegrationDetail;
+    health: IntegrationHealth;
+}) {
+    const { t } = useTranslation();
+    const number = new Intl.NumberFormat(i18n.language);
+    const tiles = [
+        {
+            label: t('catalogue.healthTab.connected'),
+            value: number.format(health.connected),
+        },
+        {
+            label: t('catalogue.healthTab.reconnect'),
+            value: number.format(health.reconnect),
+        },
+        {
+            label: t('catalogue.healthTab.failing'),
+            value: number.format(health.failing),
+        },
+        {
+            label: t('catalogue.healthTab.success'),
+            value:
+                health.success === null
+                    ? t('catalogue.healthTab.noRuns')
+                    : `${new Intl.NumberFormat(i18n.language, { maximumFractionDigits: 2 }).format(health.success)}%`,
+        },
+    ];
+
+    return (
+        <section aria-labelledby="health-title" className="space-y-4">
+            <h2 id="health-title" className="text-lg font-semibold">
+                {t('catalogue.healthTab.title')}
+            </h2>
+            {integration.paused_at ? (
+                <Alert variant="destructive">
+                    <CirclePause aria-hidden />
+                    <AlertTitle>{t('integrations.paused.title')}</AlertTitle>
+                    <AlertDescription>
+                        {t('integrations.paused.body', {
+                            time: new Intl.DateTimeFormat(i18n.language, {
+                                dateStyle: 'medium',
+                                timeStyle: 'short',
+                            }).format(new Date(integration.paused_at)),
+                        })}
+                    </AlertDescription>
+                </Alert>
+            ) : null}
+            <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {tiles.map((tile) => (
+                    <div
+                        key={tile.label}
+                        className="flex flex-col-reverse rounded-reos-lg border border-border bg-card p-5"
+                    >
+                        <dt className="text-sm text-muted-foreground">
+                            {tile.label}
+                        </dt>
+                        <dd className="text-2xl font-bold">{tile.value}</dd>
+                    </div>
+                ))}
+            </dl>
+            <p className="rounded-reos-md bg-reos-tone-warning-bg p-3 text-sm text-reos-tone-warning-fg">
+                {t('catalogue.healthTab.autoPause')}
+            </p>
+        </section>
+    );
+}
+
+/** "Credentials and health" beside the rules (journey screen 65). */
+function SummaryCard({
+    integration,
+    catalogue,
+    health,
+}: {
+    integration: IntegrationDetail;
+    catalogue: CatalogueDetail;
+    health: IntegrationHealth;
+}) {
+    const { t } = useTranslation();
+    const rows: [string, string][] = [
+        [
+            t('catalogue.summary.auth'),
+            t(`catalogue.summary.auths.${catalogue.summary.auth}`),
+        ],
+        [
+            t('catalogue.summary.accounts'),
+            t(`catalogue.summary.accountTypes.${catalogue.summary.accounts}`),
+        ],
+        [
+            t('catalogue.summary.runsOn'),
+            t(`integrations.mode.${integration.mode}`),
+        ],
+        [
+            t('catalogue.summary.sync'),
+            catalogue.built
+                ? t('catalogue.summary.syncBuilt')
+                : t('catalogue.summary.notBuilt'),
+        ],
+        [
+            t('catalogue.summary.rateLimit'),
+            catalogue.summary.rate_limit === null
+                ? t('catalogue.none')
+                : t('catalogue.summary.perMinute', {
+                      count: catalogue.summary.rate_limit,
+                  }),
+        ],
+    ];
+
+    return (
+        <section
+            aria-labelledby="summary-title"
+            className="space-y-4 rounded-reos-lg border border-border bg-card p-6"
+        >
+            <h2 id="summary-title" className="text-lg font-semibold">
+                {t('catalogue.summary.title')}
+            </h2>
+            <dl className="divide-y divide-border">
+                {rows.map(([label, value]) => (
+                    <div
+                        key={label}
+                        className="flex justify-between gap-4 py-2"
+                    >
+                        <dt className="text-muted-foreground">{label}</dt>
+                        <dd className="text-right font-semibold">{value}</dd>
+                    </div>
+                ))}
+            </dl>
+            <div className="grid grid-cols-2 gap-3">
+                <div className="rounded-reos-md border border-border p-3">
+                    <p className="text-sm text-muted-foreground">
+                        {t('catalogue.healthTab.success')}
+                    </p>
+                    <p className="text-xl font-bold">
+                        {health.success === null
+                            ? t('catalogue.healthTab.noRuns')
+                            : `${health.success}%`}
+                    </p>
+                </div>
+                <div className="rounded-reos-md border border-border p-3">
+                    <p className="text-sm text-muted-foreground">
+                        {t('catalogue.healthTab.connected')}
+                    </p>
+                    <p className="text-xl font-bold">{health.connected}</p>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+type ListRule = string[] | null;
+
+/** "Everyone" or "Only these", with a checkbox for each choice. */
+function RuleField({
+    legend,
+    value,
+    options,
+    onChange,
+}: {
+    legend: string;
+    value: ListRule;
+    options: { value: string; label: string }[];
+    onChange: (value: ListRule) => void;
+}) {
+    const { t } = useTranslation();
+    const id = legend.toLowerCase().replace(/\W+/g, '-');
+
+    return (
+        <fieldset className="space-y-2">
+            <legend className="font-semibold">{legend}</legend>
+            <div className="flex flex-wrap gap-4">
+                {(['everyone', 'only'] as const).map((choice) => (
+                    <label
+                        key={choice}
+                        className="flex min-h-12 items-center gap-2"
+                    >
+                        <input
+                            type="radio"
+                            name={`${id}-scope`}
+                            className="size-5 accent-primary"
+                            checked={
+                                choice === 'everyone'
+                                    ? value === null
+                                    : value !== null
+                            }
+                            onChange={() =>
+                                onChange(choice === 'everyone' ? null : [])
+                            }
+                        />
+                        {t(`catalogue.rules.${choice}`)}
+                    </label>
+                ))}
+            </div>
+            {value !== null ? (
+                <div className="grid max-h-60 gap-1 overflow-y-auto rounded-reos-md border border-border p-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {options.map((option) => (
+                        <label
+                            key={option.value}
+                            className="flex min-h-10 items-center gap-2"
+                        >
+                            <input
+                                type="checkbox"
+                                className="size-5 accent-primary"
+                                checked={value.includes(option.value)}
+                                onChange={(event) =>
+                                    onChange(
+                                        event.target.checked
+                                            ? [...value, option.value]
+                                            : value.filter(
+                                                  (v) => v !== option.value,
+                                              ),
+                                    )
+                                }
+                            />
+                            {option.label}
+                        </label>
+                    ))}
+                </div>
+            ) : null}
+        </fieldset>
+    );
+}
+
+function AvailabilityForm({
+    integrationId,
+    catalogue,
+}: {
+    integrationId: string;
+    catalogue: CatalogueDetail;
+}) {
+    const { t } = useTranslation();
+    const [status, setStatus] = useState<CatalogueStatus | ''>(
+        catalogue.status ?? '',
+    );
+    const [retiresOn, setRetiresOn] = useState(catalogue.retires_on ?? '');
+    const [states, setStates] = useState<ListRule>(catalogue.states);
+    const [roles, setRoles] = useState<ListRule>(catalogue.roles);
+    const [beta, setBeta] = useState<number[]>(catalogue.beta_organisations);
+    const [flags, setFlags] = useState({
+        tenants_may_hide: catalogue.tenants_may_hide,
+        tenants_may_require: catalogue.tenants_may_require,
+        show_coming_soon: catalogue.show_coming_soon,
+    });
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [saving, setSaving] = useState(false);
+
+    const save = () => {
+        setSaving(true);
+        router.put(
+            catalogueRoute(integrationId).url,
+            {
+                status: status === '' ? null : status,
+                retires_on: status === 'retired' ? retiresOn : null,
+                states,
+                roles,
+                beta_organisations: beta,
+                ...flags,
+            },
+            {
+                preserveScroll: true,
+                onError: setErrors,
+                onSuccess: () => setErrors({}),
+                onFinish: () => setSaving(false),
+            },
+        );
+    };
+
+    return (
+        <section
+            aria-labelledby="availability-title"
+            className="space-y-6 rounded-reos-lg border border-border bg-card p-6"
+        >
+            <div className="flex flex-wrap items-center justify-between gap-3">
+                <h2 id="availability-title" className="text-lg font-semibold">
+                    {t('catalogue.rules.title')}
+                </h2>
+                <Button onClick={save} disabled={saving}>
+                    {t('catalogue.save')}
+                </Button>
+            </div>
+
+            {!catalogue.built ? (
+                <Alert>
+                    <AlertDescription>
+                        {t('catalogue.rules.notBuilt')}
+                    </AlertDescription>
+                </Alert>
+            ) : null}
+
+            <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid gap-2">
+                    <Label htmlFor="catalogue-status">
+                        {t('catalogue.rules.status')}
+                    </Label>
+                    <select
+                        id="catalogue-status"
+                        value={status}
+                        onChange={(event) =>
+                            setStatus(
+                                event.target.value as CatalogueStatus | '',
+                            )
+                        }
+                        className="min-h-12 rounded-reos-md border border-input bg-background px-3 text-base"
+                    >
+                        <option value="">
+                            {t('catalogue.rules.statusDefault', {
+                                status: t(
+                                    `catalogue.statuses.${catalogue.default}`,
+                                ),
+                            })}
+                        </option>
+                        {(
+                            [
+                                'enabled',
+                                'beta',
+                                'coming_soon',
+                                'paused',
+                                'retired',
+                            ] as const
+                        ).map((value) => (
+                            <option key={value} value={value}>
+                                {t(`catalogue.statuses.${value}`)}
+                            </option>
+                        ))}
+                    </select>
+                    <InputError message={errors.status} />
+                </div>
+                {status === 'retired' ? (
+                    <div className="grid gap-2">
+                        <Label htmlFor="catalogue-retires">
+                            {t('catalogue.rules.retiresOn')}
+                        </Label>
+                        <input
+                            id="catalogue-retires"
+                            type="date"
+                            value={retiresOn}
+                            onChange={(event) =>
+                                setRetiresOn(event.target.value)
+                            }
+                            className="min-h-12 rounded-reos-md border border-input bg-background px-3 text-base"
+                        />
+                        <InputError message={errors.retires_on} />
+                    </div>
+                ) : null}
+            </div>
+
+            <RuleField
+                legend={t('catalogue.rules.states')}
+                value={states}
+                options={catalogue.options.states.map((s) => ({
+                    value: s.code,
+                    label: s.name,
+                }))}
+                onChange={setStates}
+            />
+            <RuleField
+                legend={t('catalogue.rules.roles')}
+                value={roles}
+                options={catalogue.options.roles.map((r) => ({
+                    value: r,
+                    label: roleName(t, r as Membership['role']),
+                }))}
+                onChange={setRoles}
+            />
+
+            <div className="space-y-1">
+                <p className="font-semibold">{t('catalogue.rules.plans')}</p>
+                <p className="text-muted-foreground">
+                    {t('catalogue.rules.plansLater')}
+                </p>
+            </div>
+
+            {catalogue.options.organisations.length > 0 ? (
+                <fieldset className="space-y-2">
+                    <legend className="font-semibold">
+                        {t('catalogue.rules.betaOrganisations')}
+                    </legend>
+                    <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+                        {catalogue.options.organisations.map((organisation) => (
+                            <label
+                                key={organisation.id}
+                                className="flex min-h-10 items-center gap-2"
+                            >
+                                <input
+                                    type="checkbox"
+                                    className="size-5 accent-primary"
+                                    checked={beta.includes(organisation.id)}
+                                    onChange={(event) =>
+                                        setBeta(
+                                            event.target.checked
+                                                ? [...beta, organisation.id]
+                                                : beta.filter(
+                                                      (id) =>
+                                                          id !==
+                                                          organisation.id,
+                                                  ),
+                                        )
+                                    }
+                                />
+                                {organisation.name}
+                            </label>
+                        ))}
+                    </div>
+                </fieldset>
+            ) : null}
+
+            <div className="divide-y divide-border rounded-reos-md border border-border">
+                {(
+                    [
+                        ['tenants_may_hide', 'tenantsMayHide'],
+                        ['tenants_may_require', 'tenantsMayRequire'],
+                        ['show_coming_soon', 'showComingSoon'],
+                    ] as const
+                ).map(([key, label]) => (
+                    <label
+                        key={key}
+                        className="flex min-h-12 items-center justify-between gap-4 px-4"
+                    >
+                        {t(`catalogue.rules.${label}`)}
+                        <input
+                            type="checkbox"
+                            role="switch"
+                            className="size-5 accent-primary"
+                            checked={flags[key]}
+                            onChange={(event) =>
+                                setFlags({
+                                    ...flags,
+                                    [key]: event.target.checked,
+                                })
+                            }
+                        />
+                    </label>
+                ))}
+            </div>
+        </section>
     );
 }
 

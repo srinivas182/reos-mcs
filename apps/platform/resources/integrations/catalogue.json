@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/integrations/register.yaml",
-  "updated": "2026-11-20",
+  "updated": "2026-11-21",
   "entries": [
     {
       "id": "google-sign-in",
@@ -187,6 +187,145 @@
           },
           {
             "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "apple-calendar",
+      "name": "Apple Calendar (iCloud)",
+      "kind": "integration",
+      "category": "calendar_email",
+      "purpose": "Read events from iCloud calendars.",
+      "launch": "coming_soon",
+      "build_sprint": 4,
+      "owner": "client_with_mayura",
+      "access_status": "not_needed",
+      "personal_data": true,
+      "sandbox": "Any Apple ID with an app-specific password.",
+      "connection": {
+        "auth": "none",
+        "accounts": "user",
+        "fields": []
+      }
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom",
+      "kind": "integration",
+      "category": "meetings",
+      "purpose": "Meeting links for showings, sessions and client calls.",
+      "launch": "coming_soon",
+      "build_sprint": 4,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Zoom Marketplace development app; any Zoom account until published.",
+      "connection": {
+        "auth": "oauth2",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "client_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "microsoft-teams",
+      "name": "Microsoft Teams meetings",
+      "kind": "integration",
+      "category": "meetings",
+      "purpose": "Teams meeting links on REOS events.",
+      "launch": "coming_soon",
+      "build_sprint": 4,
+      "owner": "client_with_mayura",
+      "access_status": "not_needed",
+      "personal_data": true,
+      "sandbox": "Uses the Microsoft 365 connection.",
+      "connection": {
+        "auth": "none",
+        "accounts": "user",
+        "fields": []
+      }
+    },
+    {
+      "id": "google-meet",
+      "name": "Google Meet",
+      "kind": "integration",
+      "category": "meetings",
+      "purpose": "Google Meet links on REOS events.",
+      "launch": "coming_soon",
+      "build_sprint": 4,
+      "owner": "client_with_mayura",
+      "access_status": "not_needed",
+      "personal_data": true,
+      "sandbox": "Uses the Google Calendar and Gmail connection.",
+      "connection": {
+        "auth": "none",
+        "accounts": "user",
+        "fields": []
+      }
+    },
+    {
+      "id": "showingtime",
+      "name": "ShowingTime",
+      "kind": "integration",
+      "category": "meetings",
+      "purpose": "Showing requests and confirmations on the REOS calendar.",
+      "launch": "coming_soon",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "brokerbay",
+      "name": "BrokerBay",
+      "kind": "integration",
+      "category": "meetings",
+      "purpose": "Showing and appointment bookings on the REOS calendar.",
+      "launch": "coming_soon",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "api_key",
             "secret": true,
             "required": true,
             "kind": "text",
@@ -933,6 +1072,110 @@
       }
     },
     {
+      "id": "open-to-close",
+      "name": "Open to Close",
+      "kind": "integration",
+      "category": "transactions",
+      "purpose": "Transaction coordination: deals, tasks and deadlines.",
+      "launch": "coming_soon",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "paperless-pipeline",
+      "name": "Paperless Pipeline",
+      "kind": "integration",
+      "category": "transactions",
+      "purpose": "Brokerage transactions, documents and checklists.",
+      "launch": "coming_soon",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "listedkit",
+      "name": "ListedKit",
+      "kind": "integration",
+      "category": "transactions",
+      "purpose": "AI transaction coordinator: deals and deadlines.",
+      "launch": "coming_soon",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "boldtrail-backoffice",
+      "name": "BoldTrail BackOffice",
+      "kind": "integration",
+      "category": "transactions",
+      "purpose": "Brokerage back office: deals, commissions and agent billing.",
+      "launch": "coming_soon",
+      "build_sprint": 9,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner sandbox on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "tenant",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
       "id": "docusign",
       "name": "DocuSign",
       "kind": "integration",
@@ -970,6 +1213,102 @@
             "default": null
           }
         ]
+      }
+    },
+    {
+      "id": "zillow-leads",
+      "name": "Zillow leads",
+      "kind": "integration",
+      "category": "leads",
+      "purpose": "New Zillow Premier Agent leads, sent to the default CRM.",
+      "launch": "coming_soon",
+      "build_sprint": 14,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Zillow partner test account on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "realtor-com-leads",
+      "name": "Realtor.com leads",
+      "kind": "integration",
+      "category": "leads",
+      "purpose": "New Realtor.com leads, sent to the default CRM.",
+      "launch": "coming_soon",
+      "build_sprint": 14,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner test account on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "homes-com-leads",
+      "name": "Homes.com leads",
+      "kind": "integration",
+      "category": "leads",
+      "purpose": "New Homes.com leads, sent to the default CRM.",
+      "launch": "coming_soon",
+      "build_sprint": 14,
+      "owner": "client_with_mayura",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Partner test account on approval.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "user",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "phone-contacts",
+      "name": "Phone contacts",
+      "kind": "integration",
+      "category": "contacts",
+      "purpose": "Names, numbers and emails from the phone, so a new agent starts with a contact list.",
+      "launch": "coming_soon",
+      "build_sprint": 7,
+      "owner": "client_with_mayura",
+      "access_status": "not_needed",
+      "personal_data": true,
+      "sandbox": "The phone's own contacts permission.",
+      "connection": {
+        "auth": "none",
+        "accounts": "user",
+        "fields": []
       }
     },
     {

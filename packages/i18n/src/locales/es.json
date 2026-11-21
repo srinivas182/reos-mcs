@@ -278,7 +278,10 @@
       "association": "Asociación",
       "operations": "Supervisión",
       "platform": "Plataforma",
-      "regulatory": "Normativa"
+      "regulatory": "Normativa",
+      "meetings": "Calendario y reuniones",
+      "leads": "Clientes potenciales",
+      "contacts": "Contactos"
     },
     "mode": {
       "label": "Cómo funciona",
@@ -1175,6 +1178,132 @@
       "next3": "Sus datos en REOS se actualizan automáticamente",
       "signIn": "Iniciar sesión en {{tool}}",
       "working": "Esta conexión ya funciona de nuevo."
+    }
+  },
+  "catalogue": {
+    "title": "Catálogo de integraciones",
+    "description": "Todas las herramientas que pueden conectar agentes, brókers y proveedores · estado, disponibilidad y funcionamiento",
+    "demandAction": "Demanda de «Avisarme»",
+    "tabs": {
+      "label": "Filtrar por estado",
+      "all": "Todas",
+      "platform": "Servicios de la plataforma"
+    },
+    "statuses": {
+      "enabled": "Activada",
+      "beta": "Beta",
+      "coming_soon": "Próximamente",
+      "paused": "En pausa",
+      "retired": "Retirada"
+    },
+    "peopleStatuses": {
+      "enabled": "Disponible",
+      "beta": "Beta",
+      "coming_soon": "Próximamente",
+      "paused": "No disponible por ahora",
+      "retired": "Se retira"
+    },
+    "columns": {
+      "integration": "Integración",
+      "category": "Categoría",
+      "status": "Estado",
+      "states": "Estados",
+      "roles": "Roles",
+      "plans": "Planes",
+      "connected": "Conectadas",
+      "health": "Funcionamiento",
+      "demand": "Demanda"
+    },
+    "all": "Todos",
+    "allPlans": "Todos los planes",
+    "none": "—",
+    "taps_one": "{{count}} toque",
+    "taps_other": "{{count}} toques",
+    "health": {
+      "healthy": "Funciona bien",
+      "paused": "En pausa por las revisiones",
+      "demo": "Datos de demostración",
+      "off": "Apagada",
+      "test": "Cuenta de prueba"
+    },
+    "definitions": "Estados: Activada, Beta (organizaciones elegidas), Próximamente (con «Avisarme»), En pausa (interruptor de emergencia; las personas ven «No disponible por ahora»), Retirada (con fecha y aviso). Las organizaciones pueden ocultar una herramienta activada, nunca activarla.",
+    "detailTabs": {
+      "label": "Secciones de la integración",
+      "availability": "Disponibilidad",
+      "credentials": "Credenciales",
+      "health": "Funcionamiento",
+      "changelog": "Historial de cambios"
+    },
+    "pause": "Pausar (interruptor de emergencia)",
+    "resume": "Reanudar",
+    "save": "Guardar",
+    "saved": "Se guardó {{name}}.",
+    "pausedToast": "{{name}} está en pausa. Las personas ven «No disponible por ahora».",
+    "resumedToast": "{{name}} está activa de nuevo.",
+    "rules": {
+      "title": "Reglas de disponibilidad",
+      "status": "Estado",
+      "statusDefault": "Según lo previsto ({{status}})",
+      "retiresOn": "Último día",
+      "states": "Estados",
+      "roles": "Roles",
+      "plans": "Planes",
+      "plansLater": "Las reglas por plan llegan con Planes y precios. Hasta entonces, todos los planes pueden usarla.",
+      "betaOrganisations": "Organizaciones en beta",
+      "everyone": "Todos",
+      "only": "Solo estos",
+      "tenantsMayHide": "Las organizaciones pueden ocultar esta herramienta",
+      "tenantsMayRequire": "Las organizaciones pueden exigirla a sus agentes",
+      "showComingSoon": "Mostrar en la app como «próximamente» antes del lanzamiento",
+      "notBuilt": "El conector de esta herramienta aún no está listo, así que las personas ven «Próximamente», sea cual sea el estado."
+    },
+    "healthTab": {
+      "title": "Conexiones",
+      "connected": "Cuentas conectadas",
+      "reconnect": "Por volver a conectar",
+      "failing": "Con fallas",
+      "success": "Sincronizaciones correctas, 7 días",
+      "noRuns": "Aún no hay sincronizaciones",
+      "autoPause": "Las revisiones pausan la herramienta después de 3 fallas seguidas, y se avisa por correo a los superadministradores."
+    },
+    "demand": {
+      "title": "Demanda de «Avisarme»",
+      "description": "Las herramientas que más se piden, y las que las personas solicitaron",
+      "notify": "Avisarme",
+      "beta": "Unirme a la beta",
+      "tool": "Herramienta",
+      "requests": "Herramientas solicitadas",
+      "requestsEmpty": "Aún no hay solicitudes",
+      "toolsEmpty": "Aún no hay toques",
+      "back": "Catálogo de integraciones",
+      "toolsEmptyBody": "Cuando las personas tocan «Avisarme» o «Unirme a la beta» en una herramienta, se cuenta aquí.",
+      "requestsEmptyBody": "Cuando alguien toca «Mi herramienta no aparece», su solicitud aparece aquí."
+    },
+    "errors": {
+      "noInterest": "No es posible seguir esta herramienta."
+    },
+    "summary": {
+      "title": "Credenciales y funcionamiento",
+      "auth": "Inicio de sesión",
+      "auths": {
+        "oauth2": "OAuth · app de socio de REOS",
+        "api_key": "Clave de API",
+        "aws": "Claves de AWS",
+        "none": "No necesita claves"
+      },
+      "accounts": "De quién es la cuenta",
+      "accountTypes": {
+        "user": "De cada persona",
+        "tenant": "De la organización",
+        "platform": "De REOS"
+      },
+      "runsOn": "Funciona con",
+      "sync": "Sincronización",
+      "syncBuilt": "Webhooks + cada 15 min",
+      "notBuilt": "Conector aún no listo",
+      "rateLimit": "Límite de uso",
+      "perMinute_one": "{{count}} por minuto · cola equitativa",
+      "perMinute_other": "{{count}} por minuto · cola equitativa"
     }
   }
 }

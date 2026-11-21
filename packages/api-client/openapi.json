@@ -111,6 +111,198 @@
                 "security": []
             }
         },
+        "/catalogue": {
+            "get": {
+                "operationId": "catalogue.index",
+                "description": "The tools you may see, with what you can do with each. A status change\nin the back office shows here at once, with no app release.",
+                "summary": "List the catalogue",
+                "tags": [
+                    "Catalogue"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `CatalogueItemResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CatalogueItemResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/catalogue/{tool}/interest": {
+            "post": {
+                "operationId": "catalogue.interest",
+                "description": "Counted as demand for the tool, so the most wanted are built first.",
+                "summary": "Notify me / Join beta",
+                "tags": [
+                    "Catalogue"
+                ],
+                "parameters": [
+                    {
+                        "name": "tool",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "const": 204
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "catalogue.forget",
+                "summary": "Undo \"Notify me\" or \"Join beta\"",
+                "tags": [
+                    "Catalogue"
+                ],
+                "parameters": [
+                    {
+                        "name": "tool",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/tool-requests": {
+            "post": {
+                "operationId": "tool-requests.store",
+                "summary": "My tool isn't listed",
+                "tags": [
+                    "Catalogue"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ToolRequestRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "const": 201
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/connections": {
             "get": {
                 "operationId": "connections.index",
@@ -1128,6 +1320,80 @@
                 ],
                 "title": "AppConfigResource"
             },
+            "CatalogueItemResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "The tool's register id, for example `follow-up-boss`."
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "purpose": {
+                        "type": "string"
+                    },
+                    "group": {
+                        "description": "The library tab: `crm`, `deals`, `calendar`, `leads` or `more`.",
+                        "$ref": "#/components/schemas/LibraryGroup"
+                    },
+                    "status": {
+                        "description": "`enabled`, `beta`, `coming_soon`, `paused` (temporarily unavailable) or `retired`.\n| |\n|---|\n| `enabled` <br/> Connect / Manage. |\n| `beta` <br/> Selected organisations connect; others can ask to join. |\n| `coming_soon` <br/> Shown with \"Notify me\"; taps are counted to prioritise the build. |\n| `paused` <br/> Kill switch: \"Temporarily unavailable\". Data is kept; syncing stops. |\n| `retired` <br/> Shown with its end date, then removed. |",
+                        "$ref": "#/components/schemas/CatalogueStatus"
+                    },
+                    "action": {
+                        "type": "string",
+                        "description": "What this person can do: `connect`, `join_beta`, `notify` or `none`.",
+                        "enum": [
+                            "connect",
+                            "join_beta",
+                            "notify",
+                            "none"
+                        ]
+                    },
+                    "interested": {
+                        "type": "boolean",
+                        "description": "They tapped \"Notify me\" or \"Join beta\"."
+                    },
+                    "retires_on": {
+                        "type": "string",
+                        "description": "Retired tools: the last day they work (YYYY-MM-DD)."
+                    },
+                    "connected": {
+                        "type": "integer",
+                        "description": "How many accounts of theirs are connected."
+                    },
+                    "accounts": {
+                        "type": "string",
+                        "description": "`user` (their own account) or `tenant` (their organisation's)."
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "purpose",
+                    "group",
+                    "status",
+                    "action",
+                    "interested",
+                    "retires_on",
+                    "connected",
+                    "accounts"
+                ],
+                "title": "CatalogueItemResource"
+            },
+            "CatalogueStatus": {
+                "type": "string",
+                "description": "What people see for a tool (web journey screen 64): the register's `launch` value until the super admin changes it.\n| |\n|---|\n| `enabled` <br/> Connect / Manage. |\n| `beta` <br/> Selected organisations connect; others can ask to join. |\n| `coming_soon` <br/> Shown with \"Notify me\"; taps are counted to prioritise the build. |\n| `paused` <br/> Kill switch: \"Temporarily unavailable\". Data is kept; syncing stops. |\n| `retired` <br/> Shown with its end date, then removed. |",
+                "enum": [
+                    "enabled",
+                    "beta",
+                    "coming_soon",
+                    "paused",
+                    "retired"
+                ],
+                "title": "CatalogueStatus"
+            },
             "ConnectionResource": {
                 "type": "object",
                 "properties": {
@@ -1446,6 +1712,18 @@
                     "device"
                 ],
                 "title": "IdentitySignInRequest"
+            },
+            "LibraryGroup": {
+                "type": "string",
+                "description": "The tabs of the Connections library (Connections and Sync journey, screens 2\u20134).\n",
+                "enum": [
+                    "crm",
+                    "deals",
+                    "calendar",
+                    "leads",
+                    "more"
+                ],
+                "title": "LibraryGroup"
             },
             "Locale": {
                 "type": "string",
@@ -2125,6 +2403,30 @@
                     "not_planned"
                 ],
                 "title": "StateStatus"
+            },
+            "ToolRequestRequest": {
+                "type": "object",
+                "description": "\"My tool isn't listed\".",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The tool's name, as the person knows it.",
+                        "minLength": 2,
+                        "maxLength": 120
+                    },
+                    "note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "What they use it for (optional).",
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "ToolRequestRequest"
             },
             "WaitlistRequest": {
                 "type": "object",

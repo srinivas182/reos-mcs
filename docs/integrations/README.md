@@ -2,7 +2,7 @@
 
 # Integrations register
 
-Every integration, platform service, vendor account and outside approval REOS needs for the Texas pilot on **14 Sep 2027**, with who owns it, how we get access, and when it must be filed. Source: [`register.yaml`](register.yaml) (schema: [`register.schema.json`](register.schema.json)). Updated 20 Nov 2026.
+Every integration, platform service, vendor account and outside approval REOS needs for the Texas pilot on **14 Sep 2027**, with who owns it, how we get access, and when it must be filed. Source: [`register.yaml`](register.yaml) (schema: [`register.schema.json`](register.schema.json)). Updated 21 Nov 2026.
 
 Credentials rules: [credentials policy](credentials-policy.md). Lead times are planning estimates until the vendor confirms.
 
@@ -10,15 +10,15 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 
 |  | Count |
 | --- | --- |
-| Integrations users connect (catalogue) | 30 (29 enabled, 1 beta, 0 coming soon at the pilot) |
+| Integrations users connect (catalogue) | 44 (29 enabled, 1 beta, 14 coming soon at the pilot) |
 | Platform services REOS runs on | 16 |
 | Vendor accounts | 7 |
 | Outside approvals | 2 |
 | Access approved | 1 |
 | Filed and waiting | 0 |
 | Blocked | 0 |
-| Not started | 53 |
-| Already past their apply-by date on 20 Nov 2026 | **1** |
+| Not started | 63 |
+| Already past their apply-by date on 21 Nov 2026 | **1** |
 
 ## Action list: file in this order
 
@@ -42,6 +42,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 18 Dec 2026 † | [TREC CE completion reporting](#trec-ce-reporting) | Nelle | Agreement | 6 wk | S11 (26 Apr 2027) | Not started |
 | 18 Dec 2026 † | [Texas REALTORS® single sign-on and member data (NRDS)](#texas-realtors-membership) | Client | Agreement | 16 wk | S18 (2 Aug 2027) | Not started |
 | 18 Dec 2026 † | [TREC approval of REOS-delivered courses](#trec-course-approvals) | Nelle | Agreement | 16 wk | S19 (16 Aug 2027) | Not started |
+| 21 Dec 2026 | [Zoom](#zoom) | Client + Mayura | Vendor review | 4 wk | S4 (18 Jan 2027) | Not started |
 | 28 Dec 2026 | [Sign in with Google](#google-sign-in) | Client + Mayura | Self-serve | 1 wk | S3 (4 Jan 2027) | Not started |
 | 28 Dec 2026 | [Twilio Verify (phone sign-in codes)](#twilio-verify) | Client | Self-serve | 1 wk | S3 (4 Jan 2027) | Not started |
 | 28 Dec 2026 | [Microsoft 365 (Outlook calendar and mail)](#microsoft-365) | Client + Mayura | Vendor review | 3 wk | S4 (18 Jan 2027) | Not started |
@@ -55,11 +56,17 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 18 Jan 2027 | [Twilio SMS](#twilio-sms) | Client | Vendor review | 4 wk | S6 (15 Feb 2027) | Not started |
 | 25 Jan 2027 | [Mux Video](#mux) | Mayura | Self-serve | 1 wk | S5 (1 Feb 2027) | Not started |
 | 25 Jan 2027 | [Stripe (Checkout, Billing, Tax)](#stripe) | Client | Self-serve | 1 wk | S5 (1 Feb 2027) | Not started |
+| 1 Feb 2027 | [BrokerBay](#brokerbay) | Client + Mayura | Partner application | 8 wk | S9 (29 Mar 2027) | Not started |
+| 1 Feb 2027 | [ShowingTime](#showingtime) | Client + Mayura | Partner application | 8 wk | S9 (29 Mar 2027) | Not started |
 | 8 Feb 2027 | [Amazon SES (email)](#amazon-ses) | Client | Vendor review | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [AWS organisation](#aws-organisation) | Client | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [Expo push notifications (APNs, FCM)](#expo-push) | Mayura | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [LiveKit Cloud](#livekit) | Mayura | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [Synthesia (AI avatar lessons; HeyGen fallback)](#synthesia) | Client | Agreement | 3 wk | S7 (1 Mar 2027) | Not started |
+| 15 Feb 2027 | [BoldTrail BackOffice](#boldtrail-backoffice) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
+| 15 Feb 2027 | [ListedKit](#listedkit) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
+| 15 Feb 2027 | [Open to Close](#open-to-close) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
+| 15 Feb 2027 | [Paperless Pipeline](#paperless-pipeline) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
 | 22 Feb 2027 | [Claude on Amazon Bedrock](#aws-bedrock-claude) | Client | Self-serve | 1 wk | S7 (1 Mar 2027) | Not started |
 | 1 Mar 2027 | [LinkedIn](#linkedin) | Client + Mayura | Partner application | 8 wk | S11 (26 Apr 2027) | Not started |
 | 15 Mar 2027 | [NMLS Consumer Access](#nmls-lookup) | Mayura | Agreement | 4 wk | S10 (12 Apr 2027) | Not started |
@@ -68,6 +75,9 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 15 Mar 2027 | [YouTube](#youtube) | Client + Mayura | OAuth verification | 6 wk | S11 (26 Apr 2027) | Not started |
 | 29 Mar 2027 | [Texas Department of Insurance licence lookup](#tdi-lookup) | Mayura | Self-serve | 2 wk | S10 (12 Apr 2027) | Not started |
 | 29 Mar 2027 | [Google Business Profile](#google-business-profile) | Client + Mayura | Partner application | 4 wk | S11 (26 Apr 2027) | Not started |
+| 29 Mar 2027 | [Homes.com leads](#homes-com-leads) | Client + Mayura | Partner application | 10 wk | S14 (7 Jun 2027) | Not started |
+| 29 Mar 2027 | [Realtor.com leads](#realtor-com-leads) | Client + Mayura | Partner application | 10 wk | S14 (7 Jun 2027) | Not started |
+| 29 Mar 2027 | [Zillow leads](#zillow-leads) | Client + Mayura | Partner application | 10 wk | S14 (7 Jun 2027) | Not started |
 | 5 Apr 2027 | [Amazon Textract](#aws-textract) | Client | Self-serve | 1 wk | S10 (12 Apr 2027) | Not started |
 | 5 Apr 2027 | [TREC licence lookup](#trec-licence) | Mayura | Self-serve | 1 wk | S10 (12 Apr 2027) | Not started |
 | 10 May 2027 | [RESPA counsel review](#respa-review) | Client | Agreement | 6 wk | S15 (21 Jun 2027) | Not started |
@@ -90,6 +100,17 @@ What users see in **Connections** on day one. Every row is also a back-office ca
 | --- | --- | --- | --- | --- | --- |
 | [Google Calendar and Gmail](#google-workspace) | Enabled | B4.1 · S4 | REOS app keys | Yes | Not started |
 | [Microsoft 365 (Outlook calendar and mail)](#microsoft-365) | Enabled | B4.2 · S4 | REOS app keys | Yes | Not started |
+| [Apple Calendar (iCloud)](#apple-calendar) | Coming soon | B4.1 · S4 | None | Yes | Not needed |
+
+### Calendar and meetings
+
+| Integration | Pilot status | Built in | Connects with | Personal data | Access |
+| --- | --- | --- | --- | --- | --- |
+| [Zoom](#zoom) | Coming soon | B4.2 · S4 | REOS app keys | Yes | Not started |
+| [Microsoft Teams meetings](#microsoft-teams) | Coming soon | B4.2 · S4 | None | Yes | Not needed |
+| [Google Meet](#google-meet) | Coming soon | B4.2 · S4 | None | Yes | Not needed |
+| [ShowingTime](#showingtime) | Coming soon | B9.2 · S9 | REOS app keys | Yes | Not started |
+| [BrokerBay](#brokerbay) | Coming soon | B9.2 · S9 | REOS app keys | Yes | Not started |
 
 ### Payments
 
@@ -116,12 +137,30 @@ What users see in **Connections** on day one. Every row is also a back-office ca
 | [Lone Wolf Transactions](#lone-wolf) | Enabled | B9.1 · S9 | REOS or customer | Yes | Not started |
 | [dotloop](#dotloop) | Enabled | B9.2 · S9 | Customer's own account | Yes | Not started |
 | [SkySlope](#skyslope) | Enabled | B9.2 · S9 | Customer's own account | Yes | Not started |
+| [Open to Close](#open-to-close) | Coming soon | B9.1 · S9 | Customer's own account | Yes | Not started |
+| [Paperless Pipeline](#paperless-pipeline) | Coming soon | B9.1 · S9 | Customer's own account | Yes | Not started |
+| [ListedKit](#listedkit) | Coming soon | B9.1 · S9 | Customer's own account | Yes | Not started |
+| [BoldTrail BackOffice](#boldtrail-backoffice) | Coming soon | B9.1 · S9 | Customer's own account | Yes | Not started |
 
 ### E-signature
 
 | Integration | Pilot status | Built in | Connects with | Personal data | Access |
 | --- | --- | --- | --- | --- | --- |
 | [DocuSign](#docusign) | Enabled | B9.3 · S9 | Customer's own account | Yes | Not started |
+
+### Leads
+
+| Integration | Pilot status | Built in | Connects with | Personal data | Access |
+| --- | --- | --- | --- | --- | --- |
+| [Zillow leads](#zillow-leads) | Coming soon | B14.1 · S14 | REOS app keys | Yes | Not started |
+| [Realtor.com leads](#realtor-com-leads) | Coming soon | B14.1 · S14 | REOS app keys | Yes | Not started |
+| [Homes.com leads](#homes-com-leads) | Coming soon | B14.1 · S14 | REOS app keys | Yes | Not started |
+
+### Contacts
+
+| Integration | Pilot status | Built in | Connects with | Personal data | Access |
+| --- | --- | --- | --- | --- | --- |
+| [Phone contacts](#phone-contacts) | Coming soon | B7.1 · S7 | None | Yes | Not needed |
 
 ### MLS data
 
@@ -285,6 +324,92 @@ Two-way Outlook calendar and mail.
 - **Cost:** Free API.
 - **Notes:** Microsoft Entra multi-tenant app with publisher verification (needs a Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting.
 - **Sources:** [1](https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview)
+
+### Apple Calendar (iCloud)
+<a id="apple-calendar"></a>
+
+**Integration** · Calendar and email · built in B4.1 (sprint 4) · pilot status **Coming soon**
+
+Read events from iCloud calendars.
+
+- **Owner:** Client + Mayura
+- **Access:** Self-serve, about 0 weeks; needed by S4 (18 Jan 2027); apply by 18 Jan 2027. Status: Not needed.
+- **Sandbox:** Any Apple ID with an app-specific password.
+- **Credentials:** None · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Free.
+- **Notes:** iCloud has no OAuth calendar API: people connect with CalDAV and an app-specific password, so REOS holds no platform keys. Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+### Zoom
+<a id="zoom"></a>
+
+**Integration** · Calendar and meetings · built in B4.2 (sprint 4) · pilot status **Coming soon**
+
+Meeting links for showings, sessions and client calls.
+
+- **Owner:** Client + Mayura
+- **Access:** Vendor review, about 4 weeks; needed by S4 (18 Jan 2027); apply by 21 Dec 2026. Status: Not started.
+- **Sandbox:** Zoom Marketplace development app; any Zoom account until published.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Free API; publishing needs Zoom Marketplace review.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+### Microsoft Teams meetings
+<a id="microsoft-teams"></a>
+
+**Integration** · Calendar and meetings · built in B4.2 (sprint 4) · pilot status **Coming soon**
+
+Teams meeting links on REOS events.
+
+- **Owner:** Client + Mayura
+- **Access:** Self-serve, about 0 weeks; needed by S4 (18 Jan 2027); apply by 18 Jan 2027. Status: Not needed.
+- **Sandbox:** Uses the Microsoft 365 connection.
+- **Credentials:** None · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Included with Microsoft 365.
+- **Notes:** Created through the Microsoft 365 (Graph) connection, so it has no keys of its own.
+
+### Google Meet
+<a id="google-meet"></a>
+
+**Integration** · Calendar and meetings · built in B4.2 (sprint 4) · pilot status **Coming soon**
+
+Google Meet links on REOS events.
+
+- **Owner:** Client + Mayura
+- **Access:** Self-serve, about 0 weeks; needed by S4 (18 Jan 2027); apply by 18 Jan 2027. Status: Not needed.
+- **Sandbox:** Uses the Google Calendar and Gmail connection.
+- **Credentials:** None · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Included with Google accounts.
+- **Notes:** Created through the Google Calendar connection (conference data), so it has no keys of its own.
+
+### ShowingTime
+<a id="showingtime"></a>
+
+**Integration** · Calendar and meetings · built in B9.2 (sprint 9) · pilot status **Coming soon**
+
+Showing requests and confirmations on the REOS calendar.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 8 weeks; needed by S9 (29 Mar 2027); apply by 1 Feb 2027. Status: Not started.
+- **Sandbox:** Partner sandbox on approval.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** Showing confirmation emails forwarded to REOS.
+
+### BrokerBay
+<a id="brokerbay"></a>
+
+**Integration** · Calendar and meetings · built in B9.2 (sprint 9) · pilot status **Coming soon**
+
+Showing and appointment bookings on the REOS calendar.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 8 weeks; needed by S9 (29 Mar 2027); apply by 1 Feb 2027. Status: Not started.
+- **Sandbox:** Partner sandbox on approval.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** Booking emails forwarded to REOS.
 
 ### Amazon Transcribe and Polly (speech)
 <a id="aws-speech"></a>
@@ -561,6 +686,66 @@ Files, documents and deadlines.
 - **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Partner terms on application.
 
+### Open to Close
+<a id="open-to-close"></a>
+
+**Integration** · Transactions · built in B9.1 (sprint 9) · pilot status **Coming soon**
+
+Transaction coordination: deals, tasks and deadlines.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 6 weeks; needed by S9 (29 Mar 2027); apply by 15 Feb 2027. Status: Not started.
+- **Sandbox:** Partner sandbox on approval.
+- **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** CSV export.
+
+### Paperless Pipeline
+<a id="paperless-pipeline"></a>
+
+**Integration** · Transactions · built in B9.1 (sprint 9) · pilot status **Coming soon**
+
+Brokerage transactions, documents and checklists.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 6 weeks; needed by S9 (29 Mar 2027); apply by 15 Feb 2027. Status: Not started.
+- **Sandbox:** Partner sandbox on approval.
+- **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** CSV export.
+
+### ListedKit
+<a id="listedkit"></a>
+
+**Integration** · Transactions · built in B9.1 (sprint 9) · pilot status **Coming soon**
+
+AI transaction coordinator: deals and deadlines.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 6 weeks; needed by S9 (29 Mar 2027); apply by 15 Feb 2027. Status: Not started.
+- **Sandbox:** Partner sandbox on approval.
+- **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** Deadline emails forwarded to REOS.
+
+### BoldTrail BackOffice
+<a id="boldtrail-backoffice"></a>
+
+**Integration** · Transactions · built in B9.1 (sprint 9) · pilot status **Coming soon**
+
+Brokerage back office: deals, commissions and agent billing.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 6 weeks; needed by S9 (29 Mar 2027); apply by 15 Feb 2027. Status: Not started.
+- **Sandbox:** Partner sandbox on approval.
+- **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Formerly Brokermint. Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** CSV export.
+
 ### DocuSign
 <a id="docusign"></a>
 
@@ -574,6 +759,65 @@ Send, track and store signatures from REOS.
 - **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Free to integrate; signers use the customer's DocuSign plan.
 - **Notes:** Production go-live review after enough successful calls in the demo environment.
+
+### Zillow leads
+<a id="zillow-leads"></a>
+
+**Integration** · Leads · built in B14.1 (sprint 14) · pilot status **Coming soon**
+
+New Zillow Premier Agent leads, sent to the default CRM.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 10 weeks; needed by S14 (7 Jun 2027); apply by 29 Mar 2027. Status: Not started.
+- **Sandbox:** Zillow partner test account on approval.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** Lead emails forwarded to REOS.
+
+### Realtor.com leads
+<a id="realtor-com-leads"></a>
+
+**Integration** · Leads · built in B14.1 (sprint 14) · pilot status **Coming soon**
+
+New Realtor.com leads, sent to the default CRM.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 10 weeks; needed by S14 (7 Jun 2027); apply by 29 Mar 2027. Status: Not started.
+- **Sandbox:** Partner test account on approval.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** Lead emails forwarded to REOS.
+
+### Homes.com leads
+<a id="homes-com-leads"></a>
+
+**Integration** · Leads · built in B14.1 (sprint 14) · pilot status **Coming soon**
+
+New Homes.com leads, sent to the default CRM.
+
+- **Owner:** Client + Mayura
+- **Access:** Partner application, about 10 weeks; needed by S14 (7 Jun 2027); apply by 29 Mar 2027. Status: Not started.
+- **Sandbox:** Partner test account on approval.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Partner terms on application.
+- **Notes:** Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+- **Fallback:** Lead emails forwarded to REOS.
+
+### Phone contacts
+<a id="phone-contacts"></a>
+
+**Integration** · Contacts · built in B7.1 (sprint 7) · pilot status **Coming soon**
+
+Names, numbers and emails from the phone, so a new agent starts with a contact list.
+
+- **Owner:** Client + Mayura
+- **Access:** Self-serve, about 0 weeks; needed by S7 (1 Mar 2027); apply by 1 Mar 2027. Status: Not needed.
+- **Sandbox:** The phone's own contacts permission.
+- **Credentials:** None · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** Free.
+- **Notes:** Read on the phone with the person's permission; nothing to set up in Settings › Integrations.
 
 ### HAR MLS (Houston)
 <a id="mls-har"></a>

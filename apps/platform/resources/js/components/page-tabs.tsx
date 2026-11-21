@@ -6,17 +6,21 @@ import { cn, toUrl } from '@/lib/utils';
 export type PageTab = {
     title: string;
     href: NonNullable<InertiaLinkProps['href']>;
+    /** Only this exact address (a tool's first tab, whose sub-pages are its siblings). */
+    exact?: boolean;
 };
 
 /** The journey's underlined tabs under a page title (Settings, a tool's detail…). */
 export function PageTabs({ tabs, label }: { tabs: PageTab[]; label: string }) {
-    const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { isCurrentUrl, isCurrentOrParentUrl } = useCurrentUrl();
 
     return (
         <nav aria-label={label} className="border-b border-border">
             <ul className="-mb-px flex gap-2 overflow-x-auto">
                 {tabs.map((tab) => {
-                    const active = isCurrentOrParentUrl(tab.href);
+                    const active = tab.exact
+                        ? isCurrentUrl(tab.href)
+                        : isCurrentOrParentUrl(tab.href);
 
                     return (
                         <li key={toUrl(tab.href)}>

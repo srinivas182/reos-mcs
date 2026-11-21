@@ -47,3 +47,7 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Connect / Reconnect (a tool) | Conectar / Volver a conectar | |
 | Sync | Sincronizar, sincronización | |
 | Simulator (demo data) | Simulador | |
+| Lead (sales) | Cliente potencial | Not "lead" or "prospecto" on screen |
+| Notify me | Avisarme | |
+| Kill switch | Interruptor de emergencia | |
+| Beta | Beta | |

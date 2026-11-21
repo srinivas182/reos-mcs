@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\CatalogueController;
+use App\Http\Controllers\Admin\DemandController;
 use App\Http\Controllers\Admin\IntegrationCheckController;
 use App\Http\Controllers\Admin\IntegrationController;
 use App\Http\Controllers\Admin\IntegrationCredentialController;
@@ -23,12 +25,17 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:integrati
     ->name('integrations.')
     ->group(function () {
         Route::get('/', [IntegrationController::class, 'index'])->name('index');
+        // Catalogue (B3.2, screens 64–65): demand, then each tool's tabs.
+        Route::get('demand', DemandController::class)->name('demand');
         Route::get('{integration}', [IntegrationController::class, 'show'])->name('show');
+        Route::get('{integration}/{tab}', [IntegrationController::class, 'show'])->whereIn('tab', ['credentials', 'health', 'changelog'])->name('tab');
 
         Route::middleware('throttle:30,1')->group(function () {
             Route::put('{integration}/keys/{environment}', [IntegrationCredentialController::class, 'update'])->name('keys.update')->whereIn('environment', ['sandbox', 'live']);
             Route::delete('{integration}/keys/{environment}', [IntegrationCredentialController::class, 'destroy'])->name('keys.destroy')->whereIn('environment', ['sandbox', 'live']);
             Route::patch('{integration}/mode', [IntegrationModeController::class, 'update'])->name('mode.update');
+            Route::put('{integration}/catalogue', [CatalogueController::class, 'update'])->name('catalogue.update');
+            Route::put('{integration}/pause', [CatalogueController::class, 'pause'])->name('pause');
         });
 
         // Each test calls the vendor, so it has its own, lower limit.

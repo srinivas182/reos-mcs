@@ -38,7 +38,7 @@ const LABELS = {
     identity: 'Sign-in', calendar_email: 'Calendar and email', voice: 'Voice', payments: 'Payments', notifications: 'Notifications', video: 'Video',
     ai: 'AI', crm: 'CRM', transactions: 'Transactions', esignature: 'E-signature', mls: 'MLS data', lookups: 'Lookups and reporting',
     social: 'Social', maps: 'Maps', accounting: 'Accounting', association: 'Association', operations: 'Operations',
-    platform: 'Platform', regulatory: 'Regulatory',
+    platform: 'Platform', regulatory: 'Regulatory', meetings: 'Calendar and meetings', leads: 'Leads', contacts: 'Contacts',
   },
   launch: { enabled: 'Enabled', beta: 'Beta', coming_soon: 'Coming soon', not_applicable: '—' },
   owner: { client: 'Client', mayura: 'Mayura', client_with_mayura: 'Client + Mayura', nelle: 'Nelle', tenant: 'Tenant' },

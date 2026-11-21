@@ -8,6 +8,7 @@ use App\Connections\HistoryRange;
 use App\Http\Controllers\Controller;
 use App\Models\OAuthAuthorization;
 use App\Models\User;
+use App\Services\Catalogue\IntegrationCatalogue;
 use App\Services\Connections\ConnectionAuthorizer;
 use App\Services\Connections\Connections;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -19,11 +20,11 @@ use Symfony\Component\HttpFoundation\Response;
 /** "Connect Google Calendar" on the website: off to the tool's sign-in. */
 final class ConnectController extends Controller
 {
-    public function __invoke(Request $request, string $tool, #[CurrentUser] User $user, Connections $connections, ConnectionAuthorizer $authorizer): RedirectResponse|Response
+    public function __invoke(Request $request, string $tool, #[CurrentUser] User $user, Connections $connections, ConnectionAuthorizer $authorizer, IntegrationCatalogue $catalogue): RedirectResponse|Response
     {
         $owner = $connections->ownerFor($user, $tool);
 
-        if (! $connections->available($tool) || $owner === null) {
+        if (! $catalogue->canConnect($user, $tool) || $owner === null) {
             Inertia::flash('toast', ['type' => 'error', 'message' => __('connections.errors.unavailable')]);
 
             return to_route('dashboard')->with('connection', ['outcome' => ConnectionAuthorizer::OUTCOME_FAILED, 'integration' => $tool, 'reason' => 'connections.errors.unavailable', 'name' => $tool]);
