@@ -11,7 +11,6 @@ use App\Models\Todo;
 use App\Models\User;
 use App\Services\Todos\Todos;
 use Illuminate\Container\Attributes\CurrentUser;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -40,12 +39,15 @@ final class TodoController extends Controller
      *
      * Send the phone's own `client_id`: sending the same one again returns
      * the to-do already saved (200) instead of adding another (201).
+     *
+     * @status 201
      */
-    public function store(SaveTodoRequest $request, #[CurrentUser] User $user, Todos $todos): JsonResponse
+    public function store(SaveTodoRequest $request, #[CurrentUser] User $user, Todos $todos): TodoResource
     {
-        [$todo, $created] = $todos->create($user, $request->values(), $request->clientId());
+        // A new model answers 201 and one already saved 200 (Laravel reads `wasRecentlyCreated`).
+        [$todo] = $todos->create($user, $request->values(), $request->clientId());
 
-        return (new TodoResource($todo))->response()->setStatusCode($created ? 201 : 200);
+        return new TodoResource($todo);
     }
 
     /** Change a to-do. */

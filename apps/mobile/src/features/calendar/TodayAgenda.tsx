@@ -39,6 +39,9 @@ export function TodayAgenda() {
     return null;
   }
 
+  // To-dos due today are listed under To-dos, with Done; not twice.
+  const events = today.data.filter((event) => event.kind !== 'todo');
+
   const bringBack = async (conflict: number) => {
     const { response } = await api().POST('/calendar/conflicts/{conflict}/undo', { params: { path: { conflict } } });
 
@@ -63,13 +66,13 @@ export function TodayAgenda() {
           action={<Button label={t('calendar.removed.bringBack')} variant="secondary" onPress={() => void bringBack(removed.conflict)} />}
         />
       ))}
-      {today.data.length === 0 ? (
+      {events.length === 0 ? (
         <Card>
           <Text weight="semibold">{t('calendar.empty')}</Text>
           <Text tone="muted">{t('calendar.emptyBody')}</Text>
         </Card>
       ) : (
-        today.data.map((event) => (
+        events.map((event) => (
           <ListRow
             key={event.id}
             icon={event.busy ? Lock : ICONS[event.kind]}

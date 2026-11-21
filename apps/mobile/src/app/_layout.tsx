@@ -10,6 +10,9 @@ import { useUnistyles } from 'react-native-unistyles';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import { deviceLocale, i18n } from '@/lib/i18n';
 import { appConfig, startMonitoring, trackScreen } from '@/lib/monitoring';
+import { useShortcuts } from '@/lib/shortcuts';
+import { useTodoReminderActions } from '@/lib/todoReminders';
+import { useTodoQueueFlush } from '@/lib/todos';
 import { useAuthGate } from '@/lib/useAuthGate';
 import { initPreferences, OfflineBanner, ToastProvider } from '@/ui';
 
@@ -48,6 +51,10 @@ function Navigator() {
   const { status } = useAuth();
 
   useAuthGate();
+  // Voice to-dos (B4.3b): Done and Snooze on reminders, the offline queue, and the "Add a to-do" shortcut.
+  useTodoReminderActions();
+  useTodoQueueFlush();
+  useShortcuts(status === 'signedIn');
 
   useEffect(() => {
     if (status !== 'loading') {

@@ -2695,12 +2695,15 @@ export interface operations {
             };
         };
         responses: {
+            /** @description `TodoResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": string;
+                    "application/json": {
+                        data: components["schemas"]["TodoResource"];
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];

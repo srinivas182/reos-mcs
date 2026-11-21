@@ -22,6 +22,7 @@ export { ProgressBar, ProgressRing } from './Progress';
 export { FeatureTile, IconTile, ListRow, SwitchRow } from './Rows';
 export { Screen } from './Screen';
 export { Sheet, type SheetProps } from './Sheet';
+export { Stepper } from './Stepper';
 export { SyncAlert } from './SyncAlert';
 export { ToolRow } from './ToolRow';
 export { TabBar } from './TabBar';

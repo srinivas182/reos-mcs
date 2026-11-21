@@ -14,9 +14,10 @@ Where REOS keeps personal data, why, and how each right under the Texas Data Pri
 | Calendar events, made in REOS or synced from a connected calendar (title, place, notes, guest emails, times) | `calendar_events` | The REOS calendar, written back to the person's calendar tool (B4.1) | Calendar | Deleted (cascade). Synced events also go when their calendar is disconnected or switched off |
 | Losing versions of calendar events changed in two places | `calendar_conflicts` | Undo for 30 days, so nothing is overwritten silently | Calendar | Deleted (cascade); otherwise after 30 days |
 | Demo calendar data on Simulator connections | `simulator_records` | Demo connections only (no real tool) | — (demo data) | Deleted with the connection |
-| To-dos (title, notes, due and reminder times, the name of the contact it's about) | `todos` | To-dos typed or spoken (B4.3); a due date is also a calendar event | To-dos | Deleted (cascade) |
+| To-dos (title, notes, due and reminder times, the name of the contact it's about) | `todos` (and on the phone until sent, when captured with no signal) | To-dos typed or spoken (B4.3); a due date is also a calendar event | To-dos | Deleted (cascade) |
 | AI credit use (feature, engine, count; never what was said) | `ai_credit_uses` | The monthly AI allowance | AI credit uses | Deleted (cascade) |
-| What was said for a voice to-do | Not stored | Sent to Claude on Amazon Bedrock (no training on it) or read by the built-in parser, then discarded | — | — |
+| What was said for a voice to-do | Not stored | Speech becomes words on the phone (no audio leaves it); the words are sent to Claude on Amazon Bedrock (no training on it) or read by the built-in parser, then discarded | — | — |
+| The phone's address book | Not stored | Searched on the phone for a name said in a to-do; only the chosen contact's id and name are saved with the to-do | — | — |
 | Tool interests and requests | `integration_interests`, `tool_requests` | Catalogue demand | Tool interests and requests | Deleted (cascade) |
 | Invitations sent to them | `invitations` (email or phone) | Joining a tenant | — (the tenant's record) | Expire after 14 days |
 | Privacy requests | `privacy_requests` | TDPSA duties | Privacy requests | Kept as a record without name, email or details |

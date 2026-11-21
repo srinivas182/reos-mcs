@@ -45,7 +45,24 @@
           "faceIDPermission": "REOS uses Face ID so you can open the app quickly and securely. Your face data stays on your phone."
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "REOS uses the microphone when you hold the mic to add a to-do. What you say is turned into words on your phone when it can be.",
+          "speechRecognitionPermission": "REOS turns what you say into a to-do. Nothing is saved until you check it and tap Save.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "REOS looks up a name you say (\"call Maria\") in your contacts so the to-do can link to them. Your contacts stay on your phone."
+        }
+      ],
+      "expo-quick-actions"
     ],
     "experiments": {
       "typedRoutes": true,
