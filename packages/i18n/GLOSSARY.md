@@ -24,18 +24,18 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Add | Agregar | Not "añadir" |
 | Remove | Quitar | Delete (permanent) is "Eliminar" |
 | Role | Rol | |
-| Organisation | Organización | |
+| Organization | Organización | |
 | Brokerage | Agencia inmobiliaria (short: agencia) | |
 | Broker | Bróker | |
 | Licensed agent | Agente con licencia | |
-| Sales agent (licence type) | Agente de ventas | |
+| Sales agent (license type) | Agente de ventas | |
 | Candidate | Candidato | |
 | Mentor, Instructor | Mentor, Instructor | |
 | School admin | Administrador de la escuela | |
 | Association admin | Administrador de la asociación | |
 | Service provider | Proveedor de servicios | |
 | REOS super admin | Superadministrador de REOS | |
-| Licence | Licencia | |
+| License | Licencia | |
 | Continuing education (CE) | Educación continua (CE) | Keep "CE" and "TREC" as in English |
 | Integration | Integración | |
 | Demo data | Datos de demostración | |

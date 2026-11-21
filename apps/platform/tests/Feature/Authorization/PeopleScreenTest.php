@@ -98,7 +98,7 @@ describe('People screen', function () {
         $this->from("/admin/people/{$person->id}")
             ->post("/admin/people/{$person->id}/roles", ['role' => 'broker', 'organisation_id' => $school->id])
             ->assertRedirect("/admin/people/{$person->id}")
-            ->assertSessionHasErrors(['role' => "That role can't be held in this kind of organisation."]);
+            ->assertSessionHasErrors(['role' => "That role can't be held in this kind of organization."]);
 
         $this->post("/admin/people/{$person->id}/roles", ['role' => 'king', 'organisation_id' => 999])
             ->assertSessionHasErrors(['role', 'organisation_id']);

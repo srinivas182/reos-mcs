@@ -32,7 +32,7 @@ describe('GrantRoleForm', () => {
         expect(give).toBeDisabled();
 
         await userEvent.selectOptions(screen.getByLabelText('Role'), 'broker');
-        const organisation = screen.getByLabelText('Organisation');
+        const organisation = screen.getByLabelText('Organization');
         expect(
             screen.queryByRole('option', { name: 'Texas Realty School' }),
         ).toBeNull();
@@ -51,8 +51,8 @@ describe('GrantRoleForm', () => {
         );
 
         expect(
-            screen.getByText("There's no organisation of the right kind yet."),
+            screen.getByText("There's no organization of the right kind yet."),
         ).toBeInTheDocument();
-        expect(screen.getByLabelText('Organisation')).toBeDisabled();
+        expect(screen.getByLabelText('Organization')).toBeDisabled();
     });
 });
