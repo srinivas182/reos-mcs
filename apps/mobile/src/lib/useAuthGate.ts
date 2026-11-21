@@ -19,7 +19,8 @@ export const needsSetup = (user: Me | null): boolean => user !== null && !user.o
  */
 export function useAuthGate(): void {
   const { status, user, landing, clearLanding } = useAuth();
-  const segments = useSegments();
+  // Read as plain strings: the generated route types narrow this tuple.
+  const segments: readonly string[] = useSegments();
   const group = segments[0];
   const screen = segments[1];
   const inAuth = group === '(auth)';
