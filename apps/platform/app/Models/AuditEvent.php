@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Tenancy\BelongsToTenant;
+use App\Tenancy\HasPersonalRows;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +17,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int|null $actor_id
+ * @property int|null $organisation_id The tenant it belongs to; null for platform-wide events
  * @property string $action
  * @property string $subject_type
  * @property string $subject_id
@@ -24,9 +27,11 @@ use Illuminate\Support\Carbon;
  * @property Carbon $created_at
  * @property-read User|null $actor
  */
-#[Fillable(['actor_id', 'action', 'subject_type', 'subject_id', 'properties', 'ip_address', 'user_agent', 'created_at'])]
-final class AuditEvent extends Model
+#[Fillable(['actor_id', 'organisation_id', 'action', 'subject_type', 'subject_id', 'properties', 'ip_address', 'user_agent', 'created_at'])]
+final class AuditEvent extends Model implements HasPersonalRows
 {
+    use BelongsToTenant;
+
     /** Audit events are never updated, so there is no updated_at. */
     public const UPDATED_AT = null;
 

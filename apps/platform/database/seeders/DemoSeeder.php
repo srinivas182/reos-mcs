@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Services\Authorization\Memberships;
 use Database\Seeders\Demo\DemoCatalogue;
 use Database\Seeders\Demo\DemoConnections;
+use Database\Seeders\Demo\DemoTenants;
 use Database\Seeders\Demo\Personas;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -61,6 +62,9 @@ final class DemoSeeder extends Seeder
         app(DemoConnections::class)->seed();
         // "Notify me" demand and a tool request (B3.2).
         app(DemoCatalogue::class)->seed();
+
+        // Tenant details for the Tenants screens (A4.1b).
+        app(DemoTenants::class)->seed();
     }
 
     private function organisation(string $name): Organisation

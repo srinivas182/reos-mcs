@@ -5,14 +5,19 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Http\Middleware\ResolveTenant;
+use App\Models\Organisation;
+use App\Models\User;
 use App\Tenancy\Tenancy;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Console\Events\CommandStarting;
 use Illuminate\Database\Events\ConnectionEstablished;
+use Illuminate\Http\Request;
 use Illuminate\Queue\Events\JobExceptionOccurred;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -21,6 +26,9 @@ use Illuminate\Support\ServiceProvider;
  */
 final class TenancyServiceProvider extends ServiceProvider
 {
+    /** API requests per minute for people without a tenant, per person (or network when signed out). */
+    public const PERSONAL_RATE_LIMIT = 300;
+
     /** @var list<array{0: int|null, 1: bool}> States to restore after each job (the sync queue runs jobs inside a request). */
     private array $beforeJobs = [];
 
@@ -45,6 +53,26 @@ final class TenancyServiceProvider extends ServiceProvider
         // Artisan commands (migrations, seeders, schedulers, workers) are platform work.
         Event::listen(CommandStarting::class, function (): void {
             $this->app->make(Tenancy::class)->enterPlatform();
+        });
+
+        // The API limit is per tenant, from its own settings (screen 60).
+        RateLimiter::for('api', function (Request $request): Limit {
+            $tenancy = $this->app->make(Tenancy::class);
+            $tenant = $tenancy->tenant();
+
+            if ($tenancy->isPlatform()) {
+                return Limit::none();
+            }
+
+            if ($tenant !== null) {
+                $organisation = Organisation::query()->find($tenant);
+
+                return Limit::perMinute($organisation?->tenantLimits()->rateLimit ?? 600)->by('tenant:'.$tenant);
+            }
+
+            $user = $request->user('sanctum');
+
+            return Limit::perMinute(self::PERSONAL_RATE_LIMIT)->by($user instanceof User ? 'user:'.$user->id : 'ip:'.$request->ip());
         });
 
         // Jobs run as whoever queued them.

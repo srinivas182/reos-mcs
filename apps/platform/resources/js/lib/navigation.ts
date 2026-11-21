@@ -1,12 +1,20 @@
 import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
-import { House, Map as MapIcon, Plug, Settings, Users } from 'lucide-react';
+import {
+    Building2,
+    House,
+    Map as MapIcon,
+    Plug,
+    Settings,
+    Users,
+} from 'lucide-react';
 import { dashboard } from '@/routes';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
 import { edit as profile } from '@/routes/profile';
 import { index as states } from '@/routes/states';
+import { index as tenantsIndex } from '@/routes/tenants';
 import type { RoleName } from '@/types/auth';
 
 /** Sidebar labels that exist in the translations (pages that are built). */
@@ -18,6 +26,7 @@ export type NavLabel =
     | 'people'
     | 'integrations'
     | 'states'
+    | 'tenants'
     | 'connections';
 
 export type RoleNavItem = {
@@ -140,7 +149,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         ],
         super_admin: [
             item('overview', House, dashboard()),
-            planned('tenants'),
+            item('tenants', Building2, tenantsIndex()),
             item('people', Users, people()),
             item('states', MapIcon, states()),
             planned('contentAndApprovals'),

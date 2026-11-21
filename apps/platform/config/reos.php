@@ -40,6 +40,14 @@ return [
         'name' => env('REOS_REGION_NAME', 'Texas'),
     ],
 
+    /*
+    | Tenancy (A4.1, ADR 0015): each tenant is reachable at <slug>.<base domain>
+    | until it verifies its own domain (A4.2).
+    */
+    'tenancy' => [
+        'base_domain' => env('REOS_TENANT_BASE_DOMAIN', 'reos.com'),
+    ],
+
     'mobile' => [
         'bundle_id' => env('REOS_MOBILE_BUNDLE_ID', 'com.reos.app'),
         // Where browser sign-in returns to the app (scheme in apps/mobile/app.json).

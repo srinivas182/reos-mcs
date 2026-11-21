@@ -2206,13 +2206,14 @@
             },
             "OrganisationType": {
                 "type": "string",
-                "description": "Kinds of organisation a role can belong to (A3.2). A4.1 adds the full hierarchy, branding and domains.\n| |\n|---|\n| `platform` <br/> REOS itself: super admins, and people who joined on their own. |\n| `brokerage` <br/>  |\n| `school` <br/>  |\n| `association` <br/>  |\n| `provider_business` <br/> A lender, inspector, title company or other service business. |",
+                "description": "Kinds of organisation (tenant) a role can belong to (A3.2, A4.1).\n| |\n|---|\n| `platform` <br/> REOS itself: super admins, and people who joined on their own. |\n| `brokerage` <br/>  |\n| `school` <br/>  |\n| `association` <br/>  |\n| `provider_business` <br/> A lender, inspector, title company or other service business. |\n| `team` <br/> A team inside a brokerage (its parent); it inherits the brokerage's plan. |",
                 "enum": [
                     "platform",
                     "brokerage",
                     "school",
                     "association",
-                    "provider_business"
+                    "provider_business",
+                    "team"
                 ],
                 "title": "OrganisationType"
             },

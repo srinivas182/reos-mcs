@@ -15,7 +15,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Route;
 use Sentry\Laravel\Integration;
 
@@ -50,8 +50,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Tenancy (A4.1, ADR 0015): whose data this request may touch.
         $middleware->api(append: [SetApiLocale::class, ResolveTenant::class]);
         $middleware->alias(['tenancy.platform' => PlatformScope::class]);
-        // Before route model binding, so bound models are already isolated.
-        $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveTenant::class);
+        // Before throttling (the API limit is per tenant) and route model binding (bound models are isolated).
+        $middleware->throttleApi();
+        // ThrottleRequests comes before SubstituteBindings in Laravel's priority list, so this covers both.
+        $middleware->prependToPriorityList(before: ThrottleRequests::class, prepend: ResolveTenant::class);
 
         $middleware->web(append: [
             EnsureAccountActive::class,

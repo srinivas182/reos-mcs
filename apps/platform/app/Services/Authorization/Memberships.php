@@ -10,6 +10,7 @@ use App\Authorization\RoleRefused;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
+use App\Tenancy\TenantStatus;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\PermissionRegistrar;
@@ -29,7 +30,8 @@ final readonly class Memberships
 
     /**
      * Every role the person holds, most responsibility first (Role::rank),
-     * then by organisation name.
+     * then by organisation name. Roles in a suspended or archived tenant
+     * don't count until it's restored (A4.1b).
      *
      * @return list<Membership>
      */
@@ -42,7 +44,11 @@ final readonly class Memberships
             ->where('model_has_roles.model_id', $user->id)
             ->get(['roles.name', 'model_has_roles.organisation_id']);
 
-        $organisations = Organisation::query()->findMany($rows->pluck('organisation_id')->unique()->all())->keyBy('id');
+        $organisations = Organisation::query()
+            ->whereIn('id', $rows->pluck('organisation_id')->unique()->all())
+            ->whereNotIn('status', [TenantStatus::Suspended->value, TenantStatus::Archived->value])
+            ->get()
+            ->keyBy('id');
 
         return array_values($rows
             ->map(static function (object $row) use ($organisations): ?Membership {

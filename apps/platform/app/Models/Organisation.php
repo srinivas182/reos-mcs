@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\OrganisationType;
+use App\Tenancy\TenantFeature;
+use App\Tenancy\TenantLimits;
+use App\Tenancy\TenantPlan;
 use App\Tenancy\TenantStatus;
 use Database\Factories\OrganisationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -25,18 +28,20 @@ use Illuminate\Support\Str;
  * @property string $name
  * @property string $slug
  * @property TenantStatus $status
+ * @property Carbon|null $trial_ends_at
+ * @property string|null $status_reason
  * @property list<string>|null $states
- * @property string|null $plan
+ * @property TenantPlan|null $plan
  * @property string $region
  * @property string $cell
- * @property array<string, int>|null $limits
+ * @property array<string, mixed>|null $limits Overrides of TenantLimits (see tenantLimits())
  * @property array<string, bool>|null $features
  * @property int|null $parent_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Organisation|null $parent
  */
-#[Fillable(['type', 'name', 'slug', 'status', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'parent_id'])]
+#[Fillable(['type', 'name', 'slug', 'status', 'trial_ends_at', 'status_reason', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'parent_id'])]
 final class Organisation extends Model
 {
     /** @use HasFactory<OrganisationFactory> */
@@ -57,6 +62,25 @@ final class Organisation extends Model
                 $organisation->slug = $slug;
             }
         });
+    }
+
+    /** Limits and data, with the defaults for its type filled in (screen 60). */
+    public function tenantLimits(): TenantLimits
+    {
+        return TenantLimits::for($this->type, $this->limits);
+    }
+
+    /** Whether a feature is on for this tenant: its own choice, else the default (screen 60). */
+    public function hasFeature(TenantFeature $feature): bool
+    {
+        $choice = $this->features[$feature->value] ?? null;
+
+        return is_bool($choice) && $feature->switchable() ? $choice : $feature->defaultFor($this->type);
+    }
+
+    public function effectivePlan(): TenantPlan
+    {
+        return $this->plan ?? TenantPlan::defaultFor($this->type);
     }
 
     /** REOS itself, created by the roles migration. */
@@ -86,6 +110,8 @@ final class Organisation extends Model
         return [
             'type' => OrganisationType::class,
             'status' => TenantStatus::class,
+            'trial_ends_at' => 'datetime',
+            'plan' => TenantPlan::class,
             'states' => 'array',
             'limits' => 'array',
             'features' => 'array',

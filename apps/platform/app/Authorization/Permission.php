@@ -36,6 +36,7 @@ enum Permission: string
 
     // Platform
     case PeopleManage = 'people.manage';
+    case TenantsManage = 'tenants.manage';
     case IntegrationsManage = 'integrations.manage';
     case StatesManage = 'states.manage';
     case AuditView = 'audit.view';

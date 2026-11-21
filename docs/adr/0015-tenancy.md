@@ -45,3 +45,15 @@ People are not tenants. One person can hold roles in several organisations (ADR 
 - **Personal rows are protected by the app** (policies and `Connections::canManage`), not by row-level security. Adding a `reos.user` setting is the path if that's ever needed.
 - **Platform scope is powerful.** It's limited to super admins, Artisan, and endpoints with their own proof (signatures, one-time `state`).
 - An older migration that created the platform organisation through the model now writes the table directly, so later model changes can't break it.
+
+## Addendum: tenant administration (A4.1b, screens 59 and 60)
+
+- **Features** (`TenantFeature`) have a default per tenant type, and a tenant's own choice overrides it.
+  - Beta features are switched on from Features and releases (screen 70), not per tenant.
+  - Each feature checks `Organisation::hasFeature()` when it ships.
+- **Limits** (`TenantLimits`): seats and who pays, AI credits per seat (pooled or not), candidate pool, API rate limit, fair-queue weight, and retention (logs at least 4 years).
+  - Anything not set uses the defaults for its type.
+  - **The API rate limit is enforced now.** The `api` limiter reads the tenant's own value, keyed per tenant; `ResolveTenant` runs before throttling. People without a tenant get 300 requests a minute each; platform scope has no limit.
+- **Status:** active, trial (with `trial_ends_at`), suspended and archived. Suspending or archiving needs a reason. Roles in a suspended or archived tenant stop counting until it is restored, so its people lose access at once.
+- **Audit:** `audit_events.organisation_id` tags each event with its tenant, protected by row-level security (platform-wide events have none). Tenant changes record the fields changed, with before and after values.
+- **New organisation type:** `team`, inside a brokerage, inheriting its plan.

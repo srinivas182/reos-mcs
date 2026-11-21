@@ -32,7 +32,8 @@
     "userMenu": "Account menu for {{name}}",
     "state": "State: {{state}}",
     "states": "States",
-    "connections": "Connections"
+    "connections": "Connections",
+    "tenants": "Tenants"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -733,7 +734,8 @@
       "brokerage": "Brokerage",
       "school": "School",
       "association": "Association",
-      "provider_business": "Business"
+      "provider_business": "Business",
+      "team": "Team"
     },
     "errors": {
       "notHeld": "You don't have that role. Ask your administrator if you need it.",
@@ -1477,6 +1479,225 @@
       "rateLimit": "Rate limit",
       "perMinute_one": "{{count}} a minute · fair queue",
       "perMinute_other": "{{count}} a minute · fair queue"
+    }
+  },
+  "tenants": {
+    "title": "Tenants",
+    "description": "Each organization is a tenant with its own brand, domain, settings and data boundary",
+    "filter": "Filter",
+    "newTenant": "New tenant",
+    "export": "Export CSV",
+    "all": "All",
+    "clear": "Clear filters",
+    "apply": "Apply",
+    "search": "Search by name",
+    "columns": {
+      "tenant": "Tenant",
+      "type": "Type",
+      "state": "State",
+      "plan": "Plan",
+      "users": "Users",
+      "domain": "Domain",
+      "cell": "Cell",
+      "status": "Status"
+    },
+    "types": {
+      "association": "Association",
+      "brokerage": "Brokerage",
+      "school": "School",
+      "provider_business": "Provider business",
+      "team": "Team"
+    },
+    "teamIn": "Team · in {{parent}}",
+    "plans": {
+      "enterprise": "Enterprise",
+      "association": "Association",
+      "brokerage": "Brokerage",
+      "school": "School",
+      "partner": "Partner",
+      "inherits": "Inherits"
+    },
+    "planSeats_one": "{{plan}} · {{count}} seat",
+    "planSeats_other": "{{plan}} · {{count}} seats",
+    "trialLeft_one": "Trial · {{count}} day left",
+    "trialLeft_other": "Trial · {{count}} days left",
+    "statuses": {
+      "active": "Live",
+      "trial": "Trial",
+      "suspended": "Suspended",
+      "archived": "Archived"
+    },
+    "rlsNote": "Row-level security keeps every tenant's data separate in the shared database. A tenant can be moved to its own cell without downtime.",
+    "emptyTitle": "No tenants match",
+    "emptyBody": "Try another filter, or create the first tenant for this state.",
+    "created": "{{name}} is ready.",
+    "saved": "Saved changes to {{name}}.",
+    "statusChanged": {
+      "active": "{{name}} is live again.",
+      "trial": "{{name}} is on a trial.",
+      "suspended": "{{name}} is suspended. Its people have lost access to it.",
+      "archived": "{{name}} is archived."
+    },
+    "new": {
+      "title": "New tenant",
+      "intro": "The tenant gets its own sign-in address. Its owner and people are invited next.",
+      "name": "Name",
+      "type": "Type",
+      "parent": "Brokerage it belongs to",
+      "states": "States",
+      "plan": "Plan",
+      "seats": "Seats (optional)",
+      "seatsHint": "Leave empty for no limit.",
+      "trial": "Trial days (optional)",
+      "create": "Create tenant",
+      "choose": "Choose…"
+    },
+    "show": {
+      "description": "{{type}} tenant · created {{date}} · owner {{owner}}",
+      "noOwner": "no owner yet",
+      "back": "All tenants",
+      "save": "Save",
+      "saving": "Saving…",
+      "tabs": {
+        "overview": "Overview",
+        "plan": "Plan and billing",
+        "features": "Features",
+        "integrations": "Integrations",
+        "domain": "Domain",
+        "privacy": "Data and privacy",
+        "audit": "Audit"
+      },
+      "tabsLabel": "Tenant sections"
+    },
+    "overview": {
+      "status": "Status",
+      "owner": "Owner",
+      "members": "People",
+      "seats": "Seats",
+      "seatsUsed": "{{used}} of {{seats}} used",
+      "seatsUnlimited": "{{used}} · no limit",
+      "almostFull_one": "Almost full: {{count}} seat left",
+      "almostFull_other": "Almost full: {{count}} seats left",
+      "full": "Every seat is used. New invites wait until seats are added.",
+      "lastActive": "Last active",
+      "never": "Not yet",
+      "problems": "Connections needing attention",
+      "noProblems": "None",
+      "states": "States",
+      "parent": "Part of",
+      "teams": "Teams",
+      "suspendedBecause": "Suspended: {{reason}}",
+      "archivedBecause": "Archived: {{reason}}"
+    },
+    "status": {
+      "suspend": "Suspend",
+      "archive": "Archive",
+      "restore": "Restore",
+      "suspendTitle": "Suspend {{name}}?",
+      "suspendBody": "Its people lose access to it straight away, and get it back when you restore it. Nothing is deleted.",
+      "archiveTitle": "Archive {{name}}?",
+      "archiveBody": "The tenant is closed. Its data is kept until the retention period ends.",
+      "reason": "Reason (kept in the audit log)",
+      "confirmSuspend": "Suspend",
+      "confirmArchive": "Archive",
+      "keep": "Keep it live"
+    },
+    "plan": {
+      "title": "Plan",
+      "plan": "Plan",
+      "trialEnds": "Trial ends",
+      "seats": "Seats",
+      "seatsHint": "Leave empty for no limit.",
+      "payer": "Who pays for seats",
+      "payers": {
+        "organisation": "The organization pays",
+        "member": "Each member pays"
+      },
+      "creditsPerSeat": "AI credits per seat per month",
+      "pooled": "Pool credits across seats",
+      "candidatePool": "Credits for sponsored candidates",
+      "billingNote": "Prices, invoices and payment methods come with Plans and pricing."
+    },
+    "features": {
+      "title": "Features for this tenant",
+      "defaultOn": "Default on",
+      "defaultOff": "Default off",
+      "beta": "Beta",
+      "addOn": "Plan add-on",
+      "betaHint": "Turned on from Features and releases",
+      "names": {
+        "virtual_broker": "Virtual broker",
+        "contract_review": "Contract review",
+        "provider_marketplace": "Provider marketplace",
+        "recruiting_agents": "Recruiting licensed agents",
+        "ai_video_lessons": "AI video lessons for brokerage training",
+        "spanish_ui": "Spanish UI"
+      }
+    },
+    "limits": {
+      "title": "Limits and data",
+      "seats": "Seats",
+      "seatsValue": "{{seats}} · {{payer}}",
+      "noLimit": "No limit",
+      "aiCredits": "AI credits",
+      "aiCreditsValue": "{{value}} per seat per month",
+      "pooledSuffix": " · pooled",
+      "candidatePool": "Candidate pool",
+      "rateLimit": "API rate limit",
+      "rateValue": "{{value}} requests / minute",
+      "queueWeight": "Fair-queue weight",
+      "weights": {
+        "low": "Low",
+        "standard": "Standard",
+        "high": "High"
+      },
+      "region": "Data region",
+      "regionValue": "{{region}} · data stays in the US",
+      "retention": "Retention",
+      "retentionValue": "Logs {{years}} years · deleted users {{days}} days",
+      "supportNote": "Support sign-in needs the tenant owner's consent, lasts 60 minutes and is logged in the tenant's audit log.",
+      "credits_one": "{{value}} credit",
+      "credits_other": "{{value}} credits"
+    },
+    "integrations": {
+      "hidden": "Tools this tenant hides from its people",
+      "noneHidden": "It hides none.",
+      "connections": "Connected by this tenant",
+      "noConnections": "No tools connected for the whole organization yet.",
+      "catalogue": "Open the integrations catalogue",
+      "states": {
+        "active": "Up to date",
+        "reconnect_needed": "Needs sign-in",
+        "failing": "Failing"
+      }
+    },
+    "domain": {
+      "address": "Sign-in address",
+      "custom": "Custom domain",
+      "customNote": "The tenant connects its own domain on Branding and domain. Its status shows here once it's set up.",
+      "teamNote": "Teams and provider businesses sign in through the REOS app and their parent's address."
+    },
+    "privacy": {
+      "region": "Data region",
+      "cell": "Cell",
+      "cellNote": "Each cell is a separate copy of REOS's servers. A tenant can be moved to its own cell without downtime.",
+      "logs": "Keep logs for (years)",
+      "deleted": "Keep deleted people for (days)",
+      "logsHint": "At least 4 years, for state record-keeping rules."
+    },
+    "audit": {
+      "title": "Audit log",
+      "empty": "No changes yet.",
+      "when": "When",
+      "who": "Who",
+      "what": "What",
+      "system": "REOS",
+      "changed": "Changed: {{fields}}",
+      "actions": {
+        "tenant.created": "Created the tenant",
+        "tenant.updated": "Changed settings",
+        "tenant.status_changed": "Changed status: {{from}} → {{to}}"
+      }
     }
   }
 }
