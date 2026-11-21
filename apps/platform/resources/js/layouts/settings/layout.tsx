@@ -8,6 +8,7 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import { cn, toUrl } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { index as integrations } from '@/routes/integrations';
+import { index as people } from '@/routes/people';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 import type { NavItem } from '@/types';
@@ -22,6 +23,9 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
         { title: t('nav.security'), href: editSecurity(), icon: null },
         { title: t('nav.appearance'), href: editAppearance(), icon: null },
         // Super admins only (the server enforces it too).
+        ...(auth.can.managePeople
+            ? [{ title: t('nav.people'), href: people(), icon: null }]
+            : []),
         ...(auth.can.manageIntegrations
             ? [
                   {

@@ -51,6 +51,7 @@ class HandleInertiaRequests extends Middleware
                 'hasPassword' => $request->user()?->password !== null,
                 'can' => [
                     'manageIntegrations' => $request->user()?->can(Permission::IntegrationsManage->value) ?? false,
+                    'managePeople' => $request->user()?->can(Permission::PeopleManage->value) ?? false,
                 ],
                 // Roles held, the one in use on this device, and what it allows (A3.2).
                 'roles' => fn () => $this->roles($request),
@@ -67,7 +68,7 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
-     * @return array{held: list<array{role: string, organisation: array{id: int, name: string, type: string}, admin: bool}>, active: array{role: string, organisationId: int}|null, permissions: list<string>, twoStepRequired: bool}|null
+     * @return array{held: list<array{role: string, organisation: array{id: int, name: string, type: string}, admin: bool}>, active: array{role: string, organisationId: int}|null, permissions: list<string>, twoStepEnabled: bool, twoStepRequired: bool}|null
      */
     private function roles(Request $request): ?array
     {
@@ -88,6 +89,7 @@ class HandleInertiaRequests extends Middleware
             ], app(Memberships::class)->of($user)),
             'active' => $current === null ? null : ['role' => $current->role->value, 'organisationId' => $current->organisation->id],
             'permissions' => $active->permissions($user),
+            'twoStepEnabled' => ActiveRole::hasTwoStep($user),
             'twoStepRequired' => $active->needsTwoStep($user),
         ];
     }
