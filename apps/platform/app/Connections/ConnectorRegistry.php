@@ -37,6 +37,36 @@ final readonly class ConnectorRegistry
         private IntegrationCatalogue $offer,
     ) {}
 
+    /** @var array<string, array{can: list<string>, never: list<string>}> */
+    private const CONSENT = [
+        GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::CONSENT,
+    ];
+
+    /** @var array<string, array<string, string>> */
+    private const STREAMS = [
+        GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::STREAMS,
+    ];
+
+    /**
+     * What a tool lets REOS do, and what REOS never does there.
+     *
+     * @return array{can: list<string>, never: list<string>}|null
+     */
+    public static function consent(string $integrationId): ?array
+    {
+        return self::CONSENT[$integrationId] ?? null;
+    }
+
+    /**
+     * Each stream and its direction (`read`, `write` or `both`).
+     *
+     * @return array<string, string>
+     */
+    public static function streamDirections(string $integrationId): array
+    {
+        return self::STREAMS[$integrationId] ?? [];
+    }
+
     /** @return list<string> Every tool the engine knows, connectable or not. */
     public static function ids(): array
     {

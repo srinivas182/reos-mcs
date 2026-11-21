@@ -41,6 +41,12 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
 
     public const SCOPES = ['openid', 'email', 'https://www.googleapis.com/auth/calendar.readonly'];
 
+    /** What the consent sheet promises (Connections and Sync journey, screen 5). */
+    public const CONSENT = ['can' => ['read_events', 'change_alerts'], 'never' => ['change_events']];
+
+    /** Each stream and which way it flows (screens 6–7). Two-way arrives with B4.1. */
+    public const STREAMS = ['events' => 'read'];
+
     private const API = 'https://www.googleapis.com/calendar/v3';
 
     private OAuth2Client $oauth;

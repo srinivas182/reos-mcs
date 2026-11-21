@@ -146,3 +146,20 @@ test('every connection field needs a translated label', () => {
     extraEnv = {};
   }
 });
+
+test('every tool agents can see needs a one-line summary in packages/i18n', () => {
+  const dir = workspace();
+  const i18n = join(dir, 'en.json');
+  const real = JSON.parse(readFileSync(join(root, 'packages/i18n/src/locales/en.json'), 'utf8'));
+  delete real.integrations.tools.lofty;
+  writeFileSync(i18n, JSON.stringify(real));
+  extraEnv = { I18N_PATH: i18n };
+  try {
+    const result = run(dir);
+    assert.equal(result.ok, false);
+    assert.match(result.out, /\[lofty\] needs a one-line summary for agents/);
+    assert.doesNotMatch(result.out, /\[stripe\] needs a one-line summary/, 'payments and platform services are not in the library');
+  } finally {
+    extraEnv = {};
+  }
+});

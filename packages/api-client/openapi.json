@@ -462,6 +462,83 @@
             }
         },
         "/connections/{connection}": {
+            "patch": {
+                "operationId": "connections.update",
+                "description": "A new history range syncs again from its start; nothing already synced\nis lost.",
+                "summary": "Change what syncs",
+                "tags": [
+                    "Connection"
+                ],
+                "parameters": [
+                    {
+                        "name": "connection",
+                        "in": "path",
+                        "required": true,
+                        "description": "The connection ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateConnectionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`ConnectionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ConnectionResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
             "delete": {
                 "operationId": "connections.destroy",
                 "description": "REOS asks the tool to forget its access, then deletes the tokens and\neverything it synced from this account.",
@@ -1331,7 +1408,8 @@
                         "type": "string"
                     },
                     "purpose": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The agent-facing line in their language; the register checks every\ntool people can see has one."
                     },
                     "group": {
                         "description": "The library tab: `crm`, `deals`, `calendar`, `leads` or `more`.",
@@ -1366,6 +1444,36 @@
                     "accounts": {
                         "type": "string",
                         "description": "`user` (their own account) or `tenant` (their organisation's)."
+                    },
+                    "consent": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet).",
+                        "properties": {
+                            "can": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "enum": [
+                                        "read_events",
+                                        "change_alerts"
+                                    ]
+                                }
+                            },
+                            "never": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "const": "change_events"
+                                }
+                            }
+                        },
+                        "required": [
+                            "can",
+                            "never"
+                        ]
                     }
                 },
                 "required": [
@@ -1378,7 +1486,8 @@
                     "interested",
                     "retires_on",
                     "connected",
-                    "accounts"
+                    "accounts",
+                    "consent"
                 ],
                 "title": "CatalogueItemResource"
             },
@@ -1467,6 +1576,35 @@
                             "string",
                             "null"
                         ]
+                    },
+                    "streams": {
+                        "type": "array",
+                        "description": "What syncs: each stream, which way, and how many records came over.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string",
+                                    "const": "events"
+                                },
+                                "direction": {
+                                    "type": "string",
+                                    "enum": [
+                                        "read",
+                                        "write",
+                                        "both"
+                                    ]
+                                },
+                                "records": {
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "key",
+                                "direction",
+                                "records"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -1482,7 +1620,8 @@
                     "last_synced_at",
                     "problem",
                     "problem_since",
-                    "connected_at"
+                    "connected_at",
+                    "streams"
                 ],
                 "title": "ConnectionResource"
             },
@@ -2427,6 +2566,20 @@
                     "name"
                 ],
                 "title": "ToolRequestRequest"
+            },
+            "UpdateConnectionRequest": {
+                "type": "object",
+                "description": "\"What to sync\" (Connections and Sync journey, screen 7).",
+                "properties": {
+                    "history": {
+                        "description": "How far back to sync: `3m`, `12m` or `all`.",
+                        "$ref": "#/components/schemas/HistoryRange"
+                    }
+                },
+                "required": [
+                    "history"
+                ],
+                "title": "UpdateConnectionRequest"
             },
             "WaitlistRequest": {
                 "type": "object",

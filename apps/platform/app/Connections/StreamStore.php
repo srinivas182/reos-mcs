@@ -23,4 +23,7 @@ interface StreamStore
 
     /** Everything this connection synced (on disconnect). */
     public function forget(Connection $connection): void;
+
+    /** How many records this connection has synced (shown on its screen). */
+    public function count(Connection $connection): int;
 }

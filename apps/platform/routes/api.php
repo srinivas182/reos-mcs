@@ -72,5 +72,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('connections', [ConnectionController::class, 'index'])->name('api.connections.index');
     Route::post('connections', [ConnectionController::class, 'store'])->middleware('throttle:sign-in')->name('api.connections.store');
     Route::post('connections/{connection}/sync', [ConnectionController::class, 'sync'])->whereNumber('connection')->middleware('throttle:10,1')->name('api.connections.sync');
+    Route::patch('connections/{connection}', [ConnectionController::class, 'update'])->whereNumber('connection')->middleware('throttle:30,1')->name('api.connections.update');
     Route::delete('connections/{connection}', [ConnectionController::class, 'destroy'])->whereNumber('connection')->middleware('throttle:30,1')->name('api.connections.destroy');
 });

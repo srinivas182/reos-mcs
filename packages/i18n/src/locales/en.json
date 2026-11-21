@@ -182,7 +182,8 @@
       "signOut": "Sign out",
       "twoStepTitle": "Set up two-step to use {{role}}",
       "twoStepBody": "Admin roles need a second step when you sign in. Set it up on the REOS website in Settings › Security. It takes about a minute.",
-      "openWeb": "Open the website"
+      "openWeb": "Open the website",
+      "connections": "Connections"
     },
     "organisations": {
       "title": "Your organizations",
@@ -443,6 +444,40 @@
         "action": "Open the integration",
         "resume": "Fix the keys if needed, then press Test connection. A passing test switches it back on."
       }
+    },
+    "tools": {
+      "apple-calendar": "Events from your iCloud calendars.",
+      "boldtrail": "Contacts, notes and tasks, both ways.",
+      "boldtrail-backoffice": "Deals and commissions. Usually set up by your broker.",
+      "brokerbay": "Showings and appointments.",
+      "docusign": "Send, track and keep signatures.",
+      "dotloop": "Loops, documents and deadlines.",
+      "follow-up-boss": "Contacts, notes and tasks, both ways.",
+      "google-business-profile": "Posts and insights on your Google listing.",
+      "google-meet": "Google Meet links on your appointments.",
+      "google-workspace": "Your calendar and email, both ways.",
+      "homes-com-leads": "New Homes.com leads, sent to your CRM.",
+      "linkedin": "Post to your profile and company page.",
+      "listedkit": "Deals and deadlines, with an AI coordinator.",
+      "lofty": "Contacts, notes and tasks, both ways.",
+      "lone-wolf": "Deals, documents and deadlines. Free with Texas REALTORS®.",
+      "meta": "Post to Facebook and Instagram and see how posts do.",
+      "microsoft-365": "Your Outlook calendar and email, both ways.",
+      "microsoft-teams": "Teams meeting links on your appointments.",
+      "open-to-close": "Deals, tasks and deadlines.",
+      "paperless-pipeline": "Documents and checklists.",
+      "phone-contacts": "Contacts from this phone, so you start with a list.",
+      "quickbooks-online": "Split sheets and payouts for your books.",
+      "realtor-com-leads": "New Realtor.com leads, sent to your CRM.",
+      "salesforce": "Contacts, leads and tasks for brokerages on Salesforce.",
+      "showingtime": "Showings appear on your calendar.",
+      "skyslope": "Files, documents and deadlines.",
+      "texas-realtors-membership": "Sign in with your association login; member records and CE stay in sync.",
+      "tiktok": "Post short videos and see how they do.",
+      "trec-ce-reporting": "Your CE completions, reported to TREC.",
+      "youtube": "Post short videos and see how they do.",
+      "zillow-leads": "New Zillow leads, sent to your CRM.",
+      "zoom": "Meeting links for showings, sessions and client calls."
     }
   },
   "identity": {
@@ -1178,6 +1213,115 @@
       "next3": "Your data in REOS refreshes automatically",
       "signIn": "Sign in to {{tool}}",
       "working": "This connection is working again."
+    },
+    "hub": {
+      "title": "Connections",
+      "add": "Add a connection",
+      "empty": "No tools connected yet",
+      "emptyBody": "Connect the calendar, CRM and transaction tools you already use. REOS works with them, so there's nothing new to learn.",
+      "groups": {
+        "crm": "CRM",
+        "deals": "Deals",
+        "calendar": "Calendar",
+        "leads": "Leads",
+        "more": "More"
+      },
+      "groupCount": "{{group}} · {{count}}",
+      "ago": "Synced {{ago}}",
+      "never": "Not synced yet"
+    },
+    "state": {
+      "upToDate": "Up to date",
+      "syncing": "Syncing",
+      "delayed": "Delayed",
+      "reconnect": "Reconnect"
+    },
+    "library": {
+      "title": "Add a connection",
+      "search": "Search {{count}} tools",
+      "tabs": "Tool types",
+      "connect": "Connect",
+      "on": "On",
+      "notify": "Notify me",
+      "notified": "We'll tell you",
+      "joinBeta": "Join beta",
+      "asked": "Asked",
+      "unavailable": "Temporarily unavailable",
+      "retiring": "Until {{date}}",
+      "broker": "Brokerage",
+      "noResults": "No tool matches “{{search}}”",
+      "notListed": "My tool isn't listed",
+      "notifyToast": "Noted. We'll tell you when {{tool}} arrives.",
+      "betaToast": "Noted. We'll tell you when the {{tool}} beta opens for you.",
+      "undone": "Removed."
+    },
+    "request": {
+      "title": "My tool isn't listed",
+      "intro": "Tell us which tool you use. Every request counts when we choose what to connect next.",
+      "name": "Tool name",
+      "note": "What you use it for (optional)",
+      "send": "Send",
+      "sent": "Thanks. Your request is in."
+    },
+    "consent": {
+      "title": "Connect {{tool}}",
+      "body": "You'll sign in on {{tool}}'s own page. REOS never sees your password.",
+      "willBeAbleTo": "REOS will be able to",
+      "can": {
+        "read_events": "See the events on your calendar",
+        "change_alerts": "Get notified when something changes"
+      },
+      "never": {
+        "change_events": "Never change or delete your events"
+      },
+      "footer": "Disconnect any time from Connections. Your data stays yours.",
+      "continue": "Continue to {{tool}}",
+      "cancel": "Cancel"
+    },
+    "connected": {
+      "title": "{{tool}} is connected",
+      "body": "We picked the settings most agents use. You don't need to change anything.",
+      "streams": {
+        "events": "Calendar events"
+      },
+      "directions": {
+        "read": "REOS reads",
+        "write": "REOS writes",
+        "both": "Both ways"
+      },
+      "history": "History",
+      "historyValues": {
+        "3m": "Last 3 months",
+        "12m": "Last 12 months",
+        "all": "Everything"
+      },
+      "change": "Change settings",
+      "done": "Start syncing"
+    },
+    "settings": {
+      "title": "What to sync",
+      "signedInAs": "{{tool}} · signed in as {{account}}",
+      "howFar": "How far back",
+      "privacy": "Only you see this data in REOS.",
+      "save": "Save",
+      "saved": "Saved. Syncing from the new start date."
+    },
+    "detail": {
+      "account": "Account",
+      "status": "Status",
+      "lastSync": "Last sync",
+      "records_one": "{{count}} item synced",
+      "records_other": "{{count}} items synced",
+      "syncNow": "Sync now",
+      "syncQueued": "Syncing now.",
+      "whatToSync": "What to sync",
+      "disconnect": "Disconnect",
+      "demo": "Demo data",
+      "confirmTitle": "Disconnect {{tool}}?",
+      "confirmBody": "REOS stops syncing and removes the {{tool}} data it copied. Nothing is deleted in {{tool}} itself.",
+      "confirm": "Disconnect",
+      "keep": "Keep connected",
+      "disconnected": "{{tool}} is disconnected."
     }
   },
   "catalogue": {

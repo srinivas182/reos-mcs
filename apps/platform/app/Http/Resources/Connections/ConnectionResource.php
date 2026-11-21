@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources\Connections;
 
 use App\Connections\ConnectionStatus;
+use App\Connections\ConnectorRegistry;
 use App\Integrations\Catalogue;
 use App\Models\Connection;
 use Illuminate\Http\Request;
@@ -18,6 +19,20 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 final class ConnectionResource extends JsonResource
 {
+    /** @return list<array{key: string, direction: string, records: int}> */
+    private static function streams(Connection $connection): array
+    {
+        $streams = [];
+        $registry = app(ConnectorRegistry::class);
+
+        foreach (ConnectorRegistry::streamDirections($connection->integration_id) as $key => $direction) {
+            $store = $registry->supports($connection->integration_id) ? ($registry->driver($connection->integration_id, $connection->mode)->streams()[$key] ?? null) : null;
+            $streams[] = ['key' => $key, 'direction' => $direction, 'records' => $store === null ? 0 : app($store)->count($connection)];
+        }
+
+        return $streams;
+    }
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -50,6 +65,12 @@ final class ConnectionResource extends JsonResource
             /** When the latest problem started (for "stopped 2 days ago"). */
             'problem_since' => $connection->last_error === null ? null : $connection->last_failed_at?->toIso8601String(),
             'connected_at' => $connection->created_at?->toIso8601String(),
+            /**
+             * What syncs: each stream, which way, and how many records came over.
+             *
+             * @var list<array{key: 'events', direction: 'read'|'write'|'both', records: int}>
+             */
+            'streams' => self::streams($connection),
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Connections\ConnectorRegistry;
 use App\Connections\SyncTrigger;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Connections\StartConnectionRequest;
+use App\Http\Requests\Connections\UpdateConnectionRequest;
 use App\Http\Resources\Connections\ConnectionResource;
 use App\Jobs\SyncConnection;
 use App\Models\Connection;
@@ -78,6 +79,31 @@ final class ConnectionController extends Controller
         }
 
         return response()->json(['queued' => true], 202);
+    }
+
+    /**
+     * Change what syncs.
+     *
+     * A new history range syncs again from its start; nothing already synced
+     * is lost.
+     */
+    public function update(UpdateConnectionRequest $request, #[CurrentUser] User $user, Connection $connection, Connections $connections, ConnectorRegistry $registry): ConnectionResource
+    {
+        abort_unless($connections->canManage($user, $connection), 404);
+
+        $history = $request->history();
+
+        if ($history !== $connection->history()) {
+            $connection->forceFill(['settings' => [...$connection->settings, 'history' => $history->value], 'cursors' => []])->save();
+
+            if ($connection->status->syncs() && $connections->available($connection->integration_id)) {
+                foreach (array_keys($registry->driver($connection->integration_id, $connection->mode)->streams()) as $stream) {
+                    SyncConnection::dispatch($connection->id, $stream, SyncTrigger::Manual);
+                }
+            }
+        }
+
+        return new ConnectionResource($connection->fresh());
     }
 
     /**

@@ -1,6 +1,7 @@
 import { createApiClient } from '@reos/api-client';
 
-import { apiBaseUrl, fetchHealth } from '@/lib/api';
+import { apiBaseUrl, fetchHealth, withSession } from '@/lib/api';
+import { i18n } from '@/lib/i18n';
 
 const clientReturning = (status: number, body: unknown) => {
   const fetch = jest.fn(async (_request: Request) =>
@@ -32,5 +33,18 @@ describe('fetchHealth', () => {
 
   it('throws on an unexpected body', async () => {
     await expect(fetchHealth(clientReturning(200, { status: 'down' }).client)).rejects.toThrow('Unexpected');
+  });
+});
+
+describe('withSession', () => {
+  afterEach(() => i18n.changeLanguage('en'));
+
+  it('asks for answers in the language on screen', async () => {
+    await i18n.changeLanguage('es');
+    const { fetch, client } = clientReturning(200, { status: 'ok', app: 'REOS', version: '0.1.0', time: '2026-12-07T09:00:00+00:00' });
+
+    await fetchHealth(withSession(client));
+
+    expect(fetch.mock.calls[0]?.[0].headers.get('Accept-Language')).toBe('es');
   });
 });
