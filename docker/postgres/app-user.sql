@@ -16,8 +16,24 @@ ALTER DATABASE reos_testing OWNER TO reos_app;
 
 \connect reos
 ALTER SCHEMA public OWNER TO reos_app;
-REASSIGN OWNED BY reos TO reos_app;
+-- Tables made before this user existed (a table's sequences move with it).
+DO $$
+DECLARE t record;
+BEGIN
+  FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP
+    EXECUTE format('ALTER TABLE public.%I OWNER TO reos_app', t.tablename);
+  END LOOP;
+END
+$$;
 
 \connect reos_testing
 ALTER SCHEMA public OWNER TO reos_app;
-REASSIGN OWNED BY reos TO reos_app;
+-- Tables made before this user existed (a table's sequences move with it).
+DO $$
+DECLARE t record;
+BEGIN
+  FOR t IN SELECT tablename FROM pg_tables WHERE schemaname = 'public' LOOP
+    EXECUTE format('ALTER TABLE public.%I OWNER TO reos_app', t.tablename);
+  END LOOP;
+END
+$$;
