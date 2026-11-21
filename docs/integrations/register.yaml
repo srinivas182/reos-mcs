@@ -12,7 +12,7 @@
 # once an application is filed. Status values are updated by whoever owns the item.
 
 version: 1
-updated: 2026-11-20
+updated: 2026-11-21
 # Decisions 20 Nov 2026: domain reos.com (working choice; Nelle may change it before launch);
 # staging (2.1) and TestFlight/Play (2.3) move to just before the pilot.
 sprint_one_starts: 2026-12-07 # sprints are 2 weeks; sprint N starts 14 × (N − 1) days later
@@ -169,6 +169,156 @@ entries:
     notes: Microsoft Entra multi-tenant app with publisher verification (needs a Microsoft Partner Network ID), so customers' admins see a verified publisher when consenting.
     sources:
       - https://learn.microsoft.com/en-us/entra/identity-platform/publisher-verification-overview
+
+  - id: apple-calendar
+    name: Apple Calendar (iCloud)
+    kind: integration
+    category: calendar_email
+    purpose: Read events from iCloud calendars.
+    launch: coming_soon
+    build: { sprint: 4, item: B4.1 }
+    owner: client_with_mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 0
+      needed_by_sprint: 4
+      status: not_needed
+    sandbox: Any Apple ID with an app-specific password.
+    credentials: none
+    connection:
+      auth: none
+      accounts: user
+      fields: []
+    personal_data: true
+    cost: Free.
+    notes: >-
+      iCloud has no OAuth calendar API: people connect with CalDAV and an app-specific password, so REOS holds no platform keys. Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: zoom
+    name: Zoom
+    kind: integration
+    category: meetings
+    purpose: Meeting links for showings, sessions and client calls.
+    launch: coming_soon
+    build: { sprint: 4, item: B4.2 }
+    owner: client_with_mayura
+    access:
+      route: app_review
+      lead_time_weeks: 4
+      needed_by_sprint: 4
+      status: not_started
+    sandbox: Zoom Marketplace development app; any Zoom account until published.
+    credentials: platform
+    connection:
+      auth: oauth2
+      accounts: user
+      fields:
+        - { key: client_id }
+        - { key: client_secret, secret: true }
+    personal_data: true
+    cost: Free API; publishing needs Zoom Marketplace review.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: microsoft-teams
+    name: Microsoft Teams meetings
+    kind: integration
+    category: meetings
+    purpose: Teams meeting links on REOS events.
+    launch: coming_soon
+    build: { sprint: 4, item: B4.2 }
+    owner: client_with_mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 0
+      needed_by_sprint: 4
+      status: not_needed
+    sandbox: Uses the Microsoft 365 connection.
+    credentials: none
+    connection:
+      auth: none
+      accounts: user
+      fields: []
+    personal_data: true
+    cost: Included with Microsoft 365.
+    notes: >-
+      Created through the Microsoft 365 (Graph) connection, so it has no keys of its own.
+
+  - id: google-meet
+    name: Google Meet
+    kind: integration
+    category: meetings
+    purpose: Google Meet links on REOS events.
+    launch: coming_soon
+    build: { sprint: 4, item: B4.2 }
+    owner: client_with_mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 0
+      needed_by_sprint: 4
+      status: not_needed
+    sandbox: Uses the Google Calendar and Gmail connection.
+    credentials: none
+    connection:
+      auth: none
+      accounts: user
+      fields: []
+    personal_data: true
+    cost: Included with Google accounts.
+    notes: >-
+      Created through the Google Calendar connection (conference data), so it has no keys of its own.
+
+  - id: showingtime
+    name: ShowingTime
+    kind: integration
+    category: meetings
+    purpose: Showing requests and confirmations on the REOS calendar.
+    launch: coming_soon
+    build: { sprint: 9, item: B9.2 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 8
+      needed_by_sprint: 9
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: Showing confirmation emails forwarded to REOS.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: brokerbay
+    name: BrokerBay
+    kind: integration
+    category: meetings
+    purpose: Showing and appointment bookings on the REOS calendar.
+    launch: coming_soon
+    build: { sprint: 9, item: B9.2 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 8
+      needed_by_sprint: 9
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: Booking emails forwarded to REOS.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
 
   - id: aws-speech
     name: Amazon Transcribe and Polly (speech)
@@ -692,6 +842,110 @@ entries:
     personal_data: true
     cost: Partner terms on application.
 
+  - id: open-to-close
+    name: Open to Close
+    kind: integration
+    category: transactions
+    purpose: 'Transaction coordination: deals, tasks and deadlines.'
+    launch: coming_soon
+    build: { sprint: 9, item: B9.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 6
+      needed_by_sprint: 9
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    connection:
+      auth: api_key
+      accounts: user
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: CSV export.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: paperless-pipeline
+    name: Paperless Pipeline
+    kind: integration
+    category: transactions
+    purpose: Brokerage transactions, documents and checklists.
+    launch: coming_soon
+    build: { sprint: 9, item: B9.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 6
+      needed_by_sprint: 9
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: CSV export.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: listedkit
+    name: ListedKit
+    kind: integration
+    category: transactions
+    purpose: 'AI transaction coordinator: deals and deadlines.'
+    launch: coming_soon
+    build: { sprint: 9, item: B9.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 6
+      needed_by_sprint: 9
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    connection:
+      auth: api_key
+      accounts: user
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: Deadline emails forwarded to REOS.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: boldtrail-backoffice
+    name: BoldTrail BackOffice
+    kind: integration
+    category: transactions
+    purpose: 'Brokerage back office: deals, commissions and agent billing.'
+    launch: coming_soon
+    build: { sprint: 9, item: B9.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 6
+      needed_by_sprint: 9
+      status: not_started
+    sandbox: Partner sandbox on approval.
+    credentials: tenant
+    connection:
+      auth: api_key
+      accounts: tenant
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: CSV export.
+    notes: >-
+      Formerly Brokermint. Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
   - id: docusign
     name: DocuSign
     kind: integration
@@ -720,6 +974,108 @@ entries:
     notes: Production go-live review after enough successful calls in the demo environment.
 
   # ── MLS data (RESO Web API) ─────────────────────────────────────────────────
+  - id: zillow-leads
+    name: Zillow leads
+    kind: integration
+    category: leads
+    purpose: New Zillow Premier Agent leads, sent to the default CRM.
+    launch: coming_soon
+    build: { sprint: 14, item: B14.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 10
+      needed_by_sprint: 14
+      status: not_started
+    sandbox: Zillow partner test account on approval.
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: user
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: Lead emails forwarded to REOS.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: realtor-com-leads
+    name: Realtor.com leads
+    kind: integration
+    category: leads
+    purpose: New Realtor.com leads, sent to the default CRM.
+    launch: coming_soon
+    build: { sprint: 14, item: B14.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 10
+      needed_by_sprint: 14
+      status: not_started
+    sandbox: Partner test account on approval.
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: user
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: Lead emails forwarded to REOS.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: homes-com-leads
+    name: Homes.com leads
+    kind: integration
+    category: leads
+    purpose: New Homes.com leads, sent to the default CRM.
+    launch: coming_soon
+    build: { sprint: 14, item: B14.1 }
+    owner: client_with_mayura
+    access:
+      route: partner_application
+      lead_time_weeks: 10
+      needed_by_sprint: 14
+      status: not_started
+    sandbox: Partner test account on approval.
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: user
+      fields:
+        - { key: api_key, secret: true }
+    personal_data: true
+    cost: Partner terms on application.
+    fallback: Lead emails forwarded to REOS.
+    notes: >-
+      Added from the Connections and Sync journey library (B3.2); API access and key type to be confirmed when the partner application is filed.
+
+  - id: phone-contacts
+    name: Phone contacts
+    kind: integration
+    category: contacts
+    purpose: Names, numbers and emails from the phone, so a new agent starts with a contact list.
+    launch: coming_soon
+    build: { sprint: 7, item: B7.1 }
+    owner: client_with_mayura
+    access:
+      route: self_serve
+      lead_time_weeks: 0
+      needed_by_sprint: 7
+      status: not_needed
+    sandbox: The phone's own contacts permission.
+    credentials: none
+    connection:
+      auth: none
+      accounts: user
+      fields: []
+    personal_data: true
+    cost: Free.
+    notes: >-
+      Read on the phone with the person's permission; nothing to set up in Settings › Integrations.
+
   - id: mls-har
     name: HAR MLS (Houston)
     kind: integration

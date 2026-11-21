@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
+use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MeController;
@@ -60,6 +61,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('me/devices', [MeController::class, 'devices'])->name('api.me.devices');
     Route::delete('me/devices/{device}', [MeController::class, 'revokeDevice'])->whereNumber('device')->name('api.me.devices.destroy');
     Route::post('auth/sign-out', [MeController::class, 'signOut'])->name('api.auth.sign-out');
+
+    // The Connections library (B3.2, ADR 0014).
+    Route::get('catalogue', [CatalogueController::class, 'index'])->name('api.catalogue.index');
+    Route::post('catalogue/{tool}/interest', [CatalogueController::class, 'interest'])->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1')->name('api.catalogue.interest');
+    Route::delete('catalogue/{tool}/interest', [CatalogueController::class, 'forget'])->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1')->name('api.catalogue.forget');
+    Route::post('tool-requests', [CatalogueController::class, 'request'])->middleware('throttle:10,60')->name('api.tool-requests.store');
 
     // Connections (B3.1, ADR 0013).
     Route::get('connections', [ConnectionController::class, 'index'])->name('api.connections.index');

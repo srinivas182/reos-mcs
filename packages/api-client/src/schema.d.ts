@@ -49,6 +49,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/catalogue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List the catalogue
+         * @description The tools you may see, with what you can do with each. A status change
+         *     in the back office shows here at once, with no app release.
+         */
+        get: operations["catalogue.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/catalogue/{tool}/interest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Notify me / Join beta
+         * @description Counted as demand for the tool, so the most wanted are built first.
+         */
+        post: operations["catalogue.interest"];
+        /** Undo "Notify me" or "Join beta" */
+        delete: operations["catalogue.forget"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tool-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** My tool isn't listed */
+        post: operations["tool-requests.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/connections": {
         parameters: {
             query?: never;
@@ -452,6 +511,52 @@ export interface components {
                 demo: boolean;
             };
         };
+        /** CatalogueItemResource */
+        CatalogueItemResource: {
+            /** @description The tool's register id, for example `follow-up-boss`. */
+            id: string;
+            name: string;
+            purpose: string;
+            /** @description The library tab: `crm`, `deals`, `calendar`, `leads` or `more`. */
+            group: components["schemas"]["LibraryGroup"];
+            /**
+             * @description `enabled`, `beta`, `coming_soon`, `paused` (temporarily unavailable) or `retired`.
+             *     | |
+             *     |---|
+             *     | `enabled` <br/> Connect / Manage. |
+             *     | `beta` <br/> Selected organisations connect; others can ask to join. |
+             *     | `coming_soon` <br/> Shown with "Notify me"; taps are counted to prioritise the build. |
+             *     | `paused` <br/> Kill switch: "Temporarily unavailable". Data is kept; syncing stops. |
+             *     | `retired` <br/> Shown with its end date, then removed. |
+             */
+            status: components["schemas"]["CatalogueStatus"];
+            /**
+             * @description What this person can do: `connect`, `join_beta`, `notify` or `none`.
+             * @enum {string}
+             */
+            action: "connect" | "join_beta" | "notify" | "none";
+            /** @description They tapped "Notify me" or "Join beta". */
+            interested: boolean;
+            /** @description Retired tools: the last day they work (YYYY-MM-DD). */
+            retires_on: string;
+            /** @description How many accounts of theirs are connected. */
+            connected: number;
+            /** @description `user` (their own account) or `tenant` (their organisation's). */
+            accounts: string;
+        };
+        /**
+         * CatalogueStatus
+         * @description What people see for a tool (web journey screen 64): the register's `launch` value until the super admin changes it.
+         *     | |
+         *     |---|
+         *     | `enabled` <br/> Connect / Manage. |
+         *     | `beta` <br/> Selected organisations connect; others can ask to join. |
+         *     | `coming_soon` <br/> Shown with "Notify me"; taps are counted to prioritise the build. |
+         *     | `paused` <br/> Kill switch: "Temporarily unavailable". Data is kept; syncing stops. |
+         *     | `retired` <br/> Shown with its end date, then removed. |
+         * @enum {string}
+         */
+        CatalogueStatus: "enabled" | "beta" | "coming_soon" | "paused" | "retired";
         /** ConnectionResource */
         ConnectionResource: {
             id: number;
@@ -575,6 +680,12 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /**
+         * LibraryGroup
+         * @description The tabs of the Connections library (Connections and Sync journey, screens 2–4).
+         * @enum {string}
+         */
+        LibraryGroup: "crm" | "deals" | "calendar" | "leads" | "more";
         /**
          * Locale
          * @description Languages REOS is available in. Matches `supportedLocales` in packages/i18n.
@@ -806,6 +917,16 @@ export interface components {
          * @enum {string}
          */
         StateStatus: "live" | "in_preparation" | "waitlist" | "not_planned";
+        /**
+         * ToolRequestRequest
+         * @description "My tool isn't listed".
+         */
+        ToolRequestRequest: {
+            /** @description The tool's name, as the person knows it. */
+            name: string;
+            /** @description What they use it for (optional). */
+            note?: string | null;
+        };
         /** WaitlistRequest */
         WaitlistRequest: {
             /**
@@ -881,6 +1002,8 @@ export interface components {
 }
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemResource'];
+export type SchemaCatalogueStatus = components['schemas']['CatalogueStatus'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
@@ -889,6 +1012,7 @@ export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
+export type SchemaLibraryGroup = components['schemas']['LibraryGroup'];
 export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
@@ -907,6 +1031,7 @@ export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
+export type SchemaToolRequestRequest = components['schemas']['ToolRequestRequest'];
 export type SchemaWaitlistRequest = components['schemas']['WaitlistRequest'];
 export type ResponseModelNotFoundException = components['responses']['ModelNotFoundException'];
 export type ResponseValidationException = components['responses']['ValidationException'];
@@ -970,6 +1095,133 @@ export interface operations {
                     "application/json": components["schemas"]["AppConfigResource"];
                 };
             };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "catalogue.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `CatalogueItemResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CatalogueItemResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "catalogue.interest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tool: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": 204;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "catalogue.forget": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tool: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "tool-requests.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ToolRequestRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": 201;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

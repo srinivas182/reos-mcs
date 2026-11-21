@@ -28,7 +28,65 @@ export type IntegrationCategory =
     | 'association'
     | 'operations'
     | 'platform'
-    | 'regulatory';
+    | 'regulatory'
+    | 'meetings'
+    | 'leads'
+    | 'contacts';
+
+/** What people see for a tool (B3.2, web journey screen 64). */
+export type CatalogueStatus =
+    | 'enabled'
+    | 'beta'
+    | 'coming_soon'
+    | 'paused'
+    | 'retired';
+
+export type CatalogueSummary = {
+    status: CatalogueStatus;
+    /** Null: everyone. */
+    states: string[] | null;
+    roles: string[] | null;
+    plans: string[] | null;
+    connected: number;
+    demand: number;
+};
+
+export type CatalogueDetail = {
+    /** The super admin's choice; null means the register's default. */
+    status: CatalogueStatus | null;
+    effective: CatalogueStatus;
+    default: CatalogueStatus;
+    retires_on: string | null;
+    states: string[] | null;
+    roles: string[] | null;
+    plans: string[] | null;
+    beta_organisations: number[];
+    tenants_may_hide: boolean;
+    tenants_may_require: boolean;
+    show_coming_soon: boolean;
+    /** The connector exists; until then people see "Coming soon". */
+    built: boolean;
+    summary: {
+        auth: 'api_key' | 'oauth2' | 'aws' | 'none';
+        accounts: 'platform' | 'user' | 'tenant';
+        /** Requests a minute, shared fairly; null until the connector exists. */
+        rate_limit: number | null;
+    };
+    demand: number;
+    options: {
+        states: { code: string; name: string }[];
+        roles: string[];
+        organisations: { id: number; name: string }[];
+    };
+};
+
+export type IntegrationHealth = {
+    connected: number;
+    reconnect: number;
+    failing: number;
+    runs: number;
+    success: number | null;
+};
 
 export type IntegrationSummary = {
     id: string;
@@ -43,6 +101,8 @@ export type IntegrationSummary = {
     /** Set when health checks paused it; features then treat it as Off. */
     paused_at: string | null;
     keys: Record<CredentialEnvironment, boolean>;
+    /** Null for platform services, which people never connect. */
+    catalogue?: CatalogueSummary | null;
 };
 
 export type CheckOutcome = 'passed' | 'failed' | 'unverified';

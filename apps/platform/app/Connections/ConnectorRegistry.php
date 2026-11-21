@@ -11,6 +11,7 @@ use App\Integrations\CredentialEnvironment;
 use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\IntegrationDefinition;
 use App\Integrations\IntegrationMode;
+use App\Services\Catalogue\IntegrationCatalogue;
 use App\Services\Integrations\IntegrationHub;
 use LogicException;
 
@@ -33,6 +34,7 @@ final readonly class ConnectorRegistry
         private Catalogue $catalogue,
         private IntegrationHub $hub,
         private CredentialVault $vault,
+        private IntegrationCatalogue $offer,
     ) {}
 
     /** @return list<string> Every tool the engine knows, connectable or not. */
@@ -54,12 +56,19 @@ final readonly class ConnectorRegistry
         return $definition !== null && in_array($definition->accounts->value, ['user', 'tenant'], true) ? $definition : null;
     }
 
-    /** The mode connections run in now; Off when switched off or paused. */
+    /**
+     * The mode connections run in now: Off when switched off, paused by health
+     * checks, paused in the catalogue (kill switch) or past retirement.
+     */
     public function mode(string $integrationId): IntegrationMode
     {
         $definition = $this->definition($integrationId);
 
-        return $definition === null ? IntegrationMode::Off : $this->hub->status($definition)->effectiveMode();
+        if ($definition === null || ! $this->offer->syncAllowed($integrationId)) {
+            return IntegrationMode::Off;
+        }
+
+        return $this->hub->status($definition)->effectiveMode();
     }
 
     public function driver(string $integrationId, IntegrationMode $mode): ConnectorDriver

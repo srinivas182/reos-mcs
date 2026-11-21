@@ -13,6 +13,7 @@ use App\Jobs\SyncConnection;
 use App\Models\Connection;
 use App\Models\OAuthAuthorization;
 use App\Models\User;
+use App\Services\Catalogue\IntegrationCatalogue;
 use App\Services\Connections\ConnectionAuthorizer;
 use App\Services\Connections\Connections;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -42,12 +43,13 @@ final class ConnectionController extends Controller
      *
      * @response array{authorization_url: string}
      */
-    public function store(StartConnectionRequest $request, #[CurrentUser] User $user, Connections $connections, ConnectionAuthorizer $authorizer): JsonResponse
+    public function store(StartConnectionRequest $request, #[CurrentUser] User $user, Connections $connections, ConnectionAuthorizer $authorizer, IntegrationCatalogue $catalogue): JsonResponse
     {
         $integration = $request->string('integration')->toString();
         $owner = $connections->ownerFor($user, $integration);
 
-        if (! $connections->available($integration) || $owner === null) {
+        // The catalogue decides: status, availability, beta and organisation hiding.
+        if (! $catalogue->canConnect($user, $integration) || $owner === null) {
             return response()->json(['message' => __('connections.errors.unavailable')], 422);
         }
 

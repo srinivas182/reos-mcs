@@ -278,7 +278,10 @@
       "association": "Association",
       "operations": "Monitoring",
       "platform": "Platform",
-      "regulatory": "Regulatory"
+      "regulatory": "Regulatory",
+      "meetings": "Calendar and meetings",
+      "leads": "Leads",
+      "contacts": "Contacts"
     },
     "mode": {
       "label": "How it runs",
@@ -1175,6 +1178,132 @@
       "next3": "Your data in REOS refreshes automatically",
       "signIn": "Sign in to {{tool}}",
       "working": "This connection is working again."
+    }
+  },
+  "catalogue": {
+    "title": "Integrations catalogue",
+    "description": "Every tool agents, brokers and providers can connect · status, availability and health",
+    "demandAction": "Notify-me demand",
+    "tabs": {
+      "label": "Filter by status",
+      "all": "All",
+      "platform": "Platform services"
+    },
+    "statuses": {
+      "enabled": "Enabled",
+      "beta": "Beta",
+      "coming_soon": "Coming soon",
+      "paused": "Paused",
+      "retired": "Retired"
+    },
+    "peopleStatuses": {
+      "enabled": "Available",
+      "beta": "Beta",
+      "coming_soon": "Coming soon",
+      "paused": "Temporarily unavailable",
+      "retired": "Retiring"
+    },
+    "columns": {
+      "integration": "Integration",
+      "category": "Category",
+      "status": "Status",
+      "states": "States",
+      "roles": "Roles",
+      "plans": "Plans",
+      "connected": "Connected",
+      "health": "Health",
+      "demand": "Demand"
+    },
+    "all": "All",
+    "allPlans": "All plans",
+    "none": "—",
+    "taps_one": "{{count}} tap",
+    "taps_other": "{{count}} taps",
+    "health": {
+      "healthy": "Healthy",
+      "paused": "Paused by health checks",
+      "demo": "Demo data",
+      "off": "Off",
+      "test": "Test account"
+    },
+    "definitions": "Statuses: Enabled, Beta (selected organizations), Coming soon (shown with Notify me), Paused (kill switch; people see \"Temporarily unavailable\"), Retired (with a date and warning). Organizations can hide an enabled tool, never enable one.",
+    "detailTabs": {
+      "label": "Integration sections",
+      "availability": "Availability",
+      "credentials": "Credentials",
+      "health": "Health",
+      "changelog": "Changelog"
+    },
+    "pause": "Pause (kill switch)",
+    "resume": "Resume",
+    "save": "Save",
+    "saved": "{{name}} saved.",
+    "pausedToast": "{{name}} is paused. People see \"Temporarily unavailable\".",
+    "resumedToast": "{{name}} is back on.",
+    "rules": {
+      "title": "Availability rules",
+      "status": "Status",
+      "statusDefault": "As planned ({{status}})",
+      "retiresOn": "Last day",
+      "states": "States",
+      "roles": "Roles",
+      "plans": "Plans",
+      "plansLater": "Plan rules arrive with Plans and pricing. Until then every plan can use it.",
+      "betaOrganisations": "Beta organizations",
+      "everyone": "Everyone",
+      "only": "Only these",
+      "tenantsMayHide": "Organizations may hide this tool",
+      "tenantsMayRequire": "Organizations may require it for their agents",
+      "showComingSoon": "Show in the app as \"coming soon\" before release",
+      "notBuilt": "The connector for this tool isn't built yet, so people see \"Coming soon\" whatever the status says."
+    },
+    "healthTab": {
+      "title": "Connections",
+      "connected": "Connected accounts",
+      "reconnect": "Need reconnecting",
+      "failing": "Failing",
+      "success": "Successful syncs, 7 days",
+      "noRuns": "No syncs yet",
+      "autoPause": "Health checks pause the tool after 3 failed checks in a row, and the super admins are emailed."
+    },
+    "demand": {
+      "title": "Notify-me demand",
+      "description": "Which tools people want most, and tools they asked for",
+      "notify": "Notify me",
+      "beta": "Join beta",
+      "tool": "Tool",
+      "requests": "Tools people asked for",
+      "requestsEmpty": "No requests yet",
+      "toolsEmpty": "No taps yet",
+      "back": "Integrations catalogue",
+      "toolsEmptyBody": "When people tap \"Notify me\" or \"Join beta\" on a tool, it's counted here.",
+      "requestsEmptyBody": "When someone taps \"My tool isn't listed\", their request appears here."
+    },
+    "errors": {
+      "noInterest": "This tool can't be followed."
+    },
+    "summary": {
+      "title": "Credentials and health",
+      "auth": "Sign-in",
+      "auths": {
+        "oauth2": "OAuth · REOS partner app",
+        "api_key": "API key",
+        "aws": "AWS keys",
+        "none": "No keys needed"
+      },
+      "accounts": "Whose account",
+      "accountTypes": {
+        "user": "Each person's own",
+        "tenant": "The organization's",
+        "platform": "REOS's own"
+      },
+      "runsOn": "Runs on",
+      "sync": "Sync",
+      "syncBuilt": "Webhooks + every 15 min",
+      "notBuilt": "Connector not built yet",
+      "rateLimit": "Rate limit",
+      "perMinute_one": "{{count}} a minute · fair queue",
+      "perMinute_other": "{{count}} a minute · fair queue"
     }
   }
 }
