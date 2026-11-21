@@ -73,6 +73,14 @@ afterEach(() => {
 });
 
 describe('Today: the calendar (agent app journey; B4.1)', () => {
+  it('leaves to-dos to the To-dos list below (B4.3b), so they are not shown twice', async () => {
+    mockApi.GET.mockResolvedValue(day([event(), event({ id: 44, title: 'Call Maria', kind: 'todo', source: 'reos' })]));
+    await renderAgenda();
+
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Showing — 1234 Oak Ridge Dr. 2:00 PM · Google Calendar' })).toBeOnTheScreen());
+    expect(screen.queryByText('Call Maria')).toBeNull();
+  });
+
   it("asks for today in the phone's time zone and lists each event with its time and tool", async () => {
     mockApi.GET.mockResolvedValue(day([event({ id: 40, title: 'Option period ends', kind: 'deadline', all_day: true, start_date: '2026-11-21', end_date: '2026-11-21' }), event(), event({ id: 43, title: null, busy: true, editable: false, deletable: false, source: 'google-calendar' })]));
     await renderAgenda();

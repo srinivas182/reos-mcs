@@ -3,8 +3,18 @@ import { I18nextProvider } from 'react-i18next';
 
 import HomeScreen from '@/app/index';
 import { i18n } from '@/lib/i18n';
+import { ToastProvider } from '@/ui';
 
-jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
+const mockParams: { current: { capture?: string } } = { current: {} };
+jest.mock('expo-router', () => ({
+  router: { push: jest.fn(), setParams: jest.fn() },
+  useLocalSearchParams: () => mockParams.current,
+  useFocusEffect: jest.fn(),
+}));
+jest.mock('@/lib/todos', () => ({
+  ...jest.requireActual('@/lib/todos'),
+  useOpenTodos: () => ({ rows: [], reload: jest.fn() }),
+}));
 const mockUser: { current: object } = { current: { name: 'Sofia Reyes' } };
 jest.mock('@/lib/auth', () => ({ useAuth: () => ({ user: mockUser.current }) }));
 jest.mock('@/features/calendar/TodayAgenda', () => {
@@ -26,7 +36,9 @@ jest.mock('@/lib/api', () => ({
 const renderHome = () =>
   render(
     <I18nextProvider i18n={i18n}>
-      <HomeScreen />
+      <ToastProvider>
+        <HomeScreen />
+      </ToastProvider>
     </I18nextProvider>,
   );
 
@@ -57,6 +69,32 @@ describe('HomeScreen', () => {
     };
     await renderHome();
     expect(screen.getByText('Today agenda')).toBeOnTheScreen();
+    mockUser.current = { name: 'Sofia Reyes' };
+  });
+
+  it('gives agents their to-dos and the Ask bar for voice to-dos; the shortcut opens capture listening', async () => {
+    const { ExpoSpeechRecognitionModule } = jest.requireMock('expo-speech-recognition') as { ExpoSpeechRecognitionModule: { start: jest.Mock } };
+    const { router } = jest.requireMock('expo-router') as { router: { setParams: jest.Mock } };
+    mockUser.current = {
+      name: 'James Miller',
+      active_role: { role: 'agent', organisation_id: 2 },
+      roles: [{ role: 'agent', organisation: { id: 2, name: 'Lone Star Realty' } }],
+    };
+    await renderHome();
+    expect(screen.getByText('Your to-dos live here')).toBeOnTheScreen();
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Add a to-do: say it or type it' }));
+    expect(screen.getByLabelText('What to do')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Close' }));
+
+    // reos://voice and the "Add a to-do" home-screen shortcut land on /?capture=voice.
+    mockParams.current = { capture: 'voice' };
+    await renderHome();
+    await waitFor(() => expect(ExpoSpeechRecognitionModule.start).toHaveBeenCalled());
+    await fireEvent.press(screen.getByRole('button', { name: 'Close' }));
+    expect(router.setParams).toHaveBeenCalledWith({ capture: undefined });
+
+    mockParams.current = {};
     mockUser.current = { name: 'Sofia Reyes' };
   });
 

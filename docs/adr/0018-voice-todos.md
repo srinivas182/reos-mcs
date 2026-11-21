@@ -33,9 +33,15 @@ Agents think of things to do while driving between showings. Todoist Ramble and 
    - "Remind me" with only a date reminds at 9 AM.
 5. **AI credits stub** (`AiCredits`, `ai_credit_uses`): each person has a monthly allowance (`reos.ai.monthly_credits`, 500 by default), and each use records the feature, engine and cost only. Pools per seat and top-ups arrive in Sprint 6.
 6. **Reminders ring on the phone** (local notifications with Done and Snooze; B4.3b). The server keeps `remind_at` so every device knows; server push comes with B6.2.
+7. **On the phone (B4.3b)** the flow is: the Ask bar's mic on Today (or the "Add a to-do" home-screen shortcut, or `reos://voice`) opens a sheet that is already listening. Hold the big mic and let go to finish, or tap it to start and tap again to stop (tapping works with screen readers). Speech is turned into words by the phone (`expo-speech-recognition`, on the device when the phone supports it); no audio leaves the phone. The confirm card shows each to-do with its date and time (moved in steps), the reminder switch, the contact link and notes; nothing is saved until Save.
+   - **No signal:** the phone's parser reads the words, the confirmed to-do is kept on the phone (MMKV) and the reminder is scheduled at once. Done from the lock screen is kept too. Both are sent in order when the app is back in front or the phone is back online; the server's `client_id` check means a retry never saves twice. The confirmed card is what's sent: it is not read again by Claude later, because the person already checked it.
+   - **Done and Snooze** don't open the app: Done marks the to-do done (or queues it), Snooze rings again in 10 minutes.
+   - **Contacts:** permission is asked only when a to-do names someone. One match is linked unless the person says otherwise; several are offered as choices with "Don't link".
 
 ## Consequences
 
 - Voice works with no AI keys at all; Claude improves it when switched on.
 - Contacts are matched on the phone against its own address book (B4.3b), so no contact list leaves the phone. Sprint 5 adds matching against CRM contacts on the server.
 - Amazon Transcribe, the planned fallback for phones without on-device speech, is not used yet. The phone's own recogniser serves every supported device, and the confirm card catches mistakes.
+- "Hey Siri, add a to-do in REOS" needs a native App Intents extension, which Expo builds can't add without a custom native target. Until then the home-screen shortcut and the `reos://voice` link (which Siri Shortcuts and Android's Assistant routines can open) do the same job. App Intents are planned with the store builds.
+- To-dos due today appear once on the phone's Today, under To-dos (with Done), not again in the calendar list. The web Today card still shows them with the calendar.

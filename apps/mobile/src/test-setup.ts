@@ -92,8 +92,51 @@ jest.mock('expo-notifications', () => ({
   getPermissionsAsync: jest.fn().mockResolvedValue({ granted: false }),
   requestPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
   setNotificationChannelAsync: jest.fn(),
+  setNotificationCategoryAsync: jest.fn().mockResolvedValue(undefined),
+  setNotificationHandler: jest.fn(),
+  addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  dismissNotificationAsync: jest.fn().mockResolvedValue(undefined),
   cancelScheduledNotificationAsync: jest.fn().mockResolvedValue(undefined),
   scheduleNotificationAsync: jest.fn().mockResolvedValue('id'),
-  AndroidImportance: { DEFAULT: 3 },
-  SchedulableTriggerInputTypes: { DAILY: 'daily' },
+  AndroidImportance: { DEFAULT: 3, HIGH: 4 },
+  SchedulableTriggerInputTypes: { DAILY: 'daily', DATE: 'date' },
 }));
+
+// B4.3b voice to-dos: speech recognition, contacts and the home-screen
+// shortcut. Tests drive speech through `__emit` and set contacts per case.
+jest.mock('expo-speech-recognition', () => {
+  const { useEffect } = jest.requireActual<typeof import('react')>('react');
+  const handlers = new Map<string, Set<(event: unknown) => void>>();
+
+  return {
+    ExpoSpeechRecognitionModule: {
+      isRecognitionAvailable: jest.fn(() => true),
+      supportsOnDeviceRecognition: jest.fn(() => true),
+      requestPermissionsAsync: jest.fn(async () => ({ granted: true })),
+      start: jest.fn(),
+      stop: jest.fn(() => handlers.get('end')?.forEach((handler) => handler(null))),
+    },
+    useSpeechRecognitionEvent: (name: string, handler: (event: unknown) => void) => {
+      useEffect(() => {
+        const set = handlers.get(name) ?? new Set();
+        handlers.set(name, set);
+        set.add(handler);
+
+        return () => {
+          set.delete(handler);
+        };
+      }, [name, handler]);
+    },
+    __emit: (name: string, event: unknown) => handlers.get(name)?.forEach((handler) => handler(event)),
+  };
+});
+
+jest.mock('expo-contacts', () => ({
+  getPermissionsAsync: jest.fn(async () => ({ granted: true, canAskAgain: true })),
+  requestPermissionsAsync: jest.fn(async () => ({ granted: true, canAskAgain: true })),
+  ContactField: { FULL_NAME: 'fullName' },
+  Contact: { getAllDetails: jest.fn(async () => []) },
+}));
+
+jest.mock('expo-quick-actions', () => ({ setItems: jest.fn().mockResolvedValue(undefined), addListener: jest.fn(() => ({ remove: jest.fn() })), initial: undefined }));
+jest.mock('expo-quick-actions/router', () => ({ useQuickActionRouting: jest.fn() }));

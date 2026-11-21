@@ -14,6 +14,7 @@ import {
   ScreenHeader,
   SectionTitle,
   Sheet,
+  Stepper,
   SwitchRow,
   TabBar,
   Text,
@@ -28,6 +29,7 @@ const firstTab: Record<AppRole, TabKey> = { candidate: 'today', agent: 'today', 
 export default function KitDemo() {
   const undoToast = useUndoToast();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [quarter, setQuarter] = useState(0);
   const [archived, setArchived] = useState(false);
   const [days, setDays] = useState<'3' | '5' | '7'>('5');
   const [reminders, setReminders] = useState(true);
@@ -60,6 +62,7 @@ export default function KitDemo() {
       <TextField label="TREC licence number" hint="Seven digits, on your licence card" keyboardType="number-pad" />
       <TextField label="Email address" defaultValue="sofia@" error="Enter a full email address, like sofia@example.com." />
       <SwitchRow label="Study reminders" description="A nudge at 7pm if you haven't studied" value={reminders} onValueChange={setReminders} />
+      <Stepper label="Time" value={`${4 + Math.floor(quarter / 4)}:${String((quarter % 4) * 15).padStart(2, '0')} PM`} earlier="15 minutes earlier" later="15 minutes later" onEarlier={() => setQuarter((q) => Math.max(0, q - 1))} onLater={() => setQuarter((q) => q + 1)} />
 
       <SectionTitle>Undo instead of “Are you sure?”</SectionTitle>
       <Text>Maria Gomez · {archived ? 'Archived' : 'Active client'}</Text>

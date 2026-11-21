@@ -1,8 +1,6 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { useState } from 'react';
-import { Linking, View } from 'react-native';
+import { Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native-unistyles';
 
 import { api } from '@/lib/api';
 import {
@@ -20,7 +18,7 @@ import {
   payload,
   sourceName,
 } from '@/lib/calendar';
-import { Button, Callout, IconButton, PillGroup, Sheet, SwitchRow, Text, TextField, useUndoToast } from '@/ui';
+import { Button, Callout, PillGroup, Sheet, Stepper, SwitchRow, Text, TextField, useUndoToast } from '@/ui';
 
 type Props = {
   /** The event, `'new'`, or null when closed. */
@@ -221,21 +219,6 @@ function Editor({ event, day, writeTo, onClose, onChanged }: Omit<Props, 'event'
 }
 
 /** A value with earlier and later buttons (date by day, time by 15 minutes). */
-function Stepper({ label, value, earlier, later, onEarlier, onLater }: { label: string; value: string; earlier: string; later: string; onEarlier: () => void; onLater: () => void }) {
-  return (
-    <View style={styles.stepper}>
-      <Text weight="semibold">{label}</Text>
-      <View style={styles.stepperRow}>
-        <IconButton icon={ChevronLeft} label={earlier} onPress={onEarlier} />
-        <Text variant="bodyLarge" style={styles.stepperValue} accessibilityLabel={`${label}: ${value}`} accessibilityLiveRegion="polite">
-          {value}
-        </Text>
-        <IconButton icon={ChevronRight} label={later} onPress={onLater} />
-      </View>
-    </View>
-  );
-}
-
 function ConflictNotice({ event, onChanged, onClose }: { event: CalendarEvent; onChanged: () => void; onClose: () => void }) {
   const { t, i18n } = useTranslation();
   const toast = useUndoToast();
@@ -288,9 +271,3 @@ function ReadOnly({ event }: { event: CalendarEvent }) {
     </>
   );
 }
-
-const styles = StyleSheet.create((theme) => ({
-  stepper: { gap: theme.space.xs },
-  stepperRow: { flexDirection: 'row', alignItems: 'center', gap: theme.space.sm },
-  stepperValue: { flex: 1, textAlign: 'center' },
-}));

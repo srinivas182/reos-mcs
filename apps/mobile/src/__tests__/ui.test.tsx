@@ -7,7 +7,7 @@ import { I18nextProvider } from 'react-i18next';
 import { i18n } from '@/lib/i18n';
 import { Calculator } from 'lucide-react-native';
 
-import { AskBar, Button, Callout, ChatBubble, Chip, CodeInput, EmptyState, ListRow, OfflineBanner, OptionGroup, PillGroup, ProgressBar, ProgressRing, Sheet, SwitchRow, TabBar, Text, TextField, ToastProvider, useUndoToast } from '@/ui';
+import { AskBar, Button, Callout, ChatBubble, Chip, CodeInput, EmptyState, ListRow, OfflineBanner, OptionGroup, PillGroup, ProgressBar, ProgressRing, Sheet, Stepper, SwitchRow, TabBar, Text, TextField, ToastProvider, useUndoToast } from '@/ui';
 
 const wrap = async (ui: ReactNode) => render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
 
@@ -148,7 +148,26 @@ describe('TabBar', () => {
   });
 });
 
+describe('Stepper', () => {
+  it('moves in steps with two labelled 48-point buttons and announces the value', async () => {
+    const onEarlier = jest.fn();
+    const onLater = jest.fn();
+    await wrap(<Stepper label="Time" value="4:00 PM" earlier="15 minutes earlier" later="15 minutes later" onEarlier={onEarlier} onLater={onLater} />);
+
+    expect(screen.getByLabelText('Time: 4:00 PM')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: '15 minutes earlier' }));
+    await fireEvent.press(screen.getByRole('button', { name: '15 minutes later' }));
+    expect(onEarlier).toHaveBeenCalledTimes(1);
+    expect(onLater).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('AskBar', () => {
+  it('names the microphone for what it does on this screen', async () => {
+    await wrap(<AskBar placeholder="Add a to-do: say it or type it" voiceLabel="Add a to-do by voice" onPress={jest.fn()} onVoice={jest.fn()} />);
+    expect(screen.getByRole('button', { name: 'Add a to-do by voice' })).toBeOnTheScreen();
+  });
+
   it('opens typing or voice, both labelled', async () => {
     const onPress = jest.fn();
     const onVoice = jest.fn();

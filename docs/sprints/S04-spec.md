@@ -148,7 +148,7 @@ Benchmarks from the sprint plan: BoldTrail and Lone Wolf for tenant branding; To
 - **Offline:** captures are queued on the phone and parsed when back online. A reminder with a clear time is scheduled immediately by the date parser.
 - **Credits:** each parse uses AI credits from the seat's monthly pool (the credit ledger is a stub in this sprint; full credits arrive in Sprint 6).
 - **Done when:** "Remind me to call Maria at 4" creates the to-do, links Maria, and the reminder fires on the lock screen at 4 PM with Done and Snooze.
-- **As built (ADR 0018):** in two parts. **B4.3a** (server): to-dos, the parse endpoint, the credits stub, and due dates on the calendar. **B4.3b** (phone): capture, the confirm card, reminders, the offline queue and shortcuts. One date parser in two copies (`@reos/voice` on the phone, PHP on the server) passes a shared phrase set. Amazon Transcribe is not used yet (ADR 0018).
+- **As built (ADR 0018):** in two parts. **B4.3a** (server): to-dos, the parse endpoint, the credits stub, and due dates on the calendar. **B4.3b** (phone): capture, the confirm card, reminders, the offline queue and shortcuts. One date parser in two copies (`@reos/voice` on the phone, PHP on the server) passes a shared phrase set. Amazon Transcribe is not used yet. The shortcut is the home-screen "Add a to-do" action plus the `reos://voice` link; Siri App Intents follow with the store builds (ADR 0018).
 
 ## 4. Definition of done (whole sprint)
 

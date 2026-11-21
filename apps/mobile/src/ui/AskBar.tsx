@@ -13,10 +13,12 @@ type AskBarProps = {
   onPress: () => void;
   /** Starts a spoken question (hands-free, easier than typing). */
   onVoice: () => void;
+  /** What the microphone does, for screen readers (default "Ask by voice"). */
+  voiceLabel?: string;
 };
 
 /** The "Ask anything" bar above the tabs: one tap to type, or the blue microphone to speak. */
-export function AskBar({ placeholder, onPress, onVoice }: AskBarProps) {
+export function AskBar({ placeholder, onPress, onVoice, voiceLabel }: AskBarProps) {
   const { t } = useTranslation();
 
   return (
@@ -27,7 +29,7 @@ export function AskBar({ placeholder, onPress, onVoice }: AskBarProps) {
           {placeholder}
         </Text>
       </Pressable>
-      <Pressable accessibilityRole="button" accessibilityLabel={t('ask.voice')} onPress={onVoice} hitSlop={4} style={({ pressed }) => [styles.mic, pressed && styles.pressed]}>
+      <Pressable accessibilityRole="button" accessibilityLabel={voiceLabel ?? t('ask.voice')} onPress={onVoice} hitSlop={4} style={({ pressed }) => [styles.mic, pressed && styles.pressed]}>
         <Icon icon={Mic} color="onAction" size={22} />
       </Pressable>
     </View>
