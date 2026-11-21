@@ -166,6 +166,130 @@
                 "security": []
             }
         },
+        "/states/{state}/free-quiz": {
+            "get": {
+                "operationId": "states.free-quiz",
+                "description": "Ten exam-style questions for the state, in `locale` (en or es), each\nwith its answer, explanation and source. No account needed.",
+                "summary": "Get the free quiz",
+                "tags": [
+                    "FreeQuiz"
+                ],
+                "parameters": [
+                    {
+                        "name": "state",
+                        "in": "path",
+                        "required": true,
+                        "description": "The state code",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `QuizQuestionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/QuizQuestionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/me/quiz-attempts": {
+            "post": {
+                "operationId": "me.quiz-attempts",
+                "description": "The free quiz is answered before sign-up and kept on the phone; the\napp sends it here straight after the account is created.",
+                "summary": "Save a quiz to my account",
+                "tags": [
+                    "FreeQuiz"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QuizAttemptRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`QuizResultResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/QuizResultResource"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "operationId": "health",
@@ -400,6 +524,62 @@
                 }
             }
         },
+        "/me/onboarding": {
+            "put": {
+                "operationId": "me.onboarding",
+                "description": "Send only what changed. Choosing `become_agent` makes the person a\ncandidate. `complete: true` marks the setup done, so the chooser and\nsetup don't show again.",
+                "summary": "Save my getting-started choices",
+                "tags": [
+                    "Onboarding"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OnboardingRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`OnboardingResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OnboardingResource"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/auth/phone/start": {
             "post": {
                 "operationId": "auth.phone.start",
@@ -495,6 +675,135 @@
                                 }
                             }
                         }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/states": {
+            "get": {
+                "operationId": "states",
+                "description": "Live states first. The super admin decides which are live.",
+                "summary": "List states",
+                "tags": [
+                    "State"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `StateResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StateResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            }
+        },
+        "/states/{state}/waitlist": {
+            "post": {
+                "operationId": "states.waitlist",
+                "description": "Once per person, or per device before an account exists. Members are\ntold the day the state opens.",
+                "summary": "Join a state's waitlist",
+                "tags": [
+                    "State"
+                ],
+                "parameters": [
+                    {
+                        "name": "state",
+                        "in": "path",
+                        "required": true,
+                        "description": "The state code",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/WaitlistRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "waiting": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "waiting"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
@@ -817,6 +1126,15 @@
                 ],
                 "title": "IdentitySignInRequest"
             },
+            "Locale": {
+                "type": "string",
+                "description": "Languages REOS is available in. Matches `supportedLocales` in packages/i18n.\n",
+                "enum": [
+                    "en",
+                    "es"
+                ],
+                "title": "Locale"
+            },
             "MeResource": {
                 "type": "object",
                 "properties": {
@@ -912,6 +1230,10 @@
                             "type": "string"
                         }
                     },
+                    "onboarding": {
+                        "description": "Path, target state and setup choices from getting started (A3.3).",
+                        "$ref": "#/components/schemas/OnboardingResource"
+                    },
                     "two_step": {
                         "type": "object",
                         "properties": {
@@ -944,6 +1266,7 @@
                     "roles",
                     "active_role",
                     "permissions",
+                    "onboarding",
                     "two_step"
                 ],
                 "title": "MeResource"
@@ -984,6 +1307,164 @@
                     "admin"
                 ],
                 "title": "MembershipResource"
+            },
+            "OnboardingPath": {
+                "type": "string",
+                "description": "The cards on \"Choose your path\" (mobile journey screen 1).\n| |\n|---|\n| `become_agent` <br/>  |\n| `licensed_agent` <br/>  |\n| `broker` <br/> Broker, team and association set-up finishes on the website. |\n| `instructor` <br/>  |\n| `provider` <br/>  |",
+                "enum": [
+                    "become_agent",
+                    "licensed_agent",
+                    "broker",
+                    "instructor",
+                    "provider"
+                ],
+                "title": "OnboardingPath"
+            },
+            "OnboardingRequest": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/OnboardingPath"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "state": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Two-letter code of a live state.",
+                        "minLength": 2,
+                        "maxLength": 2
+                    },
+                    "exam_month": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "YYYY-MM, or null for \"Not sure\"."
+                    },
+                    "minutes_per_day": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "enum": [
+                            "10",
+                            "20",
+                            "30",
+                            "45",
+                            "60",
+                            null
+                        ]
+                    },
+                    "locale": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Locale"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "reminder_time": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "HH:MM, or null for no reminder."
+                    },
+                    "complete": {
+                        "type": "boolean",
+                        "description": "True when \"Build my plan\" is tapped: the setup won't show again."
+                    }
+                },
+                "title": "OnboardingRequest"
+            },
+            "OnboardingResource": {
+                "type": "object",
+                "properties": {
+                    "path": {
+                        "anyOf": [
+                            {
+                                "description": "The card chosen on \"Choose your path\"; null before choosing.\n| |\n|---|\n| `become_agent` <br/>  |\n| `licensed_agent` <br/>  |\n| `broker` <br/> Broker, team and association set-up finishes on the website. |\n| `instructor` <br/>  |\n| `provider` <br/>  |",
+                                "$ref": "#/components/schemas/OnboardingPath"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "target_state": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "exam_month": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The month they plan to take the exam (YYYY-MM); null means \"Not sure\"."
+                    },
+                    "minutes_per_day": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "reminder_time": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Daily reminder (HH:MM), or null for none."
+                    },
+                    "completed": {
+                        "type": "boolean",
+                        "description": "The 60-second setup is done, so the chooser and setup never show again."
+                    },
+                    "plan": {
+                        "type": "object",
+                        "properties": {
+                            "days_to_exam": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ],
+                                "description": "Days until the start of the exam month."
+                            },
+                            "qualifying_hours": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ],
+                                "description": "Qualifying education the state asks for (180 in Texas)."
+                            }
+                        },
+                        "required": [
+                            "days_to_exam",
+                            "qualifying_hours"
+                        ]
+                    }
+                },
+                "required": [
+                    "path",
+                    "target_state",
+                    "exam_month",
+                    "minutes_per_day",
+                    "reminder_time",
+                    "completed",
+                    "plan"
+                ],
+                "title": "OnboardingResource"
             },
             "OrganisationType": {
                 "type": "string",
@@ -1066,6 +1547,152 @@
                 ],
                 "title": "PhoneVerifyRequest"
             },
+            "QuizAttemptRequest": {
+                "type": "object",
+                "properties": {
+                    "state": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The state the quiz was taken for.",
+                        "minLength": 2,
+                        "maxLength": 2
+                    },
+                    "answers": {
+                        "type": "array",
+                        "description": "Each answer given before sign-up, kept on the phone until now.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "question_id": {
+                                    "type": "integer"
+                                },
+                                "choice": {
+                                    "type": "integer",
+                                    "minimum": 0,
+                                    "maximum": 3
+                                }
+                            },
+                            "required": [
+                                "question_id",
+                                "choice"
+                            ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 20
+                    }
+                },
+                "required": [
+                    "answers"
+                ],
+                "title": "QuizAttemptRequest"
+            },
+            "QuizQuestionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "topic": {
+                        "$ref": "#/components/schemas/QuizTopic"
+                    },
+                    "question": {
+                        "type": "string"
+                    },
+                    "options": {
+                        "type": "array",
+                        "description": "Four options, in order.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "correct_option": {
+                        "type": "integer",
+                        "description": "Index of the right option (0\u20133)."
+                    },
+                    "explanation": {
+                        "type": "string"
+                    },
+                    "source": {
+                        "type": "string",
+                        "description": "Where the answer comes from: a rule, statute or exam outline topic."
+                    },
+                    "sample": {
+                        "type": "boolean",
+                        "description": "A sample question (until the licensed question bank arrives)."
+                    }
+                },
+                "required": [
+                    "id",
+                    "topic",
+                    "question",
+                    "options",
+                    "correct_option",
+                    "explanation",
+                    "source",
+                    "sample"
+                ],
+                "title": "QuizQuestionResource"
+            },
+            "QuizResultResource": {
+                "type": "object",
+                "properties": {
+                    "correct": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "percent": {
+                        "type": "integer"
+                    },
+                    "topics": {
+                        "type": "array",
+                        "description": "Each topic: strong, learning or start_here.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "topic": {
+                                    "$ref": "#/components/schemas/QuizTopic"
+                                },
+                                "level": {
+                                    "type": "string",
+                                    "enum": [
+                                        "strong",
+                                        "learning",
+                                        "start_here"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "topic",
+                                "level"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "correct",
+                    "total",
+                    "percent",
+                    "topics"
+                ],
+                "title": "QuizResultResource"
+            },
+            "QuizTopic": {
+                "type": "string",
+                "description": "Exam topics from the licensing content outline, as quiz questions are tagged.\n",
+                "enum": [
+                    "agency",
+                    "contracts",
+                    "math",
+                    "ownership",
+                    "finance",
+                    "state_rules"
+                ],
+                "title": "QuizTopic"
+            },
             "Role": {
                 "type": "string",
                 "description": "The roles from the journey documents, plus the platform's super admin. A person can hold several, each in an organisation.\n",
@@ -1113,6 +1740,65 @@
                     "user"
                 ],
                 "title": "SignInResource"
+            },
+            "StateResource": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/StateStatus"
+                    },
+                    "live": {
+                        "type": "boolean",
+                        "description": "People can register and study for this state now; otherwise \"Coming soon\" with a waitlist."
+                    }
+                },
+                "required": [
+                    "code",
+                    "name",
+                    "status",
+                    "live"
+                ],
+                "title": "StateResource"
+            },
+            "StateStatus": {
+                "type": "string",
+                "description": "Where a state is in its launch (web journey screen 61).\n| |\n|---|\n| `live` <br/> People can register and study for this state. |\n| `in_preparation` <br/> Rules, courses and approvals are being loaded. |\n| `waitlist` <br/> Not being prepared yet; people can join the waitlist. |\n| `not_planned` <br/>  |",
+                "enum": [
+                    "live",
+                    "in_preparation",
+                    "waitlist",
+                    "not_planned"
+                ],
+                "title": "StateStatus"
+            },
+            "WaitlistRequest": {
+                "type": "object",
+                "properties": {
+                    "device_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "The app's device id, so the same phone joins once before an account exists."
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email",
+                        "description": "To be told the day the state opens (optional on the phone).",
+                        "maxLength": 255
+                    }
+                },
+                "title": "WaitlistRequest"
             }
         },
         "responses": {

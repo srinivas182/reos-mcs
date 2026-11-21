@@ -30,6 +30,12 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $phone
  * @property Carbon|null $phone_verified_at
  * @property Carbon|null $deletion_requested_at
+ * @property string|null $onboarding_path
+ * @property string|null $target_state
+ * @property Carbon|null $exam_month
+ * @property int|null $minutes_per_day
+ * @property string|null $reminder_time
+ * @property Carbon|null $onboarded_at
  * @property string|null $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
@@ -99,6 +105,9 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'deletion_requested_at' => 'datetime',
+            'exam_month' => 'date',
+            'minutes_per_day' => 'integer',
+            'onboarded_at' => 'datetime',
             'password' => 'hashed',
             'appearance' => Appearance::class,
             'text_size' => TextSize::class,

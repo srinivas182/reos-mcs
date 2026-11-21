@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\IntegrationCredentialController;
 use App\Http\Controllers\Admin\IntegrationModeController;
 use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonRoleController;
+use App\Http\Controllers\Admin\StateController;
 use App\Http\Middleware\ConfirmIdentity;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use Illuminate\Support\Facades\Route;
@@ -59,4 +60,13 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:people.ma
             Route::post('{person}/roles', [PersonRoleController::class, 'store'])->whereNumber('person')->name('roles.store');
             Route::delete('{person}/roles', [PersonRoleController::class, 'destroy'])->whereNumber('person')->name('roles.destroy');
         });
+    });
+
+// States (A3.3, web journey screen 61): launch status and waitlists.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:states.manage'])
+    ->prefix('admin/states')
+    ->name('states.')
+    ->group(function () {
+        Route::get('/', [StateController::class, 'index'])->name('index');
+        Route::patch('{state}', [StateController::class, 'update'])->middleware('throttle:30,1')->name('update');
     });

@@ -11,6 +11,7 @@ describe('roleNavigation (web journey, Navigation by role)', () => {
         expect(menu('super_admin')).toEqual([
             ['overview', '/dashboard'],
             ['people', '/admin/people'],
+            ['states', '/admin/states'],
             ['integrations', '/admin/integrations'],
         ]);
     });

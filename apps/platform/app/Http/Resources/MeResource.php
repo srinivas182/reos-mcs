@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Onboarding\OnboardingResource;
 use App\Models\SocialAccount;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
@@ -67,6 +68,8 @@ final class MeResource extends JsonResource
              * @var list<string>
              */
             'permissions' => $active->permissions($user),
+            /** Path, target state and setup choices from getting started (A3.3). */
+            'onboarding' => new OnboardingResource($user),
             'two_step' => [
                 /** An authenticator app or a passkey is set up. */
                 'enabled' => (bool) ActiveRole::hasTwoStep($user),

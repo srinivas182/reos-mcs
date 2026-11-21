@@ -30,7 +30,8 @@
     "openMenu": "Open the menu",
     "mainMenu": "Main menu",
     "userMenu": "Account menu for {{name}}",
-    "state": "State: {{state}}"
+    "state": "State: {{state}}",
+    "states": "States"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -780,5 +781,34 @@
     "description": "You're using REOS as {{role}}.",
     "comingTitle": "Your dashboard is on its way",
     "comingDescription": "Your plan, progress and the things that need you will appear here as each part of REOS goes live."
+  },
+  "states": {
+    "title": "States",
+    "description": "Which states are open, and how many people are waiting for the rest.",
+    "columns": {
+      "state": "State",
+      "status": "Status",
+      "regulator": "Regulator",
+      "examVendor": "Exam vendor",
+      "qualifyingHours": "Qualifying hours",
+      "ceHours": "CE per renewal",
+      "waitlist": "Waitlist"
+    },
+    "statuses": {
+      "live": "Live",
+      "in_preparation": "In preparation",
+      "waitlist": "Waitlist",
+      "not_planned": "Not planned"
+    },
+    "changeStatus": "Status for {{state}}",
+    "changed": "{{state}} is now {{status}}.",
+    "search": "Find a state",
+    "noResults": "No state matches “{{search}}”",
+    "goesLive": {
+      "title": "What changes when a state goes live",
+      "register": "People can choose it and register in the app and on reos.com.",
+      "waitlist": "Its waitlist is kept, so everyone waiting can be told when notifications arrive.",
+      "fill": "Fill in the regulator, exam vendor and hours before opening a state."
+    }
   }
 }

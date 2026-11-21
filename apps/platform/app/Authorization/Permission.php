@@ -37,6 +37,7 @@ enum Permission: string
     // Platform
     case PeopleManage = 'people.manage';
     case IntegrationsManage = 'integrations.manage';
+    case StatesManage = 'states.manage';
     case AuditView = 'audit.view';
 
     /** The area a permission is grouped under on screens. */
