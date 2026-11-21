@@ -34,7 +34,7 @@ describe('TwoStepNotice', () => {
 
         expect(
             screen.getByRole('heading', {
-                name: 'Su rol de Bróker necesita los dos pasos',
+                name: 'Su rol de Bróker necesita la verificación en dos pasos',
             }),
         ).toBeInTheDocument();
         await i18n.changeLanguage('en');

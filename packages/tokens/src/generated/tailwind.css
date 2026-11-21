@@ -43,6 +43,12 @@
     --color-reos-hero-accent: var(--reos-hero-accent);
     --color-reos-hero-progress: var(--reos-hero-progress);
     --color-reos-hero-track: var(--reos-hero-track);
+    --color-reos-nav-bg: var(--reos-nav-bg);
+    --color-reos-nav-panel: var(--reos-nav-panel);
+    --color-reos-nav-text: var(--reos-nav-text);
+    --color-reos-nav-muted: var(--reos-nav-muted);
+    --color-reos-nav-active: var(--reos-nav-active);
+    --color-reos-on-nav-active: var(--reos-on-nav-active);
 
     --text-caption: 0.875rem;
     --text-caption--line-height: 1.25rem;

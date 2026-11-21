@@ -117,6 +117,17 @@ export type SemanticColors = {
   heroProgress: string;
   /** Progress ring track on hero cards. */
   heroTrack: string;
+
+  /* Web app sidebar (web journey: dark navy in every theme). */
+  navBg: string;
+  /** Organisation block at the top of the sidebar. */
+  navPanel: string;
+  navText: string;
+  /** Labels such as "Organisation" and inactive icons. */
+  navMuted: string;
+  /** The page you are on. */
+  navActive: string;
+  onNavActive: string;
 };
 
 export const themes: Record<ThemeName, SemanticColors> = {
@@ -158,6 +169,12 @@ export const themes: Record<ThemeName, SemanticColors> = {
     heroAccent: palette.blue300,
     heroProgress: palette.green400,
     heroTrack: palette.slate700,
+    navBg: palette.navy900,
+    navPanel: palette.slate800,
+    navText: palette.white,
+    navMuted: palette.slate300,
+    navActive: palette.blue600,
+    onNavActive: palette.white,
   },
   dark: {
     page: palette.navy950,
@@ -197,6 +214,12 @@ export const themes: Record<ThemeName, SemanticColors> = {
     heroAccent: palette.blue300,
     heroProgress: palette.green400,
     heroTrack: palette.slate700,
+    navBg: palette.navy950,
+    navPanel: palette.slate800,
+    navText: '#F8FAFC',
+    navMuted: palette.slate300,
+    navActive: palette.blue600,
+    onNavActive: palette.white,
   },
   /** Calm, high-contrast theme for low vision and bright sunlight. */
   contrast: {
@@ -237,6 +260,12 @@ export const themes: Record<ThemeName, SemanticColors> = {
     heroAccent: '#BFD3FF',
     heroProgress: palette.green400,
     heroTrack: palette.slate600,
+    navBg: palette.black,
+    navPanel: palette.navy900,
+    navText: palette.white,
+    navMuted: palette.white,
+    navActive: palette.blue700,
+    onNavActive: palette.white,
   },
 };
 
@@ -257,6 +286,11 @@ export const contrastPairs: ReadonlyArray<{ fg: keyof SemanticColors; bg: keyof 
   { fg: 'action', bg: 'page', min: 4.5 },
   { fg: 'text', bg: 'actionTint', min: 4.5 },
   { fg: 'onAction', bg: 'action', min: 4.5 },
+  { fg: 'navText', bg: 'navBg', min: 4.5 },
+  { fg: 'navMuted', bg: 'navBg', min: 4.5 },
+  { fg: 'navText', bg: 'navPanel', min: 4.5 },
+  { fg: 'navMuted', bg: 'navPanel', min: 4.5 },
+  { fg: 'onNavActive', bg: 'navActive', min: 4.5 },
   { fg: 'onAction', bg: 'actionPressed', min: 4.5 },
   { fg: 'success', bg: 'surface', min: 4.5 },
   { fg: 'success', bg: 'successSurface', min: 4.5 },

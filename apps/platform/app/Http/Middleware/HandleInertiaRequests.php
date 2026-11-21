@@ -56,6 +56,11 @@ class HandleInertiaRequests extends Middleware
                 // Roles held, the one in use on this device, and what it allows (A3.2).
                 'roles' => fn () => $this->roles($request),
             ],
+            // The state chip in the top bar. Texas only for now; A5.1 adds the state switcher.
+            'region' => $request->user() === null ? null : [
+                'code' => config()->string('reos.region.code'),
+                'name' => config()->string('reos.region.name'),
+            ],
             'preferences' => [
                 'appearance' => View::shared('appearance', 'system'),
                 'textSize' => View::shared('textSize', 'standard'),

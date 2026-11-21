@@ -43,7 +43,7 @@ describe('RoleSwitcher', () => {
         render(<RoleSwitcher roles={lindaPark} onSwitch={onSwitch} />);
 
         const trigger = screen.getByRole('button', {
-            name: /Your role: Agent · Lone Star Realty/,
+            name: /Your role: Licensed agent · Lone Star Realty/,
         });
         await userEvent.click(trigger);
 
@@ -52,7 +52,7 @@ describe('RoleSwitcher', () => {
         });
         expect(broker).toHaveTextContent('Needs two-step');
         expect(
-            screen.getByRole('menuitemradio', { name: /Agent/ }),
+            screen.getByRole('menuitemradio', { name: /Licensed agent/ }),
         ).toHaveAttribute('aria-checked', 'true');
 
         await userEvent.click(broker);
@@ -82,7 +82,10 @@ describe('RoleSwitcher', () => {
         );
 
         expect(screen.queryByRole('button')).toBeNull();
-        expect(screen.getByText('Candidate · on your own')).toBeInTheDocument();
+        expect(screen.getByText('Candidate')).toBeInTheDocument();
+        expect(
+            screen.getByLabelText('Your role: Candidate · on your own'),
+        ).toBeInTheDocument();
     });
 
     it('shows nothing for someone with no role yet', () => {

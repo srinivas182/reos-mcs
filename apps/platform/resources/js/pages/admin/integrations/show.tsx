@@ -12,14 +12,14 @@ import type { LucideIcon } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import IntegrationCredentialController from '@/actions/App/Http/Controllers/Settings/IntegrationCredentialController';
+import IntegrationCredentialController from '@/actions/App/Http/Controllers/Admin/IntegrationCredentialController';
 import { CheckStatus } from '@/components/check-status';
 import { ChoiceTiles } from '@/components/choice-tiles';
 import type { ChoiceTile } from '@/components/choice-tiles';
 import { CopyField } from '@/components/copy-field';
 import { CredentialField } from '@/components/credential-field';
 import { EmptyState } from '@/components/empty-state';
-import Heading from '@/components/heading';
+import { PageHeader } from '@/components/page-header';
 import InputError from '@/components/input-error';
 import { ApprovalBadge, ModeBadge } from '@/components/integration-badges';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -73,22 +73,20 @@ export default function IntegrationShow({ integration, activity }: Props) {
         <>
             <Head title={integration.name} />
 
-            <h1 className="sr-only">{integration.name}</h1>
-
-            <div className="space-y-10">
+            <div className="space-y-10 px-4 py-6 md:px-8">
                 <div className="space-y-4">
-                    <Link
-                        href={index()}
-                        className="inline-flex min-h-touch items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
-                    >
-                        <ArrowLeft aria-hidden className="size-5" />
-                        {t('integrations.back')}
-                    </Link>
-
-                    <Heading
-                        variant="small"
+                    <PageHeader
                         title={integration.name}
                         description={integration.purpose}
+                        back={
+                            <Link
+                                href={index()}
+                                className="inline-flex min-h-touch items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
+                            >
+                                <ArrowLeft aria-hidden className="size-5" />
+                                {t('integrations.back')}
+                            </Link>
+                        }
                     />
 
                     <div className="flex flex-wrap gap-2">
@@ -534,14 +532,3 @@ function ActivityList({ activity }: { activity: AuditActivity[] }) {
         </section>
     );
 }
-
-IntegrationShow.layout = {
-    breadcrumbs: [
-        {
-            get title() {
-                return i18n.t('integrations.title');
-            },
-            href: index(),
-        },
-    ],
-};

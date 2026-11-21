@@ -16,6 +16,8 @@ Read `README.md` and `docs/adr/` first.
 - Local services: `compose.yaml` (PostgreSQL 17 + pgvector, Redis, Meilisearch, Mailpit, SeaweedFS S3). Tests in CI run on PostgreSQL.
 - Integrations: every integration, vendor account and approval is an entry in `docs/integrations/register.yaml`; never hard-code a vendor list elsewhere. Follow `docs/integrations/credentials-policy.md`.
 - Design standard: minimum 16pt body text, 48pt touch targets, plain language, high contrast; luxury, calm and modern.
+- **Journey screens are locked (UX rule).** Every web screen follows the Web App Journey (shell: dark sidebar per role with the organisation block, top bar with state chip, role chip and person; each page a title, a purpose line and actions). Every phone screen follows the mobile journeys (Today, Me, bottom tabs, sheets). The two are different on purpose; never copy one into the other. Before each PR, compare new screens side by side with the journey page and say which journey screen each one implements.
+- Spanish follows `packages/i18n/GLOSSARY.md` (formal "usted", everyday US Latin American terms).
 - Security: never commit secrets, `.env` files or signing keys. Validate all input, escape output, rate-limit public endpoints.
 - Branches: `sNN.N-short-name`. Open pull requests as drafts (quick checks only) and mark them ready once for the full suite. "CI result" must be green before merging. See `docs/ci.md`.
 - Git hooks (Lefthook) run on commit and push; don't skip them except in an emergency.

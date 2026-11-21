@@ -16,12 +16,21 @@
     "menu": "Menú",
     "dashboard": "Inicio",
     "settings": "Configuración",
-    "settingsDescription": "Administra tu perfil y tu cuenta",
+    "settingsDescription": "Cuenta, roles, privacidad y notificaciones",
     "profile": "Perfil",
     "security": "Seguridad",
     "appearance": "Apariencia e idioma",
     "integrations": "Integraciones",
-    "people": "Personas"
+    "people": "Personas",
+    "overview": "Resumen",
+    "account": "Cuenta",
+    "organisation": "Organización",
+    "platform": "Plataforma",
+    "signOut": "Cerrar sesión",
+    "openMenu": "Abrir el menú",
+    "mainMenu": "Menú principal",
+    "userMenu": "Menú de la cuenta de {{name}}",
+    "state": "Estado: {{state}}"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -83,7 +92,7 @@
   },
   "mobile": {
     "eyebrow": "REAL ESTATE OS",
-    "tagline": "Estudia, obtén tu licencia, cumple con los requisitos y crece, todo en una sola app.",
+    "tagline": "Estudie, obtenga su licencia, cumpla con los requisitos y crezca, todo en una sola app.",
     "connected": "Conectado a {{app}} · versión {{version}}",
     "unreachable": "No podemos conectar con el servidor de REOS en este momento.",
     "displaySettings": "Pantalla e idioma",
@@ -178,7 +187,7 @@
     "agents": "Agentes",
     "approvals": "Aprobaciones",
     "recruit": "Reclutar",
-    "brokerage": "Correduría",
+    "brokerage": "Agencia",
     "messages": "Mensajes",
     "community": "Comunidad",
     "profile": "Perfil",
@@ -195,7 +204,7 @@
   },
   "options": {
     "correct": "Respuesta correcta",
-    "incorrect": "Tu respuesta, incorrecta"
+    "incorrect": "Su respuesta, incorrecta"
   },
   "chat": {
     "you": "Tú",
@@ -300,7 +309,7 @@
     "accounts": {
       "platform": "Usa la cuenta propia de REOS.",
       "user": "Después de guardar estas claves, cada persona conecta su propia cuenta desde su configuración.",
-      "tenant": "Después de guardar estas claves, cada correduría o escuela conecta su propia cuenta desde su configuración."
+      "tenant": "Después de guardar estas claves, cada agencia inmobiliaria o escuela conecta su propia cuenta desde su configuración."
     },
     "setup": {
       "title": "Cómo obtener acceso de prueba"
@@ -463,7 +472,7 @@
       "remember": "Mantener la sesión iniciada en este dispositivo",
       "noAccount": "¿Es nuevo en REOS?",
       "createAccount": "Crear una cuenta",
-      "securityNote": "El inicio de sesión en dos pasos es obligatorio para corredores y administradores de escuelas y asociaciones. Los dispositivos nuevos se confirman por correo electrónico."
+      "securityNote": "La verificación en dos pasos es obligatoria para brókers y administradores de escuelas y asociaciones. Los dispositivos nuevos se confirman por correo electrónico."
     },
     "providers": {
       "google": "Continuar con Google",
@@ -514,7 +523,7 @@
       "submit": "Confirmar"
     },
     "twoFactor": {
-      "title": "Inicio de sesión en dos pasos",
+      "title": "Verificación en dos pasos",
       "codeDescription": "Escriba el código de seis dígitos de su aplicación de autenticación.",
       "recoveryDescription": "Escriba uno de sus códigos de recuperación.",
       "recoveryPlaceholder": "Código de recuperación",
@@ -561,18 +570,18 @@
       "cancel": "Conservar mi cuenta"
     },
     "twoStep": {
-      "title": "Inicio de sesión en dos pasos",
+      "title": "Verificación en dos pasos",
       "description": "Un segundo paso al iniciar sesión, con un código de una aplicación de autenticación en su teléfono.",
       "onBody": "Al iniciar sesión, le pedimos el código de 6 dígitos de su aplicación de autenticación.",
       "offBody": "Actívelo y le pediremos un código de 6 dígitos de una aplicación de autenticación cada vez que inicie sesión.",
-      "enable": "Activar los dos pasos",
-      "disable": "Desactivar los dos pasos",
+      "enable": "Activar la verificación en dos pasos",
+      "disable": "Desactivar la verificación en dos pasos",
       "continue": "Continuar la configuración",
-      "setupTitle": "Activar los dos pasos",
+      "setupTitle": "Activar la verificación en dos pasos",
       "setupBody": "Escanee el código QR con su aplicación de autenticación o escriba la clave de configuración.",
       "verifyTitle": "Escriba el código",
       "verifyBody": "Escriba el código de 6 dígitos que muestra su aplicación de autenticación.",
-      "enabledTitle": "Los dos pasos están activados",
+      "enabledTitle": "La verificación en dos pasos está activada",
       "enabledBody": "Escanee el código QR o escriba la clave de configuración en su aplicación de autenticación.",
       "orManual": "o escriba la clave usted mismo",
       "setupKey": "Clave de configuración",
@@ -621,30 +630,44 @@
       "removing": "Quitando…",
       "removeConfirm": "Quitar la llave de acceso",
       "keep": "Conservarla"
+    },
+    "profile": {
+      "title": "Perfil",
+      "description": "Su nombre y su correo electrónico.",
+      "name": "Nombre",
+      "namePlaceholder": "Nombre completo",
+      "email": "Correo electrónico",
+      "unverified": "Su correo electrónico todavía no está confirmado.",
+      "resend": "Enviar de nuevo el correo de confirmación",
+      "sent": "Le enviamos un nuevo enlace de confirmación a su correo.",
+      "save": "Guardar",
+      "saved": "Perfil guardado.",
+      "rolesTitle": "Cuenta y roles",
+      "rolesDescription": "Sus roles y dónde los tiene. Pida a su administrador que agregue o cambie un rol."
     }
   },
   "roles": {
     "names": {
       "candidate": "Candidato",
-      "agent": "Agente",
+      "agent": "Agente con licencia",
       "broker": "Bróker",
       "mentor": "Mentor",
       "instructor": "Instructor",
       "school_admin": "Administrador de la escuela",
       "provider": "Proveedor de servicios",
       "association_admin": "Administrador de la asociación",
-      "super_admin": "Superadministrador"
+      "super_admin": "Superadministrador de REOS"
     },
     "organisationTypes": {
       "platform": "Por su cuenta",
-      "brokerage": "Correduría",
+      "brokerage": "Agencia inmobiliaria",
       "school": "Escuela",
       "association": "Asociación",
       "provider_business": "Empresa"
     },
     "errors": {
       "notHeld": "Usted no tiene ese rol. Pídaselo a su administrador si lo necesita.",
-      "twoStepRequired": "Active el inicio de sesión en dos pasos para usar este rol. Tarda alrededor de un minuto.",
+      "twoStepRequired": "Active la verificación en dos pasos para usar este rol. Tarda alrededor de un minuto.",
       "wrongOrganisation": "Ese rol no se puede tener en este tipo de organización.",
       "lastSuperAdmin": "REOS necesita al menos un superadministrador. Agregue otro antes de quitar este."
     },
@@ -653,18 +676,18 @@
       "current": "Usa REOS como {{role}} en {{organisation}}",
       "menuTitle": "Cambiar de rol",
       "onOwn": "{{role}} · por su cuenta",
-      "needsTwoStep": "Necesita dos pasos",
+      "needsTwoStep": "Necesita verificación en dos pasos",
       "switched": "Ahora usa REOS como {{role}}."
     },
     "twoStepNotice": {
-      "title": "Active los dos pasos para usar {{role}}",
+      "title": "Active la verificación en dos pasos para usar {{role}}",
       "body": "Los roles de administración cuidan información de otras personas, así que iniciar sesión necesita un segundo paso: una llave de acceso o una aplicación de autenticación. Tarda alrededor de un minuto.",
-      "action": "Activar los dos pasos",
+      "action": "Activar la verificación en dos pasos",
       "otherRole": "Usar otro rol"
     },
     "twoStepSecurity": {
-      "title": "Su rol de {{role}} necesita los dos pasos",
-      "body": "Elija una opción: agregue una llave de acceso (Face ID, una huella o el bloqueo de su computadora) o active los dos pasos con una aplicación de autenticación. Guarde sus códigos de recuperación en un lugar seguro."
+      "title": "Su rol de {{role}} necesita la verificación en dos pasos",
+      "body": "Elija una opción: agregue una llave de acceso (Face ID, una huella o el bloqueo de su computadora) o active la verificación en dos pasos con una aplicación de autenticación. Guarde sus códigos de recuperación en un lugar seguro."
     }
   },
   "people": {
@@ -683,8 +706,8 @@
     "unnamed": "Sin nombre todavía",
     "noRoles": "Sin roles todavía",
     "admin": "Administración",
-    "twoStepOn": "Dos pasos activados",
-    "twoStepOff": "Sin dos pasos",
+    "twoStepOn": "Verificación en dos pasos activada",
+    "twoStepOff": "Sin verificación en dos pasos",
     "joined": "Se unió el {{date}}",
     "open": "Abrir {{name}}",
     "back": "Todas las personas",
@@ -720,5 +743,12 @@
       "someone": "Alguien",
       "unknownOrganisation": "una organización"
     }
+  },
+  "dashboard": {
+    "greeting": "Hola, {{name}}",
+    "greetingNoName": "Le damos la bienvenida a REOS",
+    "description": "Usa REOS como {{role}}.",
+    "comingTitle": "Su panel está en camino",
+    "comingDescription": "Su plan, su progreso y lo que necesita su atención aparecerán aquí a medida que se activa cada parte de REOS."
   }
 }

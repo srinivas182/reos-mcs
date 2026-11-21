@@ -1,9 +1,8 @@
 import { router, usePage } from '@inertiajs/react';
-import { BriefcaseBusiness, ChevronsUpDown, ShieldAlert } from 'lucide-react';
+import { ChevronDown, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -25,8 +24,9 @@ type Props = {
 };
 
 /**
- * Shows the role in use and, for people with more than one, switches it.
- * The browser remembers the choice; the phone app has its own in Me.
+ * The role chip in the top bar (web journey, Navigation): names the role in
+ * use and, for people with more than one, switches it. The browser
+ * remembers the choice; the phone app switches in Me.
  */
 export function RoleSwitcher({ roles, onSwitch, switching = false }: Props) {
     const { t } = useTranslation();
@@ -40,13 +40,18 @@ export function RoleSwitcher({ roles, onSwitch, switching = false }: Props) {
     const needsTwoStep = (m: Membership): boolean =>
         m.admin && !roles.twoStepEnabled;
 
-    // One role: say which, nothing to switch.
+    const chip =
+        'inline-flex items-center gap-1 rounded-reos-pill bg-accent px-3 py-1 text-sm font-semibold text-primary';
+    const role = roleName(t, current.role);
+
+    // One role: the chip just names it.
     if (roles.held.length < 2) {
         return (
-            <p className="flex min-w-0 items-center gap-2 text-base text-muted-foreground">
-                <BriefcaseBusiness aria-hidden className="size-5 shrink-0" />
-                <span className="sr-only">{t('roles.switcher.label')}: </span>
-                <span className="truncate">{label}</span>
+            <p
+                className="flex min-h-12 items-center"
+                aria-label={`${t('roles.switcher.label')}: ${label}`}
+            >
+                <span className={chip}>{role}</span>
             </p>
         );
     }
@@ -54,19 +59,17 @@ export function RoleSwitcher({ roles, onSwitch, switching = false }: Props) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button
-                    variant="outline"
-                    className="max-w-full min-w-0"
+                <button
+                    type="button"
+                    className="flex min-h-12 items-center rounded-reos-md focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none disabled:opacity-50"
                     disabled={switching}
                     aria-label={`${t('roles.switcher.label')}: ${label}. ${t('roles.switcher.menuTitle')}`}
                 >
-                    <BriefcaseBusiness aria-hidden />
-                    <span className="truncate">{label}</span>
-                    <ChevronsUpDown
-                        aria-hidden
-                        className="text-muted-foreground"
-                    />
-                </Button>
+                    <span className={chip}>
+                        {role}
+                        <ChevronDown aria-hidden className="size-4" />
+                    </span>
+                </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-72">
                 <DropdownMenuLabel>

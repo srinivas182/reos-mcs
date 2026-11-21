@@ -31,6 +31,15 @@ return [
     | The phone app's identifiers (Apple sign-in tokens are issued to the
     | bundle id). Must match apps/mobile/app.json.
     */
+    /*
+    | The state REOS launches in (the top bar's state chip). A5.1 replaces this
+    | with the person's own states and a state switcher.
+    */
+    'region' => [
+        'code' => env('REOS_REGION_CODE', 'TX'),
+        'name' => env('REOS_REGION_NAME', 'Texas'),
+    ],
+
     'mobile' => [
         'bundle_id' => env('REOS_MOBILE_BUNDLE_ID', 'com.reos.app'),
         // Where browser sign-in returns to the app (scheme in apps/mobile/app.json).

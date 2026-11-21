@@ -97,7 +97,7 @@ it('gives each persona their roles in their organisation, and can run again', fu
     expect($roles('sofia.reyes@demo.reos.test'))->toBe(['candidate @ Texas Realty School'])
         ->and($roles('linda.park@demo.reos.test'))->toBe(['broker @ Lone Star Realty', 'agent @ Lone Star Realty'])
         ->and($roles('karen.webb@demo.reos.test'))->toBe(['association_admin @ Texas REALTORS®'])
-        ->and($roles('ops@demo.reos.test'))->toBe(['super_admin @ REOS'])
+        ->and($roles('ops@demo.reos.test'))->toBe(['super_admin @ REOS platform'])
         ->and(Organisation::query()->count())->toBe(count(Personas::organisations()));
 
     foreach (Personas::all() as $persona) {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Settings;
+namespace App\Http\Controllers\Admin;
 
 use App\Authorization\Role;
 use App\Http\Controllers\Controller;
@@ -25,7 +25,7 @@ final class PeopleController extends Controller
         $search = $request->string('search')->trim()->limit(100, '')->toString();
         $people = $directory->search($search);
 
-        return Inertia::render('settings/people/index', [
+        return Inertia::render('admin/people/index', [
             'search' => $search,
             'people' => [
                 'data' => array_map(
@@ -41,7 +41,7 @@ final class PeopleController extends Controller
 
     public function show(Request $request, User $person): Response
     {
-        return Inertia::render('settings/people/show', [
+        return Inertia::render('admin/people/show', [
             'person' => (new PersonResource($person))->resolve($request),
             // What can be granted where; the screen offers only valid pairs.
             'roleOptions' => array_map(static fn (Role $role): array => [

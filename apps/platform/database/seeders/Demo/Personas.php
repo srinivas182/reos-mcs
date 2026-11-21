@@ -31,7 +31,7 @@ final class Personas
             new Persona('school_admin', 'Paul Diaz', self::email('paul.diaz'), 'Texas Realty School', 'School administrator'),
             new Persona('provider', 'Ana Ruiz', self::email('ana.ruiz'), 'Katy Home Loans', 'Service provider (mortgage)'),
             new Persona('association_admin', 'Karen Webb', self::email('karen.webb'), 'Texas REALTORS®', 'Association administrator'),
-            new Persona('super_admin', 'REOS Operations', self::email('ops'), 'REOS', 'Platform super administrator'),
+            new Persona('super_admin', 'REOS Operations', self::email('ops'), 'REOS platform', 'Platform super administrator'),
         ];
     }
 
@@ -43,7 +43,7 @@ final class Personas
     public static function organisations(): array
     {
         return [
-            'REOS' => OrganisationType::Platform,
+            'REOS platform' => OrganisationType::Platform,
             'Lone Star Realty' => OrganisationType::Brokerage,
             'Texas Realty School' => OrganisationType::School,
             'Katy Home Loans' => OrganisationType::ProviderBusiness,

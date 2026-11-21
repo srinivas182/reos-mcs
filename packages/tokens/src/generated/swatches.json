@@ -36,7 +36,13 @@
     "heroMuted": "#CBD5E1",
     "heroAccent": "#93C5FD",
     "heroProgress": "#4ADE80",
-    "heroTrack": "#334155"
+    "heroTrack": "#334155",
+    "navBg": "#0F172A",
+    "navPanel": "#1E293B",
+    "navText": "#FFFFFF",
+    "navMuted": "#CBD5E1",
+    "navActive": "#2952CC",
+    "onNavActive": "#FFFFFF"
   },
   "dark": {
     "page": "#0B1120",
@@ -75,7 +81,13 @@
     "heroMuted": "#CBD5E1",
     "heroAccent": "#93C5FD",
     "heroProgress": "#4ADE80",
-    "heroTrack": "#334155"
+    "heroTrack": "#334155",
+    "navBg": "#0B1120",
+    "navPanel": "#1E293B",
+    "navText": "#F8FAFC",
+    "navMuted": "#CBD5E1",
+    "navActive": "#2952CC",
+    "onNavActive": "#FFFFFF"
   },
   "contrast": {
     "page": "#FFFFFF",
@@ -114,6 +126,12 @@
     "heroMuted": "#FFFFFF",
     "heroAccent": "#BFD3FF",
     "heroProgress": "#4ADE80",
-    "heroTrack": "#475569"
+    "heroTrack": "#475569",
+    "navBg": "#000000",
+    "navPanel": "#0F172A",
+    "navText": "#FFFFFF",
+    "navMuted": "#FFFFFF",
+    "navActive": "#1E3FA3",
+    "onNavActive": "#FFFFFF"
   }
 }

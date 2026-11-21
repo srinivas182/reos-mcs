@@ -5,15 +5,16 @@ import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { AdminTwoStepBanner } from '@/components/two-step-notice';
 import type { AppLayoutProps } from '@/types';
 
-export default function AppSidebarLayout({
-    children,
-    breadcrumbs = [],
-}: AppLayoutProps) {
+/**
+ * The signed-in web app: the journey's sidebar and top bar around each page.
+ * Pages show their own title (and a back link where needed), not breadcrumbs.
+ */
+export default function AppSidebarLayout({ children }: AppLayoutProps) {
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
             <AppContent variant="sidebar" className="min-w-0 overflow-x-clip">
-                <AppSidebarHeader breadcrumbs={breadcrumbs} />
+                <AppSidebarHeader />
                 <AdminTwoStepBanner />
                 {children}
             </AppContent>

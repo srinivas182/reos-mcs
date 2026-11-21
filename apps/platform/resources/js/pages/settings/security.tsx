@@ -10,10 +10,8 @@ import PasswordInput from '@/components/password-input';
 import { TwoStepNotice } from '@/components/two-step-notice';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { i18n } from '@/lib/i18n';
 import { activeMembership, roleName } from '@/lib/roles';
 import { destroy as destroyDevice } from '@/routes/devices';
-import { edit } from '@/routes/security';
 /* @chisel-passkeys */
 import type { Props as ManagePasskeysProps } from '@/components/manage-passkeys';
 import ManagePasskeys from '@/components/manage-passkeys';
@@ -320,14 +318,3 @@ function YourDevices({
         </section>
     );
 }
-
-Security.layout = {
-    breadcrumbs: [
-        {
-            get title() {
-                return i18n.t('settings.security.title');
-            },
-            href: edit(),
-        },
-    ],
-};

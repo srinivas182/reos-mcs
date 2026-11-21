@@ -37,7 +37,7 @@ final class Organisation extends Model
     {
         return self::query()->firstOrCreate(
             ['type' => OrganisationType::Platform, 'parent_id' => null],
-            ['name' => 'REOS'],
+            ['name' => 'REOS platform'],
         );
     }
 
