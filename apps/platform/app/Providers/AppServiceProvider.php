@@ -9,6 +9,7 @@ use App\Integrations\Credentials\CredentialCipher;
 use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\Credentials\DatabaseCredentialVault;
 use App\Models\PersonalAccessToken;
+use App\Models\State;
 use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Authorization\ActiveRole;
@@ -74,6 +75,8 @@ class AppServiceProvider extends ServiceProvider
     protected function configureRoles(): void
     {
         Route::model('person', User::class);
+        // States are found by their code, in any case ("tx" or "TX").
+        Route::bind('state', static fn (string $code): State => State::query()->findOrFail(strtoupper($code)));
 
         Gate::before(function (User $user, string $ability): ?bool {
             $permission = Permission::tryFrom($ability);

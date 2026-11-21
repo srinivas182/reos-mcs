@@ -7,6 +7,9 @@ use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MeController;
+use App\Http\Controllers\Api\Onboarding\FreeQuizController;
+use App\Http\Controllers\Api\Onboarding\OnboardingController;
+use App\Http\Controllers\Api\Onboarding\StateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,8 +41,19 @@ Route::prefix('auth')->name('api.auth.')->group(function () {
         ->name('phone.verify');
 });
 
+// Getting started (A3.3): public, before an account exists.
+Route::middleware('throttle:60,1')->group(function () {
+    Route::get('states', [StateController::class, 'index'])->name('api.states');
+    Route::get('states/{state}/free-quiz', [FreeQuizController::class, 'show'])->name('api.states.free-quiz');
+});
+Route::post('states/{state}/waitlist', [StateController::class, 'waitlist'])
+    ->middleware('throttle:10,1')
+    ->name('api.states.waitlist');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', [MeController::class, 'show'])->name('api.me');
+    Route::put('me/onboarding', [OnboardingController::class, 'update'])->middleware('throttle:30,1')->name('api.me.onboarding');
+    Route::post('me/quiz-attempts', [FreeQuizController::class, 'store'])->middleware('throttle:30,1')->name('api.me.quiz-attempts');
     Route::delete('me', [MeController::class, 'destroy'])->middleware('throttle:sign-in')->name('api.me.destroy');
     Route::put('me/active-role', ActiveRoleController::class)->middleware('throttle:30,1')->name('api.me.active-role');
     Route::get('me/devices', [MeController::class, 'devices'])->name('api.me.devices');

@@ -72,6 +72,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/states/{state}/free-quiz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get the free quiz
+         * @description Ten exam-style questions for the state, in `locale` (en or es), each
+         *     with its answer, explanation and source. No account needed.
+         */
+        get: operations["states.free-quiz"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/quiz-attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Save a quiz to my account
+         * @description The free quiz is answered before sign-up and kept on the phone; the
+         *     app sends it here straight after the account is created.
+         */
+        post: operations["me.quiz-attempts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -195,6 +237,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/onboarding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save my getting-started choices
+         * @description Send only what changed. Choosing `become_agent` makes the person a
+         *     candidate. `complete: true` marks the setup done, so the chooser and
+         *     setup don't show again.
+         */
+        put: operations["me.onboarding"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/phone/start": {
         parameters: {
             query?: never;
@@ -231,6 +295,47 @@ export interface paths {
          *     for 15 minutes.
          */
         post: operations["auth.phone.verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List states
+         * @description Live states first. The super admin decides which are live.
+         */
+        get: operations["states"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/states/{state}/waitlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join a state's waitlist
+         * @description Once per person, or per device before an account exists. Members are
+         *     told the day the state opens.
+         */
+        post: operations["states.waitlist"];
         delete?: never;
         options?: never;
         head?: never;
@@ -351,6 +456,12 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /**
+         * Locale
+         * @description Languages REOS is available in. Matches `supportedLocales` in packages/i18n.
+         * @enum {string}
+         */
+        Locale: "en" | "es";
         /** MeResource */
         MeResource: {
             id: number;
@@ -380,6 +491,8 @@ export interface components {
             } | null;
             /** @description What the active role allows, such as `learning.study`. */
             permissions: string[];
+            /** @description Path, target state and setup choices from getting started (A3.3). */
+            onboarding: components["schemas"]["OnboardingResource"];
             two_step: {
                 /** @description An authenticator app or a passkey is set up. */
                 enabled: boolean;
@@ -397,6 +510,52 @@ export interface components {
             };
             /** @description Admin roles need two-step before they grant anything. */
             admin: boolean;
+        };
+        /**
+         * OnboardingPath
+         * @description The cards on "Choose your path" (mobile journey screen 1).
+         *     | |
+         *     |---|
+         *     | `become_agent` <br/>  |
+         *     | `licensed_agent` <br/>  |
+         *     | `broker` <br/> Broker, team and association set-up finishes on the website. |
+         *     | `instructor` <br/>  |
+         *     | `provider` <br/>  |
+         * @enum {string}
+         */
+        OnboardingPath: "become_agent" | "licensed_agent" | "broker" | "instructor" | "provider";
+        /** OnboardingRequest */
+        OnboardingRequest: {
+            path?: components["schemas"]["OnboardingPath"] | null;
+            /** @description Two-letter code of a live state. */
+            state?: string | null;
+            /** @description YYYY-MM, or null for "Not sure". */
+            exam_month?: string | null;
+            /** @enum {integer|null} */
+            minutes_per_day?: "10" | "20" | "30" | "45" | "60" | null;
+            locale?: components["schemas"]["Locale"] | null;
+            /** @description HH:MM, or null for no reminder. */
+            reminder_time?: string | null;
+            /** @description True when "Build my plan" is tapped: the setup won't show again. */
+            complete?: boolean;
+        };
+        /** OnboardingResource */
+        OnboardingResource: {
+            path: components["schemas"]["OnboardingPath"] | null;
+            target_state: string | null;
+            /** @description The month they plan to take the exam (YYYY-MM); null means "Not sure". */
+            exam_month: string | null;
+            minutes_per_day: number | null;
+            /** @description Daily reminder (HH:MM), or null for none. */
+            reminder_time: string | null;
+            /** @description The 60-second setup is done, so the chooser and setup never show again. */
+            completed: boolean;
+            plan: {
+                /** @description Days until the start of the exam month. */
+                days_to_exam: number | null;
+                /** @description Qualifying education the state asks for (180 in Texas). */
+                qualifying_hours: number | null;
+            };
         };
         /**
          * OrganisationType
@@ -433,6 +592,49 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /** QuizAttemptRequest */
+        QuizAttemptRequest: {
+            /** @description The state the quiz was taken for. */
+            state?: string | null;
+            /** @description Each answer given before sign-up, kept on the phone until now. */
+            answers: {
+                question_id: number;
+                choice: number;
+            }[];
+        };
+        /** QuizQuestionResource */
+        QuizQuestionResource: {
+            id: number;
+            topic: components["schemas"]["QuizTopic"];
+            question: string;
+            /** @description Four options, in order. */
+            options: string[];
+            /** @description Index of the right option (0–3). */
+            correct_option: number;
+            explanation: string;
+            /** @description Where the answer comes from: a rule, statute or exam outline topic. */
+            source: string;
+            /** @description A sample question (until the licensed question bank arrives). */
+            sample: boolean;
+        };
+        /** QuizResultResource */
+        QuizResultResource: {
+            correct: number;
+            total: number;
+            percent: number;
+            /** @description Each topic: strong, learning or start_here. */
+            topics: {
+                topic: components["schemas"]["QuizTopic"];
+                /** @enum {string} */
+                level: "strong" | "learning" | "start_here";
+            }[];
+        };
+        /**
+         * QuizTopic
+         * @description Exam topics from the licensing content outline, as quiz questions are tagged.
+         * @enum {string}
+         */
+        QuizTopic: "agency" | "contracts" | "math" | "ownership" | "finance" | "state_rules";
         /**
          * Role
          * @description The roles from the journey documents, plus the platform's super admin. A person can hold several, each in an organisation.
@@ -450,6 +652,39 @@ export interface components {
             /** @description True when this sign-in created the account (show the 60-second setup). */
             new_account: boolean;
             user: components["schemas"]["MeResource"];
+        };
+        /** StateResource */
+        StateResource: {
+            code: string;
+            name: string;
+            status: components["schemas"]["StateStatus"];
+            /** @description People can register and study for this state now; otherwise "Coming soon" with a waitlist. */
+            live: boolean;
+        };
+        /**
+         * StateStatus
+         * @description Where a state is in its launch (web journey screen 61).
+         *     | |
+         *     |---|
+         *     | `live` <br/> People can register and study for this state. |
+         *     | `in_preparation` <br/> Rules, courses and approvals are being loaded. |
+         *     | `waitlist` <br/> Not being prepared yet; people can join the waitlist. |
+         *     | `not_planned` <br/>  |
+         * @enum {string}
+         */
+        StateStatus: "live" | "in_preparation" | "waitlist" | "not_planned";
+        /** WaitlistRequest */
+        WaitlistRequest: {
+            /**
+             * Format: uuid
+             * @description The app's device id, so the same phone joins once before an account exists.
+             */
+            device_id?: string | null;
+            /**
+             * Format: email
+             * @description To be told the day the state opens (optional on the phone).
+             */
+            email?: string | null;
         };
     };
     responses: {
@@ -518,13 +753,24 @@ export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInR
 export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
+export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
+export type SchemaOnboardingPath = components['schemas']['OnboardingPath'];
+export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest'];
+export type SchemaOnboardingResource = components['schemas']['OnboardingResource'];
 export type SchemaOrganisationType = components['schemas']['OrganisationType'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
+export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
+export type SchemaQuizResultResource = components['schemas']['QuizResultResource'];
+export type SchemaQuizTopic = components['schemas']['QuizTopic'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
+export type SchemaStateResource = components['schemas']['StateResource'];
+export type SchemaStateStatus = components['schemas']['StateStatus'];
+export type SchemaWaitlistRequest = components['schemas']['WaitlistRequest'];
 export type ResponseModelNotFoundException = components['responses']['ModelNotFoundException'];
 export type ResponseValidationException = components['responses']['ValidationException'];
 export type ResponseAuthenticationException = components['responses']['AuthenticationException'];
@@ -623,6 +869,82 @@ export interface operations {
                     "application/json": components["schemas"]["SignInResource"];
                 };
             };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "states.free-quiz": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The state code */
+                state: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `QuizQuestionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["QuizQuestionResource"][];
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.quiz-attempts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuizAttemptRequest"];
+            };
+        };
+        responses: {
+            /** @description `QuizResultResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuizResultResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
@@ -815,6 +1137,44 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
         };
     };
+    "me.onboarding": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["OnboardingRequest"];
+            };
+        };
+        responses: {
+            /** @description `OnboardingResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OnboardingResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "auth.phone.start": {
         parameters: {
             query?: never;
@@ -871,6 +1231,82 @@ export interface operations {
                     "application/json": components["schemas"]["SignInResource"];
                 };
             };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    states: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `StateResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["StateResource"][];
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "states.waitlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The state code */
+                state: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["WaitlistRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        waiting: number;
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

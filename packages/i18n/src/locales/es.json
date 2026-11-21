@@ -30,7 +30,8 @@
     "openMenu": "Abrir el menú",
     "mainMenu": "Menú principal",
     "userMenu": "Menú de la cuenta de {{name}}",
-    "state": "Estado: {{state}}"
+    "state": "Estado: {{state}}",
+    "states": "Estados"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -780,5 +781,34 @@
     "description": "Usa REOS como {{role}}.",
     "comingTitle": "Su panel está en camino",
     "comingDescription": "Su plan, su progreso y lo que necesita su atención aparecerán aquí a medida que se activa cada parte de REOS."
+  },
+  "states": {
+    "title": "Estados",
+    "description": "Qué estados están abiertos y cuántas personas esperan los demás.",
+    "columns": {
+      "state": "Estado",
+      "status": "Situación",
+      "regulator": "Regulador",
+      "examVendor": "Proveedor del examen",
+      "qualifyingHours": "Horas de calificación",
+      "ceHours": "CE por renovación",
+      "waitlist": "Lista de espera"
+    },
+    "statuses": {
+      "live": "Activo",
+      "in_preparation": "En preparación",
+      "waitlist": "Lista de espera",
+      "not_planned": "Sin planes"
+    },
+    "changeStatus": "Situación de {{state}}",
+    "changed": "{{state}} ahora está en: {{status}}.",
+    "search": "Buscar un estado",
+    "noResults": "Ningún estado coincide con «{{search}}»",
+    "goesLive": {
+      "title": "Qué cambia cuando un estado se activa",
+      "register": "Las personas pueden elegirlo y registrarse en la aplicación y en reos.com.",
+      "waitlist": "Su lista de espera se conserva, para avisar a quienes esperan cuando lleguen las notificaciones.",
+      "fill": "Complete el regulador, el proveedor del examen y las horas antes de abrir un estado."
+    }
   }
 }
