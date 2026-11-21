@@ -36,12 +36,13 @@ use Illuminate\Support\Str;
  * @property string $cell
  * @property array<string, mixed>|null $limits Overrides of TenantLimits (see tenantLimits())
  * @property array<string, bool>|null $features
+ * @property array<string, string|null>|null $brand Logo, colour, app label and email sender (see App\Tenancy\Brand)
  * @property int|null $parent_id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Organisation|null $parent
  */
-#[Fillable(['type', 'name', 'slug', 'status', 'trial_ends_at', 'status_reason', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'parent_id'])]
+#[Fillable(['type', 'name', 'slug', 'status', 'trial_ends_at', 'status_reason', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'brand', 'parent_id'])]
 final class Organisation extends Model
 {
     /** @use HasFactory<OrganisationFactory> */
@@ -115,6 +116,7 @@ final class Organisation extends Model
             'states' => 'array',
             'limits' => 'array',
             'features' => 'array',
+            'brand' => 'array',
         ];
     }
 }

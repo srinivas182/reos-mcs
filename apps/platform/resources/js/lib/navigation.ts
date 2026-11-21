@@ -4,11 +4,13 @@ import {
     Building2,
     House,
     Map as MapIcon,
+    Palette,
     Plug,
     Settings,
     Users,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
+import { show as brandingShow } from '@/routes/branding';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -27,6 +29,7 @@ export type NavLabel =
     | 'integrations'
     | 'states'
     | 'tenants'
+    | 'brandingAndDomain'
     | 'connections';
 
 export type RoleNavItem = {
@@ -144,7 +147,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('events'),
             planned('announcements'),
             planned('programs'),
-            planned('brandingAndDomain'),
+            item('brandingAndDomain', Palette, brandingShow()),
             planned('reports'),
         ],
         super_admin: [

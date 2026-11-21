@@ -3,6 +3,7 @@
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
+use App\Http\Controllers\BrandLogoController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
@@ -10,8 +11,10 @@ use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
+use App\Http\Controllers\Organisation\BrandingController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
+use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Http\Middleware\EnsureOnboarded;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +66,16 @@ Route::middleware(['auth', 'verified', 'tenancy.platform'])->prefix('support-acc
     Route::post('revoke', [SupportConsentController::class, 'revoke'])->middleware('throttle:10,1')->name('revoke');
 });
 Route::delete('support-session', [SupportSessionController::class, 'destroy'])->middleware(['auth', 'verified'])->name('support-session.destroy');
+
+// Branding and domain (A4.2a, screen 57): the organisation managed in the active role.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/branding')->name('branding.')->group(function () {
+    Route::get('/', [BrandingController::class, 'show'])->name('show');
+    Route::put('/', [BrandingController::class, 'update'])->middleware('throttle:30,1')->name('update');
+    Route::post('logo', [BrandingController::class, 'logo'])->middleware('throttle:10,1')->name('logo');
+    Route::delete('logo', [BrandingController::class, 'removeLogo'])->middleware('throttle:10,1')->name('logo.destroy');
+});
+// A tenant's logo: public (its sign-in page shows it).
+Route::get('brand/{tenant}/logo', BrandLogoController::class)->where('tenant', '[a-z0-9-]+')->name('brand.logo');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/admin.php';

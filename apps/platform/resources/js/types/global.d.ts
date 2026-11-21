@@ -14,6 +14,8 @@ declare module '@inertiajs/core' {
             /** The state you're working in (the journey's state chip). */
             region: { code: string; name: string } | null;
             sidebarOpen: boolean;
+            /** The tenant's brand (A4.2a): the role in use, or the tenant whose address this is. */
+            brand: import('@/types/brand').BrandProps | null;
             /** REOS support inside a tenant with the owner's consent (A4.1c). */
             supportSession: { tenant: string; ends_at: string | null } | null;
             /** Your connections that need a reconnect (B3.1). */

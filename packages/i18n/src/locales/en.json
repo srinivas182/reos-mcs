@@ -33,7 +33,8 @@
     "state": "State: {{state}}",
     "states": "States",
     "connections": "Connections",
-    "tenants": "Tenants"
+    "tenants": "Tenants",
+    "brandingAndDomain": "Branding and domain"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -518,9 +519,16 @@
       "description": "{{provider}} sign-in runs on demo data here. Choose who to sign in as."
     },
     "brand": {
-      "poweredBy": "powered by REOS",
+      "poweredBy": "{{name}} · powered by REOS",
       "welcomeBack": "Welcome back to your learning and business hub.",
-      "welcomeNew": "One account for learning, your business and your whole team."
+      "welcomeNew": "One account for learning, your business and your whole team.",
+      "welcome": {
+        "association": "Welcome back to your association's learning hub.",
+        "brokerage": "Welcome back to your brokerage's learning and business hub.",
+        "school": "Welcome back to your school.",
+        "provider_business": "Welcome back to your business on REOS.",
+        "team": "Welcome back to your team's learning and business hub."
+      }
     },
     "common": {
       "email": "Email",
@@ -1778,6 +1786,60 @@
       "end": "End support session",
       "minutes_one": "{{count}} minute",
       "minutes_other": "{{count}} minutes"
+    }
+  },
+  "brand": {
+    "saved": "Brand saved. Members see it the next time a page opens.",
+    "logoSaved": "Logo saved.",
+    "errors": {
+      "colour": "Enter a colour as six hex digits, like #1E3A8A.",
+      "contrast": "White text on this colour is hard to read ({{ratio}}:1; it needs 4.5:1). Try {{suggestion}}, a little darker.",
+      "logo": "This file isn't an image REOS can read. Use a PNG, JPEG or WebP."
+    },
+    "page": {
+      "title": "Branding and domain",
+      "purpose": "One REOS app, shown with your organization's brand to its members",
+      "save": "Save",
+      "saving": "Saving…",
+      "brand": "Brand",
+      "name": "Name",
+      "primary": "Primary color",
+      "primaryHint": "White text must be easy to read on it (at least 4.5:1).",
+      "contrastOk": "Readable: {{ratio}}:1",
+      "contrastLow": "Hard to read: {{ratio}}:1. Try {{suggestion}}.",
+      "useSuggestion": "Use {{suggestion}}",
+      "appLabel": "App label",
+      "appLabelHint": "What the app is called for your members, for example \"Texas REALTORS® Learning\".",
+      "emailFrom": "Email sender name",
+      "emailFromHint": "Emails come from REOS's address with this name.",
+      "replyTo": "Reply-to address",
+      "logo": "Logo",
+      "uploadLogo": "Upload logo",
+      "replaceLogo": "Replace logo",
+      "removeLogo": "Remove logo",
+      "logoHint": "PNG, JPEG or WebP, at least 64 pixels. Square works best.",
+      "membersSee": "Members see",
+      "coBranding": "Co-branding rule",
+      "seen": {
+        "association": "Association brand + their brokerage brand",
+        "brokerage": "Your brand, everywhere inside your brokerage",
+        "school": "Your brand in your courses and classes",
+        "provider_business": "Your brand on your profile and messages",
+        "team": "Your brokerage's brand"
+      },
+      "rule": "Brokerage brand wins inside brokerage areas",
+      "inherited": "You haven't set a brand, so your members see {{name}}'s.",
+      "domain": "Custom domain",
+      "address": "Address",
+      "addressHint": "Your members sign in here. Connecting your own domain is next.",
+      "preview": "Preview",
+      "previewSignIn": "Sign-in page",
+      "previewEmail": "Email",
+      "previewButton": "Continue",
+      "poweredBy": "{{name}} · powered by REOS",
+      "emailGreeting": "Hi Maria,",
+      "emailBody": "Your CE course starts Monday.",
+      "from": "From: {{name}}"
     }
   }
 }

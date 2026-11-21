@@ -5,3 +5,4 @@ export type * from './ui';
 export type * from './people';
 export type * from './connections';
 export type * from './tenants';
+export type * from './brand';

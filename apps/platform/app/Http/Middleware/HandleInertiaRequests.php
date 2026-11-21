@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
+use App\Services\Tenancy\Brands;
 use App\Services\Tenancy\SupportAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -74,6 +75,8 @@ class HandleInertiaRequests extends Middleware
             ],
             // Public settings for browser error tracking and analytics (2.4c).
             'monitoring' => fn () => app(MonitoringRuntime::class)->clientConfig('web'),
+            // The tenant's brand (A4.2a): the role in use, or the tenant whose address this is.
+            'brand' => fn (): ?array => app(Brands::class)->current($request)?->toArray(),
             // REOS support inside a tenant with the owner's consent (A4.1c): the banner.
             'supportSession' => fn (): ?array => $this->support($request),
             // Connections that stopped syncing and need the person to sign in again (B3.1).
