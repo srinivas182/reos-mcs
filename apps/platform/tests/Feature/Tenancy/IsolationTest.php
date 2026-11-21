@@ -183,4 +183,14 @@ describe('in the app (every database)', function () {
         expect($first->slug)->toBe('lone-star-realty')
             ->and($second->slug)->toStartWith('lone-star-realty-')->not->toBe($first->slug);
     });
+
+    it('never opens a database connection just to change the context', function () {
+        DB::purge();
+
+        app(Tenancy::class)->enterPlatform();
+        app(Tenancy::class)->enter(5);
+
+        expect(DB::getConnections())->toBe([]);
+        app(Tenancy::class)->enterPlatform();
+    });
 });

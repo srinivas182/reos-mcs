@@ -35,8 +35,9 @@ final class TenancyServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // A new database session (first use, or after a reconnect) gets the
-        // current state; without it the session sees no tenant rows.
+        // A new database connection (first use, or after a reconnect) carries
+        // the current state from the moment it opens; a session without it
+        // sees no tenant rows.
         Event::listen(ConnectionEstablished::class, function (ConnectionEstablished $event): void {
             $this->app->make(Tenancy::class)->applyTo($event->connection);
         });

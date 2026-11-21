@@ -7,6 +7,7 @@ namespace App\Tenancy;
 use Closure;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
+use PDO;
 
 /**
  * Whose data this request or job may touch (ADR 0015).
@@ -157,21 +158,48 @@ final class Tenancy
         return rtrim($base.'/'.ltrim($path, '/'), '/');
     }
 
-    /** Write the state into a database session (PostgreSQL only). */
+    /**
+     * Make a database connection carry the state (PostgreSQL only): written
+     * now if the session is open, otherwise the moment it opens. Never opens
+     * a connection by itself, so commands that don't use the database don't
+     * need one.
+     */
     public function applyTo(Connection $connection): void
     {
         if ($connection->getDriverName() !== 'pgsql') {
             return;
         }
 
-        $connection->select('select set_config(?, ?, false), set_config(?, ?, false)', [
+        foreach (['write' => $connection->getRawPdo(), 'read' => $connection->getRawReadPdo()] as $kind => $pdo) {
+            if ($pdo instanceof PDO) {
+                $this->write($pdo);
+            } elseif ($pdo instanceof Closure) {
+                // Lazy connection: write the state current at connect time.
+                $connect = static function () use ($pdo): PDO {
+                    $opened = $pdo();
+                    app(self::class)->write($opened);
+
+                    return $opened;
+                };
+                $kind === 'write' ? $connection->setPdo($connect) : $connection->setReadPdo($connect);
+            }
+        }
+    }
+
+    /** @internal Writes the session settings on an open PostgreSQL session. */
+    public function write(PDO $pdo): void
+    {
+        $pdo->prepare('select set_config(?, ?, false), set_config(?, ?, false)')->execute([
             self::SETTING_TENANT, $this->tenant === null || $this->platform ? '' : (string) $this->tenant,
             self::SETTING_SCOPE, $this->platform ? self::SCOPE_PLATFORM : '',
         ]);
     }
 
+    /** Push a change to the sessions already open; new ones pick it up when they open. */
     private function apply(): void
     {
-        $this->applyTo(DB::connection());
+        foreach (DB::getConnections() as $connection) {
+            $this->applyTo($connection);
+        }
     }
 }
