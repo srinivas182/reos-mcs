@@ -130,6 +130,46 @@
       }
     },
     {
+      "id": "cloudflare-saas",
+      "name": "Cloudflare for SaaS (tenant custom domains)",
+      "kind": "platform_service",
+      "category": "platform",
+      "purpose": "Tenants' own domains (learn.example.com) with automatic SSL, verified from Branding and domain or Brokerage settings.",
+      "launch": "not_applicable",
+      "build_sprint": 4,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "A staging zone with Cloudflare for SaaS enabled; 100 custom hostnames free.",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "api_token",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "zone_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "cname_target",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "tenants.reos.com"
+          }
+        ]
+      }
+    },
+    {
       "id": "google-workspace",
       "name": "Google Calendar and Gmail",
       "kind": "integration",

@@ -11,13 +11,13 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 |  | Count |
 | --- | --- |
 | Integrations users connect (catalogue) | 44 (29 enabled, 1 beta, 14 coming soon at the pilot) |
-| Platform services REOS runs on | 16 |
+| Platform services REOS runs on | 17 |
 | Vendor accounts | 7 |
 | Outside approvals | 2 |
 | Access approved | 1 |
 | Filed and waiting | 0 |
 | Blocked | 0 |
-| Not started | 63 |
+| Not started | 64 |
 | Already past their apply-by date on 21 Nov 2026 | **1** |
 
 ## Action list: file in this order
@@ -49,6 +49,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 4 Jan 2027 | [Sign in with Apple](#apple-sign-in) | Client | Self-serve | 0 wk | S3 (4 Jan 2027) | Not started |
 | 11 Jan 2027 | [Amazon Transcribe and Polly (speech)](#aws-speech) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Cloudflare](#cloudflare) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
+| 11 Jan 2027 | [Cloudflare for SaaS (tenant custom domains)](#cloudflare-saas) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Product domain (reos.com)](#product-domain) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Authorize.net](#authorize-net) | Client | Partner application | 3 wk | S5 (1 Feb 2027) | Not started |
 | 18 Jan 2027 | [PayPal](#paypal) | Client | Self-serve | 2 wk | S5 (1 Feb 2027) | Not started |
@@ -212,6 +213,7 @@ Services REOS runs on. Users never connect these themselves, so they have no cat
 | [Sign in with Google](#google-sign-in) | One-tap sign-in with a Google account on the phone and the web. | Client + Mayura | S3 (4 Jan 2027) | Not started |
 | [Sign in with Apple](#apple-sign-in) | One-tap sign-in with an Apple ID on the phone and the web, with Hide My Email. | Client | S3 (4 Jan 2027) | Not started |
 | [Twilio Verify (phone sign-in codes)](#twilio-verify) | Sends and checks the six-digit codes for phone sign-in and two-step checks, with fraud protection. | Client | S3 (4 Jan 2027) | Not started |
+| [Cloudflare for SaaS (tenant custom domains)](#cloudflare-saas) | Tenants' own domains (learn.example.com) with automatic SSL, verified from Branding and domain or Brokerage settings. | Client | S4 (18 Jan 2027) | Not started |
 | [Amazon Transcribe and Polly (speech)](#aws-speech) | Voice to-dos and notes (speech to text) and audio-only lessons (text to speech). | Client | S4 (18 Jan 2027) | Not started |
 | [Expo push notifications (APNs, FCM)](#expo-push) | Push notifications to the iOS and Android apps. | Mayura | S6 (15 Feb 2027) | Not started |
 | [Amazon SES (email)](#amazon-ses) | Transactional email, digests and the morning brief. | Client | S6 (15 Feb 2027) | Not started |
@@ -293,6 +295,22 @@ Sends and checks the six-digit codes for phone sign-in and two-step checks, with
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Per successful verification plus the message fee; Fraud Guard included.
 - **Notes:** Verify uses Twilio's pre-registered senders, so phone sign-in doesn't wait for the 10DLC registration that twilio-sms needs. Decision 3 in the Sprint 3 spec.
+
+### Cloudflare for SaaS (tenant custom domains)
+<a id="cloudflare-saas"></a>
+
+**Platform service** · Platform · built in A4.2 (sprint 4)
+
+Tenants' own domains (learn.example.com) with automatic SSL, verified from Branding and domain or Brokerage settings.
+
+- **Owner:** Client
+- **Access:** Self-serve, about 1 week; needed by S4 (18 Jan 2027); apply by 11 Jan 2027. Status: Not started.
+- **Sandbox:** A staging zone with Cloudflare for SaaS enabled; 100 custom hostnames free.
+- **Credentials:** REOS app keys · **Personal data:** no
+- **Cost:** 100 custom hostnames free on every plan, then $0.10 each per month (decision 2 in the Sprint 4 spec).
+- **Notes:** The API token needs the SSL and Certificates edit permission on the reos.com zone. Runs on the Simulator until the account exists; the Simulator verifies a domain on the first check.
+- **Fallback:** Tenants use their <slug>.reos.com address.
+- **Sources:** [1](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/plans/)
 
 ### Google Calendar and Gmail
 <a id="google-workspace"></a>

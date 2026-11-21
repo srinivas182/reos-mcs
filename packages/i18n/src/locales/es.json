@@ -34,7 +34,8 @@
     "states": "Estados",
     "connections": "Conexiones",
     "tenants": "Organizaciones",
-    "brandingAndDomain": "Marca y dominio"
+    "brandingAndDomain": "Marca y dominio",
+    "brokerageSettings": "Configuración de la agencia"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -413,7 +414,10 @@
       "ios_client_id": "ID de cliente de iOS",
       "team_id": "ID del equipo",
       "key_id": "ID de la clave",
-      "verify_service_sid": "SID del servicio Verify"
+      "verify_service_sid": "SID del servicio Verify",
+      "api_token": "Token de API",
+      "zone_id": "ID de la zona",
+      "cname_target": "Destino CNAME"
     },
     "checks": {
       "test": "Probar conexión",
@@ -1710,7 +1714,13 @@
         "support.declined": "Rechazó el acceso de soporte",
         "support.started": "Empezó una sesión de soporte",
         "support.viewed": "El soporte abrió {{path}}",
-        "support.ended": "Terminó el acceso de soporte"
+        "support.ended": "Terminó el acceso de soporte",
+        "domain.added": "Agregó un dominio propio",
+        "domain.verified": "El dominio propio quedó activo",
+        "domain.removed": "Quitó el dominio propio",
+        "brand.updated": "Cambió la marca",
+        "brand.logo_changed": "Cambió el logotipo",
+        "brand.logo_removed": "Quitó el logotipo"
       }
     }
   },
@@ -1841,5 +1851,76 @@
       "emailBody": "Su curso de CE empieza el lunes.",
       "from": "De: {{name}}"
     }
+  },
+  "domains": {
+    "added": "Se agregó el dominio. Agregue los dos registros en su proveedor de DNS y luego pulse Verificar DNS.",
+    "live": "{{domain}} está activo, con SSL.",
+    "waiting": "Todavía no. Los cambios de DNS pueden tardar hasta una hora; REOS revisa cada 10 minutos.",
+    "removed": "Se quitó {{domain}}. Sus usuarios vuelven a iniciar sesión en su dirección de REOS.",
+    "errors": {
+      "format": "Escriba una dirección como learn.suagencia.com (tres partes o más).",
+      "reos": "Use su propio dominio. Su dirección de REOS ya funciona.",
+      "one": "Quite el dominio actual antes de agregar otro.",
+      "taken": "Otra organización ya usa este dominio.",
+      "provider": "REOS no pudo configurar el dominio en este momento. Inténtelo de nuevo en unos minutos."
+    },
+    "card": {
+      "title": "Dominio propio",
+      "yourAddress": "Dirección de su app",
+      "placeholder": "learn.suagencia.com",
+      "add": "Agregar dominio",
+      "adding": "Agregando…",
+      "reosAddress": "Mientras tanto, sus usuarios inician sesión en {{address}}.",
+      "columns": {
+        "type": "Tipo",
+        "name": "Nombre",
+        "value": "Valor",
+        "status": "Estado"
+      },
+      "verified": "Verificado",
+      "waiting": "Pendiente",
+      "copy": "Copiar el valor {{type}}",
+      "copied": "Copiado",
+      "verify": "Verificar DNS",
+      "checking": "Verificando…",
+      "remove": "Quitar dominio",
+      "pendingNote": "Agregue estos registros en su proveedor de DNS. Los cambios pueden tardar hasta una hora; REOS revisa cada 10 minutos.",
+      "liveNote": "El certificado SSL se emitió automáticamente. Sus usuarios ven su marca en la web, en el correo y en la app.",
+      "lastChecked": "Última revisión: {{when}}",
+      "removeTitle": "¿Quitar {{domain}}?",
+      "removeBody": "Sus usuarios vuelven a iniciar sesión en {{address}}. Los enlaces a {{domain}} dejan de funcionar.",
+      "keep": "Conservarlo",
+      "confirmRemove": "Quitar"
+    }
+  },
+  "brokerageSettings": {
+    "title": "Configuración de la agencia",
+    "purpose": "{{name}} · dominio, marca, usuarios y permisos",
+    "people": "Usuarios y permisos",
+    "columns": {
+      "person": "Persona",
+      "role": "Rol",
+      "scope": "Alcance",
+      "twoStep": "Dos pasos"
+    },
+    "everything": "Todo",
+    "on": "Activada",
+    "off": "Desactivada",
+    "noPeople": "Todavía no hay otros administradores.",
+    "peopleNote": "Lo siguiente es invitar administradores y cambiar permisos.",
+    "plan": "Plan",
+    "planValue": "{{payer}} · {{seats}}",
+    "seats_one": "{{count}} puesto",
+    "seats_other": "{{count}} puestos",
+    "noLimit": "sin límite de puestos",
+    "payers": {
+      "organisation": "Paga la agencia",
+      "member": "Paga cada agente"
+    },
+    "brand": "Marca",
+    "editBrand": "Editar la marca",
+    "noBrand": "Todavía no hay marca: los usuarios ven los colores de REOS.",
+    "colour": "Color principal",
+    "appLabel": "Nombre de la app"
   }
 }

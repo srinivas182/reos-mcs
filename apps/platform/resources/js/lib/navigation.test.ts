@@ -45,4 +45,11 @@ describe('roleNavigation (web journey, Navigation by role)', () => {
 
         expect(menu(null)).toEqual([['dashboard', '/dashboard']]);
     });
+
+    it('gives brokers Brokerage settings (screen 41)', () => {
+        expect(menu('broker')).toContainEqual([
+            'brokerageSettings',
+            '/organisation/settings',
+        ]);
+    });
 });

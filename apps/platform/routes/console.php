@@ -19,5 +19,8 @@ Schedule::command('model:prune', ['--model' => [IntegrationCheck::class]])->dail
 Schedule::command('reos:accounts:purge')->dailyAt('03:30')->onOneServer();
 
 // Connections engine (B3.1, ADR 0013): catch-up syncs, and housekeeping.
+// Tenants' own domains waiting for DNS or SSL (A4.2b).
+Schedule::command('reos:domains:check')->everyTenMinutes()->withoutOverlapping()->onOneServer();
+
 Schedule::command('reos:connections:sync')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
 Schedule::command('model:prune', ['--model' => [SyncRun::class, WebhookReceipt::class]])->dailyAt('04:10');

@@ -1,9 +1,10 @@
 import { Head, router, usePage } from '@inertiajs/react';
-import { Globe, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrandPreview } from '@/components/brand-preview';
 import { BrandTile } from '@/components/brand-tile';
+import { CustomDomainCard } from '@/components/custom-domain-card';
 import InputError from '@/components/input-error';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -17,7 +18,7 @@ import {
 } from '@/lib/colour';
 import { logo as logoRoute, update } from '@/routes/branding';
 import { destroy as removeLogoRoute } from '@/routes/branding/logo';
-import type { BrandProps, TenantType } from '@/types';
+import type { BrandProps, TenantDomain, TenantType } from '@/types';
 
 type Props = {
     tenant: {
@@ -32,6 +33,7 @@ type Props = {
         reply_to: string | null;
     };
     inherited: BrandProps | null;
+    domain: TenantDomain | null;
 };
 
 type Draft = {
@@ -50,7 +52,7 @@ const REOS_BLUE = '#2952CC';
  * sign-in page and an email before saving. A4.2b adds the custom domain
  * records and single sign-on status.
  */
-export default function Branding({ tenant, brand, inherited }: Props) {
+export default function Branding({ tenant, brand, inherited, domain }: Props) {
     const { t } = useTranslation();
     const { errors } = usePage<{ errors: Record<string, string> }>().props;
     const file = useRef<HTMLInputElement>(null);
@@ -325,42 +327,19 @@ export default function Branding({ tenant, brand, inherited }: Props) {
                     </section>
 
                     <div className="space-y-4">
-                        <section
-                            className="space-y-3 rounded-reos-lg border border-border bg-card p-5"
-                            aria-labelledby="domain-title"
-                        >
-                            <h2 id="domain-title" className="font-semibold">
-                                {t('brand.page.domain')}
-                            </h2>
-                            <Label htmlFor="brand-address">
-                                {t('brand.page.address')}
-                            </Label>
-                            <div className="flex items-center gap-2">
-                                <Globe
-                                    aria-hidden
-                                    className="size-5 shrink-0 text-muted-foreground"
-                                />
-                                <Input
-                                    id="brand-address"
-                                    value={tenant.address ?? ''}
-                                    readOnly
-                                    aria-describedby="brand-address-hint"
-                                />
-                            </div>
-                            <p
-                                id="brand-address-hint"
-                                className="text-sm text-muted-foreground"
-                            >
-                                {t('brand.page.addressHint')}
-                            </p>
-                        </section>
+                        <CustomDomainCard
+                            domain={domain}
+                            address={tenant.address ?? ''}
+                        />
 
                         <BrandPreview
                             name={tenant.name}
                             type={tenant.type}
                             logoUrl={brand.logo_url}
                             colour={hex && readable ? hex : REOS_BLUE}
-                            address={tenant.address}
+                            address={
+                                domain?.live ? domain.hostname : tenant.address
+                            }
                             sender={draft.email_from_name || tenant.name}
                         />
                     </div>

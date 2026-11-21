@@ -42,6 +42,7 @@ const props = {
         reply_to: null,
     },
     inherited: null,
+    domain: null,
 };
 
 beforeEach(() => vi.clearAllMocks());
@@ -62,9 +63,15 @@ describe('Branding and domain (screen 57)', () => {
         expect(
             screen.getByText('Brokerage brand wins inside brokerage areas'),
         ).toBeInTheDocument();
-        expect(screen.getByLabelText('Address')).toHaveValue(
-            'texas-realtors.reos.com',
+        expect(screen.getByLabelText('Your app address')).toHaveAttribute(
+            'placeholder',
+            'learn.yourbrokerage.com',
         );
+        expect(
+            screen.getByText(
+                'Until then, your members sign in at texas-realtors.reos.com.',
+            ),
+        ).toBeInTheDocument();
         expect(
             screen.getByText('Texas REALTORS® · powered by REOS'),
         ).toBeInTheDocument();

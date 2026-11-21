@@ -57,11 +57,17 @@ final readonly class Brands
         return $tenant === null ? null : $this->forOrganisation($tenant);
     }
 
-    /** The tenant whose address this is: `<slug>.<base domain>`. */
+    /** The tenant whose address this is: its own live domain, or `<slug>.<base domain>`. */
     public function tenantForHost(string $host): ?Organisation
     {
         $base = '.'.config()->string('reos.tenancy.base_domain');
         $host = mb_strtolower($host);
+
+        $custom = app(TenantDomains::class)->tenantFor($host);
+
+        if ($custom !== null) {
+            return Organisation::query()->find($custom);
+        }
 
         if (! str_ends_with($host, $base)) {
             return null;

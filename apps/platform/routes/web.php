@@ -12,6 +12,8 @@ use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
 use App\Http\Controllers\Organisation\BrandingController;
+use App\Http\Controllers\Organisation\DomainController;
+use App\Http\Controllers\Organisation\SettingsController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
 use App\Http\Middleware\EnsureAdminTwoStep;
@@ -74,6 +76,15 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('logo', [BrandingController::class, 'logo'])->middleware('throttle:10,1')->name('logo');
     Route::delete('logo', [BrandingController::class, 'removeLogo'])->middleware('throttle:10,1')->name('logo.destroy');
 });
+// The tenant's own domain (A4.2b), from screens 41 and 57.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/domain')->name('domain.')->group(function () {
+    Route::post('/', [DomainController::class, 'store'])->middleware('throttle:10,1')->name('store');
+    Route::post('verify', [DomainController::class, 'verify'])->middleware('throttle:20,1')->name('verify');
+    Route::delete('/', [DomainController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
+});
+// Brokerage settings (A4.2b, broker screen 41): domain, brand, people and plan.
+Route::get('organisation/settings', SettingsController::class)
+    ->middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->name('organisation.settings');
 // A tenant's logo: public (its sign-in page shows it).
 Route::get('brand/{tenant}/logo', BrandLogoController::class)->where('tenant', '[a-z0-9-]+')->name('brand.logo');
 
