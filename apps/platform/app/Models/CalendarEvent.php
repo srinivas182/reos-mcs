@@ -53,8 +53,11 @@ final class CalendarEvent extends Model
 
     public const SOURCE_REOS = 'reos';
 
-    /** Kinds made in REOS (Connections and Sync journey, screen 16), and `event` for the tool's own. */
-    public const KINDS = ['appointment', 'showing', 'deadline', 'session', 'ce', 'event'];
+    /** Kinds made in REOS (Connections and Sync journey, screen 16), `todo` for a to-do's due date (B4.3), and `event` for the tool's own. */
+    public const KINDS = ['appointment', 'showing', 'deadline', 'session', 'ce', 'todo', 'event'];
+
+    /** Kinds people choose when making an appointment. */
+    public const CHOSEN_KINDS = ['appointment', 'showing', 'deadline', 'session', 'ce'];
 
     /** Waiting to be written to the tool. */
     public const PUSH_PENDING = 'pending';

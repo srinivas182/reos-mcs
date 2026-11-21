@@ -109,7 +109,7 @@ final readonly class CalendarConflicts
             // Deleted in the tool: made again, as a REOS event.
             $event = $events->create(User::query()->findOrFail($conflict->user_id), [
                 ...$values,
-                'kind' => in_array($losing['kind'] ?? null, CalendarEvent::KINDS, true) && $losing['kind'] !== 'event' ? $losing['kind'] : 'appointment',
+                'kind' => in_array($losing['kind'] ?? null, CalendarEvent::CHOSEN_KINDS, true) ? $losing['kind'] : 'appointment',
             ]);
         } elseif (($losing['deleted'] ?? false) === true) {
             $events->delete($event);

@@ -8,6 +8,7 @@ import {
     Home,
     Lock,
     RefreshCw,
+    SquareCheck,
     TriangleAlert,
     Users,
     Video,
@@ -34,6 +35,7 @@ const ICONS: Record<CalendarKind, LucideIcon> = {
     deadline: AlertTriangle,
     session: Video,
     ce: BookOpen,
+    todo: SquareCheck,
     event: CalendarDays,
 };
 

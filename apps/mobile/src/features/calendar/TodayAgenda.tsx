@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react-native';
-import { BookOpen, CalendarDays, CalendarPlus, Home, Lock, TriangleAlert, Users, Video } from 'lucide-react-native';
+import { BookOpen, CalendarDays, CalendarPlus, Home, Lock, SquareCheck, TriangleAlert, Users, Video } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +17,7 @@ const ICONS: Record<CalendarKind, LucideIcon> = {
   deadline: TriangleAlert,
   session: Video,
   ce: BookOpen,
+  todo: SquareCheck,
   event: CalendarDays,
 };
 

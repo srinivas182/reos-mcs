@@ -56,6 +56,11 @@ final readonly class DataExport
                     'status' => $c->status->value,
                     'connected_at' => $c->created_at?->toIso8601String(),
                 ])->all(),
+            // To-dos, typed or spoken (B4.3); what was said is never stored.
+            'todos' => DB::table('todos')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')->limit(5000)
+                ->get(['title', 'notes', 'due_at', 'due_date', 'remind_at', 'related_label', 'source', 'done_at', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+            'ai_credit_uses' => DB::table('ai_credit_uses')->where('user_id', $user->id)->orderBy('id')->limit(5000)
+                ->get(['feature', 'engine', 'credits', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             // The REOS calendar: events made in REOS and those synced from calendars (B4.1).
             'calendar' => [
                 'events' => DB::table('calendar_events')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('starts_at')->limit(5000)

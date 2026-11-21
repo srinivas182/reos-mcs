@@ -54,6 +54,11 @@ return [
         'redirect' => env('REOS_MOBILE_REDIRECT', 'reos://auth'),
     ],
 
+    'ai' => [
+        // AI credits each person may use a month (B4.3 stub; seat pools arrive in Sprint 6).
+        'monthly_credits' => (int) env('REOS_AI_MONTHLY_CREDITS', 500),
+    ],
+
     'privacy' => [
         // When docs/privacy/data-map.md was last checked against the database (screen 71).
         'data_map_reviewed' => '2026-11-21',

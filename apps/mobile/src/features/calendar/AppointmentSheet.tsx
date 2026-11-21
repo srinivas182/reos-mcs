@@ -73,7 +73,8 @@ function Editor({ event, day, writeTo, onClose, onChanged }: Omit<Props, 'event'
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
   const set = <K extends keyof AppointmentForm>(key: K, value: AppointmentForm[K]) => setForm((current) => ({ ...current, [key]: value }));
-  const madeInReos = isNew || event.source === 'reos';
+  // A to-do's due date keeps its kind; other REOS events choose one.
+  const madeInReos = isNew || (event.source === 'reos' && event.kind !== 'todo');
   const time = new Intl.DateTimeFormat(i18n.language, { hour: 'numeric', minute: '2-digit' }).format(form.start);
   const moveMinutes = (minutes: number) => set('start', new Date(form.start.getTime() + minutes * 60_000));
 

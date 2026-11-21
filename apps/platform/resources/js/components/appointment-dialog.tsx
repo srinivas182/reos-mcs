@@ -114,7 +114,9 @@ function Body({
         return <ReadOnly event={event} timeZone={day.timezone} />;
     }
 
-    const madeInReos = isNew || event.source === 'reos';
+    // A to-do's due date keeps its kind; other REOS events choose one.
+    const madeInReos =
+        isNew || (event.source === 'reos' && event.kind !== 'todo');
     const submit = (e: FormEvent) => {
         e.preventDefault();
         setSaving(true);

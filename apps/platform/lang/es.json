@@ -188,6 +188,7 @@
     "calendar.kinds.event": "Evento",
     "calendar.kinds.session": "Sesión",
     "calendar.kinds.showing": "Visita",
+    "calendar.kinds.todo": "Tarea",
     "calendar.newAppointment": "Nueva cita",
     "calendar.openIn": "Abrir en :tool",
     "calendar.readOnly.busy": "Proviene de un calendario compartido como «solo ocupado», así que solo se muestra la hora.",

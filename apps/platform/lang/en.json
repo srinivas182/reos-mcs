@@ -188,6 +188,7 @@
     "calendar.kinds.event": "Event",
     "calendar.kinds.session": "Session",
     "calendar.kinds.showing": "Showing",
+    "calendar.kinds.todo": "To-do",
     "calendar.newAppointment": "New appointment",
     "calendar.openIn": "Open in :tool",
     "calendar.readOnly.busy": "From a calendar shared as busy only, so only the time is shown.",

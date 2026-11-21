@@ -2442,6 +2442,7 @@
       "deadline": "Deadline",
       "session": "Session",
       "ce": "CE",
+      "todo": "To-do",
       "event": "Event"
     },
     "fields": {

@@ -13,6 +13,8 @@ use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
+use App\Http\Controllers\Api\Todos\TodoController;
+use App\Http\Controllers\Api\Voice\VoiceController;
 use App\Http\Middleware\ResolveTenant;
 use Illuminate\Support\Facades\Route;
 
@@ -78,7 +80,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('connections/{connection}', [ConnectionController::class, 'update'])->whereNumber('connection')->middleware('throttle:30,1,api-connections-update')->name('api.connections.update');
     Route::delete('connections/{connection}', [ConnectionController::class, 'destroy'])->whereNumber('connection')->middleware('throttle:30,1,api-connections-destroy')->name('api.connections.destroy');
 
-    // Your REOS calendar, two-way with your calendar tools (B4.1, ADR 0016).
+    // To-dos and voice capture (B4.3, ADR 0018).
+    Route::prefix('todos')->name('api.todos.')->controller(TodoController::class)->group(function () {
+        Route::get('/', 'index')->middleware('throttle:120,1,api-todos-index')->name('index');
+        Route::post('/', 'store')->middleware('throttle:60,1,api-todos-store')->name('store');
+        Route::patch('{todo}', 'update')->whereNumber('todo')->middleware('throttle:60,1,api-todos-update')->name('update');
+        Route::post('{todo}/done', 'done')->whereNumber('todo')->middleware('throttle:60,1,api-todos-done')->name('done');
+        Route::delete('{todo}/done', 'undone')->whereNumber('todo')->middleware('throttle:60,1,api-todos-undone')->name('undone');
+        Route::delete('{todo}', 'destroy')->whereNumber('todo')->middleware('throttle:60,1,api-todos-destroy')->name('destroy');
+        Route::post('{todo}/restore', 'restore')->whereNumber('todo')->middleware('throttle:60,1,api-todos-restore')->name('restore');
+    });
+    Route::post('voice/parse', [VoiceController::class, 'parse'])->middleware('throttle:30,1,api-voice-parse')->name('api.voice.parse');
+
+    // Your REOS calendar, two-way with your calendar tools (B4.1, ADR 0017).
     Route::prefix('calendar')->name('api.calendar.')->controller(CalendarController::class)->group(function () {
         Route::get('events', 'index')->middleware('throttle:120,1,api-calendar-index')->name('index');
         Route::post('events', 'store')->middleware('throttle:60,1,api-calendar-store')->name('store');

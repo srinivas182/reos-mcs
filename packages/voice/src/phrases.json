@@ -1,0 +1,294 @@
+{
+    "about": "Phrases the built-in date parser must understand, in English and Spanish (B4.3). The phone (TypeScript) and the server (PHP) both run every case. `now` is the speaker's local time, a Saturday in Houston.",
+    "now": "2026-11-21T10:00",
+    "cases": [
+        {
+            "text": "Remind me to call Maria at 4",
+            "language": "en",
+            "expect": {
+                "title": "Call Maria",
+                "people": [
+                    "Maria"
+                ],
+                "due": {
+                    "date": "2026-11-21",
+                    "time": "16:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "remind me to send the CMA to the Nguyens tomorrow at 9am",
+            "language": "en",
+            "expect": {
+                "title": "Send the CMA to the Nguyens",
+                "people": [],
+                "due": {
+                    "date": "2026-11-22",
+                    "time": "09:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Call back Pat Hill on Friday at 2:30 pm",
+            "language": "en",
+            "expect": {
+                "title": "Call back Pat Hill",
+                "people": [
+                    "Pat Hill"
+                ],
+                "due": {
+                    "date": "2026-11-27",
+                    "time": "14:30"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Follow up with Ana Torres next Monday",
+            "language": "en",
+            "expect": {
+                "title": "Follow up with Ana Torres",
+                "people": [
+                    "Ana Torres"
+                ],
+                "due": {
+                    "date": "2026-11-23",
+                    "time": null
+                },
+                "remind": false
+            }
+        },
+        {
+            "text": "Order the yard sign in 2 hours",
+            "language": "en",
+            "expect": {
+                "title": "Order the yard sign",
+                "people": [],
+                "due": {
+                    "date": "2026-11-21",
+                    "time": "12:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Text Linda tonight about the open house",
+            "language": "en",
+            "expect": {
+                "title": "Text Linda about the open house",
+                "people": [
+                    "Linda"
+                ],
+                "due": {
+                    "date": "2026-11-21",
+                    "time": "19:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Pick up keys at 8",
+            "language": "en",
+            "expect": {
+                "title": "Pick up keys",
+                "people": [],
+                "due": {
+                    "date": "2026-11-22",
+                    "time": "08:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Email the lender on December 3",
+            "language": "en",
+            "expect": {
+                "title": "Email the lender",
+                "people": [],
+                "due": {
+                    "date": "2026-12-03",
+                    "time": null
+                },
+                "remind": false
+            }
+        },
+        {
+            "text": "Renew my license",
+            "language": "en",
+            "expect": {
+                "title": "Renew my license",
+                "people": [],
+                "due": null,
+                "remind": false
+            }
+        },
+        {
+            "text": "Remind me to renew my license on Friday",
+            "language": "en",
+            "expect": {
+                "title": "Renew my license",
+                "people": [],
+                "due": {
+                    "date": "2026-11-27",
+                    "time": "09:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Don't forget to book the photographer the day after tomorrow at noon",
+            "language": "en",
+            "expect": {
+                "title": "Book the photographer",
+                "people": [],
+                "due": {
+                    "date": "2026-11-23",
+                    "time": "12:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Meet Carlos at 11:15 this morning",
+            "language": "en",
+            "expect": {
+                "title": "Meet Carlos",
+                "people": [
+                    "Carlos"
+                ],
+                "due": {
+                    "date": "2026-11-21",
+                    "time": "11:15"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Recuérdame llamar a María a las 4",
+            "language": "es",
+            "expect": {
+                "title": "Llamar a María",
+                "people": [
+                    "María"
+                ],
+                "due": {
+                    "date": "2026-11-21",
+                    "time": "16:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "recuérdame enviar el contrato mañana a las 9 de la mañana",
+            "language": "es",
+            "expect": {
+                "title": "Enviar el contrato",
+                "people": [],
+                "due": {
+                    "date": "2026-11-22",
+                    "time": "09:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Llamar a José Pérez el viernes a las 2:30 de la tarde",
+            "language": "es",
+            "expect": {
+                "title": "Llamar a José Pérez",
+                "people": [
+                    "José Pérez"
+                ],
+                "due": {
+                    "date": "2026-11-27",
+                    "time": "14:30"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Tengo que revisar la inspección pasado mañana",
+            "language": "es",
+            "expect": {
+                "title": "Revisar la inspección",
+                "people": [],
+                "due": {
+                    "date": "2026-11-23",
+                    "time": null
+                },
+                "remind": false
+            }
+        },
+        {
+            "text": "Escribir a Ana esta noche",
+            "language": "es",
+            "expect": {
+                "title": "Escribir a Ana",
+                "people": [
+                    "Ana"
+                ],
+                "due": {
+                    "date": "2026-11-21",
+                    "time": "19:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Pedir el letrero en 30 minutos",
+            "language": "es",
+            "expect": {
+                "title": "Pedir el letrero",
+                "people": [],
+                "due": {
+                    "date": "2026-11-21",
+                    "time": "10:30"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Ver a Carlos el lunes al mediodía",
+            "language": "es",
+            "expect": {
+                "title": "Ver a Carlos",
+                "people": [
+                    "Carlos"
+                ],
+                "due": {
+                    "date": "2026-11-23",
+                    "time": "12:00"
+                },
+                "remind": true
+            }
+        },
+        {
+            "text": "Renovar mi licencia el 3 de diciembre",
+            "language": "es",
+            "expect": {
+                "title": "Renovar mi licencia",
+                "people": [],
+                "due": {
+                    "date": "2026-12-03",
+                    "time": null
+                },
+                "remind": false
+            }
+        },
+        {
+            "text": "Recuérdame pagar la cuota de la asociación el lunes",
+            "language": "es",
+            "expect": {
+                "title": "Pagar la cuota de la asociación",
+                "people": [],
+                "due": {
+                    "date": "2026-11-23",
+                    "time": "09:00"
+                },
+                "remind": true
+            }
+        }
+    ]
+}

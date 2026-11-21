@@ -1812,6 +1812,562 @@
                 },
                 "security": []
             }
+        },
+        "/todos": {
+            "get": {
+                "operationId": "todos.index",
+                "description": "Open ones (the default) by due date, undated last; `status=done` for\nfinished ones, newest first; `status=all` for both.",
+                "summary": "List to-dos",
+                "tags": [
+                    "Todo"
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `TodoResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/TodoResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "todos.store",
+                "description": "Send the phone's own `client_id`: sending the same one again returns\nthe to-do already saved (200) instead of adding another (201).",
+                "summary": "Add a to-do",
+                "tags": [
+                    "Todo"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveTodoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/todos/{todo}": {
+            "patch": {
+                "operationId": "todos.update",
+                "summary": "Change a to-do",
+                "tags": [
+                    "Todo"
+                ],
+                "parameters": [
+                    {
+                        "name": "todo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveTodoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`TodoResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TodoResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "todos.destroy",
+                "summary": "Delete a to-do (restore undoes it)",
+                "tags": [
+                    "Todo"
+                ],
+                "parameters": [
+                    {
+                        "name": "todo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/todos/{todo}/done": {
+            "post": {
+                "operationId": "todos.done",
+                "summary": "Mark done (from the app or the reminder's Done button)",
+                "tags": [
+                    "Todo"
+                ],
+                "parameters": [
+                    {
+                        "name": "todo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TodoResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TodoResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "todos.undone",
+                "summary": "Mark not done (Undo)",
+                "tags": [
+                    "Todo"
+                ],
+                "parameters": [
+                    {
+                        "name": "todo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TodoResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TodoResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/todos/{todo}/restore": {
+            "post": {
+                "operationId": "todos.restore",
+                "summary": "Restore a deleted to-do",
+                "tags": [
+                    "Todo"
+                ],
+                "parameters": [
+                    {
+                        "name": "todo",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`TodoResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/TodoResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/voice/parse": {
+            "post": {
+                "operationId": "voice.parse",
+                "description": "Returns to-dos for the confirm card: titles, notes, people's names to\nmatch against your contacts, due times in your time zone and whether\nto remind. Claude reads it when AI is set up and you have credits (one\nper parse); otherwise the built-in parser does. Nothing said is stored.",
+                "summary": "Understand what was said",
+                "tags": [
+                    "Voice"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ParseVoiceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "engine": {
+                                            "type": "string",
+                                            "enum": [
+                                                "ai",
+                                                "parser"
+                                            ]
+                                        },
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "notes": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "people": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "due_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "due_date": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "remind_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "title",
+                                                    "notes",
+                                                    "people",
+                                                    "due_at",
+                                                    "due_date",
+                                                    "remind_at"
+                                                ]
+                                            }
+                                        },
+                                        "credits": {
+                                            "type": "object",
+                                            "properties": {
+                                                "used": {
+                                                    "type": "integer"
+                                                },
+                                                "left": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "used",
+                                                "left"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "engine",
+                                        "items",
+                                        "credits"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1941,6 +2497,7 @@
                             "deadline",
                             "session",
                             "ce",
+                            "todo",
                             "event"
                         ]
                     },
@@ -3031,6 +3588,43 @@
                 ],
                 "title": "OrganisationType"
             },
+            "ParseVoiceRequest": {
+                "type": "object",
+                "description": "What someone said, to turn into to-dos (B4.3).",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The words, as the phone's speech recognition heard them.",
+                        "maxLength": 1000
+                    },
+                    "language": {
+                        "type": "string",
+                        "description": "`en` or `es`.",
+                        "enum": [
+                            "en",
+                            "es"
+                        ]
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "description": "The phone's time zone, for example `America/Chicago`."
+                    },
+                    "said_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "When it was said, if not just now (a capture queued while offline)."
+                    }
+                },
+                "required": [
+                    "text",
+                    "language",
+                    "timezone"
+                ],
+                "title": "ParseVoiceRequest"
+            },
             "PhoneStartRequest": {
                 "type": "object",
                 "properties": {
@@ -3338,6 +3932,93 @@
                 ],
                 "title": "SaveCalendarEventRequest"
             },
+            "SaveTodoRequest": {
+                "type": "object",
+                "description": "A to-do from the confirm card or typed in (B4.3). Due at a moment\n(`due_at`, with offset) or on a day (`due_date`), not both.",
+                "properties": {
+                    "client_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "The phone's own id for this to-do (a UUID), so sending it twice saves it once."
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "notes": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 2000
+                    },
+                    "due_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "Due at this moment, with its offset."
+                    },
+                    "due_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date",
+                        "description": "Due on this day, `YYYY-MM-DD`."
+                    },
+                    "remind_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time",
+                        "description": "When the phone reminds; at or before nothing in particular, but not in the far past."
+                    },
+                    "related_type": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The person it's about: `phone_contact` (the phone's own contact id) for now.",
+                        "enum": [
+                            "phone_contact",
+                            null
+                        ]
+                    },
+                    "related_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 64
+                    },
+                    "related_label": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Their name, as shown on the to-do.",
+                        "maxLength": 120
+                    },
+                    "source": {
+                        "type": "string",
+                        "description": "`typed` or `voice`.",
+                        "enum": [
+                            "typed",
+                            "voice"
+                        ]
+                    }
+                },
+                "required": [
+                    "title"
+                ],
+                "title": "SaveTodoRequest"
+            },
             "SignInResource": {
                 "type": "object",
                 "properties": {
@@ -3439,6 +4120,124 @@
                     "not_planned"
                 ],
                 "title": "StateStatus"
+            },
+            "TodoResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "client_id": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The phone's own id for it, when it made it."
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "notes": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "due_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Due at this moment (ISO 8601), or null."
+                    },
+                    "due_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Due on this day (`YYYY-MM-DD`), when it has no time."
+                    },
+                    "remind_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "related": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "The person it's about.",
+                        "properties": {
+                            "type": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "label": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            }
+                        },
+                        "required": [
+                            "type",
+                            "id",
+                            "label"
+                        ]
+                    },
+                    "source": {
+                        "type": "string",
+                        "enum": [
+                            "typed",
+                            "voice"
+                        ]
+                    },
+                    "done": {
+                        "type": "boolean"
+                    },
+                    "done_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "calendar_event_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "The calendar event its due date made, if any."
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "client_id",
+                    "title",
+                    "notes",
+                    "due_at",
+                    "due_date",
+                    "remind_at",
+                    "related",
+                    "source",
+                    "done",
+                    "done_at",
+                    "calendar_event_id",
+                    "created_at"
+                ],
+                "title": "TodoResource"
             },
             "ToolRequestRequest": {
                 "type": "object",
