@@ -1,0 +1,9 @@
+{
+    "extends": "@reos/config/tsconfig.base.json",
+    "compilerOptions": {
+        "resolveJsonModule": true,
+        "allowImportingTsExtensions": true,
+        "types": ["node"]
+    },
+    "include": ["src", "test"]
+}

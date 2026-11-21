@@ -74,6 +74,7 @@ jobs:
               - 'docs/integrations/**'
               - 'packages/tokens/**'
               - 'packages/i18n/**'
+              - 'packages/voice/**'
               - 'apps/platform/lang/**'
               - 'apps/platform/resources/integrations/**'
               - 'package.json'
@@ -280,6 +281,8 @@ jobs:
         run: pnpm --filter @reos/tokens test
       - name: Translations (Spanish complete, placeholders match, Laravel files current)
         run: pnpm --filter @reos/i18n test
+      - name: Voice date parser (the phone's copy passes the shared phrase set)
+        run: pnpm --filter @reos/voice test
       - name: Shell scripts (shellcheck)
         run: shellcheck scripts/*.sh
 

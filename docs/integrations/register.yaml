@@ -662,14 +662,14 @@ entries:
     name: Claude on Amazon Bedrock
     kind: platform_service
     category: ai
-    purpose: AI answers with sources, course drafting, contract review, role-play.
+    purpose: AI answers with sources, course drafting, contract review, role-play; first used to turn spoken notes into to-dos (B4.3).
     launch: not_applicable
-    build: { sprint: 7, item: A7.3 }
+    build: { sprint: 4, item: B4.3 }
     owner: client
     access:
       route: self_serve
       lead_time_weeks: 1
-      needed_by_sprint: 7
+      needed_by_sprint: 4
       status: not_started
     sandbox: Staging AWS account, us-east-2.
     credentials: platform
@@ -683,7 +683,10 @@ entries:
         - { key: model_id }
     personal_data: true
     cost: Per token.
-    notes: Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer data.
+    notes: >-
+      Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer
+      data. Voice to-dos (B4.3) use the Converse API with a forced tool for a fixed answer shape; the model id
+      is set in Settings › Integrations. Without keys (Off or Simulator) the built-in date parser runs instead.
 
   - id: aws-textract
     name: Amazon Textract

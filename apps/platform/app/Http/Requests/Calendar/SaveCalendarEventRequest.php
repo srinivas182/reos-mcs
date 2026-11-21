@@ -24,7 +24,7 @@ final class SaveCalendarEventRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             /** What it is: `appointment`, `showing`, `deadline`, `session` or `ce`. */
-            'kind' => ['sometimes', Rule::in(array_values(array_diff(CalendarEvent::KINDS, ['event'])))],
+            'kind' => ['sometimes', Rule::in(CalendarEvent::CHOSEN_KINDS)],
             'all_day' => ['sometimes', 'boolean'],
             /** Start, with its time zone offset (timed events). */
             'starts_at' => ['required_unless:all_day,true', 'date'],

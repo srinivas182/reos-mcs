@@ -54,6 +54,9 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Appointment | Cita | |
 | Deadline (contract date) | Fecha límite | |
 | Busy only (calendar sharing) | Solo ocupado | Google's own term |
+| To-do | Tarea | Not "pendiente" as a noun |
+| Reminder | Recordatorio | |
+| Snooze | Posponer | |
 | Feature (switch) | Función | |
 | Free quiz | Prueba gratis | |
 | Coming soon (state) | Próximamente | |

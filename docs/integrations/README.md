@@ -48,6 +48,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 28 Dec 2026 | [Outlook Calendar](#outlook-calendar) | Client + Mayura | Vendor review | 3 wk | S4 (18 Jan 2027) | Not started |
 | 4 Jan 2027 | [Sign in with Apple](#apple-sign-in) | Client | Self-serve | 0 wk | S3 (4 Jan 2027) | Not started |
 | 11 Jan 2027 | [Amazon Transcribe and Polly (speech)](#aws-speech) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
+| 11 Jan 2027 | [Claude on Amazon Bedrock](#aws-bedrock-claude) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Cloudflare](#cloudflare) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Cloudflare for SaaS (tenant custom domains)](#cloudflare-saas) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
 | 11 Jan 2027 | [Product domain (reos.com)](#product-domain) | Client | Self-serve | 1 wk | S4 (18 Jan 2027) | Not started |
@@ -68,7 +69,6 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 15 Feb 2027 | [ListedKit](#listedkit) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
 | 15 Feb 2027 | [Open to Close](#open-to-close) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
 | 15 Feb 2027 | [Paperless Pipeline](#paperless-pipeline) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
-| 22 Feb 2027 | [Claude on Amazon Bedrock](#aws-bedrock-claude) | Client | Self-serve | 1 wk | S7 (1 Mar 2027) | Not started |
 | 1 Mar 2027 | [LinkedIn](#linkedin) | Client + Mayura | Partner application | 8 wk | S11 (26 Apr 2027) | Not started |
 | 15 Mar 2027 | [NMLS Consumer Access](#nmls-lookup) | Mayura | Agreement | 4 wk | S10 (12 Apr 2027) | Not started |
 | 15 Mar 2027 | [Instagram and Facebook](#meta) | Client + Mayura | Vendor review | 6 wk | S11 (26 Apr 2027) | Not started |
@@ -221,7 +221,7 @@ Services REOS runs on. Users never connect these themselves, so they have no cat
 | [LiveKit Cloud](#livekit) | Mentor sessions and live classes (rooms, whiteboard, consented recording). | Mayura | S6 (15 Feb 2027) | Not started |
 | [Mux Video](#mux) | Lesson video streaming and offline download. | Mayura | S5 (1 Feb 2027) | Not started |
 | [Synthesia (AI avatar lessons; HeyGen fallback)](#synthesia) | Render AI avatar lesson videos from approved scripts. | Client | S7 (1 Mar 2027) | Not started |
-| [Claude on Amazon Bedrock](#aws-bedrock-claude) | AI answers with sources, course drafting, contract review, role-play. | Client | S7 (1 Mar 2027) | Not started |
+| [Claude on Amazon Bedrock](#aws-bedrock-claude) | AI answers with sources, course drafting, contract review, role-play; first used to turn spoken notes into to-dos (B4.3). | Client | S4 (18 Jan 2027) | Not started |
 | [Amazon Textract](#aws-textract) | Read uploaded CE certificates and licences. | Client | S10 (12 Apr 2027) | Not started |
 | [Mapbox](#mapbox) | Provider service areas on a map. | Mayura | S15 (21 Jun 2027) | Not started |
 | [Sentry](#sentry) | Error tracking for web, API and mobile. | Mayura | S19 (16 Aug 2027) | Not started |
@@ -586,16 +586,16 @@ Render AI avatar lesson videos from approved scripts.
 ### Claude on Amazon Bedrock
 <a id="aws-bedrock-claude"></a>
 
-**Platform service** · AI · built in A7.3 (sprint 7)
+**Platform service** · AI · built in B4.3 (sprint 4)
 
-AI answers with sources, course drafting, contract review, role-play.
+AI answers with sources, course drafting, contract review, role-play; first used to turn spoken notes into to-dos (B4.3).
 
 - **Owner:** Client
-- **Access:** Self-serve, about 1 week; needed by S7 (1 Mar 2027); apply by 22 Feb 2027. Status: Not started.
+- **Access:** Self-serve, about 1 week; needed by S4 (18 Jan 2027); apply by 11 Jan 2027. Status: Not started.
 - **Sandbox:** Staging AWS account, us-east-2.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Per token.
-- **Notes:** Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer data.
+- **Notes:** Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer data. Voice to-dos (B4.3) use the Converse API with a forced tool for a fixed answer shape; the model id is set in Settings › Integrations. Without keys (Off or Simulator) the built-in date parser runs instead.
 
 ### Amazon Textract
 <a id="aws-textract"></a>

@@ -585,6 +585,108 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/todos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List to-dos
+         * @description Open ones (the default) by due date, undated last; `status=done` for
+         *     finished ones, newest first; `status=all` for both.
+         */
+        get: operations["todos.index"];
+        put?: never;
+        /**
+         * Add a to-do
+         * @description Send the phone's own `client_id`: sending the same one again returns
+         *     the to-do already saved (200) instead of adding another (201).
+         */
+        post: operations["todos.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/todos/{todo}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a to-do (restore undoes it) */
+        delete: operations["todos.destroy"];
+        options?: never;
+        head?: never;
+        /** Change a to-do */
+        patch: operations["todos.update"];
+        trace?: never;
+    };
+    "/todos/{todo}/done": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark done (from the app or the reminder's Done button) */
+        post: operations["todos.done"];
+        /** Mark not done (Undo) */
+        delete: operations["todos.undone"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/todos/{todo}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore a deleted to-do */
+        post: operations["todos.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/voice/parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Understand what was said
+         * @description Returns to-dos for the confirm card: titles, notes, people's names to
+         *     match against your contacts, due times in your time zone and whether
+         *     to remind. Claude reads it when AI is set up and you have credits (one
+         *     per parse); otherwise the built-in parser does. Nothing said is stored.
+         */
+        post: operations["voice.parse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -634,7 +736,7 @@ export interface components {
             /** @description Null for an event from a calendar shared as busy only. */
             title: string | null;
             /** @enum {string} */
-            kind: "appointment" | "showing" | "deadline" | "session" | "ce" | "event";
+            kind: "appointment" | "showing" | "deadline" | "session" | "ce" | "todo" | "event";
             starts_at: string;
             ends_at: string;
             all_day: boolean;
@@ -1018,6 +1120,26 @@ export interface components {
          * @enum {string}
          */
         OrganisationType: "platform" | "brokerage" | "school" | "association" | "provider_business" | "team";
+        /**
+         * ParseVoiceRequest
+         * @description What someone said, to turn into to-dos (B4.3).
+         */
+        ParseVoiceRequest: {
+            /** @description The words, as the phone's speech recognition heard them. */
+            text: string;
+            /**
+             * @description `en` or `es`.
+             * @enum {string}
+             */
+            language: "en" | "es";
+            /** @description The phone's time zone, for example `America/Chicago`. */
+            timezone: string;
+            /**
+             * Format: date-time
+             * @description When it was said, if not just now (a capture queued while offline).
+             */
+            said_at?: string | null;
+        };
         /** PhoneStartRequest */
         PhoneStartRequest: {
             /**
@@ -1130,6 +1252,48 @@ export interface components {
             /** @description Let the calendar email the guests an invitation. Off unless asked: REOS never sends messages for you. */
             notify_guests?: boolean;
         };
+        /**
+         * SaveTodoRequest
+         * @description A to-do from the confirm card or typed in (B4.3). Due at a moment
+         *     (`due_at`, with offset) or on a day (`due_date`), not both.
+         */
+        SaveTodoRequest: {
+            /**
+             * Format: uuid
+             * @description The phone's own id for this to-do (a UUID), so sending it twice saves it once.
+             */
+            client_id?: string | null;
+            title: string;
+            notes?: string | null;
+            /**
+             * Format: date-time
+             * @description Due at this moment, with its offset.
+             */
+            due_at?: string | null;
+            /**
+             * Format: date
+             * @description Due on this day, `YYYY-MM-DD`.
+             */
+            due_date?: string | null;
+            /**
+             * Format: date-time
+             * @description When the phone reminds; at or before nothing in particular, but not in the far past.
+             */
+            remind_at?: string | null;
+            /**
+             * @description The person it's about: `phone_contact` (the phone's own contact id) for now.
+             * @enum {string|null}
+             */
+            related_type?: "phone_contact" | null;
+            related_id?: string | null;
+            /** @description Their name, as shown on the to-do. */
+            related_label?: string | null;
+            /**
+             * @description `typed` or `voice`.
+             * @enum {string}
+             */
+            source?: "typed" | "voice";
+        };
         /** SignInResource */
         SignInResource: {
             /** @description Bearer token for this device. Keep it in secure storage. */
@@ -1176,6 +1340,32 @@ export interface components {
          * @enum {string}
          */
         StateStatus: "live" | "in_preparation" | "waitlist" | "not_planned";
+        /** TodoResource */
+        TodoResource: {
+            id: number;
+            /** @description The phone's own id for it, when it made it. */
+            client_id: string | null;
+            title: string;
+            notes: string | null;
+            /** @description Due at this moment (ISO 8601), or null. */
+            due_at: string | null;
+            /** @description Due on this day (`YYYY-MM-DD`), when it has no time. */
+            due_date: string | null;
+            remind_at: string | null;
+            /** @description The person it's about. */
+            related: {
+                type: string;
+                id: string | null;
+                label: string | null;
+            } | null;
+            /** @enum {string} */
+            source: "typed" | "voice";
+            done: boolean;
+            done_at: string | null;
+            /** @description The calendar event its due date made, if any. */
+            calendar_event_id: number | null;
+            created_at: string | null;
+        };
         /**
          * ToolRequestRequest
          * @description "My tool isn't listed".
@@ -1295,6 +1485,7 @@ export type SchemaOnboardingPath = components['schemas']['OnboardingPath'];
 export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest'];
 export type SchemaOnboardingResource = components['schemas']['OnboardingResource'];
 export type SchemaOrganisationType = components['schemas']['OrganisationType'];
+export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
@@ -1303,10 +1494,12 @@ export type SchemaQuizResultResource = components['schemas']['QuizResultResource
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
+export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
+export type SchemaTodoResource = components['schemas']['TodoResource'];
 export type SchemaToolRequestRequest = components['schemas']['ToolRequestRequest'];
 export type SchemaUpdateConnectionRequest = components['schemas']['UpdateConnectionRequest'];
 export type SchemaWaitlistRequest = components['schemas']['WaitlistRequest'];
@@ -2437,6 +2630,319 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "todos.index": {
+        parameters: {
+            query?: {
+                status?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `TodoResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TodoResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "todos.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveTodoRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "todos.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                todo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "todos.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                todo: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveTodoRequest"];
+            };
+        };
+        responses: {
+            /** @description `TodoResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TodoResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "todos.done": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                todo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TodoResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TodoResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "todos.undone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                todo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TodoResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TodoResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "todos.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                todo: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `TodoResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["TodoResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "voice.parse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ParseVoiceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        engine: "ai" | "parser";
+                        items: {
+                            title: string;
+                            notes: string | null;
+                            people: string[];
+                            due_at: string | null;
+                            due_date: string | null;
+                            remind_at: string | null;
+                        }[];
+                        credits: {
+                            used: number;
+                            left: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
