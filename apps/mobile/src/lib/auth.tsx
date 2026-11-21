@@ -22,6 +22,8 @@ import { i18n } from '@/lib/i18n';
 import { biometricAsked, biometricEnabled, clearToken, deviceInfo, loadToken, onSessionExpired, saveToken } from '@/lib/session';
 
 export type Me = Schemas['MeResource'];
+export type Membership = Schemas['MembershipResource'];
+export type Role = Membership['role'];
 export type SignInOptions = Schemas['AppConfigResource']['sign_in'];
 type SignInResponse = Schemas['SignInResource'];
 
@@ -45,6 +47,8 @@ type AuthContextValue = {
   verifyPhoneCode: (phone: string, code: string) => Promise<Outcome>;
   unlock: () => Promise<boolean>;
   refresh: () => Promise<void>;
+  /** Use another role this person holds; this phone remembers it (A3.2). */
+  switchRole: (role: Role, organisationId: number) => Promise<boolean>;
   signOut: () => Promise<void>;
 };
 
@@ -94,6 +98,21 @@ export function AuthProvider({ children, client = api() }: { children: ReactNode
       setUser(data);
     }
   }, [client]);
+
+  const switchRole = useCallback(
+    async (role: Role, organisationId: number): Promise<boolean> => {
+      const { data, response } = await client.PUT('/me/active-role', { body: { role, organisation_id: organisationId } });
+
+      if (response.ok && data !== undefined) {
+        setUser(data);
+
+        return true;
+      }
+
+      return false;
+    },
+    [client],
+  );
 
   // Launch: a saved token means signed in (behind Face ID if turned on).
   useEffect(() => {
@@ -238,8 +257,8 @@ export function AuthProvider({ children, client = api() }: { children: ReactNode
   const clearLanding = useCallback(() => setLanding(null), []);
 
   const value = useMemo(
-    () => ({ status, user, landing, clearLanding, signInWithApple, signInWithBrowser, sendPhoneCode, verifyPhoneCode, unlock, refresh, signOut }),
-    [status, user, landing, clearLanding, signInWithApple, signInWithBrowser, sendPhoneCode, verifyPhoneCode, unlock, refresh, signOut],
+    () => ({ status, user, landing, clearLanding, signInWithApple, signInWithBrowser, sendPhoneCode, verifyPhoneCode, unlock, refresh, switchRole, signOut }),
+    [status, user, landing, clearLanding, signInWithApple, signInWithBrowser, sendPhoneCode, verifyPhoneCode, unlock, refresh, switchRole, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -1,23 +1,25 @@
 import { router } from 'expo-router';
-import { Palette, Settings } from 'lucide-react-native';
+import { Palette } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useUnistyles } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { fetchHealth, type Health } from '@/lib/api';
-import { Button, Card, ListRow, Screen, Text } from '@/ui';
+import { useAuth } from '@/lib/auth';
+import { Avatar, Button, Card, ListRow, Screen, Text } from '@/ui';
 
 type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
 
 /**
- * Placeholder home until onboarding (Sprint 3): the REOS brand, a live check
- * of the platform API, and links to Display settings and (in development) the
- * component gallery.
+ * Placeholder home until Today is built (A3.3 onward): the REOS brand, your
+ * initials (→ Me), a live check of the platform API and, in development,
+ * the component gallery.
  */
 export default function HomeScreen() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const { user } = useAuth();
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
 
@@ -44,9 +46,13 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      <Text variant="caption" weight="bold" tone="action">
-        {t('mobile.eyebrow')}
-      </Text>
+      {/* Me opens from your initials, top right (journey screen 16). */}
+      <View style={styles.top}>
+        <Text variant="caption" weight="bold" tone="action">
+          {t('mobile.eyebrow')}
+        </Text>
+        {user ? <Avatar name={user.name ?? user.email ?? user.phone ?? '?'} label={t('mobile.me.open')} onPress={() => router.push('/me')} /> : null}
+      </View>
       <Text variant="display">{t('common.appName')}</Text>
       <Text variant="bodyLarge" tone="body">
         {t('mobile.tagline')}
@@ -63,8 +69,11 @@ export default function HomeScreen() {
         )}
       </Card>
 
-      <ListRow icon={Settings} tone="neutral" title={t('mobile.displaySettings')} subtitle={t('mobile.displaySettingsHint')} onPress={() => router.push('/settings')} />
       {__DEV__ ? <ListRow icon={Palette} tone="info" title="Component gallery" subtitle="Development builds only" onPress={() => router.push('/design')} /> : null}
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+});

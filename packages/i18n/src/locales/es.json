@@ -95,8 +95,6 @@
     "tagline": "Estudie, obtenga su licencia, cumpla con los requisitos y crezca, todo en una sola app.",
     "connected": "Conectado a {{app}} · versión {{version}}",
     "unreachable": "No podemos conectar con el servidor de REOS en este momento.",
-    "displaySettings": "Pantalla e idioma",
-    "displaySettingsHint": "Tema, tamaño del texto e idioma",
     "signIn": {
       "welcomeBack": "Bienvenido de nuevo",
       "subtitle": "Inicie sesión de la misma forma que antes.",
@@ -170,11 +168,43 @@
       "done": "Su cuenta se eliminará en 30 días. Inicie sesión antes de esa fecha para conservarla."
     },
     "account": {
-      "title": "Cuenta",
       "devices": "Sus dispositivos",
+      "delete": "Eliminar cuenta"
+    },
+    "me": {
+      "title": "Yo",
+      "open": "Abrir mi cuenta",
+      "privacy": "Privacidad y mis datos",
+      "accessibility": "Idioma y accesibilidad",
+      "switchRoleTo": "Cambiar de rol · {{role}}",
+      "switchRole": "Cambiar de rol",
       "signOut": "Cerrar sesión",
-      "delete": "Eliminar cuenta",
-      "display": "Pantalla e idioma"
+      "twoStepTitle": "Active la verificación en dos pasos para usar {{role}}",
+      "twoStepBody": "Los roles de administración necesitan un segundo paso al iniciar sesión. Actívelo en el sitio web de REOS, en Configuración › Seguridad. Tarda alrededor de un minuto.",
+      "openWeb": "Abrir el sitio web"
+    },
+    "organisations": {
+      "title": "Sus organizaciones",
+      "intro": "Cada una ve solo lo que usted comparte con ella.",
+      "note": "Al cambiar, cambian el logotipo, los colores y lo que se muestra primero. Sus contactos, publicaciones y créditos siguen siendo suyos.",
+      "switched": "Ahora trabaja con {{organisation}}."
+    },
+    "roles": {
+      "title": "Cambiar de rol",
+      "intro": "Su cuenta, su progreso y sus datos son los mismos en todos los roles.",
+      "switched": "Ahora usa REOS como {{role}}."
+    },
+    "privacy": {
+      "title": "Privacidad y mis datos",
+      "security": "Inicio de sesión y dispositivos"
+    },
+    "accessibility": {
+      "title": "Idioma y accesibilidad",
+      "language": "Idioma",
+      "textSize": "Tamaño del texto",
+      "highContrast": "Alto contraste",
+      "highContrastHint": "El mayor contraste, para baja visión o pleno sol",
+      "note": "Funciona con VoiceOver y TalkBack. Cumple con WCAG 2.2 AA."
     }
   },
   "tabs": {

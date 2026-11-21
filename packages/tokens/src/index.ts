@@ -419,6 +419,8 @@ export const mobile = {
   /** Icon tiles in list rows and feature cards. */
   iconTile: 44,
   avatar: 48,
+  /** The person's initials at the top of Me. */
+  avatarLarge: 64,
   tabBarIcon: 22,
 } as const;
 
