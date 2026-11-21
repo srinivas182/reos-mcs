@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
+import { settings as organisationSettings } from '@/routes/organisation';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -30,6 +31,7 @@ export type NavLabel =
     | 'states'
     | 'tenants'
     | 'brandingAndDomain'
+    | 'brokerageSettings'
     | 'connections';
 
 export type RoleNavItem = {
@@ -116,7 +118,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('teamsAndRouting'),
             planned('reports'),
             planned('brokerageIntegrations'),
-            planned('brokerageSettings'),
+            item('brokerageSettings', Building2, organisationSettings()),
         ],
         // Mentors work in the mentor workspace (web journey screen 48).
         mentor: [home, planned('mentorWorkspace')],

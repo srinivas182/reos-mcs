@@ -34,7 +34,8 @@
     "states": "States",
     "connections": "Connections",
     "tenants": "Tenants",
-    "brandingAndDomain": "Branding and domain"
+    "brandingAndDomain": "Branding and domain",
+    "brokerageSettings": "Brokerage settings"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -413,7 +414,10 @@
       "ios_client_id": "iOS client ID",
       "team_id": "Team ID",
       "key_id": "Key ID",
-      "verify_service_sid": "Verify service SID"
+      "verify_service_sid": "Verify service SID",
+      "api_token": "API token",
+      "zone_id": "Zone ID",
+      "cname_target": "CNAME target"
     },
     "checks": {
       "test": "Test connection",
@@ -1710,7 +1714,13 @@
         "support.declined": "Declined support sign-in",
         "support.started": "Started a support session",
         "support.viewed": "Support opened {{path}}",
-        "support.ended": "Support access ended"
+        "support.ended": "Support access ended",
+        "domain.added": "Added a custom domain",
+        "domain.verified": "Custom domain went live",
+        "domain.removed": "Removed the custom domain",
+        "brand.updated": "Changed the brand",
+        "brand.logo_changed": "Changed the logo",
+        "brand.logo_removed": "Removed the logo"
       }
     }
   },
@@ -1841,5 +1851,76 @@
       "emailBody": "Your CE course starts Monday.",
       "from": "From: {{name}}"
     }
+  },
+  "domains": {
+    "added": "Domain added. Add the two records at your DNS provider, then press Verify DNS.",
+    "live": "{{domain}} is live, with SSL.",
+    "waiting": "Not there yet. DNS changes can take up to an hour; REOS keeps checking every 10 minutes.",
+    "removed": "{{domain}} is removed. Your members sign in at your REOS address again.",
+    "errors": {
+      "format": "Enter an address like learn.yourbrokerage.com (three parts or more).",
+      "reos": "Use your own domain. Your REOS address already works.",
+      "one": "Remove the current domain before adding another.",
+      "taken": "Another organization already uses this domain.",
+      "provider": "REOS couldn't set up the domain just now. Try again in a few minutes."
+    },
+    "card": {
+      "title": "Custom domain",
+      "yourAddress": "Your app address",
+      "placeholder": "learn.yourbrokerage.com",
+      "add": "Add domain",
+      "adding": "Adding…",
+      "reosAddress": "Until then, your members sign in at {{address}}.",
+      "columns": {
+        "type": "Type",
+        "name": "Name",
+        "value": "Value",
+        "status": "Status"
+      },
+      "verified": "Verified",
+      "waiting": "Waiting",
+      "copy": "Copy {{type}} value",
+      "copied": "Copied",
+      "verify": "Verify DNS",
+      "checking": "Checking…",
+      "remove": "Remove domain",
+      "pendingNote": "Add these records at your DNS provider. DNS can take up to an hour; REOS checks every 10 minutes.",
+      "liveNote": "SSL certificate issued automatically. Members see your brand on the web, in email and in the app.",
+      "lastChecked": "Last checked {{when}}",
+      "removeTitle": "Remove {{domain}}?",
+      "removeBody": "Members sign in at {{address}} again. Links to {{domain}} stop working.",
+      "keep": "Keep it",
+      "confirmRemove": "Remove"
+    }
+  },
+  "brokerageSettings": {
+    "title": "Brokerage settings",
+    "purpose": "{{name}} · domain, brand, people and permissions",
+    "people": "People and permissions",
+    "columns": {
+      "person": "Person",
+      "role": "Role",
+      "scope": "Scope",
+      "twoStep": "Two-step"
+    },
+    "everything": "Everything",
+    "on": "On",
+    "off": "Off",
+    "noPeople": "No admins yet besides you.",
+    "peopleNote": "Inviting admins and changing permissions come next.",
+    "plan": "Plan",
+    "planValue": "{{payer}} · {{seats}}",
+    "seats_one": "{{count}} seat",
+    "seats_other": "{{count}} seats",
+    "noLimit": "no seat limit",
+    "payers": {
+      "organisation": "Brokerage pays",
+      "member": "Each agent pays"
+    },
+    "brand": "Brand",
+    "editBrand": "Edit brand",
+    "noBrand": "No brand yet: members see REOS's colors.",
+    "colour": "Primary color",
+    "appLabel": "App label"
   }
 }

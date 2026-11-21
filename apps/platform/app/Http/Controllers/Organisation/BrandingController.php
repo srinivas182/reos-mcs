@@ -8,15 +8,17 @@ use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Organisation\UpdateBrandRequest;
 use App\Http\Requests\Organisation\UploadLogoRequest;
-use App\Http\Resources\Tenancy\TenantResource;
+use App\Http\Resources\Tenancy\TenantDomainResource;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Tenancy\Brands;
+use App\Services\Tenancy\TenantDomains;
 use App\Tenancy\Brand;
 use App\Tenancy\BrandColour;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -28,17 +30,18 @@ use Inertia\Response;
  */
 final class BrandingController extends Controller
 {
-    public function show(#[CurrentUser] User $user, ActiveRole $activeRole, Brands $brands): Response
+    public function show(Request $request, #[CurrentUser] User $user, ActiveRole $activeRole, Brands $brands, TenantDomains $domains): Response
     {
         $tenant = $this->tenant($user, $activeRole);
         $brand = Brand::of($tenant);
+        $domain = $domains->of($tenant);
 
         return Inertia::render('organisation/branding', [
             'tenant' => [
                 'id' => $tenant->id,
                 'name' => $tenant->name,
                 'type' => $tenant->type->value,
-                'address' => TenantResource::domain($tenant),
+                'address' => $tenant->slug.'.'.config()->string('reos.tenancy.base_domain'),
                 'parent' => $tenant->parent?->name,
             ],
             'brand' => [
@@ -49,6 +52,8 @@ final class BrandingController extends Controller
             // What members see when this organisation has no brand of its own.
             'inherited' => $brand->isSet() ? null : $brands->forOrganisation($tenant)?->toArray(),
             'minContrast' => BrandColour::MIN_CONTRAST,
+            // The tenant's own domain (A4.2b).
+            'domain' => $domain === null ? null : (new TenantDomainResource($domain))->resolve($request),
         ]);
     }
 

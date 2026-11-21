@@ -108,6 +108,37 @@ entries:
       Verify uses Twilio's pre-registered senders, so phone sign-in doesn't wait for the 10DLC
       registration that twilio-sms needs. Decision 3 in the Sprint 3 spec.
 
+  - id: cloudflare-saas
+    name: Cloudflare for SaaS (tenant custom domains)
+    kind: platform_service
+    category: platform
+    purpose: Tenants' own domains (learn.example.com) with automatic SSL, verified from Branding and domain or Brokerage settings.
+    launch: not_applicable
+    build: { sprint: 4, item: A4.2 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 4
+      status: not_started
+    sandbox: A staging zone with Cloudflare for SaaS enabled; 100 custom hostnames free.
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: api_token, secret: true }
+        - { key: zone_id }
+        - { key: cname_target, default: tenants.reos.com }
+    personal_data: false
+    cost: 100 custom hostnames free on every plan, then $0.10 each per month (decision 2 in the Sprint 4 spec).
+    fallback: Tenants use their <slug>.reos.com address.
+    notes: >-
+      The API token needs the SSL and Certificates edit permission on the reos.com zone. Runs on
+      the Simulator until the account exists; the Simulator verifies a domain on the first check.
+    sources:
+      - https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/plans/
+
   # ── Calendar, email and voice ───────────────────────────────────────────────
   - id: google-workspace
     name: Google Calendar and Gmail

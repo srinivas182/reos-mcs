@@ -145,3 +145,15 @@ export type SupportGrant = {
     minutes: number;
     answer_hours: number;
 };
+
+/** A tenant's own domain on screens 41 and 57 (A4.2b). */
+export type TenantDomain = {
+    hostname: string;
+    status: 'pending' | 'active' | 'failed';
+    ssl: 'pending' | 'active';
+    live: boolean;
+    records: { type: string; name: string; value: string; verified: boolean }[];
+    error: string | null;
+    last_checked_at: string | null;
+    verified_at: string | null;
+};

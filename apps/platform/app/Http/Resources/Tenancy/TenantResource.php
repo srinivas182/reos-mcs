@@ -6,6 +6,7 @@ namespace App\Http\Resources\Tenancy;
 
 use App\Enums\OrganisationType;
 use App\Models\Organisation;
+use App\Services\Tenancy\TenantDomains;
 use App\Tenancy\TenantStatus;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -48,6 +49,10 @@ final class TenantResource extends JsonResource
             return null;
         }
 
-        return $tenant->slug.'.'.config()->string('reos.tenancy.base_domain');
+        $custom = app(TenantDomains::class)->of($tenant);
+
+        return $custom !== null && $custom->live()
+            ? $custom->hostname
+            : $tenant->slug.'.'.config()->string('reos.tenancy.base_domain');
     }
 }

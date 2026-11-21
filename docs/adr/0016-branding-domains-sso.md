@@ -1,6 +1,6 @@
 # ADR 0016: Tenant branding, domains and single sign-on
 
-- Status: Accepted (A4.2a); A4.2b adds custom domains and single sign-on
+- Status: Accepted (A4.2a branding, A4.2b custom domains); A4.2c adds single sign-on
 - Date: 2026-11-21 (Sprint 4, A4.2; spec in docs/sprints/S04-spec.md, decisions 2 and 4)
 
 ## Context
@@ -30,5 +30,14 @@ REOS is one app for everyone, but members of Texas REALTORS® or Lone Star Realt
 ## Consequences
 
 - A tenant can't make REOS harder to read, and members see their organisation everywhere they work.
-- **Brokerage brands:** brokerages, schools and provider businesses can save a brand at the same address as associations. The broker journey's Brokerage settings (screen 41) doesn't draw a brand card, so where brokers edit it needs a journey decision.
+- **Brokerage brands:** brokerages, schools and provider businesses can save a brand at the same address as associations. Brokers see it as a Brand card on Brokerage settings (screen 41), which links to the brand editor (decision of 21 November 2026, A4.2b).
 - The phone app shows the brand after sign-in, from the same data, when the phone's shell is themed (later sprint).
+
+## Decision (A4.2b): custom domains
+
+1. **One custom domain per tenant**, held in `tenant_domains` (row-level security, ADR 0015). Hostnames are unique across REOS, need three labels or more (`learn.lonestarrealty.com`) and can't be under the REOS base domain.
+2. **Cloudflare for SaaS issues and renews SSL** (`cloudflare-saas` in the integrations register; API token, zone and CNAME target set by super admins). The tenant adds two records: a CNAME to `tenants.reos.com` and a TXT ownership record. Outside production a simulator stands in and goes live on the first check, so local work and tests never call Cloudflare.
+3. **Verify DNS** checks at once; a scheduled job (`reos:domains:check`, every 10 minutes) checks domains still waiting, for up to 7 days. Adding, going live and removing are audited with the tenant.
+4. **A domain counts only when both the hostname and SSL are active.** Only then does it brand sign-in (`Brands::tenantForHost` looks it up first, cached for 10 minutes and cleared on every change) and replace the slug address on the Tenants screens. The slug address always keeps working.
+5. **Where it is managed:** the same `CustomDomainCard` on Branding and domain (screen 57, associations, schools, providers) and Brokerage settings (screen 41, brokers). Screen 41 also lists the people who run the brokerage and its teams with their scope and two-step status, and the plan. Inviting admins and changing permissions come with A4.3.
+6. **Removing a domain asks first.** It can't be undone with a toast: putting it back needs DNS checked again and a new certificate.
