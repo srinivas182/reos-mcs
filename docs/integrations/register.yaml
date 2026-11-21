@@ -1534,7 +1534,7 @@ entries:
       fields: []
     personal_data: true
     cost: Contract.
-    notes: Open PRD question which membership system and fields. Data-sharing agreement and security review usually precede access; start the conversation now.
+    notes: Open PRD question which membership system and fields. Data-sharing agreement and security review usually precede access; start the conversation now. Sign-in itself is built generically (A4.2c, SAML 2.0 or OpenID Connect, set up by the association admin on screen 57), so the association only gives its identity provider's metadata or issuer and client; this entry is for its member-data feed.
 
   # ── Operations ──────────────────────────────────────────────────────────────
   - id: sentry

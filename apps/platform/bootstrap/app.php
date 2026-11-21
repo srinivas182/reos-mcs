@@ -11,6 +11,7 @@ use App\Http\Middleware\SetApiLocale;
 use App\Http\Middleware\TraceRequests;
 use App\Identity\SignInFailed;
 use App\Services\Identity\AppSignInHandoff;
+use App\Sso\SsoProblem;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -30,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
         then: static function (): void {
             // Vendors sign their webhooks; they run in platform scope (ADR 0015).
             Route::middleware(['api', 'tenancy.platform'])->group(base_path('routes/webhooks.php'));
+            // Sign-in answers posted from other sites: no session (see the file).
+            Route::group([], base_path('routes/handoff.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -89,6 +92,18 @@ return Application::configure(basePath: dirname(__DIR__))
             $field = in_array($e->reason, ['identity.errors.wrongCode', 'identity.errors.locked'], true) ? 'code' : 'sign_in';
 
             return redirect()->route('login')->withInput($request->only('phone'))->withErrors([$field => $message]);
+        });
+
+        // Single sign-on problems (A4.2c): a plain message on the sign-in page.
+        $exceptions->dontReport(SsoProblem::class);
+        $exceptions->render(function (SsoProblem $e, Request $request) {
+            $message = __($e->reason);
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message, 'reason' => $e->reason], $e->status);
+            }
+
+            return redirect()->route('login')->withErrors(['sign_in' => $message]);
         });
 
         // Role problems (A3.2): a reason key the apps translate, or back with an error.

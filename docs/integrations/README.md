@@ -1076,7 +1076,7 @@ Members sign in with their association login; member records, CE and programs st
 - **Sandbox:** Ask for a test environment of the membership system.
 - **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Contract.
-- **Notes:** Open PRD question which membership system and fields. Data-sharing agreement and security review usually precede access; start the conversation now.
+- **Notes:** Open PRD question which membership system and fields. Data-sharing agreement and security review usually precede access; start the conversation now. Sign-in itself is built generically (A4.2c, SAML 2.0 or OpenID Connect, set up by the association admin on screen 57), so the association only gives its identity provider's metadata or issuer and client; this entry is for its member-data feed.
 
 ### Sentry
 <a id="sentry"></a>

@@ -13,6 +13,7 @@ use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Tenancy\Brands;
+use App\Services\Tenancy\SingleSignOn;
 use App\Services\Tenancy\TenantDomains;
 use App\Tenancy\Brand;
 use App\Tenancy\BrandColour;
@@ -30,7 +31,7 @@ use Inertia\Response;
  */
 final class BrandingController extends Controller
 {
-    public function show(Request $request, #[CurrentUser] User $user, ActiveRole $activeRole, Brands $brands, TenantDomains $domains): Response
+    public function show(Request $request, #[CurrentUser] User $user, ActiveRole $activeRole, Brands $brands, TenantDomains $domains, SingleSignOn $sso): Response
     {
         $tenant = $this->tenant($user, $activeRole);
         $brand = Brand::of($tenant);
@@ -54,6 +55,8 @@ final class BrandingController extends Controller
             'minContrast' => BrandColour::MIN_CONTRAST,
             // The tenant's own domain (A4.2b).
             'domain' => $domain === null ? null : (new TenantDomainResource($domain))->resolve($request),
+            // Single sign-on (A4.2c).
+            'sso' => $sso->screen($tenant),
         ]);
     }
 

@@ -20,6 +20,7 @@
         "laravel/tinker": "^3.0",
         "laravel/wayfinder": "^0.1.14",
         "league/flysystem-aws-s3-v3": "^3.0",
+        "onelogin/php-saml": "^4.2",
         "open-telemetry/exporter-otlp": "^1.6",
         "open-telemetry/sdk": "^1.17",
         "sentry/sentry-laravel": "^4.31",

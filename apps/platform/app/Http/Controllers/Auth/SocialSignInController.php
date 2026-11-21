@@ -14,8 +14,6 @@ use Database\Seeders\Demo\Persona;
 use Database\Seeders\Demo\Personas;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -39,20 +37,9 @@ final class SocialSignInController extends Controller
     {
         $provider = str_contains($request->path(), 'apple') ? IdentityProvider::Apple : IdentityProvider::Google;
 
-        // Apple answers with a cross-site POST, which doesn't carry our
-        // (SameSite=Lax) session cookie. Hold the answer for five minutes
-        // and continue with a same-site GET, which does.
-        if ($request->isMethod('post')) {
-            $key = Str::random(40);
-            Cache::put("reos:oauth-handoff:{$key}", $request->only(['state', 'code', 'user', 'error', 'demo_email']), 300);
-
-            return redirect()->to($request->url().'?'.http_build_query(['handoff' => $key]), 303);
-        }
-
-        if ($request->filled('handoff')) {
-            $answer = Cache::pull('reos:oauth-handoff:'.$request->string('handoff')->toString());
-            $request->merge(is_array($answer) ? $answer : []);
-        }
+        // Apple posts its answer from its own site; routes/handoff.php parked
+        // it and sent the browser here with a same-site GET.
+        CrossSitePostHandoff::restore($request);
         ['claims' => $claims, 'name' => $name] = $oauth->finish($provider, $request);
         ['user' => $user, 'created' => $created] = $accounts->fromIdentity($claims, $name);
 

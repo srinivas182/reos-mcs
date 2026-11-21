@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Connections\SyncEngine;
+use App\Sso\TestIdentityProvider;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -58,6 +59,8 @@ class AppServiceProvider extends ServiceProvider
 
         // The role in use is worked out once per request.
         $this->app->scoped(ActiveRole::class);
+        // Loads its key pair once per process (outside production only).
+        $this->app->singleton(TestIdentityProvider::class);
     }
 
     /**

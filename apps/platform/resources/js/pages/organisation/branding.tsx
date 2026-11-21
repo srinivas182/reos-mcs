@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { BrandPreview } from '@/components/brand-preview';
 import { BrandTile } from '@/components/brand-tile';
 import { CustomDomainCard } from '@/components/custom-domain-card';
+import { SsoCard, SsoStatusNote } from '@/components/sso-card';
 import InputError from '@/components/input-error';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,7 @@ import {
 } from '@/lib/colour';
 import { logo as logoRoute, update } from '@/routes/branding';
 import { destroy as removeLogoRoute } from '@/routes/branding/logo';
-import type { BrandProps, TenantDomain, TenantType } from '@/types';
+import type { BrandProps, SsoScreen, TenantDomain, TenantType } from '@/types';
 
 type Props = {
     tenant: {
@@ -34,6 +35,7 @@ type Props = {
     };
     inherited: BrandProps | null;
     domain: TenantDomain | null;
+    sso: SsoScreen;
 };
 
 type Draft = {
@@ -49,10 +51,16 @@ const REOS_BLUE = '#2952CC';
  * Branding and domain (association admin, web journey screen 57): the
  * brand members see (logo, name, primary colour, app label), who sees
  * which brand, and the address members sign in at. A preview shows the
- * sign-in page and an email before saving. A4.2b adds the custom domain
- * records and single sign-on status.
+ * sign-in page and an email before saving. A4.2b added the custom domain
+ * records; A4.2c adds single sign-on (status under the domain, set-up card).
  */
-export default function Branding({ tenant, brand, inherited, domain }: Props) {
+export default function Branding({
+    tenant,
+    brand,
+    inherited,
+    domain,
+    sso,
+}: Props) {
     const { t } = useTranslation();
     const { errors } = usePage<{ errors: Record<string, string> }>().props;
     const file = useRef<HTMLInputElement>(null);
@@ -330,7 +338,11 @@ export default function Branding({ tenant, brand, inherited, domain }: Props) {
                         <CustomDomainCard
                             domain={domain}
                             address={tenant.address ?? ''}
-                        />
+                        >
+                            <SsoStatusNote sso={sso} tenant={tenant.name} />
+                        </CustomDomainCard>
+
+                        <SsoCard sso={sso} tenant={tenant.name} />
 
                         <BrandPreview
                             name={tenant.name}

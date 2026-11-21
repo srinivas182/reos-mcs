@@ -3,6 +3,8 @@
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
+use App\Http\Controllers\Auth\SsoSignInController;
+use App\Http\Controllers\Auth\TestIdentityProviderController;
 use App\Http\Controllers\BrandLogoController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Onboarding\PublicSiteController;
 use App\Http\Controllers\Organisation\BrandingController;
 use App\Http\Controllers\Organisation\DomainController;
 use App\Http\Controllers\Organisation\SettingsController;
+use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
 use App\Http\Middleware\EnsureAdminTwoStep;
@@ -77,6 +80,15 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::delete('logo', [BrandingController::class, 'removeLogo'])->middleware('throttle:10,1')->name('logo.destroy');
 });
 // The tenant's own domain (A4.2b), from screens 41 and 57.
+// Single sign-on settings (A4.2c, screen 57).
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/sso')->name('sso.')->group(function () {
+    Route::put('/', [SsoController::class, 'update'])->middleware('throttle:10,1')->name('update');
+    Route::post('test-provider', [SsoController::class, 'useTestProvider'])->middleware('throttle:10,1')->name('test-provider');
+    Route::post('test', [SsoController::class, 'test'])->middleware('throttle:10,1')->name('test');
+    Route::post('enable', [SsoController::class, 'enable'])->middleware('throttle:10,1')->name('enable');
+    Route::post('disable', [SsoController::class, 'disable'])->middleware('throttle:10,1')->name('disable');
+});
+
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/domain')->name('domain.')->group(function () {
     Route::post('/', [DomainController::class, 'store'])->middleware('throttle:10,1')->name('store');
     Route::post('verify', [DomainController::class, 'verify'])->middleware('throttle:20,1')->name('verify');
@@ -107,12 +119,24 @@ Route::middleware('guest')->group(function () {
         ->middleware('throttle:sign-in')->name('auth.phone.verify');
 });
 
-Route::match(['get', 'post'], 'integrations/google-sign-in/callback', [SocialSignInController::class, 'callback'])
+Route::get('integrations/google-sign-in/callback', [SocialSignInController::class, 'callback'])
     ->middleware('throttle:sign-in')->name('auth.social.callback.google');
 // Apple posts the answer back from its own site, so the callbacks can't carry a
 // CSRF token (see bootstrap/app.php); the one-time `state` protects them instead.
-Route::match(['get', 'post'], 'integrations/apple-sign-in/callback', [SocialSignInController::class, 'callback'])
+Route::get('integrations/apple-sign-in/callback', [SocialSignInController::class, 'callback'])
     ->middleware('throttle:sign-in')->name('auth.social.callback.apple');
+
+// Single sign-on with a tenant's identity provider (A4.2c, journey screen 2).
+// OIDC answers with a GET; SAML posts from the provider's site, which
+// routes/handoff.php turns into a GET here. The one-time state, nonce and
+// SAML request ID protect the callback.
+Route::get('sso/complete/{ticket}', [SsoSignInController::class, 'complete'])->middleware('throttle:sign-in')->name('sso.complete');
+Route::get('sso/{organisation:slug}/start', [SsoSignInController::class, 'start'])->middleware('throttle:sign-in')->name('sso.start');
+Route::get('sso/{organisation:slug}/callback', [SsoSignInController::class, 'callback'])->middleware('throttle:sign-in')->name('sso.callback');
+Route::get('sso/{organisation:slug}/metadata', [SsoSignInController::class, 'metadata'])->middleware('throttle:60,1')->name('sso.metadata');
+// REOS's test identity provider (outside production; 404 in production).
+Route::get('sso-test-idp/authorize', [TestIdentityProviderController::class, 'oidc'])->middleware('throttle:sign-in')->name('sso.test-idp.oidc');
+Route::get('sso-test-idp/saml', [TestIdentityProviderController::class, 'saml'])->middleware('throttle:sign-in')->name('sso.test-idp.saml');
 
 // Connections (B3.1, ADR 0013): a person's own account at a tool. The callback
 // is the address Settings › Integrations shows; the single-use `state` says
