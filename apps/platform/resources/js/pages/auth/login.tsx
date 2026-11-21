@@ -1,5 +1,5 @@
 import { Form, Head, usePage } from '@inertiajs/react';
-import { ShieldCheck } from 'lucide-react';
+import { KeyRound, ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
 /* @chisel-passkeys */
@@ -31,14 +31,20 @@ type Props = {
     canResetPassword: boolean;
     signInOptions: SignInOptionsAvailable;
     phoneCodeSentTo?: string | null;
+    /** The tenant's (or its association's) single sign-on, A4.2c. */
+    sso?: { name: string; url: string } | null;
 };
 
-/** Sign in (journey screen w002): email and password, Google, Apple, phone, passkey. */
+/**
+ * Sign in (journey screen w002): email and password, Google, Apple, the
+ * tenant's single sign-on, phone, passkey.
+ */
 export default function Login({
     status,
     canResetPassword,
     signInOptions,
     phoneCodeSentTo,
+    sso = null,
 }: Props) {
     const { t } = useTranslation();
     const { errors } = usePage<{ errors: Record<string, string> }>().props;
@@ -139,6 +145,19 @@ export default function Login({
 
                 <div className="space-y-3">
                     <ProviderButtons available={signInOptions} />
+                    {sso ? (
+                        <Button
+                            asChild
+                            variant="outline"
+                            className="h-auto min-h-12 w-full py-3 whitespace-normal"
+                        >
+                            {/* A full page visit: it leaves for the identity provider. */}
+                            <a href={sso.url}>
+                                <KeyRound aria-hidden className="size-5" />
+                                {t('signIn.sso', { name: sso.name })}
+                            </a>
+                        </Button>
+                    ) : null}
                     {signInOptions.phone ? (
                         <PhoneSignIn sentTo={phoneCodeSentTo} />
                     ) : null}

@@ -43,6 +43,21 @@ const props = {
     },
     inherited: null,
     domain: null,
+    sso: {
+        settings: null,
+        service_provider: {
+            entity_id:
+                'https://texas-realtors.reos.com/sso/texas-realtors/metadata',
+            acs_url:
+                'https://texas-realtors.reos.com/sso/texas-realtors/callback',
+            metadata_url:
+                'https://texas-realtors.reos.com/sso/texas-realtors/metadata',
+            redirect_uri:
+                'https://texas-realtors.reos.com/sso/texas-realtors/callback',
+        },
+        members: 0,
+        test_provider_available: false,
+    },
 };
 
 beforeEach(() => vi.clearAllMocks());

@@ -38,6 +38,10 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | License | Licencia | |
 | Continuing education (CE) | Educación continua (CE) | Keep "CE" and "TREC" as in English |
 | Integration | Integración | |
+| Single sign-on (SSO) | Inicio de sesión único | Microsoft's term; keep "SSO" only in technical fields |
+| Identity provider | Proveedor de identidad | |
+| Metadata | Metadatos | |
+| Certificate | Certificado | |
 | Demo data | Datos de demostración | |
 | Waitlist | Lista de espera | |
 | Exam prep | Preparación para el examen | |

@@ -157,3 +157,36 @@ export type TenantDomain = {
     last_checked_at: string | null;
     verified_at: string | null;
 };
+
+/** Single sign-on on screen 57 (A4.2c). */
+export type SsoStatus = 'draft' | 'tested' | 'on';
+export type SsoProtocol = 'saml' | 'oidc';
+
+export type SsoScreen = {
+    settings: {
+        protocol: SsoProtocol;
+        status: SsoStatus;
+        issuer?: string;
+        client_id?: string;
+        entity_id?: string;
+        sso_url?: string;
+        metadata_url?: string | null;
+        has_secret: boolean;
+        certificate_expires: string | null;
+        test_provider: boolean;
+        last_test: {
+            at: string;
+            passed: boolean;
+            detail: string | null;
+        } | null;
+        enabled_at: string | null;
+    } | null;
+    service_provider: {
+        entity_id: string;
+        acs_url: string;
+        metadata_url: string;
+        redirect_uri: string;
+    };
+    members: number;
+    test_provider_available: boolean;
+};

@@ -613,6 +613,12 @@
       "useRecovery": "Use a recovery code",
       "useCode": "Use an authenticator code",
       "orYouCan": "or"
+    },
+    "sso": "Sign in with {{name}} (single sign-on)",
+    "testIdp": {
+      "title": "REOS test identity provider",
+      "description": "This stands in for your organization's member login, outside production only. Choose who signs in.",
+      "protocol": "Answers with {{protocol}}"
     }
   },
   "settings": {
@@ -1720,7 +1726,13 @@
         "domain.removed": "Removed the custom domain",
         "brand.updated": "Changed the brand",
         "brand.logo_changed": "Changed the logo",
-        "brand.logo_removed": "Removed the logo"
+        "brand.logo_removed": "Removed the logo",
+        "sso.updated": "Changed single sign-on settings",
+        "sso.tested": "Ran a single sign-on test",
+        "sso.enabled": "Turned single sign-on on",
+        "sso.disabled": "Turned single sign-on off",
+        "sso.account_created": "New account from single sign-on",
+        "sso.account_linked": "Linked an account to single sign-on"
       }
     }
   },
@@ -1922,5 +1934,80 @@
     "noBrand": "No brand yet: members see REOS's colors.",
     "colour": "Primary color",
     "appLabel": "App label"
+  },
+  "sso": {
+    "saved": "Single sign-on settings saved. Run a test sign-in next.",
+    "testProviderUsed": "The REOS test identity provider is set up. Run a test sign-in next.",
+    "enabled": "Single sign-on is on. {{name}} members now see it on the sign-in page.",
+    "disabled": "Single sign-on is off. Members sign in with their other sign-in methods.",
+    "test": {
+      "noEmail": "no email sent"
+    },
+    "errors": {
+      "secret": "Enter the client secret from your identity provider.",
+      "address": "Use an https:// address on the public internet.",
+      "metadataNeeded": "Enter the metadata URL or upload the metadata file.",
+      "discovery": "REOS couldn't read this provider's settings. Check the issuer URL.",
+      "unreachable": "REOS couldn't reach the identity provider. Try again in a few minutes.",
+      "metadata": "This isn't usable SAML metadata. REOS needs the entity ID, a sign-in address and a signing certificate.",
+      "rejected": "The identity provider's answer didn't pass REOS's security checks, so you weren't signed in.",
+      "replayed": "This sign-in was already used. Please start again.",
+      "expired": "This sign-in took too long or was already used. Please start again.",
+      "notOn": "Single sign-on isn't turned on here.",
+      "notSetUp": "Single sign-on isn't set up yet.",
+      "cancelled": "Sign-in was canceled at the identity provider.",
+      "noEmail": "The identity provider didn't send an email address, so REOS can't find your account. Ask your organization to include it.",
+      "emailInUse": "A REOS account with this email already exists and isn't part of this organization. Sign in with your password, Google or Apple instead.",
+      "testFirst": "Run a test sign-in that passes before turning single sign-on on."
+    },
+    "card": {
+      "title": "Single sign-on",
+      "purpose": "Members sign in with their {{name}} login. Works with any SAML 2.0 or OpenID Connect identity provider.",
+      "status": {
+        "off": "Off",
+        "draft": "Not tested",
+        "tested": "Test passed",
+        "on": "On"
+      },
+      "protocol": "Identity provider type",
+      "protocols": {
+        "saml": "SAML 2.0",
+        "oidc": "OpenID Connect"
+      },
+      "metadataUrl": "Metadata URL",
+      "metadataUrlHint": "From your identity provider, for example https://login.example.org/saml/metadata.",
+      "metadataFile": "Or upload the metadata file",
+      "metadataSaved": "Metadata saved. Leave both blank to keep it.",
+      "provider": "Identity provider",
+      "signInAddress": "Sign-in address",
+      "certificateExpires": "Signing certificate expires {{date}}",
+      "issuer": "Issuer URL",
+      "clientId": "Client ID",
+      "clientSecret": "Client secret",
+      "secretSaved": "A secret is saved. Leave blank to keep it.",
+      "giveProvider": "Give your identity provider these values",
+      "entityId": "Entity ID (audience)",
+      "acsUrl": "Reply URL (ACS)",
+      "spMetadata": "REOS metadata",
+      "redirectUri": "Redirect URI",
+      "copy": "Copy {{label}}",
+      "copied": "Copied",
+      "save": "Save settings",
+      "saving": "Saving…",
+      "test": "Test sign-in",
+      "enable": "Turn on for members",
+      "disable": "Turn off",
+      "testProvider": "Use the REOS test identity provider",
+      "testProviderHint": "Outside production only: try single sign-on with demo people before your provider is ready.",
+      "testProviderInUse": "Using the REOS test identity provider (demo data).",
+      "lastTestPassed": "{{when}}: test sign-in passed for {{detail}}",
+      "lastTestFailed": "{{when}}: test sign-in failed. {{detail}}",
+      "changeNote": "Saving new settings turns single sign-on off until a test sign-in passes.",
+      "linking": "First sign-in: people who already belong to {{name}} or one of its organizations are linked by email. Everyone else gets a new member account. Accounts outside {{name}} are never taken over.",
+      "members_one": "{{count}} person has signed in with single sign-on.",
+      "members_other": "{{count}} people have signed in with single sign-on.",
+      "onNote": "Single sign-on with {{name}}'s member login is on.",
+      "offNote": "Single sign-on is off. Set it up below."
+    }
   }
 }

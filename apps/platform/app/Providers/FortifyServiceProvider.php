@@ -8,6 +8,7 @@ use App\Actions\Fortify\CreateNewUser;
 /* @end-chisel-registration */
 use App\Actions\Fortify\ResetUserPassword;
 use App\Services\Identity\SignInOptions;
+use App\Services\Tenancy\SingleSignOn;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -60,6 +61,8 @@ class FortifyServiceProvider extends ServiceProvider
             'signInOptions' => app(SignInOptions::class)->available(),
             // After "Send code": the number the code went to, so the code box shows.
             'phoneCodeSentTo' => $request->session()->get('phoneCodeSentTo'),
+            // Journey screen 2: "Sign in with Texas REALTORS® (single sign-on)".
+            'sso' => app(SingleSignOn::class)->button($request),
         ]));
 
         Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/reset-password', [

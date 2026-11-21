@@ -6,6 +6,12 @@ namespace Database\Seeders\Demo;
 
 use App\Enums\OrganisationType;
 use App\Models\Organisation;
+use App\Models\TenantSso;
+use App\Sso\SamlClient;
+use App\Sso\SsoProtocol;
+use App\Sso\SsoStatus;
+use App\Sso\TestIdentityProvider;
+use App\Tenancy\Tenancy;
 use App\Tenancy\TenantPlan;
 use App\Tenancy\TenantStatus;
 
@@ -24,7 +30,8 @@ final class DemoTenants
             'Texas REALTORS®' => ['plan' => TenantPlan::Enterprise, 'cell' => 'cell-1', 'limits' => null,
                 'brand' => ['primary' => '#1E3A8A', 'app_label' => 'Texas REALTORS® Learning', 'email_from_name' => 'Texas REALTORS®']],
             'Texas Realty School' => ['plan' => TenantPlan::School, 'cell' => 'cell-2', 'limits' => ['seats' => 40]],
-            'Lone Star Realty' => ['plan' => TenantPlan::Brokerage, 'cell' => 'cell-1', 'limits' => ['seats' => 142, 'candidate_pool' => 5000]],
+            'Lone Star Realty' => ['plan' => TenantPlan::Brokerage, 'cell' => 'cell-1', 'limits' => ['seats' => 142, 'candidate_pool' => 5000],
+                'brand' => ['primary' => '#1D4ED8', 'app_label' => 'Lone Star Realty Learning']],
             'Katy Home Loans' => ['plan' => TenantPlan::Partner, 'cell' => 'cell-2', 'limits' => null],
         ];
 
@@ -40,6 +47,13 @@ final class DemoTenants
         }
 
         $loneStar = Organisation::query()->where('name', 'Lone Star Realty')->first();
+        $texas = Organisation::query()->where('name', 'Texas REALTORS®')->first();
+
+        // A member brokerage of Texas REALTORS® (journey screen 2: its sign-in
+        // page offers the association's single sign-on).
+        if ($loneStar !== null && $texas !== null) {
+            $loneStar->forceFill(['parent_id' => $texas->id])->save();
+        }
 
         if ($loneStar !== null) {
             Organisation::query()->firstOrCreate(
@@ -48,10 +62,37 @@ final class DemoTenants
             );
         }
 
+        $this->singleSignOn();
+
         Organisation::query()->firstOrCreate(
             ['name' => 'Bayou Realty', 'type' => OrganisationType::Brokerage],
             ['states' => ['TX'], 'plan' => TenantPlan::Brokerage, 'cell' => 'cell-2', 'status' => TenantStatus::Trial,
                 'trial_ends_at' => now()->addDays(14)->endOfDay(), 'limits' => ['seats' => 30]],
         );
+    }
+
+    /**
+     * Texas REALTORS® signs its members in with the REOS test identity
+     * provider (SAML), tested and on, so the button shows on its address and
+     * its brokerages' (journey screens 2 and 57). Outside production only.
+     */
+    private function singleSignOn(): void
+    {
+        $texas = Organisation::query()->where('name', 'Texas REALTORS®')->first();
+        $idp = app(TestIdentityProvider::class);
+
+        if ($texas === null || ! $idp->available()) {
+            return;
+        }
+
+        app(Tenancy::class)->run($texas->id, static fn (): TenantSso => TenantSso::query()->updateOrCreate(['organisation_id' => $texas->id], [
+            'protocol' => SsoProtocol::Saml,
+            'status' => SsoStatus::On,
+            'settings' => [...app(SamlClient::class)->parseMetadata($idp->samlMetadata()), 'metadata_url' => null],
+            'last_test_at' => now(),
+            'last_test_passed' => true,
+            'last_test_detail' => 'karen.webb@texasrealtors.example (Karen Webb)',
+            'enabled_at' => now(),
+        ]));
     }
 }
