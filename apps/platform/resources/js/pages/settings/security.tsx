@@ -1,4 +1,4 @@
-import { Form, Head, router } from '@inertiajs/react';
+import { Form, Head, router, usePage } from '@inertiajs/react';
 import { Monitor, Smartphone } from 'lucide-react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,9 +7,11 @@ import { EmptyState } from '@/components/empty-state';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
+import { TwoStepNotice } from '@/components/two-step-notice';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { i18n } from '@/lib/i18n';
+import { activeMembership, roleName } from '@/lib/roles';
 import { destroy as destroyDevice } from '@/routes/devices';
 import { edit } from '@/routes/security';
 /* @chisel-passkeys */
@@ -44,12 +46,27 @@ export default function Security(props: Props) {
     const { t } = useTranslation();
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
+    const { auth } = usePage().props;
+    const adminRole = auth.roles?.twoStepRequired
+        ? activeMembership(auth.roles)
+        : null;
 
     return (
         <>
             <Head title={t('settings.security.title')} />
 
             <h1 className="sr-only">{t('settings.security.title')}</h1>
+
+            {/* An admin role is waiting: the two-step choices come first. */}
+            {adminRole ? (
+                <>
+                    <TwoStepNotice
+                        mode="security"
+                        role={roleName(t, adminRole.role)}
+                    />
+                    <TwoStepOptions {...props} />
+                </>
+            ) : null}
 
             <div className="space-y-6">
                 <Heading
@@ -162,6 +179,15 @@ export default function Security(props: Props) {
 
             <YourDevices devices={props.devices} browsers={props.browsers} />
 
+            {adminRole ? null : <TwoStepOptions {...props} />}
+        </>
+    );
+}
+
+/** Two-step with an authenticator app, and passkeys. */
+function TwoStepOptions(props: Props) {
+    return (
+        <>
             {/* @chisel-2fa */}
             <ManageTwoFactor
                 canManageTwoFactor={props.canManageTwoFactor}

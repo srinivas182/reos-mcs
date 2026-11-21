@@ -20,7 +20,8 @@
     "profile": "Perfil",
     "security": "Seguridad",
     "appearance": "Apariencia e idioma",
-    "integrations": "Integraciones"
+    "integrations": "Integraciones",
+    "people": "Personas"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -30,12 +31,12 @@
   },
   "appearance": {
     "pageTitle": "Apariencia e idioma",
-    "description": "Elige el tema, el tamaño de texto y el idioma que te resulten más cómodos",
+    "description": "Elija el tema, el tamaño del texto y el idioma que le resulten más cómodos",
     "theme": "Tema",
     "themes": {
       "system": {
         "label": "Igual que mi dispositivo",
-        "description": "Claro u oscuro, según tu dispositivo"
+        "description": "Claro u oscuro, según su dispositivo"
       },
       "light": {
         "label": "Claro",
@@ -71,14 +72,14 @@
         "description": "Use REOS in English"
       },
       "es": {
-        "description": "Usa REOS en español"
+        "description": "Use REOS en español"
       },
       "device": {
         "label": "Idioma de mi teléfono",
-        "description": "Inglés o español, según tu teléfono"
+        "description": "Inglés o español, según su teléfono"
       }
     },
-    "savedNote": "Tus preferencias se guardan en tu cuenta y te acompañan en todos tus dispositivos. El ajuste de texto de tu teléfono o computadora también se aplica."
+    "savedNote": "Sus preferencias se guardan en su cuenta y le acompañan en todos sus dispositivos. El ajuste de texto de su teléfono o computadora también se aplica."
   },
   "mobile": {
     "eyebrow": "REAL ESTATE OS",
@@ -558,6 +559,68 @@
       "passwordLabel": "Escriba su contraseña para confirmar",
       "submit": "Eliminar cuenta",
       "cancel": "Conservar mi cuenta"
+    },
+    "twoStep": {
+      "title": "Inicio de sesión en dos pasos",
+      "description": "Un segundo paso al iniciar sesión, con un código de una aplicación de autenticación en su teléfono.",
+      "onBody": "Al iniciar sesión, le pedimos el código de 6 dígitos de su aplicación de autenticación.",
+      "offBody": "Actívelo y le pediremos un código de 6 dígitos de una aplicación de autenticación cada vez que inicie sesión.",
+      "enable": "Activar los dos pasos",
+      "disable": "Desactivar los dos pasos",
+      "continue": "Continuar la configuración",
+      "setupTitle": "Activar los dos pasos",
+      "setupBody": "Escanee el código QR con su aplicación de autenticación o escriba la clave de configuración.",
+      "verifyTitle": "Escriba el código",
+      "verifyBody": "Escriba el código de 6 dígitos que muestra su aplicación de autenticación.",
+      "enabledTitle": "Los dos pasos están activados",
+      "enabledBody": "Escanee el código QR o escriba la clave de configuración en su aplicación de autenticación.",
+      "orManual": "o escriba la clave usted mismo",
+      "setupKey": "Clave de configuración",
+      "copyKey": "Copiar la clave de configuración",
+      "code": "Código de seis dígitos",
+      "next": "Continuar",
+      "back": "Atrás",
+      "confirm": "Confirmar",
+      "close": "Cerrar",
+      "errors": {
+        "qr": "No pudimos cargar el código QR. Inténtelo de nuevo.",
+        "key": "No pudimos cargar la clave de configuración. Inténtelo de nuevo.",
+        "codes": "No pudimos cargar sus códigos de recuperación. Inténtelo de nuevo."
+      },
+      "recovery": {
+        "title": "Códigos de recuperación",
+        "description": "Si pierde su teléfono, un código de recuperación le permite entrar. Guárdelos en un gestor de contraseñas.",
+        "show": "Mostrar los códigos de recuperación",
+        "hide": "Ocultar los códigos de recuperación",
+        "regenerate": "Crear códigos nuevos",
+        "list": "Códigos de recuperación",
+        "loading": "Cargando los códigos de recuperación",
+        "note": "Cada código funciona una vez. Cree códigos nuevos cuando le queden pocos."
+      }
+    },
+    "passkeys": {
+      "title": "Llaves de acceso",
+      "description": "Inicie sesión con Face ID, una huella o el bloqueo de su computadora en lugar de una contraseña.",
+      "emptyTitle": "Todavía no tiene llaves de acceso",
+      "emptyDescription": "Agregue una para iniciar sesión sin contraseña.",
+      "add": "Agregar una llave de acceso",
+      "name": "Nombre de la llave de acceso",
+      "namePlaceholder": "Por ejemplo, MacBook o iPhone",
+      "nameHint": "Un nombre le ayuda a distinguir sus llaves de acceso.",
+      "onDevice": "{{browser}} en {{system}}",
+      "save": "Guardar la llave de acceso",
+      "saving": "Guardando…",
+      "cancel": "Cancelar",
+      "unsupported": "Este navegador no puede usar llaves de acceso.",
+      "added": "Agregada {{time}}",
+      "lastUsed": "Usada por última vez {{time}}",
+      "remove": "Quitar",
+      "removeLabel": "Quitar la llave de acceso {{name}}",
+      "removeTitle": "¿Quitar esta llave de acceso?",
+      "removeBody": "Ya no podrá iniciar sesión con «{{name}}».",
+      "removing": "Quitando…",
+      "removeConfirm": "Quitar la llave de acceso",
+      "keep": "Conservarla"
     }
   },
   "roles": {
@@ -573,17 +636,89 @@
       "super_admin": "Superadministrador"
     },
     "organisationTypes": {
-      "platform": "Por mi cuenta",
+      "platform": "Por su cuenta",
       "brokerage": "Correduría",
       "school": "Escuela",
       "association": "Asociación",
       "provider_business": "Empresa"
     },
     "errors": {
-      "notHeld": "No tienes ese rol. Pídeselo a tu administrador si lo necesitas.",
-      "twoStepRequired": "Activa el inicio de sesión en dos pasos para usar este rol. Tarda alrededor de un minuto.",
+      "notHeld": "Usted no tiene ese rol. Pídaselo a su administrador si lo necesita.",
+      "twoStepRequired": "Active el inicio de sesión en dos pasos para usar este rol. Tarda alrededor de un minuto.",
       "wrongOrganisation": "Ese rol no se puede tener en este tipo de organización.",
-      "lastSuperAdmin": "REOS necesita al menos un superadministrador. Añade otro antes de quitar este."
+      "lastSuperAdmin": "REOS necesita al menos un superadministrador. Agregue otro antes de quitar este."
+    },
+    "switcher": {
+      "label": "Su rol",
+      "current": "Usa REOS como {{role}} en {{organisation}}",
+      "menuTitle": "Cambiar de rol",
+      "onOwn": "{{role}} · por su cuenta",
+      "needsTwoStep": "Necesita dos pasos",
+      "switched": "Ahora usa REOS como {{role}}."
+    },
+    "twoStepNotice": {
+      "title": "Active los dos pasos para usar {{role}}",
+      "body": "Los roles de administración cuidan información de otras personas, así que iniciar sesión necesita un segundo paso: una llave de acceso o una aplicación de autenticación. Tarda alrededor de un minuto.",
+      "action": "Activar los dos pasos",
+      "otherRole": "Usar otro rol"
+    },
+    "twoStepSecurity": {
+      "title": "Su rol de {{role}} necesita los dos pasos",
+      "body": "Elija una opción: agregue una llave de acceso (Face ID, una huella o el bloqueo de su computadora) o active los dos pasos con una aplicación de autenticación. Guarde sus códigos de recuperación en un lugar seguro."
+    }
+  },
+  "people": {
+    "title": "Personas",
+    "description": "Busque a una persona, vea sus roles y cámbielos. Cada cambio queda registrado.",
+    "searchLabel": "Buscar a una persona",
+    "searchPlaceholder": "Nombre, correo o teléfono",
+    "search": "Buscar",
+    "clear": "Borrar",
+    "count_one": "{{count}} persona",
+    "count_other": "{{count}} personas",
+    "emptyTitle": "Todavía no se ha unido nadie",
+    "emptyDescription": "Las personas aparecen aquí cuando se registran.",
+    "noResultsTitle": "Nadie coincide con «{{search}}»",
+    "noResultsDescription": "Revise cómo está escrito, o busque por correo o por los últimos dígitos del teléfono.",
+    "unnamed": "Sin nombre todavía",
+    "noRoles": "Sin roles todavía",
+    "admin": "Administración",
+    "twoStepOn": "Dos pasos activados",
+    "twoStepOff": "Sin dos pasos",
+    "joined": "Se unió el {{date}}",
+    "open": "Abrir {{name}}",
+    "back": "Todas las personas",
+    "page": "Página {{page}} de {{pages}}",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "roles": {
+      "title": "Roles",
+      "description": "Lo que esta persona puede hacer, y dónde.",
+      "emptyTitle": "Sin roles todavía",
+      "emptyDescription": "Asígnele un rol abajo."
+    },
+    "grant": {
+      "title": "Asignar un rol",
+      "role": "Rol",
+      "organisation": "Organización",
+      "chooseRole": "Elija un rol",
+      "chooseOrganisation": "Elija una organización",
+      "noOrganisations": "Todavía no hay una organización del tipo adecuado.",
+      "submit": "Asignar rol",
+      "granted": "Rol de {{role}} asignado en {{organisation}}."
+    },
+    "remove": {
+      "button": "Quitar",
+      "label": "Quitar {{role}} en {{organisation}}",
+      "removed": "Rol de {{role}} quitado en {{organisation}}."
+    },
+    "activity": {
+      "title": "Cambios recientes",
+      "empty": "Todavía no hay cambios de roles.",
+      "granted": "{{actor}} asignó {{role}} ({{organisation}})",
+      "removed": "{{actor}} quitó {{role}} ({{organisation}})",
+      "someone": "Alguien",
+      "unknownOrganisation": "una organización"
     }
   }
 }

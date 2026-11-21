@@ -73,6 +73,8 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureRoles(): void
     {
+        Route::model('person', User::class);
+
         Gate::before(function (User $user, string $ability): ?bool {
             $permission = Permission::tryFrom($ability);
 

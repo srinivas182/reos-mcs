@@ -20,7 +20,8 @@
     "profile": "Profile",
     "security": "Security",
     "appearance": "Appearance and language",
-    "integrations": "Integrations"
+    "integrations": "Integrations",
+    "people": "People"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -71,7 +72,7 @@
         "description": "Use REOS in English"
       },
       "es": {
-        "description": "Usa REOS en español"
+        "description": "Use REOS en español"
       },
       "device": {
         "label": "My phone's language",
@@ -558,6 +559,68 @@
       "passwordLabel": "Enter your password to confirm",
       "submit": "Delete account",
       "cancel": "Keep my account"
+    },
+    "twoStep": {
+      "title": "Two-step sign-in",
+      "description": "A second step when you sign in, with a code from an authenticator app on your phone.",
+      "onBody": "When you sign in, we ask for the 6-digit code from your authenticator app.",
+      "offBody": "Turn it on and we'll ask for a 6-digit code from an authenticator app each time you sign in.",
+      "enable": "Turn on two-step",
+      "disable": "Turn off two-step",
+      "continue": "Continue setup",
+      "setupTitle": "Turn on two-step",
+      "setupBody": "Scan the QR code with your authenticator app, or type in the setup key.",
+      "verifyTitle": "Enter the code",
+      "verifyBody": "Type the 6-digit code your authenticator app shows.",
+      "enabledTitle": "Two-step is on",
+      "enabledBody": "Scan the QR code or type the setup key into your authenticator app.",
+      "orManual": "or type the key yourself",
+      "setupKey": "Setup key",
+      "copyKey": "Copy setup key",
+      "code": "Six-digit code",
+      "next": "Continue",
+      "back": "Back",
+      "confirm": "Confirm",
+      "close": "Close",
+      "errors": {
+        "qr": "We couldn't load the QR code. Try again.",
+        "key": "We couldn't load the setup key. Try again.",
+        "codes": "We couldn't load your recovery codes. Try again."
+      },
+      "recovery": {
+        "title": "Recovery codes",
+        "description": "If you lose your phone, a recovery code gets you in. Keep them in a password manager.",
+        "show": "Show recovery codes",
+        "hide": "Hide recovery codes",
+        "regenerate": "Make new codes",
+        "list": "Recovery codes",
+        "loading": "Loading recovery codes",
+        "note": "Each code works once. Make new codes when you run low."
+      }
+    },
+    "passkeys": {
+      "title": "Passkeys",
+      "description": "Sign in with Face ID, a fingerprint or your computer's lock instead of a password.",
+      "emptyTitle": "No passkeys yet",
+      "emptyDescription": "Add one to sign in without a password.",
+      "add": "Add a passkey",
+      "name": "Passkey name",
+      "namePlaceholder": "For example, MacBook or iPhone",
+      "nameHint": "A name helps you tell your passkeys apart.",
+      "onDevice": "{{browser}} on {{system}}",
+      "save": "Save passkey",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "unsupported": "This browser can't use passkeys.",
+      "added": "Added {{time}}",
+      "lastUsed": "Last used {{time}}",
+      "remove": "Remove",
+      "removeLabel": "Remove the passkey {{name}}",
+      "removeTitle": "Remove this passkey?",
+      "removeBody": "You won't be able to sign in with “{{name}}” any more.",
+      "removing": "Removing…",
+      "removeConfirm": "Remove passkey",
+      "keep": "Keep it"
     }
   },
   "roles": {
@@ -584,6 +647,78 @@
       "twoStepRequired": "Set up two-step sign-in to use this role. It takes about a minute.",
       "wrongOrganisation": "That role can't be held in this kind of organisation.",
       "lastSuperAdmin": "REOS needs at least one super admin. Add another before removing this one."
+    },
+    "switcher": {
+      "label": "Your role",
+      "current": "Using REOS as {{role}} at {{organisation}}",
+      "menuTitle": "Switch role",
+      "onOwn": "{{role}} · on your own",
+      "needsTwoStep": "Needs two-step",
+      "switched": "You're now using REOS as {{role}}."
+    },
+    "twoStepNotice": {
+      "title": "Set up two-step to use {{role}}",
+      "body": "Admin roles look after other people's information, so signing in needs a second step: a passkey or an authenticator app. It takes about a minute.",
+      "action": "Set up two-step",
+      "otherRole": "Use another role"
+    },
+    "twoStepSecurity": {
+      "title": "Your {{role}} role needs two-step",
+      "body": "Choose one below: add a passkey (Face ID, a fingerprint or your computer's lock), or turn on two-step with an authenticator app. Keep your recovery codes somewhere safe."
+    }
+  },
+  "people": {
+    "title": "People",
+    "description": "Find a person, see their roles and change them. Every change is recorded.",
+    "searchLabel": "Find a person",
+    "searchPlaceholder": "Name, email or phone",
+    "search": "Search",
+    "clear": "Clear",
+    "count_one": "{{count}} person",
+    "count_other": "{{count}} people",
+    "emptyTitle": "No one has joined yet",
+    "emptyDescription": "People appear here once they sign up.",
+    "noResultsTitle": "No one matches “{{search}}”",
+    "noResultsDescription": "Check the spelling, or search by email or the last digits of a phone number.",
+    "unnamed": "No name yet",
+    "noRoles": "No roles yet",
+    "admin": "Admin",
+    "twoStepOn": "Two-step on",
+    "twoStepOff": "No two-step",
+    "joined": "Joined {{date}}",
+    "open": "Open {{name}}",
+    "back": "All people",
+    "page": "Page {{page}} of {{pages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "roles": {
+      "title": "Roles",
+      "description": "What this person can do, and where.",
+      "emptyTitle": "No roles yet",
+      "emptyDescription": "Give them a role below."
+    },
+    "grant": {
+      "title": "Give a role",
+      "role": "Role",
+      "organisation": "Organisation",
+      "chooseRole": "Choose a role",
+      "chooseOrganisation": "Choose an organisation",
+      "noOrganisations": "There's no organisation of the right kind yet.",
+      "submit": "Give role",
+      "granted": "{{role}} given at {{organisation}}."
+    },
+    "remove": {
+      "button": "Remove",
+      "label": "Remove {{role}} at {{organisation}}",
+      "removed": "{{role}} removed at {{organisation}}."
+    },
+    "activity": {
+      "title": "Recent changes",
+      "empty": "No role changes yet.",
+      "granted": "{{actor}} gave {{role}} ({{organisation}})",
+      "removed": "{{actor}} removed {{role}} ({{organisation}})",
+      "someone": "Someone",
+      "unknownOrganisation": "an organisation"
     }
   }
 }

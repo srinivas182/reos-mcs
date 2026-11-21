@@ -44,7 +44,7 @@ test('language names are written in their own language in every locale', () => {
   for (const locale of ['en', 'es']) {
     const flat = flatten(load(locale));
     assert.equal(flat['appearance.languages.en.description'], 'Use REOS in English');
-    assert.equal(flat['appearance.languages.es.description'], 'Usa REOS en español');
+    assert.equal(flat['appearance.languages.es.description'], 'Use REOS en español');
   }
 });
 

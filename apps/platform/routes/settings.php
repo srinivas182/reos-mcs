@@ -1,10 +1,13 @@
 <?php
 
+use App\Http\Controllers\Settings\ActiveRoleController;
 use App\Http\Controllers\Settings\AppearanceController;
 use App\Http\Controllers\Settings\IntegrationCheckController;
 use App\Http\Controllers\Settings\IntegrationController;
 use App\Http\Controllers\Settings\IntegrationCredentialController;
 use App\Http\Controllers\Settings\IntegrationModeController;
+use App\Http\Controllers\Settings\PeopleController;
+use App\Http\Controllers\Settings\PersonRoleController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Middleware\ConfirmIdentity;
@@ -32,6 +35,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('settings/password', [SecurityController::class, 'update'])
         ->middleware('throttle:6,1')
         ->name('user-password.update');
+
+    // The role switcher (A3.2): this browser remembers the choice.
+    Route::put('settings/active-role', [ActiveRoleController::class, 'update'])
+        ->middleware('throttle:30,1')
+        ->name('active-role.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
     Route::patch('settings/appearance', [AppearanceController::class, 'update'])
@@ -69,3 +77,18 @@ Route::get('.well-known/passkey-endpoints', function () {
     ]);
 })->name('well-known.passkeys');
 /* @end-chisel-passkeys */
+
+// People (A3.2): super admin only, with two-step and a recent password
+// confirmation, because roles decide what everyone can do. Every change is audited.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:people.manage', ConfirmIdentity::class])
+    ->prefix('settings/people')
+    ->name('people.')
+    ->group(function () {
+        Route::get('/', [PeopleController::class, 'index'])->name('index');
+        Route::get('{person}', [PeopleController::class, 'show'])->whereNumber('person')->name('show');
+
+        Route::middleware(['throttle:30,1', 'can:manageRoles,person'])->group(function () {
+            Route::post('{person}/roles', [PersonRoleController::class, 'store'])->whereNumber('person')->name('roles.store');
+            Route::delete('{person}/roles', [PersonRoleController::class, 'destroy'])->whereNumber('person')->name('roles.destroy');
+        });
+    });

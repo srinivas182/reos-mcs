@@ -41,5 +41,9 @@ One person can be a candidate, an agent, a broker, a mentor, an instructor, a sc
 - New features add a permission to `Permission` and the roles that get it to `Role::permissions()`. A test (`RolesTest`) checks every role against every permission.
 - Demo personas carry their roles and organisations (`Personas.php`). Linda Park (broker) and Dana Brooks (mentor) are also agents, to show the role switcher.
 - Demo admins start without two-step on purpose, so the guided set-up can be shown.
-- A3.2b adds the web role switcher, the People screen and the two-step guidance; A3.2c adds the switcher to the phone app's Me tab.
+- **Web (A3.2b).**
+  - The role switcher is in the header (`PUT /settings/active-role`).
+  - While an admin role waits for two-step, a banner offers "Set up two-step" or "Use another role", and Security settings puts the two-step choices first.
+  - Settings › People (super admin, two-step and a recent password confirmation) finds people by name, email or phone digits, grants roles only in organisations of the right kind, and removes them with Undo. Its "Recent changes" lists role changes only.
+- A3.2c adds the switcher to the phone app's Me tab.
 - A4.1 adds row-level security per organisation. Until then, organisation scoping is done in policies.

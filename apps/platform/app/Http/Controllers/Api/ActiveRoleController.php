@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\ActiveRoleRequest;
+use App\Http\Requests\ActiveRoleRequest;
 use App\Http\Resources\MeResource;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
