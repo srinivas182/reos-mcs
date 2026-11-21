@@ -64,7 +64,7 @@ export default function ScoreScreen() {
       footer={
         <View style={styles.footer}>
           <Text tone="muted" style={styles.center}>
-            {t('mobile.onboarding.score.save')}
+            {t('onboarding.score.save')}
           </Text>
           {error ? <Callout tone="danger" title={error} live /> : null}
           {nativeApple ? (
@@ -86,24 +86,24 @@ export default function ScoreScreen() {
       }
     >
       <View style={styles.ring}>
-        <ProgressRing value={percent} label={`${percent}% ${t('mobile.onboarding.score.label')}`} size={160} color="action" track="border">
+        <ProgressRing value={percent} label={`${percent}% ${t('onboarding.score.label')}`} size={160} color="action" track="border">
           <Text variant="display">{`${percent}%`}</Text>
           <Text variant="caption" tone="muted">
-            {t('mobile.onboarding.score.label')}
+            {t('onboarding.score.label')}
           </Text>
         </ProgressRing>
       </View>
       <Text variant="title" heading style={styles.center}>
-        {percent >= 50 ? t('mobile.onboarding.score.strong') : t('mobile.onboarding.score.start')}
+        {percent >= 50 ? t('onboarding.score.strong') : t('onboarding.score.start')}
       </Text>
       {topics.length > 0 ? (
         <Card>
           {topics.map(({ topic, level }) => (
             <View key={topic} style={styles.topic}>
               <Text weight="semibold" style={styles.flex}>
-                {t(`mobile.onboarding.topics.${topic}`)}
+                {t(`onboarding.topics.${topic}`)}
               </Text>
-              <Chip label={t(`mobile.onboarding.levels.${level}`)} tone={levelTone[level]} />
+              <Chip label={t(`onboarding.levels.${level}`)} tone={levelTone[level]} />
             </View>
           ))}
         </Card>

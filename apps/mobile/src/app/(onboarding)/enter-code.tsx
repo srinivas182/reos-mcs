@@ -17,11 +17,11 @@ export default function EnterCodeScreen() {
   const [sent, setSent] = useState(false);
 
   return (
-    <Screen footer={<View style={styles.footer}><Button label={t('mobile.onboarding.code.continue')} disabled={code.trim().length < 4} fullWidth onPress={() => setSent(true)} /></View>}>
-      <TitleBar title={t('mobile.onboarding.code.title')} onBack={() => router.back()} />
+    <Screen footer={<View style={styles.footer}><Button label={t('onboarding.code.continue')} disabled={code.trim().length < 4} fullWidth onPress={() => setSent(true)} /></View>}>
+      <TitleBar title={t('onboarding.code.title')} onBack={() => router.back()} />
       <TextField
-        label={t('mobile.onboarding.code.label')}
-        placeholder={t('mobile.onboarding.code.placeholder')}
+        label={t('onboarding.code.label')}
+        placeholder={t('onboarding.code.placeholder')}
         value={code}
         onChangeText={(value) => {
           setCode(value.toUpperCase());
@@ -31,7 +31,7 @@ export default function EnterCodeScreen() {
         autoCorrect={false}
         style={styles.code}
       />
-      {sent ? <Callout tone="info" live title={t('mobile.onboarding.code.soon')} /> : null}
+      {sent ? <Callout tone="info" live title={t('onboarding.code.soon')} /> : null}
     </Screen>
   );
 }

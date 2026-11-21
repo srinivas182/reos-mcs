@@ -56,9 +56,9 @@ export default function StartScreen() {
       <BrandMark />
       <View style={styles.titles}>
         <Text variant="headline" heading style={styles.light}>
-          {t('mobile.onboarding.path.title')}
+          {t('onboarding.path.title')}
         </Text>
-        <Text style={styles.muted}>{t('mobile.onboarding.path.subtitle')}</Text>
+        <Text style={styles.muted}>{t('onboarding.path.subtitle')}</Text>
       </View>
 
       <View style={styles.cards}>
@@ -67,30 +67,30 @@ export default function StartScreen() {
             key={path}
             icon={icon}
             primary={path === 'become_agent'}
-            title={t(`mobile.onboarding.path.${path}.title`)}
-            subtitle={t(`mobile.onboarding.path.${path}.subtitle`)}
+            title={t(`onboarding.path.${path}.title`)}
+            subtitle={t(`onboarding.path.${path}.subtitle`)}
             onPress={() => void choose(path)}
           />
         ))}
       </View>
 
       <View style={styles.bottom}>
-        <Button label={t('mobile.onboarding.path.code')} icon={Tag} variant="heroOutline" fullWidth onPress={() => router.push('/enter-code')} />
+        <Button label={t('onboarding.path.code')} icon={Tag} variant="heroOutline" fullWidth onPress={() => router.push('/enter-code')} />
         {status === 'signedIn' ? null : (
           <Pressable accessibilityRole="button" onPress={() => router.push('/sign-in')} style={styles.link}>
             <Text weight="semibold" style={styles.linkText}>
-              {t('mobile.onboarding.path.signIn')}
+              {t('onboarding.path.signIn')}
             </Text>
           </Pressable>
         )}
       </View>
 
-      <Sheet open={brokerSheet} onClose={() => setBrokerSheet(false)} title={t('mobile.onboarding.path.brokerTitle')}>
-        <Text>{t('mobile.onboarding.path.brokerBody')}</Text>
-        <Button label={t('mobile.onboarding.path.openWebsite')} fullWidth onPress={() => void WebBrowser.openBrowserAsync(`${webBaseUrl()}/register?path=broker`)} />
+      <Sheet open={brokerSheet} onClose={() => setBrokerSheet(false)} title={t('onboarding.path.brokerTitle')}>
+        <Text>{t('onboarding.path.brokerBody')}</Text>
+        <Button label={t('onboarding.path.openWebsite')} fullWidth onPress={() => void WebBrowser.openBrowserAsync(`${webBaseUrl()}/register?path=broker`)} />
         {status === 'signedIn' ? null : (
           <Button
-            label={t('mobile.onboarding.path.signIn')}
+            label={t('onboarding.path.signIn')}
             variant="secondary"
             fullWidth
             onPress={() => {

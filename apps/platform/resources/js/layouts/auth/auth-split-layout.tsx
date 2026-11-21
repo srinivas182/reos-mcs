@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import { BrandMark } from '@/components/brand-mark';
 import { home } from '@/routes';
 import type { AuthLayoutProps } from '@/types';
 
@@ -60,16 +61,5 @@ export default function AuthSplitLayout({
                 </div>
             </main>
         </div>
-    );
-}
-
-function BrandMark() {
-    return (
-        <span
-            aria-hidden
-            className="flex size-11 items-center justify-center rounded-reos-md bg-primary text-base font-bold text-primary-foreground"
-        >
-            RE
-        </span>
     );
 }

@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use App\Authorization\Membership;
 use App\Authorization\Permission;
+use App\Enums\StateStatus;
+use App\Models\State;
 use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Authorization\ActiveRole;
@@ -68,6 +70,10 @@ class HandleInertiaRequests extends Middleware
             ],
             // Public settings for browser error tracking and analytics (2.4c).
             'monitoring' => fn () => app(MonitoringRuntime::class)->clientConfig('web'),
+            // The public site's state chip and headline ("Now live in Texas").
+            'liveStates' => fn (): array => State::query()->where('status', StateStatus::Live)->orderBy('name')->pluck('name')->all(),
+            // One-time notices after a redirect (for example "You're on the list").
+            'flash' => fn (): array => ['joined' => $request->hasSession() && $request->session()->get('joined') === true],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

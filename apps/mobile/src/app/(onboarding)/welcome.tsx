@@ -24,11 +24,11 @@ export default function WelcomeScreen() {
       dark
       footer={
         <View style={styles.footer}>
-          <Button label={t('mobile.onboarding.welcome.quiz')} trailingIcon={ArrowRight} fullWidth onPress={() => router.push('/quiz')} />
-          <Button label={t('mobile.onboarding.welcome.haveAccount')} variant="heroOutline" fullWidth onPress={() => router.push('/sign-in')} />
+          <Button label={t('onboarding.welcome.quiz')} trailingIcon={ArrowRight} fullWidth onPress={() => router.push('/quiz')} />
+          <Button label={t('onboarding.welcome.haveAccount')} variant="heroOutline" fullWidth onPress={() => router.push('/sign-in')} />
           <Pressable accessibilityRole="button" onPress={() => router.push('/enter-code')} style={styles.link}>
             <Text weight="semibold" style={styles.linkText}>
-              {t('mobile.onboarding.welcome.code')}
+              {t('onboarding.welcome.code')}
             </Text>
           </Pressable>
         </View>
@@ -36,18 +36,18 @@ export default function WelcomeScreen() {
     >
       <BrandMark />
       <Text variant="caption" weight="bold" style={styles.eyebrow}>
-        {t('mobile.onboarding.welcome.eyebrow', { state: stateName }).toUpperCase()}
+        {t('onboarding.welcome.eyebrow', { state: stateName }).toUpperCase()}
       </Text>
       <Text variant="display" heading style={styles.light}>
-        {t('mobile.onboarding.welcome.title')}
+        {t('onboarding.welcome.title')}
       </Text>
       <Text variant="bodyLarge" style={styles.muted}>
-        {t('mobile.onboarding.welcome.body')}
+        {t('onboarding.welcome.body')}
       </Text>
       <View style={styles.stats}>
-        <StatTile value={t('mobile.onboarding.welcome.dailyValue')} label={t('mobile.onboarding.welcome.daily')} />
-        <StatTile value={t('mobile.onboarding.welcome.aiValue')} label={t('mobile.onboarding.welcome.ai')} />
-        <StatTile value={t('mobile.onboarding.welcome.languagesValue')} label={t('mobile.onboarding.welcome.languages')} />
+        <StatTile value={t('onboarding.welcome.dailyValue')} label={t('onboarding.welcome.daily')} />
+        <StatTile value={t('onboarding.welcome.aiValue')} label={t('onboarding.welcome.ai')} />
+        <StatTile value={t('onboarding.welcome.languagesValue')} label={t('onboarding.welcome.languages')} />
       </View>
     </Screen>
   );
