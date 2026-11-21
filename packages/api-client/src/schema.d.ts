@@ -483,6 +483,8 @@ export interface components {
             last_synced_at: string | null;
             /** @description Translation key for the latest problem, or null. */
             problem: string | null;
+            /** @description When the latest problem started (for "stopped 2 days ago"). */
+            problem_since: string | null;
             connected_at: string | null;
         };
         /**

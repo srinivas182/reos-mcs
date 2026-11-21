@@ -7,6 +7,12 @@ import { i18n } from '@/lib/i18n';
 jest.mock('expo-router', () => ({ router: { push: jest.fn() } }));
 jest.mock('@/lib/auth', () => ({ useAuth: () => ({ user: { name: 'Sofia Reyes' } }) }));
 
+// No connections by default; the connections tests cover the alert.
+jest.mock('@/lib/connections', () => ({
+  ...jest.requireActual('@/lib/connections'),
+  useConnections: () => ({ connections: [], reload: jest.fn() }),
+}));
+
 jest.mock('@/lib/api', () => ({
   fetchHealth: jest.fn().mockResolvedValue({ status: 'ok', app: 'REOS', version: '0.1.0-dev', time: 'now' }),
 }));

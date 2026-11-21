@@ -47,6 +47,8 @@ final class ConnectionResource extends JsonResource
             'last_synced_at' => $connection->last_synced_at?->toIso8601String(),
             /** Translation key for the latest problem, or null. */
             'problem' => $connection->last_error,
+            /** When the latest problem started (for "stopped 2 days ago"). */
+            'problem_since' => $connection->last_error === null ? null : $connection->last_failed_at?->toIso8601String(),
             'connected_at' => $connection->created_at?->toIso8601String(),
         ];
     }

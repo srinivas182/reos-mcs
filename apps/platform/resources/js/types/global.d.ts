@@ -14,17 +14,13 @@ declare module '@inertiajs/core' {
             /** The state you're working in (the journey's state chip). */
             region: { code: string; name: string } | null;
             sidebarOpen: boolean;
+            /** Your connections that need a reconnect (B3.1). */
+            connectionAlerts: import('@/components/connection-alert').ConnectionAlertItem[];
             /** Live states' names, for the public site's state chip. */
             liveStates: string[];
             /** One-time notices after a redirect. */
             flash: {
                 joined: boolean;
-                /** After connecting a tool on the website. */
-                connection: {
-                    outcome: 'connected' | 'cancelled' | 'failed';
-                    integration: string;
-                    reason: string | null;
-                } | null;
             };
             [key: string]: unknown;
         };
