@@ -7,6 +7,7 @@ namespace App\Services\Identity;
 use App\Models\User;
 use App\Notifications\AccountDeletionScheduled;
 use App\Services\Audit\AuditLogger;
+use App\Services\Privacy\PrivacyRequests;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -18,7 +19,7 @@ final readonly class AccountDeletion
 {
     public const GRACE_DAYS = 30;
 
-    public function __construct(private AuditLogger $audit) {}
+    public function __construct(private AuditLogger $audit, private PrivacyRequests $privacy) {}
 
     public function request(User $user): void
     {
@@ -29,6 +30,8 @@ final readonly class AccountDeletion
             $this->audit->record('account.deletion_requested', 'user', (string) $user->id, [
                 'delete_after' => now()->addDays(self::GRACE_DAYS)->toDateString(),
             ], $user);
+            // On the privacy request list (screen 71), on hold for the 30 days.
+            $this->privacy->deletionRequested($user);
         });
 
         if ($user->email !== null) {
@@ -39,6 +42,7 @@ final readonly class AccountDeletion
     public function cancel(User $user): void
     {
         $user->forceFill(['deletion_requested_at' => null])->save();
+        $this->privacy->deletionWithdrawn($user);
 
         $this->audit->record('account.deletion_cancelled', 'user', (string) $user->id, [], $user);
     }
@@ -58,6 +62,7 @@ final readonly class AccountDeletion
             ->lazyById()
             ->each(function (User $user) use (&$count): void {
                 $id = (string) $user->id;
+                $this->privacy->deletionDone($user);
                 $user->delete();
                 // The audit row keeps only the id: the person's details are gone.
                 $this->audit->record('account.deleted', 'user', $id);

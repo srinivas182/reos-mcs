@@ -14,6 +14,7 @@ describe('roleNavigation (web journey, Navigation by role)', () => {
             ['people', '/admin/people'],
             ['states', '/admin/states'],
             ['integrations', '/admin/integrations'],
+            ['complianceAndAudit', '/admin/compliance'],
         ]);
     });
 

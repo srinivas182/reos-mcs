@@ -118,6 +118,9 @@ class AppServiceProvider extends ServiceProvider
         });
         RateLimiter::for('webhooks', static fn (Request $request): Limit => Limit::perMinute(600)->by($request->ip()));
 
+        // Email verification links and resends (Fortify), six a minute per person.
+        RateLimiter::for('verification', static fn (Request $request): Limit => Limit::perMinute(6)->by('verification:'.($request->user() instanceof User ? $request->user()->id : $request->ip())));
+
         RateLimiter::for('sign-in', static fn (Request $request): Limit => Limit::perMinute(20)->by($request->ip()));
 
         // A code per number every minute (and 5 per hour), and 20 per hour per network: stops SMS pumping.

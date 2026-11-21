@@ -87,3 +87,18 @@ People are not tenants. One person can hold roles in several organisations (ADR 
 - **Ask my broker:** agents in a brokerage see tools their brokerage connects for everyone (`accounts: tenant`) with "Ask my broker". The brokerage's owners get an email a minute later unless the agent undoes it; the ask is audited in the brokerage and counts as demand.
 - **Rate limits:** every route's limit has its own counter (`throttle:N,M,<route>`). Without the third parameter Laravel shares one counter per person across all routes, so five invites could block a later, unrelated action.
 - Audited: `invite.sent`, `invite.resent`, `invite.revoked`, `invite.accepted`, `seats.requested`, `connection.broker_asked`, all with the tenant. The audit log screen and the check that every admin action is audited come in A4.3b.
+
+## Addendum (A4.3b): audit everything, compliance and privacy requests
+
+- **Every admin action is audited** with the person, the tenant, the IP address and user agent, and, for changes, before and after values (`before`/`after`, or `from`/`to` on older events; the screen and export read both). `tests/Feature/Audit/AdminActionsAuditedTest.php` lists every admin route that changes something and fails when a new one isn't listed, then calls each one and checks the row. Gaps it found are fixed: "Test sign-in" (`sso.test_started`) and "Verify DNS" before the domain is live (`domain.checked`).
+- **Labels:** every action REOS records has a label in English and Spanish; a test scans the code for `record('…')` and fails on a missing one.
+- **Compliance and audit (screen 71)** is for REOS super admins with two-step and a recent password confirmation (`audit.view`). It shows:
+  - privacy requests with the 45-day clock;
+  - the platform rules;
+  - the platform audit log: filters by area, tenant, person or IP, and dates; 50 rows a page (cursor); CSV export of the filtered rows (up to 50,000, formula-safe). Exporting is itself audited (`audit.exported`).
+- **Privacy requests (TDPSA):** people ask from Settings › Profile ("Your data").
+  - **See my data:** a JSON export built at once from `App\Services\Privacy\DataExport`, never with secrets, sent as a signed link that works for 7 days and only for its owner. The file is deleted after that (`reos:privacy:prune`).
+  - **Correct my data:** a REOS admin starts, completes or declines it (a reason is required, since the law asks to say why and how to appeal). It can be extended once by 45 days with a reason; the person is told by email at every step.
+  - **Delete my account:** the existing 30-day deletion appears as "In 30-day hold", is withdrawn when the person signs in again, and becomes Done when the account is deleted. The request keeps no name, email or details after that.
+  - `privacy_requests` belongs to the person, not a tenant: REOS answers it, so it has no tenant column or row-level security; only super admins and the person see it.
+- **Data map:** `docs/privacy/data-map.md` lists where personal data lives and how each right reaches it; screen 71 shows when it was last reviewed (`reos.privacy.data_map_reviewed`).

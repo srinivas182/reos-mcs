@@ -94,6 +94,13 @@ final readonly class TenantDomains
 
         if ($state->live() && ! $wasLive) {
             $this->audit->record('domain.verified', self::AUDIT_SUBJECT, (string) $domain->id, ['hostname' => $domain->hostname], $actor, $domain->organisation_id);
+        } elseif ($actor !== null) {
+            // An admin pressed Verify DNS and it isn't live yet: still on record.
+            $this->audit->record('domain.checked', self::AUDIT_SUBJECT, (string) $domain->id, [
+                'hostname' => $domain->hostname,
+                'status' => $state->status,
+                'ssl' => $state->ssl,
+            ], $actor, $domain->organisation_id);
         }
 
         return $domain;

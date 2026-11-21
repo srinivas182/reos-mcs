@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $user_agent
  * @property Carbon $created_at
  * @property-read User|null $actor
+ * @property-read Organisation|null $organisation
  */
 #[Fillable(['actor_id', 'organisation_id', 'action', 'subject_type', 'subject_id', 'properties', 'ip_address', 'user_agent', 'created_at'])]
 final class AuditEvent extends Model implements HasPersonalRows
@@ -39,6 +40,12 @@ final class AuditEvent extends Model implements HasPersonalRows
     public function actor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'actor_id');
+    }
+
+    /** @return BelongsTo<Organisation, $this> */
+    public function organisation(): BelongsTo
+    {
+        return $this->belongsTo(Organisation::class);
     }
 
     /** @return array<string, string> */

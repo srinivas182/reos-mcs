@@ -7,12 +7,14 @@ import {
     Palette,
     Plug,
     Settings,
+    ShieldCheck,
     Users,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
 import { index as agentsIndex } from '@/routes/agents';
 import { settings as organisationSettings } from '@/routes/organisation';
+import { index as complianceIndex } from '@/routes/compliance';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -34,6 +36,7 @@ export type NavLabel =
     | 'brandingAndDomain'
     | 'brokerageSettings'
     | 'agents'
+    | 'complianceAndAudit'
     | 'connections';
 
 export type RoleNavItem = {
@@ -167,7 +170,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('aiAndCredits'),
             planned('featuresAndReleases'),
             planned('platformHealth'),
-            planned('complianceAndAudit'),
+            item('complianceAndAudit', ShieldCheck, complianceIndex()),
         ],
     };
 

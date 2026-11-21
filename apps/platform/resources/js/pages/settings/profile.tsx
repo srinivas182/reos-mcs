@@ -5,6 +5,8 @@ import { Link } from '@inertiajs/react';
 /* @end-chisel-email-verification */
 import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
 import DeleteUser from '@/components/delete-user';
+import { YourData } from '@/components/your-data';
+import type { MyPrivacyRequest } from '@/components/your-data';
 import Heading from '@/components/heading';
 import { MembershipList } from '@/components/membership-list';
 import InputError from '@/components/input-error';
@@ -25,9 +27,11 @@ export default function Profile(
     {
         mustVerifyEmail,
         status,
+        privacyRequests = [],
     }: {
         mustVerifyEmail: boolean;
         status?: string;
+        privacyRequests?: MyPrivacyRequest[];
     },
     /* @end-chisel-email-verification */
 ) {
@@ -147,6 +151,8 @@ export default function Profile(
                     )}
                 </Form>
             </div>
+
+            <YourData requests={privacyRequests} />
 
             <DeleteUser />
         </>

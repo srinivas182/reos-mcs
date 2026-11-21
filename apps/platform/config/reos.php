@@ -54,4 +54,9 @@ return [
         'redirect' => env('REOS_MOBILE_REDIRECT', 'reos://auth'),
     ],
 
+    'privacy' => [
+        // When docs/privacy/data-map.md was last checked against the database (screen 71).
+        'data_map_reviewed' => '2026-11-21',
+    ],
+
 ];

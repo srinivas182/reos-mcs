@@ -36,7 +36,8 @@
     "tenants": "Organizaciones",
     "brandingAndDomain": "Marca y dominio",
     "brokerageSettings": "Configuración de la agencia",
-    "agents": "Agentes"
+    "agents": "Agentes",
+    "complianceAndAudit": "Cumplimiento y auditoría"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1751,7 +1752,33 @@
         "invite.revoked": "Retiró una invitación",
         "invite.accepted": "Se unió con una invitación",
         "seats.requested": "Pidió más puestos",
-        "connection.broker_asked": "Pidió una herramienta al bróker"
+        "connection.broker_asked": "Pidió una herramienta al bróker",
+        "account.deleted": "Cuenta eliminada",
+        "account.deletion_cancelled": "Se retiró la eliminación de la cuenta",
+        "account.deletion_requested": "Pidió eliminar la cuenta",
+        "auth.device_revoked": "Cerró la sesión de un dispositivo",
+        "auth.sign_in_failed": "Inicio de sesión fallido",
+        "auth.signed_in": "Inició sesión",
+        "auth.signed_out": "Cerró sesión",
+        "catalogue.updated": "Cambió la disponibilidad de una herramienta",
+        "connection.connected": "Conectó una herramienta",
+        "connection.disconnected": "Desconectó una herramienta",
+        "connection.reconnect_needed": "Una herramienta necesita volver a iniciar sesión",
+        "connection.reconnected": "Volvió a conectar una herramienta",
+        "domain.checked": "Revisó el dominio propio",
+        "integration.checked": "Probó una integración",
+        "integration.credentials_removed": "Quitó claves de una integración",
+        "integration.credentials_updated": "Cambió claves de una integración",
+        "integration.mode_changed": "Cambió el modo de una integración",
+        "integration.paused": "Pausó una integración",
+        "integration.resumed": "Reanudó una integración",
+        "role.granted": "Asignó un rol",
+        "role.removed": "Quitó un rol",
+        "sso.test_started": "Inició una prueba de inicio de sesión único",
+        "state.status_changed": "Cambió el estado de lanzamiento de un estado",
+        "privacy.requested": "Hizo una solicitud de privacidad",
+        "privacy.updated": "Actualizó una solicitud de privacidad",
+        "audit.exported": "Exportó el registro de auditoría"
       }
     }
   },
@@ -2195,5 +2222,170 @@
     "code": "Código de invitación",
     "placeholder": "ABCD-2345",
     "continue": "Continuar"
+  },
+  "privacy": {
+    "title": "Sus datos",
+    "description": "Según la ley de privacidad de Texas, puede ver los datos que REOS tiene sobre usted, pedir una corrección o eliminar su cuenta.",
+    "download": "Descargar mis datos",
+    "correct": "Pedir una corrección",
+    "whatToCorrect": "¿Qué debemos corregir?",
+    "send": "Enviar solicitud",
+    "promise": "REOS responde en un plazo de 45 días, normalmente mucho antes, y le avisa por correo.",
+    "yourRequests": "Sus solicitudes",
+    "answerBy": "Responderemos a más tardar el {{date}}",
+    "asked": "Solicitado el {{date}}",
+    "getFile": "Descargar archivo",
+    "kinds": {
+      "access": "Ver mis datos",
+      "correct": "Corregir mis datos",
+      "delete": "Eliminar mi cuenta"
+    },
+    "statuses": {
+      "open": "Recibida",
+      "in_progress": "En curso",
+      "hold": "En espera de 30 días",
+      "done": "Lista",
+      "declined": "Rechazada",
+      "withdrawn": "Retirada"
+    },
+    "sent": {
+      "access": "Su archivo de datos está listo. Le enviamos el enlace por correo.",
+      "correct": "Solicitud enviada. Le avisaremos por correo cuando esté lista."
+    },
+    "errors": {
+      "kind": "Elija lo que desea que hagamos.",
+      "waiting": "Ya tiene una solicitud como esta en espera.",
+      "noAccount": "Esta cuenta ya no existe.",
+      "closed": "Esta solicitud ya está cerrada.",
+      "reason": "Agregue una nota que la persona verá.",
+      "extended": "Esta solicitud ya se extendió una vez.",
+      "action": "No puede hacer eso con esta solicitud."
+    },
+    "mail": {
+      "received": {
+        "subject": "Recibimos su solicitud: {{kind}}",
+        "body": "Responderemos a más tardar el {{date}}."
+      },
+      "extended": {
+        "subject": "Necesitamos más tiempo: {{kind}}",
+        "body": "Responderemos a más tardar el {{date}}."
+      },
+      "done": {
+        "subject": "Lista: {{kind}}",
+        "body": "Su solicitud está completa."
+      },
+      "declined": {
+        "subject": "No pudimos completar su solicitud: {{kind}}",
+        "body": "Lamentamos no haber podido hacerlo."
+      },
+      "note": "Nota de REOS: {{note}}",
+      "download": "Descargar mis datos",
+      "linkDays": "El enlace funciona durante {{days}} días."
+    }
+  },
+  "compliance": {
+    "title": "Cumplimiento y auditoría",
+    "purpose": "Solicitudes de privacidad, reglas legales y registro de auditoría de la plataforma",
+    "export": "Exportar auditoría",
+    "privacy": {
+      "title": "Solicitudes de privacidad (TDPSA)",
+      "none": "Aún no hay solicitudes de privacidad.",
+      "columns": {
+        "request": "Solicitud",
+        "user": "Usuario",
+        "due": "Vence",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "kinds": {
+        "access": "Descargar mis datos",
+        "correct": "Corregir datos",
+        "delete": "Eliminar cuenta"
+      },
+      "statuses": {
+        "open": "Abierta",
+        "in_progress": "En curso",
+        "hold": "En espera de 30 días",
+        "done": "Lista",
+        "declined": "Rechazada",
+        "withdrawn": "Retirada"
+      },
+      "deletedAccount": "Cuenta eliminada",
+      "overdue": "Vencida",
+      "extended": "Extendida una vez",
+      "actions": {
+        "start": "Empezar",
+        "done": "Marcar como lista",
+        "decline": "Rechazar",
+        "extend": "Extender 45 días"
+      },
+      "dialog": {
+        "done": {
+          "title": "Marcar como lista",
+          "body": "{{person}} recibe un correo de que su solicitud ({{kind}}) está completa, con su nota si agrega una."
+        },
+        "decline": {
+          "title": "Rechazar la solicitud",
+          "body": "{{person}} recibe un correo con su motivo. La ley de Texas pide explicar por qué y cómo apelar."
+        },
+        "extend": {
+          "title": "Extender {{days}} días",
+          "body": "Se permite una vez cuando sea razonablemente necesario. {{person}} recibe un correo con su motivo y la nueva fecha."
+        }
+      },
+      "note": "Nota para la persona",
+      "noteOptional": "Nota para la persona (opcional)",
+      "cancel": "Cancelar",
+      "updated": "Solicitud actualizada. Se avisó a la persona por correo.",
+      "limit": "Plazo de respuesta",
+      "days_one": "{{count}} día",
+      "days_other": "{{count}} días",
+      "dataMap": "Mapa de datos",
+      "reviewed": "Al día · {{date}}",
+      "manage": "Gestionar",
+      "manageFor": "Gestionar {{kind}} de {{person}}"
+    },
+    "rules": {
+      "title": "Reglas de la plataforma",
+      "respa": "RESPA: tarifas fijas para proveedores; las recompensas nunca dependen del proveedor elegido",
+      "advertising": "TREC: revisión de publicidad siempre activa en Texas",
+      "fairHousing": "Revisión de lenguaje de vivienda justa en cada publicación",
+      "noInAppPurchases": "Sin compras dentro de las aplicaciones móviles",
+      "twoStep": "Verificación en dos pasos para todo rol de administrador",
+      "supportConsent": "Acceso de soporte solo con el consentimiento del propietario de la organización"
+    },
+    "audit": {
+      "title": "Registro de auditoría de la plataforma",
+      "search": "Buscar",
+      "searchPlaceholder": "Persona, correo, acción o IP",
+      "area": "Área",
+      "tenant": "Organización",
+      "from": "Desde",
+      "to": "Hasta",
+      "all": "Todas",
+      "apply": "Mostrar",
+      "groups": {
+        "sign_in": "Inicios de sesión y cuentas",
+        "tenants": "Organizaciones y soporte",
+        "people": "Roles e invitaciones",
+        "brand": "Marca, dominio y SSO",
+        "integrations": "Integraciones y conexiones",
+        "states": "Estados",
+        "privacy": "Privacidad"
+      },
+      "columns": {
+        "time": "Hora",
+        "who": "Quién",
+        "action": "Acción",
+        "change": "Cambio",
+        "tenant": "Organización"
+      },
+      "system": "Sistema",
+      "emptyTitle": "No hay coincidencias",
+      "emptyBody": "Pruebe con menos filtros o un rango de fechas más amplio.",
+      "pages": "Páginas del registro de auditoría",
+      "newer": "Más recientes",
+      "older": "Más antiguos"
+    }
   }
 }
