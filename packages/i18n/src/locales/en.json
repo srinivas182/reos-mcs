@@ -1122,5 +1122,37 @@
       "toDashboard": "Go to my dashboard",
       "questionOf": "Question {{number}} of {{total}}"
     }
+  },
+  "connections": {
+    "errors": {
+      "unavailable": "This tool can't be connected right now.",
+      "stateInvalid": "That sign-in link has expired or was already used. Please start again.",
+      "cancelled": "You didn't allow access, so nothing was connected.",
+      "refused": "The tool didn't accept the sign-in. Please connect again.",
+      "vendorUnavailable": "We couldn't reach the tool. Please try again in a few minutes.",
+      "modeChanged": "REOS changed how it connects to this tool. Please connect again."
+    },
+    "outcome": {
+      "connected": "{{tool}} is connected. Your data is syncing now.",
+      "cancelled": "Nothing was connected.",
+      "failed": "{{tool}} wasn't connected."
+    },
+    "reconnect": {
+      "subject": "Reconnect {{tool}} to REOS",
+      "body": "{{tool}} stopped accepting REOS's access for {{account}}, so syncing has paused. Nothing was deleted.",
+      "action": "Reconnect {{tool}}",
+      "safe": "If you removed REOS's access on purpose, you can ignore this email."
+    },
+    "simulator": {
+      "title": "Demo sign-in",
+      "eyebrow": "Demo data · Simulator",
+      "body": "This page stands in for the real {{tool}} sign-in while REOS runs on demo data. Nothing is sent to the tool.",
+      "account": "Signing in as {{account}}",
+      "wants": "REOS would like to:",
+      "readCalendar": "See the events on your calendar",
+      "never": "REOS never changes or deletes your events.",
+      "allow": "Allow",
+      "deny": "Don't allow"
+    }
   }
 }

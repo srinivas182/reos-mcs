@@ -49,6 +49,73 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List connections
+         * @description Yours, and your active organisation's when your role there manages it.
+         */
+        get: operations["connections.index"];
+        put?: never;
+        /**
+         * Start connecting a tool
+         * @description Returns the tool's sign-in address. Open it in a secure browser sheet;
+         *     after signing in, the tool comes back to REOS, which returns to
+         *     `reos://connections?outcome=connected|cancelled|failed&integration=…`.
+         */
+        post: operations["connections.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connections/{connection}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sync now
+         * @description Queues a sync of every stream; the list shows the new time when it's done.
+         */
+        post: operations["connections.sync"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connections/{connection}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Disconnect
+         * @description REOS asks the tool to forget its access, then deletes the tokens and
+         *     everything it synced from this account.
+         */
+        delete: operations["connections.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/exchange": {
         parameters: {
             query?: never;
@@ -385,6 +452,50 @@ export interface components {
                 demo: boolean;
             };
         };
+        /** ConnectionResource */
+        ConnectionResource: {
+            id: number;
+            /** @description The tool's register id, for example `google-workspace`. */
+            integration: string;
+            integration_name: string;
+            /** @description `user` (yours) or `organisation` (your organisation's). */
+            owner: string;
+            /** @description The account at the tool, usually its email. */
+            account: string | null;
+            /**
+             * @description `active`, `reconnect_needed` or `failing`.
+             *     | |
+             *     |---|
+             *     | `active` <br/> Syncing normally. |
+             *     | `reconnect_needed` <br/> The tool refused the sign-in (revoked, expired, or REOS switched run mode): the person must sign in again. |
+             *     | `failing` <br/> Syncs keep failing for another reason; REOS keeps retrying. |
+             */
+            status: components["schemas"]["ConnectionStatus"];
+            /** @description Running on demo data (the Simulator), not the real tool. */
+            demo: boolean;
+            /** @description What REOS may do at the tool. */
+            scopes: string[];
+            /**
+             * @description How far back the first sync reached: `3m`, `12m` or `all`.
+             * @enum {string}
+             */
+            history: "3m" | "12m" | "all";
+            last_synced_at: string | null;
+            /** @description Translation key for the latest problem, or null. */
+            problem: string | null;
+            connected_at: string | null;
+        };
+        /**
+         * ConnectionStatus
+         * @description Where a connection stands, as the person sees it.
+         *     | |
+         *     |---|
+         *     | `active` <br/> Syncing normally. |
+         *     | `reconnect_needed` <br/> The tool refused the sign-in (revoked, expired, or REOS switched run mode): the person must sign in again. |
+         *     | `failing` <br/> Syncs keep failing for another reason; REOS keeps retrying. |
+         * @enum {string}
+         */
+        ConnectionStatus: "active" | "reconnect_needed" | "failing";
         /** DeviceResource */
         DeviceResource: {
             id: number;
@@ -435,6 +546,12 @@ export interface components {
              */
             time: string;
         };
+        /**
+         * HistoryRange
+         * @description How far back the first sync reaches: 3 or 12 months, or everything.
+         * @enum {string}
+         */
+        HistoryRange: "3m" | "12m" | "all";
         /**
          * IdentityProvider
          * @description One-tap sign-in providers, and their entries in the integrations register.
@@ -653,6 +770,18 @@ export interface components {
             new_account: boolean;
             user: components["schemas"]["MeResource"];
         };
+        /**
+         * StartConnectionRequest
+         * @description Start connecting a tool: which one, and how much history the first sync fetches.
+         */
+        StartConnectionRequest: {
+            /**
+             * @description The tool's register id, for example `google-workspace`.
+             * @enum {string}
+             */
+            integration: "google-workspace";
+            history?: components["schemas"]["HistoryRange"] | null;
+        };
         /** StateResource */
         StateResource: {
             code: string;
@@ -750,9 +879,12 @@ export interface components {
 }
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
+export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
+export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
 export type SchemaLocale = components['schemas']['Locale'];
@@ -770,6 +902,7 @@ export type SchemaQuizResultResource = components['schemas']['QuizResultResource
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
+export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
 export type SchemaWaitlistRequest = components['schemas']['WaitlistRequest'];
@@ -835,6 +968,139 @@ export interface operations {
                     "application/json": components["schemas"]["AppConfigResource"];
                 };
             };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "connections.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `ConnectionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ConnectionResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "connections.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartConnectionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        authorization_url: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "connections.sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The connection ID */
+                connection: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": 202;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "connections.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The connection ID */
+                connection: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {

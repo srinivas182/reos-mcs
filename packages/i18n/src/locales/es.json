@@ -1122,5 +1122,37 @@
       "toDashboard": "Ir a mi panel",
       "questionOf": "Pregunta {{number}} de {{total}}"
     }
+  },
+  "connections": {
+    "errors": {
+      "unavailable": "No es posible conectar esta herramienta en este momento.",
+      "stateInvalid": "Ese enlace de inicio de sesión venció o ya se usó. Vuelva a empezar.",
+      "cancelled": "No permitió el acceso, así que no se conectó nada.",
+      "refused": "La herramienta no aceptó el inicio de sesión. Vuelva a conectarla.",
+      "vendorUnavailable": "No pudimos comunicarnos con la herramienta. Inténtelo de nuevo en unos minutos.",
+      "modeChanged": "REOS cambió la forma de conectarse a esta herramienta. Vuelva a conectarla."
+    },
+    "outcome": {
+      "connected": "{{tool}} está conectado. Sus datos se están sincronizando.",
+      "cancelled": "No se conectó nada.",
+      "failed": "No se conectó {{tool}}."
+    },
+    "reconnect": {
+      "subject": "Vuelva a conectar {{tool}} con REOS",
+      "body": "{{tool}} dejó de aceptar el acceso de REOS para {{account}}, así que la sincronización está en pausa. No se eliminó nada.",
+      "action": "Volver a conectar {{tool}}",
+      "safe": "Si quitó el acceso de REOS a propósito, puede ignorar este correo."
+    },
+    "simulator": {
+      "title": "Inicio de sesión de demostración",
+      "eyebrow": "Datos de demostración · Simulador",
+      "body": "Esta página reemplaza el inicio de sesión real de {{tool}} mientras REOS usa datos de demostración. No se envía nada a la herramienta.",
+      "account": "Iniciando sesión como {{account}}",
+      "wants": "REOS quiere:",
+      "readCalendar": "Ver los eventos de su calendario",
+      "never": "REOS nunca cambia ni elimina sus eventos.",
+      "allow": "Permitir",
+      "deny": "No permitir"
+    }
   }
 }

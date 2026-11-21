@@ -1,7 +1,11 @@
 <?php
 
+use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
+use App\Http\Controllers\Connections\ConnectController;
+use App\Http\Controllers\Connections\OAuthCallbackController;
+use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
@@ -60,3 +64,18 @@ Route::match(['get', 'post'], 'integrations/google-sign-in/callback', [SocialSig
 // CSRF token (see bootstrap/app.php); the one-time `state` protects them instead.
 Route::match(['get', 'post'], 'integrations/apple-sign-in/callback', [SocialSignInController::class, 'callback'])
     ->middleware('throttle:sign-in')->name('auth.social.callback.apple');
+
+// Connections (B3.1, ADR 0013): a person's own account at a tool. The callback
+// is the address Settings › Integrations shows; the single-use `state` says
+// who it's for, so it needs no session (the phone signs in in a browser sheet).
+Route::get('connections/{tool}/connect', ConnectController::class)
+    ->whereIn('tool', ConnectorRegistry::ids())
+    ->middleware(['auth', 'verified', 'throttle:sign-in'])->name('connections.connect');
+Route::match(['get', 'post'], 'integrations/{tool}/callback', OAuthCallbackController::class)
+    ->whereIn('tool', ConnectorRegistry::ids())
+    ->middleware('throttle:sign-in')->name('connections.callback');
+// The demo-data stand-in for a tool's sign-in page (Simulator mode only).
+Route::get('connections/simulator/{tool}', [SimulatorSignInController::class, 'show'])
+    ->whereIn('tool', ConnectorRegistry::ids())->middleware('throttle:sign-in')->name('connections.simulator');
+Route::post('connections/simulator/{tool}', [SimulatorSignInController::class, 'decide'])
+    ->whereIn('tool', ConnectorRegistry::ids())->middleware('throttle:sign-in')->name('connections.simulator.decide');

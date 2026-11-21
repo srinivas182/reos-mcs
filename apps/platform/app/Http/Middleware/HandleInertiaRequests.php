@@ -73,7 +73,11 @@ class HandleInertiaRequests extends Middleware
             // The public site's state chip and headline ("Now live in Texas").
             'liveStates' => fn (): array => State::query()->where('status', StateStatus::Live)->orderBy('name')->pluck('name')->all(),
             // One-time notices after a redirect (for example "You're on the list").
-            'flash' => fn (): array => ['joined' => $request->hasSession() && $request->session()->get('joined') === true],
+            'flash' => fn (): array => [
+                'joined' => $request->hasSession() && $request->session()->get('joined') === true,
+                // After connecting a tool on the website (B3.1): outcome, tool and reason.
+                'connection' => $request->hasSession() && is_array($request->session()->get('connection')) ? $request->session()->get('connection') : null,
+            ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

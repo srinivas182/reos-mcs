@@ -1,6 +1,8 @@
 <?php
 
 use App\Models\IntegrationCheck;
+use App\Models\SyncRun;
+use App\Models\WebhookReceipt;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -15,3 +17,7 @@ Schedule::command('model:prune', ['--model' => [IntegrationCheck::class]])->dail
 
 // Accounts (A3.1): delete accounts 30 days after the person asked.
 Schedule::command('reos:accounts:purge')->dailyAt('03:30')->onOneServer();
+
+// Connections engine (B3.1, ADR 0013): catch-up syncs, and housekeeping.
+Schedule::command('reos:connections:sync')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+Schedule::command('model:prune', ['--model' => [SyncRun::class, WebhookReceipt::class]])->dailyAt('04:10');

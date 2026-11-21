@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
+use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
@@ -59,4 +60,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('me/devices', [MeController::class, 'devices'])->name('api.me.devices');
     Route::delete('me/devices/{device}', [MeController::class, 'revokeDevice'])->whereNumber('device')->name('api.me.devices.destroy');
     Route::post('auth/sign-out', [MeController::class, 'signOut'])->name('api.auth.sign-out');
+
+    // Connections (B3.1, ADR 0013).
+    Route::get('connections', [ConnectionController::class, 'index'])->name('api.connections.index');
+    Route::post('connections', [ConnectionController::class, 'store'])->middleware('throttle:sign-in')->name('api.connections.store');
+    Route::post('connections/{connection}/sync', [ConnectionController::class, 'sync'])->whereNumber('connection')->middleware('throttle:10,1')->name('api.connections.sync');
+    Route::delete('connections/{connection}', [ConnectionController::class, 'destroy'])->whereNumber('connection')->middleware('throttle:30,1')->name('api.connections.destroy');
 });

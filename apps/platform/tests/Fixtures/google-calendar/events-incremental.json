@@ -1,0 +1,20 @@
+{
+    "kind": "calendar#events",
+    "nextSyncToken": "CKjMgvKEx70CEKjMgvKEx70CGAU=",
+    "items": [
+        {
+            "kind": "calendar#event",
+            "id": "4n1q8h2c9vs0k3e7t5r6p0m1ab",
+            "status": "cancelled"
+        },
+        {
+            "kind": "calendar#event",
+            "id": "9a8b7c6d5e4f3g2h1i0j9k8l7m",
+            "status": "confirmed",
+            "updated": "2026-11-20T08:00:00.000Z",
+            "summary": "Closing — Johnson family (moved)",
+            "start": { "dateTime": "2026-11-27T10:00:00-06:00" },
+            "end": { "dateTime": "2026-11-27T11:30:00-06:00" }
+        }
+    ]
+}

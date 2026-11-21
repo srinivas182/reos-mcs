@@ -1,0 +1,7 @@
+{
+    "kind": "api#channel",
+    "id": "reos-1-abcdefabcdef",
+    "resourceId": "o3hgv1538sdjfh",
+    "resourceUri": "https://www.googleapis.com/calendar/v3/calendars/primary/events?alt=json",
+    "expiration": "1795564800000"
+}
