@@ -163,6 +163,8 @@ jobs:
       DB_USERNAME: reos
       DB_PASSWORD: reos-ci
       REDIS_HOST: 127.0.0.1
+      # The throwaway test key from phpunit.xml: seeding demo connections encrypts their tokens (B3.1).
+      REOS_CREDENTIALS_KEY: base64:8o0oxmy0WXy6bYCatR0Ps2DO3Nn65RHWK1N4UGP1Ulg=
     steps:
       - uses: actions/checkout@v5
       - uses: ./.github/actions/setup-platform
