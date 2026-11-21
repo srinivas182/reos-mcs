@@ -41,3 +41,5 @@ runs:
       run: |
         cp .env.example .env
         php artisan key:generate
+        # As scripts/dev-setup.sh does: seeding encrypts demo connection tokens with it (B3.1).
+        php artisan reos:credentials:key
