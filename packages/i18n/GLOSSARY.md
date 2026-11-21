@@ -44,3 +44,6 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Seat (paid place in a course) | Puesto | Not "asiento" |
 | Free quiz | Prueba gratis | |
 | Coming soon (state) | Próximamente | |
+| Connect / Reconnect (a tool) | Conectar / Volver a conectar | |
+| Sync | Sincronizar, sincronización | |
+| Simulator (demo data) | Simulador | |

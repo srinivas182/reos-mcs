@@ -111,6 +111,215 @@
                 "security": []
             }
         },
+        "/connections": {
+            "get": {
+                "operationId": "connections.index",
+                "description": "Yours, and your active organisation's when your role there manages it.",
+                "summary": "List connections",
+                "tags": [
+                    "Connection"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `ConnectionResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ConnectionResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "connections.store",
+                "description": "Returns the tool's sign-in address. Open it in a secure browser sheet;\nafter signing in, the tool comes back to REOS, which returns to\n`reos://connections?outcome=connected|cancelled|failed&integration=\u2026`.",
+                "summary": "Start connecting a tool",
+                "tags": [
+                    "Connection"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StartConnectionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "authorization_url": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "authorization_url"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/connections/{connection}/sync": {
+            "post": {
+                "operationId": "connections.sync",
+                "description": "Queues a sync of every stream; the list shows the new time when it's done.",
+                "summary": "Sync now",
+                "tags": [
+                    "Connection"
+                ],
+                "parameters": [
+                    {
+                        "name": "connection",
+                        "in": "path",
+                        "required": true,
+                        "description": "The connection ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "const": 202
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/connections/{connection}": {
+            "delete": {
+                "operationId": "connections.destroy",
+                "description": "REOS asks the tool to forget its access, then deletes the tokens and\neverything it synced from this account.",
+                "summary": "Disconnect",
+                "tags": [
+                    "Connection"
+                ],
+                "parameters": [
+                    {
+                        "name": "connection",
+                        "in": "path",
+                        "required": true,
+                        "description": "The connection ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/auth/exchange": {
             "post": {
                 "operationId": "auth.exchange",
@@ -919,6 +1128,100 @@
                 ],
                 "title": "AppConfigResource"
             },
+            "ConnectionResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "integration": {
+                        "type": "string",
+                        "description": "The tool's register id, for example `google-workspace`."
+                    },
+                    "integration_name": {
+                        "type": "string"
+                    },
+                    "owner": {
+                        "type": "string",
+                        "description": "`user` (yours) or `organisation` (your organisation's)."
+                    },
+                    "account": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The account at the tool, usually its email."
+                    },
+                    "status": {
+                        "description": "`active`, `reconnect_needed` or `failing`.\n| |\n|---|\n| `active` <br/> Syncing normally. |\n| `reconnect_needed` <br/> The tool refused the sign-in (revoked, expired, or REOS switched run mode): the person must sign in again. |\n| `failing` <br/> Syncs keep failing for another reason; REOS keeps retrying. |",
+                        "$ref": "#/components/schemas/ConnectionStatus"
+                    },
+                    "demo": {
+                        "type": "boolean",
+                        "description": "Running on demo data (the Simulator), not the real tool."
+                    },
+                    "scopes": {
+                        "type": "array",
+                        "description": "What REOS may do at the tool.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "history": {
+                        "type": "string",
+                        "description": "How far back the first sync reached: `3m`, `12m` or `all`.",
+                        "enum": [
+                            "3m",
+                            "12m",
+                            "all"
+                        ]
+                    },
+                    "last_synced_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "problem": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Translation key for the latest problem, or null."
+                    },
+                    "connected_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "integration",
+                    "integration_name",
+                    "owner",
+                    "account",
+                    "status",
+                    "demo",
+                    "scopes",
+                    "history",
+                    "last_synced_at",
+                    "problem",
+                    "connected_at"
+                ],
+                "title": "ConnectionResource"
+            },
+            "ConnectionStatus": {
+                "type": "string",
+                "description": "Where a connection stands, as the person sees it.\n| |\n|---|\n| `active` <br/> Syncing normally. |\n| `reconnect_needed` <br/> The tool refused the sign-in (revoked, expired, or REOS switched run mode): the person must sign in again. |\n| `failing` <br/> Syncs keep failing for another reason; REOS keeps retrying. |",
+                "enum": [
+                    "active",
+                    "reconnect_needed",
+                    "failing"
+                ],
+                "title": "ConnectionStatus"
+            },
             "DeviceResource": {
                 "type": "object",
                 "properties": {
@@ -1060,6 +1363,16 @@
                     "time"
                 ],
                 "title": "HealthResource"
+            },
+            "HistoryRange": {
+                "type": "string",
+                "description": "How far back the first sync reaches: 3 or 12 months, or everything.\n",
+                "enum": [
+                    "3m",
+                    "12m",
+                    "all"
+                ],
+                "title": "HistoryRange"
             },
             "IdentityProvider": {
                 "type": "string",
@@ -1735,6 +2048,34 @@
                     "user"
                 ],
                 "title": "SignInResource"
+            },
+            "StartConnectionRequest": {
+                "type": "object",
+                "description": "Start connecting a tool: which one, and how much history the first sync fetches.",
+                "properties": {
+                    "integration": {
+                        "type": "string",
+                        "description": "The tool's register id, for example `google-workspace`.",
+                        "enum": [
+                            "google-workspace"
+                        ]
+                    },
+                    "history": {
+                        "anyOf": [
+                            {
+                                "description": "How far back the first sync reaches: `3m` (default), `12m` or `all`.",
+                                "$ref": "#/components/schemas/HistoryRange"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "integration"
+                ],
+                "title": "StartConnectionRequest"
             },
             "StateResource": {
                 "type": "object",

@@ -12,6 +12,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Sentry\Laravel\Integration;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -21,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
         apiPrefix: 'api/v1',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: static function (): void {
+            Route::middleware('api')->group(base_path('routes/webhooks.php'));
+        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Monitoring settings from Settings › Integrations, and request traces.
@@ -31,6 +35,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->preventRequestForgery(except: [
             'integrations/apple-sign-in/callback',
             'integrations/google-sign-in/callback',
+            // Connections (B3.1): some tools post the sign-in answer back.
+            'integrations/*/callback',
         ]);
 
         $middleware->encryptCookies(except: ['appearance', 'text_size', 'locale', 'sidebar_state']);

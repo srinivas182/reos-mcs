@@ -3,16 +3,20 @@
 namespace App\Providers;
 
 use App\Authorization\Permission;
+use App\Connections\ConnectorRegistry;
 use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Catalogue;
 use App\Integrations\Credentials\CredentialCipher;
 use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\Credentials\DatabaseCredentialVault;
+use App\Jobs\SyncConnection;
+use App\Models\Connection;
 use App\Models\PersonalAccessToken;
 use App\Models\State;
 use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Authorization\ActiveRole;
+use App\Services\Connections\SyncEngine;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -95,6 +99,21 @@ class AppServiceProvider extends ServiceProvider
         Sanctum::authenticateAccessTokensUsing(
             static fn (mixed $token, bool $isValid): bool => $isValid && $token instanceof PersonalAccessToken && ! $token->isIdle(),
         );
+
+        // Connections engine (B3.1): fair sync allowances per owner and per tool, and the webhook inbox.
+        RateLimiter::for('connection-owner', static function (object $job): Limit {
+            $connection = $job instanceof SyncConnection ? Connection::query()->find($job->connectionId) : null;
+
+            return Limit::perMinute(60)->by('owner:'.($connection?->ownerKey() ?? 'none'));
+        });
+        RateLimiter::for('connection-vendor', static function (object $job): Limit {
+            $connection = $job instanceof SyncConnection ? Connection::query()->find($job->connectionId) : null;
+            $allowance = $connection === null ? 60 : app(ConnectorRegistry::class)->requestsPerMinute($connection->integration_id, $connection->mode);
+
+            // Each page is about one request; the job does a few pages per run.
+            return Limit::perMinute(max(1, intdiv($allowance, SyncEngine::PAGES_PER_RUN)))->by('vendor:'.($connection->integration_id ?? 'none'));
+        });
+        RateLimiter::for('webhooks', static fn (Request $request): Limit => Limit::perMinute(600)->by($request->ip()));
 
         RateLimiter::for('sign-in', static fn (Request $request): Limit => Limit::perMinute(20)->by($request->ip()));
 

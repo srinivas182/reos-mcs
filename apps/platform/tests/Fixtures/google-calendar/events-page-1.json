@@ -1,0 +1,34 @@
+{
+    "kind": "calendar#events",
+    "summary": "maria.lopez.test@gmail.com",
+    "timeZone": "America/Chicago",
+    "nextPageToken": "CkkKOwo5Y2FsZW5kYXItZXZlbnRzLXBhZ2UtMg",
+    "items": [
+        {
+            "kind": "calendar#event",
+            "id": "4n1q8h2c9vs0k3e7t5r6p0m1ab",
+            "status": "confirmed",
+            "htmlLink": "https://www.google.com/calendar/event?eid=NG4xcTho",
+            "updated": "2026-11-18T15:02:11.000Z",
+            "summary": "Showing — 2218 Elm St",
+            "location": "2218 Elm St, Houston, TX",
+            "start": {
+                "dateTime": "2026-11-23T11:00:00-06:00",
+                "timeZone": "America/Chicago"
+            },
+            "end": {
+                "dateTime": "2026-11-23T11:45:00-06:00",
+                "timeZone": "America/Chicago"
+            }
+        },
+        {
+            "kind": "calendar#event",
+            "id": "7c2m4k8p1q3r5s7t9u0v2w4x6y",
+            "status": "confirmed",
+            "updated": "2026-11-17T09:30:00.000Z",
+            "summary": "Texas REALTORS® conference",
+            "start": { "date": "2026-12-03" },
+            "end": { "date": "2026-12-04" }
+        }
+    ]
+}

@@ -17,7 +17,15 @@ declare module '@inertiajs/core' {
             /** Live states' names, for the public site's state chip. */
             liveStates: string[];
             /** One-time notices after a redirect. */
-            flash: { joined: boolean };
+            flash: {
+                joined: boolean;
+                /** After connecting a tool on the website. */
+                connection: {
+                    outcome: 'connected' | 'cancelled' | 'failed';
+                    integration: string;
+                    reason: string | null;
+                } | null;
+            };
             [key: string]: unknown;
         };
     }
