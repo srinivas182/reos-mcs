@@ -64,8 +64,8 @@ final readonly class DemoConnections
         $showing = $this->make($linda, [
             'title' => 'Showing — 1234 Oak Ridge Dr',
             'kind' => 'showing',
-            'starts_at' => $this->houston(1, 14),
-            'ends_at' => $this->houston(1, 14, 45),
+            'starts_at' => $this->houston(0, 17),
+            'ends_at' => $this->houston(0, 17, 45),
             'location' => '1234 Oak Ridge Dr, Cypress, TX',
             'attendees' => ['garcia.family@example.com'],
         ]);
@@ -80,7 +80,7 @@ final readonly class DemoConnections
 
         // Changed in REOS while Google couldn't be reached, and in Google too.
         $connection->forceFill(['status' => ConnectionStatus::ReconnectNeeded])->save();
-        $this->events->update($showing, ['starts_at' => $this->houston(1, 15), 'ends_at' => $this->houston(1, 15, 45)]);
+        $this->events->update($showing, ['starts_at' => $this->houston(0, 17, 30), 'ends_at' => $this->houston(0, 18, 15)]);
         GoogleCalendarSimulator::changeInTool($connection, ['title' => 'Showing — 1234 Oak Ridge Dr (Garcias running late)'], $showing->external_id);
         $connection->forceFill(['status' => ConnectionStatus::Active])->save();
         $this->engine->run($connection->refresh(), 'events', SyncTrigger::Webhook);

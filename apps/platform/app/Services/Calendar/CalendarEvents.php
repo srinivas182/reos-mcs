@@ -32,15 +32,32 @@ final readonly class CalendarEvents
     /** The fields people set. */
     public const FIELDS = ['title', 'kind', 'starts_at', 'ends_at', 'all_day', 'location', 'description', 'attendees', 'notify_guests', 'related_type', 'related_id'];
 
-    /** @return Collection<int, CalendarEvent> Events overlapping the window, earliest first. */
+    /**
+     * Events in a window, all-day ones first, then by start.
+     *
+     * Pass `$from` and `$to` in the person's own time zone: timed events
+     * overlap the moments, all-day events overlap the dates (an all-day event
+     * is a date, not a stretch of UTC).
+     *
+     * @return Collection<int, CalendarEvent>
+     */
     public function between(User $user, CarbonImmutable $from, CarbonImmutable $to): Collection
     {
+        $firstDay = CarbonImmutable::parse($from->format('Y-m-d'), 'UTC');
+        $afterLastDay = CarbonImmutable::parse($to->format('Y-m-d'), 'UTC');
+        if ($to->format('H:i:s') !== '00:00:00') {
+            $afterLastDay = $afterLastDay->addDay();
+        }
+
         return CalendarEvent::query()
             ->with('connection')
             ->where('user_id', $user->id)
-            ->where('starts_at', '<', $to)
-            ->where('ends_at', '>', $from)
             ->where('status', '!=', 'cancelled')
+            ->where(static function ($query) use ($from, $to, $firstDay, $afterLastDay): void {
+                $query->where(static fn ($timed) => $timed->where('all_day', false)->where('starts_at', '<', $to->utc())->where('ends_at', '>', $from->utc()))
+                    ->orWhere(static fn ($day) => $day->where('all_day', true)->where('starts_at', '<', $afterLastDay)->where('ends_at', '>', $firstDay));
+            })
+            ->orderByDesc('all_day')
             ->orderBy('starts_at')
             ->orderBy('id')
             ->limit(500)

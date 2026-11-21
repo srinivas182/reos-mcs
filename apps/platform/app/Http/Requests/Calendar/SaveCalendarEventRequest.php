@@ -27,13 +27,13 @@ final class SaveCalendarEventRequest extends FormRequest
             'kind' => ['sometimes', Rule::in(array_values(array_diff(CalendarEvent::KINDS, ['event'])))],
             'all_day' => ['sometimes', 'boolean'],
             /** Start, with its time zone offset (timed events). */
-            'starts_at' => ['exclude_if:all_day,true', 'required', 'date'],
+            'starts_at' => ['required_unless:all_day,true', 'date'],
             /** End, after the start (timed events). */
-            'ends_at' => ['exclude_if:all_day,true', 'required', 'date', 'after:starts_at', 'before_or_equal:'.$this->latestEnd()],
+            'ends_at' => ['required_unless:all_day,true', 'date', 'after:starts_at', 'before_or_equal:'.$this->latestEnd()],
             /** First day, `YYYY-MM-DD` (all-day events). */
-            'start_date' => ['exclude_unless:all_day,true', 'required', 'date_format:Y-m-d'],
+            'start_date' => ['required_if:all_day,true', 'date_format:Y-m-d'],
             /** Last day, inclusive (all-day events). */
-            'end_date' => ['exclude_unless:all_day,true', 'required', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            'end_date' => ['required_if:all_day,true', 'date_format:Y-m-d', 'after_or_equal:start_date'],
             'location' => ['sometimes', 'nullable', 'string', 'max:1000'],
             'description' => ['sometimes', 'nullable', 'string', 'max:8000'],
             /** Guest emails. */

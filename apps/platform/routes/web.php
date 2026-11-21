@@ -7,10 +7,12 @@ use App\Http\Controllers\Auth\SocialSignInController;
 use App\Http\Controllers\Auth\SsoSignInController;
 use App\Http\Controllers\Auth\TestIdentityProviderController;
 use App\Http\Controllers\BrandLogoController;
+use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
@@ -50,7 +52,17 @@ Route::prefix('get-started')->name('get-started')->group(function () {
 Route::get('sign-up/{path}', [GetStartedController::class, 'signUp'])->name('sign-up');
 
 Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', DashboardController::class)->name('dashboard');
+
+    // The calendar (B4.1): appointments made on the agent dashboard (screen 12).
+    Route::controller(CalendarPageController::class)->prefix('calendar')->name('calendar.')->group(function () {
+        Route::post('events', 'store')->middleware('throttle:60,1,calendar-store')->name('store');
+        Route::put('events/{event}', 'update')->whereNumber('event')->middleware('throttle:60,1,calendar-update')->name('update');
+        Route::delete('events/{event}', 'destroy')->whereNumber('event')->middleware('throttle:60,1,calendar-destroy')->name('destroy');
+        Route::post('events/{event}/restore', 'restore')->whereNumber('event')->middleware('throttle:60,1,calendar-restore')->name('restore');
+        Route::post('events/{event}/retry', 'retry')->whereNumber('event')->middleware('throttle:20,1,calendar-retry')->name('retry');
+        Route::post('conflicts/{conflict}/undo', 'undo')->whereNumber('conflict')->middleware('throttle:30,1,calendar-undo')->name('undo');
+    });
 
     // Connections (B3.2c, web journey screen 19): the tools this person may use.
     Route::controller(ConnectionsPageController::class)->prefix('connections')->name('connections.')->group(function () {

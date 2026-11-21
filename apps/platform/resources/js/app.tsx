@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { initializeTheme, setSignedIn } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
+import { rememberTimezone } from '@/lib/calendar';
 import { i18n } from '@/lib/i18n';
 import type { MonitoringConfig } from '@/lib/monitoring';
 import { identify, startMonitoring, trackPageView } from '@/lib/monitoring';
@@ -51,6 +52,7 @@ void createInertiaApp({
 // Applies the server-rendered theme and text size, then keeps the account in
 // sync: preference changes are saved to the account only when signed in.
 initializeTheme();
+rememberTimezone();
 router.on('navigate', (event) => {
     const { page } = event.detail;
     const props = page.props as {

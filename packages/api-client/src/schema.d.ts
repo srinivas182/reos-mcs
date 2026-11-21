@@ -1107,22 +1107,22 @@ export interface components {
              * Format: date-time
              * @description Start, with its time zone offset (timed events).
              */
-            starts_at: string;
+            starts_at?: string;
             /**
              * Format: date-time
              * @description End, after the start (timed events).
              */
-            ends_at: string;
+            ends_at?: string;
             /**
              * Format: date
              * @description First day, `YYYY-MM-DD` (all-day events).
              */
-            start_date: string;
+            start_date?: string;
             /**
              * Format: date
              * @description Last day, inclusive (all-day events).
              */
-            end_date: string;
+            end_date?: string;
             location?: string | null;
             description?: string | null;
             /** @description Guest emails. */

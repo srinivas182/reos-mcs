@@ -20,6 +20,7 @@ use App\Connections\TokenSet;
 use App\Connections\WebhookDelivery;
 use App\Models\Connection;
 use App\Models\SimulatorRecord;
+use App\Support\PersonTimezone;
 use Carbon\CarbonImmutable;
 use DateTimeInterface;
 use Illuminate\Http\Request;
@@ -273,7 +274,8 @@ final readonly class GoogleCalendarSimulator implements CalendarDriver, Connecto
             return;
         }
 
-        $today = CarbonImmutable::now()->startOfDay();
+        // A Houston agent's day: times are Texas times.
+        $today = CarbonImmutable::now(PersonTimezone::DEFAULT)->startOfDay();
         $plan = [
             ['primary', -9, 10, 60, 'Listing appointment — 1402 Heights Blvd', '1402 Heights Blvd, Houston, TX'],
             ['primary', -6, 14, 90, 'Closing — Johnson family', 'Lone Star Title, 5 Greenway Plaza, Houston, TX'],
@@ -295,7 +297,8 @@ final readonly class GoogleCalendarSimulator implements CalendarDriver, Connecto
 
         foreach ($plan as $index => [$calendar, $day, $hour, $minutes, $title, $location]) {
             $allDay = $minutes === 0;
-            $start = $today->addDays($day)->addHours($hour);
+            // All-day events are dates: midnight UTC on that day, as Google stores them.
+            $start = $allDay ? CarbonImmutable::parse($today->addDays($day)->toDateString(), 'UTC') : $today->addDays($day)->addHours($hour);
             $row = SimulatorRecord::query()->create([
                 'connection_id' => $connection->id,
                 'stream' => self::STREAM,

@@ -48,7 +48,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'integrations/*/callback',
         ]);
 
-        $middleware->encryptCookies(except: ['appearance', 'text_size', 'locale', 'sidebar_state']);
+        $middleware->encryptCookies(except: ['appearance', 'text_size', 'locale', 'sidebar_state', 'reos_tz']);
 
         // The phone app's language (B3.2b): tool descriptions and messages match its screen.
         // Tenancy (A4.1, ADR 0015): whose data this request may touch.
