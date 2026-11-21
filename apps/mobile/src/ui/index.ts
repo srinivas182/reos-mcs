@@ -9,6 +9,7 @@ export { Callout } from './Callout';
 export { ChatBubble } from './Chat';
 export { Chip, type ChipProps } from './Chip';
 export { CodeInput } from './CodeInput';
+export { BrandMark, PathCard, StatTile } from './Dark';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { Avatar, IconButton, ScreenHeader, SectionTitle } from './Header';
 export { Icon } from './Icon';

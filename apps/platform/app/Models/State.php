@@ -20,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $exam_vendor
  * @property int|null $qualifying_hours
  * @property int|null $ce_hours
+ * @property int|null $waitlist_count
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

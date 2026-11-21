@@ -206,6 +206,156 @@
       "highContrast": "Alto contraste",
       "highContrastHint": "El mayor contraste, para baja visión o pleno sol",
       "note": "Funciona con VoiceOver y TalkBack. Cumple con WCAG 2.2 AA."
+    },
+    "onboarding": {
+      "path": {
+        "title": "¿Qué le trae a REOS?",
+        "subtitle": "Elija una opción. Puede agregar otro rol más adelante.",
+        "become_agent": {
+          "title": "Quiero ser agente",
+          "subtitle": "Prueba gratis, cursos y preparación para el examen"
+        },
+        "licensed_agent": {
+          "title": "Soy agente con licencia",
+          "subtitle": "CE, renovación, ayuda con IA y mentoría"
+        },
+        "broker": {
+          "title": "Dirijo un equipo o una agencia inmobiliaria",
+          "subtitle": "Puestos, progreso del equipo y reclutamiento"
+        },
+        "instructor": {
+          "title": "Soy instructor o mentor",
+          "subtitle": "Enseñe, fije su tarifa y reciba reservas"
+        },
+        "provider": {
+          "title": "Soy proveedor de servicios",
+          "subtitle": "Prestamistas, inspectores, títulos y más"
+        },
+        "code": "Tengo un código o una invitación",
+        "signIn": "Iniciar sesión",
+        "brokerTitle": "Configure su equipo en reos.com",
+        "brokerBody": "Las agencias, los equipos y las asociaciones se configuran en el sitio web, donde agrega puestos e invita a sus agentes. Después, inicie sesión aquí con la misma cuenta.",
+        "openWebsite": "Abrir reos.com"
+      },
+      "state": {
+        "step": "Paso {{step}} de {{total}}",
+        "titleCandidate": "¿Dónde quiere obtener su licencia?",
+        "titleLicensed": "¿En qué estado tiene licencia?",
+        "subtitle": "Los cursos, la preparación para el examen y las reglas dependen de su estado. Puede agregar otro estado más adelante.",
+        "search": "Buscar estados",
+        "liveDetail": "Cursos, preparación para el examen y CE disponibles",
+        "live": "Activo",
+        "comingSoon": "Próximamente",
+        "note": "REOS empieza en Texas. Los demás estados se abren uno por uno.",
+        "continue": "Continuar con {{state}}",
+        "noResults": "Ningún estado coincide con «{{search}}»"
+      },
+      "waitlist": {
+        "title": "REOS todavía no está en {{state}}",
+        "body": "Empezamos en Texas. Únase a la lista de espera y le avisaremos el día que abra {{state}}.",
+        "youGet": "Usted recibe",
+        "early": "Acceso anticipado antes del lanzamiento",
+        "credits": "50 créditos de IA de regalo al empezar",
+        "say": "Voz en qué cursos llegan primero",
+        "waiting_one": "{{count}} persona de {{state}} está esperando. Cuantas más se registren, antes abre el estado.",
+        "waiting_other": "{{count}} personas de {{state}} están esperando. Cuantas más se registren, antes abre el estado.",
+        "join": "Unirme a la lista de espera de {{state}}",
+        "texasInstead": "Prefiero estudiar para Texas",
+        "joined": "Ya está en la lista. Le avisaremos el día que abra {{state}}.",
+        "joinFailed": "No pudimos agregarle en este momento. Revise su conexión e inténtelo de nuevo."
+      },
+      "welcome": {
+        "eyebrow": "Licencia de bienes raíces de {{state}}",
+        "title": "Conviértase en agente con licencia. Le ayudamos a lograrlo.",
+        "body": "Cursos, preparación para el examen y un compañero de estudio con IA en una sola app. Sepa cuándo está listo y apruebe a la primera.",
+        "dailyValue": "5 min",
+        "daily": "lecciones diarias",
+        "aiValue": "24/7",
+        "ai": "compañero de estudio con IA",
+        "languagesValue": "EN · ES",
+        "languages": "English, Español",
+        "quiz": "Hacer la prueba gratis de 2 minutos",
+        "haveAccount": "Ya tengo una cuenta",
+        "code": "¿Tiene un código de su escuela, agencia o asociación?"
+      },
+      "quiz": {
+        "header": "Prueba gratis · sin cuenta",
+        "count": "{{number}} de {{total}}",
+        "progress": "Progreso de la prueba",
+        "answers": "Respuestas",
+        "correct": "¡Correcto, muy bien!",
+        "incorrect": "No exactamente.",
+        "source": "Fuente: {{source}}",
+        "next": "Siguiente pregunta",
+        "finish": "Ver mi resultado",
+        "loadFailed": "No pudimos cargar la prueba. Revise su conexión e inténtelo de nuevo.",
+        "sample": "Pregunta de muestra"
+      },
+      "score": {
+        "label": "ya lo sabe",
+        "strong": "Empieza con muy buen pie.",
+        "start": "Un gran punto de partida.",
+        "save": "Guarde su resultado y reciba su plan gratis"
+      },
+      "levels": {
+        "strong": "Fuerte",
+        "learning": "Aprendiendo",
+        "start_here": "Empiece aquí"
+      },
+      "topics": {
+        "agency": "Representación (agencia)",
+        "contracts": "Contratos",
+        "math": "Matemáticas de bienes raíces",
+        "ownership": "Propiedad de inmuebles",
+        "finance": "Financiamiento",
+        "state_rules": "Reglas de Texas"
+      },
+      "setup": {
+        "header": "Su plan · 3 preguntas rápidas",
+        "time": "1 min",
+        "examTitle": "¿Cuándo le gustaría presentar el examen?",
+        "notSure": "No estoy seguro",
+        "minutesTitle": "¿Cuánto tiempo al día?",
+        "minutes": "{{count}} min",
+        "hourPlus": "1 h o más",
+        "languageTitle": "Aprender en",
+        "remindTitle": "Recordarme",
+        "remindEvery": "Todos los días a las",
+        "remindNone": "Sin recordatorio",
+        "remindChoose": "Elija la hora del recordatorio",
+        "build": "Crear mi plan",
+        "reminderTitle": "Hora de estudiar",
+        "reminderBody": "Sus {{minutes}} minutos de hoy están listos.",
+        "notificationsOff": "Las notificaciones están desactivadas, así que no habrá recordatorio. Puede activarlas en la configuración de su teléfono."
+      },
+      "plan": {
+        "eyebrow": "Su plan está listo",
+        "titleMonth": "Examen en {{month}}. Este es el camino.",
+        "titleNotSure": "Este es su camino hacia la licencia.",
+        "targetExam": "Examen previsto",
+        "days": "días",
+        "perDay": "{{minutes}} min al día · {{hours}} horas de cursos · preparación para el examen",
+        "perDayNoHours": "{{minutes}} min al día · cursos · preparación para el examen",
+        "steps": {
+          "courses": "Cursos requeridos",
+          "coursesDetail": "{{hours}} horas",
+          "coursesDetailNoHours": "Las horas que pide su estado",
+          "prep": "Preparación y simulacros de examen",
+          "prepDetail": "Hasta que esté listo",
+          "exam": "Reservar y aprobar el examen",
+          "examDetail": "Le avisamos cuándo reservar",
+          "license": "Obtener patrocinio y la licencia",
+          "licenseDetail": "Ofertas de brókers dentro de la app"
+        },
+        "start": "Ir a Hoy"
+      },
+      "code": {
+        "title": "Ingrese un código",
+        "label": "Su código",
+        "placeholder": "Por ejemplo, LSR-2026-KATY",
+        "continue": "Continuar",
+        "soon": "Los códigos de escuelas, agencias y asociaciones empiezan a funcionar en la próxima actualización. Guarde su código y, mientras tanto, haga la prueba gratis."
+      }
     }
   },
   "tabs": {

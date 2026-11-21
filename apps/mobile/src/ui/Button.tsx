@@ -12,11 +12,12 @@ import { Text } from './Text';
  * - `primary`: blue, 54 pt (the journeys' main button)
  * - `secondary`: white with a border, 50 pt
  * - `onHero`: white button on a dark hero card ("Start drill")
+ * - `heroOutline`: outlined, on a dark screen ("I have a code or invite")
  * - `ghost`: text only
  * - `destructive`: red, for things that can't be undone
  * - `warning`: dark amber, the action inside an amber nudge ("Book" a tutor)
  */
-export type ButtonVariant = 'primary' | 'secondary' | 'onHero' | 'ghost' | 'destructive' | 'warning';
+export type ButtonVariant = 'primary' | 'secondary' | 'onHero' | 'heroOutline' | 'ghost' | 'destructive' | 'warning';
 
 export type ButtonProps = Omit<PressableProps, 'children'> & {
   /** Verb first: "Book session", not "Submit". */
@@ -34,6 +35,7 @@ const textColor: Record<ButtonVariant, keyof SemanticColors> = {
   primary: 'onAction',
   secondary: 'text',
   onHero: 'heroBg',
+  heroOutline: 'heroText',
   ghost: 'action',
   destructive: 'onDanger',
   warning: 'toneWarningBg',
@@ -89,6 +91,7 @@ const styles = StyleSheet.create((theme) => ({
         primary: { backgroundColor: theme.colors.action },
         secondary: { minHeight: theme.m.secondaryButtonHeight, backgroundColor: theme.colors.surface, borderColor: theme.colors.borderControl },
         onHero: { backgroundColor: theme.colors.heroText },
+        heroOutline: { minHeight: theme.m.secondaryButtonHeight, backgroundColor: 'transparent', borderColor: theme.colors.heroMuted },
         ghost: { minHeight: theme.touch, backgroundColor: 'transparent', paddingHorizontal: theme.space.md },
         destructive: { backgroundColor: theme.colors.danger },
         warning: { minHeight: theme.touch, backgroundColor: theme.colors.toneWarningFg, borderRadius: theme.m.radius.pill, paddingHorizontal: theme.space.lg },

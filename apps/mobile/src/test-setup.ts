@@ -7,16 +7,25 @@ import 'react-native-unistyles/mocks';
 import '@/ui/unistyles';
 
 jest.mock('react-native-mmkv', () => {
-  const stores = new Map<string, Map<string, string>>();
+  const stores = new Map<string, Map<string, string | boolean>>();
 
   return {
     createMMKV: ({ id }: { id: string }) => {
-      const store = stores.get(id) ?? new Map<string, string>();
+      const store = stores.get(id) ?? new Map<string, string | boolean>();
       stores.set(id, store);
 
       return {
-        getString: (key: string) => store.get(key),
-        set: (key: string, value: string) => store.set(key, value),
+        getString: (key: string) => {
+          const value = store.get(key);
+
+          return typeof value === 'string' ? value : undefined;
+        },
+        getBoolean: (key: string) => {
+          const value = store.get(key);
+
+          return typeof value === 'boolean' ? value : undefined;
+        },
+        set: (key: string, value: string | boolean) => store.set(key, value),
         remove: (key: string) => store.delete(key),
         clearAll: () => store.clear(),
       };
@@ -78,3 +87,13 @@ jest.mock('expo-apple-authentication', () => ({
 
 jest.mock('expo-device', () => ({ deviceName: "Sofia's iPhone", modelName: 'iPhone 16' }));
 jest.mock('expo-application', () => ({ nativeApplicationVersion: '1.0.0' }));
+
+jest.mock('expo-notifications', () => ({
+  getPermissionsAsync: jest.fn().mockResolvedValue({ granted: false }),
+  requestPermissionsAsync: jest.fn().mockResolvedValue({ granted: true }),
+  setNotificationChannelAsync: jest.fn(),
+  cancelScheduledNotificationAsync: jest.fn().mockResolvedValue(undefined),
+  scheduleNotificationAsync: jest.fn().mockResolvedValue('id'),
+  AndroidImportance: { DEFAULT: 3 },
+  SchedulableTriggerInputTypes: { DAILY: 'daily' },
+}));

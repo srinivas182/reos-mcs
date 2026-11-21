@@ -26,7 +26,8 @@ final class OnboardingRequest extends FormRequest
             'state' => ['sometimes', 'nullable', 'string', 'size:2', Rule::exists('states', 'code')->where('status', 'live')],
             /** YYYY-MM, or null for "Not sure". */
             'exam_month' => ['sometimes', 'nullable', 'date_format:Y-m', 'after_or_equal:'.now()->format('Y-m')],
-            'minutes_per_day' => ['sometimes', 'nullable', 'integer', Rule::in([10, 20, 30, 45, 60])],
+            /** Minutes a day: 10, 20, 30, 45 or 60 ("1 h+"). */
+            'minutes_per_day' => ['sometimes', 'nullable', 'integer', 'min:10', 'max:60', 'multiple_of:5'],
             'locale' => ['sometimes', 'nullable', Rule::enum(Locale::class)],
             /** HH:MM, or null for no reminder. */
             'reminder_time' => ['sometimes', 'nullable', 'date_format:H:i'],
