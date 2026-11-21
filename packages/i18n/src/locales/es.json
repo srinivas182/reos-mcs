@@ -31,7 +31,8 @@
     "mainMenu": "Menú principal",
     "userMenu": "Menú de la cuenta de {{name}}",
     "state": "Estado: {{state}}",
-    "states": "Estados"
+    "states": "Estados",
+    "connections": "Conexiones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1322,6 +1323,34 @@
       "confirm": "Desconectar",
       "keep": "Mantener conectado",
       "disconnected": "Se desconectó {{tool}}."
+    },
+    "web": {
+      "purpose": "Herramientas disponibles para agentes en {{state}} · administradas por REOS",
+      "requestTool": "Solicitar una herramienta",
+      "tabsLabel": "Tipos de herramientas",
+      "all": "Todas",
+      "connected": "Conectada",
+      "needsSignIn": "Requiere iniciar sesión",
+      "manage": "Administrar",
+      "manageTool": "Administrar {{tool}}",
+      "connectTool": "Conectar {{tool}}",
+      "backSoon": "Vuelve pronto",
+      "brokerage": "La configura su agencia",
+      "note": "REOS decide qué herramientas aparecen, y si se muestran como disponibles, beta o próximamente, para cada estado, rol y plan. Su agencia puede ocultar las herramientas que no permite.",
+      "emptyTitle": "Todavía no hay herramientas",
+      "emptyBody": "REOS agrega herramientas para su estado y rol cuando están listas. Díganos cuáles usa y contaremos su voto.",
+      "manageIntro": "Sesión iniciada como {{account}}.",
+      "lastSync": "Última sincronización",
+      "records": "Sincronizado hasta ahora",
+      "tabs": {
+        "crm": "CRM",
+        "transactions": "Operaciones",
+        "calendar_email": "Calendario y correo",
+        "leads": "Clientes potenciales",
+        "social": "Redes sociales",
+        "mls": "MLS e IDX",
+        "esignature": "Firma electrónica"
+      }
     }
   },
   "catalogue": {

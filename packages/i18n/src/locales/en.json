@@ -31,7 +31,8 @@
     "mainMenu": "Main menu",
     "userMenu": "Account menu for {{name}}",
     "state": "State: {{state}}",
-    "states": "States"
+    "states": "States",
+    "connections": "Connections"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1322,6 +1323,34 @@
       "confirm": "Disconnect",
       "keep": "Keep connected",
       "disconnected": "{{tool}} is disconnected."
+    },
+    "web": {
+      "purpose": "Tools available to agents in {{state}} · managed by REOS",
+      "requestTool": "Request a tool",
+      "tabsLabel": "Tool types",
+      "all": "All",
+      "connected": "Connected",
+      "needsSignIn": "Needs sign-in",
+      "manage": "Manage",
+      "manageTool": "Manage {{tool}}",
+      "connectTool": "Connect {{tool}}",
+      "backSoon": "Back soon",
+      "brokerage": "Set up by your brokerage",
+      "note": "Which tools appear, and whether they show as available, beta or coming soon, is set by REOS for each state, role and plan. Your brokerage can hide tools it doesn't allow.",
+      "emptyTitle": "No tools to show yet",
+      "emptyBody": "REOS adds tools for your state and role as they're ready. Tell us which ones you use and we'll count your vote.",
+      "manageIntro": "Signed in as {{account}}.",
+      "lastSync": "Last sync",
+      "records": "Synced so far",
+      "tabs": {
+        "crm": "CRM",
+        "transactions": "Transactions",
+        "calendar_email": "Calendar and email",
+        "leads": "Leads",
+        "social": "Social",
+        "mls": "MLS and IDX",
+        "esignature": "E-sign"
+      }
     }
   },
   "catalogue": {

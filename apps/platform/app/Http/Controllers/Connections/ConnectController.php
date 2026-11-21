@@ -27,7 +27,7 @@ final class ConnectController extends Controller
         if (! $catalogue->canConnect($user, $tool) || $owner === null) {
             Inertia::flash('toast', ['type' => 'error', 'message' => __('connections.errors.unavailable')]);
 
-            return to_route('dashboard')->with('connection', ['outcome' => ConnectionAuthorizer::OUTCOME_FAILED, 'integration' => $tool, 'reason' => 'connections.errors.unavailable', 'name' => $tool]);
+            return to_route('connections.index')->with('connection', ['outcome' => ConnectionAuthorizer::OUTCOME_FAILED, 'integration' => $tool, 'reason' => 'connections.errors.unavailable', 'name' => $tool]);
         }
 
         $history = HistoryRange::tryFrom($request->string('history')->toString()) ?? HistoryRange::DEFAULT;

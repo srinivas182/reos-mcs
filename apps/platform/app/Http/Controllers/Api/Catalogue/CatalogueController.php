@@ -8,7 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalogue\ToolRequestRequest;
 use App\Http\Resources\Catalogue\CatalogueItemResource;
 use App\Models\IntegrationInterest;
-use App\Models\ToolRequest;
 use App\Models\User;
 use App\Services\Catalogue\IntegrationCatalogue;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -39,13 +38,9 @@ final class CatalogueController extends Controller
      */
     public function interest(string $tool, #[CurrentUser] User $user, IntegrationCatalogue $catalogue): Response|JsonResponse
     {
-        $item = collect($catalogue->forUser($user))->first(static fn (array $i): bool => $i['definition']->id === $tool);
-
-        if ($item === null || ! in_array($item['action'], [IntegrationCatalogue::ACTION_NOTIFY, IntegrationCatalogue::ACTION_JOIN_BETA], true)) {
+        if (! $catalogue->askFor($user, $tool)) {
             return response()->json(['message' => __('catalogue.errors.noInterest')], 422);
         }
-
-        $catalogue->setInterest($user, $tool, $item['action'] === IntegrationCatalogue::ACTION_JOIN_BETA ? IntegrationInterest::BETA : IntegrationInterest::NOTIFY, true);
 
         return response()->noContent();
     }
@@ -63,13 +58,9 @@ final class CatalogueController extends Controller
      *
      * @response 201 array{received: bool}
      */
-    public function request(ToolRequestRequest $request, #[CurrentUser] User $user): JsonResponse
+    public function request(ToolRequestRequest $request, #[CurrentUser] User $user, IntegrationCatalogue $catalogue): JsonResponse
     {
-        ToolRequest::query()->create([
-            'user_id' => $user->id,
-            'name' => $request->string('name')->trim()->toString(),
-            'note' => $request->filled('note') ? $request->string('note')->trim()->toString() : null,
-        ]);
+        $catalogue->requestTool($user, $request->string('name')->toString(), $request->filled('note') ? $request->string('note')->toString() : null);
 
         return response()->json(['received' => true], 201);
     }

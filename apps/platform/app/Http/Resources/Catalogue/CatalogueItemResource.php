@@ -31,6 +31,8 @@ final class CatalogueItemResource extends JsonResource
             // The agent-facing line in their language; the register checks every
             // tool people can see has one.
             'purpose' => __('integrations.tools.'.$definition->id),
+            /** The register category, for example `crm` or `transactions` (the website's tabs). */
+            'category' => (string) $definition->category,
             /**
              * The library tab: `crm`, `deals`, `calendar`, `leads` or `more`.
              *

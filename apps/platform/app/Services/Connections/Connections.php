@@ -6,8 +6,11 @@ namespace App\Services\Connections;
 
 use App\Authorization\Permission;
 use App\Connections\ConnectorRegistry;
+use App\Connections\HistoryRange;
+use App\Connections\SyncTrigger;
 use App\Integrations\AccountScope;
 use App\Integrations\IntegrationMode;
+use App\Jobs\SyncConnection;
 use App\Models\Connection;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
@@ -81,6 +84,34 @@ final readonly class Connections
     public function available(string $integrationId): bool
     {
         return $this->registry->supports($integrationId) && $this->registry->mode($integrationId) !== IntegrationMode::Off;
+    }
+
+    /**
+     * "Sync now": queue every stream. False when the tool is switched off or
+     * the connection can't sync (it needs reconnecting).
+     */
+    public function syncNow(Connection $connection): bool
+    {
+        if (! $this->available($connection->integration_id) || ! $connection->status->syncs()) {
+            return false;
+        }
+
+        foreach (array_keys($this->registry->driver($connection->integration_id, $connection->mode)->streams()) as $stream) {
+            SyncConnection::dispatch($connection->id, $stream, SyncTrigger::Manual);
+        }
+
+        return true;
+    }
+
+    /** How far back it syncs. A change starts over from there. */
+    public function changeHistory(Connection $connection, HistoryRange $history): Connection
+    {
+        if ($history !== $connection->history()) {
+            $connection->forceFill(['settings' => [...$connection->settings, 'history' => $history->value], 'cursors' => []])->save();
+            $this->syncNow($connection);
+        }
+
+        return $connection;
     }
 
     /** Tell the tool to forget REOS, delete the synced data and the tokens. */

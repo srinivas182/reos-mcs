@@ -54,6 +54,6 @@ final class OAuthCallbackController extends Controller
         ]);
 
         // Also kept in the session for anything that needs the outcome itself.
-        return to_route('dashboard')->with('connection', [...$summary, 'name' => $name]);
+        return to_route('connections.index')->with('connection', [...$summary, 'name' => $name]);
     }
 }
