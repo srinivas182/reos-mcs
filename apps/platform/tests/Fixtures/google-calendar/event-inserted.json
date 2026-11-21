@@ -1,0 +1,27 @@
+{
+    "kind": "calendar#event",
+    "etag": "\"3471200000000000\"",
+    "id": "PLACEHOLDER_ID",
+    "status": "confirmed",
+    "htmlLink": "https://www.google.com/calendar/event?eid=cmVvcy10ZXN0",
+    "created": "2026-11-21T15:00:00.000Z",
+    "updated": "2026-11-21T15:00:00.000Z",
+    "summary": "Showing — 2218 Elm St",
+    "location": "2218 Elm St, Houston, TX",
+    "start": { "dateTime": "2026-11-24T17:00:00Z", "timeZone": "UTC" },
+    "end": { "dateTime": "2026-11-24T17:45:00Z", "timeZone": "UTC" },
+    "attendees": [
+        {
+            "email": "maria.lopez.test@gmail.com",
+            "self": true,
+            "responseStatus": "accepted"
+        },
+        {
+            "email": "nguyen.family@example.com",
+            "responseStatus": "needsAction"
+        }
+    ],
+    "extendedProperties": {
+        "private": { "reos_event_id": "PLACEHOLDER_REOS_ID" }
+    }
+}

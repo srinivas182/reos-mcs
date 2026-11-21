@@ -12,8 +12,8 @@ const render = (ui: ReactElement) =>
 const now = new Date('2026-11-21T12:00:00Z');
 const alert = {
     id: 7,
-    integration: 'google-workspace',
-    name: 'Google Calendar and Gmail',
+    integration: 'google-calendar',
+    name: 'Google Calendar',
     account: 'james.miller@example.com',
     since: new Date(Date.now() - 2 * 86_400_000).toISOString(),
 };
@@ -28,17 +28,15 @@ describe('ConnectionAlert', () => {
 
         expect(
             screen.getByRole('heading', {
-                name: 'Google Calendar and Gmail stopped syncing',
+                name: 'Google Calendar stopped syncing',
             }),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(
-                /^2 days ago\. Your Google Calendar and Gmail data/,
-            ),
+            screen.getByText(/^2 days ago\. Your Google Calendar data/),
         ).toBeInTheDocument();
         expect(
             screen.getByRole('link', { name: 'Reconnect · 30 seconds' }),
-        ).toHaveAttribute('href', '/connections/google-workspace/connect');
+        ).toHaveAttribute('href', '/connections/google-calendar/connect');
         expect(screen.getByText('GC')).toBeInTheDocument();
     });
 

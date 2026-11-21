@@ -45,7 +45,7 @@ entries:
     personal_data: true
     cost: Free.
     notes: >-
-      Separate OAuth client from the Calendar and Gmail integration (google-workspace), so sign-in
+      Separate OAuth client from Google Calendar (google-calendar), so sign-in
       never waits for the restricted-scope verification. The phone app asks Google for an ID token
       for the web client ID; iOS also needs its own iOS client ID.
 
@@ -140,11 +140,13 @@ entries:
       - https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/plans/
 
   # ── Calendar, email and voice ───────────────────────────────────────────────
-  - id: google-workspace
-    name: Google Calendar and Gmail
+  - id: google-calendar
+    name: Google Calendar
     kind: integration
     category: calendar_email
-    purpose: Two-way calendar and email for every role.
+    purpose: >-
+      Two-way calendar for every role. Appointments, showings, deadlines and to-do due dates made in REOS
+      go to the calendar the person picks; changes in Google come back live.
     launch: enabled
     build: { sprint: 4, item: B4.1 }
     owner: client_with_mayura
@@ -162,17 +164,18 @@ entries:
         - { key: client_id }
         - { key: client_secret, secret: true }
     personal_data: true
-    cost: Free API. Reading the inbox (restricted Gmail scopes) needs a yearly CASA security assessment by a Google-approved assessor, a paid third-party service.
+    cost: Free API.
     notes: >-
-      Calendar and sending mail (gmail.send) need standard OAuth verification only. Reading or
-      labelling the inbox (gmail.readonly, gmail.modify) is a restricted scope: Google requires a
-      CASA Tier 2 assessment, renewed every 12 months, which takes several weeks. Recommendation:
-      launch with calendar + send + a forwarding address for inbound mail, and file for restricted
-      scopes in parallel.
-    fallback: Forward-to-REOS address for inbound mail; ICS calendar feed.
+      Calendar only (Sprint 4 decision 1): REOS doesn't read or send mail. Scopes are calendar.events
+      (read and write events on the person's calendars) and calendar.calendarlist.readonly (the list of
+      calendars to choose from). Both are sensitive scopes: Google's standard OAuth verification, with no
+      security assessment. Push channels (events.watch) last about a week and are renewed a day before
+      they end. The callback address is /integrations/google-calendar/callback.
+    fallback: Scheduled sync every 15 minutes when push channels can't reach REOS; ICS calendar feed.
     sources:
-      - https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification
-      - https://developer.nylas.com/docs/cookbook/use-cases/build/google-oauth-scopes/
+      - https://developers.google.com/calendar/api/auth
+      - https://developers.google.com/calendar/api/guides/push
+      - https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification
 
   - id: microsoft-365
     name: Microsoft 365 (Outlook calendar and mail)

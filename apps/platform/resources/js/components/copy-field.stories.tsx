@@ -22,6 +22,6 @@ export const RedirectAddress: Story = {
     args: {
         label: 'Redirect address',
         hint: "Add this address to the app in the vendor's developer console.",
-        value: 'https://reos.com/integrations/google-workspace/callback',
+        value: 'https://reos.com/integrations/google-calendar/callback',
     },
 };

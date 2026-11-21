@@ -14,8 +14,8 @@ const twoDaysAgo = new Date(Date.now() - 2 * 86_400_000).toISOString();
 const jamesCalendar = (overrides: Partial<Connection> = {}): Connection =>
   ({
     id: 7,
-    integration: 'google-workspace',
-    integration_name: 'Google Calendar and Gmail',
+    integration: 'google-calendar',
+    integration_name: 'Google Calendar',
     owner: 'user',
     account: 'james.miller@demo.reos.test',
     status: 'reconnect_needed',
@@ -65,27 +65,27 @@ afterEach(() => i18n.changeLanguage('en'));
 describe('connecting a tool in the browser sheet', () => {
   it('opens the sign-in page and reads the outcome REOS sends back', async () => {
     mockPost.mockResolvedValue({ data: { authorization_url: 'https://accounts.example/auth?state=s' } });
-    jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValue({ type: 'success', url: 'reos://connections?outcome=connected&integration=google-workspace' });
+    jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValue({ type: 'success', url: 'reos://connections?outcome=connected&integration=google-calendar' });
 
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'connected', reason: null, connectionId: null });
-    expect(mockPost).toHaveBeenCalledWith('/connections', { body: { integration: 'google-workspace' } });
+    await expect(connectTool('google-calendar')).resolves.toEqual({ outcome: 'connected', reason: null, connectionId: null });
+    expect(mockPost).toHaveBeenCalledWith('/connections', { body: { integration: 'google-calendar' } });
     expect(WebBrowser.openAuthSessionAsync).toHaveBeenCalledWith('https://accounts.example/auth?state=s', 'reos://connections');
   });
 
   it('treats closing the sheet as cancelled, and passes on refusals', async () => {
     mockPost.mockResolvedValue({ data: { authorization_url: 'https://accounts.example/auth' } });
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValueOnce({ type: WebBrowser.WebBrowserResultType.CANCEL });
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'cancelled', reason: null, connectionId: null });
+    await expect(connectTool('google-calendar')).resolves.toEqual({ outcome: 'cancelled', reason: null, connectionId: null });
 
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValueOnce({ type: 'success', url: 'reos://connections?outcome=failed&reason=connections.errors.refused' });
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'failed', reason: 'connections.errors.refused', connectionId: null });
+    await expect(connectTool('google-calendar')).resolves.toEqual({ outcome: 'failed', reason: 'connections.errors.refused', connectionId: null });
 
     mockPost.mockResolvedValue({ error: { message: "This tool can't be connected right now." } });
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'failed', reason: "This tool can't be connected right now.", connectionId: null });
+    await expect(connectTool('google-calendar')).resolves.toEqual({ outcome: 'failed', reason: "This tool can't be connected right now.", connectionId: null });
   });
 
   it('makes two-letter tiles and friendly times', () => {
-    expect(toolInitials('Google Calendar and Gmail')).toBe('GC');
+    expect(toolInitials('Google Calendar')).toBe('GC');
     expect(toolInitials('dotloop')).toBe('D');
     expect(timeAgo('2026-11-19T12:00:00Z', 'en', new Date('2026-11-21T12:00:00Z'))).toBe('2 days ago');
     expect(timeAgo('2026-11-19T12:00:00Z', 'es', new Date('2026-11-21T12:00:00Z'))).toBe('Anteayer');
@@ -98,8 +98,8 @@ describe('When a sync breaks (Connections and Sync, screen 26)', () => {
     const { router } = jest.requireMock('expo-router') as { router: { push: jest.Mock } };
     await renderScreen(<HomeScreen />);
 
-    expect(screen.getByText('Google Calendar and Gmail stopped syncing')).toBeOnTheScreen();
-    expect(screen.getByText('2 days ago. Your Google Calendar and Gmail data in REOS may be out of date.')).toBeOnTheScreen();
+    expect(screen.getByText('Google Calendar stopped syncing')).toBeOnTheScreen();
+    expect(screen.getByText('2 days ago. Your Google Calendar data in REOS may be out of date.')).toBeOnTheScreen();
     await fireEvent.press(screen.getByRole('button', { name: 'Reconnect · 30 seconds' }));
     expect(router.push).toHaveBeenCalledWith({ pathname: '/reconnect/[id]', params: { id: '7' } });
   });
@@ -119,16 +119,16 @@ describe('Reconnect (Connections and Sync, screen 27)', () => {
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValue({ type: 'success', url: 'reos://connections?outcome=connected' });
     await renderScreen(<ReconnectScreen />);
 
-    expect(screen.getByRole('header', { name: 'Reconnect Google Calendar and Gmail' })).toBeOnTheScreen();
+    expect(screen.getByRole('header', { name: 'Reconnect Google Calendar' })).toBeOnTheScreen();
     expect(screen.getByText('Access expired')).toBeOnTheScreen();
-    expect(screen.getByText('Usually after a password change, or when Google Calendar and Gmail asks you to sign in again.')).toBeOnTheScreen();
+    expect(screen.getByText('Usually after a password change, or when Google Calendar asks you to sign in again.')).toBeOnTheScreen();
     expect(screen.getByText('REOS catches up on everything since November 19')).toBeOnTheScreen();
 
-    await fireEvent.press(screen.getByRole('button', { name: 'Sign in to Google Calendar and Gmail' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Sign in to Google Calendar' }));
 
     await waitFor(() => expect(router.back).toHaveBeenCalled());
     expect(mockState.reload).toHaveBeenCalled();
-    expect(screen.getByText('Google Calendar and Gmail is connected. Your data is syncing now.')).toBeOnTheScreen();
+    expect(screen.getByText('Google Calendar is connected. Your data is syncing now.')).toBeOnTheScreen();
   });
 
   it('says what went wrong when the tool refuses again', async () => {
@@ -136,7 +136,7 @@ describe('Reconnect (Connections and Sync, screen 27)', () => {
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValue({ type: 'success', url: 'reos://connections?outcome=failed&reason=connections.errors.refused' });
     await renderScreen(<ReconnectScreen />);
 
-    await fireEvent.press(screen.getByRole('button', { name: 'Sign in to Google Calendar and Gmail' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Sign in to Google Calendar' }));
 
     await waitFor(() => expect(screen.getByText("The tool didn't accept the sign-in. Please connect again.")).toBeOnTheScreen());
   });

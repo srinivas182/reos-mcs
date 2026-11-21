@@ -58,9 +58,9 @@ describe('the people’s library (/api/v1/catalogue)', function () {
     it('lists the tools people connect, grouped, with what they can do', function () {
         $library = libraryOf($this, catalogueAgent());
 
-        expect($library)->toHaveKeys(['google-workspace', 'follow-up-boss', 'zillow-leads', 'phone-contacts'])
+        expect($library)->toHaveKeys(['google-calendar', 'follow-up-boss', 'zillow-leads', 'phone-contacts'])
             ->not->toHaveKeys(['stripe', 'stripe-connect', 'mls-har', 'sentry', 'google-sign-in'])
-            ->and($library['google-workspace'])->toMatchArray(['group' => 'calendar', 'status' => 'enabled', 'action' => 'connect', 'accounts' => 'user'])
+            ->and($library['google-calendar'])->toMatchArray(['group' => 'calendar', 'status' => 'enabled', 'action' => 'connect', 'accounts' => 'user'])
             ->and($library['dotloop']['group'])->toBe('deals')
             ->and($library['zillow-leads'])->toMatchArray(['group' => 'leads', 'status' => 'coming_soon', 'action' => 'notify'])
             ->and($library['linkedin']['group'])->toBe('more');
@@ -75,12 +75,12 @@ describe('the people’s library (/api/v1/catalogue)', function () {
 
     it('changes at once when the super admin switches a tool to coming soon (no app release)', function () {
         $agent = catalogueAgent();
-        expect(libraryOf($this, $agent)['google-workspace']['action'])->toBe('connect');
+        expect(libraryOf($this, $agent)['google-calendar']['action'])->toBe('connect');
 
-        setCatalogue('google-workspace', ['status' => CatalogueStatus::ComingSoon]);
+        setCatalogue('google-calendar', ['status' => CatalogueStatus::ComingSoon]);
 
-        expect(libraryOf($this, $agent)['google-workspace'])->toMatchArray(['status' => 'coming_soon', 'action' => 'notify']);
-        onPhone($this, $agent)->postJson('/api/v1/connections', ['integration' => 'google-workspace'])->assertStatus(422);
+        expect(libraryOf($this, $agent)['google-calendar'])->toMatchArray(['status' => 'coming_soon', 'action' => 'notify']);
+        onPhone($this, $agent)->postJson('/api/v1/connections', ['integration' => 'google-calendar'])->assertStatus(422);
     });
 
     it('can hide coming-soon tools until release', function () {
@@ -90,31 +90,31 @@ describe('the people’s library (/api/v1/catalogue)', function () {
     });
 
     it('shows a tool only in its states and to its roles', function () {
-        setCatalogue('google-workspace', ['states' => ['LA']]);
+        setCatalogue('google-calendar', ['states' => ['LA']]);
         setCatalogue('microsoft-365', ['roles' => ['broker']]);
         $agent = catalogueAgent();
 
-        expect(libraryOf($this, $agent))->not->toHaveKeys(['google-workspace', 'microsoft-365']);
+        expect(libraryOf($this, $agent))->not->toHaveKeys(['google-calendar', 'microsoft-365']);
 
-        setCatalogue('google-workspace', ['states' => ['TX', 'LA']]);
-        expect(libraryOf($this, $agent))->toHaveKey('google-workspace');
+        setCatalogue('google-calendar', ['states' => ['TX', 'LA']]);
+        expect(libraryOf($this, $agent))->toHaveKey('google-calendar');
     });
 
     it('lets beta organisations connect and others ask to join', function () {
         $lonestar = Organisation::factory()->ofType(OrganisationType::Brokerage)->create();
-        setCatalogue('google-workspace', ['status' => CatalogueStatus::Beta, 'beta_organisations' => [$lonestar->id]]);
+        setCatalogue('google-calendar', ['status' => CatalogueStatus::Beta, 'beta_organisations' => [$lonestar->id]]);
 
-        expect(libraryOf($this, catalogueAgent($lonestar))['google-workspace'])->toMatchArray(['status' => 'beta', 'action' => 'connect'])
-            ->and(libraryOf($this, catalogueAgent())['google-workspace'])->toMatchArray(['status' => 'beta', 'action' => 'join_beta']);
+        expect(libraryOf($this, catalogueAgent($lonestar))['google-calendar'])->toMatchArray(['status' => 'beta', 'action' => 'connect'])
+            ->and(libraryOf($this, catalogueAgent())['google-calendar'])->toMatchArray(['status' => 'beta', 'action' => 'join_beta']);
     });
 
     it('lets an organisation hide a tool from its people, never enable one', function () {
         $lonestar = Organisation::factory()->ofType(OrganisationType::Brokerage)->create();
         $catalogue = app(IntegrationCatalogue::class);
-        $catalogue->hide($lonestar, 'google-workspace', true, User::factory()->create());
+        $catalogue->hide($lonestar, 'google-calendar', true, User::factory()->create());
 
-        expect(libraryOf($this, catalogueAgent($lonestar)))->not->toHaveKey('google-workspace')
-            ->and(libraryOf($this, catalogueAgent()))->toHaveKey('google-workspace');
+        expect(libraryOf($this, catalogueAgent($lonestar)))->not->toHaveKey('google-calendar')
+            ->and(libraryOf($this, catalogueAgent()))->toHaveKey('google-calendar');
 
         setCatalogue('zoom', ['tenants_may_hide' => false]);
         $catalogue->hide($lonestar, 'zoom', true, User::factory()->create());
@@ -122,11 +122,11 @@ describe('the people’s library (/api/v1/catalogue)', function () {
     });
 
     it('shows a retiring tool with its last day, then removes it', function () {
-        setCatalogue('google-workspace', ['status' => CatalogueStatus::Retired, 'retires_on' => now()->addMonth()->toDateString()]);
-        expect(libraryOf($this, catalogueAgent())['google-workspace'])->toMatchArray(['status' => 'retired', 'action' => 'none', 'retires_on' => now()->addMonth()->toDateString()]);
+        setCatalogue('google-calendar', ['status' => CatalogueStatus::Retired, 'retires_on' => now()->addMonth()->toDateString()]);
+        expect(libraryOf($this, catalogueAgent())['google-calendar'])->toMatchArray(['status' => 'retired', 'action' => 'none', 'retires_on' => now()->addMonth()->toDateString()]);
 
-        setCatalogue('google-workspace', ['retires_on' => now()->subDay()->toDateString()]);
-        expect(libraryOf($this, catalogueAgent()))->not->toHaveKey('google-workspace');
+        setCatalogue('google-calendar', ['retires_on' => now()->subDay()->toDateString()]);
+        expect(libraryOf($this, catalogueAgent()))->not->toHaveKey('google-calendar');
     });
 
     it('counts Notify me as demand, once per person, and can be undone', function () {
@@ -138,7 +138,7 @@ describe('the people’s library (/api/v1/catalogue)', function () {
             ->and(libraryOf($this, $agent)['zillow-leads']['interested'])->toBeTrue()
             ->and(app(IntegrationCatalogue::class)->demand())->toBe(['zillow-leads' => 1]);
 
-        onPhone($this, $agent)->postJson('/api/v1/catalogue/google-workspace/interest')->assertStatus(422);
+        onPhone($this, $agent)->postJson('/api/v1/catalogue/google-calendar/interest')->assertStatus(422);
         onPhone($this, $agent)->postJson('/api/v1/catalogue/nonsense/interest')->assertStatus(422);
 
         onPhone($this, $agent)->deleteJson('/api/v1/catalogue/zillow-leads/interest')->assertNoContent();
@@ -163,13 +163,13 @@ describe('the kill switch', function () {
     it('pauses syncing and connecting, keeps the data, and shows "Temporarily unavailable"', function () {
         $agent = catalogueAgent();
         $connection = Connection::query()->create([
-            'integration_id' => 'google-workspace', 'owner_type' => 'user', 'owner_id' => $agent->id, 'mode' => IntegrationMode::Simulator,
+            'integration_id' => 'google-calendar', 'owner_type' => 'user', 'owner_id' => $agent->id, 'mode' => IntegrationMode::Simulator,
             'external_account_id' => 'sim-1', 'scopes' => [], 'access_token' => 'x', 'status' => ConnectionStatus::Active,
         ]);
 
-        setCatalogue('google-workspace', ['status' => CatalogueStatus::Paused]);
+        setCatalogue('google-calendar', ['status' => CatalogueStatus::Paused]);
 
-        expect(libraryOf($this, $agent)['google-workspace'])->toMatchArray(['status' => 'paused', 'action' => 'none', 'connected' => 1])
+        expect(libraryOf($this, $agent)['google-calendar'])->toMatchArray(['status' => 'paused', 'action' => 'none', 'connected' => 1])
             ->and(app(SyncEngine::class)->run($connection, 'events', SyncTrigger::Scheduled))->toBe('skipped')
             ->and(Connection::query()->count())->toBe(1);
     });
@@ -178,12 +178,12 @@ describe('the kill switch', function () {
 describe('the super admin catalogue (web journey screens 64–65)', function () {
     it('lists integrations with status, availability, connections and demand', function () {
         IntegrationInterest::query()->create(['integration_id' => 'zillow-leads', 'user_id' => catalogueAgent()->id, 'kind' => 'notify']);
-        setCatalogue('google-workspace', ['states' => ['TX']]);
+        setCatalogue('google-calendar', ['states' => ['TX']]);
 
         $this->actingAs(catalogueAdmin())->withSession(['auth.password_confirmed_at' => time()])
             ->get('/admin/integrations')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('admin/integrations/index')
-            ->where('integrations', fn ($rows) => collect($rows)->firstWhere('id', 'google-workspace')['catalogue']['states'] === ['TX']
+            ->where('integrations', fn ($rows) => collect($rows)->firstWhere('id', 'google-calendar')['catalogue']['states'] === ['TX']
                 && collect($rows)->firstWhere('id', 'zillow-leads')['catalogue']['demand'] === 1
                 && collect($rows)->firstWhere('id', 'sentry')['catalogue'] === null));
     });
@@ -192,13 +192,13 @@ describe('the super admin catalogue (web journey screens 64–65)', function () 
         $admin = catalogueAdmin();
 
         $this->actingAs($admin)->withSession(['auth.password_confirmed_at' => time()])
-            ->get('/admin/integrations/google-workspace')->assertInertia(fn (Assert $page) => $page
+            ->get('/admin/integrations/google-calendar')->assertInertia(fn (Assert $page) => $page
             ->where('tab', 'availability')
             ->where('catalogue.effective', 'enabled')
             ->where('catalogue.built', true)
             ->has('catalogue.options.roles')
             ->has('health'));
-        $this->get('/admin/integrations/google-workspace/health')->assertInertia(fn (Assert $page) => $page->where('tab', 'health'));
+        $this->get('/admin/integrations/google-calendar/health')->assertInertia(fn (Assert $page) => $page->where('tab', 'health'));
         $this->get('/admin/integrations/sentry')->assertInertia(fn (Assert $page) => $page->where('tab', 'credentials')->where('catalogue', null));
     });
 
@@ -228,11 +228,11 @@ describe('the super admin catalogue (web journey screens 64–65)', function () 
 
     it('pauses and resumes with the kill switch', function () {
         $this->actingAs(catalogueAdmin())->withSession(['auth.password_confirmed_at' => time()])
-            ->put('/admin/integrations/google-workspace/pause', ['paused' => true])->assertRedirect();
-        expect(CatalogueSetting::query()->findOrFail('google-workspace')->status)->toBe(CatalogueStatus::Paused);
+            ->put('/admin/integrations/google-calendar/pause', ['paused' => true])->assertRedirect();
+        expect(CatalogueSetting::query()->findOrFail('google-calendar')->status)->toBe(CatalogueStatus::Paused);
 
-        $this->put('/admin/integrations/google-workspace/pause', ['paused' => false]);
-        expect(CatalogueSetting::query()->findOrFail('google-workspace')->status)->toBeNull();
+        $this->put('/admin/integrations/google-calendar/pause', ['paused' => false]);
+        expect(CatalogueSetting::query()->findOrFail('google-calendar')->status)->toBeNull();
     });
 
     it('shows Notify-me demand and tool requests', function () {

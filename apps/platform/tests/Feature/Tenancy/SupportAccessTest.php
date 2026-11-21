@@ -171,7 +171,7 @@ describe('the support session', function () {
     it('never shows anyone’s personal connections, and keeps the back office closed', function () {
         [$lone, $linda, $admin] = supportSession($this);
         Connection::query()->create([
-            'integration_id' => 'google-workspace', 'owner_type' => 'user', 'owner_id' => $linda->id, 'mode' => IntegrationMode::Simulator,
+            'integration_id' => 'google-calendar', 'owner_type' => 'user', 'owner_id' => $linda->id, 'mode' => IntegrationMode::Simulator,
             'external_account_id' => 'linda-calendar', 'account_label' => 'linda@lonestar.example', 'scopes' => [], 'access_token' => 'x', 'status' => ConnectionStatus::Active,
         ]);
 

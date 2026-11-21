@@ -10,6 +10,7 @@ use App\Integrations\Credentials\CredentialCipher;
 use App\Integrations\IntegrationMode;
 use App\Jobs\SyncConnection;
 use App\Models\AuditEvent;
+use App\Models\CalendarConflict;
 use App\Models\CalendarEvent;
 use App\Models\Connection;
 use App\Models\IntegrationSetting;
@@ -43,7 +44,7 @@ describe('vendor sign-in (OAuth with PKCE) on demo data', function () {
         $maria = User::factory()->create(['email' => 'maria@example.com']);
 
         connectOnWeb($this, $maria)->assertRedirect('/connections')
-            ->assertSessionHas('connection', ['outcome' => 'connected', 'integration' => CALENDAR, 'reason' => null, 'name' => 'Google Calendar and Gmail']);
+            ->assertSessionHas('connection', ['outcome' => 'connected', 'integration' => CALENDAR, 'reason' => null, 'name' => 'Google Calendar']);
 
         $connection = Connection::query()->sole();
         expect($connection->owner_type)->toBe('user')
@@ -104,7 +105,7 @@ describe('vendor sign-in (OAuth with PKCE) on demo data', function () {
 
     it("connects nothing when the person doesn't allow access", function () {
         connectOnWeb($this, User::factory()->create(), allow: false)
-            ->assertSessionHas('connection', ['outcome' => 'cancelled', 'integration' => CALENDAR, 'reason' => 'connections.errors.cancelled', 'name' => 'Google Calendar and Gmail']);
+            ->assertSessionHas('connection', ['outcome' => 'cancelled', 'integration' => CALENDAR, 'reason' => 'connections.errors.cancelled', 'name' => 'Google Calendar']);
 
         expect(Connection::query()->exists())->toBeFalse();
     });
@@ -163,7 +164,7 @@ describe('the API', function () {
         $this->withToken(connectionsPhoneToken($james))->getJson('/api/v1/connections')->assertOk()->assertJsonCount(0, 'data');
         $this->withToken(connectionsPhoneToken($maria))->getJson('/api/v1/connections')->assertOk()
             ->assertJsonPath('data.0.integration', CALENDAR)
-            ->assertJsonPath('data.0.integration_name', 'Google Calendar and Gmail')
+            ->assertJsonPath('data.0.integration_name', 'Google Calendar')
             ->assertJsonPath('data.0.status', 'active')
             ->assertJsonPath('data.0.demo', true)
             ->assertJsonMissingPath('data.0.access_token');
@@ -327,7 +328,7 @@ describe('reconnect prompts (B3.1b)', function () {
         $this->actingAs($james)->get('/dashboard')->assertInertia(fn (Assert $page) => $page
             ->has('connectionAlerts', 1)
             ->where('connectionAlerts.0.integration', CALENDAR)
-            ->where('connectionAlerts.0.name', 'Google Calendar and Gmail'));
+            ->where('connectionAlerts.0.name', 'Google Calendar'));
         $this->withToken(connectionsPhoneToken($james))->getJson('/api/v1/connections')
             ->assertJsonPath('data.0.status', 'reconnect_needed')
             ->assertJsonPath('data.0.problem', 'connections.errors.refused');
@@ -349,13 +350,19 @@ describe('reconnect prompts (B3.1b)', function () {
         $this->actingAs(User::factory()->create())->get('/dashboard')->assertInertia(fn (Assert $page) => $page->has('connectionAlerts', 0));
     });
 
-    it('seeds demo connections: Linda syncing, James needing a reconnect', function () {
+    it('seeds demo connections: Linda syncing both ways, James needing a reconnect', function () {
         $this->seed(DemoSeeder::class);
 
         $statuses = Connection::query()->get()->mapWithKeys(fn (Connection $c) => [(string) $c->account_label => $c->status->value]);
+        $reos = CalendarEvent::query()->where('source', 'reos')->get()->keyBy('title');
         expect($statuses->filter(fn ($s, $email) => str_starts_with($email, 'linda.park@'))->first())->toBe('active')
             ->and($statuses->filter(fn ($s, $email) => str_starts_with($email, 'james.miller@'))->first())->toBe('reconnect_needed')
-            ->and(CalendarEvent::query()->count())->toBe(24);
+            // Two demo fortnights (12 each), Linda's busy-only personal calendar (2), and three made in REOS.
+            ->and(CalendarEvent::query()->count())->toBe(29)
+            ->and(CalendarEvent::query()->where('busy', true)->whereNull('title')->count())->toBe(2)
+            ->and($reos['Showing — 1234 Oak Ridge Dr']->push_state)->toBeNull()
+            ->and($reos['Buyer consultation — Ana Torres']->push_state)->toBe('pending')
+            ->and(CalendarConflict::query()->sole()->losing['title'])->toBe('Showing — 1234 Oak Ridge Dr (Garcias running late)');
     });
 });
 
@@ -365,11 +372,11 @@ describe('the phone screens’ data (B3.2b)', function () {
         connectOnWeb($this, $maria);
 
         $catalogue = collect($this->withToken(connectionsPhoneToken($maria))->getJson('/api/v1/catalogue')->json('data'))->keyBy('id');
-        expect($catalogue['google-workspace']['consent'])->toBe(['can' => ['read_events', 'change_alerts'], 'never' => ['change_events']])
+        expect($catalogue['google-calendar']['consent'])->toBe(['can' => ['read_events', 'write_events', 'change_alerts'], 'never' => ['delete_yours', 'email']])
             ->and($catalogue['zoom']['consent'])->toBeNull();
 
         $this->withToken(connectionsPhoneToken($maria))->getJson('/api/v1/connections')
-            ->assertJsonPath('data.0.streams', [['key' => 'events', 'direction' => 'read', 'records' => 12]]);
+            ->assertJsonPath('data.0.streams', [['key' => 'events', 'direction' => 'both', 'records' => 12]]);
     });
 
     it('describes each tool in the person’s language', function () {

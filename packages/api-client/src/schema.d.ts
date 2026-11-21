@@ -49,6 +49,117 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/calendar/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List events
+         * @description Events overlapping the window, earliest first, plus where new events
+         *     go and any events deleted in your calendar tool that you can bring back.
+         */
+        get: operations["calendar.index"];
+        put?: never;
+        /**
+         * Add an event
+         * @description Saved at once and written to the calendar you chose (Connections ›
+         *     Manage); without one it stays in REOS.
+         */
+        post: operations["calendar.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/calendar/events/{event}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change an event
+         * @description Events from a calendar shared as busy only, or one you can't edit,
+         *     can't be changed here.
+         */
+        put: operations["calendar.update"];
+        post?: never;
+        /**
+         * Delete an event
+         * @description Only events made in REOS; it's removed from the calendar tool too.
+         *     Restore undoes it.
+         */
+        delete: operations["calendar.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/calendar/events/{event}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore a deleted event (Undo) */
+        post: operations["calendar.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/calendar/events/{event}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Try again
+         * @description Writes an event to the calendar tool again after writing failed.
+         */
+        post: operations["calendar.retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/calendar/conflicts/{conflict}/undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Undo a conflict
+         * @description Brings back the version that lost when an event changed in REOS and in
+         *     the calendar tool; it becomes the newest change. Returns the event, or
+         *     no content when undoing deleted it.
+         */
+        post: operations["calendar.undo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/catalogue": {
         parameters: {
             query?: never;
@@ -175,7 +286,8 @@ export interface paths {
         /**
          * Change what syncs
          * @description A new history range syncs again from its start; nothing already synced
-         *     is lost.
+         *     is lost. Calendars also take which calendars to read (full, busy only
+         *     or off) and which one REOS's own events go to (screen 16).
          */
         patch: operations["connections.update"];
         trace?: never;
@@ -516,6 +628,76 @@ export interface components {
                 demo: boolean;
             };
         };
+        /** CalendarEventResource */
+        CalendarEventResource: {
+            id: number;
+            /** @description Null for an event from a calendar shared as busy only. */
+            title: string | null;
+            /** @enum {string} */
+            kind: "appointment" | "showing" | "deadline" | "session" | "ce" | "event";
+            starts_at: string;
+            ends_at: string;
+            all_day: boolean;
+            /** @description All-day events: the first day, `YYYY-MM-DD`. */
+            start_date: string | null;
+            /** @description All-day events: the last day, inclusive. */
+            end_date: string | null;
+            location: string | null;
+            description: string | null;
+            attendees: string[];
+            notify_guests: boolean;
+            /** @description From a calendar shared as busy only: times and nothing else. */
+            busy: boolean;
+            /** @description `reos` when made in REOS, otherwise the tool's register id. */
+            source: string;
+            /** @description The tool it lives in now ("Google Calendar"), or null when only in REOS. */
+            tool: string | null;
+            /** @description The calendar it lives in at the tool. */
+            calendar: string | null;
+            /** @description Opens it in the tool. */
+            link: string | null;
+            /** @description It can be changed in REOS (not busy only, and the calendar allows it). */
+            editable: boolean;
+            /** @description Only events made in REOS can be deleted from REOS. */
+            deletable: boolean;
+            /**
+             * @description `synced` (in step with the tool), `pending` (being written),
+             *     `failed` (not written; Try again) or `local` (only in REOS).
+             * @enum {string}
+             */
+            sync: "synced" | "pending" | "failed" | "local";
+            /** @description Translation key for why writing failed. */
+            sync_error: string | null;
+            /** @description Changed in REOS and in the tool: which version was kept, and the other one, which Undo brings back. */
+            conflict: {
+                id: number;
+                /** @enum {string} */
+                kept: "reos" | "tool";
+                /** @enum {string} */
+                reason: "edited_both" | "deleted_in_reos";
+                losing: {
+                    title: string | null;
+                    starts_at: string | null;
+                    ends_at: string | null;
+                    all_day: boolean;
+                    location: string | null;
+                    deleted: boolean;
+                };
+                at: string;
+                until: string;
+            } | null;
+        };
+        /**
+         * CalendarMode
+         * @description What REOS does with one of the person's calendars (Connections and Sync journey, screen 16).
+         *     | |
+         *     |---|
+         *     | `full` <br/> Events are read, and changes made in REOS go back. |
+         *     | `busy` <br/> Only the times are read, shown as "Busy": no title, place or guests. |
+         *     | `off` <br/> Not read at all. |
+         * @enum {string}
+         */
+        CalendarMode: "full" | "busy" | "off";
         /** CatalogueItemResource */
         CatalogueItemResource: {
             /** @description The tool's register id, for example `follow-up-boss`. */
@@ -557,8 +739,8 @@ export interface components {
             accounts: string;
             /** @description For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet). */
             consent: {
-                can: ("read_events" | "change_alerts")[];
-                never: "change_events"[];
+                can: ("read_events" | "write_events" | "change_alerts")[];
+                never: ("delete_yours" | "email")[];
             } | null;
         };
         /**
@@ -577,7 +759,7 @@ export interface components {
         /** ConnectionResource */
         ConnectionResource: {
             id: number;
-            /** @description The tool's register id, for example `google-workspace`. */
+            /** @description The tool's register id, for example `google-calendar`. */
             integration: string;
             integration_name: string;
             /** @description `user` (yours) or `organisation` (your organisation's). */
@@ -616,6 +798,16 @@ export interface components {
                 direction: "read" | "write" | "both";
                 records: number;
             }[];
+            /** @description Calendars only (screen 16): each calendar, how REOS reads it, and whether REOS's events go there. */
+            calendars: {
+                id: string;
+                name: string;
+                primary: boolean;
+                writable: boolean;
+                /** @enum {string} */
+                mode: "full" | "busy" | "off";
+                write: boolean;
+            }[] | null;
         };
         /**
          * ConnectionStatus
@@ -897,6 +1089,47 @@ export interface components {
          * @enum {string}
          */
         Role: "candidate" | "agent" | "broker" | "mentor" | "instructor" | "school_admin" | "provider" | "association_admin" | "super_admin";
+        /**
+         * SaveCalendarEventRequest
+         * @description An appointment made or changed in REOS ("New appointment" sheet). Timed
+         *     events send `starts_at` and `ends_at`; all-day events send `start_date`
+         *     and `end_date` (the last day, inclusive).
+         */
+        SaveCalendarEventRequest: {
+            title: string;
+            /**
+             * @description What it is: `appointment`, `showing`, `deadline`, `session` or `ce`.
+             * @enum {string}
+             */
+            kind?: "appointment" | "showing" | "deadline" | "session" | "ce";
+            all_day?: boolean;
+            /**
+             * Format: date-time
+             * @description Start, with its time zone offset (timed events).
+             */
+            starts_at: string;
+            /**
+             * Format: date-time
+             * @description End, after the start (timed events).
+             */
+            ends_at: string;
+            /**
+             * Format: date
+             * @description First day, `YYYY-MM-DD` (all-day events).
+             */
+            start_date: string;
+            /**
+             * Format: date
+             * @description Last day, inclusive (all-day events).
+             */
+            end_date: string;
+            location?: string | null;
+            description?: string | null;
+            /** @description Guest emails. */
+            attendees?: string[];
+            /** @description Let the calendar email the guests an invitation. Off unless asked: REOS never sends messages for you. */
+            notify_guests?: boolean;
+        };
         /** SignInResource */
         SignInResource: {
             /** @description Bearer token for this device. Keep it in secure storage. */
@@ -915,10 +1148,10 @@ export interface components {
          */
         StartConnectionRequest: {
             /**
-             * @description The tool's register id, for example `google-workspace`.
+             * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-workspace";
+            integration: "google-calendar";
             history?: components["schemas"]["HistoryRange"] | null;
         };
         /** StateResource */
@@ -955,11 +1188,17 @@ export interface components {
         };
         /**
          * UpdateConnectionRequest
-         * @description "What to sync" (Connections and Sync journey, screen 7).
+         * @description "What to sync" (Connections and Sync journey, screens 7 and 16).
          */
         UpdateConnectionRequest: {
             /** @description How far back to sync: `3m`, `12m` or `all`. */
-            history: components["schemas"]["HistoryRange"];
+            history?: components["schemas"]["HistoryRange"];
+            /** @description Calendars only: each calendar id → `full` (read and write), `busy` (times only) or `off`. */
+            calendars?: {
+                [key: string]: "full" | "busy" | "off";
+            };
+            /** @description Calendars only: where events made in REOS go, or an empty string to keep them in REOS. */
+            write_calendar?: string | null;
         };
         /** WaitlistRequest */
         WaitlistRequest: {
@@ -1036,6 +1275,8 @@ export interface components {
 }
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
+export type SchemaCalendarMode = components['schemas']['CalendarMode'];
 export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemResource'];
 export type SchemaCatalogueStatus = components['schemas']['CatalogueStatus'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
@@ -1061,6 +1302,7 @@ export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionReso
 export type SchemaQuizResultResource = components['schemas']['QuizResultResource'];
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
 export type SchemaRole = components['schemas']['Role'];
+export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
@@ -1130,6 +1372,293 @@ export interface operations {
                     "application/json": components["schemas"]["AppConfigResource"];
                 };
             };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "calendar.index": {
+        parameters: {
+            query: {
+                /** @description Start of the window, with time zone offset (the device's local midnight for "today"). */
+                from: string;
+                /** @description End of the window, after `from`, at most 62 days later. */
+                to: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CalendarEventResource"][];
+                        write_to: {
+                            connection: number;
+                            tool: string;
+                            account: string | null;
+                            calendar: string;
+                        } | null;
+                        removed: {
+                            conflict: number;
+                            title: string | null;
+                            starts_at: string | null;
+                            at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "calendar.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveCalendarEventRequest"];
+            };
+        };
+        responses: {
+            /** @description `CalendarEventResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CalendarEventResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "calendar.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveCalendarEventRequest"];
+            };
+        };
+        responses: {
+            /** @description `CalendarEventResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CalendarEventResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "calendar.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "calendar.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `CalendarEventResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CalendarEventResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "calendar.retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        queued: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "calendar.undo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The conflict ID */
+                conflict: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `CalendarEventResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CalendarEventResource"];
+                    };
+                };
+            };
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -1414,7 +1943,7 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
+        requestBody?: {
             content: {
                 "application/json": components["schemas"]["UpdateConnectionRequest"];
             };

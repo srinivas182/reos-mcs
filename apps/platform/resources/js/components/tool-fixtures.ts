@@ -4,9 +4,9 @@ import type { CatalogueItem, ToolConnection } from '@/types';
 export const tool = (
     overrides: Partial<CatalogueItem> = {},
 ): CatalogueItem => ({
-    id: 'google-workspace',
-    name: 'Google Calendar and Gmail',
-    purpose: 'Your calendar and email, both ways.',
+    id: 'google-calendar',
+    name: 'Google Calendar',
+    purpose: 'Your calendar, both ways.',
     category: 'calendar_email',
     group: 'calendar',
     status: 'enabled',
@@ -23,8 +23,8 @@ export const calendarConnection = (
     overrides: Partial<ToolConnection> = {},
 ): ToolConnection => ({
     id: 7,
-    integration: 'google-workspace',
-    integration_name: 'Google Calendar and Gmail',
+    integration: 'google-calendar',
+    integration_name: 'Google Calendar',
     owner: 'user',
     account: 'james.miller@lonestarrealty.example',
     status: 'active',
@@ -35,6 +35,32 @@ export const calendarConnection = (
     problem: null,
     problem_since: null,
     connected_at: '2026-11-01T10:00:00Z',
-    streams: [{ key: 'events', direction: 'read', records: 248 }],
+    streams: [{ key: 'events', direction: 'both', records: 248 }],
+    calendars: [
+        {
+            id: 'primary',
+            name: 'james.miller@lonestarrealty.example',
+            primary: true,
+            writable: true,
+            mode: 'full',
+            write: true,
+        },
+        {
+            id: 'personal',
+            name: 'Personal',
+            primary: false,
+            writable: true,
+            mode: 'busy',
+            write: false,
+        },
+        {
+            id: 'holidays',
+            name: 'Holidays in United States',
+            primary: false,
+            writable: false,
+            mode: 'off',
+            write: false,
+        },
+    ],
     ...overrides,
 });

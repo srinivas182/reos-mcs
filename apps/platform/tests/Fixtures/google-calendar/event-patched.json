@@ -1,0 +1,12 @@
+{
+    "kind": "calendar#event",
+    "etag": "\"3471200000000999\"",
+    "id": "PLACEHOLDER_ID",
+    "status": "confirmed",
+    "htmlLink": "https://www.google.com/calendar/event?eid=cmVvcy10ZXN0",
+    "updated": "2026-11-21T16:00:00.000Z",
+    "summary": "Showing — 2218 Elm St (moved)",
+    "location": "2218 Elm St, Houston, TX",
+    "start": { "dateTime": "2026-11-24T19:00:00Z", "timeZone": "UTC" },
+    "end": { "dateTime": "2026-11-24T19:45:00Z", "timeZone": "UTC" }
+}

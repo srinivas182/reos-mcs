@@ -55,9 +55,14 @@ final readonly class DataExport
                     'account' => $c->account_label,
                     'status' => $c->status->value,
                     'connected_at' => $c->created_at?->toIso8601String(),
-                    'calendar_events' => DB::table('calendar_events')->where('connection_id', $c->id)->orderBy('starts_at')->limit(5000)
-                        ->get(['title', 'location', 'starts_at', 'ends_at', 'all_day'])->map(static fn ($r): array => (array) $r)->all(),
                 ])->all(),
+            // The REOS calendar: events made in REOS and those synced from calendars (B4.1).
+            'calendar' => [
+                'events' => DB::table('calendar_events')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('starts_at')->limit(5000)
+                    ->get(['source', 'kind', 'title', 'location', 'description', 'attendees', 'starts_at', 'ends_at', 'all_day'])->map(static fn ($r): array => (array) $r)->all(),
+                'conflicts' => DB::table('calendar_conflicts')->where('user_id', $user->id)->orderBy('id')->limit(1000)
+                    ->get(['kept', 'reason', 'losing', 'created_at', 'undone_at'])->map(static fn ($r): array => (array) $r)->all(),
+            ],
             'tool_interests' => DB::table('integration_interests')->where('user_id', $user->id)->get(['integration_id', 'kind', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             'tool_requests' => DB::table('tool_requests')->where('user_id', $user->id)->get(['name', 'note', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             'privacy_requests' => DB::table('privacy_requests')->where('user_id', $user->id)->get(['kind', 'details', 'status', 'created_at', 'completed_at', 'response'])->map(static fn ($r): array => (array) $r)->all(),

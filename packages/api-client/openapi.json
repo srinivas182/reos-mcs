@@ -111,6 +111,530 @@
                 "security": []
             }
         },
+        "/calendar/events": {
+            "get": {
+                "operationId": "calendar.index",
+                "description": "Events overlapping the window, earliest first, plus where new events\ngo and any events deleted in your calendar tool that you can bring back.",
+                "summary": "List events",
+                "tags": [
+                    "Calendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": true,
+                        "description": "Start of the window, with time zone offset (the device's local midnight for \"today\").",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "description": "End of the window, after `from`, at most 62 days later.",
+                        "schema": {
+                            "type": "string",
+                            "format": "date-time"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CalendarEventResource"
+                                            }
+                                        },
+                                        "write_to": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "connection": {
+                                                    "type": "integer"
+                                                },
+                                                "tool": {
+                                                    "type": "string"
+                                                },
+                                                "account": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "calendar": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "connection",
+                                                "tool",
+                                                "account",
+                                                "calendar"
+                                            ]
+                                        },
+                                        "removed": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "conflict": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "starts_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "conflict",
+                                                    "title",
+                                                    "starts_at",
+                                                    "at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "write_to",
+                                        "removed"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "calendar.store",
+                "description": "Saved at once and written to the calendar you chose (Connections \u203a\nManage); without one it stays in REOS.",
+                "summary": "Add an event",
+                "tags": [
+                    "Calendar"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveCalendarEventRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`CalendarEventResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CalendarEventResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/calendar/events/{event}": {
+            "put": {
+                "operationId": "calendar.update",
+                "description": "Events from a calendar shared as busy only, or one you can't edit,\ncan't be changed here.",
+                "summary": "Change an event",
+                "tags": [
+                    "Calendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveCalendarEventRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`CalendarEventResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CalendarEventResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "calendar.destroy",
+                "description": "Only events made in REOS; it's removed from the calendar tool too.\nRestore undoes it.",
+                "summary": "Delete an event",
+                "tags": [
+                    "Calendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/calendar/events/{event}/restore": {
+            "post": {
+                "operationId": "calendar.restore",
+                "summary": "Restore a deleted event (Undo)",
+                "tags": [
+                    "Calendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`CalendarEventResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CalendarEventResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/calendar/events/{event}/retry": {
+            "post": {
+                "operationId": "calendar.retry",
+                "description": "Writes an event to the calendar tool again after writing failed.",
+                "summary": "Try again",
+                "tags": [
+                    "Calendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "event",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "queued": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "queued"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/calendar/conflicts/{conflict}/undo": {
+            "post": {
+                "operationId": "calendar.undo",
+                "description": "Brings back the version that lost when an event changed in REOS and in\nthe calendar tool; it becomes the newest change. Returns the event, or\nno content when undoing deleted it.",
+                "summary": "Undo a conflict",
+                "tags": [
+                    "Calendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "conflict",
+                        "in": "path",
+                        "required": true,
+                        "description": "The conflict ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "200": {
+                        "description": "`CalendarEventResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/CalendarEventResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/catalogue": {
             "get": {
                 "operationId": "catalogue.index",
@@ -464,7 +988,7 @@
         "/connections/{connection}": {
             "patch": {
                 "operationId": "connections.update",
-                "description": "A new history range syncs again from its start; nothing already synced\nis lost.",
+                "description": "A new history range syncs again from its start; nothing already synced\nis lost. Calendars also take which calendars to read (full, busy only\nor off) and which one REOS's own events go to (screen 16).",
                 "summary": "Change what syncs",
                 "tags": [
                     "Connection"
@@ -481,7 +1005,6 @@
                     }
                 ],
                 "requestBody": {
-                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
@@ -528,14 +1051,14 @@
                             }
                         }
                     },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             },
@@ -1397,6 +1920,248 @@
                 ],
                 "title": "AppConfigResource"
             },
+            "CalendarEventResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Null for an event from a calendar shared as busy only."
+                    },
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "appointment",
+                            "showing",
+                            "deadline",
+                            "session",
+                            "ce",
+                            "event"
+                        ]
+                    },
+                    "starts_at": {
+                        "type": "string"
+                    },
+                    "ends_at": {
+                        "type": "string"
+                    },
+                    "all_day": {
+                        "type": "boolean"
+                    },
+                    "start_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "All-day events: the first day, `YYYY-MM-DD`."
+                    },
+                    "end_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "All-day events: the last day, inclusive."
+                    },
+                    "location": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "attendees": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "notify_guests": {
+                        "type": "boolean"
+                    },
+                    "busy": {
+                        "type": "boolean",
+                        "description": "From a calendar shared as busy only: times and nothing else."
+                    },
+                    "source": {
+                        "type": "string",
+                        "description": "`reos` when made in REOS, otherwise the tool's register id."
+                    },
+                    "tool": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The tool it lives in now (\"Google Calendar\"), or null when only in REOS."
+                    },
+                    "calendar": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The calendar it lives in at the tool."
+                    },
+                    "link": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Opens it in the tool."
+                    },
+                    "editable": {
+                        "type": "boolean",
+                        "description": "It can be changed in REOS (not busy only, and the calendar allows it)."
+                    },
+                    "deletable": {
+                        "type": "boolean",
+                        "description": "Only events made in REOS can be deleted from REOS."
+                    },
+                    "sync": {
+                        "type": "string",
+                        "description": "`synced` (in step with the tool), `pending` (being written),\n`failed` (not written; Try again) or `local` (only in REOS).",
+                        "enum": [
+                            "synced",
+                            "pending",
+                            "failed",
+                            "local"
+                        ]
+                    },
+                    "sync_error": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Translation key for why writing failed."
+                    },
+                    "conflict": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "Changed in REOS and in the tool: which version was kept, and the other one, which Undo brings back.",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "kept": {
+                                "type": "string",
+                                "enum": [
+                                    "reos",
+                                    "tool"
+                                ]
+                            },
+                            "reason": {
+                                "type": "string",
+                                "enum": [
+                                    "edited_both",
+                                    "deleted_in_reos"
+                                ]
+                            },
+                            "losing": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "starts_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "ends_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "all_day": {
+                                        "type": "boolean"
+                                    },
+                                    "location": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "deleted": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "title",
+                                    "starts_at",
+                                    "ends_at",
+                                    "all_day",
+                                    "location",
+                                    "deleted"
+                                ]
+                            },
+                            "at": {
+                                "type": "string"
+                            },
+                            "until": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "id",
+                            "kept",
+                            "reason",
+                            "losing",
+                            "at",
+                            "until"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "kind",
+                    "starts_at",
+                    "ends_at",
+                    "all_day",
+                    "start_date",
+                    "end_date",
+                    "location",
+                    "description",
+                    "attendees",
+                    "notify_guests",
+                    "busy",
+                    "source",
+                    "tool",
+                    "calendar",
+                    "link",
+                    "editable",
+                    "deletable",
+                    "sync",
+                    "sync_error",
+                    "conflict"
+                ],
+                "title": "CalendarEventResource"
+            },
+            "CalendarMode": {
+                "type": "string",
+                "description": "What REOS does with one of the person's calendars (Connections and Sync journey, screen 16).\n| |\n|---|\n| `full` <br/> Events are read, and changes made in REOS go back. |\n| `busy` <br/> Only the times are read, shown as \"Busy\": no title, place or guests. |\n| `off` <br/> Not read at all. |",
+                "enum": [
+                    "full",
+                    "busy",
+                    "off"
+                ],
+                "title": "CalendarMode"
+            },
             "CatalogueItemResource": {
                 "type": "object",
                 "properties": {
@@ -1463,6 +2228,7 @@
                                     "type": "string",
                                     "enum": [
                                         "read_events",
+                                        "write_events",
                                         "change_alerts"
                                     ]
                                 }
@@ -1471,7 +2237,10 @@
                                 "type": "array",
                                 "items": {
                                     "type": "string",
-                                    "const": "change_events"
+                                    "enum": [
+                                        "delete_yours",
+                                        "email"
+                                    ]
                                 }
                             }
                         },
@@ -1517,7 +2286,7 @@
                     },
                     "integration": {
                         "type": "string",
-                        "description": "The tool's register id, for example `google-workspace`."
+                        "description": "The tool's register id, for example `google-calendar`."
                     },
                     "integration_name": {
                         "type": "string"
@@ -1611,6 +2380,49 @@
                                 "records"
                             ]
                         }
+                    },
+                    "calendars": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "description": "Calendars only (screen 16): each calendar, how REOS reads it, and whether REOS's events go there.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "primary": {
+                                    "type": "boolean"
+                                },
+                                "writable": {
+                                    "type": "boolean"
+                                },
+                                "mode": {
+                                    "type": "string",
+                                    "enum": [
+                                        "full",
+                                        "busy",
+                                        "off"
+                                    ]
+                                },
+                                "write": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name",
+                                "primary",
+                                "writable",
+                                "mode",
+                                "write"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -1627,7 +2439,8 @@
                     "problem",
                     "problem_since",
                     "connected_at",
-                    "streams"
+                    "streams",
+                    "calendars"
                 ],
                 "title": "ConnectionResource"
             },
@@ -2449,6 +3262,86 @@
                 ],
                 "title": "Role"
             },
+            "SaveCalendarEventRequest": {
+                "type": "object",
+                "description": "An appointment made or changed in REOS (\"New appointment\" sheet). Timed\nevents send `starts_at` and `ends_at`; all-day events send `start_date`\nand `end_date` (the last day, inclusive).",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "kind": {
+                        "type": "string",
+                        "description": "What it is: `appointment`, `showing`, `deadline`, `session` or `ce`.",
+                        "enum": [
+                            "appointment",
+                            "showing",
+                            "deadline",
+                            "session",
+                            "ce"
+                        ]
+                    },
+                    "all_day": {
+                        "type": "boolean"
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Start, with its time zone offset (timed events)."
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "End, after the start (timed events)."
+                    },
+                    "start_date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "First day, `YYYY-MM-DD` (all-day events)."
+                    },
+                    "end_date": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "Last day, inclusive (all-day events)."
+                    },
+                    "location": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "description": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 8000
+                    },
+                    "attendees": {
+                        "type": "array",
+                        "description": "Guest emails.",
+                        "items": {
+                            "type": "string",
+                            "format": "email",
+                            "maxLength": 254
+                        },
+                        "maxItems": 50
+                    },
+                    "notify_guests": {
+                        "type": "boolean",
+                        "description": "Let the calendar email the guests an invitation. Off unless asked: REOS never sends messages for you."
+                    }
+                },
+                "required": [
+                    "title",
+                    "starts_at",
+                    "ends_at",
+                    "start_date",
+                    "end_date"
+                ],
+                "title": "SaveCalendarEventRequest"
+            },
             "SignInResource": {
                 "type": "object",
                 "properties": {
@@ -2487,9 +3380,9 @@
                 "properties": {
                     "integration": {
                         "type": "string",
-                        "description": "The tool's register id, for example `google-workspace`.",
+                        "description": "The tool's register id, for example `google-calendar`.",
                         "enum": [
-                            "google-workspace"
+                            "google-calendar"
                         ]
                     },
                     "history": {
@@ -2576,16 +3469,33 @@
             },
             "UpdateConnectionRequest": {
                 "type": "object",
-                "description": "\"What to sync\" (Connections and Sync journey, screen 7).",
+                "description": "\"What to sync\" (Connections and Sync journey, screens 7 and 16).",
                 "properties": {
                     "history": {
                         "description": "How far back to sync: `3m`, `12m` or `all`.",
                         "$ref": "#/components/schemas/HistoryRange"
+                    },
+                    "calendars": {
+                        "type": "object",
+                        "description": "Calendars only: each calendar id \u2192 `full` (read and write), `busy` (times only) or `off`.",
+                        "additionalProperties": {
+                            "type": "string",
+                            "enum": [
+                                "full",
+                                "busy",
+                                "off"
+                            ]
+                        }
+                    },
+                    "write_calendar": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Calendars only: where events made in REOS go, or an empty string to keep them in REOS.",
+                        "maxLength": 255
                     }
                 },
-                "required": [
-                    "history"
-                ],
                 "title": "UpdateConnectionRequest"
             },
             "WaitlistRequest": {

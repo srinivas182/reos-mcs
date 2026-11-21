@@ -19,15 +19,15 @@ describe('ToolCard (web journey screen 19)', () => {
         render(<ToolCard tool={tool()} />);
 
         expect(
-            screen.getByRole('heading', { name: 'Google Calendar and Gmail' }),
+            screen.getByRole('heading', { name: 'Google Calendar' }),
         ).toBeInTheDocument();
-        expect(screen.getByText('Calendar and email')).toBeInTheDocument();
+        expect(screen.getByText('Calendar')).toBeInTheDocument();
         expect(screen.getByText('Available')).toBeInTheDocument();
         expect(
             screen.getByRole('link', {
-                name: 'Connect Google Calendar and Gmail',
+                name: 'Connect Google Calendar',
             }),
-        ).toHaveAttribute('href', '/connections/google-workspace/connect');
+        ).toHaveAttribute('href', '/connections/google-calendar/connect');
     });
 
     it('shows Connected with Manage', async () => {
@@ -43,7 +43,7 @@ describe('ToolCard (web journey screen 19)', () => {
         expect(screen.getByText('Connected')).toBeInTheDocument();
         await userEvent.click(
             screen.getByRole('button', {
-                name: 'Manage Google Calendar and Gmail',
+                name: 'Manage Google Calendar',
             }),
         );
         expect(onManage).toHaveBeenCalledWith(
@@ -62,7 +62,7 @@ describe('ToolCard (web journey screen 19)', () => {
         expect(screen.getByText('Needs sign-in')).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Reconnect' })).toHaveAttribute(
             'href',
-            '/connections/google-workspace/connect',
+            '/connections/google-calendar/connect',
         );
     });
 
@@ -158,7 +158,7 @@ describe('ToolCard (web journey screen 19)', () => {
         expect(screen.getByText('Conectada')).toBeInTheDocument();
         expect(
             screen.getByRole('button', {
-                name: 'Administrar Google Calendar and Gmail',
+                name: 'Administrar Google Calendar',
             }),
         ).toBeInTheDocument();
     });

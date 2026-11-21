@@ -122,6 +122,7 @@ Benchmarks from the sprint plan: BoldTrail and Lone Wolf for tenant branding; To
   - Phone: the Today agenda and a "New appointment" sheet, per the agent app journey.
   - Web: the calendar card on the agent dashboard (screen 12) and Connections › Manage › "Calendar to write to".
 - **Done when:** an event made in REOS appears in Google and an edit in Google comes back (contract tests on recorded calls, plus the Simulator end to end).
+- **As built (ADR 0017):** in two parts. **B4.1a**: the engine, conflicts, calendar choices (web Manage, phone screen 16) and the API. **B4.1b**: the Today agenda, New appointment sheet and dashboard card. The calendar list uses `calendar.calendarlist.readonly`, narrower than `calendar.readonly`. The register id is now `google-calendar`.
 
 ### B4.2 Microsoft 365 calendar, two-way (Team B)
 

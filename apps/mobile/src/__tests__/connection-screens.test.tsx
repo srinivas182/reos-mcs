@@ -16,7 +16,7 @@ const item = (overrides: Partial<CatalogueItem>): CatalogueItem =>
   ({ id: 'x', name: 'X', purpose: 'Does things.', group: 'crm', status: 'enabled', action: 'connect', interested: false, retires_on: null, connected: 0, accounts: 'user', consent: null, ...overrides }) as CatalogueItem;
 
 const catalogue: CatalogueItem[] = [
-  item({ id: 'google-workspace', name: 'Google Calendar and Gmail', purpose: 'Two-way calendar and email.', group: 'calendar', consent: { can: ['read_events', 'change_alerts'], never: ['change_events'] } }),
+  item({ id: 'google-calendar', name: 'Google Calendar', purpose: 'Two-way calendar and email.', group: 'calendar', consent: { can: ['read_events', 'write_events', 'change_alerts'], never: ['delete_yours', 'email'] } }),
   item({ id: 'follow-up-boss', name: 'Follow Up Boss', purpose: 'Contacts, notes and tasks.', status: 'coming_soon', action: 'notify' }),
   item({ id: 'lofty', name: 'Lofty', purpose: 'Contacts, notes and tasks.', status: 'coming_soon', action: 'notify', interested: true }),
   item({ id: 'skyslope', name: 'SkySlope', purpose: 'Files and deadlines.', group: 'deals', status: 'paused', action: 'none', accounts: 'tenant' }),
@@ -25,8 +25,8 @@ const catalogue: CatalogueItem[] = [
 
 const calendar: Connection = {
   id: 7,
-  integration: 'google-workspace',
-  integration_name: 'Google Calendar and Gmail',
+  integration: 'google-calendar',
+  integration_name: 'Google Calendar',
   owner: 'user',
   account: 'linda.park@demo.reos.test',
   status: 'active',
@@ -37,8 +37,13 @@ const calendar: Connection = {
   problem: null,
   problem_since: null,
   connected_at: '2026-11-01T10:00:00Z',
-  streams: [{ key: 'events', direction: 'read', records: 12 }],
-} as Connection;
+  streams: [{ key: 'events', direction: 'both', records: 12 }],
+  calendars: [
+    { id: 'primary', name: 'linda.park@demo.reos.test', primary: true, writable: true, mode: 'full', write: true },
+    { id: 'personal', name: 'Personal', primary: false, writable: true, mode: 'off', write: false },
+    { id: 'holidays', name: 'Holidays in United States', primary: false, writable: false, mode: 'off', write: false },
+  ],
+};
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PATCH: jest.fn(), DELETE: jest.fn() };
 const mockData = { catalogue, connections: [calendar] as Connection[], reloadCatalogue: jest.fn(), reloadConnections: jest.fn() };
@@ -87,7 +92,7 @@ describe('Connections: one place (screen 12)', () => {
     expect(screen.getByText('CALENDAR · 1')).toBeOnTheScreen();
     expect(screen.getByText('Up to date')).toBeOnTheScreen();
     expect(screen.getByText('Synced 2 minutes ago')).toBeOnTheScreen();
-    await fireEvent.press(screen.getByRole('button', { name: 'Google Calendar and Gmail, linda.park@demo.reos.test' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Google Calendar, linda.park@demo.reos.test' }));
     expect(router().push).toHaveBeenCalledWith({ pathname: '/connections/[id]', params: { id: '7' } });
   });
 
@@ -110,8 +115,8 @@ describe('Add a connection (screens 2–4)', () => {
     expect(screen.getByText('We\'ll tell you')).toBeOnTheScreen();
 
     await fireEvent.press(screen.getByRole('radio', { name: 'Calendar' }));
-    await fireEvent.press(screen.getByRole('button', { name: 'Connect Google Calendar and Gmail' }));
-    expect(router().push).toHaveBeenCalledWith({ pathname: '/connections/consent/[tool]', params: { tool: 'google-workspace' } });
+    await fireEvent.press(screen.getByRole('button', { name: 'Connect Google Calendar' }));
+    expect(router().push).toHaveBeenCalledWith({ pathname: '/connections/consent/[tool]', params: { tool: 'google-calendar' } });
 
     await fireEvent.press(screen.getByRole('radio', { name: 'Deals' }));
     expect(screen.getByText('Temporarily unavailable')).toBeOnTheScreen();
@@ -158,15 +163,17 @@ describe('Add a connection (screens 2–4)', () => {
 
 describe('Consent, then connected with smart defaults (screens 5–7)', () => {
   it('says what REOS can and never does, then signs in and shows the defaults', async () => {
-    mockParams.tool = 'google-workspace';
+    mockParams.tool = 'google-calendar';
     mockApi.POST.mockResolvedValue({ data: { authorization_url: 'https://accounts.example/auth' }, response: { ok: true } });
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValue({ type: 'success', url: 'reos://connections?outcome=connected&connection=7' });
     await renderScreen(<ConsentScreen />);
 
-    expect(screen.getByText('Connect Google Calendar and Gmail')).toBeOnTheScreen();
+    expect(screen.getByText('Connect Google Calendar')).toBeOnTheScreen();
     expect(screen.getByText('See the events on your calendar')).toBeOnTheScreen();
-    expect(screen.getByText('Never change or delete your events')).toBeOnTheScreen();
-    await fireEvent.press(screen.getByRole('button', { name: 'Continue to Google Calendar and Gmail' }));
+    expect(screen.getByText('Add the appointments, showings and deadlines you make in REOS to the calendar you choose, and save your changes there')).toBeOnTheScreen();
+    expect(screen.getByText('Never delete events you made in your calendar')).toBeOnTheScreen();
+    expect(screen.getByText('Never email your guests unless you ask')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Continue to Google Calendar' }));
 
     await waitFor(() => expect(router().replace).toHaveBeenCalledWith({ pathname: '/connections/connected/[id]', params: { id: '7' } }));
   });
@@ -175,9 +182,9 @@ describe('Consent, then connected with smart defaults (screens 5–7)', () => {
     mockParams.id = '7';
     await renderScreen(<ConnectedScreen />);
 
-    expect(screen.getByText('Google Calendar and Gmail is connected')).toBeOnTheScreen();
+    expect(screen.getByText('Google Calendar is connected')).toBeOnTheScreen();
     expect(screen.getByText('Calendar events')).toBeOnTheScreen();
-    expect(screen.getByText('REOS reads')).toBeOnTheScreen();
+    expect(screen.getByText('Both ways')).toBeOnTheScreen();
     expect(screen.getByText('Last 3 months')).toBeOnTheScreen();
   });
 
@@ -191,6 +198,42 @@ describe('Consent, then connected with smart defaults (screens 5–7)', () => {
     await waitFor(() => expect(mockApi.PATCH).toHaveBeenCalledWith('/connections/{connection}', { params: { path: { connection: 7 } }, body: { history: '12m' } }));
     expect(router().back).toHaveBeenCalled();
   });
+
+  it('chooses which calendars REOS reads, and where REOS events go (screen 16)', async () => {
+    mockParams.id = '7';
+    await renderScreen(<SyncSettings />);
+
+    expect(screen.getByText('Main calendar')).toBeOnTheScreen();
+    expect(screen.getByText("Read only: you can't add events here")).toBeOnTheScreen();
+    expect(screen.getByRole('radio', { name: 'linda.park@demo.reos.test' })).toBeChecked();
+
+    // Calendars in order: main (Read + write), Personal (Read + write), Holidays (read only: Read).
+    await fireEvent.press(screen.getAllByRole('radio', { name: 'Read + write' })[1]!);
+    await fireEvent.press(screen.getByRole('radio', { name: 'Read' }));
+    await fireEvent.press(screen.getByRole('radio', { name: 'Personal' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(mockApi.PATCH).toHaveBeenCalledWith('/connections/{connection}', {
+        params: { path: { connection: 7 } },
+        body: { calendars: { personal: 'full', holidays: 'full' }, write_calendar: 'personal' },
+      }),
+    );
+    expect(mockData.reloadConnections).toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByText('Saved. Syncing your calendars now.')).toBeOnTheScreen());
+  });
+
+  it('shows why REOS refused a choice', async () => {
+    mockParams.id = '7';
+    mockApi.PATCH.mockResolvedValue({ response: { ok: false }, error: { errors: { write_calendar: ['To add REOS events to a calendar, set it to Read + write.'] } } });
+    await renderScreen(<SyncSettings />);
+
+    await fireEvent.press(screen.getByRole('radio', { name: 'Nowhere (keep them in REOS)' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => expect(screen.getByText('To add REOS events to a calendar, set it to Read + write.')).toBeOnTheScreen());
+    expect(router().back).not.toHaveBeenCalled();
+  });
 });
 
 describe('A connected tool', () => {
@@ -203,7 +246,7 @@ describe('A connected tool', () => {
     await waitFor(() => expect(screen.getByText('Syncing now.')).toBeOnTheScreen());
 
     await fireEvent.press(screen.getByRole('button', { name: 'Disconnect' }));
-    expect(screen.getByText('REOS stops syncing and removes the Google Calendar and Gmail data it copied. Nothing is deleted in Google Calendar and Gmail itself.')).toBeOnTheScreen();
+    expect(screen.getByText('REOS stops syncing and removes the Google Calendar data it copied. Nothing is deleted in Google Calendar itself.')).toBeOnTheScreen();
     await fireEvent.press(screen.getAllByRole('button', { name: 'Disconnect' }).at(-1)!);
 
     await waitFor(() => expect(mockApi.DELETE).toHaveBeenCalledWith('/connections/{connection}', { params: { path: { connection: 7 } } }));

@@ -39,7 +39,7 @@ final class TesterRegistry
         $oauth = static fn (string $tokenUrl): Closure => static fn (Container $c): ConnectionTester => new OAuthClientTester($c->make(Factory::class), $tokenUrl);
 
         return [
-            'google-workspace' => $oauth('https://oauth2.googleapis.com/token'),
+            'google-calendar' => $oauth('https://oauth2.googleapis.com/token'),
             'google-sign-in' => $oauth('https://oauth2.googleapis.com/token'),
             'twilio-verify' => static fn (Container $c): ConnectionTester => $c->make(TwilioVerifyTester::class),
             'microsoft-365' => $oauth('https://login.microsoftonline.com/common/oauth2/v2.0/token'),

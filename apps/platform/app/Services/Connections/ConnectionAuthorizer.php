@@ -17,6 +17,7 @@ use App\Models\Connection;
 use App\Models\OAuthAuthorization;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
+use App\Services\Calendar\CalendarConnections;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -159,6 +160,9 @@ final readonly class ConnectionAuthorizer
         foreach (array_keys($driver->streams()) as $stream) {
             SyncConnection::dispatch($connection->id, $stream, $reconnected ? SyncTrigger::Manual : SyncTrigger::First);
         }
+
+        // Calendars: where REOS's events go, and anything waiting to be written.
+        app(CalendarConnections::class)->connected($connection);
 
         return ['outcome' => self::OUTCOME_CONNECTED, 'authorization' => $authorization, 'connection' => $connection, 'reason' => null];
     }

@@ -11,8 +11,8 @@ const meta = {
     args: {
         alert: {
             id: 7,
-            integration: 'google-workspace',
-            name: 'Google Calendar and Gmail',
+            integration: 'google-calendar',
+            name: 'Google Calendar',
             account: 'james.miller@lonestarrealty.example',
             since: twoDaysAgo,
         },

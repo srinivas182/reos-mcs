@@ -26,7 +26,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 
 | Apply by | Item | Owner | How | Lead (est.) | Needed by | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| ⚠ 9 Nov 2026 | [Google Calendar and Gmail](#google-workspace) | Client + Mayura | OAuth verification | 10 wk | S4 (18 Jan 2027) | Not started |
+| ⚠ 9 Nov 2026 | [Google Calendar](#google-calendar) | Client + Mayura | OAuth verification | 10 wk | S4 (18 Jan 2027) | Not started |
 | 18 Dec 2026 † | [Follow Up Boss](#follow-up-boss) | Client + Mayura | Partner application | 4 wk | S7 (1 Mar 2027) | Not started |
 | 18 Dec 2026 † | [kvCORE / BoldTrail](#boldtrail) | Client + Mayura | Partner application | 8 wk | S7 (1 Mar 2027) | Not started |
 | 18 Dec 2026 † | [Lofty](#lofty) | Client + Mayura | Partner application | 6 wk | S8 (15 Mar 2027) | Not started |
@@ -99,7 +99,7 @@ What users see in **Connections** on day one. Every row is also a back-office ca
 
 | Integration | Pilot status | Built in | Connects with | Personal data | Access |
 | --- | --- | --- | --- | --- | --- |
-| [Google Calendar and Gmail](#google-workspace) | Enabled | B4.1 · S4 | REOS app keys | Yes | Not started |
+| [Google Calendar](#google-calendar) | Enabled | B4.1 · S4 | REOS app keys | Yes | Not started |
 | [Microsoft 365 (Outlook calendar and mail)](#microsoft-365) | Enabled | B4.2 · S4 | REOS app keys | Yes | Not started |
 | [Apple Calendar (iCloud)](#apple-calendar) | Coming soon | B4.1 · S4 | None | Yes | Not needed |
 
@@ -265,7 +265,7 @@ One-tap sign-in with a Google account on the phone and the web.
 - **Sandbox:** Any Google account; the OAuth consent screen stays in testing until launch. Only openid, email and profile scopes, so no Google verification is needed.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Free.
-- **Notes:** Separate OAuth client from the Calendar and Gmail integration (google-workspace), so sign-in never waits for the restricted-scope verification. The phone app asks Google for an ID token for the web client ID; iOS also needs its own iOS client ID.
+- **Notes:** Separate OAuth client from Google Calendar (google-calendar), so sign-in never waits for the restricted-scope verification. The phone app asks Google for an ID token for the web client ID; iOS also needs its own iOS client ID.
 
 ### Sign in with Apple
 <a id="apple-sign-in"></a>
@@ -312,21 +312,21 @@ Tenants' own domains (learn.example.com) with automatic SSL, verified from Brand
 - **Fallback:** Tenants use their <slug>.reos.com address.
 - **Sources:** [1](https://developers.cloudflare.com/cloudflare-for-platforms/cloudflare-for-saas/plans/)
 
-### Google Calendar and Gmail
-<a id="google-workspace"></a>
+### Google Calendar
+<a id="google-calendar"></a>
 
 **Integration** · Calendar and email · built in B4.1 (sprint 4) · pilot status **Enabled**
 
-Two-way calendar and email for every role.
+Two-way calendar for every role. Appointments, showings, deadlines and to-do due dates made in REOS go to the calendar the person picks; changes in Google come back live.
 
 - **Owner:** Client + Mayura
 - **Access:** OAuth verification, about 10 weeks; needed by S4 (18 Jan 2027); apply by 9 Nov 2026. Status: Not started.
 - **Sandbox:** Test users on an unverified Google Cloud project (up to 100) until verification is approved.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
-- **Cost:** Free API. Reading the inbox (restricted Gmail scopes) needs a yearly CASA security assessment by a Google-approved assessor, a paid third-party service.
-- **Notes:** Calendar and sending mail (gmail.send) need standard OAuth verification only. Reading or labelling the inbox (gmail.readonly, gmail.modify) is a restricted scope: Google requires a CASA Tier 2 assessment, renewed every 12 months, which takes several weeks. Recommendation: launch with calendar + send + a forwarding address for inbound mail, and file for restricted scopes in parallel.
-- **Fallback:** Forward-to-REOS address for inbound mail; ICS calendar feed.
-- **Sources:** [1](https://developers.google.com/identity/protocols/oauth2/production-readiness/restricted-scope-verification) · [2](https://developer.nylas.com/docs/cookbook/use-cases/build/google-oauth-scopes/)
+- **Cost:** Free API.
+- **Notes:** Calendar only (Sprint 4 decision 1): REOS doesn't read or send mail. Scopes are calendar.events (read and write events on the person's calendars) and calendar.calendarlist.readonly (the list of calendars to choose from). Both are sensitive scopes: Google's standard OAuth verification, with no security assessment. Push channels (events.watch) last about a week and are renewed a day before they end. The callback address is /integrations/google-calendar/callback.
+- **Fallback:** Scheduled sync every 15 minutes when push channels can't reach REOS; ICS calendar feed.
+- **Sources:** [1](https://developers.google.com/calendar/api/auth) · [2](https://developers.google.com/calendar/api/guides/push) · [3](https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification)
 
 ### Microsoft 365 (Outlook calendar and mail)
 <a id="microsoft-365"></a>

@@ -116,7 +116,7 @@ export async function connectTool(integration: string): Promise<ConnectOutcome> 
   };
 }
 
-/** Two letters for a tool's tile: "Google Calendar and Gmail" → "GC". */
+/** Two letters for a tool's tile: "Google Calendar" → "GC". */
 export function toolInitials(name: string): string {
   return name
     .split(/\s+/)

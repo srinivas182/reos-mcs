@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace App\Services\Connections;
 
+use App\Connections\Calendar\CalendarDriver;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectorRegistry;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\Exceptions\CursorExpired;
 use App\Connections\StreamStore;
-use App\Connections\SubscribesToChanges;
 use App\Connections\SyncTrigger;
 use App\Integrations\IntegrationMode;
 use App\Models\Connection;
 use App\Models\SyncRun;
+use App\Services\Calendar\CalendarConnections;
 use Throwable;
 
 /**
@@ -39,6 +40,7 @@ final readonly class SyncEngine
         private ConnectorRegistry $registry,
         private ConnectionTokens $tokens,
         private ConnectionHealth $health,
+        private ChangeChannels $channels,
     ) {}
 
     /** @return string `synced`, `continued`, `skipped` or `failed` (needs reconnecting). */
@@ -90,7 +92,7 @@ final readonly class SyncEngine
 
         if ($outcome === SyncRun::OUTCOME_SYNCED) {
             $this->health->synced($connection);
-            $this->subscribe($connection, $driver);
+            $this->afterSync($connection, $driver);
         }
 
         return $outcome;
@@ -167,22 +169,15 @@ final readonly class SyncEngine
     }
 
     /**
-     * Ask the tool to push changes, once, when REOS has a public HTTPS address
-     * (tools won't call localhost). Without it the 15-minute schedule catches up.
+     * After a full sync: keep push channels open and renewed, and for
+     * calendars, the list of calendars to choose from fresh.
      */
-    private function subscribe(Connection $connection, ConnectorDriver $driver): void
+    private function afterSync(Connection $connection, ConnectorDriver $driver): void
     {
-        $webhookUrl = url("webhooks/{$connection->integration_id}");
-
-        if (! $driver instanceof SubscribesToChanges || isset($connection->meta['channel_id']) || ! str_starts_with($webhookUrl, 'https://')) {
-            return;
+        if ($driver instanceof CalendarDriver) {
+            app(CalendarConnections::class)->refreshCalendars($connection, $driver);
         }
 
-        try {
-            $meta = $driver->subscribe($connection, $this->tokens->accessToken($connection, $driver), $webhookUrl);
-            $connection->forceFill(['meta' => [...$connection->meta, ...$meta]])->save();
-        } catch (Throwable) {
-            // Push is a bonus; scheduled syncs keep the data fresh.
-        }
+        $this->channels->keep($connection, $driver);
     }
 }

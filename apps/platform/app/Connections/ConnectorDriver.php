@@ -22,7 +22,7 @@ use Illuminate\Http\Request;
  */
 interface ConnectorDriver
 {
-    /** The register id this driver serves (for example `google-workspace`). */
+    /** The register id this driver serves (for example `google-calendar`). */
     public function integration(): string;
 
     /**

@@ -7,55 +7,59 @@ namespace App\Connections\Stores;
 use App\Connections\StreamStore;
 use App\Models\CalendarEvent;
 use App\Models\Connection;
-use Illuminate\Support\Carbon;
+use App\Services\Calendar\CalendarSync;
 
-/** Calendar events from any calendar tool, keyed by the tool's own event id. */
+/**
+ * Calendar events from any calendar tool, into the person's REOS calendar.
+ * Each record goes through `CalendarSync`, which knows what REOS changed
+ * that the tool hasn't seen yet (the conflict rule).
+ *
+ * Removed events are named by `key()`: the calendar and the tool's event id.
+ */
 final readonly class CalendarEventStore implements StreamStore
 {
-    private const COLUMNS = ['calendar_id', 'title', 'location', 'starts_at', 'ends_at', 'all_day', 'status', 'html_link', 'remote_updated_at', 'updated_at'];
+    public function __construct(private CalendarSync $sync) {}
+
+    /** One event in one calendar. Calendar and event ids never contain a slash. */
+    public static function key(string $calendarId, string $eventId): string
+    {
+        return "{$calendarId}/{$eventId}";
+    }
+
+    /** @return array{0: string, 1: string}|null */
+    public static function split(string $key): ?array
+    {
+        $at = strrpos($key, '/');
+
+        return $at === false || $at === 0 || $at === strlen($key) - 1 ? null : [substr($key, 0, $at), substr($key, $at + 1)];
+    }
 
     public function upsert(Connection $connection, array $records): int
     {
-        if ($records === []) {
-            return 0;
+        $written = 0;
+
+        foreach ($records as $record) {
+            $written += $this->sync->incoming($connection, $record) ? 1 : 0;
         }
 
-        $now = Carbon::now();
-        $rows = array_map(static fn (array $record): array => [
-            'connection_id' => $connection->id,
-            'external_id' => $record['external_id'],
-            'calendar_id' => $record['calendar_id'] ?? 'primary',
-            'title' => $record['title'] ?? null,
-            'location' => $record['location'] ?? null,
-            'starts_at' => $record['starts_at'],
-            'ends_at' => $record['ends_at'],
-            'all_day' => (bool) ($record['all_day'] ?? false),
-            'status' => $record['status'] ?? 'confirmed',
-            'html_link' => $record['html_link'] ?? null,
-            'remote_updated_at' => $record['remote_updated_at'] ?? null,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ], $records);
-
-        CalendarEvent::query()->upsert($rows, ['connection_id', 'external_id'], self::COLUMNS);
-
-        return count($rows);
+        return $written;
     }
 
     public function remove(Connection $connection, array $externalIds): int
     {
-        if ($externalIds === []) {
-            return 0;
+        $removed = 0;
+
+        foreach ($externalIds as $key) {
+            $parts = self::split($key);
+            $removed += $parts !== null && $this->sync->gone($connection, $parts[0], $parts[1]) ? 1 : 0;
         }
 
-        $removed = CalendarEvent::query()->where('connection_id', $connection->id)->whereIn('external_id', $externalIds)->delete();
-
-        return is_int($removed) ? $removed : 0;
+        return $removed;
     }
 
     public function forget(Connection $connection): void
     {
-        CalendarEvent::query()->where('connection_id', $connection->id)->delete();
+        $this->sync->forget($connection);
     }
 
     public function count(Connection $connection): int

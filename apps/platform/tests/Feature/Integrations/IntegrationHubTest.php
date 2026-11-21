@@ -257,9 +257,9 @@ describe('how it runs', function () {
 
     it('shows the redirect address for services that sign in with OAuth', function () {
         $this->actingAs(admin())->withSession(confirmed())
-            ->get(route('integrations.show', 'google-workspace'))
+            ->get(route('integrations.show', 'google-calendar'))
             ->assertInertia(fn (Assert $page) => $page
-                ->where('integration.redirect_url', url('integrations/google-workspace/callback'))
+                ->where('integration.redirect_url', url('integrations/google-calendar/callback'))
                 ->where('integration.accounts', 'user'));
     });
 

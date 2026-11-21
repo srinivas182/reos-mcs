@@ -23,7 +23,7 @@ uses(RefreshDatabase::class);
 function isolationConnection(string $ownerType, int $ownerId, string $account): Connection
 {
     return Connection::query()->create([
-        'integration_id' => 'google-workspace', 'owner_type' => $ownerType, 'owner_id' => $ownerId, 'mode' => IntegrationMode::Simulator,
+        'integration_id' => 'google-calendar', 'owner_type' => $ownerType, 'owner_id' => $ownerId, 'mode' => IntegrationMode::Simulator,
         'external_account_id' => $account, 'scopes' => [], 'access_token' => 'x', 'status' => ConnectionStatus::Active,
     ]);
 }

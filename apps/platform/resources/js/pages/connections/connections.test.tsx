@@ -88,7 +88,7 @@ describe('Connections page (web journey screen 19)', () => {
             'All',
             'CRM',
             'Transactions',
-            'Calendar and email',
+            'Calendar',
         ]);
 
         await userEvent.click(tabs.getByRole('tab', { name: 'CRM' }));
@@ -132,7 +132,7 @@ describe('Connections page (web journey screen 19)', () => {
 
         await userEvent.click(
             screen.getByRole('button', {
-                name: 'Manage Google Calendar and Gmail',
+                name: 'Manage Google Calendar',
             }),
         );
         const dialog = within(screen.getByRole('dialog'));
@@ -160,12 +160,48 @@ describe('Connections page (web journey screen 19)', () => {
             expect.anything(),
         );
 
+        // Calendars (screen 16 on the web): Personal read in full, and REOS events go there.
+        expect(dialog.getByText('Main calendar')).toBeInTheDocument();
+        const personal = within(
+            dialog.getByRole('radiogroup', {
+                name: 'How REOS reads Personal',
+            }),
+        );
+        expect(
+            personal.getByRole('radio', { name: 'Busy only' }),
+        ).toBeChecked();
+        await userEvent.click(
+            personal.getByRole('radio', { name: 'Read + write' }),
+        );
+        expect(
+            within(
+                dialog.getByRole('radiogroup', {
+                    name: 'How REOS reads Holidays in United States',
+                }),
+            ).getByRole('radio', { name: 'Read' }),
+        ).toBeInTheDocument();
+        await userEvent.click(
+            dialog.getByRole('combobox', { name: 'Add REOS events to' }),
+        );
+        await userEvent.click(screen.getByRole('option', { name: 'Personal' }));
+        await userEvent.click(dialog.getByRole('button', { name: 'Save' }));
+        expect(router.patch).toHaveBeenLastCalledWith(
+            '/connections/7',
+            {
+                // The earlier choice is still on screen (the router is mocked, so the dialog stays open).
+                history: '12m',
+                calendars: { personal: 'full' },
+                write_calendar: 'personal',
+            },
+            expect.anything(),
+        );
+
         await userEvent.click(
             dialog.getByRole('button', { name: 'Disconnect' }),
         );
         expect(
             screen.getByText(
-                /REOS stops syncing and removes the Google Calendar and Gmail data/,
+                /REOS stops syncing and removes the Google Calendar data/,
             ),
         ).toBeInTheDocument();
         await userEvent.click(

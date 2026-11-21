@@ -1,0 +1,30 @@
+{
+    "kind": "calendar#calendarList",
+    "etag": "\"p32o9q5bujv9og0o\"",
+    "nextSyncToken": "CKCq1sWDx70CEhltYXJpYS5sb3Blei50ZXN0QGdtYWlsLmNvbQ==",
+    "items": [
+        {
+            "kind": "calendar#calendarListEntry",
+            "id": "en.usa#holiday@group.v.calendar.google.com",
+            "summary": "Holidays in United States",
+            "timeZone": "America/Chicago",
+            "accessRole": "reader"
+        },
+        {
+            "kind": "calendar#calendarListEntry",
+            "id": "maria.lopez.test@gmail.com",
+            "summary": "maria.lopez.test@gmail.com",
+            "timeZone": "America/Chicago",
+            "accessRole": "owner",
+            "primary": true
+        },
+        {
+            "kind": "calendar#calendarListEntry",
+            "id": "c_8d1f0a3b2e@group.calendar.google.com",
+            "summary": "Family",
+            "summaryOverride": "Family (shared)",
+            "timeZone": "America/Chicago",
+            "accessRole": "writer"
+        }
+    ]
+}

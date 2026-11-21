@@ -36,10 +36,10 @@ describe('the Connections page', function () {
 
         $this->actingAs($maria)->get('/connections')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('connections/index')
-            ->where('tools', fn ($tools) => collect($tools)->contains(fn ($t) => $t['id'] === 'google-workspace' && $t['connected'] === 1 && $t['category'] === 'calendar_email')
+            ->where('tools', fn ($tools) => collect($tools)->contains(fn ($t) => $t['id'] === 'google-calendar' && $t['connected'] === 1 && $t['category'] === 'calendar_email')
                 && collect($tools)->contains(fn ($t) => $t['id'] === 'follow-up-boss' && $t['action'] === 'notify'))
             ->has('connections', 1)
-            ->where('connections.0.integration', 'google-workspace'));
+            ->where('connections.0.integration', 'google-calendar'));
     });
 
     it('lands here after connecting on the website', function () {
@@ -65,7 +65,7 @@ describe('what you can do there', function () {
     it('says no to Notify me for a tool you can already connect', function () {
         $maria = webAgent();
 
-        $this->actingAs($maria)->from('/connections')->post('/connections/tools/google-workspace/interest')
+        $this->actingAs($maria)->from('/connections')->post('/connections/tools/google-calendar/interest')
             ->assertRedirect('/connections')->assertInertiaFlash('toast.type', 'error');
         expect(IntegrationInterest::query()->exists())->toBeFalse();
     });

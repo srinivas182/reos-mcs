@@ -15,6 +15,7 @@ use App\Models\IntegrationInterest;
 use App\Models\User;
 use App\Services\Catalogue\IntegrationCatalogue;
 use App\Services\Connections\Connections;
+use App\Services\Connections\ConnectionSettings;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -77,12 +78,10 @@ final class ConnectionsPageController extends Controller
     }
 
     /** How far back it syncs (Manage › What to sync). */
-    public function update(UpdateConnectionRequest $request, #[CurrentUser] User $user, Connection $connection, Connections $connections): RedirectResponse
+    public function update(UpdateConnectionRequest $request, #[CurrentUser] User $user, Connection $connection, ConnectionSettings $settings): RedirectResponse
     {
-        abort_unless($connections->canManage($user, $connection), 404);
-
-        $connections->changeHistory($connection, $request->history());
-        Inertia::flash('toast', ['type' => 'success', 'message' => __('connections.settings.saved')]);
+        $settings->save($user, $connection, $request);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __($request->history() !== null ? 'connections.settings.saved' : 'connections.calendars.saved')]);
 
         return back();
     }

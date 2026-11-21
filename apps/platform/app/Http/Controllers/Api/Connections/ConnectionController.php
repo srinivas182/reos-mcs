@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\Catalogue\IntegrationCatalogue;
 use App\Services\Connections\ConnectionAuthorizer;
 use App\Services\Connections\Connections;
+use App\Services\Connections\ConnectionSettings;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -78,13 +79,12 @@ final class ConnectionController extends Controller
      * Change what syncs.
      *
      * A new history range syncs again from its start; nothing already synced
-     * is lost.
+     * is lost. Calendars also take which calendars to read (full, busy only
+     * or off) and which one REOS's own events go to (screen 16).
      */
-    public function update(UpdateConnectionRequest $request, #[CurrentUser] User $user, Connection $connection, Connections $connections): ConnectionResource
+    public function update(UpdateConnectionRequest $request, #[CurrentUser] User $user, Connection $connection, ConnectionSettings $settings): ConnectionResource
     {
-        abort_unless($connections->canManage($user, $connection), 404);
-
-        return new ConnectionResource($connections->changeHistory($connection, $request->history())->fresh());
+        return new ConnectionResource($settings->save($user, $connection, $request)->fresh());
     }
 
     /**
