@@ -4,6 +4,7 @@ use App\Authorization\RoleRefused;
 use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\LogSupportViews;
 use App\Http\Middleware\PlatformScope;
 use App\Http\Middleware\ResolveTenant;
 use App\Http\Middleware\SetApiLocale;
@@ -59,6 +60,7 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureAccountActive::class,
             HandleAppearance::class,
             ResolveTenant::class,
+            LogSupportViews::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);

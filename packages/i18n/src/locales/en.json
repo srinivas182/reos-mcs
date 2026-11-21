@@ -1696,8 +1696,88 @@
       "actions": {
         "tenant.created": "Created the tenant",
         "tenant.updated": "Changed settings",
-        "tenant.status_changed": "Changed status: {{from}} → {{to}}"
+        "tenant.status_changed": "Changed status: {{from}} → {{to}}",
+        "support.requested": "Asked to sign in as support",
+        "support.approved": "Approved support sign-in",
+        "support.declined": "Declined support sign-in",
+        "support.started": "Started a support session",
+        "support.viewed": "Support opened {{path}}",
+        "support.ended": "Support access ended"
       }
+    }
+  },
+  "support": {
+    "asked": "Asked {{tenant}}'s owner. You can start once they say yes.",
+    "endedToast": "Support session in {{tenant}} ended.",
+    "errors": {
+      "alreadyOpen": "There's already a request for this tenant. Wait for the answer, or for it to end.",
+      "noOwner": "This tenant has no owner yet, so nobody can approve support sign-in.",
+      "notPending": "This request has already been answered or has ended.",
+      "notApproved": "Support can start only after the owner approves, within 24 hours.",
+      "twoStep": "Set up two-step before approving: Settings › Security. You can still decline."
+    },
+    "mail": {
+      "subject": "REOS support asks to sign in to {{tenant}}",
+      "body": "{{person}} from REOS support asks to sign in to {{tenant}} to help.",
+      "reason": "Reason: {{reason}}",
+      "terms": "If you approve, support works inside {{tenant}} for {{minutes}} minutes at most. Every page they open is in your audit log, and you can end it at any time. They never see anyone's personal connections.",
+      "action": "Review the request",
+      "ignore": "If you don't answer within {{hours}} hours, the request ends on its own."
+    },
+    "consent": {
+      "approved": "Approved. Support can start within 24 hours.",
+      "declined": "Declined. Support won't sign in.",
+      "revoked": "Support access ended."
+    },
+    "page": {
+      "title": "Support sign-in request",
+      "purpose": "REOS support asks to work inside {{tenant}} to help. You decide.",
+      "who": "Who asks",
+      "why": "Why",
+      "how": "What support can do",
+      "approve": "Approve",
+      "decline": "Decline",
+      "revoke": "End support access",
+      "statuses": {
+        "pending": "Waiting for your answer · ends on its own after {{hours}} hours",
+        "approved": "Approved by {{person}} · support can start within 24 hours",
+        "declined": "Declined by {{person}}",
+        "active": "Support is inside now · until {{time}}",
+        "ended": "Support ended the session",
+        "expired": "Ended on its own",
+        "revoked": "Ended by an owner"
+      },
+      "terms": {
+        "t1": "Works in {{tenant}} only, as its admin, for {{minutes}} minutes at most.",
+        "t2": "Every page they open and every change they make is in your audit log.",
+        "t3": "Never sees anyone's personal connections, such as an agent's own calendar.",
+        "t4": "You can end it at any time from this page."
+      },
+      "twoStepNote": "Approving needs two-step. Set it up in Settings › Security, then come back. You can decline without it."
+    },
+    "tenant": {
+      "ask": "Sign in as support (with consent)",
+      "askTitle": "Ask to sign in to {{tenant}}",
+      "askBody": "Every owner of {{tenant}} gets an email and decides. If they approve, you can work inside for 60 minutes; every page you open goes in their audit log.",
+      "reason": "Reason the owner will read",
+      "send": "Send request",
+      "cancel": "Cancel",
+      "start": "Start support session (60 minutes)",
+      "noOwner": "No owner yet, so nobody can approve support sign-in.",
+      "statuses": {
+        "pending": "Support sign-in: waiting for the owner",
+        "approved": "Support sign-in approved by {{person}}",
+        "declined": "Support sign-in declined by {{person}}",
+        "active": "Support session under way",
+        "revoked": "Support access ended by an owner"
+      }
+    },
+    "banner": {
+      "label": "Support session",
+      "text": "You're in {{tenant}} as REOS support · {{left}} left · every page is logged",
+      "end": "End support session",
+      "minutes_one": "{{count}} minute",
+      "minutes_other": "{{count}} minutes"
     }
   }
 }

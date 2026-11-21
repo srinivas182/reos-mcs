@@ -9,6 +9,10 @@ import { TenantFeatureSwitches } from '@/components/tenant-feature-switches';
 import { TenantLimitsCard } from '@/components/tenant-limits-card';
 import { TenantStatusActions } from '@/components/tenant-status-actions';
 import { TenantStatusBadge } from '@/components/tenant-status-badge';
+import {
+    TenantSupportAccess,
+    TenantSupportStatus,
+} from '@/components/tenant-support-access';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -24,6 +28,7 @@ import type {
     TenantLimits,
     TenantOptions,
     TenantPlan,
+    TenantSupport,
 } from '@/types';
 
 type Tab =
@@ -40,6 +45,7 @@ type Props = {
     tenant: TenantDetail;
     audit: TenantAuditEvent[];
     options: TenantOptions;
+    support: TenantSupport;
 };
 
 type Draft = {
@@ -65,10 +71,16 @@ const card = 'rounded-reos-lg border border-border bg-card p-5';
 /**
  * Tenant detail (super admin, web journey screen 60): one tenant in tabs.
  * Plan, states, features, limits and retention are edited in place and
- * saved together; status changes ask for a reason. Support sign-in with the
- * owner's consent arrives in A4.1c.
+ * saved together; status changes ask for a reason; support sign-in needs the
+ * owner's consent (A4.1c).
  */
-export default function TenantShow({ tab, tenant, audit, options }: Props) {
+export default function TenantShow({
+    tab,
+    tenant,
+    audit,
+    options,
+    support,
+}: Props) {
     const { t, i18n } = useTranslation();
 
     const saved: Draft = useMemo(
@@ -168,6 +180,10 @@ export default function TenantShow({ tab, tenant, audit, options }: Props) {
                     }
                     actions={
                         <>
+                            <TenantSupportAccess
+                                tenant={tenant}
+                                support={support}
+                            />
                             <TenantStatusActions tenant={tenant} />
                             <Button onClick={save} disabled={!dirty || saving}>
                                 {saving
@@ -199,6 +215,8 @@ export default function TenantShow({ tab, tenant, audit, options }: Props) {
                         )}
                     </p>
                 ) : null}
+
+                <TenantSupportStatus support={support} />
 
                 <PageTabs tabs={tabs} label={t('tenants.show.tabsLabel')} />
 
