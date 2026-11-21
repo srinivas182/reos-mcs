@@ -35,7 +35,8 @@
     "connections": "Conexiones",
     "tenants": "Organizaciones",
     "brandingAndDomain": "Marca y dominio",
-    "brokerageSettings": "Configuración de la agencia"
+    "brokerageSettings": "Configuración de la agencia",
+    "agents": "Agentes"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -555,7 +556,8 @@
       "remember": "Mantener la sesión iniciada en este dispositivo",
       "noAccount": "¿Es nuevo en REOS?",
       "createAccount": "Crear una cuenta",
-      "securityNote": "La verificación en dos pasos es obligatoria para brókers y administradores de escuelas y asociaciones. Los dispositivos nuevos se confirman por correo electrónico."
+      "securityNote": "La verificación en dos pasos es obligatoria para brókers y administradores de escuelas y asociaciones. Los dispositivos nuevos se confirman por correo electrónico.",
+      "haveCode": "¿Tiene un código de invitación?"
     },
     "providers": {
       "google": "Continuar con Google",
@@ -1371,6 +1373,17 @@
         "mls": "MLS e IDX",
         "esignature": "Firma electrónica"
       }
+    },
+    "askBroker": {
+      "button": "Pedir a mi bróker",
+      "asked": "Ya se lo pidió a su bróker",
+      "toast": "Le pidió a su bróker que configure {{tool}}.",
+      "explain": "Su agencia lo configura una sola vez para todos sus agentes.",
+      "mail": {
+        "subject": "{{person}} le pidió configurar {{tool}}",
+        "body": "{{person}} quiere usar {{tool}} en REOS. Su agencia lo conecta una sola vez para todos sus agentes.",
+        "next": "REOS le avisará cuando esté listo para conectarse en Integraciones."
+      }
     }
   },
   "catalogue": {
@@ -1732,7 +1745,13 @@
         "sso.enabled": "Activó el inicio de sesión único",
         "sso.disabled": "Desactivó el inicio de sesión único",
         "sso.account_created": "Cuenta nueva desde el inicio de sesión único",
-        "sso.account_linked": "Vinculó una cuenta al inicio de sesión único"
+        "sso.account_linked": "Vinculó una cuenta al inicio de sesión único",
+        "invite.sent": "Envió invitaciones",
+        "invite.resent": "Reenvió una invitación",
+        "invite.revoked": "Retiró una invitación",
+        "invite.accepted": "Se unió con una invitación",
+        "seats.requested": "Pidió más puestos",
+        "connection.broker_asked": "Pidió una herramienta al bróker"
       }
     }
   },
@@ -1919,7 +1938,7 @@
     "on": "Activada",
     "off": "Desactivada",
     "noPeople": "Todavía no hay otros administradores.",
-    "peopleNote": "Lo siguiente es invitar administradores y cambiar permisos.",
+    "peopleNote": "Lo siguiente es cambiar permisos.",
     "plan": "Plan",
     "planValue": "{{payer}} · {{seats}}",
     "seats_one": "{{count}} puesto",
@@ -1933,7 +1952,8 @@
     "editBrand": "Editar la marca",
     "noBrand": "Todavía no hay marca: los usuarios ven los colores de REOS.",
     "colour": "Color principal",
-    "appLabel": "Nombre de la app"
+    "appLabel": "Nombre de la app",
+    "inviteAdmins": "Invitar administradores"
   },
   "sso": {
     "saved": "Se guardó la configuración del inicio de sesión único. Ahora haga un inicio de sesión de prueba.",
@@ -2009,5 +2029,171 @@
       "onNote": "El inicio de sesión único con la cuenta de miembro de {{name}} está activado.",
       "offNote": "El inicio de sesión único está desactivado. Configúrelo abajo."
     }
+  },
+  "invites": {
+    "sent_one": "Se envió la invitación.",
+    "sent_other": "Se enviaron {{count}} invitaciones.",
+    "noneSent": "No se envió ninguna invitación. La lista muestra por qué.",
+    "resent": "Se volvió a enviar la invitación a {{contact}}.",
+    "revoked": "Se retiró la invitación.",
+    "seatsAsked": "Se pidieron más puestos. Recibirá la respuesta por correo.",
+    "seatsAlreadyAsked": "Ya lo pidió hoy. Recibirá la respuesta por correo.",
+    "joined": "Le damos la bienvenida a {{tenant}}.",
+    "errors": {
+      "role": "No puede invitar personas a ese rol.",
+      "team": "Elija uno de sus equipos.",
+      "tooMany": "Invite hasta {{max}} personas a la vez.",
+      "seatsFull_one": "Solo queda {{left}} puesto de {{limit}}, y esto invita a {{wanted}}. Invite a menos personas o pida más puestos.",
+      "seatsFull_other": "Quedan {{left}} puestos de {{limit}}, y esto invita a {{wanted}}. Invite a menos personas o pida más puestos.",
+      "contact": "Escriba un correo electrónico o un número de celular.",
+      "nobody": "Agregue al menos un correo electrónico o número de celular.",
+      "closed": "Esta invitación venció, se retiró o ya se usó.",
+      "otherPerson": "Esta invitación se envió a otra persona.",
+      "haveAccount": "Ya tiene una cuenta de REOS. Inicie sesión para unirse.",
+      "code": "Ese código no corresponde a ninguna invitación. Revíselo e inténtelo de nuevo."
+    },
+    "mail": {
+      "subject": "{{inviter}} le invitó a {{tenant}} en REOS",
+      "reminderSubject": "Recordatorio: {{inviter}} le invitó a {{tenant}}",
+      "greeting": "Hola:",
+      "body": "{{inviter}} le invitó a unirse a {{tenant}} en REOS como {{role}}.",
+      "bodyTeam": "{{inviter}} le invitó a unirse a {{tenant}} en REOS como {{role}} en {{team}}.",
+      "action": "Unirse a {{tenant}}",
+      "code": "O abra la aplicación REOS y escriba el código {{code}}.",
+      "expires": "Esta invitación es válida hasta el {{date}}.",
+      "ignore": "Si no esperaba este mensaje, puede ignorarlo."
+    },
+    "text": {
+      "body": "{{inviter}} le invitó a {{tenant}} en REOS como {{role}}. Únase: {{link}} (código {{code}}). Válida hasta el {{date}}.",
+      "reminder": "Recordatorio: {{inviter}} le invitó a {{tenant}} en REOS. Únase: {{link}} (código {{code}}). Válida hasta el {{date}}."
+    },
+    "seatsMail": {
+      "subject": "Se pidieron más puestos para {{tenant}}",
+      "body": "{{person}} pidió más puestos para {{tenant}}. Los {{limit}} puestos están en uso o invitados.",
+      "note": "Su nota: {{note}}",
+      "next": "Los puestos forman parte del plan de la organización."
+    },
+    "sheet": {
+      "title": "Invitar personas",
+      "description": "Reciben un enlace y un código por correo o mensaje de texto. Las invitaciones son válidas 14 días, con un recordatorio el día 7.",
+      "mode": "Cuántas",
+      "one": "Una persona",
+      "many": "Varias a la vez",
+      "contact": "Correo electrónico o número de celular",
+      "contactPlaceholder": "nombre@ejemplo.com o (832) 555-0123",
+      "name": "Nombre (opcional)",
+      "people": "Correos o números de celular, uno por línea",
+      "peopleHint": "Puede poner el nombre primero: Rosa Lima, rosa@ejemplo.com",
+      "file": "O cargue un CSV (nombre, correo, teléfono)",
+      "role": "Rol",
+      "team": "Equipo",
+      "noTeam": "Sin equipo",
+      "language": "Idioma de la invitación",
+      "english": "English",
+      "spanish": "Español",
+      "seatNote": "Ocupa un puesto",
+      "seats": "Quedan {{left}} de {{limit}} puestos · {{payer}}",
+      "seatsNoLimit": "Sin límite de puestos · {{payer}}",
+      "payers": {
+        "organisation": "Paga {{tenant}}",
+        "member": "Cada persona paga su puesto"
+      },
+      "noText": "Las invitaciones por mensaje de texto empiezan cuando REOS active los mensajes de texto. Por ahora use el correo.",
+      "send": "Enviar invitaciones",
+      "sending": "Enviando…",
+      "askSeats": "Pedir más puestos",
+      "skippedTitle": "No se enviaron",
+      "reasons": {
+        "duplicate": "Aparece dos veces",
+        "member": "Ya es miembro",
+        "invited": "Ya tiene una invitación",
+        "noText": "Los mensajes de texto aún no están activos",
+        "invalid": "No es un correo ni un número de celular"
+      }
+    }
+  },
+  "agents": {
+    "title": "Agentes",
+    "purpose_one": "{{count}} agente · {{tenant}}",
+    "purpose_other": "{{count}} agentes · {{tenant}}",
+    "export": "Exportar",
+    "invite": "Invitar agentes",
+    "tabsLabel": "Mostrar",
+    "tabs": {
+      "all": "Todos {{count}}",
+      "invited": "Invitados {{count}}"
+    },
+    "columns": {
+      "agent": "Agente",
+      "email": "Correo electrónico",
+      "team": "Equipo",
+      "lastActive": "Última actividad",
+      "person": "Persona",
+      "role": "Rol",
+      "sent": "Enviada",
+      "expires": "Vence",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "never": "Todavía no",
+    "states": {
+      "pending": "En espera",
+      "expired": "Vencida"
+    },
+    "reminded": "Recordatorio enviado",
+    "resend": "Reenviar",
+    "revoke": "Retirar",
+    "resendTo": "Reenviar la invitación a {{contact}}",
+    "revokeFor": "Retirar la invitación de {{contact}}",
+    "channels": {
+      "email": "Correo",
+      "text": "Mensaje de texto"
+    },
+    "empty": {
+      "title": "Aún no hay agentes",
+      "body": "Invite a sus agentes. Reciben un enlace por correo o mensaje de texto y se unen en un minuto."
+    },
+    "emptyInvites": {
+      "title": "No hay invitaciones abiertas",
+      "body": "Las invitaciones que envíe aparecen aquí hasta que se acepten."
+    },
+    "privacy": "Usted ve la actividad de trabajo, los negocios, la educación continua (CE) y el avance del plan. Los contactos del CRM, los datos de clientes, los mensajes y las notas privadas de los agentes nunca se muestran a la agencia.",
+    "seats": "Puestos: {{used}} de {{limit}} en uso · {{pending}} invitados · {{payer}}",
+    "seatsNoLimit": "Puestos: sin límite · {{used}} en uso · {{payer}}"
+  },
+  "invitePage": {
+    "title": "Unirse a {{tenant}}",
+    "invited": "{{inviter}} le invitó a unirse a {{tenant}} como {{role}}.",
+    "invitedTeam": "{{inviter}} le invitó a unirse a {{tenant}} como {{role}} en {{team}}.",
+    "invitedNoInviter": "Tiene una invitación para unirse a {{tenant}} como {{role}}.",
+    "until": "Esta invitación es válida hasta el {{date}}.",
+    "join": "Unirse a {{tenant}}",
+    "joining": "Uniéndose…",
+    "other": "Esta invitación se envió a {{contact}}, y usted inició sesión como {{account}}. Cierre sesión y vuelva a abrir el enlace.",
+    "signOut": "Cerrar sesión",
+    "existing": "Ya tiene una cuenta de REOS con {{contact}}.",
+    "signInToJoin": "Iniciar sesión para unirse",
+    "createTitle": "Cree su cuenta",
+    "createFor": "Para {{contact}}",
+    "nameLabel": "Su nombre",
+    "password": "Contraseña",
+    "phoneNote": "Iniciará sesión con un código que le enviaremos por mensaje de texto a {{contact}}.",
+    "create": "Crear cuenta y unirse",
+    "creating": "Creando…",
+    "haveAccount": "Ya tengo una cuenta",
+    "expired": "Esta invitación venció. Pida una nueva a la persona que le invitó.",
+    "accepted": "Esta invitación ya se usó. Inicie sesión para continuar.",
+    "revoked": "Esta invitación se retiró. Consulte a la persona que le invitó si cree que es un error.",
+    "invalid": "Este enlace no funciona. Revíselo o escriba el código de su invitación.",
+    "enterCode": "Escribir un código",
+    "signIn": "Iniciar sesión",
+    "heading": "Su invitación"
+  },
+  "joinPage": {
+    "title": "Unirse con un código",
+    "description": "Escriba el código de 8 caracteres de su invitación.",
+    "code": "Código de invitación",
+    "placeholder": "ABCD-2345",
+    "continue": "Continuar"
   }
 }

@@ -74,3 +74,16 @@ People are not tenants. One person can hold roles in several organisations (ADR 
   - Every page and change is recorded as `support.viewed` in the tenant's audit log, along with `support.requested`, `approved`, `declined`, `started` and `ended` (how: ended, expired or revoked).
   - The owner can end access at any time.
 - `support_access_grants` is protected by row-level security (8 tables in `reos:tenancy:check`).
+
+## Addendum (A4.3a): invitations, seats and several tenants
+
+- **Invitations** (`invitations`, row-level security) belong to the tenant whose seat they take; a team's invites belong to its brokerage and name the team.
+  - One person or many (pasted lines or a CSV, up to 500), by email or text, with a role, an optional team and the message language.
+  - Who invites whom: brokers invite agents, mentors and brokers; team leaders invite agents into their own team only; school admins invite instructors, candidates, mentors and school admins; association admins invite co-admins; provider businesses invite providers.
+  - Each invite has a 48-character link token and an 8-character code (`XXXX-XXXX`, no look-alike characters). Both are looked up by SHA-256 hash and kept encrypted only so Resend and the reminder send the same ones.
+  - Invites expire after 14 days with one reminder at day 7 (`reos:invites:remind`, hourly), work once, and can be resent or withdrawn. Links are on the tenant's own address, so the page carries its brand.
+- **Accepting** links an account only when it is the one invited (same email, or same phone for text invites). A person with an account signs in first; a new person creates one there, with the email or phone verified by the link. Accepting gives the role and switches the person into it; other memberships stay, so one person can hold roles in several tenants (A3.2's switcher lists them).
+- **Seats:** the seat role is the one people pay for: agents in a brokerage (its teams included), instructors in a school, providers in a provider business. Admins and mentors take no seat; associations have no limit. Used seats count holders of the role plus open invites, so a batch that doesn't fit is refused whole, before anything is sent. "Ask for more seats" emails the tenant's owners, or REOS when an owner asks (once a day).
+- **Ask my broker:** agents in a brokerage see tools their brokerage connects for everyone (`accounts: tenant`) with "Ask my broker". The brokerage's owners get an email a minute later unless the agent undoes it; the ask is audited in the brokerage and counts as demand.
+- **Rate limits:** every route's limit has its own counter (`throttle:N,M,<route>`). Without the third parameter Laravel shares one counter per person across all routes, so five invites could block a later, unrelated action.
+- Audited: `invite.sent`, `invite.resent`, `invite.revoked`, `invite.accepted`, `seats.requested`, `connection.broker_asked`, all with the tenant. The audit log screen and the check that every admin action is audited come in A4.3b.

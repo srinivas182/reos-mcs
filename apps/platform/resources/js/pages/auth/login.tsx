@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { i18n } from '@/lib/i18n';
 /* @chisel-registration */
-import { register } from '@/routes';
+import { join, register } from '@/routes';
 /* @end-chisel-registration */
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
@@ -181,6 +181,12 @@ export default function Login({
                     </TextLink>
                 </p>
                 {/* @end-chisel-registration */}
+
+                <p className="text-center">
+                    <TextLink href={join()}>
+                        {t('signIn.login.haveCode')}
+                    </TextLink>
+                </p>
             </div>
         </>
     );

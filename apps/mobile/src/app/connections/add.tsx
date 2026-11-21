@@ -60,7 +60,9 @@ export default function AddConnection() {
       message:
         item.action === "join_beta"
           ? t("connections.library.betaToast", { tool: item.name })
-          : t("connections.library.notifyToast", { tool: item.name }),
+          : item.action === "ask_broker"
+            ? t("connections.askBroker.toast", { tool: item.name })
+            : t("connections.library.notifyToast", { tool: item.name }),
       onUndo: async () => {
         await setInterest(item.id, false);
         await reload();
@@ -84,6 +86,22 @@ export default function AddConnection() {
             })
           }
           accessibilityLabel={`${t("connections.library.connect")} ${item.name}`}
+        />
+      );
+    }
+    // A tool the brokerage connects once for everyone (A4.3a).
+    if (item.action === "ask_broker") {
+      if (item.interested)
+        return (
+          <Chip label={t("connections.askBroker.asked")} tone="neutral" />
+        );
+
+      return (
+        <Chip
+          label={t("connections.askBroker.button")}
+          tone="neutral"
+          onPress={() => void follow(item)}
+          accessibilityLabel={`${t("connections.askBroker.button")} · ${item.name}`}
         />
       );
     }

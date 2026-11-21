@@ -18,7 +18,12 @@ export default function AuthSplitLayout({
     description,
 }: AuthLayoutProps) {
     const { t } = useTranslation();
-    const { name, brand } = usePage().props;
+    const page = usePage();
+    const { name, brand } = page.props;
+    // People arriving to join (sign-up, an invite, a code) aren't "back".
+    const newcomer = ['auth/register', 'auth/invite', 'auth/join'].includes(
+        page.component,
+    );
     const host = typeof window === 'undefined' ? '' : window.location.host;
 
     const mark = brand ? (
@@ -49,9 +54,11 @@ export default function AuthSplitLayout({
                 </Link>
                 <div className="max-w-xl space-y-4">
                     <p className="text-5xl leading-[1.08] font-bold tracking-tight text-balance">
-                        {brand
-                            ? t(`signIn.brand.welcome.${brand.type}`)
-                            : t('signIn.brand.welcomeBack')}
+                        {newcomer
+                            ? t('signIn.brand.welcomeNew')
+                            : brand
+                              ? t(`signIn.brand.welcome.${brand.type}`)
+                              : t('signIn.brand.welcomeBack')}
                     </p>
                     {host ? (
                         <p className="text-lg text-reos-hero-muted">{host}</p>

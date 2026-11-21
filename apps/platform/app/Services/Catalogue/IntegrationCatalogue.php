@@ -7,6 +7,8 @@ namespace App\Services\Catalogue;
 use App\Catalogue\CatalogueStatus;
 use App\Catalogue\LibraryGroup;
 use App\Connections\ConnectorRegistry;
+use App\Enums\OrganisationType;
+use App\Integrations\AccountScope;
 use App\Integrations\Catalogue;
 use App\Integrations\IntegrationDefinition;
 use App\Models\CatalogueSetting;
@@ -15,10 +17,14 @@ use App\Models\IntegrationInterest;
 use App\Models\Organisation;
 use App\Models\ToolRequest;
 use App\Models\User;
+use App\Notifications\BrokerAsked;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Integrations\IntegrationHub;
+use App\Services\Tenancy\SupportAccess;
+use App\Tenancy\Tenancy;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 
 /**
  * The integrations catalogue (B3.2, ADR 0014): what people see for each tool
@@ -41,6 +47,9 @@ final readonly class IntegrationCatalogue
     public const ACTION_JOIN_BETA = 'join_beta';
 
     public const ACTION_NOTIFY = 'notify';
+
+    /** Tools the brokerage connects for everyone (A4.3a): the agent asks their broker. */
+    public const ACTION_ASK_BROKER = 'ask_broker';
 
     public const ACTION_NONE = 'none';
 
@@ -111,6 +120,7 @@ final readonly class IntegrationCatalogue
         $membership = $this->activeRole->for($user);
         $state = $user->target_state ?? config()->string('reos.region.code');
         $hidden = $membership === null ? [] : $this->hiddenBy($membership->organisation);
+        $brokerage = $this->brokerageOf($membership?->organisation);
         $interests = IntegrationInterest::query()->where('user_id', $user->id)->pluck('kind', 'integration_id')->all();
         $connected = Connection::query()->where('owner_type', Connection::OWNER_USER)->where('owner_id', $user->id)
             ->selectRaw('integration_id, count(*) as total')->groupBy('integration_id')->pluck('total', 'integration_id')->all();
@@ -125,6 +135,11 @@ final readonly class IntegrationCatalogue
             }
 
             [$shown, $action] = $this->forPerson($definition, $status, $setting, $membership?->organisation->id);
+
+            // A brokerage connects these once for everyone: its agents ask their broker.
+            if ($definition->accounts === AccountScope::Tenant && $brokerage !== null && ! in_array($shown, [CatalogueStatus::Paused, CatalogueStatus::Retired], true)) {
+                $action = self::ACTION_ASK_BROKER;
+            }
 
             $items[] = [
                 'definition' => $definition,
@@ -160,13 +175,53 @@ final readonly class IntegrationCatalogue
     {
         $item = collect($this->forUser($user))->first(static fn (array $i): bool => $i['definition']->id === $integrationId);
 
-        if ($item === null || ! in_array($item['action'], [self::ACTION_NOTIFY, self::ACTION_JOIN_BETA], true)) {
+        if ($item === null || ! in_array($item['action'], [self::ACTION_NOTIFY, self::ACTION_JOIN_BETA, self::ACTION_ASK_BROKER], true)) {
             return false;
         }
 
-        $this->setInterest($user, $integrationId, $item['action'] === self::ACTION_JOIN_BETA ? IntegrationInterest::BETA : IntegrationInterest::NOTIFY, true);
+        $kind = match ($item['action']) {
+            self::ACTION_JOIN_BETA => IntegrationInterest::BETA,
+            self::ACTION_ASK_BROKER => IntegrationInterest::BROKER,
+            default => IntegrationInterest::NOTIFY,
+        };
+        $new = ! IntegrationInterest::query()->where(['integration_id' => $integrationId, 'user_id' => $user->id])->exists();
+        $this->setInterest($user, $integrationId, $kind, true);
+
+        if ($kind === IntegrationInterest::BROKER && $new) {
+            $this->askBroker($user, $item['definition']);
+        }
 
         return true;
+    }
+
+    /**
+     * The brokerage of the role in use: the brokerage itself, or a team's
+     * brokerage. Null for everyone else.
+     */
+    public function brokerageOf(?Organisation $organisation): ?Organisation
+    {
+        return match ($organisation?->type) {
+            OrganisationType::Brokerage => $organisation,
+            OrganisationType::Team => $organisation->parent?->type === OrganisationType::Brokerage ? $organisation->parent : null,
+            default => null,
+        };
+    }
+
+    /**
+     * "Ask my broker": the brokerage's owners hear who asked for which tool
+     * (a minute later, so Undo can stop it), audited in the brokerage.
+     */
+    private function askBroker(User $user, IntegrationDefinition $definition): void
+    {
+        $brokerage = $this->brokerageOf($this->activeRole->for($user)?->organisation);
+
+        if ($brokerage === null) {
+            return;
+        }
+
+        $owners = app(SupportAccess::class)->owners($brokerage);
+        Notification::send($owners, (new BrokerAsked($user, $definition->id, $definition->name))->delay(now()->addMinute()));
+        app(Tenancy::class)->run($brokerage->id, fn () => $this->audit->record('connection.broker_asked', 'integration', $definition->id, ['brokerage_id' => $brokerage->id], $user, $brokerage->id));
     }
 
     /** "My tool isn't listed": counted when choosing what to connect next. */

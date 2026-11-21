@@ -20,6 +20,7 @@ const catalogue: CatalogueItem[] = [
   item({ id: 'follow-up-boss', name: 'Follow Up Boss', purpose: 'Contacts, notes and tasks.', status: 'coming_soon', action: 'notify' }),
   item({ id: 'lofty', name: 'Lofty', purpose: 'Contacts, notes and tasks.', status: 'coming_soon', action: 'notify', interested: true }),
   item({ id: 'skyslope', name: 'SkySlope', purpose: 'Files and deadlines.', group: 'deals', status: 'paused', action: 'none', accounts: 'tenant' }),
+  item({ id: 'lone-wolf', name: 'Lone Wolf Transactions', purpose: 'Deals and commissions.', group: 'deals', status: 'coming_soon', action: 'ask_broker', accounts: 'tenant' }),
 ];
 
 const calendar: Connection = {
@@ -126,10 +127,20 @@ describe('Add a connection (screens 2–4)', () => {
     expect(mockApi.POST).toHaveBeenCalledWith('/catalogue/{tool}/interest', { params: { path: { tool: 'follow-up-boss' } } });
   });
 
+  it('asks the broker for a tool the brokerage sets up, with Undo', async () => {
+    await renderScreen(<AddConnection />);
+
+    await fireEvent.press(screen.getByRole('radio', { name: 'Deals' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Ask my broker · Lone Wolf Transactions' }));
+
+    await waitFor(() => expect(screen.getByText('Asked your broker to set up Lone Wolf Transactions.')).toBeOnTheScreen());
+    expect(mockApi.POST).toHaveBeenCalledWith('/catalogue/{tool}/interest', { params: { path: { tool: 'lone-wolf' } } });
+  });
+
   it('searches every tab at once', async () => {
     await renderScreen(<AddConnection />);
 
-    await fireEvent.changeText(screen.getByLabelText('Search 4 tools'), 'sky');
+    await fireEvent.changeText(screen.getByLabelText('Search 5 tools'), 'sky');
     expect(screen.getByText('SkySlope')).toBeOnTheScreen();
     expect(screen.queryByText('Follow Up Boss')).toBeNull();
   });
