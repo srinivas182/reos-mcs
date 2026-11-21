@@ -11,6 +11,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
+require __DIR__.'/admin.php';
 
 // Accounts (A3.1): Google, Apple and phone-code sign-in on the web. The
 // callback addresses are the ones Settings › Integrations shows each provider.

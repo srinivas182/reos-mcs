@@ -11,8 +11,8 @@ import type {
 } from '@/components/grant-role-form';
 import Heading from '@/components/heading';
 import { MembershipList } from '@/components/membership-list';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
-import { i18n } from '@/lib/i18n';
 import { roleName } from '@/lib/roles';
 import { undoToast } from '@/lib/undo-toast';
 import { index } from '@/routes/people';
@@ -126,43 +126,40 @@ export default function PersonShow({
         <>
             <Head title={name} />
 
-            <div className="space-y-8">
-                <Button variant="ghost" asChild className="-ml-3">
-                    <Link href={index()}>
-                        <ArrowLeft aria-hidden />
-                        {t('people.back')}
-                    </Link>
-                </Button>
-
-                <header className="space-y-2">
-                    <h1 className="text-title font-semibold text-foreground">
-                        {name}
-                    </h1>
-                    <p className="text-body text-muted-foreground">
-                        {[person.email, person.phone]
-                            .filter(Boolean)
-                            .join(' · ')}
-                    </p>
-                    <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-body text-muted-foreground">
-                        {person.joined_at ? (
-                            <span>
-                                {t('people.joined', {
-                                    date: when(person.joined_at),
-                                })}
-                            </span>
-                        ) : null}
-                        <span className="flex items-center gap-1">
-                            {person.two_step ? (
-                                <ShieldCheck aria-hidden className="size-4" />
-                            ) : (
-                                <ShieldAlert aria-hidden className="size-4" />
-                            )}
-                            {person.two_step
-                                ? t('people.twoStepOn')
-                                : t('people.twoStepOff')}
+            <div className="space-y-8 px-4 py-6 md:px-8">
+                <PageHeader
+                    title={name}
+                    description={[person.email, person.phone]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    back={
+                        <Button variant="ghost" asChild className="-ml-3">
+                            <Link href={index()}>
+                                <ArrowLeft aria-hidden />
+                                {t('people.back')}
+                            </Link>
+                        </Button>
+                    }
+                />
+                <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-body text-muted-foreground">
+                    {person.joined_at ? (
+                        <span>
+                            {t('people.joined', {
+                                date: when(person.joined_at),
+                            })}
                         </span>
-                    </p>
-                </header>
+                    ) : null}
+                    <span className="flex items-center gap-1">
+                        {person.two_step ? (
+                            <ShieldCheck aria-hidden className="size-4" />
+                        ) : (
+                            <ShieldAlert aria-hidden className="size-4" />
+                        )}
+                        {person.two_step
+                            ? t('people.twoStepOn')
+                            : t('people.twoStepOff')}
+                    </span>
+                </p>
 
                 <section className="space-y-4">
                     <Heading
@@ -251,14 +248,3 @@ export default function PersonShow({
         </>
     );
 }
-
-PersonShow.layout = {
-    breadcrumbs: [
-        {
-            get title() {
-                return i18n.t('people.title');
-            },
-            href: index(),
-        },
-    ],
-};

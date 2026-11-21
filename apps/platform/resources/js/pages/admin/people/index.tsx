@@ -2,11 +2,10 @@ import { Form, Head, Link } from '@inertiajs/react';
 import { ChevronRight, SearchX, ShieldCheck, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
-import Heading from '@/components/heading';
+import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { i18n } from '@/lib/i18n';
 import { membershipLabel } from '@/lib/roles';
 import { index, show } from '@/routes/people';
 import type { Person } from '@/types/people';
@@ -31,9 +30,8 @@ export default function PeopleIndex({ search, people }: Props) {
         <>
             <Head title={t('people.title')} />
 
-            <div className="space-y-6">
-                <Heading
-                    variant="small"
+            <div className="space-y-6 px-4 py-6 md:px-8">
+                <PageHeader
                     title={t('people.title')}
                     description={t('people.description')}
                 />
@@ -187,14 +185,3 @@ export default function PeopleIndex({ search, people }: Props) {
         </>
     );
 }
-
-PeopleIndex.layout = {
-    breadcrumbs: [
-        {
-            get title() {
-                return i18n.t('people.title');
-            },
-            href: index(),
-        },
-    ],
-};

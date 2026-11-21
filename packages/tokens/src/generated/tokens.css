@@ -40,6 +40,12 @@
     --reos-hero-accent: #93C5FD;
     --reos-hero-progress: #4ADE80;
     --reos-hero-track: #334155;
+    --reos-nav-bg: #0F172A;
+    --reos-nav-panel: #1E293B;
+    --reos-nav-text: #FFFFFF;
+    --reos-nav-muted: #CBD5E1;
+    --reos-nav-active: #2952CC;
+    --reos-on-nav-active: #FFFFFF;
 
     /* shadcn/ui names */
     --background: var(--reos-page);
@@ -61,14 +67,14 @@
     --border: var(--reos-border);
     --input: var(--reos-border-control);
     --ring: var(--reos-focus);
-    --sidebar: var(--reos-surface);
-    --sidebar-foreground: var(--reos-text);
-    --sidebar-primary: var(--reos-action);
-    --sidebar-primary-foreground: var(--reos-on-action);
-    --sidebar-accent: var(--reos-action-tint);
-    --sidebar-accent-foreground: var(--reos-text);
-    --sidebar-border: var(--reos-border);
-    --sidebar-ring: var(--reos-focus);
+    --sidebar: var(--reos-nav-bg);
+    --sidebar-foreground: var(--reos-nav-text);
+    --sidebar-primary: var(--reos-nav-active);
+    --sidebar-primary-foreground: var(--reos-on-nav-active);
+    --sidebar-accent: var(--reos-nav-panel);
+    --sidebar-accent-foreground: var(--reos-nav-text);
+    --sidebar-border: var(--reos-nav-panel);
+    --sidebar-ring: var(--reos-nav-text);
     --chart-1: var(--reos-action);
     --chart-2: var(--reos-success);
     --chart-3: var(--reos-warning);
@@ -116,6 +122,12 @@
     --reos-hero-accent: #93C5FD;
     --reos-hero-progress: #4ADE80;
     --reos-hero-track: #334155;
+    --reos-nav-bg: #0B1120;
+    --reos-nav-panel: #1E293B;
+    --reos-nav-text: #F8FAFC;
+    --reos-nav-muted: #CBD5E1;
+    --reos-nav-active: #2952CC;
+    --reos-on-nav-active: #FFFFFF;
 
     /* shadcn/ui names */
     --background: var(--reos-page);
@@ -137,14 +149,14 @@
     --border: var(--reos-border);
     --input: var(--reos-border-control);
     --ring: var(--reos-focus);
-    --sidebar: var(--reos-surface);
-    --sidebar-foreground: var(--reos-text);
-    --sidebar-primary: var(--reos-action);
-    --sidebar-primary-foreground: var(--reos-on-action);
-    --sidebar-accent: var(--reos-action-tint);
-    --sidebar-accent-foreground: var(--reos-text);
-    --sidebar-border: var(--reos-border);
-    --sidebar-ring: var(--reos-focus);
+    --sidebar: var(--reos-nav-bg);
+    --sidebar-foreground: var(--reos-nav-text);
+    --sidebar-primary: var(--reos-nav-active);
+    --sidebar-primary-foreground: var(--reos-on-nav-active);
+    --sidebar-accent: var(--reos-nav-panel);
+    --sidebar-accent-foreground: var(--reos-nav-text);
+    --sidebar-border: var(--reos-nav-panel);
+    --sidebar-ring: var(--reos-nav-text);
     --chart-1: var(--reos-action);
     --chart-2: var(--reos-success);
     --chart-3: var(--reos-warning);
@@ -191,6 +203,12 @@
     --reos-hero-accent: #BFD3FF;
     --reos-hero-progress: #4ADE80;
     --reos-hero-track: #475569;
+    --reos-nav-bg: #000000;
+    --reos-nav-panel: #0F172A;
+    --reos-nav-text: #FFFFFF;
+    --reos-nav-muted: #FFFFFF;
+    --reos-nav-active: #1E3FA3;
+    --reos-on-nav-active: #FFFFFF;
 
     /* shadcn/ui names */
     --background: var(--reos-page);
@@ -212,14 +230,14 @@
     --border: var(--reos-border);
     --input: var(--reos-border-control);
     --ring: var(--reos-focus);
-    --sidebar: var(--reos-surface);
-    --sidebar-foreground: var(--reos-text);
-    --sidebar-primary: var(--reos-action);
-    --sidebar-primary-foreground: var(--reos-on-action);
-    --sidebar-accent: var(--reos-action-tint);
-    --sidebar-accent-foreground: var(--reos-text);
-    --sidebar-border: var(--reos-border);
-    --sidebar-ring: var(--reos-focus);
+    --sidebar: var(--reos-nav-bg);
+    --sidebar-foreground: var(--reos-nav-text);
+    --sidebar-primary: var(--reos-nav-active);
+    --sidebar-primary-foreground: var(--reos-on-nav-active);
+    --sidebar-accent: var(--reos-nav-panel);
+    --sidebar-accent-foreground: var(--reos-nav-text);
+    --sidebar-border: var(--reos-nav-panel);
+    --sidebar-ring: var(--reos-nav-text);
     --chart-1: var(--reos-action);
     --chart-2: var(--reos-success);
     --chart-3: var(--reos-warning);

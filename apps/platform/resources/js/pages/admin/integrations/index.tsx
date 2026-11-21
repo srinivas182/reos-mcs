@@ -3,13 +3,12 @@ import { ChevronRight, KeyRound, SearchX } from 'lucide-react';
 import { useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
-import Heading from '@/components/heading';
+import { PageHeader } from '@/components/page-header';
 import { ModeBadge } from '@/components/integration-badges';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { i18n } from '@/lib/i18n';
-import { index, show } from '@/routes/integrations';
+import { show } from '@/routes/integrations';
 import type { IntegrationCategory, IntegrationSummary } from '@/types';
 
 type Props = {
@@ -59,12 +58,9 @@ export default function IntegrationsIndex({ integrations }: Props) {
         <>
             <Head title={t('integrations.title')} />
 
-            <h1 className="sr-only">{t('integrations.title')}</h1>
-
-            <div className="space-y-8">
+            <div className="space-y-8 px-4 py-6 md:px-8">
                 <div className="space-y-2">
-                    <Heading
-                        variant="small"
+                    <PageHeader
                         title={t('integrations.title')}
                         description={t('integrations.description')}
                     />
@@ -167,14 +163,3 @@ function IntegrationRow({ integration }: { integration: IntegrationSummary }) {
         </Link>
     );
 }
-
-IntegrationsIndex.layout = {
-    breadcrumbs: [
-        {
-            get title() {
-                return i18n.t('integrations.title');
-            },
-            href: index(),
-        },
-    ],
-};

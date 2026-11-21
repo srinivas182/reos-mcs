@@ -2,8 +2,6 @@ import { Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
 import AppearanceSettings from '@/components/appearance-settings';
 import Heading from '@/components/heading';
-import { i18n } from '@/lib/i18n';
-import { edit as editAppearance } from '@/routes/appearance';
 
 export default function Appearance() {
     const { t } = useTranslation();
@@ -25,14 +23,3 @@ export default function Appearance() {
         </>
     );
 }
-
-Appearance.layout = {
-    breadcrumbs: [
-        {
-            get title() {
-                return i18n.t('appearance.pageTitle');
-            },
-            href: editAppearance(),
-        },
-    ],
-};

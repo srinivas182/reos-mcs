@@ -172,11 +172,11 @@ describe('admin screens', function () {
     it('sends an admin without two-step to set it up', function () {
         $admin = User::factory()->withRole(Role::SuperAdmin)->create();
 
-        $this->actingAs($admin)->get('/settings/integrations')
+        $this->actingAs($admin)->get('/admin/integrations')
             ->assertRedirect(route('security.edit'))
             ->assertSessionHas('status', 'two-step-required');
 
-        $this->actingAs($admin)->getJson('/settings/integrations')
+        $this->actingAs($admin)->getJson('/admin/integrations')
             ->assertForbidden()
             ->assertJsonPath('reason', 'roles.errors.twoStepRequired');
     });
@@ -185,14 +185,14 @@ describe('admin screens', function () {
         $admin = User::factory()->superAdmin()->create();
 
         $this->actingAs($admin)->withSession(['auth.password_confirmed_at' => time()])
-            ->get('/settings/integrations')
+            ->get('/admin/integrations')
             ->assertOk();
     });
 
     it('keeps everyone else out', function () {
         $broker = User::factory()->withTwoFactor()->withRole(Role::Broker)->create();
 
-        $this->actingAs($broker)->get('/settings/integrations')->assertForbidden();
+        $this->actingAs($broker)->get('/admin/integrations')->assertForbidden();
     });
 
     it('shares roles with the web app', function () {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Settings;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AuditEventResource;
@@ -21,7 +21,7 @@ final class IntegrationController extends Controller
 {
     public function index(Request $request, IntegrationHub $hub): Response
     {
-        return Inertia::render('settings/integrations/index', [
+        return Inertia::render('admin/integrations/index', [
             'integrations' => array_map(
                 static fn (array $row): array => (new IntegrationSummaryResource($row['definition'], $row['status']))->resolve($request),
                 $hub->overview(),
@@ -40,7 +40,7 @@ final class IntegrationController extends Controller
             $checks[$environment->value] = $hub->latestCheck($integration, $environment);
         }
 
-        return Inertia::render('settings/integrations/show', [
+        return Inertia::render('admin/integrations/show', [
             'integration' => (new IntegrationDetailResource(
                 $integration,
                 $status,

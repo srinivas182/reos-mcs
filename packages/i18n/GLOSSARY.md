@@ -1,0 +1,41 @@
+# Spanish glossary
+
+REOS Spanish is for people in Texas and the US, many of whom also use English apps every day. Use the words they already see in Google, Apple, Microsoft, banking apps and Texas real estate. Pick the term from this table, and add new terms here in the same change that first uses them.
+
+**Register:** use the formal *usted* everywhere ("Elija", "su cuenta"), on the web, in the phone app and in emails. Use the neutral Latin American Spanish common in the US; avoid terms specific to Spain ("ordenador", "móvil" for a phone, "vale").
+
+| English | Spanish | Notes |
+| --- | --- | --- |
+| Sign in / Sign out | Iniciar sesión / Cerrar sesión | |
+| Sign up | Registrarse | |
+| Account | Cuenta | |
+| Settings | Configuración | |
+| Dashboard (menu item) | Inicio | The page itself is "su panel" |
+| Overview (super admin) | Resumen | |
+| Password | Contraseña | |
+| Two-step sign-in, two-step | Verificación en dos pasos | Google's and Microsoft's term. Never "2FA" on screen |
+| Authenticator app | Aplicación de autenticación | |
+| Recovery codes | Códigos de recuperación | |
+| Passkey | Llave de acceso | Apple's and Google's term |
+| Device | Dispositivo | |
+| Phone, mobile number | Teléfono, número de celular | Not "móvil" |
+| Computer | Computadora | Not "ordenador" |
+| Email | Correo electrónico (short: correo) | |
+| Add | Agregar | Not "añadir" |
+| Remove | Quitar | Delete (permanent) is "Eliminar" |
+| Role | Rol | |
+| Organisation | Organización | |
+| Brokerage | Agencia inmobiliaria (short: agencia) | |
+| Broker | Bróker | |
+| Licensed agent | Agente con licencia | |
+| Sales agent (licence type) | Agente de ventas | |
+| Candidate | Candidato | |
+| Mentor, Instructor | Mentor, Instructor | |
+| School admin | Administrador de la escuela | |
+| Association admin | Administrador de la asociación | |
+| Service provider | Proveedor de servicios | |
+| REOS super admin | Superadministrador de REOS | |
+| Licence | Licencia | |
+| Continuing education (CE) | Educación continua (CE) | Keep "CE" and "TREC" as in English |
+| Integration | Integración | |
+| Demo data | Datos de demostración | |

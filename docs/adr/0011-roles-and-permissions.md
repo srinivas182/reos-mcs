@@ -42,8 +42,8 @@ One person can be a candidate, an agent, a broker, a mentor, an instructor, a sc
 - Demo personas carry their roles and organisations (`Personas.php`). Linda Park (broker) and Dana Brooks (mentor) are also agents, to show the role switcher.
 - Demo admins start without two-step on purpose, so the guided set-up can be shown.
 - **Web (A3.2b).**
-  - The role switcher is in the header (`PUT /settings/active-role`).
+  - The web shell follows the Web App Journey (page 4): a dark sidebar per role (`lib/navigation.ts`, journey order, only built pages shown) with the organisation block, and a top bar with the state chip, the **role chip** (the switcher, `PUT /settings/active-role`) and the person.
   - While an admin role waits for two-step, a banner offers "Set up two-step" or "Use another role", and Security settings puts the two-step choices first.
-  - Settings › People (super admin, two-step and a recent password confirmation) finds people by name, email or phone digits, grants roles only in organisations of the right kind, and removes them with Undo. Its "Recent changes" lists role changes only.
+  - The super admin's back office has its own menu (`/admin/…`): People (added by the Sprint 3 spec) and Integrations, not Settings. People (two-step and a recent password confirmation) finds people by name, email or phone digits, grants roles only in organisations of the right kind, and removes them with Undo. Its "Recent changes" lists role changes only.
 - A3.2c adds the switcher to the phone app's Me tab.
 - A4.1 adds row-level security per organisation. Until then, organisation scoping is done in policies.

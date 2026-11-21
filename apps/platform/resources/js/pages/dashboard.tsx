@@ -1,36 +1,44 @@
-import { Head } from '@inertiajs/react';
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
-import { dashboard } from '@/routes';
+import { Head, usePage } from '@inertiajs/react';
+import { LayoutDashboard } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { EmptyState } from '@/components/empty-state';
+import { PageHeader } from '@/components/page-header';
+import { activeMembership, roleName } from '@/lib/roles';
 
+/**
+ * Each role's dashboard (web journey screens 4, 12, 24, 30, 42, 49, 54, 58)
+ * is built in that role's sprint. Until then: the journey's greeting and an
+ * honest note instead of placeholder boxes.
+ */
 export default function Dashboard() {
+    const { t } = useTranslation();
+    const { auth } = usePage().props;
+    const current = activeMembership(auth.roles);
+    const first = auth.user.name?.split(' ')[0];
+    const title = first
+        ? t('dashboard.greeting', { name: first })
+        : t('dashboard.greetingNoName');
+
     return (
         <>
-            <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                </div>
-                <div className="relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div>
+            <Head title={t('nav.dashboard')} />
+            <div className="space-y-6 px-4 py-6 md:px-8">
+                <PageHeader
+                    title={title}
+                    description={
+                        current
+                            ? t('dashboard.description', {
+                                  role: roleName(t, current.role),
+                              })
+                            : undefined
+                    }
+                />
+                <EmptyState
+                    icon={LayoutDashboard}
+                    title={t('dashboard.comingTitle')}
+                    description={t('dashboard.comingDescription')}
+                />
             </div>
         </>
     );
 }
-
-Dashboard.layout = {
-    breadcrumbs: [
-        {
-            title: 'Dashboard',
-            href: dashboard(),
-        },
-    ],
-};

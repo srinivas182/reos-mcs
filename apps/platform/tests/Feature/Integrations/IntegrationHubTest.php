@@ -72,7 +72,7 @@ describe('access', function () {
             ->assertNotFound();
 
         $this->actingAs(admin())->withSession(confirmed())
-            ->put('/settings/integrations/stripe/keys/production', ['values' => STRIPE_LIVE])
+            ->put('/admin/integrations/stripe/keys/production', ['values' => STRIPE_LIVE])
             ->assertNotFound();
     });
 });
@@ -84,7 +84,7 @@ describe('the list', function () {
         $this->actingAs(admin())->withSession(confirmed())
             ->get(route('integrations.index'))
             ->assertInertia(fn (Assert $page) => $page
-                ->component('settings/integrations/index')
+                ->component('admin/integrations/index')
                 ->has('integrations', count($catalogue))
                 ->where('integrations.0.id', 'google-sign-in')
                 ->where('integrations.0.mode', 'simulator')
@@ -114,7 +114,7 @@ describe('keys', function () {
         $this->actingAs($admin)->withSession(confirmed())
             ->get(route('integrations.show', 'stripe'))
             ->assertInertia(fn (Assert $page) => $page
-                ->component('settings/integrations/show')
+                ->component('admin/integrations/show')
                 ->where('integration.keys.live', true)
                 ->where('integration.credentials.live.publishable_key', ['saved' => true, 'value' => 'example-publishable-key-0001', 'last4' => null])
                 ->where('integration.credentials.live.secret_key', ['saved' => true, 'value' => null, 'last4' => '9876'])

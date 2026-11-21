@@ -32,21 +32,21 @@ describe('People screen', function () {
         User::factory()->create(['name' => 'Sofia Reyes', 'email' => 'sofia@example.test']);
         User::factory()->create(['name' => 'James Miller', 'email' => 'james@example.test', 'phone' => '+17135550188']);
 
-        $this->get('/settings/people?search=SOFIA')
+        $this->get('/admin/people?search=SOFIA')
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('settings/people/index')
+                ->component('admin/people/index')
                 ->where('search', 'SOFIA')
                 ->has('people.data', 1)
                 ->where('people.data.0.name', 'Sofia Reyes'));
 
-        $this->get('/settings/people?search=0188')
+        $this->get('/admin/people?search=0188')
             ->assertInertia(fn (Assert $page) => $page->where('people.data.0.name', 'James Miller'));
 
-        $this->get('/settings/people?search=50%25')
+        $this->get('/admin/people?search=50%25')
             ->assertInertia(fn (Assert $page) => $page->has('people.data', 0));
 
-        $this->get('/settings/people')
+        $this->get('/admin/people')
             ->assertInertia(fn (Assert $page) => $page->where('people.total', 3));
     });
 
@@ -57,10 +57,10 @@ describe('People screen', function () {
         app(Memberships::class)->grant($person, Role::Instructor, $school, $admin);
         app(AuditLogger::class)->record('identity.signed_in', 'user', (string) $person->id);
 
-        $this->get("/settings/people/{$person->id}")
+        $this->get("/admin/people/{$person->id}")
             ->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('settings/people/show')
+                ->component('admin/people/show')
                 ->where('person.name', 'Rachel Hughes')
                 ->where('person.roles.0.role', 'instructor')
                 ->where('person.roles.0.organisation.name', 'Texas Realty School')
@@ -78,11 +78,11 @@ describe('People screen', function () {
         $brokerage = Organisation::factory()->create(['name' => 'Lone Star Realty']);
         $person = User::factory()->create();
 
-        $this->post("/settings/people/{$person->id}/roles", ['role' => 'agent', 'organisation_id' => $brokerage->id])
+        $this->post("/admin/people/{$person->id}/roles", ['role' => 'agent', 'organisation_id' => $brokerage->id])
             ->assertRedirect();
         expect(app(Memberships::class)->find($person, Role::Agent, $brokerage->id))->not->toBeNull();
 
-        $this->delete("/settings/people/{$person->id}/roles", ['role' => 'agent', 'organisation_id' => $brokerage->id])
+        $this->delete("/admin/people/{$person->id}/roles", ['role' => 'agent', 'organisation_id' => $brokerage->id])
             ->assertRedirect();
         expect(app(Memberships::class)->of($person))->toBe([]);
 
@@ -95,15 +95,15 @@ describe('People screen', function () {
         $school = Organisation::factory()->ofType(OrganisationType::School)->create();
         $person = User::factory()->create();
 
-        $this->from("/settings/people/{$person->id}")
-            ->post("/settings/people/{$person->id}/roles", ['role' => 'broker', 'organisation_id' => $school->id])
-            ->assertRedirect("/settings/people/{$person->id}")
+        $this->from("/admin/people/{$person->id}")
+            ->post("/admin/people/{$person->id}/roles", ['role' => 'broker', 'organisation_id' => $school->id])
+            ->assertRedirect("/admin/people/{$person->id}")
             ->assertSessionHasErrors(['role' => "That role can't be held in this kind of organisation."]);
 
-        $this->post("/settings/people/{$person->id}/roles", ['role' => 'king', 'organisation_id' => 999])
+        $this->post("/admin/people/{$person->id}/roles", ['role' => 'king', 'organisation_id' => 999])
             ->assertSessionHasErrors(['role', 'organisation_id']);
 
-        $this->delete("/settings/people/{$admin->id}/roles", ['role' => 'super_admin', 'organisation_id' => Organisation::platform()->id])
+        $this->delete("/admin/people/{$admin->id}/roles", ['role' => 'super_admin', 'organisation_id' => Organisation::platform()->id])
             ->assertSessionHasErrors('role');
         expect(app(Memberships::class)->holders(Role::SuperAdmin))->toHaveCount(1);
     });
@@ -113,25 +113,25 @@ describe('People screen', function () {
 
         $this->actingAs(User::factory()->withTwoFactor()->withRole(Role::Broker)->create())
             ->withSession(['auth.password_confirmed_at' => time()])
-            ->get('/settings/people')
+            ->get('/admin/people')
             ->assertForbidden();
 
         $this->actingAs(User::factory()->withTwoFactor()->withRole(Role::Broker)->create())
-            ->post("/settings/people/{$person->id}/roles", ['role' => 'agent', 'organisation_id' => Organisation::platform()->id])
+            ->post("/admin/people/{$person->id}/roles", ['role' => 'agent', 'organisation_id' => Organisation::platform()->id])
             ->assertForbidden();
 
         $this->actingAs(User::factory()->withRole(Role::SuperAdmin)->create())
-            ->get('/settings/people')
+            ->get('/admin/people')
             ->assertRedirect(route('security.edit'));
 
-        $this->get('/settings/people')->assertRedirect(route('security.edit'));
+        $this->get('/admin/people')->assertRedirect(route('security.edit'));
         auth()->logout();
-        $this->get('/settings/people')->assertRedirect(route('login'));
+        $this->get('/admin/people')->assertRedirect(route('login'));
     });
 
     it('asks a super admin to confirm their password first', function () {
         $this->actingAs(User::factory()->superAdmin()->create())
-            ->get('/settings/people')
+            ->get('/admin/people')
             ->assertRedirect();
     });
 });

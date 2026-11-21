@@ -16,12 +16,21 @@
     "menu": "Menu",
     "dashboard": "Dashboard",
     "settings": "Settings",
-    "settingsDescription": "Manage your profile and account settings",
+    "settingsDescription": "Account, roles, privacy and notifications",
     "profile": "Profile",
     "security": "Security",
     "appearance": "Appearance and language",
     "integrations": "Integrations",
-    "people": "People"
+    "people": "People",
+    "overview": "Overview",
+    "account": "Account",
+    "organisation": "Organisation",
+    "platform": "Platform",
+    "signOut": "Sign out",
+    "openMenu": "Open the menu",
+    "mainMenu": "Main menu",
+    "userMenu": "Account menu for {{name}}",
+    "state": "State: {{state}}"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -621,19 +630,33 @@
       "removing": "Removing…",
       "removeConfirm": "Remove passkey",
       "keep": "Keep it"
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "Your name and email address.",
+      "name": "Name",
+      "namePlaceholder": "Full name",
+      "email": "Email address",
+      "unverified": "Your email address isn't confirmed yet.",
+      "resend": "Send the confirmation email again",
+      "sent": "We've sent a new confirmation link to your email.",
+      "save": "Save",
+      "saved": "Profile saved.",
+      "rolesTitle": "Account and roles",
+      "rolesDescription": "Your roles and where you hold them. Ask your administrator to add or change a role."
     }
   },
   "roles": {
     "names": {
       "candidate": "Candidate",
-      "agent": "Agent",
+      "agent": "Licensed agent",
       "broker": "Broker",
       "mentor": "Mentor",
       "instructor": "Instructor",
       "school_admin": "School admin",
       "provider": "Service provider",
       "association_admin": "Association admin",
-      "super_admin": "Super admin"
+      "super_admin": "REOS super admin"
     },
     "organisationTypes": {
       "platform": "On my own",
@@ -720,5 +743,12 @@
       "someone": "Someone",
       "unknownOrganisation": "an organisation"
     }
+  },
+  "dashboard": {
+    "greeting": "Hi {{name}}",
+    "greetingNoName": "Welcome to REOS",
+    "description": "You're using REOS as {{role}}.",
+    "comingTitle": "Your dashboard is on its way",
+    "comingDescription": "Your plan, progress and the things that need you will appear here as each part of REOS goes live."
   }
 }

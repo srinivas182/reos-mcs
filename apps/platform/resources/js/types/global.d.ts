@@ -11,6 +11,8 @@ declare module '@inertiajs/core' {
         sharedPageProps: {
             name: string;
             auth: Auth;
+            /** The state you're working in (the journey's state chip). */
+            region: { code: string; name: string } | null;
             sidebarOpen: boolean;
             [key: string]: unknown;
         };
