@@ -3334,11 +3334,7 @@
                     }
                 },
                 "required": [
-                    "title",
-                    "starts_at",
-                    "ends_at",
-                    "start_date",
-                    "end_date"
+                    "title"
                 ],
                 "title": "SaveCalendarEventRequest"
             },

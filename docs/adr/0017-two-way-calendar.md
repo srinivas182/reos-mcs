@@ -34,3 +34,9 @@ Sprint 4 decision 1 keeps calendars only: Gmail and Outlook mail are not read or
 - A sign-in made before write access (B3.1's read-only scope) is refused by Google when REOS first writes (403 `insufficientPermissions`); the connection asks to reconnect, and the waiting change is written afterwards.
 - Busy-only calendars never store titles, places or guests, which keeps personal calendars private by design.
 - Recurring events are read as their instances (`singleEvents`); changing a series from REOS is not supported (an instance changes alone).
+
+## Screens (B4.1b)
+
+- **Web, agent dashboard (screen 12):** a Today card lists the day's events with the tool each lives in and when, opens any item, and offers New appointment. "Today" is the browser's day: the web app writes its time zone to the `reos_tz` cookie, and Texas time is used until it has (`PersonTimezone`). All-day events match by date, not by UTC hours.
+- **Phone, Today:** agents see the same day as a list of rows, and New appointment opens a sheet. The date moves a day at a time and the start time 15 minutes at a time, with 48-point buttons, and the length is chosen from common durations, so no native date picker is needed.
+- Both show a conflict on its event (what was kept, the other version, Undo until the trail ends), a write that failed (Try again), and an event deleted in the tool after a REOS change (Bring it back). Deleting offers Undo instead of asking first.

@@ -2420,6 +2420,100 @@
       "notWritable": "No puede agregar eventos a ese calendario. Elija otro.",
       "writeNeedsFull": "Para agregar eventos de REOS a un calendario, configúrelo en «Leer y escribir».",
       "notACalendar": "Solo las herramientas de calendario tienen calendarios para elegir."
+    },
+    "today": "Hoy",
+    "todayAgenda": "Su calendario de hoy",
+    "what": "Qué",
+    "from": "Desde",
+    "when": "Cuándo",
+    "reos": "REOS",
+    "allDay": "Todo el día",
+    "busy": "Ocupado",
+    "untitled": "(Sin título)",
+    "newAppointment": "Nueva cita",
+    "appointment": "Cita",
+    "edit": "Editar",
+    "empty": "Nada en su calendario hoy",
+    "emptyBody": "Agregue una cita, o conecte su calendario en Conexiones para que sus reuniones aparezcan aquí.",
+    "connect": "Conectar un calendario",
+    "kinds": {
+      "appointment": "Cita",
+      "showing": "Visita",
+      "deadline": "Fecha límite",
+      "session": "Sesión",
+      "ce": "Educación continua (CE)",
+      "event": "Evento"
+    },
+    "fields": {
+      "title": "Qué",
+      "titlePlaceholder": "Visita — 1234 Oak Ridge Dr",
+      "kind": "Tipo",
+      "date": "Fecha",
+      "start": "Empieza",
+      "end": "Termina",
+      "startDate": "Primer día",
+      "endDate": "Último día",
+      "duration": "Duración",
+      "location": "Dónde",
+      "guests": "Invitados",
+      "guestsHint": "Direcciones de correo electrónico, separadas por comas.",
+      "notes": "Notas",
+      "notifyGuests": "Enviar una invitación por correo a los invitados",
+      "notifyHint": "Desactivado a menos que usted lo active: REOS nunca envía mensajes por usted."
+    },
+    "durations": {
+      "30": "30 min",
+      "45": "45 min",
+      "60": "1 hora",
+      "90": "1½ horas",
+      "120": "2 horas"
+    },
+    "step": {
+      "earlierDay": "Día anterior",
+      "laterDay": "Día siguiente",
+      "earlierTime": "15 minutos antes",
+      "laterTime": "15 minutos después"
+    },
+    "add": "Agregar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "cancel": "Cancelar",
+    "saved": "Agregada: {{title}}.",
+    "savedLocal": "Guardado en REOS.",
+    "updated": "Guardado.",
+    "deleted": "Se eliminó {{title}}.",
+    "retrying": "Intentando de nuevo.",
+    "writeTo": "Se agrega a {{calendar}} en {{tool}}.",
+    "writeToNone": "Se queda en REOS. Elija un calendario en Conexiones para agregarla también allí.",
+    "sync": {
+      "pending": "Guardando en {{tool}}…",
+      "failed": "Aún no se guardó en {{tool}}.",
+      "local": "Solo en REOS",
+      "short": "No guardado"
+    },
+    "tryAgain": "Intentar de nuevo",
+    "openIn": "Abrir en {{tool}}",
+    "inCalendar": "{{calendar}} · {{tool}}",
+    "readOnly": {
+      "busy": "Proviene de un calendario compartido como «solo ocupado», así que solo se muestra la hora.",
+      "calendar": "Este calendario no se puede cambiar desde REOS.",
+      "notOurs": "Creado en {{tool}}: elimínelo allí si lo necesita."
+    },
+    "conflict": {
+      "keptTool": "También se cambió en {{tool}}. Ese cambio era más reciente, así que se conservó.",
+      "keptReos": "También se cambió en {{tool}}. Su cambio en REOS era más reciente, así que se conservó.",
+      "deletedInReos": "Usted lo eliminó en REOS, pero luego cambió en {{tool}}, así que se conservó.",
+      "other": "La otra versión: {{title}}, {{when}}.",
+      "otherDeleted": "La otra versión: eliminada.",
+      "until": "Puede deshacerlo hasta el {{date}}.",
+      "undo": "Usar la otra versión",
+      "undone": "Listo. La otra versión está de vuelta.",
+      "short": "Cambiado en dos lugares"
+    },
+    "removed": {
+      "title": "Eliminado en su aplicación de calendario",
+      "body": "{{title}} se eliminó allí después de que usted lo cambió en REOS. Su versión se conserva hasta el {{date}}.",
+      "bringBack": "Recuperarlo"
     }
   }
 }

@@ -2420,6 +2420,100 @@
       "notWritable": "You can't add events to that calendar. Choose another one.",
       "writeNeedsFull": "To add REOS events to a calendar, set it to Read + write.",
       "notACalendar": "Only calendar tools have calendars to choose."
+    },
+    "today": "Today",
+    "todayAgenda": "Today's calendar",
+    "what": "What",
+    "from": "From",
+    "when": "When",
+    "reos": "REOS",
+    "allDay": "All day",
+    "busy": "Busy",
+    "untitled": "(No title)",
+    "newAppointment": "New appointment",
+    "appointment": "Appointment",
+    "edit": "Edit",
+    "empty": "Nothing on your calendar today",
+    "emptyBody": "Add an appointment, or connect your calendar in Connections so your meetings show here.",
+    "connect": "Connect a calendar",
+    "kinds": {
+      "appointment": "Appointment",
+      "showing": "Showing",
+      "deadline": "Deadline",
+      "session": "Session",
+      "ce": "CE",
+      "event": "Event"
+    },
+    "fields": {
+      "title": "What",
+      "titlePlaceholder": "Showing — 1234 Oak Ridge Dr",
+      "kind": "Type",
+      "date": "Date",
+      "start": "Starts",
+      "end": "Ends",
+      "startDate": "First day",
+      "endDate": "Last day",
+      "duration": "How long",
+      "location": "Where",
+      "guests": "Guests",
+      "guestsHint": "Email addresses, separated by commas.",
+      "notes": "Notes",
+      "notifyGuests": "Email the guests an invitation",
+      "notifyHint": "Off unless you turn it on: REOS never sends messages for you."
+    },
+    "durations": {
+      "30": "30 min",
+      "45": "45 min",
+      "60": "1 hour",
+      "90": "1½ hours",
+      "120": "2 hours"
+    },
+    "step": {
+      "earlierDay": "Previous day",
+      "laterDay": "Next day",
+      "earlierTime": "15 minutes earlier",
+      "laterTime": "15 minutes later"
+    },
+    "add": "Add",
+    "save": "Save",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "saved": "Added: {{title}}.",
+    "savedLocal": "Saved in REOS.",
+    "updated": "Saved.",
+    "deleted": "Deleted {{title}}.",
+    "retrying": "Trying again.",
+    "writeTo": "Goes to {{calendar}} in {{tool}}.",
+    "writeToNone": "Stays in REOS. Choose a calendar in Connections to add it there too.",
+    "sync": {
+      "pending": "Saving to {{tool}}…",
+      "failed": "Not saved to {{tool}} yet.",
+      "local": "Only in REOS",
+      "short": "Not saved"
+    },
+    "tryAgain": "Try again",
+    "openIn": "Open in {{tool}}",
+    "inCalendar": "{{calendar}} · {{tool}}",
+    "readOnly": {
+      "busy": "From a calendar shared as busy only, so only the time is shown.",
+      "calendar": "This calendar can't be changed from REOS.",
+      "notOurs": "Made in {{tool}}: delete it there if you need to."
+    },
+    "conflict": {
+      "keptTool": "Changed in {{tool}} too. That change was newer, so it was kept.",
+      "keptReos": "Changed in {{tool}} too. Your REOS change was newer, so it was kept.",
+      "deletedInReos": "You deleted this in REOS, but it changed in {{tool}} afterwards, so it was kept.",
+      "other": "The other version: {{title}}, {{when}}.",
+      "otherDeleted": "The other version: deleted.",
+      "until": "You can undo this until {{date}}.",
+      "undo": "Use the other version",
+      "undone": "Done. The other version is back.",
+      "short": "Changed in two places"
+    },
+    "removed": {
+      "title": "Deleted in your calendar app",
+      "body": "{{title}} was deleted there after you changed it in REOS. Your version is kept until {{date}}.",
+      "bringBack": "Bring it back"
     }
   }
 }

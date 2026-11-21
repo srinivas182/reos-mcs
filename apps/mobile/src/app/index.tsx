@@ -5,9 +5,11 @@ import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import { TodayAgenda } from '@/features/calendar/TodayAgenda';
 import { fetchHealth, type Health } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { toolInitials, useConnections } from '@/lib/connections';
+import { activeMembership } from '@/lib/roles';
 import { timeAgo } from '@/lib/time';
 import { Avatar, Button, Card, ListRow, Screen, SyncAlert, Text } from '@/ui';
 
@@ -16,8 +18,9 @@ type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'err
 /**
  * Placeholder home until Today is built (A3.3 onward): the REOS brand, your
  * initials (→ Me), a red card for any connection that stopped syncing
- * (Connections and Sync journey, screen 26), a live check of the platform
- * API and, in development, the component gallery.
+ * (Connections and Sync journey, screen 26), today's calendar for agents
+ * (B4.1), a live check of the platform API and, in development, the
+ * component gallery.
  */
 export default function HomeScreen() {
   const { t, i18n } = useTranslation();
@@ -25,6 +28,7 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const { connections } = useConnections();
   const broken = (connections ?? []).filter((connection) => connection.status === 'reconnect_needed');
+  const agent = activeMembership(user)?.role === 'agent';
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
 
@@ -71,6 +75,8 @@ export default function HomeScreen() {
           onPress={() => router.push({ pathname: '/reconnect/[id]', params: { id: String(connection.id) } })}
         />
       ))}
+      {/* Today's calendar for agents (B4.1); the rest of Today arrives with the agent sprints. */}
+      {agent ? <TodayAgenda /> : null}
       <Text variant="display">{t('common.appName')}</Text>
       <Text variant="bodyLarge" tone="body">
         {t('mobile.tagline')}

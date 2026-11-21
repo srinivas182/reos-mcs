@@ -22,14 +22,15 @@ final class CalendarRangeRequest extends FormRequest
         ];
     }
 
+    /** In the sender's own offset, which says which dates all-day events fall on. */
     public function from(): CarbonImmutable
     {
-        return CarbonImmutable::parse($this->string('from')->toString())->utc();
+        return CarbonImmutable::parse($this->string('from')->toString());
     }
 
     public function to(): CarbonImmutable
     {
-        return CarbonImmutable::parse($this->string('to')->toString())->utc();
+        return CarbonImmutable::parse($this->string('to')->toString());
     }
 
     private function latest(): string
