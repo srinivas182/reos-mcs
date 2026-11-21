@@ -2,7 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Authorization\Membership;
+use App\Authorization\Permission;
+use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
+use App\Services\Authorization\ActiveRole;
+use App\Services\Authorization\Memberships;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
@@ -45,8 +50,10 @@ class HandleInertiaRequests extends Middleware
                 // People who signed up with a phone, Google or Apple have no password.
                 'hasPassword' => $request->user()?->password !== null,
                 'can' => [
-                    'manageIntegrations' => $request->user()?->can('manage-integrations') ?? false,
+                    'manageIntegrations' => $request->user()?->can(Permission::IntegrationsManage->value) ?? false,
                 ],
+                // Roles held, the one in use on this device, and what it allows (A3.2).
+                'roles' => fn () => $this->roles($request),
             ],
             'preferences' => [
                 'appearance' => View::shared('appearance', 'system'),
@@ -56,6 +63,32 @@ class HandleInertiaRequests extends Middleware
             // Public settings for browser error tracking and analytics (2.4c).
             'monitoring' => fn () => app(MonitoringRuntime::class)->clientConfig('web'),
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+        ];
+    }
+
+    /**
+     * @return array{held: list<array{role: string, organisation: array{id: int, name: string, type: string}, admin: bool}>, active: array{role: string, organisationId: int}|null, permissions: list<string>, twoStepRequired: bool}|null
+     */
+    private function roles(Request $request): ?array
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return null;
+        }
+
+        $active = app(ActiveRole::class);
+        $current = $active->for($user);
+
+        return [
+            'held' => array_map(static fn (Membership $m): array => [
+                'role' => $m->role->value,
+                'organisation' => ['id' => $m->organisation->id, 'name' => $m->organisation->name, 'type' => $m->organisation->type->value],
+                'admin' => $m->role->isAdmin(),
+            ], app(Memberships::class)->of($user)),
+            'active' => $current === null ? null : ['role' => $current->role->value, 'organisationId' => $current->organisation->id],
+            'permissions' => $active->permissions($user),
+            'twoStepRequired' => $active->needsTwoStep($user),
         ];
     }
 }

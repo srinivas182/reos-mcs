@@ -1,5 +1,6 @@
 <?php
 
+use App\Authorization\RoleRefused;
 use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -65,6 +66,18 @@ return Application::configure(basePath: dirname(__DIR__))
             $field = in_array($e->reason, ['identity.errors.wrongCode', 'identity.errors.locked'], true) ? 'code' : 'sign_in';
 
             return redirect()->route('login')->withInput($request->only('phone'))->withErrors([$field => $message]);
+        });
+
+        // Role problems (A3.2): a reason key the apps translate, or back with an error.
+        $exceptions->dontReport(RoleRefused::class);
+        $exceptions->render(function (RoleRefused $e, Request $request) {
+            $message = __($e->reason);
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message, 'reason' => $e->reason], $e->status);
+            }
+
+            return back()->withErrors(['role' => $message]);
         });
 
         $exceptions->shouldRenderJsonWhen(

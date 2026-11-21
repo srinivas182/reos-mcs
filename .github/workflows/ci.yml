@@ -114,10 +114,12 @@ jobs:
         run: pnpm types:check
       - name: API contract is up to date
         # Scramble reads model columns from the database, so it gets a
-        # throwaway SQLite one with the migrations applied.
+        # throwaway SQLite one with the migrations applied. No Redis here, and
+        # the roles migration clears the permission cache: use an in-memory one.
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: /tmp/scramble.sqlite
+          CACHE_STORE: array
         run: |
           touch /tmp/scramble.sqlite
           php artisan migrate --force --no-interaction --quiet

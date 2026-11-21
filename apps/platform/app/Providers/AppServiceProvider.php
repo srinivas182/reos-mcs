@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Authorization\Permission;
 use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Catalogue;
 use App\Integrations\Credentials\CredentialCipher;
@@ -10,6 +11,7 @@ use App\Integrations\Credentials\DatabaseCredentialVault;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
+use App\Services\Authorization\ActiveRole;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -48,6 +50,9 @@ class AppServiceProvider extends ServiceProvider
 
         // One per worker, so it remembers which settings it last applied.
         $this->app->singleton(MonitoringRuntime::class);
+
+        // The role in use is worked out once per request.
+        $this->app->scoped(ActiveRole::class);
     }
 
     /**
@@ -58,6 +63,21 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
         $this->configureIntegrations();
         $this->configureIdentity();
+        $this->configureRoles();
+    }
+
+    /**
+     * Roles and permissions (A3.2): a permission name passed to `can()` is
+     * answered by the person's active role, two-step included. Other
+     * abilities fall through to policies.
+     */
+    protected function configureRoles(): void
+    {
+        Gate::before(function (User $user, string $ability): ?bool {
+            $permission = Permission::tryFrom($ability);
+
+            return $permission === null ? null : $this->app->make(ActiveRole::class)->allows($user, $permission);
+        });
     }
 
     /**
@@ -86,13 +106,10 @@ class AppServiceProvider extends ServiceProvider
     }
 
     /**
-     * Super-admin access to the Integration Hub (Sprint 3 swaps the flag for
-     * the super-admin role), and `{integration}` route values resolved from
-     * the register's catalogue.
+     * `{integration}` route values resolved from the register's catalogue.
      */
     protected function configureIntegrations(): void
     {
-        Gate::define('manage-integrations', static fn (User $user): bool => $user->is_super_admin);
 
         Route::bind('integration', fn (string $id) => $this->app->make(Catalogue::class)->find($id)
             ?? throw new NotFoundHttpException);

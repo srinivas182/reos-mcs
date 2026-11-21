@@ -8,6 +8,7 @@ use App\Http\Controllers\Settings\IntegrationModeController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Middleware\ConfirmIdentity;
+use App\Http\Middleware\EnsureAdminTwoStep;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->group(function () {
@@ -40,7 +41,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 // Integration Hub (Sprint 2.4): super admin only, and the password must have
 // been confirmed recently, because these pages hold the platform's vendor keys.
-Route::middleware(['auth', 'verified', 'can:manage-integrations', ConfirmIdentity::class])
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:integrations.manage', ConfirmIdentity::class])
     ->prefix('settings/integrations')
     ->name('integrations.')
     ->group(function () {

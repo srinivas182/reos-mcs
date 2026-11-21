@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services\Integrations;
 
+use App\Authorization\Role;
 use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Checks\CheckTrigger;
 use App\Integrations\Checks\TesterRegistry;
 use App\Models\IntegrationSetting;
-use App\Models\User;
 use App\Notifications\IntegrationPaused;
 use App\Services\Audit\AuditLogger;
+use App\Services\Authorization\Memberships;
 use Illuminate\Support\Facades\Notification;
 
 /**
@@ -28,6 +29,7 @@ final readonly class HealthMonitor
         private ConnectionChecker $checker,
         private TesterRegistry $testers,
         private AuditLogger $audit,
+        private Memberships $memberships,
     ) {}
 
     /** @return array{checked: int, failed: int, paused: int} */
@@ -73,7 +75,7 @@ final readonly class HealthMonitor
             ]);
 
             Notification::send(
-                User::query()->where('is_super_admin', true)->get(),
+                $this->memberships->holders(Role::SuperAdmin),
                 new IntegrationPaused($definition, $check),
             );
         }

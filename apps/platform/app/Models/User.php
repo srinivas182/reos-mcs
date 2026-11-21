@@ -20,6 +20,7 @@ use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * @property int $id
@@ -37,7 +38,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Appearance $appearance
  * @property TextSize $text_size
  * @property Locale $locale
- * @property bool $is_super_admin
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, SocialAccount> $socialAccounts
@@ -47,7 +47,10 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail, PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+
+    /** Roles are held per organisation; see App\Services\Authorization. */
+    protected string $guard_name = 'web';
 
     /**
      * Defaults that match the database, so new models have them before saving.
@@ -58,7 +61,6 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         'appearance' => 'system',
         'text_size' => 'standard',
         'locale' => 'en',
-        'is_super_admin' => false,
     ];
 
     /** @return HasMany<SocialAccount, $this> */
@@ -101,7 +103,6 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
             'appearance' => Appearance::class,
             'text_size' => TextSize::class,
             'locale' => Locale::class,
-            'is_super_admin' => 'boolean',
             /* @chisel-2fa */
             'two_factor_confirmed_at' => 'datetime',
             /* @end-chisel-2fa */

@@ -4,6 +4,30 @@
  */
 
 export interface paths {
+    "/me/active-role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Switch role
+         * @description Use another role the person holds; this device remembers it, and
+         *     signing in again returns to it. Answers 422 with reason
+         *     `roles.errors.notHeld` for a role the person doesn't hold. Admin roles
+         *     can be chosen without two-step, but `permissions` stays empty and
+         *     `two_step.required` is true until it is set up.
+         */
+        put: operations["me.active-role"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/app-config": {
         parameters: {
             query?: never;
@@ -217,6 +241,13 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ActiveRoleRequest */
+        ActiveRoleRequest: {
+            /** @description One of the roles the person holds (see `roles` in `GET /me`). */
+            role: components["schemas"]["Role"];
+            /** @description The organisation that role is held in. */
+            organisation_id: number;
+        };
         /** AppConfigResource */
         AppConfigResource: {
             /**
@@ -337,6 +368,24 @@ export interface components {
             appearance: "system" | "light" | "dark" | "contrast";
             /** @enum {string} */
             text_size: "standard" | "large" | "largest";
+            /**
+             * @description Every role the person holds, each in an organisation. Admin
+             *     roles need two-step before they grant anything.
+             */
+            roles: unknown[];
+            /** @description The role in use on this device; null for someone with no role yet. */
+            active_role: {
+                role: string;
+                organisation_id: string;
+            } | null;
+            /** @description What the active role allows, such as `learning.study`. */
+            permissions: string[];
+            two_step: {
+                /** @description An authenticator app or a passkey is set up. */
+                enabled: boolean;
+                /** @description The active role is an admin role that needs two-step first. */
+                required: string;
+            };
         };
         /** PhoneStartRequest */
         PhoneStartRequest: {
@@ -360,6 +409,12 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /**
+         * Role
+         * @description The roles from the journey documents, plus the platform's super admin. A person can hold several, each in an organisation.
+         * @enum {string}
+         */
+        Role: "candidate" | "agent" | "broker" | "mentor" | "instructor" | "school_admin" | "provider" | "association_admin" | "super_admin";
         /** SignInResource */
         SignInResource: {
             /** @description Bearer token for this device. Keep it in secure storage. */
@@ -432,6 +487,7 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
@@ -441,6 +497,7 @@ export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInR
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaRole = components['schemas']['Role'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type ResponseModelNotFoundException = components['responses']['ModelNotFoundException'];
 export type ResponseValidationException = components['responses']['ValidationException'];
@@ -448,6 +505,44 @@ export type ResponseAuthenticationException = components['responses']['Authentic
 export type ResponseNotFoundHttpException = components['responses']['NotFoundHttpException'];
 export type $defs = Record<string, never>;
 export interface operations {
+    "me.active-role": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActiveRoleRequest"];
+            };
+        };
+        responses: {
+            /** @description `MeResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "app-config": {
         parameters: {
             query?: never;

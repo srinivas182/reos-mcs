@@ -559,5 +559,31 @@
       "submit": "Eliminar cuenta",
       "cancel": "Conservar mi cuenta"
     }
+  },
+  "roles": {
+    "names": {
+      "candidate": "Candidato",
+      "agent": "Agente",
+      "broker": "Bróker",
+      "mentor": "Mentor",
+      "instructor": "Instructor",
+      "school_admin": "Administrador de la escuela",
+      "provider": "Proveedor de servicios",
+      "association_admin": "Administrador de la asociación",
+      "super_admin": "Superadministrador"
+    },
+    "organisationTypes": {
+      "platform": "Por mi cuenta",
+      "brokerage": "Correduría",
+      "school": "Escuela",
+      "association": "Asociación",
+      "provider_business": "Empresa"
+    },
+    "errors": {
+      "notHeld": "No tienes ese rol. Pídeselo a tu administrador si lo necesitas.",
+      "twoStepRequired": "Activa el inicio de sesión en dos pasos para usar este rol. Tarda alrededor de un minuto.",
+      "wrongOrganisation": "Ese rol no se puede tener en este tipo de organización.",
+      "lastSuperAdmin": "REOS necesita al menos un superadministrador. Añade otro antes de quitar este."
+    }
   }
 }

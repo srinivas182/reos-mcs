@@ -2,7 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Authorization\Role;
+use App\Enums\OrganisationType;
+use App\Models\Organisation;
 use App\Models\User;
+use App\Services\Authorization\Memberships;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -49,13 +53,26 @@ class UserFactory extends Factory
     }
 
     /**
-     * A platform super administrator (Integration Hub access).
+     * A platform super administrator, with two-step set up (admin roles
+     * need it). Use withRole() for one without.
      */
     public function superAdmin(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_super_admin' => true,
-        ]);
+        return $this->withTwoFactor()->withRole(Role::SuperAdmin);
+    }
+
+    /**
+     * Holds a role, in the given organisation or one of the right kind.
+     */
+    public function withRole(Role $role, ?Organisation $organisation = null): static
+    {
+        return $this->afterCreating(function (User $user) use ($role, $organisation): void {
+            $organisation ??= $role->organisationTypes()[0] === OrganisationType::Platform
+                ? Organisation::platform()
+                : Organisation::factory()->ofType($role->organisationTypes()[0])->create();
+
+            app(Memberships::class)->attach($user, $role, $organisation);
+        });
     }
 
     /* @chisel-2fa */

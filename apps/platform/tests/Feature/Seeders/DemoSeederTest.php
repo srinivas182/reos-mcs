@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Authorization\Membership;
+use App\Authorization\Role;
+use App\Models\Organisation;
 use App\Models\User;
+use App\Services\Authorization\Memberships;
 use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\Demo\Personas;
 use Database\Seeders\DemoSeeder;
@@ -76,7 +80,27 @@ it('skips demo logins when the full seeder runs in production', function () {
 it('makes only the operations persona a super admin', function () {
     $this->seed(DatabaseSeeder::class);
 
-    $admins = User::query()->where('is_super_admin', true)->pluck('email')->all();
+    $admins = app(Memberships::class)->holders(Role::SuperAdmin)->pluck('email')->all();
 
     expect($admins)->toBe(['ops@demo.reos.test']);
+});
+
+it('gives each persona their roles in their organisation, and can run again', function () {
+    $this->seed(DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
+
+    $roles = fn (string $email): array => array_map(
+        static fn (Membership $m): string => "{$m->role->value} @ {$m->organisation->name}",
+        app(Memberships::class)->of(User::query()->where('email', $email)->sole()),
+    );
+
+    expect($roles('sofia.reyes@demo.reos.test'))->toBe(['candidate @ Texas Realty School'])
+        ->and($roles('linda.park@demo.reos.test'))->toBe(['broker @ Lone Star Realty', 'agent @ Lone Star Realty'])
+        ->and($roles('karen.webb@demo.reos.test'))->toBe(['association_admin @ Texas REALTORS®'])
+        ->and($roles('ops@demo.reos.test'))->toBe(['super_admin @ REOS'])
+        ->and(Organisation::query()->count())->toBe(count(Personas::organisations()));
+
+    foreach (Personas::all() as $persona) {
+        expect($roles($persona->email))->not->toBeEmpty();
+    }
 });
