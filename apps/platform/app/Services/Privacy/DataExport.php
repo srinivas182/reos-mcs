@@ -1,0 +1,73 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\Privacy;
+
+use App\Models\AuditEvent;
+use App\Models\Connection;
+use App\Models\User;
+use App\Services\Authorization\Memberships;
+use App\Tenancy\Tenancy;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * "Download my data" (TDPSA right of access and portability, A4.3b): what
+ * REOS holds about one person, as JSON a person or another service can
+ * read. Never secrets (password hashes, two-step secrets, tokens) and never
+ * other people's data. docs/privacy/data-map.md lists where each part lives;
+ * a new table holding personal data is added here and there.
+ */
+final readonly class DataExport
+{
+    public function __construct(private Tenancy $tenancy, private Memberships $memberships) {}
+
+    /** @return array<string, mixed> */
+    public function for(User $user): array
+    {
+        return $this->tenancy->asPlatform(fn (): array => [
+            'exported_at' => now()->toIso8601String(),
+            'profile' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'email_verified_at' => $user->email_verified_at?->toIso8601String(),
+                'phone' => $user->phone,
+                'locale' => $user->locale,
+                'target_state' => $user->target_state,
+                'created_at' => $user->created_at?->toIso8601String(),
+            ],
+            'roles' => array_map(static fn ($m): array => ['role' => $m->role->value, 'organisation' => $m->organisation->name], $this->memberships->of($user)),
+            'sign_in' => [
+                'password' => $user->password !== null,
+                'two_step' => $user->two_factor_confirmed_at !== null,
+                'linked_accounts' => DB::table('social_accounts')->where('user_id', $user->id)->get(['provider', 'email', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'single_sign_on' => DB::table('sso_identities')->join('organisations', 'organisations.id', '=', 'sso_identities.organisation_id')
+                    ->where('sso_identities.user_id', $user->id)->get(['organisations.name as organisation', 'sso_identities.email', 'sso_identities.last_signed_in_at'])->map(static fn ($r): array => (array) $r)->all(),
+            ],
+            'devices' => DB::table('known_devices')->where('user_id', $user->id)->get(['name', 'platform', 'first_seen_at', 'last_seen_at'])->map(static fn ($r): array => (array) $r)->all(),
+            'getting_started' => [
+                'waitlists' => DB::table('state_waitlist')->where('user_id', $user->id)->get(['state_code', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'quiz_attempts' => DB::table('quiz_attempts')->where('user_id', $user->id)->get(['kind', 'state_code', 'correct', 'total', 'completed_at'])->map(static fn ($r): array => (array) $r)->all(),
+            ],
+            'connections' => Connection::query()->where('owner_type', Connection::OWNER_USER)->where('owner_id', $user->id)->get()
+                ->map(static fn (Connection $c): array => [
+                    'tool' => $c->integration_id,
+                    'account' => $c->account_label,
+                    'status' => $c->status->value,
+                    'connected_at' => $c->created_at?->toIso8601String(),
+                    'calendar_events' => DB::table('calendar_events')->where('connection_id', $c->id)->orderBy('starts_at')->limit(5000)
+                        ->get(['title', 'location', 'starts_at', 'ends_at', 'all_day'])->map(static fn ($r): array => (array) $r)->all(),
+                ])->all(),
+            'tool_interests' => DB::table('integration_interests')->where('user_id', $user->id)->get(['integration_id', 'kind', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+            'tool_requests' => DB::table('tool_requests')->where('user_id', $user->id)->get(['name', 'note', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+            'privacy_requests' => DB::table('privacy_requests')->where('user_id', $user->id)->get(['kind', 'details', 'status', 'created_at', 'completed_at', 'response'])->map(static fn ($r): array => (array) $r)->all(),
+            // What this person did in REOS, newest first (the audit log's own rows).
+            'activity' => AuditEvent::query()->where('actor_id', $user->id)->latest('id')->limit(1000)
+                ->get(['action', 'ip_address', 'created_at'])->map(static fn (AuditEvent $e): array => [
+                    'action' => $e->action,
+                    'ip_address' => $e->ip_address,
+                    'at' => $e->created_at->toIso8601String(),
+                ])->all(),
+        ]);
+    }
+}

@@ -36,7 +36,8 @@
     "tenants": "Tenants",
     "brandingAndDomain": "Branding and domain",
     "brokerageSettings": "Brokerage settings",
-    "agents": "Agents"
+    "agents": "Agents",
+    "complianceAndAudit": "Compliance and audit"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1751,7 +1752,33 @@
         "invite.revoked": "Withdrew an invite",
         "invite.accepted": "Joined from an invite",
         "seats.requested": "Asked for more seats",
-        "connection.broker_asked": "Asked the broker for a tool"
+        "connection.broker_asked": "Asked the broker for a tool",
+        "account.deleted": "Account deleted",
+        "account.deletion_cancelled": "Account deletion withdrawn",
+        "account.deletion_requested": "Asked to delete the account",
+        "auth.device_revoked": "Signed a device out",
+        "auth.sign_in_failed": "Sign-in failed",
+        "auth.signed_in": "Signed in",
+        "auth.signed_out": "Signed out",
+        "catalogue.updated": "Changed a tool's availability",
+        "connection.connected": "Connected a tool",
+        "connection.disconnected": "Disconnected a tool",
+        "connection.reconnect_needed": "A tool needs signing in again",
+        "connection.reconnected": "Reconnected a tool",
+        "domain.checked": "Checked the custom domain",
+        "integration.checked": "Tested an integration",
+        "integration.credentials_removed": "Removed integration keys",
+        "integration.credentials_updated": "Changed integration keys",
+        "integration.mode_changed": "Changed an integration's mode",
+        "integration.paused": "Paused an integration",
+        "integration.resumed": "Resumed an integration",
+        "role.granted": "Gave a role",
+        "role.removed": "Removed a role",
+        "sso.test_started": "Started a single sign-on test",
+        "state.status_changed": "Changed a state's status",
+        "privacy.requested": "Made a privacy request",
+        "privacy.updated": "Updated a privacy request",
+        "audit.exported": "Exported the audit log"
       }
     }
   },
@@ -2195,5 +2222,170 @@
     "code": "Invite code",
     "placeholder": "ABCD-2345",
     "continue": "Continue"
+  },
+  "privacy": {
+    "title": "Your data",
+    "description": "Under Texas privacy law you can see the data REOS holds about you, ask for a correction, or delete your account.",
+    "download": "Download my data",
+    "correct": "Ask for a correction",
+    "whatToCorrect": "What should we correct?",
+    "send": "Send request",
+    "promise": "REOS answers within 45 days, usually much sooner, and tells you by email.",
+    "yourRequests": "Your requests",
+    "answerBy": "We'll answer by {{date}}",
+    "asked": "Asked {{date}}",
+    "getFile": "Download file",
+    "kinds": {
+      "access": "See my data",
+      "correct": "Correct my data",
+      "delete": "Delete my account"
+    },
+    "statuses": {
+      "open": "Received",
+      "in_progress": "In progress",
+      "hold": "In 30-day hold",
+      "done": "Done",
+      "declined": "Declined",
+      "withdrawn": "Withdrawn"
+    },
+    "sent": {
+      "access": "Your data file is ready. We emailed you the link.",
+      "correct": "Request sent. We'll email you when it's done."
+    },
+    "errors": {
+      "kind": "Choose what you'd like us to do.",
+      "waiting": "You already have a request like this waiting.",
+      "noAccount": "This account no longer exists.",
+      "closed": "This request is already closed.",
+      "reason": "Add a note the person will see.",
+      "extended": "This request was already extended once.",
+      "action": "That isn't something you can do with this request."
+    },
+    "mail": {
+      "received": {
+        "subject": "We received your request: {{kind}}",
+        "body": "We'll answer by {{date}}."
+      },
+      "extended": {
+        "subject": "We need more time: {{kind}}",
+        "body": "We'll answer by {{date}}."
+      },
+      "done": {
+        "subject": "Done: {{kind}}",
+        "body": "Your request is complete."
+      },
+      "declined": {
+        "subject": "We couldn't complete your request: {{kind}}",
+        "body": "We're sorry we couldn't do this."
+      },
+      "note": "Note from REOS: {{note}}",
+      "download": "Download my data",
+      "linkDays": "The link works for {{days}} days."
+    }
+  },
+  "compliance": {
+    "title": "Compliance and audit",
+    "purpose": "Privacy requests, legal rules and platform audit log",
+    "export": "Export audit",
+    "privacy": {
+      "title": "Privacy requests (TDPSA)",
+      "none": "No privacy requests yet.",
+      "columns": {
+        "request": "Request",
+        "user": "User",
+        "due": "Due",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "kinds": {
+        "access": "Download my data",
+        "correct": "Correct data",
+        "delete": "Delete account"
+      },
+      "statuses": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "hold": "In 30-day hold",
+        "done": "Done",
+        "declined": "Declined",
+        "withdrawn": "Withdrawn"
+      },
+      "deletedAccount": "Deleted account",
+      "overdue": "Overdue",
+      "extended": "Extended once",
+      "actions": {
+        "start": "Start",
+        "done": "Mark done",
+        "decline": "Decline",
+        "extend": "Extend 45 days"
+      },
+      "dialog": {
+        "done": {
+          "title": "Mark as done",
+          "body": "{{person}} gets an email that their request ({{kind}}) is complete, with your note if you add one."
+        },
+        "decline": {
+          "title": "Decline the request",
+          "body": "{{person}} gets an email with your reason. Texas law asks you to say why and how to appeal."
+        },
+        "extend": {
+          "title": "Extend by {{days}} days",
+          "body": "Allowed once when reasonably necessary. {{person}} gets an email with your reason and the new date."
+        }
+      },
+      "note": "Note for the person",
+      "noteOptional": "Note for the person (optional)",
+      "cancel": "Cancel",
+      "updated": "Request updated. The person was told by email.",
+      "limit": "Response time limit",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "dataMap": "Data map",
+      "reviewed": "Up to date · {{date}}",
+      "manage": "Manage",
+      "manageFor": "Manage {{kind}} for {{person}}"
+    },
+    "rules": {
+      "title": "Platform rules",
+      "respa": "RESPA: provider fees flat; rewards never for provider choice",
+      "advertising": "TREC: advertising checks always on in Texas",
+      "fairHousing": "Fair housing wording checks on every post",
+      "noInAppPurchases": "No purchases inside mobile apps",
+      "twoStep": "Two-step sign-in for every admin role",
+      "supportConsent": "Support access only with tenant owner consent"
+    },
+    "audit": {
+      "title": "Platform audit log",
+      "search": "Search",
+      "searchPlaceholder": "Person, email, action or IP",
+      "area": "Area",
+      "tenant": "Tenant",
+      "from": "From",
+      "to": "To",
+      "all": "All",
+      "apply": "Show",
+      "groups": {
+        "sign_in": "Sign-in and accounts",
+        "tenants": "Tenants and support",
+        "people": "Roles and invites",
+        "brand": "Brand, domain and SSO",
+        "integrations": "Integrations and connections",
+        "states": "States",
+        "privacy": "Privacy"
+      },
+      "columns": {
+        "time": "Time",
+        "who": "Who",
+        "action": "Action",
+        "change": "Change",
+        "tenant": "Tenant"
+      },
+      "system": "System",
+      "emptyTitle": "Nothing matches",
+      "emptyBody": "Try fewer filters or a wider date range.",
+      "pages": "Audit log pages",
+      "newer": "Newer",
+      "older": "Older"
+    }
   }
 }

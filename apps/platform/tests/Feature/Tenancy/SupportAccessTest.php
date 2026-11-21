@@ -204,7 +204,7 @@ describe('the support session', function () {
         $this->actingAs($admin)->delete('/support-session')->assertRedirect("/admin/tenants/{$lone->id}");
 
         expect($next->fresh()?->status)->toBe(SupportAccessStatus::Ended)
-            ->and(AuditEvent::query()->where('action', 'support.ended')->pluck('properties')->pluck('how')->all())->toBe(['revoked', 'ended']);
+            ->and(AuditEvent::query()->where('action', 'support.ended')->orderBy('id')->pluck('properties')->pluck('how')->all())->toBe(['revoked', 'ended']);
     });
 
     it('starts only for the person who asked, after a yes', function () {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CatalogueController;
+use App\Http\Controllers\Admin\ComplianceController;
 use App\Http\Controllers\Admin\DemandController;
 use App\Http\Controllers\Admin\IntegrationCheckController;
 use App\Http\Controllers\Admin\IntegrationController;
@@ -32,7 +33,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:integrati
         Route::get('{integration}', [IntegrationController::class, 'show'])->name('show');
         Route::get('{integration}/{tab}', [IntegrationController::class, 'show'])->whereIn('tab', ['credentials', 'health', 'changelog'])->name('tab');
 
-        Route::middleware('throttle:30,1')->group(function () {
+        Route::middleware('throttle:30,1,admin-integrations')->group(function () {
             Route::put('{integration}/keys/{environment}', [IntegrationCredentialController::class, 'update'])->name('keys.update')->whereIn('environment', ['sandbox', 'live']);
             Route::delete('{integration}/keys/{environment}', [IntegrationCredentialController::class, 'destroy'])->name('keys.destroy')->whereIn('environment', ['sandbox', 'live']);
             Route::patch('{integration}/mode', [IntegrationModeController::class, 'update'])->name('mode.update');
@@ -42,7 +43,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:integrati
 
         // Each test calls the vendor, so it has its own, lower limit.
         Route::post('{integration}/checks/{environment}', [IntegrationCheckController::class, 'store'])
-            ->middleware('throttle:10,1')
+            ->middleware('throttle:10,1,admin-integration-checks')
             ->name('checks.store')
             ->whereIn('environment', ['sandbox', 'live']);
     });
@@ -65,7 +66,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:people.ma
         Route::get('/', [PeopleController::class, 'index'])->name('index');
         Route::get('{person}', [PeopleController::class, 'show'])->whereNumber('person')->name('show');
 
-        Route::middleware(['throttle:30,1', 'can:manageRoles,person'])->group(function () {
+        Route::middleware(['throttle:30,1,admin-people-roles', 'can:manageRoles,person'])->group(function () {
             Route::post('{person}/roles', [PersonRoleController::class, 'store'])->whereNumber('person')->name('roles.store');
             Route::delete('{person}/roles', [PersonRoleController::class, 'destroy'])->whereNumber('person')->name('roles.destroy');
         });
@@ -77,7 +78,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:states.ma
     ->name('states.')
     ->group(function () {
         Route::get('/', [StateController::class, 'index'])->name('index');
-        Route::patch('{state}', [StateController::class, 'update'])->middleware('throttle:30,1')->name('update');
+        Route::patch('{state}', [StateController::class, 'update'])->middleware('throttle:30,1,admin-states-update')->name('update');
     });
 
 // Tenants (A4.1b, web journey screens 59 and 60): every organisation. Super
@@ -88,13 +89,25 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:tenants.m
     ->name('tenants.')
     ->group(function () {
         Route::get('/', [TenantController::class, 'index'])->name('index');
-        Route::get('export', [TenantController::class, 'export'])->middleware('throttle:10,1')->name('export');
-        Route::post('/', [TenantController::class, 'store'])->middleware('throttle:30,1')->name('store');
+        Route::get('export', [TenantController::class, 'export'])->middleware('throttle:10,1,admin-tenants-export')->name('export');
+        Route::post('/', [TenantController::class, 'store'])->middleware('throttle:30,1,admin-tenants-store')->name('store');
         Route::get('{tenant}', [TenantController::class, 'show'])->whereNumber('tenant')->name('show');
         Route::get('{tenant}/{tab}', [TenantController::class, 'show'])->whereNumber('tenant')->whereIn('tab', TenantController::TABS)->name('tab');
-        Route::patch('{tenant}', [TenantController::class, 'update'])->whereNumber('tenant')->middleware('throttle:30,1')->name('update');
-        Route::put('{tenant}/status', [TenantController::class, 'status'])->whereNumber('tenant')->middleware('throttle:30,1')->name('status');
+        Route::patch('{tenant}', [TenantController::class, 'update'])->whereNumber('tenant')->middleware('throttle:30,1,admin-tenants-update')->name('update');
+        Route::put('{tenant}/status', [TenantController::class, 'status'])->whereNumber('tenant')->middleware('throttle:30,1,admin-tenants-status')->name('status');
         // Support sign-in with the owner's consent (A4.1c).
-        Route::post('{tenant}/support', [TenantSupportController::class, 'store'])->whereNumber('tenant')->middleware('throttle:10,1')->name('support.store');
-        Route::post('{tenant}/support/start', [TenantSupportController::class, 'start'])->whereNumber('tenant')->middleware('throttle:10,1')->name('support.start');
+        Route::post('{tenant}/support', [TenantSupportController::class, 'store'])->whereNumber('tenant')->middleware('throttle:10,1,admin-tenants-support')->name('support.store');
+        Route::post('{tenant}/support/start', [TenantSupportController::class, 'start'])->whereNumber('tenant')->middleware('throttle:10,1,admin-tenants-support-start')->name('support.start');
+    });
+
+// Compliance and audit (A4.3b, web journey screen 71): privacy requests, the
+// platform rules and the audit log. It holds personal data, so it asks for
+// two-step and a recent password confirmation.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:audit.view', ConfirmIdentity::class])
+    ->prefix('admin/compliance')
+    ->name('compliance.')
+    ->group(function () {
+        Route::get('/', [ComplianceController::class, 'index'])->name('index');
+        Route::get('audit.csv', [ComplianceController::class, 'export'])->middleware('throttle:10,1,compliance-export')->name('export');
+        Route::patch('privacy/{privacyRequest}', [ComplianceController::class, 'privacy'])->whereNumber('privacyRequest')->middleware('throttle:30,1,compliance-privacy')->name('privacy.update');
     });

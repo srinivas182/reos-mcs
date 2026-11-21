@@ -116,6 +116,8 @@ return [
 
     'limiters' => [
         'login' => 'login',
+        // Its own counter (see tests/Feature/Http/RateLimitsTest.php).
+        'verification' => 'verification',
         /* @chisel-2fa */
         'two-factor' => 'two-factor',
         /* @end-chisel-2fa */

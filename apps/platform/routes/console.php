@@ -23,6 +23,8 @@ Schedule::command('reos:accounts:purge')->dailyAt('03:30')->onOneServer();
 Schedule::command('reos:domains:check')->everyTenMinutes()->withoutOverlapping()->onOneServer();
 // Invitations (A4.3a): the one reminder at day 7.
 Schedule::command('reos:invites:remind')->hourly()->withoutOverlapping()->onOneServer();
+// Privacy (A4.3b): "see my data" files go once their link expires.
+Schedule::command('reos:privacy:prune')->dailyAt('04:20')->onOneServer();
 
 Schedule::command('reos:connections:sync')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
 Schedule::command('model:prune', ['--model' => [SyncRun::class, WebhookReceipt::class]])->dailyAt('04:10');

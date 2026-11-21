@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Settings\ActiveRoleController;
 use App\Http\Controllers\Settings\AppearanceController;
+use App\Http\Controllers\Settings\PrivacyController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
 use App\Http\Middleware\ConfirmIdentity;
@@ -22,20 +23,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('security.edit');
     Route::delete('settings/devices/{device}', [SecurityController::class, 'destroyDevice'])
         ->whereNumber('device')
-        ->middleware('throttle:30,1')
+        ->middleware('throttle:30,1,devices-destroy')
         ->name('devices.destroy');
 
+    // Privacy requests (A4.3b, TDPSA): see or correct my data.
+    Route::post('settings/privacy', [PrivacyController::class, 'store'])
+        ->middleware('throttle:5,60,privacy-store')
+        ->name('privacy.store');
+    Route::get('settings/privacy/{privacyRequest}/download', [PrivacyController::class, 'download'])
+        ->whereNumber('privacyRequest')
+        ->middleware(['signed', 'throttle:20,60,privacy-download'])
+        ->name('privacy.download');
+
     Route::put('settings/password', [SecurityController::class, 'update'])
-        ->middleware('throttle:6,1')
+        ->middleware('throttle:6,1,user-password-update')
         ->name('user-password.update');
 
     // The role switcher (A3.2): this browser remembers the choice.
     Route::put('settings/active-role', [ActiveRoleController::class, 'update'])
-        ->middleware('throttle:30,1')
+        ->middleware('throttle:30,1,active-role-update')
         ->name('active-role.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
     Route::patch('settings/appearance', [AppearanceController::class, 'update'])
-        ->middleware('throttle:30,1')
+        ->middleware('throttle:30,1,appearance-update')
         ->name('appearance.update');
 });

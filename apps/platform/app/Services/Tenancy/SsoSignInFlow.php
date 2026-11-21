@@ -6,12 +6,14 @@ namespace App\Services\Tenancy;
 
 use App\Models\Organisation;
 use App\Models\User;
+use App\Services\Audit\AuditLogger;
 use App\Sso\OidcClient;
 use App\Sso\SamlClient;
 use App\Sso\SsoClaims;
 use App\Sso\SsoProblem;
 use App\Sso\SsoProtocol;
 use App\Sso\SsoStatus;
+use App\Tenancy\Tenancy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -43,6 +45,8 @@ final readonly class SsoSignInFlow
         private OidcClient $oidc,
         private SamlClient $saml,
         private Brands $brands,
+        private AuditLogger $audit,
+        private Tenancy $tenancy,
     ) {}
 
     /** An admin's test sign-in: the result shows on screen 57 at `$returnTo`. */
@@ -51,6 +55,8 @@ final readonly class SsoSignInFlow
         if ($this->sso->of($tenant) === null) {
             throw new SsoProblem('sso.errors.notSetUp');
         }
+
+        $this->tenancy->run($tenant->id, fn () => $this->audit->record('sso.test_started', SingleSignOn::AUDIT_SUBJECT, (string) $tenant->id, [], $tester, $tenant->id));
 
         return $this->hop($tenant, ['origin' => $this->sso->origin($tenant), 'test' => ['tester_id' => $tester->id, 'return' => $returnTo]]);
     }

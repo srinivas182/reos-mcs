@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Settings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\PrivacyRequest;
 use App\Models\User;
 use App\Services\Identity\AccountDeletion;
+use App\Services\Privacy\PrivacyRequests;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -20,11 +22,25 @@ class ProfileController extends Controller
     /**
      * Show the user's profile settings page.
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request, PrivacyRequests $privacy): Response
     {
+        $user = $request->user();
+
         return Inertia::render('settings/profile', [
-            'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
+            'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            // "Your data" (A4.3b, TDPSA): the person's own requests.
+            'privacyRequests' => $user instanceof User ? PrivacyRequest::query()->where('user_id', $user->id)->latest('id')->limit(10)->get()
+                ->map(static fn (PrivacyRequest $r): array => [
+                    'id' => $r->id,
+                    'kind' => $r->kind,
+                    'status' => $r->status,
+                    'created_at' => $r->created_at?->toIso8601String(),
+                    'due_at' => $r->due_at->toIso8601String(),
+                    'response' => $r->response,
+                    'download' => $r->export_path !== null && $r->completed_at !== null && $r->completed_at->addDays(PrivacyRequests::LINK_DAYS)->isFuture()
+                        ? $privacy->downloadLink($r) : null,
+                ])->all() : [],
         ]);
     }
 
