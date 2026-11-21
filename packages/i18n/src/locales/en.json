@@ -559,5 +559,31 @@
       "submit": "Delete account",
       "cancel": "Keep my account"
     }
+  },
+  "roles": {
+    "names": {
+      "candidate": "Candidate",
+      "agent": "Agent",
+      "broker": "Broker",
+      "mentor": "Mentor",
+      "instructor": "Instructor",
+      "school_admin": "School admin",
+      "provider": "Service provider",
+      "association_admin": "Association admin",
+      "super_admin": "Super admin"
+    },
+    "organisationTypes": {
+      "platform": "On my own",
+      "brokerage": "Brokerage",
+      "school": "School",
+      "association": "Association",
+      "provider_business": "Business"
+    },
+    "errors": {
+      "notHeld": "You don't have that role. Ask your administrator if you need it.",
+      "twoStepRequired": "Set up two-step sign-in to use this role. It takes about a minute.",
+      "wrongOrganisation": "That role can't be held in this kind of organisation.",
+      "lastSuperAdmin": "REOS needs at least one super admin. Add another before removing this one."
+    }
   }
 }

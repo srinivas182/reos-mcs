@@ -12,6 +12,63 @@
         }
     ],
     "paths": {
+        "/me/active-role": {
+            "put": {
+                "operationId": "me.active-role",
+                "description": "Use another role the person holds; this device remembers it, and\nsigning in again returns to it. Answers 422 with reason\n`roles.errors.notHeld` for a role the person doesn't hold. Admin roles\ncan be chosen without two-step, but `permissions` stays empty and\n`two_step.required` is true until it is set up.",
+                "summary": "Switch role",
+                "tags": [
+                    "ActiveRole"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ActiveRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`MeResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MeResource"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/app-config": {
             "get": {
                 "operationId": "app-config",
@@ -449,6 +506,25 @@
     },
     "components": {
         "schemas": {
+            "ActiveRoleRequest": {
+                "type": "object",
+                "properties": {
+                    "role": {
+                        "description": "One of the roles the person holds (see `roles` in `GET /me`).",
+                        "$ref": "#/components/schemas/Role"
+                    },
+                    "organisation_id": {
+                        "type": "integer",
+                        "description": "The organisation that role is held in.",
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "role",
+                    "organisation_id"
+                ],
+                "title": "ActiveRoleRequest"
+            },
             "AppConfigResource": {
                 "type": "object",
                 "properties": {
@@ -802,6 +878,54 @@
                             "large",
                             "largest"
                         ]
+                    },
+                    "roles": {
+                        "type": "array",
+                        "description": "Every role the person holds, each in an organisation. Admin\nroles need two-step before they grant anything.",
+                        "items": {}
+                    },
+                    "active_role": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "The role in use on this device; null for someone with no role yet.",
+                        "properties": {
+                            "role": {
+                                "type": "string"
+                            },
+                            "organisation_id": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "role",
+                            "organisation_id"
+                        ]
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "description": "What the active role allows, such as `learning.study`.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "two_step": {
+                        "type": "object",
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean",
+                                "description": "An authenticator app or a passkey is set up."
+                            },
+                            "required": {
+                                "type": "string",
+                                "description": "The active role is an admin role that needs two-step first."
+                            }
+                        },
+                        "required": [
+                            "enabled",
+                            "required"
+                        ]
                     }
                 },
                 "required": [
@@ -814,7 +938,11 @@
                     "sign_in_methods",
                     "locale",
                     "appearance",
-                    "text_size"
+                    "text_size",
+                    "roles",
+                    "active_role",
+                    "permissions",
+                    "two_step"
                 ],
                 "title": "MeResource"
             },
@@ -886,6 +1014,22 @@
                     "device"
                 ],
                 "title": "PhoneVerifyRequest"
+            },
+            "Role": {
+                "type": "string",
+                "description": "The roles from the journey documents, plus the platform's super admin. A person can hold several, each in an organisation.\n",
+                "enum": [
+                    "candidate",
+                    "agent",
+                    "broker",
+                    "mentor",
+                    "instructor",
+                    "school_admin",
+                    "provider",
+                    "association_admin",
+                    "super_admin"
+                ],
+                "title": "Role"
             },
             "SignInResource": {
                 "type": "object",

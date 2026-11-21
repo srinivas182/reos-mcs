@@ -22,7 +22,8 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "open-telemetry/exporter-otlp": "^1.6",
         "open-telemetry/sdk": "^1.17",
-        "sentry/sentry-laravel": "^4.31"
+        "sentry/sentry-laravel": "^4.31",
+        "spatie/laravel-permission": "^8.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24",

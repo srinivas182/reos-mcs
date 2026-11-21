@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Authorization\Membership;
 use App\Models\SocialAccount;
 use App\Models\User;
+use App\Services\Authorization\ActiveRole;
+use App\Services\Authorization\Memberships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,11 +23,13 @@ final class MeResource extends JsonResource
     public static $wrap = null;
 
     /**
-     * @return array{id: int, name: string|null, email: string|null, email_verified: bool, phone: string|null, has_password: bool, sign_in_methods: list<string>, locale: string, appearance: string, text_size: string}
+     * @return array{id: int, name: string|null, email: string|null, email_verified: bool, phone: string|null, has_password: bool, sign_in_methods: list<string>, locale: string, appearance: string, text_size: string, roles: list<array{role: 'candidate'|'agent'|'broker'|'mentor'|'instructor'|'school_admin'|'provider'|'association_admin'|'super_admin', organisation: array{id: int, name: string, type: 'platform'|'brokerage'|'school'|'association'|'provider_business'}, admin: bool}>, active_role: array{role: 'candidate'|'agent'|'broker'|'mentor'|'instructor'|'school_admin'|'provider'|'association_admin'|'super_admin', organisation_id: int}|null, permissions: list<string>, two_step: array{enabled: bool, required: bool}}
      */
     public function toArray(Request $request): array
     {
         $user = $this->resource;
+        $active = app(ActiveRole::class);
+        $current = $active->for($user);
 
         return [
             'id' => $user->id,
@@ -47,6 +52,36 @@ final class MeResource extends JsonResource
             'locale' => $user->locale->value,
             'appearance' => $user->appearance->value,
             'text_size' => $user->text_size->value,
+            /**
+             * Every role the person holds, each in an organisation. Admin
+             * roles need two-step before they grant anything.
+             */
+            'roles' => array_map(static fn (Membership $m): array => [
+                'role' => $m->role->value,
+                'organisation' => [
+                    'id' => $m->organisation->id,
+                    'name' => $m->organisation->name,
+                    'type' => $m->organisation->type->value,
+                ],
+                'admin' => $m->role->isAdmin(),
+            ], app(Memberships::class)->of($user)),
+            /** The role in use on this device; null for someone with no role yet. */
+            'active_role' => $current === null ? null : [
+                'role' => $current->role->value,
+                'organisation_id' => $current->organisation->id,
+            ],
+            /**
+             * What the active role allows, such as `learning.study`.
+             *
+             * @var list<string>
+             */
+            'permissions' => $active->permissions($user),
+            'two_step' => [
+                /** An authenticator app or a passkey is set up. */
+                'enabled' => ActiveRole::hasTwoStep($user),
+                /** The active role is an admin role that needs two-step first. */
+                'required' => $active->needsTwoStep($user),
+            ],
         ];
     }
 }
