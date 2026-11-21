@@ -10,8 +10,8 @@ type ToastState = { id: number; message: string; onUndo?: () => void | Promise<v
 type UndoToastOptions = {
   /** What just happened, in plain words: "Contact archived". */
   message: string;
-  /** Reverses the action. */
-  onUndo: () => void | Promise<void>;
+  /** Reverses the action. Leave out for a plain notice ("Google Calendar is connected"). */
+  onUndo?: () => void | Promise<void>;
   undoneMessage?: string;
   /** How long Undo stays available (ms). Long enough for slower readers. */
   duration?: number;
@@ -37,11 +37,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   useEffect(() => () => clearTimeout(timer.current), []);
 
   const show = useCallback(
-    ({ message, onUndo, undoneMessage, duration = 10_000 }: UndoToastOptions) => {
+    ({ message, onUndo, undoneMessage, duration }: UndoToastOptions) => {
       nextId.current += 1;
       setToast({ id: nextId.current, message, onUndo, undoneMessage });
-      AccessibilityInfo.announceForAccessibility(`${message}. ${t('common.undo')}`);
-      dismissAfter(duration);
+      AccessibilityInfo.announceForAccessibility(onUndo ? `${message}. ${t('common.undo')}` : message);
+      dismissAfter(duration ?? (onUndo ? 10_000 : 5_000));
     },
     [dismissAfter, t],
   );

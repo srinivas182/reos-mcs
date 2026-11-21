@@ -13,6 +13,7 @@ use App\Services\Connections\Connections;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\Response;
 
 /** "Connect Google Calendar" on the website: off to the tool's sign-in. */
@@ -23,7 +24,9 @@ final class ConnectController extends Controller
         $owner = $connections->ownerFor($user, $tool);
 
         if (! $connections->available($tool) || $owner === null) {
-            return to_route('dashboard')->with('connection', ['outcome' => ConnectionAuthorizer::OUTCOME_FAILED, 'integration' => $tool, 'reason' => 'connections.errors.unavailable']);
+            Inertia::flash('toast', ['type' => 'error', 'message' => __('connections.errors.unavailable')]);
+
+            return to_route('dashboard')->with('connection', ['outcome' => ConnectionAuthorizer::OUTCOME_FAILED, 'integration' => $tool, 'reason' => 'connections.errors.unavailable', 'name' => $tool]);
         }
 
         $history = HistoryRange::tryFrom($request->string('history')->toString()) ?? HistoryRange::DEFAULT;

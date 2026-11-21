@@ -20,6 +20,7 @@ use App\Notifications\ConnectionNeedsReconnect;
 use App\Services\Connections\ConnectionHealth;
 use App\Services\Connections\SyncEngine;
 use App\Services\Identity\DeviceSessions;
+use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -69,7 +70,7 @@ describe('vendor sign-in (OAuth with PKCE) on demo data', function () {
         $maria = User::factory()->create(['email' => 'maria@example.com']);
 
         connectOnWeb($this, $maria)->assertRedirect('/dashboard')
-            ->assertSessionHas('connection', ['outcome' => 'connected', 'integration' => CALENDAR, 'reason' => null]);
+            ->assertSessionHas('connection', ['outcome' => 'connected', 'integration' => CALENDAR, 'reason' => null, 'name' => 'Google Calendar and Gmail']);
 
         $connection = Connection::query()->sole();
         expect($connection->owner_type)->toBe('user')
@@ -130,7 +131,7 @@ describe('vendor sign-in (OAuth with PKCE) on demo data', function () {
 
     it("connects nothing when the person doesn't allow access", function () {
         connectOnWeb($this, User::factory()->create(), allow: false)
-            ->assertSessionHas('connection', ['outcome' => 'cancelled', 'integration' => CALENDAR, 'reason' => 'connections.errors.cancelled']);
+            ->assertSessionHas('connection', ['outcome' => 'cancelled', 'integration' => CALENDAR, 'reason' => 'connections.errors.cancelled', 'name' => 'Google Calendar and Gmail']);
 
         expect(Connection::query()->exists())->toBeFalse();
     });
@@ -338,5 +339,49 @@ describe('inbound webhooks', function () {
 
         $this->postJson('/webhooks/'.CALENDAR, [])->assertStatus(401);
         $this->postJson('/webhooks/stripe', [])->assertNotFound();
+    });
+});
+
+describe('reconnect prompts (B3.1b)', function () {
+    it('shows the web app a connection that needs reconnecting, and clears it after signing in again', function () {
+        Notification::fake();
+        $james = User::factory()->create();
+        connectOnWeb($this, $james);
+        $connection = Connection::query()->sole();
+        $connection->forceFill(['meta' => ['simulator_revoked' => true]])->save();
+        app(SyncEngine::class)->run($connection->fresh(), 'events', SyncTrigger::Scheduled);
+
+        $this->actingAs($james)->get('/dashboard')->assertInertia(fn (Assert $page) => $page
+            ->has('connectionAlerts', 1)
+            ->where('connectionAlerts.0.integration', CALENDAR)
+            ->where('connectionAlerts.0.name', 'Google Calendar and Gmail'));
+        $this->withToken(connectionsPhoneToken($james))->getJson('/api/v1/connections')
+            ->assertJsonPath('data.0.status', 'reconnect_needed')
+            ->assertJsonPath('data.0.problem', 'connections.errors.refused');
+
+        app('auth')->forgetGuards();
+        connectOnWeb($this, $james)->assertSessionHas('connection.outcome', 'connected');
+
+        expect(Connection::query()->sole()->status)->toBe(ConnectionStatus::Active)
+            ->and(Connection::query()->sole()->meta)->not->toHaveKey('simulator_revoked');
+        $this->actingAs($james)->get('/dashboard')->assertInertia(fn (Assert $page) => $page->has('connectionAlerts', 0));
+    });
+
+    it("shows nobody else's alerts", function () {
+        Notification::fake();
+        connectOnWeb($this, User::factory()->create());
+        Connection::query()->update(['status' => ConnectionStatus::ReconnectNeeded]);
+
+        app('auth')->forgetGuards();
+        $this->actingAs(User::factory()->create())->get('/dashboard')->assertInertia(fn (Assert $page) => $page->has('connectionAlerts', 0));
+    });
+
+    it('seeds demo connections: Linda syncing, James needing a reconnect', function () {
+        $this->seed(DemoSeeder::class);
+
+        $statuses = Connection::query()->get()->mapWithKeys(fn (Connection $c) => [(string) $c->account_label => $c->status->value]);
+        expect($statuses->filter(fn ($s, $email) => str_starts_with($email, 'linda.park@'))->first())->toBe('active')
+            ->and($statuses->filter(fn ($s, $email) => str_starts_with($email, 'james.miller@'))->first())->toBe('reconnect_needed')
+            ->and(CalendarEvent::query()->count())->toBe(24);
     });
 });

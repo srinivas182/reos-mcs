@@ -146,6 +146,8 @@ final readonly class ConnectionAuthorizer
         if (! $reconnected) {
             $connection->settings = $authorization->settings;
         }
+        // Signing in again undoes a revocation simulated on demo data.
+        $connection->meta = array_diff_key($connection->meta, ['simulator_revoked' => true]);
         $connection->forceFill(['consecutive_failures' => 0, 'last_error' => null])->save();
 
         $this->audit->record($reconnected ? 'connection.reconnected' : 'connection.connected', 'connection', (string) $connection->id, [

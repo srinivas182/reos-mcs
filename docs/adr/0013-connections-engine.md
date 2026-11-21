@@ -37,7 +37,10 @@ Google Calendar, read-only (`calendar.readonly`), on the `google-workspace` keys
 ## Plan
 
 - **B3.1a (this change):** the engine, API, Google Calendar sample connector, contract tests.
-- **B3.1b:** connecting from the phone (secure browser sheet) and the website, and "Reconnect needed" on the phone's Today and the web dashboard.
+- **B3.1b (done):** connecting and reconnecting from the phone and the website.
+  - **Phone:** `connectTool()` opens the tool's sign-in in a secure browser sheet (`expo-web-browser`) and reads the outcome from `reos://connections`. A red card on Today (Connections and Sync journey, screen 26) opens **Reconnect {tool}** (screen 27): why it stopped, what happens next, one sign-in button. "Chat with support" and "we tried N times" are left out: there is no support chat yet, and REOS stops retrying a refused sign-in rather than counting attempts.
+  - **Website:** the same alert under the top bar on every page (`connectionAlerts` shared prop), and a toast after returning from the tool.
+  - Signing in again clears a revocation simulated on demo data. Demo data: Linda Park's calendar syncs; James Miller's stopped two days ago (journey screen 26).
 - **B3.2:** catalogue statuses and the Connections screens.
 
 ## Alternatives considered

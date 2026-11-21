@@ -7,19 +7,24 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { fetchHealth, type Health } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
-import { Avatar, Button, Card, ListRow, Screen, Text } from '@/ui';
+import { toolInitials, useConnections } from '@/lib/connections';
+import { timeAgo } from '@/lib/time';
+import { Avatar, Button, Card, ListRow, Screen, SyncAlert, Text } from '@/ui';
 
 type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
 
 /**
  * Placeholder home until Today is built (A3.3 onward): the REOS brand, your
- * initials (→ Me), a live check of the platform API and, in development,
- * the component gallery.
+ * initials (→ Me), a red card for any connection that stopped syncing
+ * (Connections and Sync journey, screen 26), a live check of the platform
+ * API and, in development, the component gallery.
  */
 export default function HomeScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { theme } = useUnistyles();
   const { user } = useAuth();
+  const { connections } = useConnections();
+  const broken = (connections ?? []).filter((connection) => connection.status === 'reconnect_needed');
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
 
@@ -53,6 +58,19 @@ export default function HomeScreen() {
         </Text>
         {user ? <Avatar name={user.name ?? user.email ?? user.phone ?? '?'} label={t('mobile.me.open')} onPress={() => router.push('/me')} /> : null}
       </View>
+      {broken.map((connection) => (
+        <SyncAlert
+          key={connection.id}
+          initials={toolInitials(connection.integration_name)}
+          title={t('connections.alert.title', { tool: connection.integration_name })}
+          body={t('connections.alert.body', {
+            tool: connection.integration_name,
+            ago: connection.problem_since ? timeAgo(connection.problem_since, i18n.language) : '',
+          })}
+          action={t('connections.alert.action')}
+          onPress={() => router.push({ pathname: '/reconnect/[id]', params: { id: String(connection.id) } })}
+        />
+      ))}
       <Text variant="display">{t('common.appName')}</Text>
       <Text variant="bodyLarge" tone="body">
         {t('mobile.tagline')}

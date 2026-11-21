@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Connections;
 
 use App\Http\Controllers\Controller;
+use App\Integrations\Catalogue;
 use App\Models\OAuthAuthorization;
 use App\Services\Connections\ConnectionAuthorizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 /**
  * Where a tool sends people back after signing in (`/integrations/{id}/callback`,
@@ -18,7 +20,7 @@ use Illuminate\Http\Request;
  */
 final class OAuthCallbackController extends Controller
 {
-    public function __invoke(Request $request, string $tool, ConnectionAuthorizer $authorizer): RedirectResponse
+    public function __invoke(Request $request, string $tool, ConnectionAuthorizer $authorizer, Catalogue $catalogue): RedirectResponse
     {
         $state = $request->string('state')->toString();
         $result = $authorizer->complete(
@@ -35,11 +37,20 @@ final class OAuthCallbackController extends Controller
             'integration' => $tool,
             'reason' => $result['reason'],
         ];
+        $name = $catalogue->find($tool)->name ?? $tool;
 
         if ($authorization?->return_to === OAuthAuthorization::RETURN_APP) {
             return redirect()->away('reos://connections?'.http_build_query(array_filter($summary)));
         }
 
-        return to_route('dashboard')->with('connection', $summary);
+        Inertia::flash('toast', [
+            'type' => $result['outcome'] === ConnectionAuthorizer::OUTCOME_CONNECTED ? 'success' : ($result['outcome'] === ConnectionAuthorizer::OUTCOME_CANCELLED ? 'info' : 'error'),
+            'message' => $result['reason'] === null
+                ? __('connections.outcome.connected', ['tool' => $name])
+                : __('connections.outcome.'.$result['outcome'], ['tool' => $name]).' '.__($result['reason']),
+        ]);
+
+        // Also kept in the session for anything that needs the outcome itself.
+        return to_route('dashboard')->with('connection', [...$summary, 'name' => $name]);
     }
 }

@@ -4,7 +4,10 @@ namespace App\Http\Middleware;
 
 use App\Authorization\Membership;
 use App\Authorization\Permission;
+use App\Connections\ConnectionStatus;
 use App\Enums\StateStatus;
+use App\Integrations\Catalogue;
+use App\Models\Connection;
 use App\Models\State;
 use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
@@ -70,16 +73,53 @@ class HandleInertiaRequests extends Middleware
             ],
             // Public settings for browser error tracking and analytics (2.4c).
             'monitoring' => fn () => app(MonitoringRuntime::class)->clientConfig('web'),
+            // Connections that stopped syncing and need the person to sign in again (B3.1).
+            'connectionAlerts' => fn (): array => $this->connectionAlerts($request),
             // The public site's state chip and headline ("Now live in Texas").
             'liveStates' => fn (): array => State::query()->where('status', StateStatus::Live)->orderBy('name')->pluck('name')->all(),
             // One-time notices after a redirect (for example "You're on the list").
             'flash' => fn (): array => [
                 'joined' => $request->hasSession() && $request->session()->get('joined') === true,
-                // After connecting a tool on the website (B3.1): outcome, tool and reason.
-                'connection' => $request->hasSession() && is_array($request->session()->get('connection')) ? $request->session()->get('connection') : null,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
+    }
+
+    /**
+     * The person's own connections needing a reconnect (organisation ones are
+     * shown to their admins on the Connections screen, B3.2).
+     *
+     * @return list<array{id: int, integration: string, name: string, account: string|null, since: string|null}>
+     */
+    private function connectionAlerts(Request $request): array
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return [];
+        }
+
+        $catalogue = app(Catalogue::class);
+        $alerts = [];
+
+        $connections = Connection::query()
+            ->where('owner_type', Connection::OWNER_USER)
+            ->where('owner_id', $user->id)
+            ->where('status', ConnectionStatus::ReconnectNeeded)
+            ->orderBy('id')
+            ->get();
+
+        foreach ($connections as $connection) {
+            $alerts[] = [
+                'id' => $connection->id,
+                'integration' => $connection->integration_id,
+                'name' => $catalogue->find($connection->integration_id)->name ?? $connection->integration_id,
+                'account' => $connection->account_label,
+                'since' => $connection->last_failed_at?->toIso8601String(),
+            ];
+        }
+
+        return $alerts;
     }
 
     /**

@@ -1153,6 +1153,28 @@
       "never": "REOS nunca cambia ni elimina sus eventos.",
       "allow": "Permitir",
       "deny": "No permitir"
+    },
+    "alert": {
+      "label": "Conexiones que dejaron de sincronizarse",
+      "title": "{{tool}} dejó de sincronizarse",
+      "body": "{{ago}}. Es posible que sus datos de {{tool}} en REOS no estén al día.",
+      "action": "Volver a conectar · 30 segundos"
+    },
+    "reconnectScreen": {
+      "title": "Volver a conectar {{tool}}",
+      "expired": "El acceso venció",
+      "chip": "Volver a conectar",
+      "why": {
+        "refused": "Suele pasar después de cambiar la contraseña, o cuando {{tool}} le pide que vuelva a iniciar sesión.",
+        "modeChanged": "REOS cambió la forma de conectarse a {{tool}}, así que necesita que vuelva a iniciar sesión.",
+        "other": "{{tool}} dejó de aceptar el inicio de sesión de REOS."
+      },
+      "nextTitle": "Qué pasa después",
+      "next1": "Vuelva a iniciar sesión en {{tool}}",
+      "next2": "REOS se pone al día con todo desde el {{date}}",
+      "next3": "Sus datos en REOS se actualizan automáticamente",
+      "signIn": "Iniciar sesión en {{tool}}",
+      "working": "Esta conexión ya funciona de nuevo."
     }
   }
 }

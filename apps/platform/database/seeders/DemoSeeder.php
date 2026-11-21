@@ -10,6 +10,7 @@ use App\Enums\OrganisationType;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\Memberships;
+use Database\Seeders\Demo\DemoConnections;
 use Database\Seeders\Demo\Personas;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -54,6 +55,9 @@ final class DemoSeeder extends Seeder
                 }
             }
         }
+
+        // Demo connections on the Simulator (B3.1): one syncing, one needing a reconnect.
+        app(DemoConnections::class)->seed();
     }
 
     private function organisation(string $name): Organisation

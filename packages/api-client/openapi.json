@@ -1189,6 +1189,13 @@
                         ],
                         "description": "Translation key for the latest problem, or null."
                     },
+                    "problem_since": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "When the latest problem started (for \"stopped 2 days ago\")."
+                    },
                     "connected_at": {
                         "type": [
                             "string",
@@ -1208,6 +1215,7 @@
                     "history",
                     "last_synced_at",
                     "problem",
+                    "problem_since",
                     "connected_at"
                 ],
                 "title": "ConnectionResource"

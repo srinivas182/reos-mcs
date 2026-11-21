@@ -1153,6 +1153,28 @@
       "never": "REOS never changes or deletes your events.",
       "allow": "Allow",
       "deny": "Don't allow"
+    },
+    "alert": {
+      "label": "Connections that stopped syncing",
+      "title": "{{tool}} stopped syncing",
+      "body": "{{ago}}. Your {{tool}} data in REOS may be out of date.",
+      "action": "Reconnect · 30 seconds"
+    },
+    "reconnectScreen": {
+      "title": "Reconnect {{tool}}",
+      "expired": "Access expired",
+      "chip": "Reconnect",
+      "why": {
+        "refused": "Usually after a password change, or when {{tool}} asks you to sign in again.",
+        "modeChanged": "REOS changed how it connects to {{tool}}, so it needs your sign-in again.",
+        "other": "{{tool}} stopped accepting REOS's sign-in."
+      },
+      "nextTitle": "What happens next",
+      "next1": "Sign in to {{tool}} again",
+      "next2": "REOS catches up on everything since {{date}}",
+      "next3": "Your data in REOS refreshes automatically",
+      "signIn": "Sign in to {{tool}}",
+      "working": "This connection is working again."
     }
   }
 }
