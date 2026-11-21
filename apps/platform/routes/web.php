@@ -85,9 +85,9 @@ Route::get('connections/{tool}/connect', ConnectController::class)
     ->middleware(['auth', 'verified', 'throttle:sign-in'])->name('connections.connect');
 Route::match(['get', 'post'], 'integrations/{tool}/callback', OAuthCallbackController::class)
     ->whereIn('tool', ConnectorRegistry::ids())
-    ->middleware('throttle:sign-in')->name('connections.callback');
+    ->middleware(['throttle:sign-in', 'tenancy.platform'])->name('connections.callback');
 // The demo-data stand-in for a tool's sign-in page (Simulator mode only).
 Route::get('connections/simulator/{tool}', [SimulatorSignInController::class, 'show'])
     ->whereIn('tool', ConnectorRegistry::ids())->middleware('throttle:sign-in')->name('connections.simulator');
 Route::post('connections/simulator/{tool}', [SimulatorSignInController::class, 'decide'])
-    ->whereIn('tool', ConnectorRegistry::ids())->middleware('throttle:sign-in')->name('connections.simulator.decide');
+    ->whereIn('tool', ConnectorRegistry::ids())->middleware(['throttle:sign-in', 'tenancy.platform'])->name('connections.simulator.decide');

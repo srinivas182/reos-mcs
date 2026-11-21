@@ -4,6 +4,8 @@ use App\Authorization\RoleRefused;
 use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\PlatformScope;
+use App\Http\Middleware\ResolveTenant;
 use App\Http\Middleware\SetApiLocale;
 use App\Http\Middleware\TraceRequests;
 use App\Identity\SignInFailed;
@@ -13,6 +15,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 use Sentry\Laravel\Integration;
 
@@ -24,7 +27,8 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: static function (): void {
-            Route::middleware('api')->group(base_path('routes/webhooks.php'));
+            // Vendors sign their webhooks; they run in platform scope (ADR 0015).
+            Route::middleware(['api', 'tenancy.platform'])->group(base_path('routes/webhooks.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -43,11 +47,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: ['appearance', 'text_size', 'locale', 'sidebar_state']);
 
         // The phone app's language (B3.2b): tool descriptions and messages match its screen.
-        $middleware->api(append: [SetApiLocale::class]);
+        // Tenancy (A4.1, ADR 0015): whose data this request may touch.
+        $middleware->api(append: [SetApiLocale::class, ResolveTenant::class]);
+        $middleware->alias(['tenancy.platform' => PlatformScope::class]);
+        // Before route model binding, so bound models are already isolated.
+        $middleware->prependToPriorityList(before: SubstituteBindings::class, prepend: ResolveTenant::class);
 
         $middleware->web(append: [
             EnsureAccountActive::class,
             HandleAppearance::class,
+            ResolveTenant::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
