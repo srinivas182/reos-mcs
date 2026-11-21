@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
+use App\Http\Middleware\ResolveTenant;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,8 @@ use Illuminate\Support\Facades\Route;
 | web app, the mobile app and partners alike (see docs/adr/0003-api-contracts.md).
 */
 
-Route::get('health', HealthController::class)->name('api.health');
+// Reads no tenant data and must answer even when the database is struggling.
+Route::get('health', HealthController::class)->withoutMiddleware(ResolveTenant::class)->name('api.health');
 
 Route::get('app-config', AppConfigController::class)
     ->middleware('throttle:60,1')

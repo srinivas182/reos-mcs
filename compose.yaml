@@ -19,6 +19,7 @@ services:
     volumes:
       - postgres:/var/lib/postgresql/data
       - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/10-reos.sql:ro
+      - ./docker/postgres/app-user.sql:/docker-entrypoint-initdb.d/20-app-user.sql:ro
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U reos -d reos']
       interval: 3s

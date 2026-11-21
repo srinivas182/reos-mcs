@@ -8,6 +8,8 @@ use App\Casts\HubEncrypted;
 use App\Connections\ConnectionStatus;
 use App\Connections\HistoryRange;
 use App\Integrations\IntegrationMode;
+use App\Tenancy\BelongsToTenant;
+use App\Tenancy\HasPersonalRows;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -21,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string $integration_id
  * @property string $owner_type
  * @property int $owner_id
+ * @property-read int|null $organisation_id The owning organisation (generated from the owner), or null for a person's own
  * @property int|null $connected_by
  * @property IntegrationMode $mode
  * @property string $external_account_id
@@ -40,8 +43,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-final class Connection extends Model
+final class Connection extends Model implements HasPersonalRows
 {
+    use BelongsToTenant;
+
     public const OWNER_USER = 'user';
 
     public const OWNER_ORGANISATION = 'organisation';

@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use App\Authorization\Role;
-use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\RoleCatalogue;
 use Illuminate\Database\Migrations\Migration;
@@ -34,7 +33,9 @@ return new class extends Migration
 
         app(RoleCatalogue::class)->sync();
 
-        $platform = Organisation::platform();
+        // The table directly, not the model: later migrations add columns the model uses.
+        $platform = (object) ['id' => DB::table('organisations')->where('type', 'platform')->whereNull('parent_id')->value('id')
+            ?? DB::table('organisations')->insertGetId(['type' => 'platform', 'name' => 'REOS platform', 'parent_id' => null, 'created_at' => now(), 'updated_at' => now()])];
         $role = DB::table('roles')->where('name', Role::SuperAdmin->value)->value('id');
 
         DB::table('users')->where('is_super_admin', true)->pluck('id')->each(function (mixed $id) use ($platform, $role): void {

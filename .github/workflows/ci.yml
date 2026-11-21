@@ -160,11 +160,20 @@ jobs:
       DB_HOST: 127.0.0.1
       DB_PORT: 5432
       DB_DATABASE: reos_testing
-      DB_USERNAME: reos
-      DB_PASSWORD: reos-ci
+      # A normal user, so row-level security applies (ADR 0015); `reos` is the service's admin.
+      DB_USERNAME: reos_app
+      DB_PASSWORD: reos-app-ci
       REDIS_HOST: 127.0.0.1
     steps:
       - uses: actions/checkout@v5
+      - name: Database user without superuser or BYPASSRLS
+        env:
+          PGPASSWORD: reos-ci
+        run: |
+          psql -h 127.0.0.1 -U reos -d reos_testing -v ON_ERROR_STOP=1 \
+            -c "CREATE ROLE reos_app LOGIN PASSWORD 'reos-app-ci' CREATEDB NOSUPERUSER NOBYPASSRLS" \
+            -c "ALTER DATABASE reos_testing OWNER TO reos_app" \
+            -c "ALTER SCHEMA public OWNER TO reos_app"
       - uses: ./.github/actions/setup-platform
         with:
           php-version: ${{ env.PHP_VERSION }}
@@ -175,6 +184,8 @@ jobs:
           php artisan migrate --force
           php artisan migrate:rollback --force
           php artisan migrate --force --seed
+      - name: Tenant isolation is enforced by the database
+        run: php artisan reos:tenancy:check
       - name: Pest (parallel, PostgreSQL)
         run: vendor/bin/pest --parallel
       - name: Playwright Chromium cache
