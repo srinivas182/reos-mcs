@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Languages, ShieldCheck } from 'lucide-react-native';
+import { ArrowLeftRight, Languages, ShieldCheck, Plug } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -67,6 +67,7 @@ export default function MeScreen() {
       ) : null}
 
       <MenuGroup>
+        <MenuRow icon={Plug} title={t('mobile.me.connections')} onPress={() => router.push('/connections')} />
         <MenuRow icon={ShieldCheck} title={t('mobile.me.privacy')} onPress={() => router.push('/privacy')} />
         <MenuRow icon={Languages} title={t('mobile.me.accessibility')} onPress={() => router.push('/accessibility')} />
       </MenuGroup>

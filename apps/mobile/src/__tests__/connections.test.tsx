@@ -26,6 +26,7 @@ const jamesCalendar = (overrides: Partial<Connection> = {}): Connection =>
     problem: 'connections.errors.refused',
     problem_since: twoDaysAgo,
     connected_at: '2026-11-01T10:00:00Z',
+    streams: [{ key: 'events', direction: 'read', records: 12 }],
     ...overrides,
   }) as Connection;
 
@@ -66,7 +67,7 @@ describe('connecting a tool in the browser sheet', () => {
     mockPost.mockResolvedValue({ data: { authorization_url: 'https://accounts.example/auth?state=s' } });
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValue({ type: 'success', url: 'reos://connections?outcome=connected&integration=google-workspace' });
 
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'connected', reason: null });
+    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'connected', reason: null, connectionId: null });
     expect(mockPost).toHaveBeenCalledWith('/connections', { body: { integration: 'google-workspace' } });
     expect(WebBrowser.openAuthSessionAsync).toHaveBeenCalledWith('https://accounts.example/auth?state=s', 'reos://connections');
   });
@@ -74,13 +75,13 @@ describe('connecting a tool in the browser sheet', () => {
   it('treats closing the sheet as cancelled, and passes on refusals', async () => {
     mockPost.mockResolvedValue({ data: { authorization_url: 'https://accounts.example/auth' } });
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValueOnce({ type: WebBrowser.WebBrowserResultType.CANCEL });
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'cancelled', reason: null });
+    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'cancelled', reason: null, connectionId: null });
 
     jest.mocked(WebBrowser.openAuthSessionAsync).mockResolvedValueOnce({ type: 'success', url: 'reos://connections?outcome=failed&reason=connections.errors.refused' });
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'failed', reason: 'connections.errors.refused' });
+    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'failed', reason: 'connections.errors.refused', connectionId: null });
 
     mockPost.mockResolvedValue({ error: { message: "This tool can't be connected right now." } });
-    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'failed', reason: "This tool can't be connected right now." });
+    await expect(connectTool('google-workspace')).resolves.toEqual({ outcome: 'failed', reason: "This tool can't be connected right now.", connectionId: null });
   });
 
   it('makes two-letter tiles and friendly times', () => {

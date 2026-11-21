@@ -4,6 +4,7 @@ use App\Authorization\RoleRefused;
 use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetApiLocale;
 use App\Http\Middleware\TraceRequests;
 use App\Identity\SignInFailed;
 use App\Services\Identity\AppSignInHandoff;
@@ -40,6 +41,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->encryptCookies(except: ['appearance', 'text_size', 'locale', 'sidebar_state']);
+
+        // The phone app's language (B3.2b): tool descriptions and messages match its screen.
+        $middleware->api(append: [SetApiLocale::class]);
 
         $middleware->web(append: [
             EnsureAccountActive::class,

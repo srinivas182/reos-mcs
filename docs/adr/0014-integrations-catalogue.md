@@ -43,11 +43,15 @@ The Integration Hub (ADR 0009) says how REOS runs each tool (off, demo data, tes
 
 ## Plan
 
-- **B3.2a (this change):** the catalogue model, API, register gap and the super admin's screens:
+- **B3.2a (done):** the catalogue model, API, register gap and the super admin's screens:
   - 64: catalogue table with status tabs, states, roles, plans, connections, health and demand.
   - 65: the tool in tabs (Availability with "Credentials and health" beside it, Credentials, Health, Changelog) and the kill switch.
   - The Notify-me demand page.
-- **B3.2b:** the phone's Connections screens.
+- **B3.2b (this change):** the phone's Connections screens (Connections and Sync journey, screens 2–7 and 12):
+  - One place (12), Add a connection with its tabs, search, Notify me and "My tool isn't listed" (2–4), consent (5), connected with smart defaults (6), What to sync (7), and a tool's own page with Sync now and Disconnect.
+  - Each tool says what REOS can and never does (`consent`) and what syncs, which way and how many records (`streams`), from the driver.
+  - Tool descriptions for agents live in `packages/i18n` (`integrations.tools.*`, English and Spanish); the register check fails if a tool people can see has none. The register's `purpose` stays the admins' description.
+  - The API answers in the phone's language (`Accept-Language`, then the person's saved language).
 - **B3.2c:** the website's Connections page (web journey screen 19).
 
 ## Not built (yet)

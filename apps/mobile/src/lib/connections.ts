@@ -11,7 +11,54 @@ export type Connection = Schemas['ConnectionResource'];
 /** The tools the server can connect (from the API contract). */
 export type ConnectableTool = Schemas['StartConnectionRequest']['integration'];
 
-export type ConnectOutcome = { outcome: 'connected' | 'cancelled' | 'failed'; reason: string | null };
+export type ConnectOutcome = { outcome: 'connected' | 'cancelled' | 'failed'; reason: string | null; connectionId: number | null };
+
+export type CatalogueItem = Schemas['CatalogueItemResource'];
+
+export type LibraryGroup = CatalogueItem['group'];
+
+export const LIBRARY_GROUPS: LibraryGroup[] = ['crm', 'deals', 'calendar', 'leads', 'more'];
+
+/** "Up to date", "Syncing", "Delayed" or "Reconnect" (Connections and Sync journey, How sync works). */
+export function syncState(connection: Connection): 'upToDate' | 'syncing' | 'delayed' | 'reconnect' {
+  if (connection.status === 'reconnect_needed') return 'reconnect';
+  if (connection.status === 'failing') return 'delayed';
+
+  return connection.last_synced_at ? 'upToDate' : 'syncing';
+}
+
+/** The people's catalogue: what this person can connect (B3.2), reloaded on focus. */
+export function useCatalogue() {
+  const { status } = useAuth();
+  const [items, setItems] = useState<CatalogueItem[] | null>(null);
+
+  const load = useCallback(async () => {
+    if (status !== 'signedIn') {
+      return;
+    }
+
+    const { data } = await api().GET('/catalogue');
+    setItems(data?.data ?? []);
+  }, [status]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
+
+  return { items, reload: load };
+}
+
+/** "Notify me" / "Join beta", or undo it. */
+export async function setInterest(tool: string, interested: boolean): Promise<boolean> {
+  const call = interested
+    ? api().POST('/catalogue/{tool}/interest', { params: { path: { tool } } })
+    : api().DELETE('/catalogue/{tool}/interest', { params: { path: { tool } } });
+  const { response } = await call;
+
+  return response.ok;
+}
 
 /** Your connections to outside tools, reloaded whenever the screen comes back into view. */
 export function useConnections() {
@@ -48,21 +95,24 @@ export async function connectTool(integration: string): Promise<ConnectOutcome> 
   if (!data) {
     const message = error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' ? error.message : null;
 
-    return { outcome: 'failed', reason: message };
+    return { outcome: 'failed', reason: message, connectionId: null };
   }
 
   const result = await WebBrowser.openAuthSessionAsync(data.authorization_url, 'reos://connections');
 
   if (result.type !== 'success') {
-    return { outcome: 'cancelled', reason: null };
+    return { outcome: 'cancelled', reason: null, connectionId: null };
   }
 
   const params = new URL(result.url).searchParams;
   const outcome = params.get('outcome');
 
+  const connection = Number(params.get('connection'));
+
   return {
     outcome: outcome === 'connected' || outcome === 'cancelled' ? outcome : 'failed',
     reason: params.get('reason'),
+    connectionId: Number.isInteger(connection) && connection > 0 ? connection : null,
   };
 }
 

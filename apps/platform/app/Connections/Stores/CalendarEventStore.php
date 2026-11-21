@@ -57,4 +57,9 @@ final readonly class CalendarEventStore implements StreamStore
     {
         CalendarEvent::query()->where('connection_id', $connection->id)->delete();
     }
+
+    public function count(Connection $connection): int
+    {
+        return CalendarEvent::query()->where('connection_id', $connection->id)->count();
+    }
 }

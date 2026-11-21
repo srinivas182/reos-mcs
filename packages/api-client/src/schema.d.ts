@@ -172,7 +172,12 @@ export interface paths {
         delete: operations["connections.destroy"];
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Change what syncs
+         * @description A new history range syncs again from its start; nothing already synced
+         *     is lost.
+         */
+        patch: operations["connections.update"];
         trace?: never;
     };
     "/auth/exchange": {
@@ -516,6 +521,10 @@ export interface components {
             /** @description The tool's register id, for example `follow-up-boss`. */
             id: string;
             name: string;
+            /**
+             * @description The agent-facing line in their language; the register checks every
+             *     tool people can see has one.
+             */
             purpose: string;
             /** @description The library tab: `crm`, `deals`, `calendar`, `leads` or `more`. */
             group: components["schemas"]["LibraryGroup"];
@@ -543,6 +552,11 @@ export interface components {
             connected: number;
             /** @description `user` (their own account) or `tenant` (their organisation's). */
             accounts: string;
+            /** @description For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet). */
+            consent: {
+                can: ("read_events" | "change_alerts")[];
+                never: "change_events"[];
+            } | null;
         };
         /**
          * CatalogueStatus
@@ -591,6 +605,14 @@ export interface components {
             /** @description When the latest problem started (for "stopped 2 days ago"). */
             problem_since: string | null;
             connected_at: string | null;
+            /** @description What syncs: each stream, which way, and how many records came over. */
+            streams: {
+                /** @constant */
+                key: "events";
+                /** @enum {string} */
+                direction: "read" | "write" | "both";
+                records: number;
+            }[];
         };
         /**
          * ConnectionStatus
@@ -927,6 +949,14 @@ export interface components {
             /** @description What they use it for (optional). */
             note?: string | null;
         };
+        /**
+         * UpdateConnectionRequest
+         * @description "What to sync" (Connections and Sync journey, screen 7).
+         */
+        UpdateConnectionRequest: {
+            /** @description How far back to sync: `3m`, `12m` or `all`. */
+            history: components["schemas"]["HistoryRange"];
+        };
         /** WaitlistRequest */
         WaitlistRequest: {
             /**
@@ -1032,6 +1062,7 @@ export type SchemaStartConnectionRequest = components['schemas']['StartConnectio
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
 export type SchemaToolRequestRequest = components['schemas']['ToolRequestRequest'];
+export type SchemaUpdateConnectionRequest = components['schemas']['UpdateConnectionRequest'];
 export type SchemaWaitlistRequest = components['schemas']['WaitlistRequest'];
 export type ResponseModelNotFoundException = components['responses']['ModelNotFoundException'];
 export type ResponseValidationException = components['responses']['ValidationException'];
@@ -1355,6 +1386,50 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "connections.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The connection ID */
+                connection: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateConnectionRequest"];
+            };
+        };
+        responses: {
+            /** @description `ConnectionResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ConnectionResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

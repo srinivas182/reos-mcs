@@ -23,6 +23,7 @@ export { FeatureTile, IconTile, ListRow, SwitchRow } from './Rows';
 export { Screen } from './Screen';
 export { Sheet, type SheetProps } from './Sheet';
 export { SyncAlert } from './SyncAlert';
+export { ToolRow } from './ToolRow';
 export { TabBar } from './TabBar';
 export { Text, type TextProps, type TextTone, type TextVariant } from './Text';
 export { TextField, type TextFieldProps } from './TextField';

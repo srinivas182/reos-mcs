@@ -51,3 +51,5 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Notify me | Avisarme | |
 | Kill switch | Interruptor de emergencia | |
 | Beta | Beta | |
+| Deals (tab) | Operaciones | A real estate transaction is an "operación" |
+| Up to date | Al día | |

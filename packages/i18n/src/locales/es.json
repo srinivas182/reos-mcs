@@ -182,7 +182,8 @@
       "signOut": "Cerrar sesión",
       "twoStepTitle": "Active la verificación en dos pasos para usar {{role}}",
       "twoStepBody": "Los roles de administración necesitan un segundo paso al iniciar sesión. Actívelo en el sitio web de REOS, en Configuración › Seguridad. Tarda alrededor de un minuto.",
-      "openWeb": "Abrir el sitio web"
+      "openWeb": "Abrir el sitio web",
+      "connections": "Conexiones"
     },
     "organisations": {
       "title": "Sus organizaciones",
@@ -443,6 +444,40 @@
         "action": "Abrir la integración",
         "resume": "Corrija las claves si hace falta y pulse Probar conexión. Una prueba exitosa lo vuelve a activar."
       }
+    },
+    "tools": {
+      "apple-calendar": "Eventos de sus calendarios de iCloud.",
+      "boldtrail": "Contactos, notas y tareas, en ambos sentidos.",
+      "boldtrail-backoffice": "Operaciones y comisiones. Normalmente la configura su bróker.",
+      "brokerbay": "Visitas y citas.",
+      "docusign": "Envíe, siga y guarde firmas.",
+      "dotloop": "Loops, documentos y fechas límite.",
+      "follow-up-boss": "Contactos, notas y tareas, en ambos sentidos.",
+      "google-business-profile": "Publicaciones y estadísticas de su ficha de Google.",
+      "google-meet": "Enlaces de Google Meet en sus citas.",
+      "google-workspace": "Su calendario y correo, en ambos sentidos.",
+      "homes-com-leads": "Nuevos clientes potenciales de Homes.com, enviados a su CRM.",
+      "linkedin": "Publique en su perfil y en la página de su empresa.",
+      "listedkit": "Operaciones y fechas límite, con un coordinador de IA.",
+      "lofty": "Contactos, notas y tareas, en ambos sentidos.",
+      "lone-wolf": "Operaciones, documentos y fechas límite. Gratis con Texas REALTORS®.",
+      "meta": "Publique en Facebook e Instagram y vea cómo les va.",
+      "microsoft-365": "Su calendario y correo de Outlook, en ambos sentidos.",
+      "microsoft-teams": "Enlaces de reunión de Teams en sus citas.",
+      "open-to-close": "Operaciones, tareas y fechas límite.",
+      "paperless-pipeline": "Documentos y listas de verificación.",
+      "phone-contacts": "Los contactos de este teléfono, para empezar con una lista.",
+      "quickbooks-online": "Hojas de reparto y pagos para su contabilidad.",
+      "realtor-com-leads": "Nuevos clientes potenciales de Realtor.com, enviados a su CRM.",
+      "salesforce": "Contactos, clientes potenciales y tareas para agencias que usan Salesforce.",
+      "showingtime": "Las visitas aparecen en su calendario.",
+      "skyslope": "Expedientes, documentos y fechas límite.",
+      "texas-realtors-membership": "Inicie sesión con su cuenta de la asociación; sus datos de socio y su CE se mantienen al día.",
+      "tiktok": "Publique videos cortos y vea cómo les va.",
+      "trec-ce-reporting": "Sus cursos de CE completados, reportados a TREC.",
+      "youtube": "Publique videos cortos y vea cómo les va.",
+      "zillow-leads": "Nuevos clientes potenciales de Zillow, enviados a su CRM.",
+      "zoom": "Enlaces de reunión para visitas, sesiones y llamadas con clientes."
     }
   },
   "identity": {
@@ -1178,6 +1213,115 @@
       "next3": "Sus datos en REOS se actualizan automáticamente",
       "signIn": "Iniciar sesión en {{tool}}",
       "working": "Esta conexión ya funciona de nuevo."
+    },
+    "hub": {
+      "title": "Conexiones",
+      "add": "Agregar una conexión",
+      "empty": "Aún no hay herramientas conectadas",
+      "emptyBody": "Conecte el calendario, el CRM y las herramientas de operaciones que ya usa. REOS trabaja con ellas, así que no hay nada nuevo que aprender.",
+      "groups": {
+        "crm": "CRM",
+        "deals": "Operaciones",
+        "calendar": "Calendario",
+        "leads": "Clientes potenciales",
+        "more": "Más"
+      },
+      "groupCount": "{{group}} · {{count}}",
+      "ago": "Sincronizado {{ago}}",
+      "never": "Aún sin sincronizar"
+    },
+    "state": {
+      "upToDate": "Al día",
+      "syncing": "Sincronizando",
+      "delayed": "Con retraso",
+      "reconnect": "Volver a conectar"
+    },
+    "library": {
+      "title": "Agregar una conexión",
+      "search": "Buscar entre {{count}} herramientas",
+      "tabs": "Tipos de herramienta",
+      "connect": "Conectar",
+      "on": "Activa",
+      "notify": "Avisarme",
+      "notified": "Le avisaremos",
+      "joinBeta": "Unirme a la beta",
+      "asked": "Solicitado",
+      "unavailable": "No disponible por ahora",
+      "retiring": "Hasta el {{date}}",
+      "broker": "Agencia",
+      "noResults": "Ninguna herramienta coincide con «{{search}}»",
+      "notListed": "Mi herramienta no aparece",
+      "notifyToast": "Anotado. Le avisaremos cuando llegue {{tool}}.",
+      "betaToast": "Anotado. Le avisaremos cuando la beta de {{tool}} se abra para usted.",
+      "undone": "Se quitó."
+    },
+    "request": {
+      "title": "Mi herramienta no aparece",
+      "intro": "Díganos qué herramienta usa. Cada solicitud cuenta cuando elegimos qué conectar después.",
+      "name": "Nombre de la herramienta",
+      "note": "Para qué la usa (opcional)",
+      "send": "Enviar",
+      "sent": "Gracias. Recibimos su solicitud."
+    },
+    "consent": {
+      "title": "Conectar {{tool}}",
+      "body": "Iniciará sesión en la página de {{tool}}. REOS nunca ve su contraseña.",
+      "willBeAbleTo": "REOS podrá",
+      "can": {
+        "read_events": "Ver los eventos de su calendario",
+        "change_alerts": "Recibir avisos cuando algo cambie"
+      },
+      "never": {
+        "change_events": "Nunca cambiará ni eliminará sus eventos"
+      },
+      "footer": "Puede desconectarla en cualquier momento desde Conexiones. Sus datos siguen siendo suyos.",
+      "continue": "Continuar a {{tool}}",
+      "cancel": "Cancelar"
+    },
+    "connected": {
+      "title": "{{tool}} está conectado",
+      "body": "Elegimos la configuración que usan la mayoría de los agentes. No necesita cambiar nada.",
+      "streams": {
+        "events": "Eventos del calendario"
+      },
+      "directions": {
+        "read": "REOS lee",
+        "write": "REOS escribe",
+        "both": "En ambos sentidos"
+      },
+      "history": "Historial",
+      "historyValues": {
+        "3m": "Últimos 3 meses",
+        "12m": "Últimos 12 meses",
+        "all": "Todo"
+      },
+      "change": "Cambiar la configuración",
+      "done": "Empezar a sincronizar"
+    },
+    "settings": {
+      "title": "Qué sincronizar",
+      "signedInAs": "{{tool}} · sesión iniciada como {{account}}",
+      "howFar": "Hasta cuándo",
+      "privacy": "Solo usted ve estos datos en REOS.",
+      "save": "Guardar",
+      "saved": "Se guardó. Sincronizando desde la nueva fecha de inicio."
+    },
+    "detail": {
+      "account": "Cuenta",
+      "status": "Estado",
+      "lastSync": "Última sincronización",
+      "records_one": "{{count}} elemento sincronizado",
+      "records_other": "{{count}} elementos sincronizados",
+      "syncNow": "Sincronizar ahora",
+      "syncQueued": "Sincronizando ahora.",
+      "whatToSync": "Qué sincronizar",
+      "disconnect": "Desconectar",
+      "demo": "Datos de demostración",
+      "confirmTitle": "¿Desconectar {{tool}}?",
+      "confirmBody": "REOS deja de sincronizar y quita los datos de {{tool}} que copió. No se elimina nada en {{tool}}.",
+      "confirm": "Desconectar",
+      "keep": "Mantener conectado",
+      "disconnected": "Se desconectó {{tool}}."
     }
   },
   "catalogue": {

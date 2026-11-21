@@ -6,6 +6,7 @@ namespace App\Http\Resources\Catalogue;
 
 use App\Catalogue\CatalogueStatus;
 use App\Catalogue\LibraryGroup;
+use App\Connections\ConnectorRegistry;
 use App\Integrations\IntegrationDefinition;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,7 +28,9 @@ final class CatalogueItemResource extends JsonResource
             /** The tool's register id, for example `follow-up-boss`. */
             'id' => (string) $definition->id,
             'name' => (string) $definition->name,
-            'purpose' => (string) $definition->purpose,
+            // The agent-facing line in their language; the register checks every
+            // tool people can see has one.
+            'purpose' => __('integrations.tools.'.$definition->id),
             /**
              * The library tab: `crm`, `deals`, `calendar`, `leads` or `more`.
              *
@@ -54,6 +57,12 @@ final class CatalogueItemResource extends JsonResource
             'connected' => (int) $item['connected'],
             /** `user` (their own account) or `tenant` (their organisation's). */
             'accounts' => $definition->accounts->value,
+            /**
+             * For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet).
+             *
+             * @var array{can: list<'read_events'|'change_alerts'>, never: list<'change_events'>}|null
+             */
+            'consent' => ConnectorRegistry::consent($definition->id),
         ];
     }
 }

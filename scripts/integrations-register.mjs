@@ -74,7 +74,12 @@ if (!validate(register)) {
   fail(`register.yaml doesn't match the schema:\n${problems.join('\n')}`);
 }
 
-const fieldLabels = JSON.parse(readFileSync(i18nPath, 'utf8'))?.integrations?.fields ?? {};
+const i18nIntegrations = JSON.parse(readFileSync(i18nPath, 'utf8'))?.integrations ?? {};
+const fieldLabels = i18nIntegrations.fields ?? {};
+// What agents read in Connections › Add a connection, in their own language
+// (the register's `purpose` is written for the people who run REOS).
+const toolSummaries = i18nIntegrations.tools ?? {};
+const forPeople = (entry) => entry.kind === 'integration' && ['user', 'tenant'].includes(entry.connection?.accounts) && entry.category !== 'payments';
 const errors = [];
 const seen = new Set();
 for (const entry of register.entries) {
@@ -90,6 +95,9 @@ for (const entry of register.entries) {
   const connectable = ['integration', 'platform_service'].includes(entry.kind);
   if (connectable && !entry.connection && entry.access.status !== 'not_needed') {
     errors.push(`[${entry.id}] needs a connection block (how it is set up in Settings › Integrations)`);
+  }
+  if (forPeople(entry) && !toolSummaries[entry.id]) {
+    errors.push(`[${entry.id}] needs a one-line summary for agents: add integrations.tools.${entry.id} to packages/i18n (English and Spanish)`);
   }
   if (!connectable && entry.connection) errors.push(`[${entry.id}] only integrations and platform services have a connection block`);
   if (entry.connection) {

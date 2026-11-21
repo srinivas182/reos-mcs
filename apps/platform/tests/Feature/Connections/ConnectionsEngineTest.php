@@ -156,7 +156,7 @@ describe('vendor sign-in (OAuth with PKCE) on demo data', function () {
         parse_str((string) parse_url((string) $url, PHP_URL_QUERY), $query);
         $answer = $this->post('/connections/simulator/'.CALENDAR, [...$query, 'allow' => '1']);
         $this->get((string) $answer->headers->get('Location'))
-            ->assertRedirect('reos://connections?outcome=connected&integration='.CALENDAR);
+            ->assertRedirect('reos://connections?outcome=connected&integration='.CALENDAR.'&connection='.Connection::query()->sole()->id);
 
         expect(Connection::query()->sole()->owner_id)->toBe($maria->id);
     });
@@ -383,5 +383,48 @@ describe('reconnect prompts (B3.1b)', function () {
         expect($statuses->filter(fn ($s, $email) => str_starts_with($email, 'linda.park@'))->first())->toBe('active')
             ->and($statuses->filter(fn ($s, $email) => str_starts_with($email, 'james.miller@'))->first())->toBe('reconnect_needed')
             ->and(CalendarEvent::query()->count())->toBe(24);
+    });
+});
+
+describe('the phone screens’ data (B3.2b)', function () {
+    it('says what REOS can and never does, and what syncs with how many records', function () {
+        $maria = User::factory()->create();
+        connectOnWeb($this, $maria);
+
+        $catalogue = collect($this->withToken(connectionsPhoneToken($maria))->getJson('/api/v1/catalogue')->json('data'))->keyBy('id');
+        expect($catalogue['google-workspace']['consent'])->toBe(['can' => ['read_events', 'change_alerts'], 'never' => ['change_events']])
+            ->and($catalogue['zoom']['consent'])->toBeNull();
+
+        $this->withToken(connectionsPhoneToken($maria))->getJson('/api/v1/connections')
+            ->assertJsonPath('data.0.streams', [['key' => 'events', 'direction' => 'read', 'records' => 12]]);
+    });
+
+    it('describes each tool in the person’s language', function () {
+        $maria = User::factory()->create();
+
+        $catalogue = collect($this->withToken(connectionsPhoneToken($maria))->withHeader('Accept-Language', 'es-US')->getJson('/api/v1/catalogue')->json('data'))->keyBy('id');
+        expect($catalogue['follow-up-boss']['purpose'])->toBe('Contactos, notas y tareas, en ambos sentidos.')
+            ->and($catalogue->pluck('purpose')->filter(fn ($p) => str_starts_with((string) $p, 'integrations.')))->toBeEmpty();
+
+        // The app sends the language on its screen.
+        $english = $this->withToken(connectionsPhoneToken($maria))->withHeader('Accept-Language', 'en')->getJson('/api/v1/catalogue');
+        expect(collect($english->json('data'))->keyBy('id')['follow-up-boss']['purpose'])->toBe('Contacts, notes and tasks, both ways.');
+    });
+
+    it('changes how far back it syncs, and syncs again from there', function () {
+        $maria = User::factory()->create();
+        connectOnWeb($this, $maria);
+        $connection = Connection::query()->sole();
+        expect($connection->cursor('events'))->not->toBeNull();
+
+        Queue::fake();
+        $this->withToken(connectionsPhoneToken($maria))->patchJson("/api/v1/connections/{$connection->id}", ['history' => 'all'])
+            ->assertOk()->assertJsonPath('data.history', 'all');
+
+        expect($connection->fresh()?->cursor('events'))->toBeNull();
+        Queue::assertPushed(SyncConnection::class, fn (SyncConnection $job) => $job->trigger === SyncTrigger::Manual);
+
+        $this->withToken(connectionsPhoneToken($maria))->patchJson("/api/v1/connections/{$connection->id}", ['history' => '5y'])->assertJsonValidationErrors('history');
+        $this->withToken(connectionsPhoneToken(User::factory()->create()))->patchJson("/api/v1/connections/{$connection->id}", ['history' => '3m'])->assertNotFound();
     });
 });

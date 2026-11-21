@@ -40,7 +40,10 @@ final class OAuthCallbackController extends Controller
         $name = $catalogue->find($tool)->name ?? $tool;
 
         if ($authorization?->return_to === OAuthAuthorization::RETURN_APP) {
-            return redirect()->away('reos://connections?'.http_build_query(array_filter($summary)));
+            // The app opens "Connected with smart defaults" for this connection.
+            $app = [...$summary, 'connection' => $result['connection']?->id];
+
+            return redirect()->away('reos://connections?'.http_build_query(array_filter($app)));
         }
 
         Inertia::flash('toast', [

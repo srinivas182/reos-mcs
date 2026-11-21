@@ -6,6 +6,7 @@
  */
 import { createApiClient, type ApiClient, type Schemas } from '@reos/api-client';
 
+import { i18n } from '@/lib/i18n';
 import { currentToken, expireSession } from '@/lib/session';
 
 export type Health = Schemas['HealthResource'];
@@ -19,7 +20,8 @@ export const webBaseUrl = (): string => apiBaseUrl().replace(/\/api\/v1$/, '');
 let client: ApiClient | undefined;
 
 /**
- * Adds this device's token to every request, and signs the app out when the
+ * Adds this device's token and the language on screen to every request (so
+ * the server answers in it), and signs the app out when the
  * server answers 401 to a signed-in request (signed out from another device,
  * or 30 days unused).
  */
@@ -27,6 +29,7 @@ export function withSession(apiClient: ApiClient): ApiClient {
   apiClient.use({
     onRequest({ request }) {
       const token = currentToken();
+      request.headers.set('Accept-Language', i18n.language);
 
       if (token !== null) {
         request.headers.set('Authorization', `Bearer ${token}`);
