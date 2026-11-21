@@ -35,7 +35,8 @@
     "connections": "Connections",
     "tenants": "Tenants",
     "brandingAndDomain": "Branding and domain",
-    "brokerageSettings": "Brokerage settings"
+    "brokerageSettings": "Brokerage settings",
+    "agents": "Agents"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -555,7 +556,8 @@
       "remember": "Keep me signed in on this device",
       "noAccount": "New to REOS?",
       "createAccount": "Create an account",
-      "securityNote": "Two-step sign-in is required for brokers, school and association admins. New devices are confirmed by email."
+      "securityNote": "Two-step sign-in is required for brokers, school and association admins. New devices are confirmed by email.",
+      "haveCode": "Have an invite code?"
     },
     "providers": {
       "google": "Continue with Google",
@@ -1371,6 +1373,17 @@
         "mls": "MLS and IDX",
         "esignature": "E-sign"
       }
+    },
+    "askBroker": {
+      "button": "Ask my broker",
+      "asked": "Asked your broker",
+      "toast": "Asked your broker to set up {{tool}}.",
+      "explain": "Your brokerage sets this up once for all its agents.",
+      "mail": {
+        "subject": "{{person}} asked you to set up {{tool}}",
+        "body": "{{person}} would like to use {{tool}} in REOS. Your brokerage connects it once for all its agents.",
+        "next": "REOS will tell you when it's ready to connect under Integrations."
+      }
     }
   },
   "catalogue": {
@@ -1732,7 +1745,13 @@
         "sso.enabled": "Turned single sign-on on",
         "sso.disabled": "Turned single sign-on off",
         "sso.account_created": "New account from single sign-on",
-        "sso.account_linked": "Linked an account to single sign-on"
+        "sso.account_linked": "Linked an account to single sign-on",
+        "invite.sent": "Sent invites",
+        "invite.resent": "Resent an invite",
+        "invite.revoked": "Withdrew an invite",
+        "invite.accepted": "Joined from an invite",
+        "seats.requested": "Asked for more seats",
+        "connection.broker_asked": "Asked the broker for a tool"
       }
     }
   },
@@ -1919,7 +1938,7 @@
     "on": "On",
     "off": "Off",
     "noPeople": "No admins yet besides you.",
-    "peopleNote": "Inviting admins and changing permissions come next.",
+    "peopleNote": "Changing permissions comes next.",
     "plan": "Plan",
     "planValue": "{{payer}} · {{seats}}",
     "seats_one": "{{count}} seat",
@@ -1933,7 +1952,8 @@
     "editBrand": "Edit brand",
     "noBrand": "No brand yet: members see REOS's colors.",
     "colour": "Primary color",
-    "appLabel": "App label"
+    "appLabel": "App label",
+    "inviteAdmins": "Invite admins"
   },
   "sso": {
     "saved": "Single sign-on settings saved. Run a test sign-in next.",
@@ -2009,5 +2029,171 @@
       "onNote": "Single sign-on with {{name}}'s member login is on.",
       "offNote": "Single sign-on is off. Set it up below."
     }
+  },
+  "invites": {
+    "sent_one": "Invite sent.",
+    "sent_other": "{{count}} invites sent.",
+    "noneSent": "No invites were sent. The list shows why.",
+    "resent": "Invite sent again to {{contact}}.",
+    "revoked": "Invite withdrawn.",
+    "seatsAsked": "Asked for more seats. You'll hear back by email.",
+    "seatsAlreadyAsked": "You already asked today. You'll hear back by email.",
+    "joined": "Welcome to {{tenant}}.",
+    "errors": {
+      "role": "You can't invite people into that role.",
+      "team": "Choose one of your teams.",
+      "tooMany": "Invite up to {{max}} people at a time.",
+      "seatsFull_one": "Only {{left}} seat is left of {{limit}}, and this invites {{wanted}}. Invite fewer people or ask for more seats.",
+      "seatsFull_other": "{{left}} seats are left of {{limit}}, and this invites {{wanted}}. Invite fewer people or ask for more seats.",
+      "contact": "Enter an email address or a mobile number.",
+      "nobody": "Add at least one email address or mobile number.",
+      "closed": "This invite has expired, was withdrawn or was already used.",
+      "otherPerson": "This invite was sent to someone else.",
+      "haveAccount": "You already have a REOS account. Sign in to join.",
+      "code": "That code doesn't match an invite. Check it and try again."
+    },
+    "mail": {
+      "subject": "{{inviter}} invited you to {{tenant}} on REOS",
+      "reminderSubject": "Reminder: {{inviter}} invited you to {{tenant}}",
+      "greeting": "Hello,",
+      "body": "{{inviter}} invited you to join {{tenant}} on REOS as {{role}}.",
+      "bodyTeam": "{{inviter}} invited you to join {{tenant}} on REOS as {{role}} in {{team}}.",
+      "action": "Join {{tenant}}",
+      "code": "Or open the REOS app and enter the code {{code}}.",
+      "expires": "This invite works until {{date}}.",
+      "ignore": "If you weren't expecting this, you can ignore this email."
+    },
+    "text": {
+      "body": "{{inviter}} invited you to {{tenant}} on REOS as {{role}}. Join: {{link}} (code {{code}}). Works until {{date}}.",
+      "reminder": "Reminder: {{inviter}} invited you to {{tenant}} on REOS. Join: {{link}} (code {{code}}). Works until {{date}}."
+    },
+    "seatsMail": {
+      "subject": "More seats requested for {{tenant}}",
+      "body": "{{person}} asked for more seats for {{tenant}}. All {{limit}} seats are in use or invited.",
+      "note": "Their note: {{note}}",
+      "next": "Seats are part of the tenant's plan."
+    },
+    "sheet": {
+      "title": "Invite people",
+      "description": "They get a link and a code by email or text. Invites work for 14 days, with one reminder at day 7.",
+      "mode": "How many",
+      "one": "One person",
+      "many": "Several at once",
+      "contact": "Email or mobile number",
+      "contactPlaceholder": "name@example.com or (832) 555-0123",
+      "name": "Name (optional)",
+      "people": "Emails or mobile numbers, one per line",
+      "peopleHint": "Add a name first if you like: Rosa Lima, rosa@example.com",
+      "file": "Or upload a CSV (name, email, phone)",
+      "role": "Role",
+      "team": "Team",
+      "noTeam": "No team",
+      "language": "Language of the invite",
+      "english": "English",
+      "spanish": "Español",
+      "seatNote": "Takes a seat",
+      "seats": "{{left}} of {{limit}} seats left · {{payer}}",
+      "seatsNoLimit": "No seat limit · {{payer}}",
+      "payers": {
+        "organisation": "{{tenant}} pays",
+        "member": "Each person pays for their own seat"
+      },
+      "noText": "Invites by text start when REOS turns on text messages. Use email for now.",
+      "send": "Send invites",
+      "sending": "Sending…",
+      "askSeats": "Ask for more seats",
+      "skippedTitle": "Not sent",
+      "reasons": {
+        "duplicate": "Listed twice",
+        "member": "Already a member",
+        "invited": "Already invited",
+        "noText": "Text messages aren't on yet",
+        "invalid": "Not an email or mobile number"
+      }
+    }
+  },
+  "agents": {
+    "title": "Agents",
+    "purpose_one": "{{count}} agent · {{tenant}}",
+    "purpose_other": "{{count}} agents · {{tenant}}",
+    "export": "Export",
+    "invite": "Invite agents",
+    "tabsLabel": "Show",
+    "tabs": {
+      "all": "All {{count}}",
+      "invited": "Invited {{count}}"
+    },
+    "columns": {
+      "agent": "Agent",
+      "email": "Email",
+      "team": "Team",
+      "lastActive": "Last active",
+      "person": "Person",
+      "role": "Role",
+      "sent": "Sent",
+      "expires": "Expires",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "never": "Not yet",
+    "states": {
+      "pending": "Waiting",
+      "expired": "Expired"
+    },
+    "reminded": "Reminder sent",
+    "resend": "Resend",
+    "revoke": "Withdraw",
+    "resendTo": "Resend invite to {{contact}}",
+    "revokeFor": "Withdraw invite for {{contact}}",
+    "channels": {
+      "email": "Email",
+      "text": "Text"
+    },
+    "empty": {
+      "title": "No agents yet",
+      "body": "Invite your agents. They get a link by email or text and join in a minute."
+    },
+    "emptyInvites": {
+      "title": "No open invites",
+      "body": "Invites you send show here until they're accepted."
+    },
+    "privacy": "You see work activity, deals, CE and plan progress. Agents' CRM contacts, client details, messages and private notes are never shown to the brokerage.",
+    "seats": "Seats: {{used}} of {{limit}} in use · {{pending}} invited · {{payer}}",
+    "seatsNoLimit": "Seats: no limit · {{used}} in use · {{payer}}"
+  },
+  "invitePage": {
+    "title": "Join {{tenant}}",
+    "invited": "{{inviter}} invited you to join {{tenant}} as {{role}}.",
+    "invitedTeam": "{{inviter}} invited you to join {{tenant}} as {{role}} in {{team}}.",
+    "invitedNoInviter": "You're invited to join {{tenant}} as {{role}}.",
+    "until": "This invite works until {{date}}.",
+    "join": "Join {{tenant}}",
+    "joining": "Joining…",
+    "other": "This invite was sent to {{contact}}, and you're signed in as {{account}}. Sign out, then open the link again.",
+    "signOut": "Sign out",
+    "existing": "You already have a REOS account with {{contact}}.",
+    "signInToJoin": "Sign in to join",
+    "createTitle": "Create your account",
+    "createFor": "For {{contact}}",
+    "nameLabel": "Your name",
+    "password": "Password",
+    "phoneNote": "You'll sign in with a code we text to {{contact}}.",
+    "create": "Create account and join",
+    "creating": "Creating…",
+    "haveAccount": "I already have an account",
+    "expired": "This invite has expired. Ask the person who invited you for a new one.",
+    "accepted": "This invite was already used. Sign in to continue.",
+    "revoked": "This invite was withdrawn. Ask the person who invited you if you think this is a mistake.",
+    "invalid": "This link doesn't work. Check it, or enter the code from your invite.",
+    "enterCode": "Enter a code",
+    "signIn": "Sign in",
+    "heading": "Your invitation"
+  },
+  "joinPage": {
+    "title": "Join with a code",
+    "description": "Enter the 8-character code from your invite.",
+    "code": "Invite code",
+    "placeholder": "ABCD-2345",
+    "continue": "Continue"
   }
 }

@@ -21,7 +21,7 @@ type Props = { tools: CatalogueItem[]; connections: ToolConnection[] };
  * Connections (web journey screen 19): the tools this agent may use, as the
  * super admin's catalogue allows for their state, role and plan, and as
  * their brokerage allows. Tabs by tool type; each card shows its status and
- * the next step: Connect, Manage, Join beta or Notify me.
+ * the next step: Connect, Manage, Join beta, Notify me or Ask my broker.
  */
 export default function Connections({ tools, connections }: Props) {
     const { t } = useTranslation();
@@ -55,9 +55,13 @@ export default function Connections({ tools, connections }: Props) {
                                 ? t('connections.library.betaToast', {
                                       tool: tool.name,
                                   })
-                                : t('connections.library.notifyToast', {
-                                      tool: tool.name,
-                                  }),
+                                : tool.action === 'ask_broker'
+                                  ? t('connections.askBroker.toast', {
+                                        tool: tool.name,
+                                    })
+                                  : t('connections.library.notifyToast', {
+                                        tool: tool.name,
+                                    }),
                         onUndo: () =>
                             new Promise<void>((resolve) =>
                                 router.delete(forget(tool.id).url, {

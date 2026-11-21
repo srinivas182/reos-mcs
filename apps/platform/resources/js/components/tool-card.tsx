@@ -11,7 +11,7 @@ type Props = {
     /** This person's account at the tool, when connected. */
     connection?: ToolConnection;
     onManage?: (connection: ToolConnection) => void;
-    /** "Notify me" or "Join beta". */
+    /** "Notify me", "Join beta" or "Ask my broker". */
     onFollow?: (tool: CatalogueItem) => void;
 };
 
@@ -93,6 +93,23 @@ export function ToolCard({ tool, connection, onManage, onFollow }: Props) {
             );
         }
 
+        // A tool the brokerage connects once for everyone (A4.3a).
+        if (tool.action === 'ask_broker') {
+            if (tool.interested) {
+                return quiet(t('connections.askBroker.asked'));
+            }
+
+            return (
+                <Button
+                    variant="outline"
+                    onClick={() => onFollow?.(tool)}
+                    aria-label={`${t('connections.askBroker.button')} · ${tool.name}`}
+                >
+                    {t('connections.askBroker.button')}
+                </Button>
+            );
+        }
+
         if (tool.action === 'notify' || tool.action === 'join_beta') {
             const label =
                 tool.action === 'notify'
@@ -156,6 +173,11 @@ export function ToolCard({ tool, connection, onManage, onFollow }: Props) {
             <p className="flex-1 text-body text-muted-foreground">
                 {tool.purpose}
             </p>
+            {tool.action === 'ask_broker' ? (
+                <p className="text-sm text-muted-foreground">
+                    {t('connections.askBroker.explain')}
+                </p>
+            ) : null}
             <div className="flex flex-wrap items-center justify-between gap-3">
                 {status}
                 {action}

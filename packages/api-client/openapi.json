@@ -1425,17 +1425,18 @@
                     },
                     "action": {
                         "type": "string",
-                        "description": "What this person can do: `connect`, `join_beta`, `notify` or `none`.",
+                        "description": "What this person can do: `connect`, `join_beta`, `notify`,\n`ask_broker` (a tool their brokerage sets up once for everyone) or `none`.",
                         "enum": [
                             "connect",
                             "join_beta",
                             "notify",
+                            "ask_broker",
                             "none"
                         ]
                     },
                     "interested": {
                         "type": "boolean",
-                        "description": "They tapped \"Notify me\" or \"Join beta\"."
+                        "description": "They tapped \"Notify me\", \"Join beta\" or \"Ask my broker\"."
                     },
                     "retires_on": {
                         "type": "string",

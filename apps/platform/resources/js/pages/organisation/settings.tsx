@@ -1,13 +1,21 @@
 import { Head, Link } from '@inertiajs/react';
+import { UserPlus } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { BrandTile } from '@/components/brand-tile';
 import { CustomDomainCard } from '@/components/custom-domain-card';
+import { InviteSheet } from '@/components/invite-sheet';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { roleName } from '@/lib/roles';
 import { cn } from '@/lib/utils';
 import { show as branding } from '@/routes/branding';
-import type { BrandProps, TenantDomain, TenantType } from '@/types';
+import type {
+    BrandProps,
+    InviteOptions,
+    TenantDomain,
+    TenantType,
+} from '@/types';
 import type { RoleName } from '@/types/auth';
 
 type Person = {
@@ -31,6 +39,7 @@ type Props = {
     domain: TenantDomain | null;
     brand: BrandProps;
     people: Person[];
+    invite: InviteOptions;
 };
 
 const card = 'rounded-reos-lg border border-border bg-card p-5';
@@ -39,16 +48,18 @@ const card = 'rounded-reos-lg border border-border bg-card p-5';
  * Brokerage settings (broker, web journey screen 41): the brokerage's own
  * domain with its DNS records, the people who run it with their roles and
  * two-step status, and its plan. Its brand sits here too (decision of 21
- * November 2026), edited on Branding and domain. Inviting admins and
- * changing permissions come with A4.3.
+ * November 2026), edited on Branding and domain. Invite admins opens the
+ * invite sheet (A4.3a); changing permissions comes later.
  */
 export default function BrokerageSettings({
     tenant,
     domain,
     brand,
     people,
+    invite,
 }: Props) {
     const { t } = useTranslation();
+    const [inviting, setInviting] = useState(false);
     const seats =
         tenant.seats === null
             ? t('brokerageSettings.noLimit')
@@ -76,9 +87,18 @@ export default function BrokerageSettings({
                         className={cn(card, 'space-y-4')}
                         aria-labelledby="people-title"
                     >
-                        <h2 id="people-title" className="font-semibold">
-                            {t('brokerageSettings.people')}
-                        </h2>
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                            <h2 id="people-title" className="font-semibold">
+                                {t('brokerageSettings.people')}
+                            </h2>
+                            <Button
+                                variant="outline"
+                                onClick={() => setInviting(true)}
+                            >
+                                <UserPlus aria-hidden className="size-5" />
+                                {t('brokerageSettings.inviteAdmins')}
+                            </Button>
+                        </div>
                         {people.length === 0 ? (
                             <p className="text-muted-foreground">
                                 {t('brokerageSettings.noPeople')}
@@ -233,6 +253,14 @@ export default function BrokerageSettings({
                     </section>
                 </div>
             </div>
+
+            <InviteSheet
+                open={inviting}
+                onOpenChange={setInviting}
+                options={invite}
+                tenant={tenant.name}
+                defaultRole="broker"
+            />
         </>
     );
 }

@@ -22,6 +22,9 @@ final class IntegrationInterest extends Model
 
     public const BETA = 'beta';
 
+    /** "Ask my broker" (A4.3a): tools a brokerage connects once for everyone. */
+    public const BROKER = 'broker';
+
     public const UPDATED_AT = null;
 
     protected $fillable = ['integration_id', 'user_id', 'kind'];

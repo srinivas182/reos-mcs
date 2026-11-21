@@ -28,8 +28,9 @@ export function webTab(category: IntegrationCategory): WebTab {
 const ORDER: Record<CatalogueItem['action'], number> = {
     connect: 1,
     join_beta: 2,
-    notify: 3,
-    none: 4,
+    ask_broker: 3,
+    notify: 4,
+    none: 5,
 };
 
 /** Connected tools first, then what can be connected, beta, coming soon and the rest. */

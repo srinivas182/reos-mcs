@@ -1,3 +1,5 @@
+import type { RoleName } from '@/types/auth';
+
 export type TenantType =
     | 'association'
     | 'brokerage'
@@ -189,4 +191,50 @@ export type SsoScreen = {
     };
     members: number;
     test_provider_available: boolean;
+};
+
+/** What the invite sheet needs (A4.3a, screens 32 and 41). */
+export type InviteOptions = {
+    roles: { value: RoleName; label: string; seat: boolean }[];
+    teams: { id: number; name: string }[];
+    can_text: boolean;
+    seats: {
+        role: RoleName | null;
+        limit: number | null;
+        used: number;
+        pending: number;
+        left: number | null;
+        payer: 'organisation' | 'member';
+    };
+    locale: 'en' | 'es';
+};
+
+export type InviteResult = {
+    sent: number;
+    skipped: {
+        contact: string;
+        reason: 'duplicate' | 'member' | 'invited' | 'noText' | 'invalid';
+    }[];
+};
+
+export type AgentRow = {
+    id: number;
+    name: string;
+    email: string | null;
+    team: string | null;
+    last_active: string | null;
+};
+
+export type InvitationRow = {
+    id: number;
+    contact: string;
+    channel: 'email' | 'text';
+    name: string | null;
+    role: RoleName;
+    team: string | null;
+    state: 'pending' | 'expired';
+    sent_at: string | null;
+    expires_at: string;
+    reminded: boolean;
+    invited_by: string | null;
 };

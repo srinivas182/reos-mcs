@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
+import { index as agentsIndex } from '@/routes/agents';
 import { settings as organisationSettings } from '@/routes/organisation';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -32,6 +33,7 @@ export type NavLabel =
     | 'tenants'
     | 'brandingAndDomain'
     | 'brokerageSettings'
+    | 'agents'
     | 'connections';
 
 export type RoleNavItem = {
@@ -109,7 +111,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         broker: [
             home,
             planned('approvals'),
-            planned('agents'),
+            item('agents', Users, agentsIndex()),
             planned('ceCompliance'),
             planned('virtualBroker'),
             planned('policies'),

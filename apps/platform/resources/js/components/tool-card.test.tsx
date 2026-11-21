@@ -162,4 +162,38 @@ describe('ToolCard (web journey screen 19)', () => {
             }),
         ).toBeInTheDocument();
     });
+
+    it('explains a brokerage tool and asks the broker (A4.3a)', async () => {
+        const onFollow = vi.fn();
+        const loneWolf = tool({
+            id: 'lone-wolf',
+            name: 'Lone Wolf Transactions',
+            category: 'transactions',
+            status: 'coming_soon',
+            action: 'ask_broker',
+            accounts: 'tenant',
+        });
+        const { rerender } = render(
+            <ToolCard tool={loneWolf} onFollow={onFollow} />,
+        );
+
+        expect(
+            screen.getByText(
+                'Your brokerage sets this up once for all its agents.',
+            ),
+        ).toBeInTheDocument();
+        await userEvent.click(
+            screen.getByRole('button', {
+                name: 'Ask my broker · Lone Wolf Transactions',
+            }),
+        );
+        expect(onFollow).toHaveBeenCalledWith(loneWolf);
+
+        rerender(
+            <I18nextProvider i18n={i18n}>
+                <ToolCard tool={{ ...loneWolf, interested: true }} />
+            </I18nextProvider>,
+        );
+        expect(screen.getByText('Asked your broker')).toBeInTheDocument();
+    });
 });

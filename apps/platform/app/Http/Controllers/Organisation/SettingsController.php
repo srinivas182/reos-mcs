@@ -12,6 +12,7 @@ use App\Http\Resources\Tenancy\TenantResource;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
+use App\Services\Tenancy\Invitations;
 use App\Services\Tenancy\TenantDomains;
 use App\Tenancy\Brand;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -28,7 +29,7 @@ use Inertia\Response;
  */
 final class SettingsController extends Controller
 {
-    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $activeRole, TenantDomains $domains): Response
+    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $activeRole, TenantDomains $domains, Invitations $invitations): Response
     {
         $membership = $activeRole->for($user);
         abort_if($membership === null || in_array($membership->organisation->type, [OrganisationType::Platform, OrganisationType::Team], true), 404);
@@ -49,6 +50,8 @@ final class SettingsController extends Controller
             'domain' => $domain === null ? null : (new TenantDomainResource($domain))->resolve($request),
             'brand' => Brand::of($tenant)->toArray(),
             'people' => self::people($tenant),
+            // "Invite admins" (A4.3a).
+            'invite' => $invitations->options($tenant),
         ]);
     }
 

@@ -103,3 +103,34 @@ export const SetUpByBrokerage: Story = {
         }),
     },
 };
+
+/** A tool the brokerage sets up once: the agent asks their broker (A4.3a). */
+export const AskMyBroker: Story = {
+    args: {
+        tool: tool({
+            id: 'lone-wolf',
+            name: 'Lone Wolf Transactions',
+            category: 'transactions',
+            status: 'coming_soon',
+            action: 'ask_broker',
+            accounts: 'tenant',
+            purpose: 'Deals, documents and commissions from the back office.',
+        }),
+    },
+};
+
+/** Asked: the broker heard about it. */
+export const AskedMyBroker: Story = {
+    args: {
+        tool: tool({
+            id: 'lone-wolf',
+            name: 'Lone Wolf Transactions',
+            category: 'transactions',
+            status: 'coming_soon',
+            action: 'ask_broker',
+            accounts: 'tenant',
+            interested: true,
+            purpose: 'Deals, documents and commissions from the back office.',
+        }),
+    },
+};

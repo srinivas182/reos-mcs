@@ -38,6 +38,9 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | License | Licencia | |
 | Continuing education (CE) | Educación continua (CE) | Keep "CE" and "TREC" as in English |
 | Integration | Integración | |
+| Invite, invitation | Invitar, invitación | |
+| Seat (paid place in a plan) | Puesto | Not "asiento" |
+| Withdraw (an invite) | Retirar | |
 | Single sign-on (SSO) | Inicio de sesión único | Microsoft's term; keep "SSO" only in technical fields |
 | Identity provider | Proveedor de identidad | |
 | Metadata | Metadatos | |

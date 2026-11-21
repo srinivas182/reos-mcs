@@ -52,6 +52,23 @@ const props = {
             two_step: false,
         },
     ],
+    invite: {
+        roles: [
+            { value: 'agent' as const, label: 'Licensed agent', seat: true },
+            { value: 'broker' as const, label: 'Broker', seat: false },
+        ],
+        teams: [{ id: 6, name: 'Okoye Team' }],
+        can_text: true,
+        seats: {
+            role: 'agent' as const,
+            limit: 142,
+            used: 118,
+            pending: 3,
+            left: 21,
+            payer: 'organisation' as const,
+        },
+        locale: 'en' as const,
+    },
 };
 
 describe('Brokerage settings (screen 41)', () => {

@@ -542,11 +542,12 @@ export interface components {
              */
             status: components["schemas"]["CatalogueStatus"];
             /**
-             * @description What this person can do: `connect`, `join_beta`, `notify` or `none`.
+             * @description What this person can do: `connect`, `join_beta`, `notify`,
+             *     `ask_broker` (a tool their brokerage sets up once for everyone) or `none`.
              * @enum {string}
              */
-            action: "connect" | "join_beta" | "notify" | "none";
-            /** @description They tapped "Notify me" or "Join beta". */
+            action: "connect" | "join_beta" | "notify" | "ask_broker" | "none";
+            /** @description They tapped "Notify me", "Join beta" or "Ask my broker". */
             interested: boolean;
             /** @description Retired tools: the last day they work (YYYY-MM-DD). */
             retires_on: string;

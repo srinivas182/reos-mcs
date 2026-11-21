@@ -46,12 +46,13 @@ final class CatalogueItemResource extends JsonResource
              */
             'status' => $item['status'],
             /**
-             * What this person can do: `connect`, `join_beta`, `notify` or `none`.
+             * What this person can do: `connect`, `join_beta`, `notify`,
+             * `ask_broker` (a tool their brokerage sets up once for everyone) or `none`.
              *
-             * @var 'connect'|'join_beta'|'notify'|'none'
+             * @var 'connect'|'join_beta'|'notify'|'ask_broker'|'none'
              */
             'action' => $item['action'],
-            /** They tapped "Notify me" or "Join beta". */
+            /** They tapped "Notify me", "Join beta" or "Ask my broker". */
             'interested' => (bool) $item['interested'],
             /** Retired tools: the last day they work (YYYY-MM-DD). */
             'retires_on' => $item['retires_on'],
