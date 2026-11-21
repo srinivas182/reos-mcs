@@ -12,6 +12,7 @@ use App\Identity\WebDevice;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * The role a person is using right now, which decides what they can do.
@@ -45,7 +46,8 @@ final class ActiveRole
         $choices = DB::table('known_devices')
             ->where('user_id', $user->id)
             ->whereNotNull('active_role')
-            ->orderByRaw('CASE WHEN device_id = ? THEN 0 ELSE 1 END', [$device ?? ''])
+            // This device's choice first, then the latest anywhere.
+            ->when($device !== null, fn ($query) => $query->orderByRaw('CASE WHEN device_id = ? THEN 0 ELSE 1 END', [$device]))
             ->orderByDesc('role_chosen_at')
             ->get(['active_role', 'active_organisation_id']);
 
@@ -145,6 +147,6 @@ final class ActiveRole
 
         $cookie = request()->cookie(WebDevice::COOKIE);
 
-        return is_string($cookie) && $cookie !== '' ? $cookie : null;
+        return is_string($cookie) && Str::isUuid($cookie) ? $cookie : null;
     }
 }
