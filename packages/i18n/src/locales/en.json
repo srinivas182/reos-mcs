@@ -24,7 +24,7 @@
     "people": "People",
     "overview": "Overview",
     "account": "Account",
-    "organisation": "Organisation",
+    "organisation": "Organization",
     "platform": "Platform",
     "signOut": "Sign out",
     "openMenu": "Open the menu",
@@ -185,9 +185,9 @@
       "openWeb": "Open the website"
     },
     "organisations": {
-      "title": "Your organisations",
+      "title": "Your organizations",
       "intro": "Each one sees only what you share with it.",
-      "note": "Switching changes the logo, colours and what's shown first. Your contacts, posts and credits stay yours.",
+      "note": "Switching changes the logo, colors and what's shown first. Your contacts, posts and credits stay yours.",
       "switched": "You're now working with {{organisation}}."
     },
     "roles": {
@@ -600,7 +600,7 @@
       "locked": "Too many wrong codes. Try again in {{minutes}} minutes.",
       "codeNotSent": "We couldn't send a code just now. Try again in a minute.",
       "codeNotChecked": "We couldn't check the code just now. Try again in a minute.",
-      "cancelled": "Sign-in was cancelled. You can try again or choose another way.",
+      "cancelled": "Sign-in was canceled. You can try again or choose another way.",
       "providerUnreachable": "We couldn't reach the sign-in service just now. Try again in a minute.",
       "recentSignInRequired": "For your safety, please sign in again, then delete your account."
     },
@@ -728,7 +728,7 @@
       "passwordSaved": "Password saved.",
       "devices": {
         "title": "Your devices",
-        "description": "Phones and tablets signed in to REOS. Sign out any you don't recognise.",
+        "description": "Phones and tablets signed in to REOS. Sign out any you don't recognize.",
         "empty": "No phones or tablets yet",
         "emptyDescription": "When you sign in on the REOS app, the device appears here.",
         "lastUsed": "Last used {{time}}",
@@ -849,7 +849,7 @@
     "errors": {
       "notHeld": "You don't have that role. Ask your administrator if you need it.",
       "twoStepRequired": "Set up two-step sign-in to use this role. It takes about a minute.",
-      "wrongOrganisation": "That role can't be held in this kind of organisation.",
+      "wrongOrganisation": "That role can't be held in this kind of organization.",
       "lastSuperAdmin": "REOS needs at least one super admin. Add another before removing this one."
     },
     "switcher": {
@@ -904,10 +904,10 @@
     "grant": {
       "title": "Give a role",
       "role": "Role",
-      "organisation": "Organisation",
+      "organisation": "Organization",
       "chooseRole": "Choose a role",
-      "chooseOrganisation": "Choose an organisation",
-      "noOrganisations": "There's no organisation of the right kind yet.",
+      "chooseOrganisation": "Choose an organization",
+      "noOrganisations": "There's no organization of the right kind yet.",
       "submit": "Give role",
       "granted": "{{role}} given at {{organisation}}."
     },
@@ -922,7 +922,7 @@
       "granted": "{{actor}} gave {{role}} ({{organisation}})",
       "removed": "{{actor}} removed {{role}} ({{organisation}})",
       "someone": "Someone",
-      "unknownOrganisation": "an organisation"
+      "unknownOrganisation": "an organization"
     }
   },
   "dashboard": {

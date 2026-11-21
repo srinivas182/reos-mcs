@@ -38,6 +38,6 @@ export const Default: Story = {};
 
 export const WithError: Story = {
     args: {
-        error: "That role can't be held in this kind of organisation.",
+        error: "That role can't be held in this kind of organization.",
     },
 };
