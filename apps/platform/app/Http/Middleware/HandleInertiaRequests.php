@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
+use App\Services\Tenancy\SupportAccess;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
@@ -73,6 +74,8 @@ class HandleInertiaRequests extends Middleware
             ],
             // Public settings for browser error tracking and analytics (2.4c).
             'monitoring' => fn () => app(MonitoringRuntime::class)->clientConfig('web'),
+            // REOS support inside a tenant with the owner's consent (A4.1c): the banner.
+            'supportSession' => fn (): ?array => $this->support($request),
             // Connections that stopped syncing and need the person to sign in again (B3.1).
             'connectionAlerts' => fn (): array => $this->connectionAlerts($request),
             // The public site's state chip and headline ("Now live in Texas").
@@ -120,6 +123,15 @@ class HandleInertiaRequests extends Middleware
         }
 
         return $alerts;
+    }
+
+    /** @return array{tenant: string, ends_at: string|null}|null */
+    private function support(Request $request): ?array
+    {
+        $user = $request->user();
+        $grant = $user instanceof User ? app(SupportAccess::class)->current($user, $request) : null;
+
+        return $grant === null ? null : ['tenant' => $grant->organisation->name, 'ends_at' => $grant->ends_at?->toIso8601String()];
     }
 
     /**

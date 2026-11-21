@@ -14,6 +14,8 @@ declare module '@inertiajs/core' {
             /** The state you're working in (the journey's state chip). */
             region: { code: string; name: string } | null;
             sidebarOpen: boolean;
+            /** REOS support inside a tenant with the owner's consent (A4.1c). */
+            supportSession: { tenant: string; ends_at: string | null } | null;
             /** Your connections that need a reconnect (B3.1). */
             connectionAlerts: import('@/components/connection-alert').ConnectionAlertItem[];
             /** Live states' names, for the public site's state chip. */

@@ -1696,8 +1696,88 @@
       "actions": {
         "tenant.created": "Creó la organización",
         "tenant.updated": "Cambió la configuración",
-        "tenant.status_changed": "Cambió la situación: {{from}} → {{to}}"
+        "tenant.status_changed": "Cambió la situación: {{from}} → {{to}}",
+        "support.requested": "Solicitó iniciar sesión como soporte",
+        "support.approved": "Aprobó el acceso de soporte",
+        "support.declined": "Rechazó el acceso de soporte",
+        "support.started": "Empezó una sesión de soporte",
+        "support.viewed": "El soporte abrió {{path}}",
+        "support.ended": "Terminó el acceso de soporte"
       }
+    }
+  },
+  "support": {
+    "asked": "Se preguntó al propietario de {{tenant}}. Podrá empezar cuando responda que sí.",
+    "endedToast": "Terminó la sesión de soporte en {{tenant}}.",
+    "errors": {
+      "alreadyOpen": "Ya hay una solicitud para esta organización. Espere la respuesta o a que termine.",
+      "noOwner": "Esta organización todavía no tiene propietario, así que nadie puede aprobar el acceso de soporte.",
+      "notPending": "Esta solicitud ya se respondió o ya terminó.",
+      "notApproved": "El soporte solo puede empezar después de que el propietario lo apruebe, dentro de 24 horas.",
+      "twoStep": "Configure la verificación en dos pasos antes de aprobar: Configuración › Seguridad. Puede rechazar sin ella."
+    },
+    "mail": {
+      "subject": "El soporte de REOS solicita iniciar sesión en {{tenant}}",
+      "body": "{{person}}, del soporte de REOS, solicita iniciar sesión en {{tenant}} para ayudar.",
+      "reason": "Motivo: {{reason}}",
+      "terms": "Si lo aprueba, el soporte trabajará en {{tenant}} durante {{minutes}} minutos como máximo. Cada página que abra queda en su registro de auditoría y usted puede terminarlo en cualquier momento. Nunca verá las conexiones personales de nadie.",
+      "action": "Revisar la solicitud",
+      "ignore": "Si no responde en {{hours}} horas, la solicitud termina sola."
+    },
+    "consent": {
+      "approved": "Aprobado. El soporte puede empezar dentro de 24 horas.",
+      "declined": "Rechazado. El soporte no iniciará sesión.",
+      "revoked": "Terminó el acceso de soporte."
+    },
+    "page": {
+      "title": "Solicitud de acceso de soporte",
+      "purpose": "El soporte de REOS solicita trabajar en {{tenant}} para ayudar. Usted decide.",
+      "who": "Quién lo solicita",
+      "why": "Por qué",
+      "how": "Qué puede hacer el soporte",
+      "approve": "Aprobar",
+      "decline": "Rechazar",
+      "revoke": "Terminar el acceso de soporte",
+      "statuses": {
+        "pending": "Esperando su respuesta · termina sola después de {{hours}} horas",
+        "approved": "Aprobado por {{person}} · el soporte puede empezar dentro de 24 horas",
+        "declined": "Rechazado por {{person}}",
+        "active": "El soporte está dentro ahora · hasta las {{time}}",
+        "ended": "El soporte terminó la sesión",
+        "expired": "Terminó sola",
+        "revoked": "Terminado por un propietario"
+      },
+      "terms": {
+        "t1": "Trabaja solo en {{tenant}}, como su administrador, durante {{minutes}} minutos como máximo.",
+        "t2": "Cada página que abre y cada cambio que hace quedan en su registro de auditoría.",
+        "t3": "Nunca ve las conexiones personales de nadie, como el calendario propio de un agente.",
+        "t4": "Usted puede terminarlo en cualquier momento desde esta página."
+      },
+      "twoStepNote": "Para aprobar necesita la verificación en dos pasos. Configúrela en Configuración › Seguridad y vuelva. Puede rechazar sin ella."
+    },
+    "tenant": {
+      "ask": "Iniciar sesión como soporte (con consentimiento)",
+      "askTitle": "Solicitar acceso a {{tenant}}",
+      "askBody": "Cada propietario de {{tenant}} recibe un correo y decide. Si lo aprueban, podrá trabajar dentro durante 60 minutos; cada página que abra queda en su registro de auditoría.",
+      "reason": "Motivo que leerá el propietario",
+      "send": "Enviar solicitud",
+      "cancel": "Cancelar",
+      "start": "Empezar la sesión de soporte (60 minutos)",
+      "noOwner": "Todavía no hay propietario, así que nadie puede aprobar el acceso de soporte.",
+      "statuses": {
+        "pending": "Acceso de soporte: esperando al propietario",
+        "approved": "Acceso de soporte aprobado por {{person}}",
+        "declined": "Acceso de soporte rechazado por {{person}}",
+        "active": "Sesión de soporte en curso",
+        "revoked": "Un propietario terminó el acceso de soporte"
+      }
+    },
+    "banner": {
+      "label": "Sesión de soporte",
+      "text": "Está en {{tenant}} como soporte de REOS · quedan {{left}} · cada página queda registrada",
+      "end": "Terminar la sesión de soporte",
+      "minutes_one": "{{count}} minuto",
+      "minutes_other": "{{count}} minutos"
     }
   }
 }

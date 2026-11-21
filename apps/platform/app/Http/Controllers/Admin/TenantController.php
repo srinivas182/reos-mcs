@@ -17,6 +17,7 @@ use App\Models\Connection;
 use App\Models\Organisation;
 use App\Models\State;
 use App\Models\User;
+use App\Services\Tenancy\SupportAccess;
 use App\Services\Tenancy\Tenants;
 use App\Tenancy\TenantFeature;
 use App\Tenancy\TenantLimits;
@@ -55,10 +56,11 @@ final class TenantController extends Controller
         return to_route('tenants.show', $tenant);
     }
 
-    public function show(Request $request, Organisation $tenant, Tenants $tenants, Catalogue $register, string $tab = 'overview'): Response
+    public function show(Request $request, Organisation $tenant, Tenants $tenants, Catalogue $register, SupportAccess $support, string $tab = 'overview'): Response
     {
         abort_if($tenant->type === OrganisationType::Platform, 404);
         $health = $tenants->health($tenant);
+        $grant = $support->latest($tenant);
         $limits = $tenant->tenantLimits();
 
         return Inertia::render('admin/tenants/show', [
@@ -95,6 +97,18 @@ final class TenantController extends Controller
                     ->orWhere(static fn (Builder $q) => $q->where('subject_type', Tenants::AUDIT_SUBJECT)->where('subject_id', (string) $tenant->id)))
                 ->latest('id')->limit(100)->get()
                 ->map(static fn (AuditEvent $event): array => (new AuditEventResource($event))->resolve($request))->all() : [],
+            // Support sign-in with consent (A4.1c): the latest request and whether anyone can approve.
+            'support' => [
+                'can_ask' => $support->owners($tenant) !== [],
+                'latest' => $grant === null ? null : [
+                    'status' => $grant->status->value,
+                    'mine' => $grant->requested_by === $request->user()?->id,
+                    'requester' => $grant->requester->name,
+                    'decided_by' => $grant->decider?->name,
+                    'requested_at' => $grant->created_at?->toIso8601String(),
+                    'ends_at' => $grant->ends_at?->toIso8601String(),
+                ],
+            ],
             'options' => self::options(),
         ]);
     }

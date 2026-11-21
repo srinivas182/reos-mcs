@@ -12,6 +12,7 @@ const router = vi.hoisted(() => ({
     get: vi.fn(),
     patch: vi.fn(),
     put: vi.fn(),
+    post: vi.fn(),
 }));
 
 vi.mock('@inertiajs/react', async (original) => ({
@@ -24,6 +25,7 @@ vi.mock('@inertiajs/react', async (original) => ({
 const render = (ui: ReactElement) =>
     baseRender(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
 const none = { type: null, status: null, state: null, search: null };
+const noSupport = { can_ask: true, latest: null };
 
 beforeEach(() => vi.clearAllMocks());
 
@@ -102,6 +104,7 @@ describe('Tenant detail (screen 60)', () => {
                 tenant={loneStar}
                 audit={[]}
                 options={tenantOptions}
+                support={noSupport}
             />,
         );
 
@@ -148,6 +151,7 @@ describe('Tenant detail (screen 60)', () => {
                 tenant={loneStar}
                 audit={[]}
                 options={tenantOptions}
+                support={noSupport}
             />,
         );
 
@@ -177,12 +181,137 @@ describe('Tenant detail (screen 60)', () => {
                 tenant={{ ...loneStar, members: 140 }}
                 audit={[]}
                 options={tenantOptions}
+                support={noSupport}
             />,
         );
 
         expect(screen.getByText('140 of 142 used')).toBeInTheDocument();
         expect(
             screen.getByText('Almost full: 2 seats left'),
+        ).toBeInTheDocument();
+    });
+});
+
+describe('Support sign-in with consent (A4.1c)', () => {
+    it('asks with a reason the owner will read', async () => {
+        render(
+            <TenantShow
+                tab="overview"
+                tenant={loneStar}
+                audit={[]}
+                options={tenantOptions}
+                support={noSupport}
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole('button', {
+                name: 'Sign in as support (with consent)',
+            }),
+        );
+        const dialog = within(screen.getByRole('dialog'));
+        expect(
+            dialog.getByText(
+                /Every owner of Lone Star Realty gets an email and decides/,
+            ),
+        ).toBeInTheDocument();
+        await userEvent.type(
+            dialog.getByLabelText('Reason the owner will read'),
+            'Linda asked us to check her calendar sync',
+        );
+        await userEvent.click(
+            dialog.getByRole('button', { name: 'Send request' }),
+        );
+
+        expect(router.post).toHaveBeenCalledWith(
+            '/admin/tenants/3/support',
+            { reason: 'Linda asked us to check her calendar sync' },
+            expect.anything(),
+        );
+    });
+
+    it('waits for the owner, then starts once approved', async () => {
+        const pending = {
+            can_ask: true,
+            latest: {
+                status: 'pending' as const,
+                mine: true,
+                requester: 'Ops Srini',
+                decided_by: null,
+                requested_at: null,
+                ends_at: null,
+            },
+        };
+        const { rerender } = render(
+            <TenantShow
+                tab="overview"
+                tenant={loneStar}
+                audit={[]}
+                options={tenantOptions}
+                support={pending}
+            />,
+        );
+
+        expect(
+            screen.getByRole('button', {
+                name: 'Sign in as support (with consent)',
+            }),
+        ).toBeDisabled();
+        expect(
+            screen.getByText('Support sign-in: waiting for the owner'),
+        ).toBeInTheDocument();
+
+        rerender(
+            <I18nextProvider i18n={i18n}>
+                <TenantShow
+                    tab="overview"
+                    tenant={loneStar}
+                    audit={[]}
+                    options={tenantOptions}
+                    support={{
+                        ...pending,
+                        latest: {
+                            ...pending.latest,
+                            status: 'approved',
+                            decided_by: 'Linda Park',
+                        },
+                    }}
+                />
+            </I18nextProvider>,
+        );
+        expect(
+            screen.getByText('Support sign-in approved by Linda Park'),
+        ).toBeInTheDocument();
+        await userEvent.click(
+            screen.getByRole('button', {
+                name: 'Start support session (60 minutes)',
+            }),
+        );
+        expect(router.post).toHaveBeenCalledWith(
+            '/admin/tenants/3/support/start',
+        );
+    });
+
+    it('can’t ask a tenant with no owner', () => {
+        render(
+            <TenantShow
+                tab="overview"
+                tenant={loneStar}
+                audit={[]}
+                options={tenantOptions}
+                support={{ can_ask: false, latest: null }}
+            />,
+        );
+
+        expect(
+            screen.getByRole('button', {
+                name: 'Sign in as support (with consent)',
+            }),
+        ).toBeDisabled();
+        expect(
+            screen.getByText(
+                'No owner yet, so nobody can approve support sign-in.',
+            ),
         ).toBeInTheDocument();
     });
 });

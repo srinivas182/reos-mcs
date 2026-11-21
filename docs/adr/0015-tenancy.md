@@ -57,3 +57,20 @@ People are not tenants. One person can hold roles in several organisations (ADR 
 - **Status:** active, trial (with `trial_ends_at`), suspended and archived. Suspending or archiving needs a reason. Roles in a suspended or archived tenant stop counting until it is restored, so its people lose access at once.
 - **Audit:** `audit_events.organisation_id` tags each event with its tenant, protected by row-level security (platform-wide events have none). Tenant changes record the fields changed, with before and after values.
 - **New organisation type:** `team`, inside a brokerage, inheriting its plan.
+
+## Addendum: support sign-in with consent (A4.1c, screen 60)
+
+- **Ask.** REOS support asks from Tenant detail with a reason. Every holder of the tenant's admin role (broker, association admin, school admin or provider) is emailed and can answer. There is one open request per tenant at a time.
+- **Answer.**
+  - The owner answers on `/support-access/{id}`. That route runs in platform scope, because the owner may be working in another of their roles, so the controller checks ownership itself.
+  - **Approving needs the owner's two-step; declining or ending access never does.**
+  - An unanswered request ends after 24 hours, and an approval must be used within 24 hours.
+- **Session.**
+  - Support starts it; only the person who asked can.
+  - For 60 minutes, `ActiveRole` returns the tenant's admin role in that tenant, so `ResolveTenant` enters it and row-level security applies as for the owner.
+  - Personal connections stay hidden, because they belong to their owners. The back office is closed during the session.
+- **Visible and audited.**
+  - A banner shows on every page (`supportSession` shared prop) with the time left and "End support session".
+  - Every page and change is recorded as `support.viewed` in the tenant's audit log, along with `support.requested`, `approved`, `declined`, `started` and `ended` (how: ended, expired or revoked).
+  - The owner can end access at any time.
+- `support_access_grants` is protected by row-level security (8 tables in `reos:tenancy:check`).

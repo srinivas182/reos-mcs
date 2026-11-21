@@ -109,3 +109,39 @@ export type TenantAuditEvent = {
     } | null;
     created_at: string;
 };
+
+export type SupportAccessStatus =
+    | 'pending'
+    | 'approved'
+    | 'declined'
+    | 'active'
+    | 'ended'
+    | 'expired'
+    | 'revoked';
+
+/** Support sign-in for a tenant (A4.1c), as the super admin sees it. */
+export type TenantSupport = {
+    can_ask: boolean;
+    latest: {
+        status: SupportAccessStatus;
+        mine: boolean;
+        requester: string;
+        decided_by: string | null;
+        requested_at: string | null;
+        ends_at: string | null;
+    } | null;
+};
+
+/** A support sign-in request, as the tenant owner sees it. */
+export type SupportGrant = {
+    id: number;
+    tenant: string;
+    requester: string;
+    reason: string;
+    status: SupportAccessStatus;
+    requested_at: string | null;
+    ends_at: string | null;
+    decided_by: string | null;
+    minutes: number;
+    answer_hours: number;
+};

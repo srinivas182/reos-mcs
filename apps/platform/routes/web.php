@@ -10,6 +10,8 @@ use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
+use App\Http\Controllers\SupportConsentController;
+use App\Http\Controllers\SupportSessionController;
 use App\Http\Middleware\EnsureOnboarded;
 use Illuminate\Support\Facades\Route;
 
@@ -50,6 +52,17 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::delete('{connection}', 'destroy')->whereNumber('connection')->middleware('throttle:30,1')->name('destroy');
     });
 });
+
+// Support sign-in (A4.1c): the tenant owner answers; support ends its session.
+// Platform scope: the owner may be working in another of their roles, so the
+// controller checks ownership itself.
+Route::middleware(['auth', 'verified', 'tenancy.platform'])->prefix('support-access/{grant}')->whereNumber('grant')->name('support-access.')->group(function () {
+    Route::get('/', [SupportConsentController::class, 'show'])->name('show');
+    Route::post('approve', [SupportConsentController::class, 'approve'])->middleware('throttle:10,1')->name('approve');
+    Route::post('decline', [SupportConsentController::class, 'decline'])->middleware('throttle:10,1')->name('decline');
+    Route::post('revoke', [SupportConsentController::class, 'revoke'])->middleware('throttle:10,1')->name('revoke');
+});
+Route::delete('support-session', [SupportSessionController::class, 'destroy'])->middleware(['auth', 'verified'])->name('support-session.destroy');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/admin.php';

@@ -11,6 +11,7 @@ use App\Authorization\RoleRefused;
 use App\Identity\WebDevice;
 use App\Models\PersonalAccessToken;
 use App\Models\User;
+use App\Services\Tenancy\SupportAccess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -38,6 +39,14 @@ final class ActiveRole
 
         if (array_key_exists($key, $this->resolved)) {
             return $this->resolved[$key];
+        }
+
+        // REOS support inside a tenant with the owner's consent (A4.1c): the
+        // tenant's admin role there, for the 60 minutes only.
+        $support = app(SupportAccess::class)->current($user, request());
+
+        if ($support !== null) {
+            return $this->resolved[$key] = new Membership($support->role, $support->organisation);
         }
 
         $held = $this->memberships->of($user);

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\TenantController;
+use App\Http\Controllers\Admin\TenantSupportController;
 use App\Http\Middleware\ConfirmIdentity;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use Illuminate\Support\Facades\Route;
@@ -93,4 +94,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:tenants.m
         Route::get('{tenant}/{tab}', [TenantController::class, 'show'])->whereNumber('tenant')->whereIn('tab', TenantController::TABS)->name('tab');
         Route::patch('{tenant}', [TenantController::class, 'update'])->whereNumber('tenant')->middleware('throttle:30,1')->name('update');
         Route::put('{tenant}/status', [TenantController::class, 'status'])->whereNumber('tenant')->middleware('throttle:30,1')->name('status');
+        // Support sign-in with the owner's consent (A4.1c).
+        Route::post('{tenant}/support', [TenantSupportController::class, 'store'])->whereNumber('tenant')->middleware('throttle:10,1')->name('support.store');
+        Route::post('{tenant}/support/start', [TenantSupportController::class, 'start'])->whereNumber('tenant')->middleware('throttle:10,1')->name('support.start');
     });
