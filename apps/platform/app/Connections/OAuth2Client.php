@@ -123,6 +123,12 @@ final readonly class OAuth2Client
         }
 
         $reason = $response->json('error.errors.0.reason');
+
+        // Signed in before REOS asked for more (for example writing to the calendar): sign in again.
+        if ($response->status() === 403 && $reason === 'insufficientPermissions') {
+            throw new AccessRevoked('The sign-in doesn\'t allow this; reconnect to grant it.');
+        }
+
         if ($response->status() === 429 || in_array($reason, ['rateLimitExceeded', 'userRateLimitExceeded'], true)) {
             $after = $response->header('Retry-After');
 

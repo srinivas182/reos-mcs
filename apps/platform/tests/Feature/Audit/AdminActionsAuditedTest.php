@@ -96,7 +96,7 @@ function adminActions(): array
             'status' => 'beta', 'states' => ['TX'], 'roles' => ['agent'], 'beta_organisations' => [],
             'tenants_may_hide' => true, 'tenants_may_require' => false, 'show_coming_soon' => true,
         ], confirmed: true),
-        'integrations.pause' => fn () => auditCase(auditOps(), 'PUT', '/admin/integrations/google-workspace/pause', ['paused' => true], confirmed: true),
+        'integrations.pause' => fn () => auditCase(auditOps(), 'PUT', '/admin/integrations/google-calendar/pause', ['paused' => true], confirmed: true),
 
         // Super admin: People, States, Tenants (screens 59–61).
         'people.roles.store' => function () {

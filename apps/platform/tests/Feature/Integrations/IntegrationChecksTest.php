@@ -99,13 +99,13 @@ describe('Test connection', function () {
 
     it('checks Google keys by asking for a token with a made-up code', function (array $answer, int $status, string $message) {
         Http::fake(['oauth2.googleapis.com/token' => Http::response($answer, $status)]);
-        keys('google-workspace', CredentialEnvironment::Sandbox, ['client_id' => 'abc.apps.googleusercontent.com', 'client_secret' => 'fake-secret-123456']);
+        keys('google-calendar', CredentialEnvironment::Sandbox, ['client_id' => 'abc.apps.googleusercontent.com', 'client_secret' => 'fake-secret-123456']);
 
-        testKeys($this, 'google-workspace', 'sandbox');
+        testKeys($this, 'google-calendar', 'sandbox');
 
         expect(IntegrationCheck::query()->sole()->message)->toBe($message);
         Http::assertSent(fn (Request $request) => $request['code'] === 'reos-connection-check'
-            && $request['redirect_uri'] === url('integrations/google-workspace/callback'));
+            && $request['redirect_uri'] === url('integrations/google-calendar/callback'));
     })->with([
         'keys accepted' => [['error' => 'invalid_grant'], 400, 'integrations.checks.passed'],
         'keys wrong' => [['error' => 'invalid_client'], 401, 'integrations.checks.rejected'],

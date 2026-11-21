@@ -170,11 +170,11 @@
       }
     },
     {
-      "id": "google-workspace",
-      "name": "Google Calendar and Gmail",
+      "id": "google-calendar",
+      "name": "Google Calendar",
       "kind": "integration",
       "category": "calendar_email",
-      "purpose": "Two-way calendar and email for every role.",
+      "purpose": "Two-way calendar for every role. Appointments, showings, deadlines and to-do due dates made in REOS go to the calendar the person picks; changes in Google come back live.",
       "launch": "enabled",
       "build_sprint": 4,
       "owner": "client_with_mayura",

@@ -1,0 +1,15 @@
+{
+    "kind": "calendar#event",
+    "etag": "\"3471200000005555\"",
+    "id": "PLACEHOLDER_ID",
+    "status": "confirmed",
+    "htmlLink": "https://www.google.com/calendar/event?eid=cmVvcy10ZXN0",
+    "updated": "PLACEHOLDER_UPDATED",
+    "summary": "Showing — 2218 Elm St (Maria moved it in Google)",
+    "location": "2218 Elm St, Houston, TX",
+    "start": { "dateTime": "2026-11-24T21:00:00Z" },
+    "end": { "dateTime": "2026-11-24T21:45:00Z" },
+    "extendedProperties": {
+        "private": { "reos_event_id": "PLACEHOLDER_REOS_ID" }
+    }
+}

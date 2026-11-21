@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace App\Connections\Drivers\GoogleCalendar;
 
+use App\Connections\Calendar\CalendarChoices;
+use App\Connections\Calendar\CalendarDriver;
+use App\Connections\Calendar\CalendarInfo;
+use App\Connections\Calendar\CalendarMode;
+use App\Connections\Calendar\EventDraft;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\Exceptions\CursorExpired;
+use App\Connections\Exceptions\RemoteChanged;
 use App\Connections\Exceptions\VendorUnavailable;
 use App\Connections\OAuth2Client;
 use App\Connections\Stores\CalendarEventStore;
@@ -17,35 +23,50 @@ use App\Connections\WebhookDelivery;
 use App\Models\Connection;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 /**
- * Google Calendar, read-only (B3.1 sample connector; two-way in B4.1), on the
- * `google-workspace` client keys from Settings › Integrations.
+ * Google Calendar, two-way (B4.1, ADR 0017), on the `google-calendar` client
+ * keys from Settings › Integrations.
  *
- * - Sign-in: Google OAuth with PKCE, offline access, `calendar.readonly`.
- * - Sync: the primary calendar's events. The first sync pages from the
- *   history start; Google then hands back a `nextSyncToken` for changes only.
- *   A 410 means the token expired and the stream starts again.
- * - Webhooks: Google push notifications, verified by the channel token REOS
- *   set when it subscribed (`GoogleCalendarChannels`).
+ * - Sign-in: Google OAuth with PKCE and offline access. Calendar only:
+ *   `calendar.events` (read and write events) and
+ *   `calendar.calendarlist.readonly` (the calendars to choose from).
+ * - Sync: each calendar the person chose (`CalendarChoices`), one after the
+ *   other. The first pass pages from the history start; Google then hands
+ *   back a `nextSyncToken` per calendar for changes only. A 410 means a
+ *   token expired and every calendar starts again. Calendars shared as "busy
+ *   only" keep times and nothing else.
+ * - Write: events REOS makes get an id derived from REOS's own, so a retry
+ *   after a lost answer finds the event instead of adding it twice. Changes
+ *   send `If-Match` with the version REOS saw; a 412 means it changed in
+ *   Google meanwhile and the conflict rule decides.
+ * - Push: one `events.watch` channel per synced calendar, verified by the
+ *   channel token REOS set (`GoogleCalendarChannels`), renewed before it ends.
  *
  * @see https://developers.google.com/calendar/api/guides/sync
  * @see https://developers.google.com/calendar/api/guides/push
+ * @see https://developers.google.com/calendar/api/guides/version-resources
  */
-final readonly class GoogleCalendarDriver implements ConnectorDriver, SubscribesToChanges
+final readonly class GoogleCalendarDriver implements CalendarDriver, ConnectorDriver, SubscribesToChanges
 {
-    public const INTEGRATION = 'google-workspace';
+    public const INTEGRATION = 'google-calendar';
 
-    public const SCOPES = ['openid', 'email', 'https://www.googleapis.com/auth/calendar.readonly'];
+    public const SCOPES = [
+        'openid',
+        'email',
+        'https://www.googleapis.com/auth/calendar.events',
+        'https://www.googleapis.com/auth/calendar.calendarlist.readonly',
+    ];
 
     /** What the consent sheet promises (Connections and Sync journey, screen 5). */
-    public const CONSENT = ['can' => ['read_events', 'change_alerts'], 'never' => ['change_events']];
+    public const CONSENT = ['can' => ['read_events', 'write_events', 'change_alerts'], 'never' => ['delete_yours', 'email']];
 
-    /** Each stream and which way it flows (screens 6–7). Two-way arrives with B4.1. */
-    public const STREAMS = ['events' => 'read'];
+    /** Each stream and which way it flows (screens 6–7). */
+    public const STREAMS = ['events' => 'both'];
 
     private const API = 'https://www.googleapis.com/calendar/v3';
 
@@ -60,7 +81,7 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
             'https://oauth2.googleapis.com/token',
             'https://oauth2.googleapis.com/revoke',
             self::SCOPES,
-            // A refresh token every time, and keep scopes granted earlier (Gmail in B4.1).
+            // A refresh token every time, and keep scopes granted earlier.
             ['access_type' => 'offline', 'prompt' => 'consent', 'include_granted_scopes' => 'true'],
         );
     }
@@ -92,7 +113,7 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
 
     public function account(TokenSet $tokens): ConnectedAccount
     {
-        $response = $this->get('https://openidconnect.googleapis.com/v1/userinfo', $tokens->accessToken, []);
+        $response = $this->send(fn (PendingRequest $http) => $http->get('https://openidconnect.googleapis.com/v1/userinfo'), $tokens->accessToken);
         $subject = $response->json('sub');
         $email = $response->json('email');
 
@@ -110,23 +131,30 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
 
     public function fetch(Connection $connection, string $accessToken, string $stream, ?string $cursor, ?CarbonImmutable $since): SyncPage
     {
-        $state = $cursor === null ? [] : (array) json_decode($cursor, true);
+        $state = GoogleCalendarCursor::open($cursor, CalendarChoices::synced($connection));
+
+        if ($state->calendar() === null) {
+            return new SyncPage([], [], $state->encode(), true);
+        }
+
+        $calendar = (string) $state->calendar();
         $query = ['singleEvents' => 'true', 'showDeleted' => 'true', 'maxResults' => '250'];
 
-        if (is_string($state['page'] ?? null)) {
-            $query['pageToken'] = $state['page'];
+        if ($state->page !== null) {
+            $query['pageToken'] = $state->page;
         }
-        if (is_string($state['sync'] ?? null)) {
+        if ($state->syncToken($calendar) !== null) {
             // Changes since the last sync; Google doesn't allow timeMin with a sync token.
-            $query['syncToken'] = $state['sync'];
-        } elseif (is_string($state['since'] ?? null)) {
-            $query['timeMin'] = $state['since'];
-        } elseif ($since !== null) {
-            $query['timeMin'] = $since->toRfc3339String();
+            $query['syncToken'] = (string) $state->syncToken($calendar);
+        } else {
+            $state->since ??= ($since ?? $connection->history()->since())?->toRfc3339String();
+            if ($state->since !== null) {
+                $query['timeMin'] = $state->since;
+            }
         }
 
-        $response = $this->get(self::API.'/calendars/primary/events', $accessToken, $query);
-
+        $response = $this->send(fn (PendingRequest $http) => $http->get(self::API.'/calendars/'.rawurlencode($calendar).'/events', $query), $accessToken);
+        $mode = CalendarChoices::mode($connection, $calendar);
         $records = [];
         $removed = [];
 
@@ -135,13 +163,14 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
                 continue;
             }
 
-            if (($item['status'] ?? null) === 'cancelled') {
-                $removed[] = $item['id'];
+            // Cancelled, or marked "free" on a calendar shared as busy only.
+            if (($item['status'] ?? null) === 'cancelled' || ($mode === CalendarMode::Busy && ($item['transparency'] ?? null) === 'transparent')) {
+                $removed[] = CalendarEventStore::key($calendar, $item['id']);
 
                 continue;
             }
 
-            $record = self::record($item);
+            $record = self::record($item, $calendar, $mode);
 
             if ($record !== null) {
                 $records[] = $record;
@@ -152,15 +181,12 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
         $nextSync = $response->json('nextSyncToken');
 
         if (is_string($nextPage) && $nextPage !== '') {
-            // Keep the window (or sync token) so the next page asks the same question.
-            return new SyncPage($records, $removed, json_encode([
-                'page' => $nextPage,
-                'sync' => $state['sync'] ?? null,
-                'since' => $query['timeMin'] ?? null,
-            ], JSON_THROW_ON_ERROR), false);
+            return new SyncPage($records, $removed, $state->nextPage($nextPage)->encode(), false);
         }
 
-        return new SyncPage($records, $removed, is_string($nextSync) ? json_encode(['sync' => $nextSync], JSON_THROW_ON_ERROR) : null, true);
+        $state->finishCalendar(is_string($nextSync) ? $nextSync : null);
+
+        return new SyncPage($records, $removed, $state->encode(), $state->calendar() === null);
     }
 
     public function requestsPerMinute(): int
@@ -189,29 +215,148 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
         return new WebhookDelivery("{$channel}:{$number}", [$connectionId], $state !== 'sync');
     }
 
-    public function subscribe(Connection $connection, string $accessToken, string $webhookUrl): array
+    public function watchedResources(Connection $connection): array
+    {
+        return CalendarChoices::synced($connection);
+    }
+
+    public function subscribe(Connection $connection, string $accessToken, string $webhookUrl, string $resource): array
     {
         $channel = GoogleCalendarChannels::newChannelId($connection->id);
-
-        try {
-            $response = Http::withToken($accessToken)->acceptJson()->timeout(20)->post(self::API.'/calendars/primary/events/watch', [
-                'id' => $channel,
-                'type' => 'web_hook',
-                'address' => $webhookUrl,
-                'token' => GoogleCalendarChannels::token($channel),
-            ]);
-        } catch (ConnectionException $e) {
-            throw new VendorUnavailable('Google unreachable.', previous: $e);
-        }
-
-        OAuth2Client::raiseFor($response);
+        $response = $this->send(fn (PendingRequest $http) => $http->post(self::API.'/calendars/'.rawurlencode($resource).'/events/watch', [
+            'id' => $channel,
+            'type' => 'web_hook',
+            'address' => $webhookUrl,
+            'token' => GoogleCalendarChannels::token($channel),
+        ]), $accessToken);
         $expiration = $response->json('expiration');
+        $resourceId = $response->json('resourceId');
 
         return [
-            'channel_id' => $channel,
-            'resource_id' => $response->json('resourceId'),
-            // Google sends milliseconds; channels last about a week and are renewed (B4.1).
-            'channel_expires_at' => is_numeric($expiration) ? CarbonImmutable::createFromTimestampMs((int) $expiration)->toIso8601String() : null,
+            'id' => $channel,
+            'resource_id' => is_string($resourceId) ? $resourceId : null,
+            // Google sends milliseconds; channels last about a week.
+            'expires_at' => is_numeric($expiration) ? CarbonImmutable::createFromTimestampMs((int) $expiration)->toIso8601String() : null,
+        ];
+    }
+
+    public function unsubscribe(Connection $connection, string $accessToken, string $channelId, ?string $resourceId): void
+    {
+        $this->send(fn (PendingRequest $http) => $http->post(self::API.'/channels/stop', array_filter(['id' => $channelId, 'resourceId' => $resourceId])), $accessToken, [404]);
+    }
+
+    public function calendars(Connection $connection, string $accessToken): array
+    {
+        $calendars = [];
+        $page = null;
+
+        // Four pages of 250 is more calendars than anyone subscribes to.
+        for ($i = 0; $i < 4; $i++) {
+            $response = $this->send(fn (PendingRequest $http) => $http->get(self::API.'/users/me/calendarList', array_filter([
+                'maxResults' => '250',
+                'pageToken' => $page,
+            ])), $accessToken);
+
+            foreach ((array) $response->json('items', []) as $item) {
+                if (! is_array($item) || ! is_string($item['id'] ?? null) || ($item['deleted'] ?? false) === true) {
+                    continue;
+                }
+
+                $primary = ($item['primary'] ?? false) === true;
+                $name = $item['summaryOverride'] ?? $item['summary'] ?? $item['id'];
+                $calendars[] = new CalendarInfo(
+                    $primary ? CalendarChoices::PRIMARY : $item['id'],
+                    is_string($name) ? mb_substr($name, 0, 120) : $item['id'],
+                    $primary,
+                    in_array($item['accessRole'] ?? null, ['owner', 'writer'], true),
+                );
+            }
+
+            $page = $response->json('nextPageToken');
+
+            if (! is_string($page) || $page === '') {
+                break;
+            }
+        }
+
+        // Main calendar first, then by name.
+        usort($calendars, static fn (CalendarInfo $a, CalendarInfo $b): int => [$b->primary, $a->name] <=> [$a->primary, $b->name]);
+
+        return $calendars;
+    }
+
+    public function insertEvent(Connection $connection, string $accessToken, string $calendarId, EventDraft $event): array
+    {
+        $id = self::eventId($event);
+        $response = $this->send(
+            fn (PendingRequest $http) => $http->post(self::API.'/calendars/'.rawurlencode($calendarId).'/events?'.http_build_query(['sendUpdates' => $event->notifyGuests ? 'all' : 'none']), [...self::body($event), 'id' => $id]),
+            $accessToken,
+            [409],
+        );
+
+        if ($response->status() === 409) {
+            // Added already by an earlier try whose answer was lost.
+            return $this->getEvent($connection, $accessToken, $calendarId, $id) ?? throw new VendorUnavailable('Google reported the event both added and missing.');
+        }
+
+        return self::record((array) $response->json(), $calendarId, CalendarMode::Full) ?? throw new VendorUnavailable('Google returned an event without times.');
+    }
+
+    public function updateEvent(Connection $connection, string $accessToken, string $calendarId, string $eventId, EventDraft $event, ?string $etag): array
+    {
+        $response = $this->send(
+            fn (PendingRequest $http) => $http->withHeaders($etag === null ? [] : ['If-Match' => $etag])
+                ->patch(self::API.'/calendars/'.rawurlencode($calendarId).'/events/'.rawurlencode($eventId).'?'.http_build_query(['sendUpdates' => $event->notifyGuests ? 'all' : 'none']), self::body($event)),
+            $accessToken,
+            [404, 410, 412],
+        );
+
+        if (in_array($response->status(), [404, 410, 412], true)) {
+            // Changed or deleted in Google since REOS last saw it.
+            throw new RemoteChanged("Google answered {$response->status()}.");
+        }
+
+        return self::record((array) $response->json(), $calendarId, CalendarMode::Full) ?? throw new VendorUnavailable('Google returned an event without times.');
+    }
+
+    public function getEvent(Connection $connection, string $accessToken, string $calendarId, string $eventId): ?array
+    {
+        $response = $this->send(fn (PendingRequest $http) => $http->get(self::API.'/calendars/'.rawurlencode($calendarId).'/events/'.rawurlencode($eventId)), $accessToken, [404, 410]);
+
+        if (in_array($response->status(), [404, 410], true) || $response->json('status') === 'cancelled') {
+            return null;
+        }
+
+        return self::record((array) $response->json(), $calendarId, CalendarChoices::mode($connection, $calendarId));
+    }
+
+    public function deleteEvent(Connection $connection, string $accessToken, string $calendarId, string $eventId): void
+    {
+        $this->send(fn (PendingRequest $http) => $http->delete(self::API.'/calendars/'.rawurlencode($calendarId).'/events/'.rawurlencode($eventId).'?sendUpdates=none'), $accessToken, [404, 410]);
+    }
+
+    /**
+     * Google event ids are 5–1024 characters of base32hex (0–9, a–v); hex
+     * is a subset. The same REOS event and version always gets the same id.
+     */
+    public static function eventId(EventDraft $event): string
+    {
+        return 'reos'.substr(hash_hmac('sha256', "google-calendar-event:{$event->key}", config()->string('app.key')), 0, 32);
+    }
+
+    /** @return array<string, mixed> */
+    private static function body(EventDraft $event): array
+    {
+        $when = static fn (CarbonImmutable $at): array => $event->allDay ? ['date' => $at->toDateString(), 'dateTime' => null, 'timeZone' => null] : ['dateTime' => $at->toRfc3339String(), 'date' => null, 'timeZone' => 'UTC'];
+
+        return [
+            'summary' => $event->title,
+            'location' => $event->location,
+            'description' => $event->description,
+            'start' => $when($event->startsAt),
+            'end' => $when($event->endsAt),
+            'attendees' => array_map(static fn (string $email): array => ['email' => $email], $event->attendees),
+            'extendedProperties' => ['private' => ['reos_event_id' => (string) $event->reosId]],
         ];
     }
 
@@ -221,7 +366,7 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
      * @param  array<array-key, mixed>  $item
      * @return array<string, mixed>|null
      */
-    private static function record(array $item): ?array
+    private static function record(array $item, string $calendarId, CalendarMode $mode): ?array
     {
         $start = is_array($item['start'] ?? null) ? $item['start'] : [];
         $end = is_array($item['end'] ?? null) ? $item['end'] : [];
@@ -229,31 +374,58 @@ final readonly class GoogleCalendarDriver implements ConnectorDriver, Subscribes
         $startsAt = $start['dateTime'] ?? $start['date'] ?? null;
         $endsAt = $end['dateTime'] ?? $end['date'] ?? $startsAt;
 
-        if (! is_string($startsAt) || ! is_string($endsAt)) {
+        if (! is_string($startsAt) || ! is_string($endsAt) || ! is_string($item['id'] ?? null)) {
             return null;
         }
 
+        $busy = $mode === CalendarMode::Busy;
+        $text = static fn (string $key, int $limit) => ! $busy && is_string($item[$key] ?? null) && $item[$key] !== '' ? mb_substr($item[$key], 0, $limit) : null;
+        $attendees = [];
+
+        foreach ($busy ? [] : (array) ($item['attendees'] ?? []) as $attendee) {
+            // Not the person themself, and not rooms.
+            if (is_array($attendee) && is_string($attendee['email'] ?? null) && ($attendee['self'] ?? false) !== true && ($attendee['resource'] ?? false) !== true) {
+                $attendees[] = mb_strtolower($attendee['email']);
+            }
+        }
+
+        $properties = is_array($item['extendedProperties'] ?? null) ? $item['extendedProperties'] : [];
+        $private = is_array($properties['private'] ?? null) ? $properties['private'] : [];
+        $reosId = $private['reos_event_id'] ?? null;
+
         return [
-            'external_id' => is_string($item['id'] ?? null) ? $item['id'] : '',
-            'calendar_id' => 'primary',
-            'title' => is_string($item['summary'] ?? null) ? mb_substr($item['summary'], 0, 255) : null,
-            'location' => is_string($item['location'] ?? null) ? $item['location'] : null,
+            'external_id' => $item['id'],
+            'calendar_id' => $calendarId,
+            'title' => $text('summary', 255),
+            'location' => $text('location', 1000),
+            'description' => $text('description', 8000),
+            'attendees' => $attendees,
             'starts_at' => CarbonImmutable::parse($startsAt)->utc(),
             'ends_at' => CarbonImmutable::parse($endsAt)->utc(),
             'all_day' => $allDay,
+            'busy' => $busy,
             'status' => is_string($item['status'] ?? null) ? $item['status'] : 'confirmed',
-            'html_link' => is_string($item['htmlLink'] ?? null) ? mb_substr($item['htmlLink'], 0, 2048) : null,
+            'html_link' => $busy ? null : $text('htmlLink', 2048),
+            'etag' => is_string($item['etag'] ?? null) ? $item['etag'] : null,
             'remote_updated_at' => is_string($item['updated'] ?? null) ? CarbonImmutable::parse($item['updated'])->utc() : null,
+            'reos_id' => is_numeric($reosId) ? (int) $reosId : null,
         ];
     }
 
-    /** @param  array<string, string>  $query */
-    private function get(string $url, string $accessToken, array $query): Response
+    /**
+     * @param  callable(PendingRequest): Response  $call
+     * @param  list<int>  $expected  Statuses the caller handles itself.
+     */
+    private function send(callable $call, string $accessToken, array $expected = []): Response
     {
         try {
-            $response = Http::withToken($accessToken)->acceptJson()->timeout(20)->get($url, $query);
+            $response = $call(Http::withToken($accessToken)->acceptJson()->asJson()->timeout(20));
         } catch (ConnectionException $e) {
             throw new VendorUnavailable('Google unreachable.', previous: $e);
+        }
+
+        if (in_array($response->status(), $expected, true)) {
+            return $response;
         }
 
         if ($response->status() === 410) {

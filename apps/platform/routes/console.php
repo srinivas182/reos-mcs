@@ -27,4 +27,8 @@ Schedule::command('reos:invites:remind')->hourly()->withoutOverlapping()->onOneS
 Schedule::command('reos:privacy:prune')->dailyAt('04:20')->onOneServer();
 
 Schedule::command('reos:connections:sync')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+// Two-way calendars (B4.1): renew push channels, write changes still waiting, and drop old versions.
+Schedule::command('reos:connections:channels')->hourlyAt(7)->withoutOverlapping()->onOneServer();
+Schedule::command('reos:calendar:catch-up')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+Schedule::command('reos:calendar:prune')->dailyAt('04:35')->onOneServer();
 Schedule::command('model:prune', ['--model' => [SyncRun::class, WebhookReceipt::class]])->dailyAt('04:10');

@@ -111,9 +111,9 @@ test('writes the product catalogue with every connectable service and its fields
   assert.ok(run(dir).ok);
   const catalogue = JSON.parse(readFileSync(join(dir, 'catalogue.json'), 'utf8'));
   const ids = catalogue.entries.map((e) => e.id);
-  assert.ok(ids.includes('google-workspace') && ids.includes('sentry'));
+  assert.ok(ids.includes('google-calendar') && ids.includes('sentry'));
   assert.ok(!ids.includes('github'), 'vendor accounts are not in the product catalogue');
-  const google = catalogue.entries.find((e) => e.id === 'google-workspace');
+  const google = catalogue.entries.find((e) => e.id === 'google-calendar');
   assert.deepEqual(google.connection.fields[1], { key: 'client_secret', secret: true, required: true, kind: 'text', default: null });
 });
 

@@ -30,6 +30,9 @@ final readonly class ConnectorRegistry
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarSimulator::class,
     ];
 
+    /** Tools whose drivers are also a `CalendarDriver`. */
+    private const CALENDARS = [GoogleCalendarDriver::INTEGRATION];
+
     public function __construct(
         private Catalogue $catalogue,
         private IntegrationHub $hub,
@@ -65,6 +68,12 @@ final readonly class ConnectorRegistry
     public static function streamDirections(string $integrationId): array
     {
         return self::STREAMS[$integrationId] ?? [];
+    }
+
+    /** A calendar tool: REOS writes events to it (B4.1). */
+    public static function isCalendar(string $integrationId): bool
+    {
+        return in_array($integrationId, self::CALENDARS, true);
     }
 
     /** @return list<string> Every tool the engine knows, connectable or not. */

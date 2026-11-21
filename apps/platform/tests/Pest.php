@@ -15,7 +15,7 @@ use Tests\TestCase;
 pest()->extend(TestCase::class)->in('Feature');
 
 // Connections (B3.1, B3.2): shared by the engine and the website's page tests.
-const CALENDAR = 'google-workspace';
+const CALENDAR = 'google-calendar';
 
 /** Signs in on the website, then walks the demo sign-in to the callback. Returns the callback response. */
 function connectOnWeb(object $test, User $user, bool $allow = true, ?callable $tamper = null): TestResponse

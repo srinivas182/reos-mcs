@@ -32,7 +32,7 @@ The Integration Hub (ADR 0009) holds REOS's own keys for each outside tool. Most
 
 ## The sample connector
 
-Google Calendar, read-only (`calendar.readonly`), on the `google-workspace` keys. It syncs the primary calendar's events into `calendar_events` (the store B4.1 makes two-way), subscribes to push changes, and runs on demo data until the sandbox keys exist. Push channels last about a week; renewing them comes with B4.1.
+Google Calendar, read-only at first (`calendar.readonly`). It synced the primary calendar's events into `calendar_events`, subscribed to push changes, and runs on demo data until the sandbox keys exist. B4.1 made it two-way, with calendars to choose and push channels renewed (ADR 0017).
 
 ## Plan
 

@@ -268,7 +268,7 @@
     },
     "categories": {
       "identity": "Inicio de sesión",
-      "calendar_email": "Calendario y correo",
+      "calendar_email": "Calendario",
       "voice": "Voz",
       "payments": "Pagos",
       "notifications": "Notificaciones",
@@ -463,8 +463,8 @@
       "dotloop": "Loops, documentos y fechas límite.",
       "follow-up-boss": "Contactos, notas y tareas, en ambos sentidos.",
       "google-business-profile": "Publicaciones y estadísticas de su ficha de Google.",
+      "google-calendar": "Su calendario, en ambos sentidos.",
       "google-meet": "Enlaces de Google Meet en sus citas.",
-      "google-workspace": "Su calendario y correo, en ambos sentidos.",
       "homes-com-leads": "Nuevos clientes potenciales de Homes.com, enviados a su CRM.",
       "linkedin": "Publique en su perfil y en la página de su empresa.",
       "listedkit": "Operaciones y fechas límite, con un coordinador de IA.",
@@ -1293,10 +1293,12 @@
       "willBeAbleTo": "REOS podrá",
       "can": {
         "read_events": "Ver los eventos de su calendario",
+        "write_events": "Agregar al calendario que usted elija las citas, visitas y fechas límite que cree en REOS, y guardar allí sus cambios",
         "change_alerts": "Recibir avisos cuando algo cambie"
       },
       "never": {
-        "change_events": "Nunca cambiará ni eliminará sus eventos"
+        "delete_yours": "Nunca eliminará los eventos que usted creó en su calendario",
+        "email": "Nunca enviará correos a sus invitados a menos que usted lo pida"
       },
       "footer": "Puede desconectarla en cualquier momento desde Conexiones. Sus datos siguen siendo suyos.",
       "continue": "Continuar a {{tool}}",
@@ -1368,7 +1370,7 @@
       "tabs": {
         "crm": "CRM",
         "transactions": "Operaciones",
-        "calendar_email": "Calendario y correo",
+        "calendar_email": "Calendario",
         "leads": "Clientes potenciales",
         "social": "Redes sociales",
         "mls": "MLS e IDX",
@@ -1385,6 +1387,25 @@
         "body": "{{person}} quiere usar {{tool}} en REOS. Su agencia lo conecta una sola vez para todos sus agentes.",
         "next": "REOS le avisará cuando esté listo para conectarse en Integraciones."
       }
+    },
+    "calendars": {
+      "title": "Calendarios",
+      "intro": "Elija lo que REOS lee. «Solo ocupado» comparte las horas y nada más.",
+      "modes": {
+        "full": "Leer y escribir",
+        "read": "Leer",
+        "busy": "Solo ocupado",
+        "off": "Desactivado"
+      },
+      "modeFor": "Cómo lee REOS {{calendar}}",
+      "main": "Calendario principal",
+      "readOnly": "Solo lectura: no puede agregar eventos aquí",
+      "writeTo": "Agregar los eventos de REOS a",
+      "writeHint": "Las visitas, citas, fechas límite, sesiones y fechas de educación continua que agregue en REOS van aquí.",
+      "writeNone": "En ningún lugar (mantenerlos en REOS)",
+      "reads": "Lo que REOS lee",
+      "readsBody": "Sus eventos y su tiempo libre, para que Hoy se organice en torno a sus reuniones.",
+      "saved": "Guardado. Sincronizando sus calendarios ahora."
     }
   },
   "catalogue": {
@@ -2386,6 +2407,19 @@
       "pages": "Páginas del registro de auditoría",
       "newer": "Más recientes",
       "older": "Más antiguos"
+    }
+  },
+  "calendar": {
+    "errors": {
+      "busyOnly": "Este evento proviene de un calendario compartido como «solo ocupado», así que no se puede cambiar en REOS.",
+      "readOnly": "Este calendario no le permite cambiar sus eventos. Cámbielo en su aplicación de calendario.",
+      "notOurs": "REOS solo elimina los eventos creados en REOS. Elimine este en su aplicación de calendario.",
+      "undoExpired": "Esto ya no se puede deshacer.",
+      "notSaved": "Aún no se guardó en su calendario.",
+      "unknownCalendar": "Ese calendario no está en esta cuenta. Actualice e intente de nuevo.",
+      "notWritable": "No puede agregar eventos a ese calendario. Elija otro.",
+      "writeNeedsFull": "Para agregar eventos de REOS a un calendario, configúrelo en «Leer y escribir».",
+      "notACalendar": "Solo las herramientas de calendario tienen calendarios para elegir."
     }
   }
 }

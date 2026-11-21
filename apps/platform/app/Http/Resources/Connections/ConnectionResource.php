@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Connections;
 
+use App\Connections\Calendar\CalendarChoices;
 use App\Connections\ConnectionStatus;
 use App\Connections\ConnectorRegistry;
 use App\Integrations\Catalogue;
@@ -33,6 +34,22 @@ final class ConnectionResource extends JsonResource
         return $streams;
     }
 
+    /** @return list<array{id: string, name: string, primary: bool, writable: bool, mode: string, write: bool}>|null */
+    private static function calendars(Connection $connection): ?array
+    {
+        if (! ConnectorRegistry::isCalendar($connection->integration_id)) {
+            return null;
+        }
+
+        $write = CalendarChoices::writeCalendar($connection);
+
+        return array_map(static fn ($calendar): array => [
+            ...$calendar->toArray(),
+            'mode' => CalendarChoices::mode($connection, $calendar->id)->value,
+            'write' => $calendar->id === $write,
+        ], CalendarChoices::known($connection));
+    }
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -40,7 +57,7 @@ final class ConnectionResource extends JsonResource
 
         return [
             'id' => (int) $connection->id,
-            /** The tool's register id, for example `google-workspace`. */
+            /** The tool's register id, for example `google-calendar`. */
             'integration' => (string) $connection->integration_id,
             'integration_name' => (string) (app(Catalogue::class)->find($connection->integration_id)->name ?? $connection->integration_id),
             /** `user` (yours) or `organisation` (your organisation's). */
@@ -71,6 +88,12 @@ final class ConnectionResource extends JsonResource
              * @var list<array{key: 'events', direction: 'read'|'write'|'both', records: int}>
              */
             'streams' => self::streams($connection),
+            /**
+             * Calendars only (screen 16): each calendar, how REOS reads it, and whether REOS's events go there.
+             *
+             * @var list<array{id: string, name: string, primary: bool, writable: bool, mode: 'full'|'busy'|'off', write: bool}>|null
+             */
+            'calendars' => self::calendars($connection),
         ];
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
+use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\HealthController;
@@ -76,4 +77,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('connections/{connection}/sync', [ConnectionController::class, 'sync'])->whereNumber('connection')->middleware('throttle:10,1,api-connections-sync')->name('api.connections.sync');
     Route::patch('connections/{connection}', [ConnectionController::class, 'update'])->whereNumber('connection')->middleware('throttle:30,1,api-connections-update')->name('api.connections.update');
     Route::delete('connections/{connection}', [ConnectionController::class, 'destroy'])->whereNumber('connection')->middleware('throttle:30,1,api-connections-destroy')->name('api.connections.destroy');
+
+    // Your REOS calendar, two-way with your calendar tools (B4.1, ADR 0016).
+    Route::prefix('calendar')->name('api.calendar.')->controller(CalendarController::class)->group(function () {
+        Route::get('events', 'index')->middleware('throttle:120,1,api-calendar-index')->name('index');
+        Route::post('events', 'store')->middleware('throttle:60,1,api-calendar-store')->name('store');
+        Route::put('events/{event}', 'update')->whereNumber('event')->middleware('throttle:60,1,api-calendar-update')->name('update');
+        Route::delete('events/{event}', 'destroy')->whereNumber('event')->middleware('throttle:60,1,api-calendar-destroy')->name('destroy');
+        Route::post('events/{event}/restore', 'restore')->whereNumber('event')->middleware('throttle:60,1,api-calendar-restore')->name('restore');
+        Route::post('events/{event}/retry', 'retry')->whereNumber('event')->middleware('throttle:20,1,api-calendar-retry')->name('retry');
+        Route::post('conflicts/{conflict}/undo', 'undo')->whereNumber('conflict')->middleware('throttle:30,1,api-calendar-undo')->name('undo');
+    });
 });

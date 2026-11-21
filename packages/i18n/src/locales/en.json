@@ -268,7 +268,7 @@
     },
     "categories": {
       "identity": "Sign-in",
-      "calendar_email": "Calendar and email",
+      "calendar_email": "Calendar",
       "voice": "Voice",
       "payments": "Payments",
       "notifications": "Notifications",
@@ -463,8 +463,8 @@
       "dotloop": "Loops, documents and deadlines.",
       "follow-up-boss": "Contacts, notes and tasks, both ways.",
       "google-business-profile": "Posts and insights on your Google listing.",
+      "google-calendar": "Your calendar, both ways.",
       "google-meet": "Google Meet links on your appointments.",
-      "google-workspace": "Your calendar and email, both ways.",
       "homes-com-leads": "New Homes.com leads, sent to your CRM.",
       "linkedin": "Post to your profile and company page.",
       "listedkit": "Deals and deadlines, with an AI coordinator.",
@@ -1293,10 +1293,12 @@
       "willBeAbleTo": "REOS will be able to",
       "can": {
         "read_events": "See the events on your calendar",
+        "write_events": "Add the appointments, showings and deadlines you make in REOS to the calendar you choose, and save your changes there",
         "change_alerts": "Get notified when something changes"
       },
       "never": {
-        "change_events": "Never change or delete your events"
+        "delete_yours": "Never delete events you made in your calendar",
+        "email": "Never email your guests unless you ask"
       },
       "footer": "Disconnect any time from Connections. Your data stays yours.",
       "continue": "Continue to {{tool}}",
@@ -1368,7 +1370,7 @@
       "tabs": {
         "crm": "CRM",
         "transactions": "Transactions",
-        "calendar_email": "Calendar and email",
+        "calendar_email": "Calendar",
         "leads": "Leads",
         "social": "Social",
         "mls": "MLS and IDX",
@@ -1385,6 +1387,25 @@
         "body": "{{person}} would like to use {{tool}} in REOS. Your brokerage connects it once for all its agents.",
         "next": "REOS will tell you when it's ready to connect under Integrations."
       }
+    },
+    "calendars": {
+      "title": "Calendars",
+      "intro": "Choose what REOS reads. Busy only shares the times and nothing else.",
+      "modes": {
+        "full": "Read + write",
+        "read": "Read",
+        "busy": "Busy only",
+        "off": "Off"
+      },
+      "modeFor": "How REOS reads {{calendar}}",
+      "main": "Main calendar",
+      "readOnly": "Read only: you can't add events here",
+      "writeTo": "Add REOS events to",
+      "writeHint": "Showings, appointments, deadlines, sessions and CE dates you add in REOS go here.",
+      "writeNone": "Nowhere (keep them in REOS)",
+      "reads": "What REOS reads",
+      "readsBody": "Your events and free time, so Today plans around your meetings.",
+      "saved": "Saved. Syncing your calendars now."
     }
   },
   "catalogue": {
@@ -2386,6 +2407,19 @@
       "pages": "Audit log pages",
       "newer": "Newer",
       "older": "Older"
+    }
+  },
+  "calendar": {
+    "errors": {
+      "busyOnly": "This event comes from a calendar shared as busy only, so it can't be changed in REOS.",
+      "readOnly": "This calendar doesn't let you change its events. Change it in your calendar app.",
+      "notOurs": "REOS only deletes events made in REOS. Delete this one in your calendar app.",
+      "undoExpired": "This can no longer be undone.",
+      "notSaved": "Not saved to your calendar yet.",
+      "unknownCalendar": "That calendar isn't in this account. Refresh and try again.",
+      "notWritable": "You can't add events to that calendar. Choose another one.",
+      "writeNeedsFull": "To add REOS events to a calendar, set it to Read + write.",
+      "notACalendar": "Only calendar tools have calendars to choose."
     }
   }
 }

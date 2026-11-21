@@ -19,7 +19,7 @@ final class StartConnectionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            /** The tool's register id, for example `google-workspace`. */
+            /** The tool's register id, for example `google-calendar`. */
             'integration' => ['required', 'string', Rule::in(ConnectorRegistry::ids())],
             /** How far back the first sync reaches: `3m` (default), `12m` or `all`. */
             'history' => ['sometimes', 'nullable', Rule::enum(HistoryRange::class)],
