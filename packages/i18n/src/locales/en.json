@@ -3510,7 +3510,7 @@
       "within_other": "Within the policy: bought {{count}} days ago (full refunds within {{window}} days).",
       "outside_one": "Outside the policy (bought {{count}} day ago; full refunds within {{window}} days). Say why below.",
       "outside_other": "Outside the policy (bought {{count}} days ago; full refunds within {{window}} days). Say why below.",
-      "progressNote": "Course progress (under 25%) can be checked once the course player tracks it.",
+      "progressNote": "Course progress is checked once the course player tracks it (Sprint 8).",
       "amount": "Amount (USD)",
       "amountHelp": "Leave empty to refund everything left.",
       "reason": "Reason (kept in the audit log)",
@@ -3522,8 +3522,22 @@
         "notPaid": "Only paid orders can be refunded.",
         "amount": "That's more than can be refunded.",
         "gateway": "The order's gateway isn't connected right now.",
-        "failed": "The gateway didn't make the refund. Nothing changed; try again."
-      }
+        "failed": "The gateway didn't make the refund. Nothing changed; try again.",
+        "disabled": "Refunds are turned off in the refund policy.",
+        "fullOnly": "The refund policy allows full refunds only."
+      },
+      "policySaved": "Refund policy saved.",
+      "policyTitle": "Refund policy",
+      "modes": {
+        "full_and_partial": "Full and partial refunds",
+        "full_only": "Full refunds only",
+        "none": "No refunds"
+      },
+      "windowDays": "Refund window (days)",
+      "maxProgress": "Most of a course done (%)",
+      "noneHelp": "REOS won't refund orders. A refund made at the gateway itself still ends access.",
+      "savePolicy": "Save policy",
+      "fullOnlyNote": "The refund policy allows full refunds only: everything left is refunded."
     },
     "reconciliation": {
       "title": "Reconciliation",
@@ -3716,8 +3730,8 @@
       "refunds": "Refund window",
       "allReos": "100% REOS",
       "stripeTax": "Stripe Tax · state rules",
-      "refundRule_one": "{{count}} day, under 25% of a course done",
-      "refundRule_other": "{{count}} days, under 25% of a course done"
+      "refundRule_one": "{{count}} day, under {{percent}}% of a course done",
+      "refundRule_other": "{{count}} days, under {{percent}}% of a course done"
     },
     "rules": {
       "title": "Rules",

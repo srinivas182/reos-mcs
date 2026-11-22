@@ -269,6 +269,7 @@ function adminActions(): array
 
             return auditCase(auditOps(), 'POST', "/admin/tenants/{$lone->id}/pool", ['credits' => 1000, 'seats' => 5, 'note' => 'Invoice INV-1042'], $lone->id, true);
         },
+        'gateways.refund-policy' => fn () => auditCase(auditOps(), 'PUT', '/admin/gateways/refund-policy', ['mode' => 'full_only', 'window_days' => 7, 'max_progress_percent' => 25], confirmed: true),
         // Refunds from REOS (B5.3, screen 66).
         'gateways.refund' => function () {
             $ops = auditOps();
@@ -540,5 +541,5 @@ const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
-    'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund',
+    'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund', 'gateways.refund-policy',
 ];

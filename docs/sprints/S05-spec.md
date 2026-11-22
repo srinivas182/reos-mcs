@@ -137,6 +137,13 @@ Benchmarks from the sprint plan: The CE Shop and Colibri state catalogues; Strip
 
 Defaults (agreed with the decisions): unused monthly AI credits expire at month end (top-ups never expire); refunds are full within 7 days if less than 25% of a course is completed, otherwise at the admin's discretion; a 7-day grace period after a failed renewal payment before access closes; prices in USD only.
 
+Follow-up decisions (22 November 2026, after B5.3):
+
+5. **Refund policy is the super admin's:** on screen 66 they choose full and partial refunds, full refunds only, or no refunds, with the window in days and the most of a course that may be done.
+6. **Course progress in refunds:** the "less than 25% of a course done" check is added in **Sprint 8**, when the course player tracks progress (carried over; `Refunds::policy` is where it goes).
+7. **Mentors earn like instructors:** Earnings is in the mentor's web menu too (and in the app under Me → Earnings).
+8. **Payout providers:** Stripe Connect for now; more providers can be added later behind the same `PayoutProvider` interface.
+
 ## Sources
 
 - TREC: renewal CE requirements: https://trec.texas.gov/i-am-renewing-my-license-how-do-i-know-how-many-classes-i-need-take-renewal

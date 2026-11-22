@@ -62,7 +62,7 @@ describe('payment gateways (screen 66)', function () {
             ->where('gateways.1.capabilities.recurring', false)
             ->where('gateways.2.id', 'authorize-net')
             ->where('fees.platform_fee_percent', 10)
-            ->where('fees.refund_days', 7));
+            ->where('refund_policy', ['mode' => 'full_and_partial', 'window_days' => 7, 'max_progress_percent' => 25]));
     });
 
     it('saves how a gateway is used, keeps one default, and audits before and after', function () {

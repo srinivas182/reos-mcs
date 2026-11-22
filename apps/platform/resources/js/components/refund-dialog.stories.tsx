@@ -11,7 +11,13 @@ const order: RefundableOrder = {
     total: 43192,
     status: 'paid',
     paid_at: '2026-11-20T15:04:00Z',
-    policy: { refundable: 43192, days: 2, window_days: 7, within_policy: true },
+    policy: {
+        mode: 'full_and_partial',
+        refundable: 43192,
+        days: 2,
+        window_days: 7,
+        within_policy: true,
+    },
 };
 
 /** Refund an order from screen 66 (B5.3), with the policy check. */
