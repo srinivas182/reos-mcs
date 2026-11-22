@@ -21,6 +21,8 @@ import {
 } from '@/components/gateway-dialogs';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
+import { money } from '@/lib/billing';
+import { shortDate } from '@/lib/payouts';
 import { cn } from '@/lib/utils';
 import { resume } from '@/routes/gateways';
 import { index as integrations } from '@/routes/integrations';
@@ -71,13 +73,21 @@ const HEALTH_TONE: Record<NonNullable<GatewayHealth>, keyof typeof TONE> = {
 export default function PaymentGateways({
     gateways,
     fees,
+    payouts,
     options,
 }: {
     gateways: GatewayRow[];
     fees: { platform_fee_percent: number; refund_days: number };
+    payouts: {
+        pending: number;
+        ready: number;
+        setting_up: number;
+        sent_this_month: number;
+        next_payout: string;
+    };
     options: GatewayOptions;
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [editing, setEditing] = useState<GatewayRow | null>(null);
     const [pausing, setPausing] = useState<GatewayRow | null>(null);
     const stateNames = Object.fromEntries(
@@ -343,7 +353,7 @@ export default function PaymentGateways({
                     )}
                 </section>
 
-                <div className="grid gap-6 lg:grid-cols-2">
+                <div className="grid gap-6 lg:grid-cols-3">
                     <section
                         aria-labelledby="fees"
                         className="space-y-3 rounded-reos-lg border border-border bg-card p-5"
@@ -383,6 +393,52 @@ export default function PaymentGateways({
                                         {t(`gateways.fees.${key}`)}
                                     </dt>
                                     <dd className="text-right font-medium">
+                                        {value}
+                                    </dd>
+                                </div>
+                            ))}
+                        </dl>
+                    </section>
+                    <section
+                        aria-labelledby="payouts"
+                        className="space-y-3 rounded-reos-lg border border-border bg-card p-5"
+                    >
+                        <h2 id="payouts" className="font-semibold">
+                            {t('gateways.payouts.title')}
+                        </h2>
+                        <dl className="divide-y divide-border">
+                            {(
+                                [
+                                    [
+                                        'pending',
+                                        money(payouts.pending, i18n.language),
+                                    ],
+                                    [
+                                        'next',
+                                        shortDate(
+                                            payouts.next_payout,
+                                            i18n.language,
+                                        ),
+                                    ],
+                                    [
+                                        'sent',
+                                        money(
+                                            payouts.sent_this_month,
+                                            i18n.language,
+                                        ),
+                                    ],
+                                    ['ready', String(payouts.ready)],
+                                    ['settingUp', String(payouts.setting_up)],
+                                ] as const
+                            ).map(([key, value]) => (
+                                <div
+                                    key={key}
+                                    className="flex justify-between gap-4 py-2"
+                                >
+                                    <dt className="text-muted-foreground">
+                                        {t(`gateways.payouts.${key}`)}
+                                    </dt>
+                                    <dd className="text-right font-medium tabular-nums">
                                         {value}
                                     </dd>
                                 </div>

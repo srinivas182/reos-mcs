@@ -78,7 +78,7 @@ final readonly class StripeGateway implements PaymentGateway
         if ($recurring) {
             $params['subscription_data'] = ['metadata' => ['order' => $order->uuid]];
         } else {
-            $params['payment_intent_data'] = ['metadata' => ['order' => $order->uuid]];
+            $params['payment_intent_data'] = ['metadata' => ['order' => $order->uuid], 'transfer_group' => $order->uuid];
             $params['invoice_creation'] = ['enabled' => 'true'];
         }
 

@@ -6,9 +6,11 @@ namespace App\Http\Requests\Admin\Billing;
 
 use App\Billing\Buyer;
 use App\Billing\ProductKind;
+use App\Enums\OrganisationType;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\In;
 
 /**
@@ -28,7 +30,7 @@ final class ProductRequest extends FormRequest
         }
     }
 
-    /** @return array<string, array<int, ValidationRule|In|string>> */
+    /** @return array<string, array<int, ValidationRule|Exists|In|string>> */
     public function rules(): array
     {
         $required = $this->isMethod('POST') ? 'required' : 'sometimes';
@@ -45,6 +47,8 @@ final class ProductRequest extends FormRequest
             'ai_help' => ['sometimes', 'nullable', 'string', 'max:160'],
             'credits' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:1000000'],
             'seats' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:100000'],
+            /** The school that sells it (its sales are paid out to the school, B5.2b); empty: REOS. */
+            'seller_organisation_id' => ['sometimes', 'nullable', 'integer', Rule::exists('organisations', 'id')->where('type', OrganisationType::School->value)],
         ];
     }
 }

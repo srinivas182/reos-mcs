@@ -78,6 +78,15 @@ final readonly class DataExport
                     ->where('sponsor_code_redemptions.user_id', $user->id)->get(['sponsor_codes.code', 'sponsor_code_redemptions.created_at'])->map(static fn ($r): array => (array) $r)->all(),
                 'gateway_customers' => DB::table('gateway_customers')->where('user_id', $user->id)->get(['gateway', 'environment', 'customer_id'])->map(static fn ($r): array => (array) $r)->all(),
             ],
+            // Earnings and payouts for instructors and mentors (B5.2b). Bank and tax details stay with Stripe.
+            'payouts' => [
+                'stripe_accounts' => DB::table('connected_accounts')->where('owner_type', 'user')->where('owner_id', $user->id)
+                    ->get(['environment', 'kind', 'stripe_account_id', 'payouts_enabled', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'earnings' => DB::table('payout_lines')->where('payee_type', 'user')->where('payee_id', $user->id)->orderBy('id')->limit(5000)
+                    ->get(['role', 'gross_cents', 'platform_fee_cents', 'amount_cents', 'status', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'revenue_shares' => DB::table('product_splits')->join('products', 'products.id', '=', 'product_splits.product_id')->where('product_splits.payee_user_id', $user->id)
+                    ->get(['products.name as product', 'product_splits.role', 'product_splits.percent'])->map(static fn ($r): array => (array) $r)->all(),
+            ],
             // To-dos, typed or spoken (B4.3); what was said is never stored.
             'todos' => DB::table('todos')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')->limit(5000)
                 ->get(['title', 'notes', 'due_at', 'due_date', 'remind_at', 'related_label', 'source', 'done_at', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),

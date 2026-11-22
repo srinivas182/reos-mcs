@@ -8,6 +8,7 @@ use App\Billing\Gateways\CheckoutSession;
 use App\Billing\Gateways\Gateways;
 use App\Billing\Gateways\PaymentGateway;
 use App\Billing\Gateways\PaymentResult;
+use App\Billing\Payouts\RevenueSplit;
 use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\Price;
@@ -44,6 +45,7 @@ final readonly class Checkout
         private Memberships $memberships,
         private AuditLogger $audit,
         private TaxCalculator $tax,
+        private RevenueSplit $split,
     ) {}
 
     /**
@@ -206,6 +208,8 @@ final readonly class Checkout
 
         if ($fulfilled) {
             $this->tax->record($order);
+            // What the sale earns the school, its instructors and mentors (B5.2b).
+            $this->split->record($order);
             $order->user?->notify(new PurchaseReceipt($order));
         }
 
@@ -271,6 +275,7 @@ final readonly class Checkout
             $this->entitlements->revoke(EntitlementSource::Subscription, $subscription->id);
         }
 
+        $this->split->reverse($order);
         $this->audit->record('order.refunded', 'order', $order->uuid, ['total' => $order->total_cents], null, null);
     }
 }

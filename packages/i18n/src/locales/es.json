@@ -45,7 +45,9 @@
     "search": "Buscar en sus lecciones",
     "plansAndPricing": "Planes y precios",
     "planAndBilling": "Plan y facturación",
-    "paymentGateways": "Pasarelas de pago"
+    "paymentGateways": "Pasarelas de pago",
+    "earnings": "Ganancias",
+    "salesAndPayouts": "Ventas y pagos"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -199,7 +201,8 @@
       "openWeb": "Abrir el sitio web",
       "connections": "Conexiones",
       "licences": "Mis licencias",
-      "state": "Trabajando en"
+      "state": "Trabajando en",
+      "earnings": "Ganancias"
     },
     "organisations": {
       "title": "Sus organizaciones",
@@ -272,6 +275,29 @@
       "unlockedTitle": "Listo",
       "unlocked": "{{product}} de {{sponsor}} ya está disponible.",
       "done": "Empezar a aprender"
+    },
+    "earnings": {
+      "title": "Ganancias",
+      "failed": "Las ganancias no se cargaron. Vuelva atrás y ábralas de nuevo.",
+      "thisMonth": "Este mes",
+      "nextPayout": "Próximo pago {{day}} · {{amount}} · Stripe",
+      "notSetUp": "{{amount}} en espera · configure los pagos en Stripe desde la web",
+      "emptyTitle": "Aún no hay ganancias este mes",
+      "empty": "Su parte de cada venta de sesión o curso aparece aquí en cuanto se paga.",
+      "group_one": "{{product}} ({{count}})",
+      "group_other": "{{product}} ({{count}})",
+      "stripeNote": "Las partes son después de la comisión de plataforma de REOS del {{percent}}%. Los formularios de impuestos y los datos bancarios se manejan en Stripe desde la web.",
+      "roles": {
+        "seller": "Venta de la escuela",
+        "instructor": "Parte del instructor",
+        "mentor": "Parte del mentor"
+      },
+      "status": {
+        "pending": "próximo pago",
+        "paid": "pagado",
+        "cancelled": "reembolsado",
+        "reversed": "recuperado"
+      }
     }
   },
   "tabs": {
@@ -1938,7 +1964,13 @@
         "platform.setting_changed": "Cambió un ajuste de la plataforma",
         "gateway.updated": "Cambió el uso de una pasarela de pago",
         "gateway.paused": "Pausó una pasarela de pago",
-        "gateway.resumed": "Reanudó una pasarela de pago"
+        "gateway.resumed": "Reanudó una pasarela de pago",
+        "payouts.account_created": "Inició la configuración de pagos en Stripe",
+        "payouts.own_account_connected": "Conectó su propia cuenta de Stripe",
+        "payouts.sent": "Envió un pago",
+        "payouts.reversed": "Recuperó un pago después de un reembolso",
+        "product.splits_changed": "Cambió un reparto de ingresos",
+        "payouts.own_account_started": "Empezó a conectar su propia cuenta de Stripe"
       }
     }
   },
@@ -3469,7 +3501,10 @@
       "features": "Qué desbloquea (claves de función, una por línea)",
       "ai_help": "Ayuda con IA",
       "credits": "Créditos de IA",
-      "seats": "Puestos"
+      "seats": "Puestos",
+      "seller": "Vendido por",
+      "sellerReos": "REOS",
+      "sellerHelp": "Las ventas de una escuela se le pagan cada semana, después de la comisión de plataforma de REOS del {{percent}}%."
     },
     "kinds": {
       "plan": "Plan",
@@ -3509,6 +3544,20 @@
       "email": "Enviarme el enlace por correo (sin enlace en la aplicación)",
       "link": "Enlace a reos.com",
       "help": "La aplicación nunca muestra precios. Android siempre muestra el texto sin enlace. Cámbielo sin publicar una nueva versión."
+    },
+    "soldBy": "Vendido por {{name}}",
+    "splits": {
+      "open": "Reparto de ingresos",
+      "title": "Reparto de ingresos: {{name}}",
+      "help": "Las partes de instructores y mentores, como porcentaje de lo que queda después de la comisión de plataforma de REOS del {{percent}}%. {{school}} conserva el resto.",
+      "none": "Aún no hay partes: la escuela conserva todo después de la comisión de plataforma.",
+      "payee": "Beneficiario {{number}}",
+      "email": "Correo de REOS",
+      "role": "Función",
+      "percent": "Porcentaje",
+      "remove": "Quitar",
+      "add": "Agregar un instructor o mentor",
+      "schoolKeeps": "La escuela conserva el {{percent}}% de lo que queda."
     }
   },
   "gateways": {
@@ -3594,6 +3643,111 @@
       "stripe": "Stripe",
       "paypal": "PayPal",
       "authorize-net": "Authorize.net"
+    },
+    "payouts": {
+      "title": "Pagos a terceros",
+      "pending": "Pendiente de enviar",
+      "next": "Próximo pago semanal",
+      "sent": "Enviado este mes",
+      "ready": "Cuentas listas",
+      "settingUp": "Cuentas aún en configuración"
+    }
+  },
+  "payouts": {
+    "transferDescription": "Pago de REOS",
+    "recent": "Pagos recientes",
+    "noPayouts": "Aún no hay pagos. Se envían cada lunes una vez configurados los pagos.",
+    "failed": "falló, se reintenta la próxima semana",
+    "ownConnected": "Su cuenta de Stripe está conectada. Desde ahora los pagos van allí.",
+    "errors": {
+      "unavailable": "Los pagos no están disponibles en este momento. Inténtelo de nuevo pronto.",
+      "ownNotAllowed": "REOS aún no ha activado las cuentas de Stripe propias.",
+      "expired": "Ese enlace venció. Empiece de nuevo desde Ventas y pagos.",
+      "noSeller": "Primero elija la escuela que vende este plan.",
+      "over100": "Las partes suman más del 100%."
+    },
+    "account": {
+      "title": "Adónde van los pagos",
+      "states": {
+        "ready": "Lista",
+        "onboarding": "En configuración",
+        "needsInfo": "Stripe necesita información"
+      },
+      "none": "Configure los pagos en Stripe. Stripe guarda los datos bancarios y fiscales, nunca REOS.",
+      "ready": "Los pagos llegan a su cuenta de Stripe cada lunes.",
+      "readyOwn": "Los pagos llegan cada lunes a la cuenta de Stripe propia de su escuela.",
+      "notReady_one": "Stripe necesita {{count}} dato más antes de empezar los pagos. Sus ganancias se siguen acumulando.",
+      "notReady_other": "Stripe necesita {{count}} datos más antes de empezar los pagos. Sus ganancias se siguen acumulando.",
+      "setUp": "Configurar pagos en Stripe",
+      "finish": "Terminar en Stripe",
+      "update": "Datos bancarios y fiscales en Stripe",
+      "connectOwn": "Conectar su propia cuenta de Stripe"
+    },
+    "breakdown": {
+      "gross": "Ventas brutas",
+      "discounts": "Descuentos de patrocinadores",
+      "fee": "Comisión de plataforma de REOS ({{percent}}%, incluye cargos de tarjeta)",
+      "payees": "Pagos a instructores y mentores",
+      "net": "Neto para la escuela"
+    },
+    "sales": {
+      "title": "Ventas y pagos",
+      "description": "Cobrado a través de {{collected}} · pago semanal a la escuela",
+      "reosStripe": "Stripe de REOS",
+      "ownStripe": "su propia cuenta de Stripe",
+      "export": "Exportar",
+      "products": "Productos y precios",
+      "payouts": "Pagos de este mes",
+      "emptyTitle": "Aún no hay productos a la venta",
+      "empty": "Los productos aparecen aquí cuando REOS los registra como vendidos por su escuela, con un precio para cada estado.",
+      "note": "{{amount}} se envía el {{date}}. Los precios se fijan dentro de los límites que REOS establece para cada estado; los precios de los paquetes que se muestran en la app vienen de aquí.",
+      "columns": {
+        "product": "Producto",
+        "state": "Estado",
+        "price": "Precio",
+        "sold": "Vendidos este mes",
+        "discounts": "Descuentos de patrocinadores"
+      }
+    },
+    "export": {
+      "date": "Fecha",
+      "order": "Pedido",
+      "product": "Producto",
+      "state": "Estado",
+      "price": "Precio (centavos)",
+      "discount": "Descuento de patrocinador (centavos)",
+      "fee": "Comisión de plataforma (centavos)",
+      "payees": "Pagos a instructores y mentores (centavos)",
+      "net": "Neto para la escuela (centavos)",
+      "orderStatus": "Estado del pedido",
+      "payoutStatus": "Estado del pago"
+    },
+    "earnings": {
+      "title": "Ganancias",
+      "description": "Lo que ha ganado por sesiones y cursos, después de la comisión de plataforma de REOS del {{percent}}%",
+      "netThisMonth": "Neto este mes",
+      "nextPayout": "Próximo pago · {{date}}",
+      "lines": "Lo que ganó",
+      "emptyTitle": "Aún no hay ganancias",
+      "empty": "Su parte de cada venta de curso o sesión aparece aquí en cuanto se paga."
+    },
+    "roles": {
+      "seller": "Venta de la escuela",
+      "instructor": "Instructor",
+      "mentor": "Mentor"
+    },
+    "lineStatus": {
+      "pending": "Próximo pago",
+      "paid": "Pagado",
+      "cancelled": "Reembolsado",
+      "reversed": "Recuperado"
+    },
+    "simulator": {
+      "eyebrow": "Simulador",
+      "title": "Configuración de pagos (demostración)",
+      "body": "Esto reemplaza la configuración de pagos de Stripe hasta que se conecte Stripe Connect. No se piden datos bancarios y no se mueve dinero.",
+      "finish": "Terminar la configuración",
+      "later": "Volver a REOS"
     }
   }
 }

@@ -6,15 +6,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Billing\Buyer;
 use App\Billing\Membership;
+use App\Billing\Payouts\RevenueSplit;
 use App\Billing\Plans;
 use App\Billing\PriceInterval;
 use App\Billing\ProductKind;
 use App\Billing\ProductStatus;
+use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Billing\PriceRequest;
 use App\Http\Requests\Admin\Billing\ProductRequest;
+use App\Http\Requests\Admin\Billing\SplitsRequest;
+use App\Models\Organisation;
 use App\Models\Price;
 use App\Models\Product;
+use App\Models\ProductSplit;
 use App\Models\State;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -42,7 +47,7 @@ final class PlanController extends Controller
         $names = State::query()->pluck('name', 'code')->all();
 
         $products = Product::query()
-            ->with(['prices' => static fn ($q) => $q->orderBy('state_code')->orderByDesc('starts_at')])
+            ->with(['prices' => static fn ($q) => $q->orderBy('state_code')->orderByDesc('starts_at'), 'seller:id,name', 'splits.payee:id,name,email'])
             ->when($tab === 'credit_packs', static fn ($q) => $q->where('kind', ProductKind::CreditPack))
             ->when($tab !== 'credit_packs', static fn ($q) => $q->where('kind', '!=', ProductKind::CreditPack)->whereIn('buyer', self::buyers($tab)))
             ->orderByRaw("CASE status WHEN 'live' THEN 0 WHEN 'draft' THEN 1 ELSE 2 END")
@@ -65,6 +70,11 @@ final class PlanController extends Controller
                 'credits' => $product->credits,
                 'seats' => $product->seats,
                 'status' => $product->status->value,
+                // Who sells it and who shares in its sales (B5.2b).
+                'seller' => $product->seller === null ? null : ['id' => $product->seller->id, 'name' => $product->seller->name],
+                'splits' => $product->splits->map(static fn (ProductSplit $split): array => [
+                    'email' => $split->payee->email, 'name' => $split->payee->name, 'role' => $split->role->value, 'percent' => $split->percent,
+                ])->values()->all(),
                 'prices' => $product->prices->map(static fn (Price $price): array => [
                     'id' => $price->id,
                     'state' => $price->state_code,
@@ -84,6 +94,9 @@ final class PlanController extends Controller
                 'intervals' => PriceInterval::values(),
                 'statuses' => ProductStatus::values(),
                 'states' => State::query()->orderBy('name')->get(['code', 'name'])->map(static fn (State $s): array => ['code' => $s->code, 'name' => $s->name])->values()->all(),
+                'schools' => Organisation::query()->where('type', OrganisationType::School)->orderBy('name')->get(['id', 'name'])
+                    ->map(static fn (Organisation $o): array => ['id' => $o->id, 'name' => $o->name])->values()->all(),
+                'fee_percent' => RevenueSplit::platformFeePercent(),
             ],
         ]);
     }
@@ -122,6 +135,14 @@ final class PlanController extends Controller
     {
         abort_unless($price->product_id === $product->id, 404);
         $plans->endPrice($price, $actor);
+
+        return back();
+    }
+
+    /** Instructors' and mentors' shares of a school product's sales (B5.2b). */
+    public function splits(SplitsRequest $request, Product $product, #[CurrentUser] User $actor, Plans $plans): RedirectResponse
+    {
+        $plans->setSplits($product, $request->splits(), $actor);
 
         return back();
     }

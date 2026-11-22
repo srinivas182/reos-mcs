@@ -213,6 +213,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.man
             Route::patch('{product}', [PlanController::class, 'update'])->whereNumber('product')->name('update');
             Route::put('{product}/status', [PlanController::class, 'status'])->whereNumber('product')->name('status');
             Route::post('{product}/prices', [PlanController::class, 'price'])->whereNumber('product')->name('prices.store');
+            // Instructors' and mentors' shares of a school product (B5.2b).
+            Route::put('{product}/splits', [PlanController::class, 'splits'])->whereNumber('product')->name('splits');
             // How the iPhone app points to buying (decision 4).
             Route::put('ios-buy-link', [PlanController::class, 'iosBuyLink'])->name('ios-buy-link');
             Route::delete('{product}/prices/{price}', [PlanController::class, 'endPrice'])->whereNumber('product')->whereNumber('price')->name('prices.destroy');

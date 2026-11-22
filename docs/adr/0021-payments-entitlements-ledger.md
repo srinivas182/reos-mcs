@@ -1,6 +1,6 @@
 # 0021: Payments, entitlements and the ledger
 
-**Status:** accepted (B5.1, 22 November 2026; gateways and routing B5.2a); B5.2b (payouts) and B5.3 (credits, points, the ledger) extend it.
+**Status:** accepted (B5.1, 22 November 2026; gateways and routing B5.2a; payouts B5.2b); B5.3 (credits, points, the ledger) extends it.
 
 ## Context
 
@@ -20,7 +20,10 @@ REOS sells plans, courses, packages, credit packs and seat packs to candidates, 
 10. **More gateways, one interface (B5.2a).** `PaymentGateway` (checkout, result, portal, signed events) has Stripe, PayPal (Orders v2 with PayPal's hosted approval, captured on return; webhooks checked with PayPal's verify-webhook-signature) and Authorize.net (Accept Hosted: REOS gets a token and posts the buyer to Authorize.net's page; the result is found by invoice number; webhooks signed with HMAC-SHA512). Each says whether it takes plans that renew (Stripe only) and whether it works out tax (Stripe only). Card data never touches REOS at any of them (PCI SAQ A). Webhooks: `/webhooks/{stripe|paypal|authorize-net}`; receipts are kept per gateway, and events find orders by gateway and session.
 11. **Routing and the kill switch (screen 66).** `gateway_settings` says which states and kinds of product each gateway serves (none: all), which is the default, and whether tenants may connect their own account (gateways with payouts only). Checkout tries the default first, then the next in order, skipping paused gateways, gateways that are Off or lack keys, and gateways that can't take a plan that renews; none left means "Purchases are paused". Keys and Off / Simulator / Sandbox / Live stay in Settings › Integrations ("Add gateway" goes there). Every change, pause (with its reason) and resume is audited with before and after.
 12. **The same tax everywhere (B5.2a).** Gateways without built-in tax ask for the buyer's ZIP code first; Stripe's tax calculation API works out the tax from state and ZIP code, the gateway charges that amount, and after payment the calculation is recorded as a Stripe Tax transaction for filing. Without Stripe keys outside production, the Simulator's demo rate (8.25%) stands in; in production checkout refuses rather than charge no tax.
-13. **Records.** Orders stay for tax records when an account is deleted, linked to no one. Price changes, plan changes and orders are audited.
+13. **Payouts (B5.2b).** A product may be sold by a school (`products.seller_organisation_id`, set on screen 67); its sales are split when the order is paid (`payout_lines`, once per order and payee): REOS's platform fee first (screen 66, 10%, covering card fees; tax is never shared), then each instructor's or mentor's percent of the rest (`product_splits`, "Revenue split" on screen 67, at most 100%), and the school keeps what's left. Products REOS sells earn no one else anything.
+14. **Stripe Connect, separate charges and transfers.** Schools, instructors and mentors set up payouts on Stripe's own Express onboarding (bank and tax details never touch REOS); a school may connect its own Stripe account instead (Connect OAuth) when screen 66 allows tenant accounts for Stripe. Every Monday `reos:payouts:run` sends each ready payee one transfer for all pending lines (idempotency key = payout id; lines are claimed first so two runs can't pay twice); payees still setting up keep earning. Because transfers draw on the platform balance, PayPal and Authorize.net sales are paid out the same way. A refund cancels unpaid lines and reverses paid ones (transfer reversal). `account.updated` webhooks (`/webhooks/stripe-connect`, own signing secret) keep account status current; the run also re-checks accounts not yet ready.
+15. **Statements.** School: Sales and payouts (screen 53: products with prices, sold this month and sponsor discounts; gross, sponsor discounts, platform fee, instructor and mentor payouts, net; where payouts go; recent payouts; CSV export). Instructors and mentors: Earnings on the web and in the app (screens 20 and 28, `GET /me/earnings`). Screen 66 shows what's waiting, sent this month and accounts ready.
+16. **Records.** Orders stay for tax records when an account is deleted, linked to no one. Price changes, plan changes and orders are audited.
 
 ## Consequences
 
@@ -28,4 +31,5 @@ REOS sells plans, courses, packages, credit packs and seat packs to candidates, 
 - Stripe Tax needs the Texas registration in the client's Stripe account before live mode.
 - PayPal webhooks subscribe to `CHECKOUT.ORDER.APPROVED`, `PAYMENT.CAPTURE.COMPLETED` and `PAYMENT.CAPTURE.REFUNDED`; Authorize.net to `net.authorize.payment.authcapture.created`, `.refund.created` and `.void.created`.
 - Stripe stays required for tax even when another gateway takes the payment.
-- B5.2b adds Stripe Connect payouts and tenant-owned accounts; B5.3 adds the ledger, credit pools, sponsor pools and codes, refunds from REOS and reconciliation with the gateway's balance transactions.
+- Stripe Connect needs the platform profile approved and a Connect webhook endpoint (`account.updated`) before live payouts; renewals of school plans and direct charges on a tenant's own account are not split yet (school products are one-time today).
+- B5.3 adds the ledger, credit pools, sponsor pools and codes, refunds from REOS and reconciliation with the gateway's balance transactions.

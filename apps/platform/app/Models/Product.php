@@ -9,6 +9,7 @@ use App\Billing\ProductKind;
 use App\Billing\ProductStatus;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -29,13 +30,16 @@ use Illuminate\Support\Carbon;
  * @property int|null $credits
  * @property int|null $seats
  * @property ProductStatus $status
+ * @property int|null $seller_organisation_id The school that sells it; null: REOS
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, Price> $prices
+ * @property-read Organisation|null $seller
+ * @property-read Collection<int, ProductSplit> $splits
  */
 final class Product extends Model
 {
-    protected $fillable = ['key', 'name', 'kind', 'buyer', 'description', 'includes', 'features', 'ai_help', 'credits', 'seats', 'status'];
+    protected $fillable = ['key', 'name', 'kind', 'buyer', 'description', 'includes', 'features', 'ai_help', 'credits', 'seats', 'status', 'seller_organisation_id'];
 
     protected $attributes = ['status' => 'draft'];
 
@@ -56,5 +60,17 @@ final class Product extends Model
     public function prices(): HasMany
     {
         return $this->hasMany(Price::class)->orderByDesc('starts_at')->orderByDesc('id');
+    }
+
+    /** @return BelongsTo<Organisation, $this> */
+    public function seller(): BelongsTo
+    {
+        return $this->belongsTo(Organisation::class, 'seller_organisation_id');
+    }
+
+    /** @return HasMany<ProductSplit, $this> */
+    public function splits(): HasMany
+    {
+        return $this->hasMany(ProductSplit::class);
     }
 }

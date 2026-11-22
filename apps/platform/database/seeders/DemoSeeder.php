@@ -16,6 +16,7 @@ use Database\Seeders\Demo\DemoConnections;
 use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
+use Database\Seeders\Demo\DemoPayouts;
 use Database\Seeders\Demo\DemoStates;
 use Database\Seeders\Demo\DemoTenants;
 use Database\Seeders\Demo\Personas;
@@ -79,6 +80,7 @@ final class DemoSeeder extends Seeder
         // Plans, prices and a sponsor discount, as on screens 67 and 3 (B5.1).
         app(DemoBilling::class)->seed();
         app(DemoGateways::class)->seed();
+        app(DemoPayouts::class)->seed();
     }
 
     private function organisation(string $name): Organisation

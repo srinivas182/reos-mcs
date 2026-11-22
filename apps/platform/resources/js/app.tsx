@@ -20,7 +20,8 @@ void createInertiaApp({
         switch (true) {
             case name === 'connections/simulator' ||
                 name === 'billing/checkout' ||
-                name === 'billing/complete':
+                name === 'billing/complete' ||
+                name === 'payouts/simulate':
                 return null;
             case name === 'welcome' ||
                 name.startsWith('public/') ||
