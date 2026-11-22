@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\LicenceReviewController;
 use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\StateController;
+use App\Http\Controllers\Admin\StateRuleController;
 use App\Http\Controllers\Admin\TenantController;
 use App\Http\Controllers\Admin\TenantSupportController;
 use App\Http\Middleware\ConfirmIdentity;
@@ -88,6 +89,12 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:states.ma
         Route::patch('{state}', [StateController::class, 'update'])->middleware('throttle:30,1,admin-states-update')->name('update');
         Route::put('{state}/details', [StateController::class, 'prepare'])->middleware('throttle:30,1,admin-states-prepare')->name('prepare');
         Route::put('{state}/checklist', [StateController::class, 'checklist'])->middleware('throttle:60,1,admin-states-checklist')->name('checklist');
+
+        // State rules (A5.2, screen 62): drafts, publish, versions.
+        Route::get('{state}/rules', [StateRuleController::class, 'show'])->name('rules.show');
+        Route::put('{state}/rules/{key}', [StateRuleController::class, 'draft'])->where('key', '[a-z_]+\.[a-z_]+')->middleware('throttle:60,1,admin-state-rules-draft')->name('rules.draft');
+        Route::delete('{state}/rules/drafts/{rule}', [StateRuleController::class, 'discard'])->whereNumber('rule')->middleware('throttle:60,1,admin-state-rules-discard')->name('rules.discard');
+        Route::post('{state}/rules/publish', [StateRuleController::class, 'publish'])->middleware('throttle:20,1,admin-state-rules-publish')->name('rules.publish');
     });
 
 // Tenants (A4.1b, web journey screens 59 and 60): every organisation. Super

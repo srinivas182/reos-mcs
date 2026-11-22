@@ -61,6 +61,9 @@ final readonly class DataExport
             'licences' => DB::table('licences')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')
                 ->get(['state_code', 'type', 'number', 'status', 'broker_role', 'holder_name', 'licensed_on', 'expires_on', 'sponsor_name', 'verified_by', 'verified_at', 'review_note', 'created_at'])
                 ->map(static fn ($r): array => (array) $r)->all(),
+            // CE completed (A5.2).
+            'ce_completions' => DB::table('ce_completions')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('completed_on')
+                ->get(['state_code', 'title', 'course_code', 'hours', 'provider', 'source', 'completed_on'])->map(static fn ($r): array => (array) $r)->all(),
             // To-dos, typed or spoken (B4.3); what was said is never stored.
             'todos' => DB::table('todos')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')->limit(5000)
                 ->get(['title', 'notes', 'due_at', 'due_date', 'remind_at', 'related_label', 'source', 'done_at', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),

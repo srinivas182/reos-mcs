@@ -2,6 +2,7 @@ import { Form, router } from '@inertiajs/react';
 import { BadgeCheck, Clock, IdCard, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CeRequirementList } from '@/components/ce-requirement';
 import { EmptyState } from '@/components/empty-state';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -150,6 +151,20 @@ export function LicenceList({ licences, states }: Props) {
                                         </dd>
                                     </div>
                                 ) : null}
+                                {licence.ce && !licence.tracked_only ? (
+                                    <div className="flex justify-between gap-4">
+                                        <dt className="text-muted-foreground">
+                                            {t('licences.ceThisCycle')}
+                                        </dt>
+                                        <dd className="font-medium">
+                                            {t('ce.tile.hours', {
+                                                done: licence.ce.hours_done,
+                                                required:
+                                                    licence.ce.hours_required,
+                                            })}
+                                        </dd>
+                                    </div>
+                                ) : null}
                                 {licence.expires_on ? (
                                     <div className="flex justify-between gap-4">
                                         <dt className="text-muted-foreground">
@@ -162,6 +177,16 @@ export function LicenceList({ licences, states }: Props) {
                                 ) : null}
                             </dl>
 
+                            {licence.ce && !licence.tracked_only ? (
+                                <details className="rounded-reos-md border border-border px-4 py-2">
+                                    <summary className="flex min-h-12 cursor-pointer items-center font-medium text-primary">
+                                        {t('ce.whatYouNeed')}
+                                    </summary>
+                                    <div className="pb-2">
+                                        <CeRequirementList ce={licence.ce} />
+                                    </div>
+                                </details>
+                            ) : null}
                             {licence.tracked_only ? (
                                 <p className="text-body text-muted-foreground">
                                     {t('licences.trackedOnly', {

@@ -1768,6 +1768,191 @@
                 }
             }
         },
+        "/me/licences/{licence}/ce": {
+            "get": {
+                "operationId": "me.licences.ce",
+                "description": "The requirement for the current period comes from the state's rules\nin force today (each part names its source), less completed CE. Null\nwhen the state has no CE rules yet.",
+                "summary": "What CE this licence still needs",
+                "tags": [
+                    "Licence"
+                ],
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "state": {
+                                                    "type": "string"
+                                                },
+                                                "due_on": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "period_start": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "days_left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "first_renewal": {
+                                                    "type": "boolean"
+                                                },
+                                                "hours_required": {
+                                                    "type": "number"
+                                                },
+                                                "hours_done": {
+                                                    "type": "number"
+                                                },
+                                                "hours_left": {
+                                                    "type": "number"
+                                                },
+                                                "complete": {
+                                                    "type": "boolean"
+                                                },
+                                                "parts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "mandatory",
+                                                                    "broker_responsibility",
+                                                                    "qualifying",
+                                                                    "elective"
+                                                                ]
+                                                            },
+                                                            "hours": {
+                                                                "type": "number"
+                                                            },
+                                                            "hours_done": {
+                                                                "type": "number"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "title",
+                                                            "kind",
+                                                            "hours",
+                                                            "hours_done",
+                                                            "done"
+                                                        ]
+                                                    }
+                                                },
+                                                "deferral": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "fee_usd": {
+                                                            "type": "number"
+                                                        },
+                                                        "days": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "fee_usd",
+                                                        "days"
+                                                    ]
+                                                },
+                                                "sources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "citation": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "effective_from": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "citation",
+                                                            "url",
+                                                            "effective_from"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "state",
+                                                "due_on",
+                                                "period_start",
+                                                "days_left",
+                                                "first_renewal",
+                                                "hours_required",
+                                                "hours_done",
+                                                "hours_left",
+                                                "complete",
+                                                "parts",
+                                                "deferral",
+                                                "sources"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/licences/{licence}": {
             "patch": {
                 "operationId": "me.licences.update",
@@ -4021,6 +4206,152 @@
                     "tracked_only": {
                         "type": "boolean",
                         "description": "The state isn't live yet: tracked for renewal only."
+                    },
+                    "ce": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "CE this period (\"9 of 18 h\") and what's still needed, from the\nstate's rules in force today (A5.2); null while waiting for\nreview, or when the state has no CE rules.",
+                        "properties": {
+                            "state": {
+                                "type": "string"
+                            },
+                            "due_on": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "period_start": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ]
+                            },
+                            "days_left": {
+                                "type": [
+                                    "integer",
+                                    "null"
+                                ]
+                            },
+                            "first_renewal": {
+                                "type": "boolean"
+                            },
+                            "hours_required": {
+                                "type": "number"
+                            },
+                            "hours_done": {
+                                "type": "number"
+                            },
+                            "hours_left": {
+                                "type": "number"
+                            },
+                            "complete": {
+                                "type": "boolean"
+                            },
+                            "parts": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "string"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "type": "string",
+                                            "enum": [
+                                                "mandatory",
+                                                "broker_responsibility",
+                                                "qualifying",
+                                                "elective"
+                                            ]
+                                        },
+                                        "hours": {
+                                            "type": "number"
+                                        },
+                                        "hours_done": {
+                                            "type": "number"
+                                        },
+                                        "done": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "title",
+                                        "kind",
+                                        "hours",
+                                        "hours_done",
+                                        "done"
+                                    ]
+                                }
+                            },
+                            "deferral": {
+                                "type": [
+                                    "object",
+                                    "null"
+                                ],
+                                "properties": {
+                                    "fee_usd": {
+                                        "type": "number"
+                                    },
+                                    "days": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "fee_usd",
+                                    "days"
+                                ]
+                            },
+                            "sources": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string"
+                                        },
+                                        "citation": {
+                                            "type": "string"
+                                        },
+                                        "url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "effective_from": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "key",
+                                        "citation",
+                                        "url",
+                                        "effective_from"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "state",
+                            "due_on",
+                            "period_start",
+                            "days_left",
+                            "first_renewal",
+                            "hours_required",
+                            "hours_done",
+                            "hours_left",
+                            "complete",
+                            "parts",
+                            "deferral",
+                            "sources"
+                        ]
                     }
                 },
                 "required": [
@@ -4038,7 +4369,8 @@
                     "verified_by",
                     "verified_at",
                     "review_note",
-                    "tracked_only"
+                    "tracked_only",
+                    "ce"
                 ],
                 "title": "LicenceResource"
             },

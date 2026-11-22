@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { IdCard, Plus } from 'lucide-react-native';
+import { Circle, CircleCheck, IdCard, Plus } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { useAuth } from '@/lib/auth';
 import { BROKER_ROLES, type BrokerRole, formatDay, type Licence, licenceLine, removeLicence, restoreLicence, setBrokerRole, useLicences } from '@/lib/licences';
-import { Button, Card, Chip, EmptyState, Icon, IconButton, PillGroup, Screen, Sheet, Text, TitleBar, useUndoToast } from '@/ui';
+import { Button, Card, Chip, EmptyState, Icon, IconButton, PillGroup, ProgressBar, Screen, Sheet, Text, TitleBar, useUndoToast } from '@/ui';
 
 const NONE = 'none';
 
@@ -90,6 +90,7 @@ export default function MyLicences() {
           ) : (
             <View style={styles.details}>
               {licence.sponsor_name ? <Row label={t('licences.sponsor')} value={licence.sponsor_name} /> : null}
+              {licence.ce ? <Row label={t('licences.ceThisCycle')} value={t('mobile.licences.ceHours', { done: licence.ce.hours_done, required: licence.ce.hours_required })} /> : null}
               {licence.expires_on ? <Row label={t('licences.renewal')} value={formatDay(licence.expires_on, i18n.language) ?? ''} /> : null}
             </View>
           )}
@@ -109,6 +110,7 @@ export default function MyLicences() {
         {open ? (
           <>
             <Text tone="muted">{licenceLine(open, t, i18n.language)}</Text>
+            {open.ce && !open.tracked_only ? <CeNeeds ce={open.ce} /> : null}
             {open.tracked_only ? null : (
               <PillGroup
                 label={t('licences.role')}
@@ -125,6 +127,30 @@ export default function MyLicences() {
         ) : null}
       </Sheet>
     </Screen>
+  );
+}
+
+/** "What you still need" (A5.2): each required course and the electives, done or not, with the deferral option and the rules' source. */
+function CeNeeds({ ce }: { ce: NonNullable<Licence['ce']> }) {
+  const { t, i18n } = useTranslation();
+
+  return (
+    <View style={styles.needs}>
+      <Text weight="semibold">{ce.complete ? t('ce.done') : t('ce.left', { hours: ce.hours_left, date: formatDay(ce.due_on, i18n.language) ?? '' })}</Text>
+      <ProgressBar value={ce.hours_required > 0 ? Math.round((ce.hours_done / ce.hours_required) * 100) : 0} label={t('ce.progress')} />
+      {ce.first_renewal ? <Text tone="muted">{t('ce.firstRenewal')}</Text> : null}
+      {ce.parts.map((part) => (
+        <View key={part.code} style={styles.part} accessible accessibilityLabel={`${part.title}: ${t('ce.partHours', { done: part.hours_done, hours: part.hours })}${part.done ? `, ${t('ce.partDone')}` : ''}`}>
+          <Icon icon={part.done ? CircleCheck : Circle} color={part.done ? 'success' : 'textMuted'} size={20} />
+          <Text style={styles.partTitle}>{part.title}</Text>
+          <Text weight="semibold">{t('ce.partHours', { done: part.hours_done, hours: part.hours })}</Text>
+        </View>
+      ))}
+      {ce.deferral && !ce.complete ? <Text tone="muted">{t('ce.deferral', { fee: ce.deferral.fee_usd, days: ce.deferral.days })}</Text> : null}
+      <Text variant="caption" tone="muted">
+        {t('ce.sources', { sources: [...new Set(ce.sources.map((s) => s.citation))].join('; ') })}
+      </Text>
+    </View>
   );
 }
 
@@ -145,5 +171,8 @@ const styles = StyleSheet.create((theme) => ({
   tileText: { color: theme.colors.heroText },
   titles: { flex: 1 },
   details: { borderRadius: theme.m.radius.tile, borderWidth: 1, borderColor: theme.colors.border, paddingHorizontal: theme.space.md },
+  needs: { gap: theme.space.sm },
+  part: { flexDirection: 'row', alignItems: 'center', gap: theme.space.sm, minHeight: theme.touch - 8 },
+  partTitle: { flex: 1 },
   row: { flexDirection: 'row', justifyContent: 'space-between', gap: theme.space.md, minHeight: theme.touch, alignItems: 'center' },
 }));

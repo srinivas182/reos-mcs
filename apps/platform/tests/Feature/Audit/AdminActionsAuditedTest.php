@@ -14,6 +14,7 @@ use App\Models\SupportAccessGrant;
 use App\Models\User;
 use App\Services\Licences\Licences;
 use App\Services\Privacy\PrivacyRequests;
+use App\Services\StateRules\StateRules;
 use App\Services\Tenancy\Invitations;
 use App\Services\Tenancy\SingleSignOn;
 use App\Services\Tenancy\SupportAccess;
@@ -114,6 +115,19 @@ function adminActions(): array
         },
         'states.update' => fn () => auditCase(auditOps(), 'PATCH', '/admin/states/LA', ['status' => 'in_preparation'], confirmed: true),
         'states.prepare' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/LA/details', ['regulator' => 'LREC', 'exam_vendor' => 'PSI', 'qualifying_hours' => 90, 'ce_hours' => 12], confirmed: true),
+        'states.rules.draft' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/TX/rules/ce.hours', ['value' => ['number' => 18], 'citation' => '22 TAC §535.92(a)', 'effective_from' => '2027-01-01'], confirmed: true),
+        'states.rules.discard' => function () {
+            $ops = auditOps();
+            $draft = app(StateRules::class)->draft(State::query()->findOrFail('TX'), 'ce.hours', ['value' => ['number' => 18], 'citation' => 'x', 'effective_from' => '2027-01-01'], $ops);
+
+            return auditCase($ops, 'DELETE', "/admin/states/TX/rules/drafts/{$draft->id}", confirmed: true);
+        },
+        'states.rules.publish' => function () {
+            $ops = auditOps();
+            app(StateRules::class)->draft(State::query()->findOrFail('TX'), 'ce.hours', ['value' => ['number' => 18], 'citation' => 'x', 'effective_from' => '2027-01-01'], $ops);
+
+            return auditCase($ops, 'POST', '/admin/states/TX/rules/publish', confirmed: true);
+        },
         'states.checklist' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/LA/checklist', ['item' => 'rules', 'done' => true], confirmed: true),
         'people.licences.approve' => function () {
             [$licence] = app(Licences::class)->add(User::factory()->create(['name' => 'James Miller']), State::query()->findOrFail('TX'), '0798888', null, null);
@@ -329,7 +343,7 @@ it('audits the admin action', function (string $name) {
 
 /** Routes that change a value (rather than add, remove or start something). */
 const CHANGES = [
-    'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare',
+    'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update',
 ];

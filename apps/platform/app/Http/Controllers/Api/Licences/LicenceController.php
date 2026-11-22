@@ -12,6 +12,7 @@ use App\Http\Resources\Licences\LicenceResource;
 use App\Models\Licence;
 use App\Models\User;
 use App\Services\Licences\Licences;
+use App\Services\StateRules\CeRequirements;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -76,6 +77,20 @@ final class LicenceController extends Controller
             ],
             'source' => $preview['source'],
         ];
+    }
+
+    /**
+     * What CE this licence still needs.
+     *
+     * The requirement for the current period comes from the state's rules
+     * in force today (each part names its source), less completed CE. Null
+     * when the state has no CE rules yet.
+     *
+     * @return array{data: array{state: string, due_on: string|null, period_start: string|null, days_left: int|null, first_renewal: bool, hours_required: float, hours_done: float, hours_left: float, complete: bool, parts: list<array{code: string, title: string, kind: 'mandatory'|'broker_responsibility'|'qualifying'|'elective', hours: float, hours_done: float, done: bool}>, deferral: array{fee_usd: float, days: int}|null, sources: list<array{key: string, citation: string, url: string|null, effective_from: string}>}|null}
+     */
+    public function ce(#[CurrentUser] User $user, int $licence, CeRequirements $requirements): array
+    {
+        return ['data' => $requirements->for($this->find($user, $licence))];
     }
 
     /** Set who you supervise (changes your CE). */
