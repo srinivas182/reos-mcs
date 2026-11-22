@@ -119,30 +119,47 @@ export function LessonPlayer({
                     <h2 className="font-semibold">
                         {t('learn.lesson.transcript')}
                     </h2>
+                    {video ? null : (
+                        <p className="text-sm text-muted-foreground">
+                            {t('learn.lesson.noVideo')}
+                        </p>
+                    )}
                     <ol className="max-h-96 space-y-1 overflow-y-auto">
                         {transcript.map((cue, index) => (
                             <li key={`${cue.seconds}-${index}`}>
-                                <button
-                                    type="button"
-                                    title={t('learn.lesson.jump', {
-                                        time: clock(cue.seconds),
-                                    })}
-                                    aria-current={
-                                        index === active ? 'true' : undefined
-                                    }
-                                    onClick={() => jump(cue.seconds)}
-                                    className={cn(
-                                        'flex min-h-12 w-full gap-3 rounded-reos-md px-2 py-2 text-left text-body focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
-                                        index === active
-                                            ? 'bg-accent text-foreground'
-                                            : 'hover:bg-muted',
-                                    )}
-                                >
-                                    <span className="w-14 shrink-0 font-semibold text-primary tabular-nums">
-                                        {clock(cue.seconds)}
-                                    </span>
-                                    <span>{cue.text}</span>
-                                </button>
+                                {video ? (
+                                    <button
+                                        type="button"
+                                        title={t('learn.lesson.jump', {
+                                            time: clock(cue.seconds),
+                                        })}
+                                        aria-current={
+                                            index === active
+                                                ? 'true'
+                                                : undefined
+                                        }
+                                        onClick={() => jump(cue.seconds)}
+                                        className={cn(
+                                            'flex min-h-12 w-full gap-3 rounded-reos-md px-2 py-2 text-left text-body focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
+                                            index === active
+                                                ? 'bg-accent text-foreground'
+                                                : 'hover:bg-muted',
+                                        )}
+                                    >
+                                        <span className="w-14 shrink-0 font-semibold text-primary tabular-nums">
+                                            {clock(cue.seconds)}
+                                        </span>
+                                        <span>{cue.text}</span>
+                                    </button>
+                                ) : (
+                                    // No video to play: the times are just times.
+                                    <p className="flex gap-3 px-2 py-2 text-body">
+                                        <span className="w-14 shrink-0 text-muted-foreground tabular-nums">
+                                            {clock(cue.seconds)}
+                                        </span>
+                                        <span>{cue.text}</span>
+                                    </p>
+                                )}
                             </li>
                         ))}
                     </ol>

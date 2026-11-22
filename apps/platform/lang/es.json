@@ -1346,6 +1346,7 @@
     "learn.lesson.here": "Según su búsqueda",
     "learn.lesson.jump": "Reproducir desde :time",
     "learn.lesson.next": "Lección siguiente",
+    "learn.lesson.noVideo": "Aún no se ha agregado el video. Esto es solo la transcripción.",
     "learn.lesson.open": "Abrir :name",
     "learn.lesson.page": "Página :page",
     "learn.lesson.previous": "Lección anterior",

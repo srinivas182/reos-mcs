@@ -157,7 +157,18 @@ function Player({ lesson, startAt }: { lesson: LearnLesson; startAt: number | nu
       {lesson.transcript.length > 0 ? (
         <>
           <SectionTitle>{t('learn.lesson.transcript')}</SectionTitle>
-          {lesson.transcript.map((cue, i) => (
+          {!lesson.video ? <Text tone="muted">{t('learn.lesson.noVideo')}</Text> : null}
+          {!lesson.video
+            ? lesson.transcript.map((cue, i) => (
+                <View key={`${cue.seconds}-${i}`} style={styles.cue}>
+                  <Text tone="muted" style={styles.time}>
+                    {clock(cue.seconds)}
+                  </Text>
+                  <Text style={styles.flex}>{cue.text}</Text>
+                </View>
+              ))
+            : null}
+          {lesson.video ? lesson.transcript.map((cue, i) => (
             <Pressable
               key={`${cue.seconds}-${i}`}
               accessibilityRole="button"
@@ -170,7 +181,7 @@ function Player({ lesson, startAt }: { lesson: LearnLesson; startAt: number | nu
               </Text>
               <Text style={styles.flex}>{cue.text}</Text>
             </Pressable>
-          ))}
+          )) : null}
         </>
       ) : null}
     </View>

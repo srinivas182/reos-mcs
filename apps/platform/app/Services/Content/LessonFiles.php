@@ -22,8 +22,10 @@ use Closure;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 use RuntimeException;
 use Throwable;
 
@@ -50,6 +52,25 @@ final readonly class LessonFiles
     public static function disk(): FilesystemAdapter
     {
         return Storage::disk(config()->string('reos.content.disk'));
+    }
+
+    /**
+     * A short-lived link learners open a file with. Object storage (S3)
+     * signs its own link, which answers range requests so a video can seek;
+     * the local disk (development and demos) goes through a signed REOS
+     * route that does the same.
+     */
+    public static function playableUrl(LessonMedia $media, int $minutes): string
+    {
+        $disk = self::disk();
+
+        if ($disk->getAdapter() instanceof LocalFilesystemAdapter) {
+            return URL::temporarySignedRoute('lesson-media.show', now()->addMinutes($minutes), ['media' => $media->id]);
+        }
+
+        return $disk->temporaryUrl($media->path, now()->addMinutes($minutes), [
+            'ResponseContentDisposition' => 'inline; filename="'.addcslashes($media->original_name, '"\\').'"',
+        ]);
     }
 
     /** @return array{media: LessonMedia, upload: array{method: string, url: string, headers: array<string, string>}} */

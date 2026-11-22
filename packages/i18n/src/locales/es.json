@@ -3292,7 +3292,8 @@
       "open": "Abrir {{name}}",
       "page": "Página {{page}}",
       "here": "Según su búsqueda",
-      "empty": "Esta lección todavía no tiene texto ni archivos."
+      "empty": "Esta lección todavía no tiene texto ni archivos.",
+      "noVideo": "Aún no se ha agregado el video. Esto es solo la transcripción."
     }
   },
   "billing": {
