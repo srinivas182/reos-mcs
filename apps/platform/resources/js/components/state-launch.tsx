@@ -1,4 +1,4 @@
-import { Form, router } from '@inertiajs/react';
+import { Form, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { nativeSelect } from '@/lib/tenants';
 import { checklist, prepare } from '@/routes/states';
+import { show } from '@/routes/states/rules';
 
 export type ChecklistItem =
     | 'rules'
@@ -93,6 +94,12 @@ export function LaunchChecklist({
                     {t('states.checklist.beforeLive')}
                 </p>
             ) : null}
+            <Link
+                href={show(state.code)}
+                className="inline-flex min-h-12 items-center font-medium text-primary underline-offset-4 hover:underline"
+            >
+                {t('states.checklist.openRules', { state: state.name })}
+            </Link>
         </section>
     );
 }

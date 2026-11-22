@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->middleware('throttle:10,1,api-licences-store')->name('store');
         Route::post('check', 'check')->middleware('throttle:20,1,api-licences-check')->name('check');
+        Route::get('{licence}/ce', 'ce')->whereNumber('licence')->name('ce');
         Route::patch('{licence}', 'update')->whereNumber('licence')->middleware('throttle:30,1,api-licences-update')->name('update');
         Route::delete('{licence}', 'destroy')->whereNumber('licence')->middleware('throttle:30,1,api-licences-destroy')->name('destroy');
         Route::post('{licence}/restore', 'restore')->whereNumber('licence')->middleware('throttle:30,1,api-licences-restore')->name('restore');

@@ -238,7 +238,8 @@
       "noLookup": "Los registros de {{state}} aún no se pueden verificar automáticamente. Un revisor lo verifica antes de que cuente.",
       "sendForReview": "Enviar a revisión",
       "added": "Licencia de {{state}} agregada.",
-      "sentForReview": "Licencia de {{state}} enviada a revisión."
+      "sentForReview": "Licencia de {{state}} enviada a revisión.",
+      "ceHours": "{{done}} de {{required}} h"
     },
     "states": {
       "title": "Cambiar de estado",
@@ -927,7 +928,8 @@
         "plans": "Planes y precios en USD",
         "integrations": "Integraciones permitidas en {{state}}",
         "legal": "Revisión legal de RESPA y de las reglas del estado"
-      }
+      },
+      "openRules": "Reglas de {{state}}"
     },
     "liveMail": {
       "subject": "REOS ya está disponible en {{state}}",
@@ -936,7 +938,8 @@
       "bonus": "Sus créditos de bono por estar en la lista de espera se agregan a su primera membresía."
     },
     "showAll": "Mostrar {{count}} estados más",
-    "showActive": "Mostrar solo los estados disponibles, en preparación y con lista de espera"
+    "showActive": "Mostrar solo los estados disponibles, en preparación y con lista de espera",
+    "rulesFor": "Abrir las reglas de {{state}}"
   },
   "onboarding": {
     "path": {
@@ -1872,7 +1875,10 @@
         "licence.removed": "Quitó una licencia",
         "licence.restored": "Restauró una licencia",
         "licence.approved": "Aprobó una licencia",
-        "licence.rejected": "No aprobó una licencia"
+        "licence.rejected": "No aprobó una licencia",
+        "state_rule.drafted": "Redactó un cambio de regla estatal",
+        "state_rule.discarded": "Descartó un borrador de regla estatal",
+        "state_rule.published": "Publicó cambios de reglas estatales"
       }
     }
   },
@@ -2727,6 +2733,188 @@
       "reject": "No aprobar",
       "approve": "Aprobar",
       "description": "Ninguna licencia cuenta sin una coincidencia con el regulador o su aprobación."
+    },
+    "ceThisCycle": "CE en este período"
+  },
+  "stateRules": {
+    "title": "{{state}} · reglas",
+    "description": "Las usan los cursos, la preparación para el examen, el seguimiento de la educación continua (CE) y la revisión de publicaciones.",
+    "back": "Estados",
+    "history": "Historial de versiones",
+    "historyIntro": "Cada versión publicada de cada regla, con su fuente y la fecha en que entró en vigor.",
+    "publish": "Publicar cambios",
+    "publishCount": "Publicar cambios ({{count}})",
+    "published": "Se publicaron {{count}} cambios de reglas para {{state}}.",
+    "topicsLabel": "Temas de las reglas",
+    "topics": {
+      "licensing": "Licencias",
+      "exam": "Examen",
+      "ce": "CE y renovación",
+      "advertising": "Publicidad",
+      "brokerage": "Agencia inmobiliaria",
+      "forms": "Formularios"
+    },
+    "emptyTitle": "Aún no hay reglas de {{topic}}",
+    "emptyDescription": "Agregue las reglas del regulador con su fuente y la fecha en que entran en vigor. Los cursos, el seguimiento de la CE y la revisión de publicaciones las usan.",
+    "addFirst": "Agregar la primera regla",
+    "notSet": "Sin definir",
+    "draftNote": "Borrador: entra en vigor el {{date}} una vez publicado",
+    "scheduledNote": "Cambia a {{value}} el {{date}}",
+    "editRule": "Editar {{rule}}",
+    "note": "Los valores de las reglas provienen de las reglas de {{regulator}} y se revisan cada trimestre. Cada cambio conserva su fuente y su fecha de entrada en vigor.",
+    "whereUsed": "Dónde se usan estas reglas",
+    "feature": "Función",
+    "uses": "Usa",
+    "status": "Estado",
+    "live": "Activa",
+    "planned": "Planificada",
+    "source": "Fuente",
+    "sourceDates": "vigente desde el {{effective}} · revisada el {{checked}}",
+    "versionLine": "Versión {{version}} · vigente desde el {{date}}",
+    "publishedBy": "publicada por {{name}}",
+    "units": {
+      "hours_one": "{{count}} hora",
+      "hours_other": "{{count}} horas",
+      "months_one": "{{count}} mes",
+      "months_other": "{{count}} meses",
+      "years_one": "{{count}} año",
+      "years_other": "{{count}} años"
+    },
+    "unitNames": {
+      "hours": "horas",
+      "months": "meses",
+      "years": "años"
+    },
+    "values": {
+      "roleCourse": "{{hours}} horas para: {{roles}}",
+      "firstRenewal": "{{hours}} horas de cursos de calificación (SAE), más {{count}} cursos obligatorios",
+      "feeDays": "Cargo de ${{fee}} por {{days}} días más"
+    },
+    "edit": {
+      "button": "Editar",
+      "intro": "Los cambios se guardan como borrador. Publique los cambios para convertirlos en una nueva versión a partir de la fecha que elija.",
+      "value": "Valor ({{unit}})",
+      "courses": "Cursos",
+      "courseTitle": "Título del curso {{n}}",
+      "courseHours": "Horas del curso {{n}}",
+      "removeCourse": "Quitar {{title}}",
+      "addCourse": "Agregar un curso",
+      "title": "Título del curso",
+      "roles": "Quién debe tomarlo",
+      "qualifyingHours": "Horas de calificación (SAE)",
+      "plusCourses": "Más estos cursos",
+      "fee": "Cargo (USD)",
+      "days": "Días adicionales",
+      "text": "Regla",
+      "citation": "Fuente (regla y párrafo)",
+      "sourceUrl": "Enlace a la fuente",
+      "effective": "Entra en vigor el",
+      "effectiveHint": "Hasta entonces, la versión actual sigue vigente.",
+      "note": "Nota (por qué cambió)",
+      "discard": "Descartar borrador",
+      "save": "Guardar borrador"
+    },
+    "errors": {
+      "unknown": "Esa no es una regla que REOS conozca.",
+      "notDraft": "Solo se pueden descartar los borradores."
+    },
+    "features": {
+      "candidate_plan": "Plan de estudio del candidato",
+      "course_catalogue": "Catálogo de cursos",
+      "licence_journey": "Camino a la licencia",
+      "test_prep": "Preparación para el examen",
+      "ce_card": "Tarjeta de CE del agente",
+      "broker_compliance": "Cumplimiento de CE del bróker",
+      "reminders": "Recordatorios",
+      "post_checks": "Revisión de publicaciones",
+      "brokerage_matching": "Búsqueda de agencias inmobiliarias"
+    },
+    "keys": {
+      "licensing": {
+        "qualifying_hours": "Educación de calificación",
+        "qualifying_courses": "Cursos de calificación",
+        "minimum_age": "Edad mínima"
+      },
+      "exam": {
+        "vendor": "Proveedor del examen"
+      },
+      "ce": {
+        "period_months": "Período de renovación",
+        "hours": "Horas por renovación",
+        "mandatory_courses": "Cursos obligatorios",
+        "broker_responsibility": "Curso de responsabilidad del bróker",
+        "first_renewal": "Primera renovación (SAE)",
+        "no_repeat": "Cursos repetidos",
+        "commission_meeting": "Crédito por reunión de la comisión (máximo)",
+        "deferral": "Aplazamiento de la CE"
+      },
+      "advertising": {
+        "license_holder_name": "Nombre del titular de la licencia",
+        "broker_name_size": "Tamaño del nombre del bróker",
+        "social_media": "Redes sociales y mensajes de texto",
+        "misleading_titles": "Títulos y nombres de equipo engañosos"
+      },
+      "brokerage": {
+        "sponsorship": "Patrocinio"
+      }
+    },
+    "short": {
+      "licensing": {
+        "qualifying_hours": "Horas de calificación",
+        "qualifying_courses": "cursos de calificación",
+        "minimum_age": "edad mínima"
+      },
+      "exam": {
+        "vendor": "proveedor del examen"
+      },
+      "ce": {
+        "period_months": "período de renovación",
+        "hours": "horas",
+        "mandatory_courses": "cursos obligatorios",
+        "broker_responsibility": "responsabilidad del bróker",
+        "first_renewal": "primera renovación",
+        "no_repeat": "cursos repetidos",
+        "commission_meeting": "crédito por reunión",
+        "deferral": "aplazamiento"
+      },
+      "advertising": {
+        "license_holder_name": "nombre del titular",
+        "broker_name_size": "tamaño del nombre del bróker",
+        "social_media": "redes sociales",
+        "misleading_titles": "títulos y nombres de equipo"
+      },
+      "brokerage": {
+        "sponsorship": "patrocinio"
+      }
+    },
+    "ce": {
+      "sae": "Cursos de calificación (SAE)",
+      "electives": "Optativos"
+    },
+    "changedMail": {
+      "subject": "Las reglas de CE de {{state}} están cambiando",
+      "body": "Las reglas de educación continua de {{state}} cambian a partir del {{date}}:",
+      "action": "Ver lo que aún necesita",
+      "next": "Su tarjeta de CE en REOS ya cuenta con las nuevas reglas a partir de esa fecha."
     }
+  },
+  "ce": {
+    "tile": {
+      "label": "Horas de educación continua",
+      "title": "Horas de CE",
+      "hours": "{{done}}/{{required}}",
+      "renews": "se renueva el {{date}}",
+      "coursesLeft_one": "falta {{count}} curso obligatorio",
+      "coursesLeft_other": "faltan {{count}} cursos obligatorios"
+    },
+    "done": "Toda la CE está completa para esta renovación.",
+    "left": "Faltan {{hours}} horas, vence el {{date}}",
+    "progress": "Horas de CE completadas",
+    "firstRenewal": "Primera renovación: sus cursos de calificación (SAE) y Legal Update I y II reemplazan la CE habitual.",
+    "partDone": "completado",
+    "partHours": "{{done}} de {{hours}} h",
+    "deferral": "¿Le falta tiempo? Puede pagar un cargo de aplazamiento de ${{fee}} y obtener {{days}} días más después de su fecha de renovación.",
+    "sources": "Según {{sources}}.",
+    "whatYouNeed": "Lo que aún necesita"
   }
 }

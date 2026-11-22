@@ -238,7 +238,8 @@
       "noLookup": "{{state}}'s records can't be checked automatically yet. A reviewer checks it before it counts.",
       "sendForReview": "Send for review",
       "added": "{{state}} license added.",
-      "sentForReview": "{{state}} license sent for review."
+      "sentForReview": "{{state}} license sent for review.",
+      "ceHours": "{{done}} of {{required}} h"
     },
     "states": {
       "title": "Switch state",
@@ -927,7 +928,8 @@
         "plans": "Plans and prices in USD",
         "integrations": "Integrations allowed in {{state}}",
         "legal": "Legal review of RESPA and state rules"
-      }
+      },
+      "openRules": "{{state}} rules"
     },
     "liveMail": {
       "subject": "REOS is now live in {{state}}",
@@ -936,7 +938,8 @@
       "bonus": "Your waitlist bonus credits are added to your first membership."
     },
     "showAll": "Show {{count}} more states",
-    "showActive": "Show only live, preparing and waited-for states"
+    "showActive": "Show only live, preparing and waited-for states",
+    "rulesFor": "Open the rules for {{state}}"
   },
   "onboarding": {
     "path": {
@@ -1872,7 +1875,10 @@
         "licence.removed": "Removed a license",
         "licence.restored": "Restored a license",
         "licence.approved": "Approved a license",
-        "licence.rejected": "Didn't approve a license"
+        "licence.rejected": "Didn't approve a license",
+        "state_rule.drafted": "Drafted a state rule change",
+        "state_rule.discarded": "Discarded a state rule draft",
+        "state_rule.published": "Published state rule changes"
       }
     }
   },
@@ -2727,6 +2733,188 @@
       "reject": "Don't approve",
       "approve": "Approve",
       "description": "No license counts without a regulator match or your approval."
+    },
+    "ceThisCycle": "CE this cycle"
+  },
+  "stateRules": {
+    "title": "{{state}} · rules",
+    "description": "Used by courses, test prep, CE tracking and post checks.",
+    "back": "States",
+    "history": "Version history",
+    "historyIntro": "Every published version of each rule, with its source and the date it took effect.",
+    "publish": "Publish changes",
+    "publishCount": "Publish changes ({{count}})",
+    "published": "{{count}} rule changes published for {{state}}.",
+    "topicsLabel": "Rule topics",
+    "topics": {
+      "licensing": "Licensing",
+      "exam": "Exam",
+      "ce": "CE and renewal",
+      "advertising": "Advertising",
+      "brokerage": "Brokerage",
+      "forms": "Forms"
+    },
+    "emptyTitle": "No {{topic}} rules yet",
+    "emptyDescription": "Add the regulator's rules with their source and the date they take effect. Courses, CE tracking and post checks read them.",
+    "addFirst": "Add the first rule",
+    "notSet": "Not set",
+    "draftNote": "Draft: takes effect {{date}} once published",
+    "scheduledNote": "Changes to {{value}} on {{date}}",
+    "editRule": "Edit {{rule}}",
+    "note": "Rule values come from {{regulator}} rules and are reviewed every quarter. Each change keeps its source and effective date.",
+    "whereUsed": "Where these rules are used",
+    "feature": "Feature",
+    "uses": "Uses",
+    "status": "Status",
+    "live": "Live",
+    "planned": "Planned",
+    "source": "Source",
+    "sourceDates": "effective {{effective}} · checked {{checked}}",
+    "versionLine": "Version {{version}} · effective {{date}}",
+    "publishedBy": "published by {{name}}",
+    "units": {
+      "hours_one": "{{count}} hour",
+      "hours_other": "{{count}} hours",
+      "months_one": "{{count}} month",
+      "months_other": "{{count}} months",
+      "years_one": "{{count}} year",
+      "years_other": "{{count}} years"
+    },
+    "unitNames": {
+      "hours": "hours",
+      "months": "months",
+      "years": "years"
+    },
+    "values": {
+      "roleCourse": "{{hours}} hours for: {{roles}}",
+      "firstRenewal": "{{hours}} qualifying (SAE) hours, plus {{count}} required courses",
+      "feeDays": "${{fee}} fee for {{days}} more days"
+    },
+    "edit": {
+      "button": "Edit",
+      "intro": "Changes are saved as a draft. Publish changes to make them a new version from the date you choose.",
+      "value": "Value ({{unit}})",
+      "courses": "Courses",
+      "courseTitle": "Course {{n}} title",
+      "courseHours": "Course {{n}} hours",
+      "removeCourse": "Remove {{title}}",
+      "addCourse": "Add a course",
+      "title": "Course title",
+      "roles": "Who must take it",
+      "qualifyingHours": "Qualifying (SAE) hours",
+      "plusCourses": "Plus these courses",
+      "fee": "Fee (USD)",
+      "days": "Extra days",
+      "text": "Rule",
+      "citation": "Source (rule and paragraph)",
+      "sourceUrl": "Link to the source",
+      "effective": "Takes effect on",
+      "effectiveHint": "Until then, the current version stays in force.",
+      "note": "Note (why it changed)",
+      "discard": "Discard draft",
+      "save": "Save draft"
+    },
+    "errors": {
+      "unknown": "That isn't a rule REOS knows.",
+      "notDraft": "Only drafts can be discarded."
+    },
+    "features": {
+      "candidate_plan": "Candidate study plan",
+      "course_catalogue": "Course catalog",
+      "licence_journey": "License journey",
+      "test_prep": "Test prep",
+      "ce_card": "Agent CE card",
+      "broker_compliance": "Broker CE compliance",
+      "reminders": "Reminders",
+      "post_checks": "Post checks",
+      "brokerage_matching": "Brokerage matching"
+    },
+    "keys": {
+      "licensing": {
+        "qualifying_hours": "Qualifying education",
+        "qualifying_courses": "Qualifying courses",
+        "minimum_age": "Minimum age"
+      },
+      "exam": {
+        "vendor": "Exam vendor"
+      },
+      "ce": {
+        "period_months": "Renewal period",
+        "hours": "Hours per renewal",
+        "mandatory_courses": "Required courses",
+        "broker_responsibility": "Broker responsibility course",
+        "first_renewal": "First renewal (SAE)",
+        "no_repeat": "Repeated courses",
+        "commission_meeting": "Commission meeting credit (most)",
+        "deferral": "CE deferral"
+      },
+      "advertising": {
+        "license_holder_name": "License holder's name",
+        "broker_name_size": "Broker's name size",
+        "social_media": "Social media and texts",
+        "misleading_titles": "Misleading titles and team names"
+      },
+      "brokerage": {
+        "sponsorship": "Sponsorship"
+      }
+    },
+    "short": {
+      "licensing": {
+        "qualifying_hours": "Qualifying hours",
+        "qualifying_courses": "qualifying courses",
+        "minimum_age": "minimum age"
+      },
+      "exam": {
+        "vendor": "exam vendor"
+      },
+      "ce": {
+        "period_months": "renewal period",
+        "hours": "hours",
+        "mandatory_courses": "required courses",
+        "broker_responsibility": "broker responsibility",
+        "first_renewal": "first renewal",
+        "no_repeat": "repeated courses",
+        "commission_meeting": "commission meeting credit",
+        "deferral": "deferral"
+      },
+      "advertising": {
+        "license_holder_name": "license holder's name",
+        "broker_name_size": "broker's name size",
+        "social_media": "social media",
+        "misleading_titles": "titles and team names"
+      },
+      "brokerage": {
+        "sponsorship": "sponsorship"
+      }
+    },
+    "ce": {
+      "sae": "Qualifying (SAE) courses",
+      "electives": "Electives"
+    },
+    "changedMail": {
+      "subject": "{{state}} CE rules are changing",
+      "body": "{{state}}'s continuing education rules change from {{date}}:",
+      "action": "See what you still need",
+      "next": "Your CE card in REOS already counts with the new rules from that date."
     }
+  },
+  "ce": {
+    "tile": {
+      "label": "Continuing education hours",
+      "title": "CE hours",
+      "hours": "{{done}}/{{required}}",
+      "renews": "renews {{date}}",
+      "coursesLeft_one": "{{count}} required course to go",
+      "coursesLeft_other": "{{count}} required courses to go"
+    },
+    "done": "All CE done for this renewal.",
+    "left": "{{hours}} hours left, due {{date}}",
+    "progress": "CE hours done",
+    "firstRenewal": "First renewal: your qualifying (SAE) courses and Legal Update I and II replace regular CE.",
+    "partDone": "done",
+    "partHours": "{{done}} of {{hours}} h",
+    "deferral": "Short on time? You can pay a ${{fee}} deferral fee and get {{days}} more days after your renewal date.",
+    "sources": "From {{sources}}.",
+    "whatYouNeed": "What you still need"
   }
 }

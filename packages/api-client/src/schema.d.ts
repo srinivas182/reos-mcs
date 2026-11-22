@@ -480,6 +480,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/licences/{licence}/ce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * What CE this licence still needs
+         * @description The requirement for the current period comes from the state's rules
+         *     in force today (each part names its source), less completed CE. Null
+         *     when the state has no CE rules yet.
+         */
+        get: operations["me.licences.ce"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/licences/{licence}": {
         parameters: {
             query?: never;
@@ -1186,6 +1208,41 @@ export interface components {
             review_note: string | null;
             /** @description The state isn't live yet: tracked for renewal only. */
             tracked_only: boolean;
+            /**
+             * @description CE this period ("9 of 18 h") and what's still needed, from the
+             *     state's rules in force today (A5.2); null while waiting for
+             *     review, or when the state has no CE rules.
+             */
+            ce: {
+                state: string;
+                due_on: string | null;
+                period_start: string | null;
+                days_left: number | null;
+                first_renewal: boolean;
+                hours_required: number;
+                hours_done: number;
+                hours_left: number;
+                complete: boolean;
+                parts: {
+                    code: string;
+                    title: string;
+                    /** @enum {string} */
+                    kind: "mandatory" | "broker_responsibility" | "qualifying" | "elective";
+                    hours: number;
+                    hours_done: number;
+                    done: boolean;
+                }[];
+                deferral: {
+                    fee_usd: number;
+                    days: number;
+                } | null;
+                sources: {
+                    key: string;
+                    citation: string;
+                    url: string | null;
+                    effective_from: string;
+                }[];
+            } | null;
         };
         /**
          * LicenceRoleRequest
@@ -2746,6 +2803,59 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "me.licences.ce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                licence: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            state: string;
+                            due_on: string | null;
+                            period_start: string | null;
+                            days_left: number | null;
+                            first_renewal: boolean;
+                            hours_required: number;
+                            hours_done: number;
+                            hours_left: number;
+                            complete: boolean;
+                            parts: {
+                                code: string;
+                                title: string;
+                                /** @enum {string} */
+                                kind: "mandatory" | "broker_responsibility" | "qualifying" | "elective";
+                                hours: number;
+                                hours_done: number;
+                                done: boolean;
+                            }[];
+                            deferral: {
+                                fee_usd: number;
+                                days: number;
+                            } | null;
+                            sources: {
+                                key: string;
+                                citation: string;
+                                url: string | null;
+                                effective_from: string;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "me.licences.destroy": {

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\WaitlistEntry;
 use App\Notifications\StateWentLive;
 use App\Services\Audit\AuditLogger;
+use App\Services\StateRules\StateRules;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -148,6 +149,11 @@ final readonly class States
         foreach (self::CHECKLIST as $item) {
             $tick = $saved[$item] ?? null;
             $items[$item] = is_array($tick) && is_int($tick['by'] ?? null) && is_string($tick['at'] ?? null) ? ['by' => $tick['by'], 'at' => $tick['at']] : null;
+        }
+
+        // Rules ticks itself once licensing, exam and CE rules are published (A5.2).
+        if ($items['rules'] === null && app(StateRules::class)->loaded($state->code)) {
+            $items['rules'] = ['by' => 0, 'at' => $state->updated_at?->toIso8601String() ?? ''];
         }
 
         return $items;

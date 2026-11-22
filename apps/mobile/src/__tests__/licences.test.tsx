@@ -52,6 +52,25 @@ const texas: Licence = {
   verified_at: '2026-11-21T16:00:00+00:00',
   review_note: null,
   tracked_only: false,
+  ce: {
+    state: 'TX',
+    due_on: '2027-03-31',
+    period_start: '2025-03-31',
+    days_left: 129,
+    first_renewal: false,
+    hours_required: 18,
+    hours_done: 9,
+    hours_left: 9,
+    complete: false,
+    parts: [
+      { code: 'legal_update_1', title: 'Legal Update I: Laws, Rules and Forms', kind: 'mandatory', hours: 4, hours_done: 4, done: true },
+      { code: 'legal_update_2', title: 'Legal Update II: Agency, Ethics and Hot Topics', kind: 'mandatory', hours: 4, hours_done: 0, done: false },
+      { code: 'contracts', title: 'Real estate contracts', kind: 'mandatory', hours: 3, hours_done: 3, done: true },
+      { code: 'electives', title: 'Electives', kind: 'elective', hours: 7, hours_done: 2, done: false },
+    ],
+    deferral: { fee_usd: 200, days: 60 },
+    sources: [{ key: 'ce.hours', citation: '22 TAC §535.92(a)', url: null, effective_from: '2023-08-29' }],
+  },
 };
 const louisiana: Licence = {
   ...texas,
@@ -65,6 +84,7 @@ const louisiana: Licence = {
   verified_at: null,
   review_note: "This state's records can't be checked automatically yet.",
   tracked_only: true,
+  ce: null,
 };
 
 const wrap = (ui: React.ReactElement) =>
@@ -95,6 +115,7 @@ describe('My licences (agent journey screen 148)', () => {
     expect(await screen.findByRole('button', { name: /Texas · Sales agent\. #0798765 · active · verified Nov 21/ })).toBeOnTheScreen();
     expect(screen.getByLabelText('Sponsoring broker: Lone Star Realty')).toBeOnTheScreen();
     expect(screen.getByLabelText('Renewal: Mar 31, 2027')).toBeOnTheScreen();
+    expect(screen.getByLabelText('CE this cycle: 9 of 18 h')).toBeOnTheScreen();
     expect(screen.getByText('Coming soon')).toBeOnTheScreen();
     expect(screen.getByText(/REOS isn't live in Louisiana yet/)).toBeOnTheScreen();
     expect(screen.getByText("Licenses are checked with each state's regulator.")).toBeOnTheScreen();
@@ -110,6 +131,12 @@ describe('My licences (agent journey screen 148)', () => {
     await wrap(<MyLicences />);
 
     await fireEvent.press(await screen.findByRole('button', { name: /Texas · Sales agent/ }));
+    // What you still need, from the Texas rules (A5.2).
+    expect(screen.getByText('9 hours left, due Mar 31, 2027')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Legal Update II: Agency, Ethics and Hot Topics: 0 of 4 h')).toBeOnTheScreen();
+    expect(screen.getByLabelText('Legal Update I: Laws, Rules and Forms: 4 of 4 h, done')).toBeOnTheScreen();
+    expect(screen.getByText(/\$200 deferral fee and get 60 more days/)).toBeOnTheScreen();
+    expect(screen.getByText('From 22 TAC §535.92(a).')).toBeOnTheScreen();
     // A sales agent licence can't sponsor agents.
     expect(screen.queryByRole('radio', { name: 'I sponsor sales agents' })).toBeNull();
     await fireEvent.press(screen.getByRole('radio', { name: 'Delegated supervisor' }));

@@ -1,4 +1,4 @@
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { ArrowRight, Plus, SearchX } from 'lucide-react';
 import { useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { undoToast } from '@/lib/undo-toast';
 import { cn } from '@/lib/utils';
 import { update } from '@/routes/states';
+import { show as showRules } from '@/routes/states/rules';
 
 type StateStatus = 'live' | 'in_preparation' | 'waitlist' | 'not_planned';
 
@@ -208,7 +209,16 @@ export default function StatesIndex({
                                             className="px-4 py-2 font-medium"
                                         >
                                             {state.status === 'live' ? (
-                                                state.name
+                                                <Link
+                                                    href={showRules(state.code)}
+                                                    className="inline-flex min-h-12 items-center font-medium text-primary underline-offset-4 hover:underline"
+                                                    aria-label={t(
+                                                        'states.rulesFor',
+                                                        { state: state.name },
+                                                    )}
+                                                >
+                                                    {state.name}
+                                                </Link>
                                             ) : (
                                                 <button
                                                     type="button"

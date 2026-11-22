@@ -83,12 +83,17 @@ describe('Licences (web screen 23, A5.1)', () => {
             />,
         );
 
-        const [texas, louisiana] = screen.getAllByRole('listitem');
+        const texas = screen.getByText('Texas · Sales agent').closest('li')!;
+        const louisiana = screen
+            .getByText('Louisiana · Sales agent')
+            .closest('li')!;
         expect(texas).toHaveTextContent('Texas · Sales agent');
         expect(texas).toHaveTextContent('Active');
         expect(texas).toHaveTextContent('Lone Star Realty');
         expect(texas).toHaveTextContent('Mar 31, 2027');
         expect(texas).toHaveTextContent('checked with the regulator');
+        expect(texas).toHaveTextContent('CE this cycle9/18');
+        expect(texas).toHaveTextContent('What you still need');
         expect(louisiana).toHaveTextContent('Coming soon');
         expect(louisiana).toHaveTextContent("REOS isn't live in Louisiana yet");
         expect(louisiana).toHaveTextContent('A reviewer is checking');
