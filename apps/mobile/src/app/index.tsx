@@ -14,7 +14,8 @@ import { toolInitials, useConnections } from '@/lib/connections';
 import { activeMembership } from '@/lib/roles';
 import { timeAgo } from '@/lib/time';
 import { useOpenTodos } from '@/lib/todos';
-import { AskBar, Avatar, Button, Card, ListRow, Screen, SyncAlert, Text } from '@/ui';
+import { useWhatsNew } from '@/lib/whatsNew';
+import { AskBar, Avatar, Button, Callout, Card, ListRow, Screen, SyncAlert, Text } from '@/ui';
 
 type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
 
@@ -22,7 +23,8 @@ type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'err
  * Placeholder home until Today is built (A3.3 onward): the REOS brand, your
  * initials (→ Me), a red card for any connection that stopped syncing
  * (Connections and Sync journey, screen 26), today's calendar and to-dos for
- * agents (B4.1, B4.3b) with the Ask bar's mic for voice to-dos, a live check
+ * agents (B4.1, B4.3b) with the Ask bar's mic for voice to-dos, "What's new"
+ * for your role (A6.2), a live check
  * of the platform API and, in development, the component gallery.
  *
  * `/?capture=voice` (the "Add a to-do" shortcut and `reos://voice`) opens
@@ -43,6 +45,7 @@ export default function HomeScreen() {
   const [chosen, setCapturing] = useState<CaptureMode | null>(null);
   const capturing = chosen ?? (agent && (capture === 'voice' || capture === 'type') ? capture : null);
   const todos = useOpenTodos();
+  const whatsNew = useWhatsNew();
   const closeCapture = () => {
     setCapturing(null);
     if (capture !== undefined) router.setParams({ capture: undefined });
@@ -97,6 +100,15 @@ export default function HomeScreen() {
           onPress={() => router.push({ pathname: '/reconnect/[id]', params: { id: String(connection.id) } })}
         />
       ))}
+      {/* What's new for your role (A6.2), once, until dismissed. */}
+      {whatsNew.item ? (
+        <Callout
+          tone="info"
+          title={t('whatsNew.title', { version: whatsNew.item.version })}
+          body={whatsNew.item.note}
+          action={<Button variant="ghost" label={t('whatsNew.dismiss')} accessibilityLabel={t('whatsNew.dismissLabel', { version: whatsNew.item.version })} onPress={whatsNew.dismiss} />}
+        />
+      ) : null}
       {/* Today's calendar for agents (B4.1); the rest of Today arrives with the agent sprints. */}
       {/* Learn (candidate screen 8, A5.3b): courses and search inside lessons; the Learn tab arrives with the tab bar. */}
       {learner ? <ListRow icon={BookOpen} tone="info" title={t('learn.title')} subtitle={t('learn.searchLabel')} onPress={() => router.push('/learn')} /> : null}

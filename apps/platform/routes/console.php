@@ -42,3 +42,5 @@ Schedule::command('reos:payouts:run')->weeklyOn(1, '09:17')->timezone('America/C
 Schedule::command('reos:ledger:reconcile')->dailyAt('05:20')->withoutOverlapping()->onOneServer();
 // Platform health and request metrics (A6.1): screen 58 and the status page.
 Schedule::command('reos:health:check')->everyMinute()->withoutOverlapping()->onOneServer();
+// Feature flags (A6.2): error rates per flag and the automatic rollback.
+Schedule::command('reos:flags:watch')->everyMinute()->withoutOverlapping()->onOneServer();

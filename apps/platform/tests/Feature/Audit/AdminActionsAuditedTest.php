@@ -9,6 +9,8 @@ use App\Billing\ProductStatus;
 use App\Billing\SponsorCodes;
 use App\Content\MediaKind;
 use App\Enums\OrganisationType;
+use App\Features\Flags;
+use App\Features\Rollouts;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Models\AuditEvent;
 use App\Models\Course;
@@ -286,6 +288,16 @@ function adminActions(): array
 
             return auditCase($ops, 'PUT', '/admin/ai', $settings, confirmed: true);
         },
+        // Features and releases (A6.2, screen 70).
+        'features.rollout' => fn () => auditCase(auditOps(), 'PUT', '/admin/features/messages/rollout', ['stage' => 'everyone', 'tenant_ids' => [], 'states' => [], 'percent' => 0, 'roles' => [], 'error_threshold' => 5]),
+        'features.kill' => fn () => auditCase(auditOps(), 'POST', '/admin/features/messages/kill'),
+        'features.restore' => function () {
+            $ops = auditOps();
+            app(Rollouts::class)->kill(app(Flags::class)->flag('messages'), $ops);
+
+            return auditCase($ops, 'DELETE', '/admin/features/messages/kill');
+        },
+        'releases.store' => fn () => auditCase(auditOps(), 'POST', '/admin/releases', ['version' => '6.2.0', 'released_on' => now()->toDateString(), 'notes' => ['agent' => 'Messages are here.'], 'flags' => []]),
         'gateways.refund-policy' => fn () => auditCase(auditOps(), 'PUT', '/admin/gateways/refund-policy', ['mode' => 'full_only', 'window_days' => 7, 'max_progress_percent' => 25], confirmed: true),
         // Refunds from REOS (B5.3, screen 66).
         'gateways.refund' => function () {
@@ -559,4 +571,5 @@ const CHANGES = [
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
     'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund', 'gateways.refund-policy', 'provider-categories.update', 'ai.update',
+    'features.rollout', 'features.kill', 'features.restore', 'releases.store',
 ];

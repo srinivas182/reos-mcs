@@ -1,6 +1,7 @@
 <?php
 
 use App\Authorization\RoleRefused;
+use App\Features\FlagUsage;
 use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -74,6 +75,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         // Reports to Sentry only when it is switched on in Settings › Integrations.
         Integration::handles($exceptions);
+
+        // Errors count against the flags that were on (A6.2's automatic rollback).
+        $exceptions->report(static function (Throwable $e): void {
+            app(FlagUsage::class)->failed();
+        });
 
         // Sign-in problems answer in the person's language, never with internals.
         $exceptions->dontReport(SignInFailed::class);

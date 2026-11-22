@@ -17,6 +17,7 @@ use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
 use Database\Seeders\Demo\DemoPayouts;
+use Database\Seeders\Demo\DemoReleases;
 use Database\Seeders\Demo\DemoStates;
 use Database\Seeders\Demo\DemoTenantPlans;
 use Database\Seeders\Demo\DemoTenants;
@@ -83,6 +84,8 @@ final class DemoSeeder extends Seeder
         app(DemoGateways::class)->seed();
         app(DemoPayouts::class)->seed();
         app(DemoTenantPlans::class)->seed();
+        // Flags and a release, as on screen 70 (A6.2).
+        app(DemoReleases::class)->seed();
     }
 
     private function organisation(string $name): Organisation

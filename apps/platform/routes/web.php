@@ -33,6 +33,7 @@ use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorControlle
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
+use App\Http\Controllers\WhatsNewController;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Http\Middleware\EnsureOnboarded;
 use App\Services\Tenancy\TenantSignups;
@@ -166,6 +167,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::get('own-account', [SalesController::class, 'ownAccount'])->middleware('throttle:10,1,sales-own-back')->name('own-account');
 });
 // Earnings (B5.2b): instructors and mentors.
+// "What's new" (A6.2): dismissed once, gone on the web and the phone.
+Route::post('whats-new/{release}/dismiss', [WhatsNewController::class, 'dismiss'])->whereNumber('release')->middleware(['auth', 'throttle:30,1,whats-new'])->name('whats-new.dismiss');
+
 Route::middleware(['auth', 'verified'])->prefix('earnings')->name('earnings.')->group(function () {
     Route::get('/', [EarningsController::class, 'index'])->name('index');
     Route::post('connect', [EarningsController::class, 'connect'])->middleware('throttle:10,1,earnings-connect')->name('connect');

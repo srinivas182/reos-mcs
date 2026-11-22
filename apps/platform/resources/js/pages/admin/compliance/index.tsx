@@ -78,7 +78,10 @@ type AuditGroup =
     | 'brand'
     | 'integrations'
     | 'states'
-    | 'privacy';
+    | 'content'
+    | 'billing'
+    | 'privacy'
+    | 'releases';
 
 const RULES = [
     'respa',

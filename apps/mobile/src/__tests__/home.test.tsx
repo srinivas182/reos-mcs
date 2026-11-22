@@ -29,6 +29,11 @@ jest.mock('@/lib/connections', () => ({
   useConnections: () => ({ connections: [], reload: jest.fn() }),
 }));
 
+const mockWhatsNew: { current: { item: { id: number; version: string; released_on: string; note: string } | null; dismiss: jest.Mock } } = {
+  current: { item: null, dismiss: jest.fn() },
+};
+jest.mock('@/lib/whatsNew', () => ({ useWhatsNew: () => mockWhatsNew.current }));
+
 jest.mock('@/lib/api', () => ({
   fetchHealth: jest.fn().mockResolvedValue({ status: 'ok', app: 'REOS', version: '0.1.0-dev', time: 'now' }),
 }));
@@ -102,5 +107,16 @@ describe('HomeScreen', () => {
     await i18n.changeLanguage('es');
     await renderHome();
     await waitFor(() => expect(screen.getByText('Conectado a REOS · versión 0.1.0-dev')).toBeOnTheScreen());
+  });
+
+  it("shows What's new for the role once, and dismisses it", async () => {
+    const dismiss = jest.fn();
+    mockWhatsNew.current = { item: { id: 3, version: '6.2.0', released_on: '2026-11-22', note: 'Messages are here: talk to your broker and team in REOS.' }, dismiss };
+    await renderHome();
+    expect(screen.getByText("What's new in 6.2.0")).toBeOnTheScreen();
+    expect(screen.getByText('Messages are here: talk to your broker and team in REOS.')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: "Dismiss what's new in 6.2.0" }));
+    expect(dismiss).toHaveBeenCalled();
+    mockWhatsNew.current = { item: null, dismiss: jest.fn() };
   });
 });

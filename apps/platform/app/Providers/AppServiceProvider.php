@@ -9,6 +9,8 @@ use App\Content\Scanning\FileScanner;
 use App\Content\Scanning\Unavailable;
 use App\Content\Scanning\UnscannedOutsideProduction;
 use App\Events\IntegrationSettingsChanged;
+use App\Features\Flags;
+use App\Features\FlagUsage;
 use App\Integrations\Catalogue;
 use App\Integrations\Credentials\CredentialCipher;
 use App\Integrations\Credentials\CredentialVault;
@@ -63,6 +65,9 @@ class AppServiceProvider extends ServiceProvider
 
         // The role in use is worked out once per request.
         $this->app->scoped(ActiveRole::class);
+        // Feature flags (A6.2): rollouts remembered for the request; usage counted per request.
+        $this->app->scoped(Flags::class);
+        $this->app->scoped(FlagUsage::class);
         // Loads its key pair once per process (outside production only).
         $this->app->singleton(TestIdentityProvider::class);
 
@@ -88,6 +93,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureIntegrations();
         $this->configureIdentity();
         $this->configureRoles();
+        Flags::define();
     }
 
     /**

@@ -49,7 +49,8 @@
     "earnings": "Earnings",
     "salesAndPayouts": "Sales and payouts",
     "providerCategories": "Provider categories",
-    "aiAndCredits": "AI and credits"
+    "aiAndCredits": "AI and credits",
+    "featuresAndReleases": "Features and releases"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1978,7 +1979,12 @@
         "provider_category.created": "Added a provider category",
         "provider_category.updated": "Changed a provider category",
         "ai.settings_changed": "Changed AI settings",
-        "tenant.signed_up": "Signed up and paid on the web"
+        "tenant.signed_up": "Signed up and paid on the web",
+        "flag.rollout_changed": "Changed a feature rollout",
+        "flag.killed": "Turned a feature off everywhere",
+        "flag.restored": "Turned a feature back on",
+        "flag.rolled_back": "A feature rolled back on its own",
+        "release.published": "Published a release"
       }
     }
   },
@@ -2573,7 +2579,8 @@
         "states": "States",
         "privacy": "Privacy",
         "content": "Courses and lessons",
-        "billing": "Plans and payments"
+        "billing": "Plans and payments",
+        "releases": "Features and releases"
       },
       "columns": {
         "time": "Time",
@@ -4078,5 +4085,113 @@
     "errors": {
       "plan": "That plan isn't available for this organization and state."
     }
+  },
+  "features": {
+    "title": "Features and releases",
+    "purpose": "Roll out safely: REOS staff first, then a few tenants, a state, a share of tenants and everyone.",
+    "flagsTitle": "Feature flags",
+    "columns": {
+      "feature": "Feature",
+      "rollout": "Rollout step",
+      "who": "Who sees it",
+      "errors": "Errors since rollout",
+      "actions": "Actions"
+    },
+    "stages": {
+      "off": "Off",
+      "internal": "REOS staff",
+      "tenants": "Named tenants",
+      "states": "States",
+      "percent": "Share of tenants",
+      "everyone": "Everyone"
+    },
+    "stageHints": {
+      "off": "No one has it.",
+      "internal": "Only REOS staff.",
+      "tenants": "REOS staff and the tenants you name.",
+      "states": "Also every tenant working in these states.",
+      "percent": "Also this share of all tenants (the same ones as it grows).",
+      "everyone": "Every tenant and person."
+    },
+    "detail": {
+      "tenants_one": "{{count}} tenant",
+      "tenants_other": "{{count}} tenants",
+      "percent": "{{percent}}% of tenants"
+    },
+    "everyRole": "Every role",
+    "onlyRoles": "Only {{roles}}",
+    "uses": "{{errors}} errors in {{uses}} uses",
+    "rate": "{{rate}} per 100 uses",
+    "noUses": "No uses yet",
+    "tenantFeature": "Tenant feature: tenants can also switch it on Tenant detail",
+    "offEverywhere": "Off everywhere",
+    "rolledBack": "Stepped back on its own {{ago}} from {{from}}: errors stayed at {{threshold}} or more per 100 uses for {{minutes}} minutes.",
+    "changeRollout": "Change rollout",
+    "changeRolloutFor": "Change rollout for {{name}}",
+    "kill": "Turn off everywhere",
+    "killFor": "Turn {{name}} off everywhere",
+    "restore": "Turn back on",
+    "restoreFor": "Turn {{name}} back on",
+    "killed": "{{name}} is off everywhere.",
+    "restored": "{{name}} is back on.",
+    "rolloutSaved": "Rollout saved.",
+    "owner": "Owner: {{owner}}",
+    "dialog": {
+      "title": "Change rollout: {{name}}",
+      "description": "Each step includes the ones before it. Changes apply at once and are recorded in the audit log.",
+      "stage": "Rollout step",
+      "tenants": "Named tenants",
+      "tenantsHint": "Pick the tenants who try it first.",
+      "noTenants": "No tenants yet.",
+      "states": "States",
+      "percent": "Share of tenants (%)",
+      "percentHint": "The same tenants stay in as the share grows.",
+      "roles": "Who sees it",
+      "rolesHint": "Leave all unticked for every role.",
+      "threshold": "Roll back when errors reach (per 100 uses)",
+      "thresholdHint": "Steps back one stage if errors stay this high for {{minutes}} minutes in a row.",
+      "save": "Save rollout",
+      "cancel": "Cancel"
+    },
+    "releases": {
+      "title": "Releases",
+      "new": "New release",
+      "empty": "No releases yet",
+      "emptyBody": "Publish a release to tell each role what changed in plain words. It shows once as \"What's new\" on the web and the phone.",
+      "version": "Version",
+      "date": "Release date",
+      "notes": "What's new, per role",
+      "notesHint": "Plain words, one or two sentences. Roles without a note see nothing.",
+      "noteFor": "Note for {{role}}",
+      "flags": "Flags it rolls out to everyone",
+      "noFlags": "No flags",
+      "rollsOut": "Rolls out: {{flags}}",
+      "dismissed_one": "Dismissed by {{count}} person",
+      "dismissed_other": "Dismissed by {{count}} people",
+      "by": "By {{name}}",
+      "publish": "Publish release",
+      "dialogTitle": "New release",
+      "dialogDescription": "Publishing shows the notes as \"What's new\" and rolls the ticked flags out to everyone.",
+      "roles_one": "{{count}} role",
+      "roles_other": "{{count}} roles"
+    },
+    "releasePublished": "Release {{version}} published.",
+    "errors": {
+      "noNotes": "Write a note for at least one role."
+    },
+    "notifications": {
+      "rolledBack": {
+        "subject": "{{name}} was rolled back",
+        "body": "Errors for {{name}} stayed at {{rate}} per 100 uses for 10 minutes, so REOS stepped its rollout back from {{from}} to {{to}}.",
+        "action": "Open Features and releases",
+        "next": "Fix the cause, then change the rollout again when it's ready."
+      }
+    }
+  },
+  "whatsNew": {
+    "label": "What's new",
+    "title": "What's new in {{version}}",
+    "dismiss": "Dismiss",
+    "dismissLabel": "Dismiss what's new in {{version}}"
   }
 }

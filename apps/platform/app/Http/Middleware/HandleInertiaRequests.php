@@ -6,6 +6,7 @@ use App\Authorization\Membership;
 use App\Authorization\Permission;
 use App\Connections\ConnectionStatus;
 use App\Enums\StateStatus;
+use App\Features\Releases;
 use App\Integrations\Catalogue;
 use App\Models\Connection;
 use App\Models\State;
@@ -79,6 +80,8 @@ class HandleInertiaRequests extends Middleware
             'supportSession' => fn (): ?array => $this->support($request),
             // Connections that stopped syncing and need the person to sign in again (B3.1).
             'connectionAlerts' => fn (): array => $this->connectionAlerts($request),
+            // "What's new" for the person's role (A6.2), until dismissed.
+            'whatsNew' => fn (): ?array => $request->user() instanceof User ? app(Releases::class)->card($request->user()) : null,
             // The public site's state chip and headline ("Now live in Texas").
             'liveStates' => fn (): array => State::query()->where('status', StateStatus::Live)->orderBy('name')->pluck('name')->all(),
             // One-time notices after a redirect (for example "You're on the list").

@@ -27,6 +27,7 @@ final readonly class AuditLog
         'content' => ['course.', 'lesson.'],
         'billing' => ['order.', 'product.', 'price.', 'code.', 'platform.', 'gateway.', 'payouts.', 'pool.', 'provider_category.', 'ai.'],
         'privacy' => ['privacy.'],
+        'releases' => ['flag.', 'release.'],
     ];
 
     public function __construct(private Tenancy $tenancy) {}
