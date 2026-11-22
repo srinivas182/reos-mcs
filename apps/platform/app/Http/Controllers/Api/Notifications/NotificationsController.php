@@ -53,7 +53,7 @@ final class NotificationsController extends Controller
      * messages), urgent (arrives in quiet hours) or can be a digest; quiet
      * hours and the time zone they follow.
      *
-     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'>, phones: int, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool, sms: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'|'sms'>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
      */
     public function settings(#[CurrentUser] User $user, Preferences $preferences): JsonResponse
     {
@@ -67,7 +67,7 @@ final class NotificationsController extends Controller
      * `digests.{kind}` daily, weekly or null, `quiet` (enabled, start, end as
      * HH:MM) and `timezone`. Locked kinds can't be turned off (422).
      *
-     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'>, phones: int, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool, sms: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'|'sms'>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
      */
     public function update(NotificationSettingsRequest $request, #[CurrentUser] User $user, Preferences $preferences): JsonResponse
     {

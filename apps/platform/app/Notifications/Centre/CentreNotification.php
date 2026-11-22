@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 
 /**
  * A notification that goes through REOS's notification centre (B6.2): the
@@ -42,6 +43,20 @@ abstract class CentreNotification extends Notification implements ShouldQueue
         $inbox = $this->inbox($notifiable);
 
         return ['title' => $inbox['title'], 'body' => $inbox['body'], 'path' => $this->appPath()];
+    }
+
+    /**
+     * The text message (B6.2c): "REOS: " and the inbox line, short enough for
+     * one or two segments, with how to stop.
+     */
+    public function sms(object $notifiable): string
+    {
+        $inbox = $this->inbox($notifiable);
+        $line = $inbox['body'] === null || $inbox['body'] === '' ? $inbox['title'] : $inbox['title'].' – '.$inbox['body'];
+
+        $line = Str::limit($line, 240);
+
+        return __('notifications.texts.sms.alert', ['text' => preg_match('/[.!?…]$/u', $line) === 1 ? $line : $line.'.']);
     }
 
     /** Where a tap opens in the app; the notifications screen unless a kind has its own. */

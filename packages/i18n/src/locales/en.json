@@ -1992,7 +1992,8 @@
         "privacy.consent_changed": "Changed a privacy switch for someone",
         "message.reported": "Reported messages",
         "message.report_resolved": "Marked a message report handled",
-        "announcement.sent": "Sent an announcement"
+        "announcement.sent": "Sent an announcement",
+        "account.phone_changed": "Mobile number changed"
       }
     }
   },
@@ -4472,7 +4473,8 @@
     "channels": {
       "inbox": "Inbox",
       "email": "Email",
-      "push": "Push"
+      "push": "Push",
+      "sms": "Text"
     },
     "digests": {
       "off": "One at a time",
@@ -4551,6 +4553,40 @@
       "body": "Turn on notifications so messages and alerts reach you, even when REOS is closed. Quiet hours still apply.",
       "action": "Turn on",
       "later": "Not now"
+    },
+    "texts": {
+      "title": "Texts",
+      "description": "Text alerts go to your US mobile number. Message frequency varies; message and data rates may apply.",
+      "noNumber": "Add your mobile number to get texts.",
+      "number": "Texts go to {{phone}}.",
+      "phone": "Mobile number",
+      "phoneHint": "US numbers only, for example +15125550100.",
+      "sendCode": "Send code",
+      "code": "Code",
+      "verify": "Verify number",
+      "codeSent": "We sent a code to that number.",
+      "verified": "Mobile number verified.",
+      "change": "Change number",
+      "remove": "Remove number",
+      "on": "Get texts from REOS",
+      "onDescription": "By turning this on, you agree to receive text alerts from REOS at this number. Message frequency varies. Message and data rates may apply. Reply HELP for help, STOP to stop.",
+      "turnedOn": "Texts are on. Choose which alerts come by text below.",
+      "turnedOff": "Texts are off.",
+      "unavailable": "Texts aren’t available yet.",
+      "columnHint": "Turn on texts above to choose alerts by text.",
+      "errors": {
+        "wrongCode": "That code isn’t right or has expired.",
+        "locked": "Too many wrong codes. Try again in {{minutes}} minutes.",
+        "usOnly": "Enter a US mobile number, starting with +1.",
+        "taken": "That number belongs to another REOS account.",
+        "noPhone": "Add and verify your mobile number first.",
+        "signInPhone": "You sign in with this number, so it can’t be removed."
+      },
+      "sms": {
+        "alert": "REOS: {{text}} Reply STOP to stop.",
+        "welcome": "REOS: You’re signed up for REOS alerts. Msg frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to cancel.",
+        "help": "REOS alerts: get help at reos.com/help or support@reos.com. Msg frequency varies. Msg & data rates may apply. Reply STOP to cancel."
+      }
     }
   }
 }

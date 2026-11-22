@@ -5,6 +5,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Heading from '@/components/heading';
 import InputError from '@/components/input-error';
+import {
+    NotificationTexts,
+    type TextsStatus,
+} from '@/components/notification-texts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -12,7 +16,7 @@ import { Switch } from '@/components/ui/switch';
 import { nativeSelect } from '@/lib/tenants';
 import { update } from '@/routes/notification-settings';
 
-type Channel = 'inbox' | 'push' | 'email';
+type Channel = 'inbox' | 'push' | 'email' | 'sms';
 
 export type NotificationKindName =
     | 'new_device'
@@ -66,6 +70,7 @@ export default function NotificationSettings({
     timezone,
     browserTimezone,
     phones = 0,
+    texts = null,
 }: {
     kinds: KindRow[];
     channels: Channel[];
@@ -74,6 +79,8 @@ export default function NotificationSettings({
     browserTimezone: string;
     /** Phones signed in with push on (B6.2b). */
     phones?: number;
+    /** Texts (B6.2c): the verified number and whether they're on. */
+    texts?: TextsStatus | null;
 }) {
     const { t } = useTranslation();
     const [hours, setHours] = useState(quiet);
@@ -179,6 +186,8 @@ export default function NotificationSettings({
                     </div>
                 </section>
 
+                {texts ? <NotificationTexts texts={texts} /> : null}
+
                 <section className="space-y-4">
                     <Heading
                         variant="small"
@@ -189,6 +198,9 @@ export default function NotificationSettings({
                         {phones === 0
                             ? t('notifications.phones.none')
                             : t('notifications.phones.some', { count: phones })}
+                        {texts && texts.available && !texts.on
+                            ? ` ${t('notifications.texts.columnHint')}`
+                            : null}
                     </p>
                     <InputError message={errors.channels ?? errors.digests} />
                     {GROUPS.map((group) => {
@@ -203,7 +215,7 @@ export default function NotificationSettings({
                                 key={group}
                                 className="overflow-x-auto rounded-reos-lg border border-border bg-card"
                             >
-                                <table className="w-full min-w-[34rem] table-fixed text-left text-base">
+                                <table className="w-full min-w-[40rem] table-fixed text-left text-base">
                                     <caption className="px-5 pt-4 text-left font-semibold">
                                         {t(`notifications.groups.${group}`)}
                                     </caption>
@@ -291,7 +303,10 @@ export default function NotificationSettings({
                                                                 }
                                                                 disabled={
                                                                     row.locked ||
-                                                                    busy
+                                                                    busy ||
+                                                                    (c ===
+                                                                        'sms' &&
+                                                                        !texts?.on)
                                                                 }
                                                                 aria-label={t(
                                                                     'notifications.kinds.switch',

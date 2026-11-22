@@ -6,6 +6,7 @@ namespace App\Notifications\Centre;
 
 use App\Models\PushDevice;
 use App\Models\User;
+use App\Notifications\Centre\Sms\TextAlerts;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -15,10 +16,10 @@ use Illuminate\Validation\ValidationException;
  */
 final readonly class Preferences
 {
-    public function __construct(private NotificationCentre $centre) {}
+    public function __construct(private NotificationCentre $centre, private TextAlerts $texts) {}
 
     /**
-     * @return array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: string|null}>, channels: list<string>, phones: int, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     * @return array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: string|null}>, channels: list<string>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
      */
     public function summary(User $user): array
     {
@@ -37,6 +38,8 @@ final readonly class Preferences
             'channels' => NotificationKind::CHANNELS,
             // Phones signed in with push turned on.
             'phones' => PushDevice::query()->where('user_id', $user->id)->count(),
+            // Texts (B6.2c): the verified number, masked, and whether they turned texts on.
+            'texts' => $this->texts->status($user),
             'quiet' => ['enabled' => $settings->quiet_enabled, 'start' => $settings->quiet_start, 'end' => $settings->quiet_end],
             'timezone' => $settings->timezone,
         ];

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Notifications\NotificationsController;
+use App\Http\Controllers\Notifications\TextsController;
 use App\Http\Controllers\Settings\ActiveRoleController;
 use App\Http\Controllers\Settings\AppearanceController;
 use App\Http\Controllers\Settings\ConsentController;
@@ -42,6 +43,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Notifications by kind and channel, quiet hours and digests (B6.2).
     Route::get('settings/notifications', [NotificationsController::class, 'settings'])->name('notification-settings.edit');
     Route::put('settings/notifications', [NotificationsController::class, 'update'])->middleware('throttle:30,1,notification-settings')->name('notification-settings.update');
+    // Texts (B6.2c): the mobile number and the texts switch.
+    Route::post('settings/notifications/phone', [TextsController::class, 'sendCode'])->middleware('throttle:5,10,texts-code')->name('texts.phone');
+    Route::post('settings/notifications/phone/verify', [TextsController::class, 'verify'])->middleware('throttle:10,10,texts-verify')->name('texts.verify');
+    Route::delete('settings/notifications/phone', [TextsController::class, 'remove'])->middleware('throttle:10,10,texts-remove')->name('texts.remove');
+    Route::put('settings/notifications/texts', [TextsController::class, 'update'])->middleware('throttle:20,1,texts-switch')->name('texts.update');
 
     // Privacy switches and "Your consents" (A6.3).
     Route::get('settings/privacy', [ConsentController::class, 'edit'])->name('consents.edit');

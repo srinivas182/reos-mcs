@@ -83,7 +83,20 @@ export function FeatureTile({ icon, tone, title, subtitle, onPress }: { icon: Lu
 }
 
 /** A labelled on/off switch row (notification and privacy settings). */
-export function SwitchRow({ label, description, value, onValueChange }: { label: string; description?: string; value: boolean; onValueChange: (value: boolean) => void }) {
+export function SwitchRow({
+  label,
+  description,
+  value,
+  onValueChange,
+  disabled = false,
+}: {
+  label: string;
+  description?: string;
+  value: boolean;
+  onValueChange: (value: boolean) => void;
+  /** Can't be changed now (a locked kind, or texts not turned on yet). */
+  disabled?: boolean;
+}) {
   const { theme } = useUnistyles();
 
   return (
@@ -101,6 +114,8 @@ export function SwitchRow({ label, description, value, onValueChange }: { label:
         accessibilityHint={description}
         value={value}
         onValueChange={onValueChange}
+        disabled={disabled}
+        accessibilityState={{ disabled, checked: value }}
         trackColor={{ true: theme.colors.action, false: theme.colors.borderControl }}
         thumbColor={theme.colors.surface}
         ios_backgroundColor={theme.colors.borderControl}

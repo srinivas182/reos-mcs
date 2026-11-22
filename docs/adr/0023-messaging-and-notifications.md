@@ -1,6 +1,6 @@
 # 0023: Messaging and notifications
 
-**Status:** accepted for messaging (B6.1a and B6.1b), the notification centre (B6.2a) and push (B6.2b), 22 November 2026; SMS and email bounces (B6.2c) extend it.
+**Status:** accepted for messaging (B6.1a and B6.1b), the notification centre (B6.2a), push (B6.2b) and texts (B6.2c), 22 November 2026; email bounces (B6.2d) extend it.
 
 ## Context
 
@@ -27,10 +27,13 @@ Brokerages, schools and mentors talk to their people in Slack, texts and CRM inb
 
 15. **Push through Expo (B6.2b).** A phone sends its Expo push token after the person allows notifications (`POST /api/v1/me/push-devices`); the system prompt only follows a tap on Turn on (Today's card or Me › Notifications), never at launch. Each token belongs to the phone's sign-in (`push_devices.personal_access_token_id`, cascade), so signing out or revoking the phone in Devices removes it; a phone that signs in as someone else moves the token to them. `PushChannel` sends to every phone (title, short body, the badge = unread inbox, the app path a tap opens, Android channel `messages` or `alerts`, high priority and a 1-hour lifetime for urgent kinds). Expo's `DeviceNotRegistered` removes a phone at once (ticket) or 15 minutes later (`reos:push:receipts`, receipts kept a day). Push is a channel like email: on by default for every kind, held in quiet hours, gathered into digests, turned off per kind. Off in production until Expo push is set up in Settings › Integrations (`expo-push`); the simulator keeps an outbox elsewhere.
 16. **Messages push when the person isn't looking (B6.2b).** Each message sends `NewMessage` to the other participants (not to anyone who blocked the sender): push only by default (the Messages badge already counts chats, so not the inbox), collapsed per conversation (`collapseId`), titled "Linda Park · 3 new messages" when several wait. Laravel's `shouldSend` drops it if the person read the conversation first or the message was deleted, so a chat held overnight isn't pushed in the morning once read. While REOS is open on that conversation, the phone doesn't show it.
+17. **Texts only with consent (B6.2c).** A person adds a US mobile number and verifies it with a code (Twilio Verify; five wrong codes lock it for 15 minutes; a number can belong to one account), then turns on "Get texts from REOS", which shows the words carriers require and records the SMS consent (`consent_records`, web or app) and sends the confirmation text. SMS consent never defaults on: only a granted record counts, checked when choosing channels and again by `SmsChannel` at the moment of sending (a STOP may arrive while a text waits for the morning). Texts are a channel per kind, off by default, never for locked security kinds, and follow quiet hours and digests. Turning texts on from Settings › Privacy goes through the same path. Removing the number withdraws consent; people who sign in with their phone keep it.
+18. **STOP, START and HELP (B6.2c).** Twilio posts replies to `/webhooks/twilio-sms`, signed with the auth token (HMAC-SHA1 of the URL and sorted fields; unsigned only on the simulator outside production). STOP and its synonyms withdraw consent for that number (recorded as by SMS), START and its synonyms give it back, and HELP answers with who we are, help contacts, frequency, rates and how to stop. Twilio's Advanced Opt-Out confirms STOP itself.
 
 ## Consequences
 
 - Who can message whom is code, reviewed with the journeys; a tenant can't open messaging to everyone.
 - Participant-scoped tables need their access check kept in the service and the channel; tests cover both.
 - Reverb is another process to run and monitor (B6 platform health); the app degrades to refresh-on-open without it.
+- Texts in production wait for Twilio 10DLC brand and campaign approval (register); until then texts stay on the simulator outside production and Settings shows them as not available yet.
 - Push needs the EAS project id in the app config and the Apple push key and Firebase project (store accounts) before TestFlight; until then development builds use Expo's sandbox.

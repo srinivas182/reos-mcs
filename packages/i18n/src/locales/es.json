@@ -1992,7 +1992,8 @@
         "privacy.consent_changed": "Cambió una opción de privacidad de otra persona",
         "message.reported": "Denunció mensajes",
         "message.report_resolved": "Marcó una denuncia como atendida",
-        "announcement.sent": "Envió un anuncio"
+        "announcement.sent": "Envió un anuncio",
+        "account.phone_changed": "Número móvil cambiado"
       }
     }
   },
@@ -4472,7 +4473,8 @@
     "channels": {
       "inbox": "Bandeja",
       "email": "Correo",
-      "push": "Push"
+      "push": "Push",
+      "sms": "Texto"
     },
     "digests": {
       "off": "Una por una",
@@ -4551,6 +4553,40 @@
       "body": "Active las notificaciones para que los mensajes y las alertas le lleguen, incluso con REOS cerrado. Las horas de silencio se respetan.",
       "action": "Activar",
       "later": "Ahora no"
+    },
+    "texts": {
+      "title": "Mensajes de texto",
+      "description": "Las alertas por mensaje de texto llegan a su número móvil de EE. UU. La frecuencia varía; pueden aplicarse tarifas de mensajes y datos.",
+      "noNumber": "Agregue su número móvil para recibir mensajes de texto.",
+      "number": "Los mensajes de texto llegan al {{phone}}.",
+      "phone": "Número móvil",
+      "phoneHint": "Solo números de EE. UU., por ejemplo +15125550100.",
+      "sendCode": "Enviar código",
+      "code": "Código",
+      "verify": "Verificar número",
+      "codeSent": "Enviamos un código a ese número.",
+      "verified": "Número móvil verificado.",
+      "change": "Cambiar número",
+      "remove": "Quitar número",
+      "on": "Recibir mensajes de texto de REOS",
+      "onDescription": "Al activar esta opción, usted acepta recibir alertas por mensaje de texto de REOS en este número. La frecuencia varía. Pueden aplicarse tarifas de mensajes y datos. Responda HELP para obtener ayuda o STOP para cancelar.",
+      "turnedOn": "Los mensajes de texto están activados. Elija abajo qué alertas recibe por texto.",
+      "turnedOff": "Los mensajes de texto están desactivados.",
+      "unavailable": "Los mensajes de texto aún no están disponibles.",
+      "columnHint": "Active los mensajes de texto arriba para elegir alertas por texto.",
+      "errors": {
+        "wrongCode": "Ese código no es correcto o ya venció.",
+        "locked": "Demasiados códigos incorrectos. Inténtelo de nuevo en {{minutes}} minutos.",
+        "usOnly": "Ingrese un número móvil de EE. UU. que empiece con +1.",
+        "taken": "Ese número pertenece a otra cuenta de REOS.",
+        "noPhone": "Primero agregue y verifique su número móvil.",
+        "signInPhone": "Usted inicia sesión con este número, así que no se puede quitar."
+      },
+      "sms": {
+        "alert": "REOS: {{text}} Responda STOP para cancelar.",
+        "welcome": "REOS: Usted se suscribió a las alertas de REOS. La frecuencia varía. Pueden aplicarse tarifas de mensajes y datos. Responda HELP para obtener ayuda o STOP para cancelar.",
+        "help": "Alertas de REOS: obtenga ayuda en reos.com/help o support@reos.com. La frecuencia varía. Pueden aplicarse tarifas de mensajes y datos. Responda STOP para cancelar."
+      }
     }
   }
 }

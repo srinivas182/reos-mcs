@@ -5478,12 +5478,16 @@
                                                             },
                                                             "email": {
                                                                 "type": "boolean"
+                                                            },
+                                                            "sms": {
+                                                                "type": "boolean"
                                                             }
                                                         },
                                                         "required": [
                                                             "inbox",
                                                             "push",
-                                                            "email"
+                                                            "email",
+                                                            "sms"
                                                         ]
                                                     },
                                                     "digest": {
@@ -5516,12 +5520,35 @@
                                                 "enum": [
                                                     "inbox",
                                                     "push",
-                                                    "email"
+                                                    "email",
+                                                    "sms"
                                                 ]
                                             }
                                         },
                                         "phones": {
                                             "type": "integer"
+                                        },
+                                        "texts": {
+                                            "type": "object",
+                                            "properties": {
+                                                "phone": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "on": {
+                                                    "type": "boolean"
+                                                },
+                                                "available": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "phone",
+                                                "on",
+                                                "available"
+                                            ]
                                         },
                                         "quiet": {
                                             "type": "object",
@@ -5550,6 +5577,7 @@
                                         "kinds",
                                         "channels",
                                         "phones",
+                                        "texts",
                                         "quiet",
                                         "timezone"
                                     ]
@@ -5617,12 +5645,16 @@
                                                             },
                                                             "email": {
                                                                 "type": "boolean"
+                                                            },
+                                                            "sms": {
+                                                                "type": "boolean"
                                                             }
                                                         },
                                                         "required": [
                                                             "inbox",
                                                             "push",
-                                                            "email"
+                                                            "email",
+                                                            "sms"
                                                         ]
                                                     },
                                                     "digest": {
@@ -5655,12 +5687,35 @@
                                                 "enum": [
                                                     "inbox",
                                                     "push",
-                                                    "email"
+                                                    "email",
+                                                    "sms"
                                                 ]
                                             }
                                         },
                                         "phones": {
                                             "type": "integer"
+                                        },
+                                        "texts": {
+                                            "type": "object",
+                                            "properties": {
+                                                "phone": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "on": {
+                                                    "type": "boolean"
+                                                },
+                                                "available": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "phone",
+                                                "on",
+                                                "available"
+                                            ]
                                         },
                                         "quiet": {
                                             "type": "object",
@@ -5689,6 +5744,7 @@
                                         "kinds",
                                         "channels",
                                         "phones",
+                                        "texts",
                                         "quiet",
                                         "timezone"
                                     ]
@@ -6112,6 +6168,233 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/me/phone": {
+            "post": {
+                "operationId": "me.texts.phone",
+                "description": "US numbers only. The number replaces the current one once verified.",
+                "summary": "Send a code to a mobile number for texts (B6.2c)",
+                "tags": [
+                    "Texts"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TextNumberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "phone": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "on": {
+                                            "type": "boolean"
+                                        },
+                                        "available": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "phone",
+                                        "on",
+                                        "available"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/phone/verify": {
+            "post": {
+                "operationId": "me.texts.verify",
+                "summary": "Verify the mobile number for texts (B6.2c)",
+                "tags": [
+                    "Texts"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TextNumberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "phone": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "on": {
+                                            "type": "boolean"
+                                        },
+                                        "available": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "phone",
+                                        "on",
+                                        "available"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/texts": {
+            "put": {
+                "operationId": "me.texts.update",
+                "description": "Turning them on records the person's SMS consent and sends the\nconfirmation text; it needs a verified number first. Then choose which\nkinds come by text in the notification settings.",
+                "summary": "Turn texts on or off (B6.2c)",
+                "tags": [
+                    "Texts"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TextSwitchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "phone": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "on": {
+                                            "type": "boolean"
+                                        },
+                                        "available": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "phone",
+                                        "on",
+                                        "available"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
             }
         },
         "/todos": {
@@ -9324,6 +9607,42 @@
                     "not_planned"
                 ],
                 "title": "StateStatus"
+            },
+            "TextNumberRequest": {
+                "type": "object",
+                "description": "A mobile number for text alerts (B6.2c), and the code sent to it when verifying.",
+                "properties": {
+                    "phone": {
+                        "type": "string",
+                        "description": "US mobile number in international format.",
+                        "pattern": "^\\+[1-9][0-9]{7,14}$",
+                        "examples": [
+                            "+15125550100"
+                        ]
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "The 6-digit code, when verifying.",
+                        "pattern": "^[0-9]{4,10}$"
+                    }
+                },
+                "required": [
+                    "phone"
+                ],
+                "title": "TextNumberRequest"
+            },
+            "TextSwitchRequest": {
+                "type": "object",
+                "description": "Turning text alerts on or off (B6.2c).",
+                "properties": {
+                    "on": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "on"
+                ],
+                "title": "TextSwitchRequest"
             },
             "TodoResource": {
                 "type": "object",

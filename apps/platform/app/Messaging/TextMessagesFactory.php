@@ -42,6 +42,24 @@ final readonly class TextMessagesFactory
         return $environment === null ? null : new TwilioTextMessages($this->container->make(Http::class), $this->vault->get(self::INTEGRATION, $environment));
     }
 
+    /**
+     * The Twilio auth token that signs inbound texts (STOP, HELP); null on
+     * the simulator, which takes unsigned test replies outside production.
+     */
+    public function authToken(): ?string
+    {
+        $mode = $this->mode();
+
+        if ($mode === IntegrationMode::Simulator && ! $this->container->make('app')->isProduction()) {
+            return null;
+        }
+
+        $environment = $mode->environment();
+        $token = $environment === null ? '' : ($this->vault->get(self::INTEGRATION, $environment)['auth_token'] ?? '');
+
+        return $token;
+    }
+
     private function mode(): IntegrationMode
     {
         $definition = $this->catalogue->find(self::INTEGRATION);
