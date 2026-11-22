@@ -116,6 +116,9 @@ describe('Settings › Privacy (web)', function () {
 
 describe('Me › Privacy (app)', function () {
     it('lists and changes switches, recorded as in the app', function () {
+        // Texts need a verified number first (B6.2c).
+        $this->james->forceFill(['phone' => '+15125550100', 'phone_verified_at' => now()])->save();
+
         $this->actingAs($this->james, 'sanctum')->getJson('/api/v1/me/consents')->assertOk()
             ->assertJsonCount(5, 'switches')
             ->assertJsonPath('records', []);

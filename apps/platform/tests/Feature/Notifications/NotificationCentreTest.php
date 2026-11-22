@@ -93,7 +93,7 @@ describe('preferences', function () {
         $this->actingAs($this->james)->get('/settings/notifications')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('settings/notifications')
             ->where('quiet', ['enabled' => true, 'start' => '21:00', 'end' => '07:00'])
-            ->where('kinds', fn ($kinds) => collect($kinds)->firstWhere('kind', 'state_went_live')['channels'] === ['inbox' => true, 'push' => true, 'email' => false]
+            ->where('kinds', fn ($kinds) => collect($kinds)->firstWhere('kind', 'state_went_live')['channels'] === ['inbox' => true, 'push' => true, 'email' => false, 'sms' => false]
                 && collect($kinds)->firstWhere('kind', 'new_device')['locked'] === true));
     });
 

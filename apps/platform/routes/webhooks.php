@@ -6,6 +6,7 @@ use App\Http\Controllers\Connections\WebhookController;
 use App\Http\Controllers\Webhooks\ConnectWebhookController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Http\Controllers\Webhooks\PaymentWebhookController;
+use App\Http\Controllers\Webhooks\TwilioSmsWebhookController;
 use Illuminate\Support\Facades\Route;
 
 // Payments (B5.1, B5.2a): Stripe, PayPal and Authorize.net, each signed its own way. Before the
@@ -19,6 +20,11 @@ Route::post('webhooks/{gateway}', PaymentWebhookController::class)
 Route::post('webhooks/stripe-connect', ConnectWebhookController::class)
     ->middleware('throttle:webhooks')
     ->name('webhooks.stripe-connect');
+
+// Texts to REOS's number (B6.2c): STOP, START and HELP. Signed with the Twilio auth token.
+Route::post('webhooks/twilio-sms', TwilioSmsWebhookController::class)
+    ->middleware('throttle:webhooks')
+    ->name('webhooks.twilio-sms');
 
 // Inbound webhooks from connected tools (B3.1, ADR 0013). No session or CSRF:
 // each tool's own signature check (in its driver) protects the endpoint.

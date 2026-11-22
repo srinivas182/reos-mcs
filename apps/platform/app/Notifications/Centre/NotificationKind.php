@@ -38,11 +38,14 @@ enum NotificationKind: string
 
     public const EMAIL = 'email';
 
-    /** The channels a person can choose between. */
-    public const CHANNELS = [self::INBOX, self::PUSH, self::EMAIL];
+    public const SMS = 'sms';
+
+    /** The channels a person can choose between (texts only once they've turned texts on). */
+    public const CHANNELS = [self::INBOX, self::PUSH, self::EMAIL, self::SMS];
 
     /**
-     * Where it goes unless the person changed it.
+     * Where it goes unless the person changed it. Never texts: those need
+     * the person to choose each kind after turning texts on.
      *
      * @return list<string>
      */

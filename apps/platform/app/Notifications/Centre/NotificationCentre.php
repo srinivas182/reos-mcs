@@ -7,12 +7,14 @@ namespace App\Notifications\Centre;
 use App\Models\NotificationSetting;
 use App\Models\User;
 use App\Notifications\Centre\Push\PushChannel;
+use App\Notifications\Centre\Sms\SmsChannel;
+use App\Notifications\Centre\Sms\TextAlerts;
 use Carbon\CarbonImmutable;
 
 /**
  * The notification centre (B6.2, ADR 0023). For each notification it picks
  * the channels from the person's choices for its kind: the inbox always
- * (silent), and alerts (push and email; SMS in B6.2c) unless they're
+ * (silent), and alerts (push, email and texts) unless they're
  * off. In quiet hours (default 9 PM to 7 AM in the person's time zone) an
  * alert that isn't urgent is held and sent when they end; a kind the person
  * gets as a digest is gathered instead.
@@ -20,10 +22,15 @@ use Carbon\CarbonImmutable;
 final class NotificationCentre
 {
     /** Channel names Laravel sends through. */
-    public const SEND_AS = [NotificationKind::INBOX => 'database', NotificationKind::PUSH => PushChannel::class, NotificationKind::EMAIL => 'mail'];
+    public const SEND_AS = [NotificationKind::INBOX => 'database', NotificationKind::PUSH => PushChannel::class, NotificationKind::EMAIL => 'mail', NotificationKind::SMS => SmsChannel::class];
 
     /** @var array<int, NotificationSetting> */
     private array $settings = [];
+
+    /** @var array<int, bool> whether each person can get texts, for this run */
+    private array $texts = [];
+
+    public function __construct(private TextAlerts $alerts) {}
 
     public function settings(User $user): NotificationSetting
     {
@@ -32,12 +39,17 @@ final class NotificationCentre
 
     public function forget(User $user): void
     {
-        unset($this->settings[$user->id]);
+        unset($this->settings[$user->id], $this->texts[$user->id]);
     }
 
     /** Whether the person gets this kind on this channel. */
     public function wants(User $user, NotificationKind $kind, string $channel): bool
     {
+        // Texts need a verified number and the person's SMS consent first (B6.2c).
+        if ($channel === NotificationKind::SMS && ! ($this->texts[$user->id] ??= $this->alerts->ready($user))) {
+            return false;
+        }
+
         $default = in_array($channel, $kind->defaults(), true);
 
         if ($kind->locked()) {

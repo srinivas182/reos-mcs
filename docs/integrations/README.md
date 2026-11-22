@@ -541,7 +541,7 @@ SMS alerts and codes, with quiet hours.
 - **Sandbox:** Twilio test credentials and a trial number.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Per message plus one-off and monthly 10DLC registration fees.
-- **Notes:** US A2P 10DLC brand registration (up to about a week) and campaign vetting (8–10 business days per submission; a rejection restarts it). Needs a live privacy policy and terms on the product domain first. A4.3a already sends invite texts through it (Programmable Messaging); until it is set up, the simulator writes them to the log and invites by text are offered only outside production.
+- **Notes:** US A2P 10DLC brand registration (up to about a week) and campaign vetting (8–10 business days per submission; a rejection restarts it). Needs a live privacy policy and terms on the product domain first. A4.3a already sends invite texts through it (Programmable Messaging); until it is set up, the simulator writes them to the log and invites by text are offered only outside production. B6.2c sends text alerts through it (only with recorded SMS consent) and receives replies at https://reos.com/webhooks/twilio-sms (set as the number's or Messaging Service's incoming webhook): STOP, START and HELP, signed with the auth token. Keep Advanced Opt-Out on.
 - **Sources:** [1](https://help.justcall.io/en/articles/15516614-what-are-the-timelines-and-processes-for-10dlc-approval)
 
 ### LiveKit Cloud

@@ -1297,6 +1297,65 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/phone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a code to a mobile number for texts (B6.2c)
+         * @description US numbers only. The number replaces the current one once verified.
+         */
+        post: operations["me.texts.phone"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/phone/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Verify the mobile number for texts (B6.2c) */
+        post: operations["me.texts.verify"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/texts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Turn texts on or off (B6.2c)
+         * @description Turning them on records the person's SMS consent and sends the
+         *     confirmation text; it needs a verified number first. Then choose which
+         *     kinds come by text in the notification settings.
+         */
+        put: operations["me.texts.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/todos": {
         parameters: {
             query?: never;
@@ -2323,6 +2382,26 @@ export interface components {
          * @enum {string}
          */
         StateStatus: "live" | "in_preparation" | "waitlist" | "not_planned";
+        /**
+         * TextNumberRequest
+         * @description A mobile number for text alerts (B6.2c), and the code sent to it when verifying.
+         */
+        TextNumberRequest: {
+            /**
+             * @description US mobile number in international format.
+             * @example +15125550100
+             */
+            phone: string;
+            /** @description The 6-digit code, when verifying. */
+            code?: string;
+        };
+        /**
+         * TextSwitchRequest
+         * @description Turning text alerts on or off (B6.2c).
+         */
+        TextSwitchRequest: {
+            on: boolean;
+        };
         /** TodoResource */
         TodoResource: {
             id: number;
@@ -2509,6 +2588,8 @@ export type SchemaStartConnectionRequest = components['schemas']['StartConnectio
 export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
+export type SchemaTextNumberRequest = components['schemas']['TextNumberRequest'];
+export type SchemaTextSwitchRequest = components['schemas']['TextSwitchRequest'];
 export type SchemaTodoResource = components['schemas']['TodoResource'];
 export type SchemaToolRequestRequest = components['schemas']['ToolRequestRequest'];
 export type SchemaUpdateConnectionRequest = components['schemas']['UpdateConnectionRequest'];
@@ -5050,12 +5131,18 @@ export interface operations {
                                 inbox: boolean;
                                 push: boolean;
                                 email: boolean;
+                                sms: boolean;
                             };
                             /** @enum {string|null} */
                             digest: "daily" | "weekly" | null;
                         }[];
-                        channels: ("inbox" | "push" | "email")[];
+                        channels: ("inbox" | "push" | "email" | "sms")[];
                         phones: number;
+                        texts: {
+                            phone: string | null;
+                            on: boolean;
+                            available: boolean;
+                        };
                         quiet: {
                             enabled: boolean;
                             start: string;
@@ -5097,12 +5184,18 @@ export interface operations {
                                 inbox: boolean;
                                 push: boolean;
                                 email: boolean;
+                                sms: boolean;
                             };
                             /** @enum {string|null} */
                             digest: "daily" | "weekly" | null;
                         }[];
-                        channels: ("inbox" | "push" | "email")[];
+                        channels: ("inbox" | "push" | "email" | "sms")[];
                         phones: number;
+                        texts: {
+                            phone: string | null;
+                            on: boolean;
+                            available: boolean;
+                        };
                         quiet: {
                             enabled: boolean;
                             start: string;
@@ -5368,6 +5461,129 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.texts.phone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TextNumberRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        phone: string | null;
+                        on: boolean;
+                        available: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.texts.verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TextNumberRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        phone: string | null;
+                        on: boolean;
+                        available: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.texts.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TextSwitchRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        phone: string | null;
+                        on: boolean;
+                        available: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

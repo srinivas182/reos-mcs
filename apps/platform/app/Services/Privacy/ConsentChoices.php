@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\Privacy;
 
 use App\Models\User;
+use App\Notifications\Centre\Sms\TextAlerts;
 use App\Privacy\ConsentMethod;
 use App\Privacy\ConsentPurpose;
 use Illuminate\Validation\ValidationException;
@@ -17,7 +18,7 @@ use Illuminate\Validation\ValidationException;
  */
 final readonly class ConsentChoices
 {
-    public function __construct(private Consents $consents) {}
+    public function __construct(private Consents $consents, private TextAlerts $texts) {}
 
     public function change(User $user, ConsentPurpose $purpose, bool $granted, ?string $subject, ConsentMethod $method): void
     {
@@ -31,6 +32,13 @@ final readonly class ConsentChoices
 
         if (! $purpose->perSubject() && $subject !== null) {
             throw ValidationException::withMessages(['subject' => __('consents.errors.noSubject')]);
+        }
+
+        // Texts need a verified number and send the confirmation text (B6.2c).
+        if ($purpose === ConsentPurpose::Sms) {
+            $this->texts->turn($user, $granted, $method);
+
+            return;
         }
 
         // Nothing to record when nothing changes.

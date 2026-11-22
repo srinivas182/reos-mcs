@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncement
 use App\Http\Controllers\Api\Messaging\MessagesController as ApiMessagesController;
 use App\Http\Controllers\Api\Notifications\NotificationsController as ApiNotificationsController;
 use App\Http\Controllers\Api\Notifications\PushDeviceController;
+use App\Http\Controllers\Api\Notifications\TextsController as ApiTextsController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
@@ -128,6 +129,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('me/notification-settings', [ApiNotificationsController::class, 'update'])->middleware('throttle:30,1,api-notification-settings')->name('api.me.notification-settings.update');
     // Push to this phone (B6.2b).
     Route::post('me/push-devices', [PushDeviceController::class, 'store'])->middleware('throttle:20,1,api-push-devices')->name('api.me.push-devices.store');
+    // Texts (B6.2c).
+    Route::post('me/phone', [ApiTextsController::class, 'sendCode'])->middleware('throttle:5,10,api-texts-code')->name('api.me.texts.phone');
+    Route::post('me/phone/verify', [ApiTextsController::class, 'verify'])->middleware('throttle:10,10,api-texts-verify')->name('api.me.texts.verify');
+    Route::put('me/texts', [ApiTextsController::class, 'update'])->middleware('throttle:20,1,api-texts-switch')->name('api.me.texts.update');
     Route::delete('me/push-devices/current', [PushDeviceController::class, 'destroy'])->middleware('throttle:20,1,api-push-devices')->name('api.me.push-devices.destroy');
     // Privacy switches and consents (A6.3, Me › Privacy).
     Route::get('me/consents', [ConsentController::class, 'index'])->name('api.me.consents');

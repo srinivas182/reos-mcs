@@ -1,7 +1,8 @@
 /**
  * The notification centre on the phone (B6.2): the inbox behind the bell on
  * Today, and Me › Notifications (each kind by channel, quiet hours in my
- * time zone, digests). Push arrives with B6.2b.
+ * time zone, digests), push on this phone (B6.2b, `push.ts`) and texts
+ * (B6.2c: a verified US number, then the switch that records consent).
  */
 import type { paths } from '@reos/api-client';
 import { useFocusEffect } from 'expo-router';
@@ -63,7 +64,40 @@ export function useNotificationSettings() {
     return data !== undefined;
   }, []);
 
-  return { settings, failed, save };
+  type TextsStatus = NotificationSettings['texts'];
+  type Result = { ok: true } | { ok: false; message: string };
+
+  const apply = useCallback((texts: TextsStatus) => setSettings((current) => (current ? { ...current, texts } : current)), []);
+
+  const sendCode = useCallback(async (phone: string): Promise<Result> => {
+    const { data, error } = await api().POST('/me/phone', { body: { phone } });
+    if (data) apply(data);
+
+    return data ? { ok: true } : { ok: false, message: problem(error) };
+  }, [apply]);
+
+  const verifyNumber = useCallback(async (phone: string, code: string): Promise<Result> => {
+    const { data, error } = await api().POST('/me/phone/verify', { body: { phone, code } });
+    if (data) apply(data);
+
+    return data ? { ok: true } : { ok: false, message: problem(error) };
+  }, [apply]);
+
+  const turnTexts = useCallback(async (on: boolean): Promise<Result> => {
+    const { data, error } = await api().PUT('/me/texts', { body: { on } });
+    if (data) apply(data);
+
+    return data ? { ok: true } : { ok: false, message: problem(error) };
+  }, [apply]);
+
+  return { settings, failed, save, sendCode, verifyNumber, turnTexts };
+}
+
+/** The server's message for a refused request (already in the person's language). */
+function problem(error: unknown): string {
+  const message = (error as { message?: unknown } | undefined)?.message;
+
+  return typeof message === 'string' ? message : '';
 }
 
 /** The phone's time zone (what quiet hours should follow). */

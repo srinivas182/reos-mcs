@@ -583,6 +583,9 @@ entries:
       product domain first.
       A4.3a already sends invite texts through it (Programmable Messaging); until it is set up,
       the simulator writes them to the log and invites by text are offered only outside production.
+      B6.2c sends text alerts through it (only with recorded SMS consent) and receives replies at
+      https://reos.com/webhooks/twilio-sms (set as the number's or Messaging Service's incoming
+      webhook): STOP, START and HELP, signed with the auth token. Keep Advanced Opt-Out on.
     sources:
       - https://help.justcall.io/en/articles/15516614-what-are-the-timelines-and-processes-for-10dlc-approval
 

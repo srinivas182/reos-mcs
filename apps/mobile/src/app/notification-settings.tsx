@@ -20,7 +20,7 @@ const GROUPS = ['messages', 'learning', 'organisation', 'tools', 'billing', 'acc
  */
 export default function NotificationSettingsScreen() {
   const { t } = useTranslation();
-  const { settings, failed, save } = useNotificationSettings();
+  const { settings, failed, save, sendCode, verifyNumber, turnTexts } = useNotificationSettings();
   // What the person typed, else what's saved.
   const [startEdit, setStart] = useState<string | null>(null);
   const [endEdit, setEnd] = useState<string | null>(null);
@@ -51,6 +51,39 @@ export default function NotificationSettingsScreen() {
     setPushFailed(false);
   };
 
+  // Texts (B6.2c): a number to verify, then the consent switch.
+  const [number, setNumber] = useState('');
+  const [sentTo, setSentTo] = useState<string | null>(null);
+  const [code, setCode] = useState('');
+  const [changing, setChanging] = useState(false);
+  const [textsError, setTextsError] = useState<string | null>(null);
+  const texts = settings?.texts;
+
+  const submitNumber = async () => {
+    const result = sentTo === null ? await sendCode(number) : await verifyNumber(sentTo, code);
+
+    if (!result.ok) {
+      setTextsError(result.message || t('consents.errors.generic'));
+
+      return;
+    }
+
+    setTextsError(null);
+
+    if (sentTo === null) {
+      setSentTo(number);
+    } else {
+      setSentTo(null);
+      setCode('');
+      setChanging(false);
+    }
+  };
+
+  const switchTexts = async (on: boolean) => {
+    const result = await turnTexts(on);
+    setTextsError(result.ok ? null : result.message || t('consents.errors.generic'));
+  };
+
   const name = (kind: KindSetting) => t(`notifications.names.${kind.kind}` as 'notifications.names.message');
 
   return (
@@ -76,6 +109,43 @@ export default function NotificationSettingsScreen() {
         </View>
       ) : null}
       {pushFailed ? <Callout tone="danger" title={t('notifications.thisPhone.failed')} live /> : null}
+
+      {texts?.available ? (
+        <View style={styles.block}>
+          <Eyebrow>{t('notifications.texts.title')}</Eyebrow>
+          <Text tone="muted">{t('notifications.texts.description')}</Text>
+          {texts.phone !== null && !changing ? (
+            <>
+              <Text>{t('notifications.texts.number', { phone: texts.phone })}</Text>
+              <Button variant="ghost" label={t('notifications.texts.change')} onPress={() => setChanging(true)} />
+            </>
+          ) : (
+            <>
+              <TextField
+                label={t('notifications.texts.phone')}
+                hint={t('notifications.texts.phoneHint')}
+                value={number}
+                onChangeText={setNumber}
+                editable={sentTo === null}
+                keyboardType="phone-pad"
+                autoComplete="tel"
+              />
+              {sentTo !== null ? <TextField label={t('notifications.texts.code')} value={code} onChangeText={setCode} keyboardType="number-pad" autoComplete="sms-otp" /> : null}
+              <Button variant="secondary" label={sentTo === null ? t('notifications.texts.sendCode') : t('notifications.texts.verify')} onPress={() => void submitNumber()} />
+            </>
+          )}
+          <MenuGroup>
+            <SwitchRow
+              label={t('notifications.texts.on')}
+              description={t('notifications.texts.onDescription')}
+              value={texts.on}
+              disabled={texts.phone === null}
+              onValueChange={(on) => void switchTexts(on)}
+            />
+          </MenuGroup>
+          {textsError ? <Callout tone="danger" title={textsError} live /> : null}
+        </View>
+      ) : null}
 
       <Eyebrow>{t('notifications.quiet.title')}</Eyebrow>
       <Text tone="muted">{t('notifications.quiet.description')}</Text>
@@ -115,6 +185,7 @@ export default function NotificationSettingsScreen() {
                     label={t('notifications.kinds.switch', { kind: name(kind), channel: t(`notifications.channels.${channel}` as 'notifications.channels.inbox') })}
                     description={kind.locked ? t('notifications.kinds.locked') : kind.urgent ? t('notifications.kinds.urgent') : undefined}
                     value={kind.channels[channel] ?? false}
+                    disabled={kind.locked || (channel === 'sms' && !texts?.on)}
                     onValueChange={(on) => (kind.locked ? undefined : void save({ channels: channelChange(kind.kind, channel, on) }))}
                   />
                 )),
