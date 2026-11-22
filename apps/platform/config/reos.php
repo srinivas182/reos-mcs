@@ -35,6 +35,9 @@ return [
     | The state REOS launches in (the top bar's state chip). A5.1 replaces this
     | with the person's own states and a state switcher.
     */
+    // Where this deployment runs (screen 58's cells; one cell until the AWS build).
+    'aws_region' => env('AWS_DEFAULT_REGION', 'us-east-2'),
+
     'region' => [
         'code' => env('REOS_REGION_CODE', 'TX'),
         'name' => env('REOS_REGION_NAME', 'Texas'),

@@ -6,6 +6,7 @@ namespace App\Voice;
 
 use App\Models\User;
 use App\Services\Ai\AiCredits;
+use App\Services\Ai\AiSettings;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -24,6 +25,7 @@ final readonly class VoiceParsing
     public function __construct(
         private UnderstandingFactory $factory,
         private AiCredits $credits,
+        private AiSettings $settings,
     ) {}
 
     /**
@@ -33,15 +35,17 @@ final readonly class VoiceParsing
      */
     public function parse(User $user, string $text, string $language, CarbonImmutable $saidAt): array
     {
-        $ai = $this->credits->canSpend($user) ? $this->factory->ai() : null;
+        // What a voice to-do costs is set on screen 69 (A6.1).
+        $cost = $this->settings->cost('voice_todo');
+        $ai = $this->credits->canSpend($user, $cost) ? $this->factory->ai() : null;
         $understanding = $ai ?? $this->factory->builtIn();
         $used = 0;
 
         try {
             $items = $understanding->understand($text, $language, $saidAt);
             if ($ai !== null) {
-                $this->credits->charge($user, self::FEATURE, $ai->engine());
-                $used = 1;
+                $this->credits->charge($user, self::FEATURE, $ai->engine(), $cost);
+                $used = $cost;
             }
         } catch (Throwable $e) {
             // The cause only; never what was said.

@@ -6,11 +6,13 @@ import {
     CreditCard,
     GraduationCap,
     House,
+    LayoutGrid,
     Map as MapIcon,
     Palette,
     Plug,
     Settings,
     ShieldCheck,
+    Sparkles,
     Tag,
     Users,
     Wallet,
@@ -25,6 +27,8 @@ import { index as learn } from '@/routes/learn';
 import { index as billingIndex } from '@/routes/billing';
 import { index as gateways } from '@/routes/gateways';
 import { index as plans } from '@/routes/plans';
+import { show as aiSettings } from '@/routes/ai';
+import { index as providerCategories } from '@/routes/provider-categories';
 import { index as sales } from '@/routes/sales';
 import { index as earnings } from '@/routes/earnings';
 import { index as connections } from '@/routes/connections';
@@ -53,6 +57,8 @@ export type NavLabel =
     | 'courses'
     | 'learnAndCe'
     | 'paymentGateways'
+    | 'providerCategories'
+    | 'aiAndCredits'
     | 'salesAndPayouts'
     | 'earnings'
     | 'plansAndPricing'
@@ -201,8 +207,13 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             item('integrations', Plug, integrations()),
             item('paymentGateways', CreditCard, gateways(), '/admin/gateways'),
             item('plansAndPricing', Tag, plans(), '/admin/plans'),
-            planned('providerCategories'),
-            planned('aiAndCredits'),
+            item(
+                'providerCategories',
+                LayoutGrid,
+                providerCategories(),
+                '/admin/provider-categories',
+            ),
+            item('aiAndCredits', Sparkles, aiSettings(), '/admin/ai'),
             planned('featuresAndReleases'),
             planned('platformHealth'),
             item('complianceAndAudit', ShieldCheck, complianceIndex()),

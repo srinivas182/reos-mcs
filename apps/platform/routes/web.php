@@ -29,6 +29,7 @@ use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\Payouts\EarningsController;
 use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
 use App\Http\Middleware\EnsureAdminTwoStep;
@@ -37,6 +38,8 @@ use Illuminate\Support\Facades\Route;
 
 // The public site (web journey screen 1) and each audience's landing page.
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
+// The public status page (A6.1).
+Route::get('status', StatusController::class)->middleware('throttle:60,1,status')->name('status');
 Route::get('for/{audience}', [PublicSiteController::class, 'audience'])
     ->whereIn('audience', PublicSiteController::AUDIENCES)->name('audience');
 

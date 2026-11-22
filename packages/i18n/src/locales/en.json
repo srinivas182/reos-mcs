@@ -47,7 +47,9 @@
     "planAndBilling": "Plan and billing",
     "paymentGateways": "Payment gateways",
     "earnings": "Earnings",
-    "salesAndPayouts": "Sales and payouts"
+    "salesAndPayouts": "Sales and payouts",
+    "providerCategories": "Provider categories",
+    "aiAndCredits": "AI and credits"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1972,7 +1974,10 @@
         "product.splits_changed": "Changed a revenue split",
         "payouts.own_account_started": "Started connecting its own Stripe account",
         "pool.funded": "Added to a sponsor pool",
-        "order.refund_issued": "Refunded an order"
+        "order.refund_issued": "Refunded an order",
+        "provider_category.created": "Added a provider category",
+        "provider_category.updated": "Changed a provider category",
+        "ai.settings_changed": "Changed AI settings"
       }
     }
   },
@@ -3851,5 +3856,196 @@
       "finish": "Finish setup",
       "later": "Back to REOS"
     }
+  },
+  "overview": {
+    "title": "Platform overview",
+    "description": "All tenants · all cells · live",
+    "last24h": "Last 24 hours",
+    "last30d": "Last 30 days",
+    "statusPage": "Status page",
+    "tenants": "Tenants",
+    "noTenants": "No tenants yet",
+    "people": "Users",
+    "peopleDetail": "{{agents}} agents · {{candidates}} candidates",
+    "online": "Online now",
+    "activeToday_one": "{{count}} active today",
+    "activeToday_other": "{{count}} active today",
+    "p95": "API p95",
+    "ms": "{{value}} ms",
+    "p95Target": "target {{value}} ms",
+    "p95Over": "Response time is over the 300 ms target. Check the queues and the slowest pages.",
+    "uptime": "Uptime",
+    "uptimeTarget": "30 days · target {{value}}%",
+    "trafficHourly": "Requests per hour · last 24 h",
+    "trafficDaily": "Requests per day · last 30 days",
+    "trafficSummary": "{{total}} requests in this period",
+    "now": "Now",
+    "cells": "Cells",
+    "cellColumns": {
+      "cell": "Cell",
+      "region": "Region",
+      "tenants": "Tenants",
+      "status": "Status"
+    },
+    "cellStatus": {
+      "healthy": "Healthy",
+      "unhealthy": "Needs attention"
+    },
+    "oneCell": "One cell until the AWS build adds more regions and a standby.",
+    "integrations": "Integrations",
+    "liveHealthy": "Live and healthy",
+    "paused": "Paused",
+    "comingSoon": "Coming soon",
+    "comingSoonValue": "{{count}} · {{taps}} notify-me taps",
+    "paymentsToday": "Payments today",
+    "gateway": "Gateway",
+    "charges": "Charges",
+    "unfinished": "Not finished",
+    "refunds": "Refunds",
+    "reconciliation": "Last reconciliation",
+    "reconciliationStatus": {
+      "matched": "Matched",
+      "differences": "Differences",
+      "failed": "Could not run"
+    },
+    "queues": "Queues",
+    "queueNames": {
+      "default": "General jobs",
+      "billing": "Payments",
+      "content": "Lesson processing",
+      "connections": "Tool syncs"
+    },
+    "waiting_one": "{{count}} waiting",
+    "waiting_other": "{{count}} waiting",
+    "unreachable": "Can't reach",
+    "failedJobs": "Failed jobs",
+    "openTenants": "Open tenants",
+    "typeCount": {
+      "association_one": "{{count}} association",
+      "association_other": "{{count}} associations",
+      "school_one": "{{count}} school",
+      "school_other": "{{count}} schools",
+      "brokerage_one": "{{count}} brokerage",
+      "brokerage_other": "{{count}} brokerages",
+      "team_one": "{{count}} team",
+      "team_other": "{{count}} teams",
+      "provider_business_one": "{{count}} provider business",
+      "provider_business_other": "{{count}} provider businesses"
+    }
+  },
+  "status": {
+    "title": "REOS status",
+    "allGood": "Everything is working",
+    "problem": "Some parts of REOS have a problem. We are on it.",
+    "parts": {
+      "database": "Accounts and data",
+      "cache": "Fast answers",
+      "queue": "Background work (emails, syncs)",
+      "storage": "Files and videos"
+    },
+    "working": "Working",
+    "down": "Problem",
+    "uptime": "Uptime, last {{days}} days",
+    "checked": "Last checked {{time}}"
+  },
+  "providerCategories": {
+    "title": "Service provider categories",
+    "description": "Unlimited categories · each with its own license check, profile fields and plan prices",
+    "add": "Add category",
+    "edit": "Edit {{name}}",
+    "editSettings": "Edit settings",
+    "settings": "{{name}} · settings",
+    "save": "Save category",
+    "emptyTitle": "No categories yet",
+    "empty": "Add the kinds of service providers agents can find in REOS, such as loan officers or home inspectors.",
+    "respa": "RESPA: provider fees are flat fees for listing and advertising. Never per referral, lead or closed loan.",
+    "requested_one": "Requested ×{{count}}",
+    "requested_other": "Requested ×{{count}}",
+    "columns": {
+      "category": "Category",
+      "licence": "License check",
+      "providers": "Providers",
+      "prices": "Plan prices (TX)",
+      "status": "Status"
+    },
+    "statuses": {
+      "live": "Live",
+      "draft": "Draft",
+      "requested": "Requested",
+      "retired": "Retired"
+    },
+    "tiers": {
+      "basic": "Basic, per month",
+      "pro": "Pro, per month",
+      "premium": "Premium, per month"
+    },
+    "fields": {
+      "name": "Name",
+      "licenceCheck": "License check",
+      "verification": "Verification",
+      "profileFields": "Profile fields (one per line)",
+      "permissions": "Special permissions",
+      "areasOnPro": "Areas on Pro",
+      "status": "Status",
+      "prices": "Flat monthly plan prices",
+      "state": "State"
+    }
+  },
+  "aiSettings": {
+    "title": "AI and credits",
+    "description": "Models, answer order, credit costs and limits",
+    "save": "Save",
+    "saved": "AI settings saved. They apply right away.",
+    "answerOrder": "Answer order",
+    "role": "Role",
+    "step_ordinal_one": "{{count}}st",
+    "step_ordinal_two": "{{count}}nd",
+    "step_ordinal_few": "{{count}}rd",
+    "step_ordinal_other": "{{count}}th",
+    "stepFor_ordinal_one": "{{role}}: {{count}}st step",
+    "stepFor_ordinal_two": "{{role}}: {{count}}nd step",
+    "stepFor_ordinal_few": "{{role}}: {{count}}rd step",
+    "stepFor_ordinal_other": "{{role}}: {{count}}th step",
+    "none": "None",
+    "roles": {
+      "candidate": "Candidate",
+      "agent": "Agent",
+      "broker": "Broker",
+      "provider": "Provider"
+    },
+    "sources": {
+      "course_knowledge": "Course knowledge (free)",
+      "brokerage_policy": "Brokerage policy",
+      "state_rules": "State rules",
+      "category_knowledge": "Category knowledge",
+      "general_ai": "General AI",
+      "instructor_booking": "Instructor booking",
+      "escalate_broker": "Escalate to broker",
+      "reos_support": "REOS support"
+    },
+    "model": "Answer model",
+    "models": {
+      "claude-sonnet": "Claude Sonnet · Amazon Bedrock (us-east-2)",
+      "claude-haiku": "Claude Haiku · Amazon Bedrock (us-east-2)"
+    },
+    "embeddings": "Embeddings",
+    "embeddingsValue": "Titan V2 · pgvector per tenant and state",
+    "training": "Training on customer data",
+    "never": "Never",
+    "costs": "Credit costs",
+    "actions": {
+      "knowledge_answer": "Question answered from knowledge",
+      "general_answer": "General AI answer",
+      "contract_review": "Contract review",
+      "content_post": "Content studio post",
+      "short_video": "Short video",
+      "ai_lesson_minute": "AI lesson minute (schools)",
+      "voice_todo": "Voice to-do"
+    },
+    "monthly": "Default per seat, each month",
+    "creditPack": "Credit pack",
+    "creditPackValue": "{{credits}} for {{amount}} · reos.com",
+    "abuseLimit": "Abuse limit (actions per hour per person)",
+    "candidates": "Candidates are never charged credits: their AI help draws on their sponsor, else REOS."
   }
 }

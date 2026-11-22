@@ -40,3 +40,5 @@ Schedule::command('reos:billing:reconcile')->everyTenMinutes()->withoutOverlappi
 Schedule::command('reos:payouts:run')->weeklyOn(1, '09:17')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // The ledger (B5.3): yesterday's money against each gateway's records.
 Schedule::command('reos:ledger:reconcile')->dailyAt('05:20')->withoutOverlapping()->onOneServer();
+// Platform health and request metrics (A6.1): screen 58 and the status page.
+Schedule::command('reos:health:check')->everyMinute()->withoutOverlapping()->onOneServer();

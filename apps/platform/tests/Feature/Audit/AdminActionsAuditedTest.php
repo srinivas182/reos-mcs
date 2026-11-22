@@ -20,9 +20,11 @@ use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
 use App\Models\Product;
+use App\Models\ProviderCategory;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
+use App\Services\Ai\AiSettings;
 use App\Services\Content\Courses;
 use App\Services\Content\LessonFiles;
 use App\Services\Content\Lessons;
@@ -268,6 +270,21 @@ function adminActions(): array
             [$lone] = auditBrokerage();
 
             return auditCase(auditOps(), 'POST', "/admin/tenants/{$lone->id}/pool", ['credits' => 1000, 'seats' => 5, 'note' => 'Invoice INV-1042'], $lone->id, true);
+        },
+        // Back office (A6.1): provider categories (68) and AI and credits (69).
+        'provider-categories.store' => fn () => auditCase(auditOps(), 'POST', '/admin/provider-categories', ['name' => 'Stager', 'prices' => [['state' => 'TX', 'tier' => 'basic', 'monthly' => 19]]], confirmed: true),
+        'provider-categories.update' => function () {
+            $ops = auditOps();
+            $id = ProviderCategory::query()->where('key', 'photographer')->value('id');
+
+            return auditCase($ops, 'PATCH', "/admin/provider-categories/{$id}", ['areas_on_pro' => 5], confirmed: true);
+        },
+        'ai.update' => function () {
+            $ops = auditOps();
+            $settings = app(AiSettings::class)->current();
+            $settings['hourly_limit'] = 50;
+
+            return auditCase($ops, 'PUT', '/admin/ai', $settings, confirmed: true);
         },
         'gateways.refund-policy' => fn () => auditCase(auditOps(), 'PUT', '/admin/gateways/refund-policy', ['mode' => 'full_only', 'window_days' => 7, 'max_progress_percent' => 25], confirmed: true),
         // Refunds from REOS (B5.3, screen 66).
@@ -541,5 +558,5 @@ const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
-    'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund', 'gateways.refund-policy',
+    'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund', 'gateways.refund-policy', 'provider-categories.update', 'ai.update',
 ];

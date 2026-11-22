@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\DB;
  */
 final readonly class AiCredits
 {
-    public function __construct(private Ledger $ledger, private ActiveRole $roles, private Memberships $memberships) {}
+    public function __construct(private Ledger $ledger, private ActiveRole $roles, private Memberships $memberships, private AiSettings $settings) {}
 
     /** The person's monthly credits. */
     public function allowanceFor(User $user): int
@@ -48,7 +48,15 @@ final readonly class AiCredits
     /** The default monthly allowance, for people without a plan that sets one. */
     public function allowance(): int
     {
-        return max(0, config()->integer('reos.ai.monthly_credits', 500));
+        return max(0, $this->settings->current()['default_monthly_credits']);
+    }
+
+    /** The abuse limit (screen 69): AI actions per person per hour. */
+    public function withinHourlyLimit(User $user): bool
+    {
+        $count = DB::table('ai_credit_uses')->where('user_id', $user->id)->where('created_at', '>=', CarbonImmutable::now()->subHour())->count();
+
+        return $count < $this->settings->current()['hourly_limit'];
     }
 
     /** Credits spent this month. */
@@ -88,6 +96,10 @@ final readonly class AiCredits
 
     public function canSpend(User $user, int $credits = 1): bool
     {
+        if (! $this->withinHourlyLimit($user)) {
+            return false;
+        }
+
         return $this->isCandidate($user) || $this->left($user) >= $credits;
     }
 
