@@ -73,7 +73,7 @@ return [
     | scanner set, uploads are refused in production.
     */
     'content' => [
-        'disk' => env('REOS_CONTENT_DISK', 'local'),
+        'disk' => env('REOS_CONTENT_DISK', env('FILESYSTEM_DISK', 'local')),
         'upload_minutes' => 30,
         'clamav' => [
             'host' => env('CLAMAV_HOST'),
