@@ -23,16 +23,16 @@ final readonly class PaymentWebhooks
 
     public function __construct(private Gateways $gateways) {}
 
-    public function receive(string $body, ?string $signature): string
+    public function receive(string $gateway, string $body, ?string $signature): string
     {
-        $event = $this->gateways->current()?->event($body, $signature);
+        $event = $this->gateways->driver($gateway)?->event($body, $signature);
 
         if ($event === null) {
             return self::REFUSED;
         }
 
         $inserted = WebhookReceipt::query()->insertOrIgnore([
-            'integration_id' => Gateways::STRIPE,
+            'integration_id' => $gateway,
             'delivery_key' => mb_substr($event->id, 0, 255),
             'received_at' => now(),
         ]);
@@ -42,7 +42,7 @@ final readonly class PaymentWebhooks
         }
 
         if ($event->kind !== 'ignored') {
-            HandlePaymentEvent::dispatch($event->kind, $event->sessionId, $event->subscriptionId, $event->paymentId, $event->periodEnd?->toIso8601String());
+            HandlePaymentEvent::dispatch($event->kind, $event->sessionId, $event->subscriptionId, $event->paymentId, $event->periodEnd?->toIso8601String(), $gateway);
         }
 
         return self::ACCEPTED;

@@ -43,6 +43,7 @@ final readonly class Checkout
         private Entitlements $entitlements,
         private Memberships $memberships,
         private AuditLogger $audit,
+        private TaxCalculator $tax,
     ) {}
 
     /**
@@ -84,12 +85,16 @@ final readonly class Checkout
      *
      * @return array{order: Order, session: CheckoutSession, gateway: PaymentGateway}
      */
-    public function start(User $buyer, Price $price, callable $returnUrl): array
+    public function start(User $buyer, Price $price, callable $returnUrl, ?string $postalCode = null): array
     {
-        $gateway = $this->gateways->current();
+        $gateway = $this->gateways->route($price);
 
         if ($gateway === null) {
             throw ValidationException::withMessages(['price' => __('billing.errors.paused')]);
+        }
+
+        if (! $gateway->calculatesTax() && ($postalCode === null || preg_match('/^\d{5}$/', $postalCode) !== 1)) {
+            throw ValidationException::withMessages(['postal_code' => __('billing.errors.postalCode')]);
         }
 
         if (! $price->isCurrent() || $price->product->status !== ProductStatus::Live) {
@@ -104,6 +109,7 @@ final readonly class Checkout
             'product_id' => $price->product_id,
             'price_id' => $price->id,
             'state_code' => $price->state_code,
+            'postal_code' => $gateway->calculatesTax() ? null : $postalCode,
             'amount_cents' => $quote['amount'],
             'discount_cents' => $quote['discount'],
             'sponsor_organisation_id' => $quote['sponsor']?->id,
@@ -112,8 +118,13 @@ final readonly class Checkout
             'environment' => $gateway->environment(),
         ]);
 
+        // Gateways without built-in tax charge what Stripe's tax calculation says.
+        if (! $gateway->calculatesTax()) {
+            $this->tax->calculate($order);
+        }
+
         $session = $gateway->checkout($order, $buyer, $returnUrl($order));
-        $order->forceFill(['gateway_session_id' => $session->id])->save();
+        $order->forceFill(['gateway_session_id' => $session->id, 'gateway_reference' => $session->id])->save();
 
         $this->audit->record('order.started', 'order', $order->uuid, ['product' => $price->product->key, 'state' => $price->state_code, 'charge' => $quote['charge']], $buyer);
 
@@ -127,7 +138,7 @@ final readonly class Checkout
             return $order;
         }
 
-        $gateway = $this->gateways->current();
+        $gateway = $this->gateways->driver($order->gateway);
 
         if ($gateway === null || $gateway->environment() !== $order->environment) {
             return $order;
@@ -161,8 +172,8 @@ final readonly class Checkout
             $locked->forceFill([
                 'status' => OrderStatus::Paid,
                 'paid_at' => now(),
-                'total_cents' => $result->totalCents ?? $locked->chargeCents(),
-                'tax_cents' => $result->taxCents,
+                'total_cents' => $result->totalCents ?? $locked->chargeCents() + ($locked->tax_cents ?? 0),
+                'tax_cents' => $result->taxCents ?? $locked->tax_cents,
                 'gateway_payment_id' => $result->paymentId,
                 'gateway_subscription_id' => $result->subscriptionId,
                 'receipt_url' => $result->receiptUrl,
@@ -194,6 +205,7 @@ final readonly class Checkout
         $order->refresh();
 
         if ($fulfilled) {
+            $this->tax->record($order);
             $order->user?->notify(new PurchaseReceipt($order));
         }
 

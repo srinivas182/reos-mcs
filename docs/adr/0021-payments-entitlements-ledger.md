@@ -1,6 +1,6 @@
 # 0021: Payments, entitlements and the ledger
 
-**Status:** accepted (B5.1, 22 November 2026); B5.2 (more gateways, routing, payouts) and B5.3 (credits, points, the ledger) extend it.
+**Status:** accepted (B5.1, 22 November 2026; gateways and routing B5.2a); B5.2b (payouts) and B5.3 (credits, points, the ledger) extend it.
 
 ## Context
 
@@ -17,10 +17,15 @@ REOS sells plans, courses, packages, credit packs and seat packs to candidates, 
 7. **Plan and billing** (screen 29 and each role's equivalent, in Settings): plans for the person's role and state, what they have now, subscriptions (cards and cancelling in Stripe's customer portal) and receipts.
 8. **The phone never sells (B5.1b, decision 4).** The Membership screen (candidate screen 6) shows what a plan includes, never a price. iPhone: "Email me the link" by default; a super-admin switch on screen 67 (`platform_settings`, audited) turns on the reos.com link without an app release. Android shows the same words without a link. `GET /me/membership`, `POST /me/membership/email-link`.
 9. **Sponsor codes** (`sponsor_codes`, `sponsor_code_redemptions`): REOS issues a code for seats a tenant pays for on the tenant's Plan tab (screen 60); each person redeems once ("Enter a code" in the app or on Plan and billing) and gets the product's features as a `sponsor` entitlement; codes stop at their seats, expiry or when stopped. B5.3 funds them from sponsor pools.
-10. **Records.** Orders stay for tax records when an account is deleted, linked to no one. Price changes, plan changes and orders are audited.
+10. **More gateways, one interface (B5.2a).** `PaymentGateway` (checkout, result, portal, signed events) has Stripe, PayPal (Orders v2 with PayPal's hosted approval, captured on return; webhooks checked with PayPal's verify-webhook-signature) and Authorize.net (Accept Hosted: REOS gets a token and posts the buyer to Authorize.net's page; the result is found by invoice number; webhooks signed with HMAC-SHA512). Each says whether it takes plans that renew (Stripe only) and whether it works out tax (Stripe only). Card data never touches REOS at any of them (PCI SAQ A). Webhooks: `/webhooks/{stripe|paypal|authorize-net}`; receipts are kept per gateway, and events find orders by gateway and session.
+11. **Routing and the kill switch (screen 66).** `gateway_settings` says which states and kinds of product each gateway serves (none: all), which is the default, and whether tenants may connect their own account (gateways with payouts only). Checkout tries the default first, then the next in order, skipping paused gateways, gateways that are Off or lack keys, and gateways that can't take a plan that renews; none left means "Purchases are paused". Keys and Off / Simulator / Sandbox / Live stay in Settings › Integrations ("Add gateway" goes there). Every change, pause (with its reason) and resume is audited with before and after.
+12. **The same tax everywhere (B5.2a).** Gateways without built-in tax ask for the buyer's ZIP code first; Stripe's tax calculation API works out the tax from state and ZIP code, the gateway charges that amount, and after payment the calculation is recorded as a Stripe Tax transaction for filing. Without Stripe keys outside production, the Simulator's demo rate (8.25%) stands in; in production checkout refuses rather than charge no tax.
+13. **Records.** Orders stay for tax records when an account is deleted, linked to no one. Price changes, plan changes and orders are audited.
 
 ## Consequences
 
 - Workers listen on the `billing` queue; the Stripe webhook endpoint subscribes to `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted` and `charge.refunded`.
 - Stripe Tax needs the Texas registration in the client's Stripe account before live mode.
-- B5.2 puts PayPal and Authorize.net behind the same `PaymentGateway` interface with routing per state and product and the kill switch (screen 66); B5.3 adds the ledger, credit pools, sponsor pools and codes, refunds from REOS and reconciliation with the gateway's balance transactions.
+- PayPal webhooks subscribe to `CHECKOUT.ORDER.APPROVED`, `PAYMENT.CAPTURE.COMPLETED` and `PAYMENT.CAPTURE.REFUNDED`; Authorize.net to `net.authorize.payment.authcapture.created`, `.refund.created` and `.void.created`.
+- Stripe stays required for tax even when another gateway takes the payment.
+- B5.2b adds Stripe Connect payouts and tenant-owned accounts; B5.3 adds the ledger, credit pools, sponsor pools and codes, refunds from REOS and reconciliation with the gateway's balance transactions.

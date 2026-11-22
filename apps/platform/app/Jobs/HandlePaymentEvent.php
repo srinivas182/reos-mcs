@@ -26,6 +26,7 @@ final class HandlePaymentEvent implements ShouldQueue
         public readonly ?string $subscriptionId = null,
         public readonly ?string $paymentId = null,
         public readonly ?string $periodEnd = null,
+        public readonly string $gateway = 'stripe',
     ) {
         $this->onQueue('billing');
     }
@@ -44,7 +45,7 @@ final class HandlePaymentEvent implements ShouldQueue
 
     private function completed(Checkout $checkout): void
     {
-        $order = $this->sessionId === null ? null : Order::query()->where('gateway_session_id', $this->sessionId)->first();
+        $order = $this->sessionId === null ? null : Order::query()->where('gateway', $this->gateway)->where('gateway_session_id', $this->sessionId)->first();
 
         if ($order !== null) {
             $checkout->confirm($order);

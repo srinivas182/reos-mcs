@@ -257,7 +257,7 @@ describe('Stripe (B5.1)', function () {
 
         $subscription = Subscription::query()->sole();
         expect($subscription->status)->toBe(SubscriptionStatus::Active)
-            ->and(Entitlement::query()->first()->ends_at->getTimestamp())->toBe(now()->addMonth()->addDays(2)->getTimestamp());
+            ->and(Entitlement::query()->first()->ends_at->getTimestamp())->toBe($periodEnd + 2 * 86400);
 
         stripeEvent($this, ['id' => 'evt_f', 'type' => 'invoice.payment_failed', 'data' => ['object' => ['subscription' => 'sub_1']]]);
         expect($subscription->refresh()->status)->toBe(SubscriptionStatus::PastDue)

@@ -1,16 +1,18 @@
 <?php
 
+use App\Billing\Gateways\Gateways;
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Connections\WebhookController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Http\Controllers\Webhooks\PaymentWebhookController;
 use Illuminate\Support\Facades\Route;
 
-// Payments (B5.1): Stripe, signed with the webhook secret. Before the
+// Payments (B5.1, B5.2a): Stripe, PayPal and Authorize.net, each signed its own way. Before the
 // connections route so the gateway never reaches a tool's driver.
-Route::post('webhooks/stripe', PaymentWebhookController::class)
+Route::post('webhooks/{gateway}', PaymentWebhookController::class)
+    ->whereIn('gateway', Gateways::CHECKOUT)
     ->middleware('throttle:webhooks')
-    ->name('webhooks.stripe');
+    ->name('webhooks.payments');
 
 // Inbound webhooks from connected tools (B3.1, ADR 0013). No session or CSRF:
 // each tool's own signature check (in its driver) protects the endpoint.

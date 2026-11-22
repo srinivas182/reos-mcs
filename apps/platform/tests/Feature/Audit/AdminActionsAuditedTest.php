@@ -12,6 +12,7 @@ use App\Enums\OrganisationType;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Models\AuditEvent;
 use App\Models\Course;
+use App\Models\GatewaySetting;
 use App\Models\Invitation;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
@@ -251,6 +252,15 @@ function adminActions(): array
             return auditCase($ops, 'DELETE', "/admin/plans/{$plan->id}/prices/{$price->id}", confirmed: true);
         },
         'plans.ios-buy-link' => fn () => auditCase(auditOps(), 'PUT', '/admin/plans/ios-buy-link', ['mode' => 'link'], confirmed: true),
+        // Super admin: payment gateways (B5.2a, screen 66).
+        'gateways.update' => fn () => auditCase(auditOps(), 'PUT', '/admin/gateways/paypal', ['states' => ['TX'], 'used_for' => ['package'], 'is_default' => true, 'tenant_accounts' => false], confirmed: true),
+        'gateways.pause' => fn () => auditCase(auditOps(), 'POST', '/admin/gateways/stripe/pause', ['reason' => 'Card testing attack'], confirmed: true),
+        'gateways.resume' => function () {
+            $ops = auditOps();
+            GatewaySetting::query()->create(['gateway' => 'stripe', 'paused' => true, 'paused_reason' => 'Outage']);
+
+            return auditCase($ops, 'DELETE', '/admin/gateways/stripe/pause', confirmed: true);
+        },
         'tenants.codes.store' => function () {
             [$lone] = auditBrokerage();
             $ops = auditOps();
@@ -485,4 +495,5 @@ const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
+    'gateways.update', 'gateways.pause', 'gateways.resume',
 ];

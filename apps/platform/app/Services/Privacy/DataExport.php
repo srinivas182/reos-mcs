@@ -67,7 +67,7 @@ final readonly class DataExport
             // Purchases, plans and what they unlock (B5.1). Card details are never held by REOS.
             'billing' => [
                 'orders' => DB::table('orders')->join('products', 'products.id', '=', 'orders.product_id')->where('orders.user_id', $user->id)->orderBy('orders.id')
-                    ->get(['products.name as product', 'orders.state_code', 'orders.amount_cents', 'orders.discount_cents', 'orders.tax_cents', 'orders.total_cents', 'orders.currency', 'orders.status', 'orders.gateway', 'orders.paid_at', 'orders.created_at'])
+                    ->get(['products.name as product', 'orders.state_code', 'orders.postal_code', 'orders.amount_cents', 'orders.discount_cents', 'orders.tax_cents', 'orders.total_cents', 'orders.currency', 'orders.status', 'orders.gateway', 'orders.paid_at', 'orders.created_at'])
                     ->map(static fn ($r): array => (array) $r)->all(),
                 'subscriptions' => DB::table('subscriptions')->join('products', 'products.id', '=', 'subscriptions.product_id')->where('subscriptions.user_id', $user->id)
                     ->get(['products.name as product', 'subscriptions.gateway', 'subscriptions.status', 'subscriptions.current_period_end', 'subscriptions.canceled_at'])

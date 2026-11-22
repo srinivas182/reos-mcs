@@ -44,7 +44,8 @@
     "learnAndCe": "Learn and CE",
     "search": "Search your lessons",
     "plansAndPricing": "Plans and pricing",
-    "planAndBilling": "Plan and billing"
+    "planAndBilling": "Plan and billing",
+    "paymentGateways": "Payment gateways"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1934,7 +1935,10 @@
         "code.created": "Created a sponsor code",
         "code.deactivated": "Stopped a sponsor code",
         "code.redeemed": "Used a sponsor code",
-        "platform.setting_changed": "Changed a platform setting"
+        "platform.setting_changed": "Changed a platform setting",
+        "gateway.updated": "Changed how a payment gateway is used",
+        "gateway.paused": "Paused a payment gateway",
+        "gateway.resumed": "Resumed a payment gateway"
       }
     }
   },
@@ -3264,7 +3268,9 @@
       "paused": "Purchases are paused right now. Try again soon.",
       "notForSale": "This plan isn't for sale right now.",
       "noPrice": "Set a price in at least one state before the plan goes live.",
-      "floor": "The lowest price can't be more than the price."
+      "floor": "The lowest price can't be more than the price.",
+      "postalCode": "Enter a five-digit ZIP code.",
+      "tax": "We couldn't work out the sales tax. Check the ZIP code and try again."
     },
     "membershipRequired": "This lesson is part of a plan. See the plans on reos.com.",
     "noPortal": "Card and invoice settings aren't available yet.",
@@ -3305,7 +3311,7 @@
       "totalBeforeTax": "Total before tax",
       "pay": "Pay {{amount}}",
       "webOnly": "Bought on the web only. The app unlocks within seconds; there are no purchases inside the iPhone or Android app.",
-      "processedBy": "Payments are processed by Stripe, the gateway enabled for {{state}} in the REOS back office. Card details never touch REOS servers.",
+      "processedBy": "Payments are processed by {{gateway}}, the gateway enabled for {{state}} in the REOS back office. Card details never touch REOS servers.",
       "paymentMethod": "Payment method",
       "simulator": "Simulator: no real payment. Use it to try checkout before Stripe is connected.",
       "testCard": "Test card",
@@ -3318,7 +3324,11 @@
         "year": "Every year"
       },
       "perMonth": "{{amount}} / month",
-      "perYear": "{{amount}} / year"
+      "perYear": "{{amount}} / year",
+      "postalCode": "ZIP code",
+      "postalCodeHelp": "We use it to work out the sales tax before you pay.",
+      "continueTo": "Continue to {{gateway}}",
+      "simulatorFor": "Simulator: no real payment. This stands in for {{gateway}} until it is connected."
     },
     "complete": {
       "title": "You're in",
@@ -3407,6 +3417,11 @@
         "action": "See plans",
         "unlock": "The app unlocks within seconds of buying; there's nothing to buy in the app."
       }
+    },
+    "hosted": {
+      "continue": "Back to REOS",
+      "cancel": "Cancel",
+      "pay": "Pay"
     }
   },
   "plans": {
@@ -3494,6 +3509,91 @@
       "email": "Email me the link (no link in the app)",
       "link": "Link to reos.com",
       "help": "The app never shows prices. Android always shows the words without a link. Change this without an app release."
+    }
+  },
+  "gateways": {
+    "title": "Payment gateways",
+    "description": "Web checkout only · no payments inside the iPhone or Android app",
+    "add": "Add gateway",
+    "emptyTitle": "No payment gateways yet",
+    "empty": "Add a gateway in Integrations with its keys; it appears here to route checkout.",
+    "actions": "Actions",
+    "default": "default",
+    "all": "All",
+    "onceOnly": "One-time purchases only",
+    "payoutsConnect": "Stripe Connect to instructors, mentors, schools",
+    "allowed": "Allowed",
+    "notAllowed": "No",
+    "ordersToday": "Last 24 hours: {{paid}} paid, {{expired}} not finished",
+    "edit": "Edit {{name}}",
+    "editHelp": "Choose the states and products this gateway serves. Keys and test or live mode stay in Integrations.",
+    "save": "Save",
+    "saved": "Gateway saved.",
+    "pause": "Pause",
+    "pauseTitle": "Pause {{name}}?",
+    "pauseHelp": "Checkout moves to the next gateway allowed for that state and product. If there is none, buyers see \"Purchases are paused\".",
+    "pauseReason": "Reason (kept in the audit log)",
+    "pausedToast": "Gateway paused. Checkout uses the next allowed gateway.",
+    "resume": "Resume",
+    "columns": {
+      "gateway": "Gateway",
+      "status": "Status",
+      "states": "States and currency",
+      "usedFor": "Used for",
+      "payouts": "Payouts",
+      "tenantAccounts": "Tenant-owned accounts",
+      "health": "Health"
+    },
+    "status": {
+      "paused": "Paused",
+      "off": "Off",
+      "needsKeys": "Needs keys",
+      "simulator": "Simulator",
+      "sandbox": "Test mode",
+      "live": "Enabled"
+    },
+    "health": {
+      "healthy": "Healthy",
+      "simulator": "Demo payments",
+      "failing": "Key check failed",
+      "autoPaused": "Paused by health checks"
+    },
+    "fields": {
+      "states": "States",
+      "statesHelp": "None ticked: every state.",
+      "usedFor": "Used for",
+      "usedForHelp": "None ticked: every kind of product.",
+      "usedForOnce": "None ticked: every kind of product. Plans that renew always go to a gateway that can take them (Stripe).",
+      "default": "Default gateway",
+      "defaultHelp": "Checkout tries this gateway first.",
+      "tenantAccounts": "Tenants may connect their own account",
+      "tenantAccountsHelp": "REOS still keeps its platform fee.",
+      "tenantAccountsNo": "Only Stripe and Authorize.net let tenants connect their own account."
+    },
+    "fees": {
+      "title": "Fees and tax",
+      "sessions": "Platform fee · sessions",
+      "schoolSales": "Platform fee · school sales",
+      "providerPlans": "Provider plans",
+      "salesTax": "Sales tax",
+      "refunds": "Refund window",
+      "allReos": "100% REOS",
+      "stripeTax": "Stripe Tax · state rules",
+      "refundRule_one": "{{count}} day, under 25% of a course done",
+      "refundRule_other": "{{count}} days, under 25% of a course done"
+    },
+    "rules": {
+      "title": "Rules",
+      "routing": "Each state and product uses the default gateway that serves it, then the next one",
+      "tenantAccounts": "Tenants may connect their own Stripe account; REOS keeps its platform fee",
+      "killSwitch": "Kill switch per gateway; checkout moves on or shows \"Purchases are paused\"",
+      "tax": "Every gateway charges the same sales tax, worked out by Stripe Tax",
+      "pci": "Card data never touches REOS servers (PCI SAQ A)"
+    },
+    "names": {
+      "stripe": "Stripe",
+      "paypal": "PayPal",
+      "authorize-net": "Authorize.net"
     }
   }
 }
