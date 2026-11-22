@@ -34,6 +34,7 @@ RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --opt
  && cd /src && git init -q \
  && pnpm install --frozen-lockfile --filter platform... \
  && cd /src/apps/platform \
+ && mkdir -p storage/app/public storage/framework/cache/data storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
  && cp .env.example .env && php artisan key:generate --no-interaction \
  && php artisan wayfinder:generate --with-form \
  && pnpm build \
