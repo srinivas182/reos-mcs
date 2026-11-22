@@ -37,6 +37,13 @@ return [
 
     'mailers' => [
 
+        // Amazon SES with the keys from Settings › Integrations (B6.2d); the
+        // fallback mailer until SES is set up. Production sets MAIL_MAILER=reos.
+        'reos' => [
+            'transport' => 'reos-ses',
+            'fallback' => env('MAIL_REOS_FALLBACK', 'log'),
+        ],
+
         'smtp' => [
             'transport' => 'smtp',
             'scheme' => env('MAIL_SCHEME'),

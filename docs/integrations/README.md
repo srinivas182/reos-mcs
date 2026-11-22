@@ -527,7 +527,7 @@ Transactional email, digests and the morning brief.
 - **Sandbox:** SES sandbox (verified recipients only).
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Per 1,000 emails.
-- **Notes:** Request production access; set up SPF, DKIM and DMARC on the product domain.
+- **Notes:** Request production access; set up SPF, DKIM and DMARC on the product domain. B6.2d sends all mail through it when MAIL_MAILER=reos (keys resolved from here at send time; the log until set up) and reads bounces and complaints from an SNS topic subscribed to https://reos.com/webhooks/ses (SNS-signed; pin the topic ARN here). Hard bounces and complaints stop email to that address until the person resumes it.
 
 ### Twilio SMS
 <a id="twilio-sms"></a>

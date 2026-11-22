@@ -5550,6 +5550,43 @@
                                                 "available"
                                             ]
                                         },
+                                        "email": {
+                                            "type": "object",
+                                            "properties": {
+                                                "address": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "stopped": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "reason": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "bounce",
+                                                                "complaint"
+                                                            ]
+                                                        },
+                                                        "at": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "reason",
+                                                        "at"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "address",
+                                                "stopped"
+                                            ]
+                                        },
                                         "quiet": {
                                             "type": "object",
                                             "properties": {
@@ -5578,6 +5615,7 @@
                                         "channels",
                                         "phones",
                                         "texts",
+                                        "email",
                                         "quiet",
                                         "timezone"
                                     ]
@@ -5717,6 +5755,43 @@
                                                 "available"
                                             ]
                                         },
+                                        "email": {
+                                            "type": "object",
+                                            "properties": {
+                                                "address": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "stopped": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "reason": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "bounce",
+                                                                "complaint"
+                                                            ]
+                                                        },
+                                                        "at": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "reason",
+                                                        "at"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "address",
+                                                "stopped"
+                                            ]
+                                        },
                                         "quiet": {
                                             "type": "object",
                                             "properties": {
@@ -5745,6 +5820,7 @@
                                         "channels",
                                         "phones",
                                         "texts",
+                                        "email",
                                         "quiet",
                                         "timezone"
                                     ]
@@ -5776,6 +5852,84 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/email/resume": {
+            "post": {
+                "operationId": "me.email.resume",
+                "description": "For people who fixed their mailbox. If it bounces again, it stops again.",
+                "summary": "Resume email after a bounce or complaint (B6.2d)",
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "address": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "stopped": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "reason": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "bounce",
+                                                        "complaint"
+                                                    ]
+                                                },
+                                                "at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "reason",
+                                                "at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "address",
+                                        "stopped"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }

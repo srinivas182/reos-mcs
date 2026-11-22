@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Notifications;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\NotificationSettingsRequest;
+use App\Mail\Ses\EmailSuppressions;
 use App\Models\User;
 use App\Notifications\Centre\Inbox;
 use App\Notifications\Centre\Preferences;
@@ -49,6 +50,15 @@ final class NotificationsController extends Controller
             // The browser's zone, offered when it differs from the saved one.
             'browserTimezone' => PersonTimezone::of($request),
         ]);
+    }
+
+    /** Email stopped after a bounce or complaint; the person fixed it (B6.2d). */
+    public function resumeEmail(#[CurrentUser] User $user, EmailSuppressions $suppressions): RedirectResponse
+    {
+        $suppressions->resume($user);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('notifications.email.resumed')]);
+
+        return back();
     }
 
     public function update(NotificationSettingsRequest $request, #[CurrentUser] User $user, Preferences $preferences): RedirectResponse

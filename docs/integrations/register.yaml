@@ -549,9 +549,15 @@ entries:
         - { key: secret_access_key, secret: true }
         - { key: region, default: us-east-2 }
         - { key: from_email, kind: email, default: hello@reos.com }
+        - { key: sns_topic_arn, required: false }
     personal_data: true
     cost: Per 1,000 emails.
-    notes: Request production access; set up SPF, DKIM and DMARC on the product domain.
+    notes: >-
+      Request production access; set up SPF, DKIM and DMARC on the product domain. B6.2d sends all
+      mail through it when MAIL_MAILER=reos (keys resolved from here at send time; the log until set
+      up) and reads bounces and complaints from an SNS topic subscribed to
+      https://reos.com/webhooks/ses (SNS-signed; pin the topic ARN here). Hard bounces and
+      complaints stop email to that address until the person resumes it.
 
   - id: twilio-sms
     name: Twilio SMS

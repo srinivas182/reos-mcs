@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications\Centre;
 
+use App\Mail\Ses\EmailSuppressions;
 use App\Models\NotificationSetting;
 use App\Models\User;
 use App\Notifications\Centre\Push\PushChannel;
@@ -30,7 +31,10 @@ final class NotificationCentre
     /** @var array<int, bool> whether each person can get texts, for this run */
     private array $texts = [];
 
-    public function __construct(private TextAlerts $alerts) {}
+    /** @var array<int, bool> whether email to each person is suppressed, for this run */
+    private array $bounced = [];
+
+    public function __construct(private TextAlerts $alerts, private EmailSuppressions $suppressions) {}
 
     public function settings(User $user): NotificationSetting
     {
@@ -39,7 +43,7 @@ final class NotificationCentre
 
     public function forget(User $user): void
     {
-        unset($this->settings[$user->id], $this->texts[$user->id]);
+        unset($this->settings[$user->id], $this->texts[$user->id], $this->bounced[$user->id]);
     }
 
     /** Whether the person gets this kind on this channel. */
@@ -47,6 +51,11 @@ final class NotificationCentre
     {
         // Texts need a verified number and the person's SMS consent first (B6.2c).
         if ($channel === NotificationKind::SMS && ! ($this->texts[$user->id] ??= $this->alerts->ready($user))) {
+            return false;
+        }
+
+        // Email stops after a hard bounce or a complaint until the person resumes it (B6.2d).
+        if ($channel === NotificationKind::EMAIL && ($this->bounced[$user->id] ??= $user->email !== null && $this->suppressions->suppressed($user->email))) {
             return false;
         }
 

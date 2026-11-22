@@ -6,6 +6,7 @@ use App\Http\Controllers\Connections\WebhookController;
 use App\Http\Controllers\Webhooks\ConnectWebhookController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Http\Controllers\Webhooks\PaymentWebhookController;
+use App\Http\Controllers\Webhooks\SesWebhookController;
 use App\Http\Controllers\Webhooks\TwilioSmsWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,11 @@ Route::post('webhooks/stripe-connect', ConnectWebhookController::class)
 Route::post('webhooks/twilio-sms', TwilioSmsWebhookController::class)
     ->middleware('throttle:webhooks')
     ->name('webhooks.twilio-sms');
+
+// Amazon SES bounces and complaints through SNS (B6.2d). Signed by SNS.
+Route::post('webhooks/ses', SesWebhookController::class)
+    ->middleware('throttle:webhooks')
+    ->name('webhooks.ses');
 
 // Inbound webhooks from connected tools (B3.1, ADR 0013). No session or CSRF:
 // each tool's own signature check (in its driver) protects the endpoint.

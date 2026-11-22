@@ -90,7 +90,15 @@ export function useNotificationSettings() {
     return data ? { ok: true } : { ok: false, message: problem(error) };
   }, [apply]);
 
-  return { settings, failed, save, sendCode, verifyNumber, turnTexts };
+  // Email stopped after a bounce or complaint (B6.2d): the person fixed it.
+  const resumeEmail = useCallback(async (): Promise<boolean> => {
+    const { data } = await api().POST('/me/email/resume');
+    if (data) setSettings((current) => (current ? { ...current, email: data } : current));
+
+    return data !== undefined;
+  }, []);
+
+  return { settings, failed, save, sendCode, verifyNumber, turnTexts, resumeEmail };
 }
 
 /** The server's message for a refused request (already in the person's language). */

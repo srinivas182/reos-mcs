@@ -643,6 +643,13 @@
             "required": true,
             "kind": "email",
             "default": "hello@reos.com"
+          },
+          {
+            "key": "sns_topic_arn",
+            "secret": false,
+            "required": false,
+            "kind": "text",
+            "default": null
           }
         ]
       }

@@ -129,6 +129,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('me/notification-settings', [ApiNotificationsController::class, 'update'])->middleware('throttle:30,1,api-notification-settings')->name('api.me.notification-settings.update');
     // Push to this phone (B6.2b).
     Route::post('me/push-devices', [PushDeviceController::class, 'store'])->middleware('throttle:20,1,api-push-devices')->name('api.me.push-devices.store');
+    Route::post('me/email/resume', [ApiNotificationsController::class, 'resumeEmail'])->middleware('throttle:5,10,api-email-resume')->name('api.me.email.resume');
     // Texts (B6.2c).
     Route::post('me/phone', [ApiTextsController::class, 'sendCode'])->middleware('throttle:5,10,api-texts-code')->name('api.me.texts.phone');
     Route::post('me/phone/verify', [ApiTextsController::class, 'verify'])->middleware('throttle:10,10,api-texts-verify')->name('api.me.texts.verify');

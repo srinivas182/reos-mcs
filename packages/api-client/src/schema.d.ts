@@ -1150,6 +1150,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/email/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Resume email after a bounce or complaint (B6.2d)
+         * @description For people who fixed their mailbox. If it bounces again, it stops again.
+         */
+        post: operations["me.email.resume"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/onboarding": {
         parameters: {
             query?: never;
@@ -5143,6 +5163,14 @@ export interface operations {
                             on: boolean;
                             available: boolean;
                         };
+                        email: {
+                            address: string | null;
+                            stopped: {
+                                /** @enum {string} */
+                                reason: "bounce" | "complaint";
+                                at: string;
+                            } | null;
+                        };
                         quiet: {
                             enabled: boolean;
                             start: string;
@@ -5196,6 +5224,14 @@ export interface operations {
                             on: boolean;
                             available: boolean;
                         };
+                        email: {
+                            address: string | null;
+                            stopped: {
+                                /** @enum {string} */
+                                reason: "bounce" | "complaint";
+                                at: string;
+                            } | null;
+                        };
                         quiet: {
                             enabled: boolean;
                             start: string;
@@ -5207,6 +5243,45 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.email.resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        address: string | null;
+                        stopped: {
+                            /** @enum {string} */
+                            reason: "bounce" | "complaint";
+                            at: string;
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {
