@@ -1,10 +1,10 @@
 # Personal data map
 
-Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 21 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1, ZIP codes for tax in B5.2a, payouts in B5.2b, the ledger and refunds in B5.3); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
+Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 21 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1, ZIP codes for tax in B5.2a, payouts in B5.2b, the ledger and refunds in B5.3, last activity in A6.1); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
 
 | Data | Where | Why | See ("Download my data") | Delete (account deletion, after 30 days) |
 | --- | --- | --- | --- | --- |
-| Name, email, phone, language, target state | `users` | Account and sign-in | Profile | Deleted |
+| Name, email, phone, language, target state, when last active | `users` | Account and sign-in; "online now" on the platform overview (A6.1, counts only) | Profile | Deleted |
 | Roles in organisations | `model_has_roles` | What each person can do | Roles | Deleted (cascade) |
 | Linked Google or Apple accounts | `social_accounts` | One-tap sign-in | Sign-in | Deleted (cascade) |
 | Single sign-on links | `sso_identities` | Association sign-in | Sign-in | Deleted (cascade) |

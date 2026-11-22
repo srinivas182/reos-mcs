@@ -41,6 +41,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
+ * @property Carbon|null $last_active_at When they last used REOS (A6.1)
  * @property string|null $remember_token
  * @property Appearance $appearance
  * @property TextSize $text_size
@@ -122,6 +123,7 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
             'locale' => Locale::class,
             /* @chisel-2fa */
             'two_factor_confirmed_at' => 'datetime',
+            'last_active_at' => 'datetime',
             /* @end-chisel-2fa */
         ];
     }

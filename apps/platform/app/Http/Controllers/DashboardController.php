@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Authorization\Role;
 use App\Models\Licence;
 use App\Models\User;
+use App\Monitoring\PlatformOverview;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Calendar\CalendarView;
 use App\Services\StateRules\CeRequirements;
@@ -24,8 +25,15 @@ use Inertia\Response;
  */
 final class DashboardController extends Controller
 {
-    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CalendarView $calendar, PersonStates $states, CeRequirements $requirements): Response
+    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CalendarView $calendar, PersonStates $states, CeRequirements $requirements, PlatformOverview $overview): Response
     {
+        // The REOS super admin's home is the platform overview (screen 58, A6.1).
+        if ($roles->for($user)?->role === Role::SuperAdmin) {
+            $range = $request->validate(['range' => ['nullable', 'in:24h,30d']])['range'] ?? '24h';
+
+            return Inertia::render('admin/overview', ['overview' => $overview->summary(is_string($range) ? $range : '24h')]);
+        }
+
         $agent = $roles->for($user)?->role === Role::Agent;
         [$from, $to] = PersonTimezone::today($request);
 

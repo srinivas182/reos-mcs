@@ -36,6 +36,8 @@ final readonly class DataExport
                 'target_state' => $user->target_state,
                 'current_state' => $user->current_state,
                 'created_at' => $user->created_at?->toIso8601String(),
+                // When they last used REOS (A6.1; the platform overview's "online now").
+                'last_active_at' => $user->last_active_at?->toIso8601String(),
             ],
             'roles' => array_map(static fn ($m): array => ['role' => $m->role->value, 'organisation' => $m->organisation->name], $this->memberships->of($user)),
             'sign_in' => [

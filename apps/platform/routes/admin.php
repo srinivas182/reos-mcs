@@ -1,6 +1,7 @@
 <?php
 
 use App\Billing\Gateways\Gateways;
+use App\Http\Controllers\Admin\AiSettingsController;
 use App\Http\Controllers\Admin\CatalogueController;
 use App\Http\Controllers\Admin\ComplianceController;
 use App\Http\Controllers\Admin\Content\ContentApprovalsController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\Admin\LicenceReviewController;
 use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\ProviderCategoryController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\StateRuleController;
 use App\Http\Controllers\Admin\TenantController;
@@ -203,6 +205,17 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.man
             Route::put('refund-policy', [GatewayController::class, 'refundPolicy'])->name('refund-policy');
             Route::post('orders/{order:uuid}/refund', [GatewayController::class, 'refund'])->middleware(ConfirmIdentity::class)->name('refund');
         });
+    });
+
+// Provider categories (screen 68) and AI and credits (screen 69), A6.1.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.manage'])
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('provider-categories', [ProviderCategoryController::class, 'index'])->name('provider-categories.index');
+        Route::post('provider-categories', [ProviderCategoryController::class, 'store'])->middleware('throttle:60,1,admin-provider-categories')->name('provider-categories.store');
+        Route::patch('provider-categories/{category}', [ProviderCategoryController::class, 'update'])->whereNumber('category')->middleware('throttle:60,1,admin-provider-categories')->name('provider-categories.update');
+        Route::get('ai', [AiSettingsController::class, 'show'])->name('ai.show');
+        Route::put('ai', [AiSettingsController::class, 'update'])->middleware('throttle:30,1,admin-ai')->name('ai.update');
     });
 
 // Plans and pricing (B5.1, web journey screen 67): products and prices per

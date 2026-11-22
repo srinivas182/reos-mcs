@@ -6,6 +6,7 @@ use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\LogSupportViews;
 use App\Http\Middleware\PlatformScope;
+use App\Http\Middleware\RecordRequestMetrics;
 use App\Http\Middleware\ResolveTenant;
 use App\Http\Middleware\SetApiLocale;
 use App\Http\Middleware\TraceRequests;
@@ -38,6 +39,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // Monitoring settings from Settings › Integrations, and request traces.
         $middleware->prepend(TraceRequests::class);
+        // Request counts and durations for the platform overview (A6.1).
+        $middleware->prepend(RecordRequestMetrics::class);
 
         // Sign-in callbacks: Apple posts from its own site; the one-time OAuth
         // `state` protects them instead of a CSRF token.

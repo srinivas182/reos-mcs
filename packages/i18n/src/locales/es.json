@@ -47,7 +47,9 @@
     "planAndBilling": "Plan y facturación",
     "paymentGateways": "Pasarelas de pago",
     "earnings": "Ganancias",
-    "salesAndPayouts": "Ventas y pagos"
+    "salesAndPayouts": "Ventas y pagos",
+    "providerCategories": "Categorías de proveedores",
+    "aiAndCredits": "IA y créditos"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1972,7 +1974,10 @@
         "product.splits_changed": "Cambió un reparto de ingresos",
         "payouts.own_account_started": "Empezó a conectar su propia cuenta de Stripe",
         "pool.funded": "Agregó a un fondo de patrocinio",
-        "order.refund_issued": "Reembolsó un pedido"
+        "order.refund_issued": "Reembolsó un pedido",
+        "provider_category.created": "Agregó una categoría de proveedores",
+        "provider_category.updated": "Cambió una categoría de proveedores",
+        "ai.settings_changed": "Cambió la configuración de IA"
       }
     }
   },
@@ -3851,5 +3856,196 @@
       "finish": "Terminar la configuración",
       "later": "Volver a REOS"
     }
+  },
+  "overview": {
+    "title": "Resumen de la plataforma",
+    "description": "Todos los clientes · todas las celdas · en vivo",
+    "last24h": "Últimas 24 horas",
+    "last30d": "Últimos 30 días",
+    "statusPage": "Página de estado",
+    "tenants": "Clientes",
+    "noTenants": "Aún no hay clientes",
+    "people": "Usuarios",
+    "peopleDetail": "{{agents}} agentes · {{candidates}} candidatos",
+    "online": "En línea ahora",
+    "activeToday_one": "{{count}} activo hoy",
+    "activeToday_other": "{{count}} activos hoy",
+    "p95": "API p95",
+    "ms": "{{value}} ms",
+    "p95Target": "meta {{value}} ms",
+    "p95Over": "El tiempo de respuesta supera la meta de 300 ms. Revise las colas y las páginas más lentas.",
+    "uptime": "Disponibilidad",
+    "uptimeTarget": "30 días · meta {{value}}%",
+    "trafficHourly": "Solicitudes por hora · últimas 24 h",
+    "trafficDaily": "Solicitudes por día · últimos 30 días",
+    "trafficSummary": "{{total}} solicitudes en este periodo",
+    "now": "Ahora",
+    "cells": "Celdas",
+    "cellColumns": {
+      "cell": "Celda",
+      "region": "Región",
+      "tenants": "Clientes",
+      "status": "Estado"
+    },
+    "cellStatus": {
+      "healthy": "Saludable",
+      "unhealthy": "Requiere atención"
+    },
+    "oneCell": "Una celda hasta que la implementación en AWS agregue más regiones y una de respaldo.",
+    "integrations": "Integraciones",
+    "liveHealthy": "En vivo y saludables",
+    "paused": "En pausa",
+    "comingSoon": "Próximamente",
+    "comingSoonValue": "{{count}} · {{taps}} pedidos de aviso",
+    "paymentsToday": "Pagos de hoy",
+    "gateway": "Pasarela",
+    "charges": "Cobros",
+    "unfinished": "Sin terminar",
+    "refunds": "Reembolsos",
+    "reconciliation": "Última conciliación",
+    "reconciliationStatus": {
+      "matched": "Coincide",
+      "differences": "Diferencias",
+      "failed": "No se pudo hacer"
+    },
+    "queues": "Colas",
+    "queueNames": {
+      "default": "Tareas generales",
+      "billing": "Pagos",
+      "content": "Procesamiento de lecciones",
+      "connections": "Sincronizaciones"
+    },
+    "waiting_one": "{{count}} en espera",
+    "waiting_other": "{{count}} en espera",
+    "unreachable": "Sin conexión",
+    "failedJobs": "Tareas fallidas",
+    "openTenants": "Abrir clientes",
+    "typeCount": {
+      "association_one": "{{count}} asociación",
+      "association_other": "{{count}} asociaciones",
+      "school_one": "{{count}} escuela",
+      "school_other": "{{count}} escuelas",
+      "brokerage_one": "{{count}} corretaje",
+      "brokerage_other": "{{count}} corretajes",
+      "team_one": "{{count}} equipo",
+      "team_other": "{{count}} equipos",
+      "provider_business_one": "{{count}} empresa proveedora",
+      "provider_business_other": "{{count}} empresas proveedoras"
+    }
+  },
+  "status": {
+    "title": "Estado de REOS",
+    "allGood": "Todo funciona",
+    "problem": "Algunas partes de REOS tienen un problema. Estamos trabajando en ello.",
+    "parts": {
+      "database": "Cuentas y datos",
+      "cache": "Respuestas rápidas",
+      "queue": "Trabajo en segundo plano (correos, sincronizaciones)",
+      "storage": "Archivos y videos"
+    },
+    "working": "Funciona",
+    "down": "Con problema",
+    "uptime": "Disponibilidad, últimos {{days}} días",
+    "checked": "Última revisión {{time}}"
+  },
+  "providerCategories": {
+    "title": "Categorías de proveedores de servicios",
+    "description": "Categorías ilimitadas · cada una con su verificación de licencia, campos de perfil y precios de planes",
+    "add": "Agregar categoría",
+    "edit": "Editar {{name}}",
+    "editSettings": "Editar configuración",
+    "settings": "{{name}} · configuración",
+    "save": "Guardar categoría",
+    "emptyTitle": "Aún no hay categorías",
+    "empty": "Agregue los tipos de proveedores que los agentes pueden encontrar en REOS, como oficiales de préstamos o inspectores.",
+    "respa": "RESPA: las tarifas de proveedores son fijas por aparecer y anunciarse. Nunca por referido, prospecto o préstamo cerrado.",
+    "requested_one": "Solicitada ×{{count}}",
+    "requested_other": "Solicitada ×{{count}}",
+    "columns": {
+      "category": "Categoría",
+      "licence": "Verificación de licencia",
+      "providers": "Proveedores",
+      "prices": "Precios de planes (TX)",
+      "status": "Estado"
+    },
+    "statuses": {
+      "live": "Activa",
+      "draft": "Borrador",
+      "requested": "Solicitada",
+      "retired": "Retirada"
+    },
+    "tiers": {
+      "basic": "Básico, por mes",
+      "pro": "Pro, por mes",
+      "premium": "Premium, por mes"
+    },
+    "fields": {
+      "name": "Nombre",
+      "licenceCheck": "Verificación de licencia",
+      "verification": "Verificación",
+      "profileFields": "Campos del perfil (uno por línea)",
+      "permissions": "Permisos especiales",
+      "areasOnPro": "Áreas en Pro",
+      "status": "Estado",
+      "prices": "Precios mensuales fijos de los planes",
+      "state": "Estado"
+    }
+  },
+  "aiSettings": {
+    "title": "IA y créditos",
+    "description": "Modelos, orden de respuestas, costos en créditos y límites",
+    "save": "Guardar",
+    "saved": "Configuración de IA guardada. Se aplica de inmediato.",
+    "answerOrder": "Orden de respuestas",
+    "role": "Función",
+    "step_ordinal_one": "{{count}}.º",
+    "step_ordinal_two": "{{count}}.º",
+    "step_ordinal_few": "{{count}}.º",
+    "step_ordinal_other": "{{count}}.º",
+    "stepFor_ordinal_one": "{{role}}: paso {{count}}.º",
+    "stepFor_ordinal_two": "{{role}}: paso {{count}}.º",
+    "stepFor_ordinal_few": "{{role}}: paso {{count}}.º",
+    "stepFor_ordinal_other": "{{role}}: paso {{count}}.º",
+    "none": "Ninguno",
+    "roles": {
+      "candidate": "Candidato",
+      "agent": "Agente",
+      "broker": "Corredor",
+      "provider": "Proveedor"
+    },
+    "sources": {
+      "course_knowledge": "Conocimiento del curso (gratis)",
+      "brokerage_policy": "Política del corretaje",
+      "state_rules": "Reglas del estado",
+      "category_knowledge": "Conocimiento de la categoría",
+      "general_ai": "IA general",
+      "instructor_booking": "Reservar con instructor",
+      "escalate_broker": "Escalar al corredor",
+      "reos_support": "Soporte de REOS"
+    },
+    "model": "Modelo de respuestas",
+    "models": {
+      "claude-sonnet": "Claude Sonnet · Amazon Bedrock (us-east-2)",
+      "claude-haiku": "Claude Haiku · Amazon Bedrock (us-east-2)"
+    },
+    "embeddings": "Embeddings",
+    "embeddingsValue": "Titan V2 · pgvector por cliente y estado",
+    "training": "Entrenamiento con datos de clientes",
+    "never": "Nunca",
+    "costs": "Costos en créditos",
+    "actions": {
+      "knowledge_answer": "Pregunta respondida con el conocimiento",
+      "general_answer": "Respuesta de IA general",
+      "contract_review": "Revisión de contrato",
+      "content_post": "Publicación del estudio de contenido",
+      "short_video": "Video corto",
+      "ai_lesson_minute": "Minuto de lección con IA (escuelas)",
+      "voice_todo": "Tarea por voz"
+    },
+    "monthly": "Predeterminado por puesto, cada mes",
+    "creditPack": "Paquete de créditos",
+    "creditPackValue": "{{credits}} por {{amount}} · reos.com",
+    "abuseLimit": "Límite de abuso (acciones por hora por persona)",
+    "candidates": "A los candidatos nunca se les cobran créditos: su ayuda de IA la cubre su patrocinador o REOS."
   }
 }
