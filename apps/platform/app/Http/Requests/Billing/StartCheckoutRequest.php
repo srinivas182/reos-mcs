@@ -19,7 +19,16 @@ final class StartCheckoutRequest extends FormRequest
         return [
             /** Five-digit US ZIP code, for the sales tax at gateways without their own. */
             'postal_code' => ['sometimes', 'nullable', 'string', 'regex:/^\d{5}$/'],
+            /** The brokerage or school sign-up this payment is for (A6.1b). */
+            'signup' => ['sometimes', 'nullable', 'uuid'],
         ];
+    }
+
+    public function signup(): ?string
+    {
+        $signup = $this->validated('signup');
+
+        return is_string($signup) ? $signup : null;
     }
 
     public function postalCode(): ?string

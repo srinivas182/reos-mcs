@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { BrandMark } from '@/components/brand-mark';
 import { OrderSummary } from '@/components/order-summary';
 import { Button } from '@/components/ui/button';
+import { dashboard } from '@/routes';
 import { featureLabel } from '@/lib/billing';
 import { index as billing } from '@/routes/billing';
 import { index as learn } from '@/routes/learn';
@@ -31,7 +32,10 @@ type Order = {
 export default function CheckoutComplete({
     order,
     unlocked,
+    tenant = null,
 }: {
+    /** A brokerage or school that signed up with this payment (A6.1b). */
+    tenant?: { name: string; type: string } | null;
     order: Order;
     unlocked: string[];
 }) {
@@ -85,6 +89,11 @@ export default function CheckoutComplete({
                                   ? t('billing.complete.pending')
                                   : t('billing.complete.expired')}
                         </p>
+                        {tenant ? (
+                            <p className="rounded-reos-md bg-reos-tone-success-bg p-4 text-body text-reos-tone-success-fg">
+                                {t('signup.ready', { name: tenant.name })}
+                            </p>
+                        ) : null}
                         {unlocked.length > 0 ? (
                             <div className="space-y-2 rounded-reos-lg border border-border bg-card p-5">
                                 <h2 className="font-semibold">
@@ -100,7 +109,15 @@ export default function CheckoutComplete({
                             </div>
                         ) : null}
                         <div className="flex flex-wrap gap-3">
-                            {order.status === 'paid' ? (
+                            {order.status === 'paid' && tenant ? (
+                                <Button asChild>
+                                    <Link href={dashboard()}>
+                                        {t('signup.open', {
+                                            name: tenant.name,
+                                        })}
+                                    </Link>
+                                </Button>
+                            ) : order.status === 'paid' ? (
                                 <Button asChild>
                                     <Link href={learn()}>
                                         {t('billing.complete.learn')}

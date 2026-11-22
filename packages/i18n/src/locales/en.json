@@ -1977,7 +1977,8 @@
         "order.refund_issued": "Refunded an order",
         "provider_category.created": "Added a provider category",
         "provider_category.updated": "Changed a provider category",
-        "ai.settings_changed": "Changed AI settings"
+        "ai.settings_changed": "Changed AI settings",
+        "tenant.signed_up": "Signed up and paid on the web"
       }
     }
   },
@@ -4047,5 +4048,35 @@
     "creditPackValue": "{{credits}} for {{amount}} · reos.com",
     "abuseLimit": "Abuse limit (actions per hour per person)",
     "candidates": "Candidates are never charged credits: their AI help draws on their sponsor, else REOS."
+  },
+  "signup": {
+    "brokerage": {
+      "title": "Start your brokerage on REOS",
+      "intro": "Name your brokerage, pick its states and a plan, and pay on the web. Your brokerage is ready the moment the payment lands, with you as its broker.",
+      "name": "Brokerage name",
+      "cta": "Start your brokerage"
+    },
+    "school": {
+      "title": "Start your school on REOS",
+      "intro": "Name your school, pick its states and a plan, and pay on the web. Your school is ready the moment the payment lands, with you as its administrator.",
+      "name": "School name",
+      "cta": "Start your school"
+    },
+    "states": "States you work in",
+    "statesHelp": "Only states where REOS is live. Add more later from your settings.",
+    "plansFor": "Plans for {{state}}",
+    "priceState": "Prices for",
+    "seats_one": "{{count}} seat",
+    "seats_other": "{{count}} seats",
+    "noPlansTitle": "No plans here yet",
+    "noPlans": "REOS sets plans for each state. Talk to the REOS team to get started.",
+    "continue": "Continue to payment",
+    "webOnly": "Payment happens on reos.com; card details never touch REOS.",
+    "checkoutFor": "For {{name}}",
+    "ready": "{{name}} is ready. You are its admin, and your team can join now.",
+    "open": "Open {{name}}",
+    "errors": {
+      "plan": "That plan isn't available for this organization and state."
+    }
   }
 }

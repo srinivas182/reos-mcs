@@ -18,6 +18,7 @@ use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
 use Database\Seeders\Demo\DemoPayouts;
 use Database\Seeders\Demo\DemoStates;
+use Database\Seeders\Demo\DemoTenantPlans;
 use Database\Seeders\Demo\DemoTenants;
 use Database\Seeders\Demo\Personas;
 use Illuminate\Database\Seeder;
@@ -81,6 +82,7 @@ final class DemoSeeder extends Seeder
         app(DemoBilling::class)->seed();
         app(DemoGateways::class)->seed();
         app(DemoPayouts::class)->seed();
+        app(DemoTenantPlans::class)->seed();
     }
 
     private function organisation(string $name): Organisation

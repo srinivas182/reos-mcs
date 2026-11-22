@@ -5,6 +5,7 @@ import type { Audience } from '@/components/public-header';
 import { Button } from '@/components/ui/button';
 import { liveStateWording } from '@/lib/live-states';
 import { getStarted, login, signUp } from '@/routes';
+import { show as startTenant } from '@/routes/start';
 
 type Props = { audience: Audience; liveStates: string[] };
 
@@ -78,6 +79,21 @@ export default function AudiencePage({ audience, liveStates }: Props) {
                                 }
                             >
                                 {t(`site.audience.${audience}.cta`)}
+                            </Link>
+                        </Button>
+                    ) : null}
+                    {audience === 'brokerages' || audience === 'schools' ? (
+                        <Button asChild variant="outline">
+                            <Link
+                                href={startTenant(
+                                    audience === 'schools'
+                                        ? 'school'
+                                        : 'brokerage',
+                                )}
+                            >
+                                {t(
+                                    `signup.${audience === 'schools' ? 'school' : 'brokerage'}.cta`,
+                                )}
                             </Link>
                         </Button>
                     ) : null}
