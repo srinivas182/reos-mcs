@@ -20,6 +20,7 @@ use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
+use App\Http\Controllers\Onboarding\TenantSignupController;
 use App\Http\Controllers\Organisation\AgentsController;
 use App\Http\Controllers\Organisation\BrandingController;
 use App\Http\Controllers\Organisation\DomainController;
@@ -34,10 +35,16 @@ use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Http\Middleware\EnsureOnboarded;
+use App\Services\Tenancy\TenantSignups;
 use Illuminate\Support\Facades\Route;
 
 // The public site (web journey screen 1) and each audience's landing page.
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
+// Brokerages and schools sign up and pay on the web (A6.1b, the Sprint 6 gate).
+Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind', array_keys(TenantSignups::TYPES))->name('start.')->group(function () {
+    Route::get('/', [TenantSignupController::class, 'show'])->name('show');
+    Route::post('/', [TenantSignupController::class, 'store'])->middleware('throttle:10,1,tenant-signup')->name('store');
+});
 // The public status page (A6.1).
 Route::get('status', StatusController::class)->middleware('throttle:60,1,status')->name('status');
 Route::get('for/{audience}', [PublicSiteController::class, 'audience'])

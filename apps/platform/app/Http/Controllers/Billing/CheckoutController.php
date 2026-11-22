@@ -4,21 +4,27 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Billing;
 
+use App\Authorization\Role;
 use App\Billing\Checkout;
 use App\Billing\Gateways\Gateways;
 use App\Billing\Gateways\SimulatedGateway;
 use App\Billing\OrderStatus;
 use App\Billing\ProductStatus;
+use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Billing\StartCheckoutRequest;
 use App\Models\Entitlement;
 use App\Models\Order;
 use App\Models\Price;
 use App\Models\State;
+use App\Models\TenantSignup;
 use App\Models\User;
+use App\Services\Authorization\ActiveRole;
+use App\Services\Tenancy\TenantSignups;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -30,14 +36,17 @@ use Inertia\Response;
  */
 final class CheckoutController extends Controller
 {
-    public function show(Price $price, #[CurrentUser] User $user, Checkout $checkout, Gateways $gateways): Response
+    public function show(Request $request, Price $price, #[CurrentUser] User $user, Checkout $checkout, Gateways $gateways): Response
     {
         abort_unless($price->isCurrent() && $price->product->status === ProductStatus::Live, 404);
+        $signup = self::signup($request->query('signup'), $user, $price);
         $quote = $checkout->quote($user, $price);
         $gateway = $gateways->route($price);
 
         return Inertia::render('billing/checkout', [
             'price' => self::price($price),
+            // Paying for a new brokerage or school (A6.1b).
+            'signup' => $signup === null ? null : ['uuid' => $signup->uuid, 'name' => $signup->name],
             'quote' => ['amount' => $quote['amount'], 'discount' => $quote['discount'], 'sponsor' => $quote['sponsor']?->name, 'charge' => $quote['charge']],
             'gateway' => $gateway === null ? null : [
                 'id' => $gateway->id(),
@@ -54,10 +63,15 @@ final class CheckoutController extends Controller
      * buyer to the gateway's hosted page (`redirect`), or shows the
      * Simulator, with the answer.
      */
-    public function start(StartCheckoutRequest $request, Price $price, #[CurrentUser] User $user, Checkout $checkout): JsonResponse
+    public function start(StartCheckoutRequest $request, Price $price, #[CurrentUser] User $user, Checkout $checkout, TenantSignups $signups): JsonResponse
     {
+        $signup = self::signup($request->signup(), $user, $price);
         $started = $checkout->start($user, $price, static fn (Order $order): string => route('checkout.complete', $order).'?session_id={CHECKOUT_SESSION_ID}', $request->postalCode());
         $order = $started['order'];
+
+        if ($signup !== null) {
+            $signups->attach($signup, $order);
+        }
 
         return response()->json([
             'order' => $order->uuid,
@@ -80,10 +94,16 @@ final class CheckoutController extends Controller
     }
 
     /** Back from paying: REOS asks the gateway directly and unlocks at once. */
-    public function complete(Order $order, #[CurrentUser] User $user, Checkout $checkout): Response
+    public function complete(Order $order, #[CurrentUser] User $user, Checkout $checkout, ActiveRole $roles): Response
     {
         abort_unless($order->user_id === $user->id, 404);
         $order = $checkout->confirm($order);
+        $signup = TenantSignup::query()->with('organisation')->where('order_id', $order->id)->first();
+
+        // A new brokerage or school: its owner works there from now on.
+        if ($signup?->organisation !== null && $signup->status === 'completed') {
+            $roles->choose($user, $signup->type === OrganisationType::School ? Role::SchoolAdmin : Role::Broker, $signup->organisation->id);
+        }
 
         return Inertia::render('billing/complete', [
             'order' => [
@@ -100,10 +120,18 @@ final class CheckoutController extends Controller
                 'receipt_url' => $order->receipt_url,
                 'paid_at' => $order->paid_at?->toIso8601String(),
             ],
+            'tenant' => $signup?->organisation === null ? null : ['name' => $signup->organisation->name, 'type' => $signup->type->value],
             'unlocked' => $order->status === OrderStatus::Paid
                 ? Entitlement::query()->active()->where('user_id', $user->id)->pluck('feature')->unique()->values()->all()
                 : [],
         ]);
+    }
+
+    /** A pending sign-up of this person's, for this price. */
+    private static function signup(mixed $uuid, User $user, Price $price): ?TenantSignup
+    {
+        return is_string($uuid) && $uuid !== '' ? TenantSignup::query()->where('uuid', $uuid)->where('user_id', $user->id)
+            ->where('price_id', $price->id)->where('status', 'pending')->first() : null;
     }
 
     public static function stateName(string $code): string

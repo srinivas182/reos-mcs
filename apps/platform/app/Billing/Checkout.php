@@ -21,6 +21,7 @@ use App\Notifications\PurchaseReceipt;
 use App\Services\Ai\AiCredits;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
+use App\Services\Tenancy\TenantSignups;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -50,6 +51,7 @@ final readonly class Checkout
         private RevenueSplit $split,
         private MoneyPostings $money,
         private AiCredits $credits,
+        private TenantSignups $signups,
     ) {}
 
     /**
@@ -216,6 +218,9 @@ final readonly class Checkout
             $this->split->record($order);
             // The ledger (B5.3): the money, and a top-up pack's credits.
             $this->money->orderPaid($order);
+
+            // A brokerage or school that signed up on the web (A6.1b).
+            $this->signups->complete($order);
 
             if ($order->product->kind === ProductKind::CreditPack && $order->user !== null) {
                 $this->credits->topUp($order->user, $order->product->credits ?? 0, $order->uuid);

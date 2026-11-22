@@ -29,7 +29,10 @@ export default function CheckoutPage({
     price,
     quote,
     gateway,
+    signup = null,
 }: {
+    /** Paying for a new brokerage or school (A6.1b). */
+    signup?: { uuid: string; name: string } | null;
     price: PriceView;
     quote: {
         amount: number;
@@ -56,10 +59,12 @@ export default function CheckoutPage({
         [gateway?.publishable_key],
     );
     const fetchClientSecret = useCallback(async () => {
-        const started = await postJson<StartedCheckout>(start(price.id).url);
+        const started = await postJson<StartedCheckout>(start(price.id).url, {
+            signup: signup?.uuid ?? null,
+        });
 
         return started.client_secret ?? '';
-    }, [price.id]);
+    }, [price.id, signup?.uuid]);
 
     const paySimulated = async () => {
         setBusy(true);
@@ -68,6 +73,7 @@ export default function CheckoutPage({
         try {
             const started = await postJson<StartedCheckout>(
                 start(price.id).url,
+                { signup: signup?.uuid ?? null },
             );
             router.post(simulate(started.order).url);
         } catch (e) {
@@ -83,6 +89,7 @@ export default function CheckoutPage({
     const startWithPostalCode = async (postalCode: string) => {
         const started = await postJson<StartedCheckout>(start(price.id).url, {
             postal_code: postalCode,
+            signup: signup?.uuid ?? null,
         });
         setTax(started.tax);
 
@@ -129,6 +136,13 @@ export default function CheckoutPage({
                                     }),
                                 ].join(' · ')}
                             </p>
+                            {signup ? (
+                                <p className="text-body font-medium">
+                                    {t('signup.checkoutFor', {
+                                        name: signup.name,
+                                    })}
+                                </p>
+                            ) : null}
                         </div>
                         {price.includes.length > 0 ? (
                             <section

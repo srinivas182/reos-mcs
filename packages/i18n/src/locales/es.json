@@ -1977,7 +1977,8 @@
         "order.refund_issued": "Reembolsó un pedido",
         "provider_category.created": "Agregó una categoría de proveedores",
         "provider_category.updated": "Cambió una categoría de proveedores",
-        "ai.settings_changed": "Cambió la configuración de IA"
+        "ai.settings_changed": "Cambió la configuración de IA",
+        "tenant.signed_up": "Se registró y pagó en la web"
       }
     }
   },
@@ -4047,5 +4048,35 @@
     "creditPackValue": "{{credits}} por {{amount}} · reos.com",
     "abuseLimit": "Límite de abuso (acciones por hora por persona)",
     "candidates": "A los candidatos nunca se les cobran créditos: su ayuda de IA la cubre su patrocinador o REOS."
+  },
+  "signup": {
+    "brokerage": {
+      "title": "Inicie su corretaje en REOS",
+      "intro": "Escriba el nombre de su corretaje, elija sus estados y un plan, y pague en la web. Su corretaje estará listo en cuanto se reciba el pago, con usted como corredor.",
+      "name": "Nombre del corretaje",
+      "cta": "Inicie su corretaje"
+    },
+    "school": {
+      "title": "Inicie su escuela en REOS",
+      "intro": "Escriba el nombre de su escuela, elija sus estados y un plan, y pague en la web. Su escuela estará lista en cuanto se reciba el pago, con usted como administrador.",
+      "name": "Nombre de la escuela",
+      "cta": "Inicie su escuela"
+    },
+    "states": "Estados en los que trabaja",
+    "statesHelp": "Solo estados donde REOS ya funciona. Agregue más después desde su configuración.",
+    "plansFor": "Planes para {{state}}",
+    "priceState": "Precios para",
+    "seats_one": "{{count}} lugar",
+    "seats_other": "{{count}} lugares",
+    "noPlansTitle": "Aún no hay planes aquí",
+    "noPlans": "REOS establece los planes para cada estado. Hable con el equipo de REOS para comenzar.",
+    "continue": "Continuar al pago",
+    "webOnly": "El pago se hace en reos.com; los datos de la tarjeta nunca pasan por REOS.",
+    "checkoutFor": "Para {{name}}",
+    "ready": "{{name}} está listo. Usted es su administrador y su equipo ya puede unirse.",
+    "open": "Abrir {{name}}",
+    "errors": {
+      "plan": "Ese plan no está disponible para esta organización y estado."
+    }
   }
 }
