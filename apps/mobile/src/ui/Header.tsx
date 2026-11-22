@@ -1,3 +1,4 @@
+import { initialsOf } from '@/lib/personName';
 import type { LucideIcon } from 'lucide-react-native';
 import type { ReactNode } from 'react';
 import { Pressable, View } from 'react-native';
@@ -23,12 +24,7 @@ export function ScreenHeader({ overline, title, trailing }: { overline?: string;
 
 /** Initials in a tinted circle (48 pt). Becomes a button when `onPress` is given. */
 export function Avatar({ name, label, onPress }: { name: string; label?: string; onPress?: () => void }) {
-  const initials = name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
+  const initials = initialsOf(name);
 
   return (
     <Pressable accessibilityRole={onPress ? 'button' : 'image'} accessibilityLabel={label ?? name} disabled={!onPress} onPress={onPress} style={styles.avatar}>

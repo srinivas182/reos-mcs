@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { nameParts } from '@/lib/person-name';
+
 export type GetInitialsFn = (fullName: string | null | undefined) => string;
 
 function getInitial(name: string): string {
@@ -8,7 +10,8 @@ function getInitial(name: string): string {
 
 export function useInitials(): GetInitialsFn {
     return useCallback((fullName: string | null | undefined): string => {
-        const names = (fullName ?? '').trim().split(/\s+/u).filter(Boolean);
+        // "Dr. Rachel Hughes" → "RH".
+        const names = nameParts(fullName);
 
         if (names.length === 0) {
             return '';

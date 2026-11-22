@@ -1,3 +1,4 @@
+import { initialsOf } from '@/lib/personName';
 import type { LucideIcon } from 'lucide-react-native';
 import { ArrowRight, Check, ChevronLeft } from 'lucide-react-native';
 import type { ReactNode } from 'react';
@@ -9,14 +10,8 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Icon } from './Icon';
 import { Text } from './Text';
 
-/** Initials from a name: "James Miller" → "JM". */
-export const initialsOf = (name: string): string =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join('');
+/** Initials from a name: "James Miller" → "JM" (titles skipped). */
+export { initialsOf };
 
 /**
  * One white card of rows divided by hairlines, as on Me (journey screen 16)

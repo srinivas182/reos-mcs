@@ -29,14 +29,16 @@ final readonly class DemoReleases
         }
 
         $loneStar = Organisation::query()->where('name', 'Lone Star Realty')->value('id');
+        $school = Organisation::query()->where('name', 'Texas Realty School')->value('id');
+
+        // Messages for the two pilot tenants (usability check 1), still limited by role.
         FeatureFlag::query()->where('key', 'messages')->update([
             'stage' => RolloutStage::Tenants->value,
-            'tenant_ids' => json_encode(is_int($loneStar) ? [$loneStar] : [], JSON_THROW_ON_ERROR),
-            'roles' => json_encode(['agent', 'broker', 'mentor'], JSON_THROW_ON_ERROR),
+            'tenant_ids' => json_encode(array_values(array_filter([$loneStar, $school], is_int(...))), JSON_THROW_ON_ERROR),
+            'roles' => json_encode(['agent', 'broker', 'mentor', 'instructor', 'candidate', 'school_admin'], JSON_THROW_ON_ERROR),
             'stage_changed_at' => now()->subDays(3),
         ]);
 
-        $school = Organisation::query()->where('name', 'Texas Realty School')->value('id');
         FeatureFlag::query()->where('key', 'video_rooms')->update([
             'stage' => RolloutStage::Tenants->value,
             'tenant_ids' => json_encode(array_values(array_filter([$loneStar, $school], is_int(...))), JSON_THROW_ON_ERROR),

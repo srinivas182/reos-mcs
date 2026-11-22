@@ -1,0 +1,60 @@
+name: Usability finding
+description: A problem seen in a usability check with pilot users.
+title: "[Usability] "
+labels: ["usability-check-1"]
+body:
+  - type: markdown
+    attributes:
+      value: One issue per problem. If more people hit it, add them to the count instead of opening a new issue. Don't write participant names; use P01–P40.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - 4 - can't finish the task
+        - 3 - finishes only with a hint or a big detour
+        - 2 - slowed down or confused
+        - 1 - cosmetic
+    validations:
+      required: true
+  - type: input
+    id: task
+    attributes:
+      label: Task
+      description: Role and task number from docs/usability/check-1.md, e.g. candidate-2
+    validations:
+      required: true
+  - type: input
+    id: screen
+    attributes:
+      label: Journey screen
+      description: The web or phone journey screen where it happened, e.g. "Web 23 Settings › Notifications" or "Phone: Today".
+    validations:
+      required: true
+  - type: checkboxes
+    id: where
+    attributes:
+      label: Where
+      options:
+        - label: Web
+        - label: iPhone
+        - label: Android
+        - label: Spanish
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What the person tried, what they expected and what they said (quotes help).
+    validations:
+      required: true
+  - type: input
+    id: count
+    attributes:
+      label: How many people hit it
+      description: e.g. 3 of 6 candidates (P02, P05, P11)
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Suggested change (optional)

@@ -2,7 +2,7 @@
 
 **Goal:** by the end of the sprint the REOS super admin runs the whole platform from the web: the platform overview, tenants and plans, provider categories, AI behaviour and costs, and feature flags with staged releases. People talk to each other inside REOS (chat and announcements, live on the web and in the app), hear about what matters on the channel they chose without being woken at night, and meet face to face in video rooms that end on time and never record without consent. Every person's consents are recorded.
 
-**Status:** decisions taken 22 November 2026 (section 6). Source: REOS Sprint Plan v1.0 (Sprint 6: A6.1–A6.3, B6.1–B6.3; gate "a tenant signs up and pays on the web; usability check 1 with pilot users"), the Web App Journey (screens 23, 26, 58, 68, 69, 70 and the announcements screens), the Instructor and Mentor Journey (screens 14–16, session room and notes) and the phone journeys (Today, Me, sheets).
+**Status:** complete (23 November 2026; wrap-up in section 7). Decisions taken 22 November 2026 (section 6). Source: REOS Sprint Plan v1.0 (Sprint 6: A6.1–A6.3, B6.1–B6.3; gate "a tenant signs up and pays on the web; usability check 1 with pilot users"), the Web App Journey (screens 23, 26, 58, 68, 69, 70 and the announcements screens), the Instructor and Mentor Journey (screens 14–16, session room and notes) and the phone journeys (Today, Me, sheets).
 
 ## 0. What earlier sprints already delivered (scope adjusted)
 
@@ -74,7 +74,7 @@
 - **Announcements:** school, brokerage and association admins send to all members or a group (role, team, state), with read receipts and a "Read by 82 of 140" count; the phone shows them on Today.
 - **Screens:** web Messages (each role's messages entry; provider screen 26), the phone's Messages tab or sheet as the phone journeys place it, announcements on the admin screens and Today.
 - **Done when:** a message arrives live on the web and in the app.
-- **As built, B6.1a:** conversations (one-to-one, reused, or groups up to 20), replies, edit or delete for everyone within 5 minutes, read state ("Read") and unread counts; who can message whom by relationship (ADR 0023); live through Laravel Reverb on private channels for the web (session) and the phone (token, key from app config); web Messages for every role with the unread count in the menu; phone Messages from Today, a conversation and New message; all behind the `messages` flag (demo: Lone Star Realty's agents, brokers and mentors). Attachments, report and block, and announcements follow in B6.1b.
+- **As built, B6.1a:** conversations (one-to-one, reused, or groups up to 20), replies, edit or delete for everyone within 5 minutes, read state ("Read") and unread counts; who can message whom by relationship (ADR 0023); live through Laravel Reverb on private channels for the web (session) and the phone (token, key from app config); web Messages for every role with the unread count in the menu; phone Messages from Today, a conversation and New message; all behind the `messages` flag (demo: Lone Star Realty's agents, brokers and mentors, and Texas Realty School's instructors, candidates and admins since the wrap-up). Attachments, report and block, and announcements follow in B6.1b.
 - **As built, B6.1b:** attachments (up to 5 images or PDFs, 20 MB each, virus-scanned before they open through a 30-minute signed link; removed if infected; deleted with the message), report and block on every conversation (block both ways for one-to-one, read state hidden; reports copy the messages and go to the tenant's admins by email and to REOS on Compliance and audit, where they're marked handled), and announcements from brokerage, school and association admins to everyone or a group by role, team and state, shown above Messages and on Today until read, with "Read by X of Y". Messages, files, blocks, reports and announcements join the data map and "Download my data" (A6.3 done-when for messages; sessions join with B6.3).
 
 ### B6.2 Notifications (Team B)
@@ -129,6 +129,30 @@
 2. **Who can message whom:** by relationship (B6.1): broker with their agents and team, school staff with their students, mentors with their mentees; providers only after an agent accepts, with contacts hidden until both share.
 3. **Quiet hours default:** 9 PM to 7 AM in the person's time zone; urgent kinds always delivered; each person can change it.
 4. **Session recordings:** made only when every participant agrees; kept 90 days, then deleted.
+
+## 7. Wrap-up (23 November 2026)
+
+Every sub-sprint merged with green CI: A6.1a–b (#60, #61), A6.2 (#62), A6.3 (#63), B6.1a–b (#64, #65), B6.2a–d (#66–#69), B6.3a–c (#70–#72).
+
+| Definition of done | Status |
+| --- | --- |
+| Own PR per sub-sprint, green CI, merged in order | Done |
+| Screens match the journeys, English and Spanish | Done: compared side by side in each PR; at the wrap-up every Sprint 6 web screen was opened as each persona in both languages at 1,440 px and 390 px. No untranslated text, no sideways scrolling and no errors were found. |
+| `/api/v1`, documented, api-client regenerated, Pest feature tests | Done |
+| Security: messaging, seeing and joining by relationship | `MessagesTest`, `SessionsTest` |
+| Security: blocked people blocked everywhere | `MessageSafetyTest`; `SprintSixSecurityTest` covers contacts, messages and sessions (new at the wrap-up) |
+| Security: WebSocket channels per conversation | `SprintSixSecurityTest` covers the web and the phone, and Messages switched off (new at the wrap-up) |
+| Security: room tokens per person, per room, expiring | `SessionsTest` |
+| Security: recordings need everyone's consent | `RecordingTest` |
+| Security: no SMS without consent | `TextsTest` |
+| Security: flags need two-step and are audited | `FeatureFlagsTest` (audit); `SprintSixSecurityTest` (two-step, new at the wrap-up) |
+| Gate: a tenant signs up and pays on the web | Done: `TenantSignupTest` (A6.1b) |
+| Gate: usability check 1 with pilot users | **Moved to the first week of Sprint 7** (dependency in section 1). The kit is ready in `docs/usability/check-1.md`: 40 people across 8 roles, tasks per role, a log sheet, the `usability-check-1` issue form and a pass mark. It still needs the pilot users (Nelle) and somewhere for them to open REOS (a small preview environment, or moderated screen share until then). |
+| ADRs 0022, 0023, 0024 | Done |
+
+Fixed at the wrap-up: greetings and initials skip titles ("Hi Rachel", "RH", not "Hi Dr." and "DH"). The demo turns Messages on for Texas Realty School as well, and adds a recorded past session.
+
+Carried forward: course progress in refunds (Sprint 8); providers in Messages; before going live, Twilio 10DLC, the SES domain and SNS topic, the LiveKit Cloud project and webhook, the egress S3 key, and the Apple and Firebase push keys (section 1).
 
 ## Sources
 
