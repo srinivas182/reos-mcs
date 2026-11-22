@@ -17,6 +17,7 @@ import { useOpenTodos } from '@/lib/todos';
 import { useWhatsNew } from '@/lib/whatsNew';
 import { useAnnouncements, useInbox } from '@/lib/messages';
 import { useNotificationInbox } from '@/lib/notifications';
+import { usePushPrompt } from '@/lib/push';
 import { AskBar, Avatar, Button, Callout, Card, IconButton, ListRow, Screen, SyncAlert, Text } from '@/ui';
 
 type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
@@ -54,6 +55,7 @@ export default function HomeScreen() {
   // Announcements from my brokerage, school or association (B6.1b), until read.
   const { announcements, markRead } = useAnnouncements(user?.id ?? null);
   const unreadAnnouncements = (announcements ?? []).filter((a) => !a.read);
+  const { show: pushPrompt, answer: answerPushPrompt } = usePushPrompt(Boolean(user));
   const closeCapture = () => {
     setCapturing(null);
     if (capture !== undefined) router.setParams({ capture: undefined });
@@ -121,6 +123,20 @@ export default function HomeScreen() {
           action={<Button variant="ghost" label={t('whatsNew.dismiss')} accessibilityLabel={t('whatsNew.dismissLabel', { version: whatsNew.item.version })} onPress={whatsNew.dismiss} />}
         />
       ) : null}
+      {/* Push (B6.2b): asked once, only when the person taps Turn on. */}
+      {pushPrompt ? (
+        <Callout
+          tone="info"
+          title={t('notifications.prompt.title')}
+          body={t('notifications.prompt.body')}
+          action={
+            <View style={styles.promptActions}>
+              <Button label={t('notifications.prompt.action')} onPress={() => void answerPushPrompt(true)} />
+              <Button variant="ghost" label={t('notifications.prompt.later')} onPress={() => void answerPushPrompt(false)} />
+            </View>
+          }
+        />
+      ) : null}
       {unreadAnnouncements.map((announcement) => (
         <Callout
           key={announcement.id}
@@ -169,4 +185,5 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   topActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  promptActions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
 });

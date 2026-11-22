@@ -3,7 +3,8 @@
  * the reminder time, with Done and Snooze on the lock screen. Neither opens
  * the app. They're scheduled on the phone, so they ring with no signal.
  *
- * Server push to the person's other devices arrives with B6.2.
+ * Server push (B6.2b) is in `push.ts`; this handler also decides whether a
+ * push shows while REOS is open.
  */
 import type { TFunction } from 'i18next';
 import * as Notifications from 'expo-notifications';
@@ -12,6 +13,7 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 
 import { i18n } from '@/lib/i18n';
+import { showWhileOpen } from '@/lib/push';
 import { setDone } from '@/lib/todos';
 
 export const TODO_CATEGORY = 'reos.todo';
@@ -99,7 +101,12 @@ export function useTodoReminderActions(): void {
   useEffect(() => {
     // Reminders also show while REOS is open.
     Notifications.setNotificationHandler({
-      handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: true, shouldSetBadge: false }),
+      // A push for the chat you're reading stays quiet (B6.2b).
+      handleNotification: async (notification) => {
+        const show = showWhileOpen(notification.request.content.data);
+
+        return { shouldShowBanner: show, shouldShowList: show, shouldPlaySound: show, shouldSetBadge: false };
+      },
     });
     void setUpTodoReminders().catch(() => undefined);
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {

@@ -5469,9 +5469,22 @@
                                                     },
                                                     "channels": {
                                                         "type": "object",
-                                                        "additionalProperties": {
-                                                            "type": "boolean"
-                                                        }
+                                                        "properties": {
+                                                            "inbox": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "push": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "email": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "inbox",
+                                                            "push",
+                                                            "email"
+                                                        ]
                                                     },
                                                     "digest": {
                                                         "type": [
@@ -5499,8 +5512,16 @@
                                         "channels": {
                                             "type": "array",
                                             "items": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "enum": [
+                                                    "inbox",
+                                                    "push",
+                                                    "email"
+                                                ]
                                             }
+                                        },
+                                        "phones": {
+                                            "type": "integer"
                                         },
                                         "quiet": {
                                             "type": "object",
@@ -5528,6 +5549,7 @@
                                     "required": [
                                         "kinds",
                                         "channels",
+                                        "phones",
                                         "quiet",
                                         "timezone"
                                     ]
@@ -5586,9 +5608,22 @@
                                                     },
                                                     "channels": {
                                                         "type": "object",
-                                                        "additionalProperties": {
-                                                            "type": "boolean"
-                                                        }
+                                                        "properties": {
+                                                            "inbox": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "push": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "email": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "inbox",
+                                                            "push",
+                                                            "email"
+                                                        ]
                                                     },
                                                     "digest": {
                                                         "type": [
@@ -5616,8 +5651,16 @@
                                         "channels": {
                                             "type": "array",
                                             "items": {
-                                                "type": "string"
+                                                "type": "string",
+                                                "enum": [
+                                                    "inbox",
+                                                    "push",
+                                                    "email"
+                                                ]
                                             }
+                                        },
+                                        "phones": {
+                                            "type": "integer"
                                         },
                                         "quiet": {
                                             "type": "object",
@@ -5645,6 +5688,7 @@
                                     "required": [
                                         "kinds",
                                         "channels",
+                                        "phones",
                                         "quiet",
                                         "timezone"
                                     ]
@@ -5837,6 +5881,108 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/me/push-devices": {
+            "post": {
+                "operationId": "me.push-devices.store",
+                "description": "Send the Expo push token after the person allows notifications. The\ntoken belongs to this sign-in: signing out removes it. Sending it\nagain (each app start) is safe.",
+                "summary": "Turn on push for this phone (B6.2b)",
+                "tags": [
+                    "PushDevice"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PushDeviceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "phones": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "phones"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/push-devices/current": {
+            "delete": {
+                "operationId": "me.push-devices.destroy",
+                "description": "Removes the push token sent with this sign-in.",
+                "summary": "Turn off push for this phone (B6.2b)",
+                "tags": [
+                    "PushDevice"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
             }
         },
         "/states": {
@@ -8604,6 +8750,36 @@
                     "device"
                 ],
                 "title": "PhoneVerifyRequest"
+            },
+            "PushDeviceRequest": {
+                "type": "object",
+                "description": "A phone turning on push notifications (B6.2b).",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "pattern": "^Expo(nent)?PushToken\\[[A-Za-z0-9_\\-]{8,200}\\]$",
+                        "maxLength": 255
+                    },
+                    "platform": {
+                        "type": "string",
+                        "enum": [
+                            "ios",
+                            "android"
+                        ]
+                    },
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 100
+                    }
+                },
+                "required": [
+                    "token",
+                    "platform"
+                ],
+                "title": "PushDeviceRequest"
             },
             "QuizAttemptRequest": {
                 "type": "object",

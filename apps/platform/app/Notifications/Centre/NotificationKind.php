@@ -34,10 +34,12 @@ enum NotificationKind: string
 
     public const INBOX = 'inbox';
 
+    public const PUSH = 'push';
+
     public const EMAIL = 'email';
 
     /** The channels a person can choose between. */
-    public const CHANNELS = [self::INBOX, self::EMAIL];
+    public const CHANNELS = [self::INBOX, self::PUSH, self::EMAIL];
 
     /**
      * Where it goes unless the person changed it.
@@ -47,9 +49,10 @@ enum NotificationKind: string
     public function defaults(): array
     {
         return match ($this) {
-            // Chats would flood email; they stay in the app.
-            self::Message, self::Announcement => [self::INBOX],
-            default => [self::INBOX, self::EMAIL],
+            // Chats would flood email and the inbox; the Messages badge already counts them.
+            self::Message => [self::PUSH],
+            self::Announcement => [self::INBOX, self::PUSH],
+            default => [self::INBOX, self::PUSH, self::EMAIL],
         };
     }
 

@@ -31,6 +31,31 @@ abstract class CentreNotification extends Notification implements ShouldQueue
      */
     abstract public function inbox(object $notifiable): array;
 
+    /**
+     * The push to the phone (B6.2b): the inbox line, opening the screen in
+     * the app that `appPath` names.
+     *
+     * @return array{title: string, body: string|null, path: string}
+     */
+    public function push(object $notifiable): array
+    {
+        $inbox = $this->inbox($notifiable);
+
+        return ['title' => $inbox['title'], 'body' => $inbox['body'], 'path' => $this->appPath()];
+    }
+
+    /** Where a tap opens in the app; the notifications screen unless a kind has its own. */
+    public function appPath(): string
+    {
+        return '/notifications';
+    }
+
+    /** Pushes with the same key replace each other on the phone (one per conversation). */
+    public function collapseKey(): ?string
+    {
+        return null;
+    }
+
     /** @return list<string|class-string> */
     public function via(object $notifiable): array
     {

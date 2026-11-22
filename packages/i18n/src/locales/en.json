@@ -4471,7 +4471,8 @@
     },
     "channels": {
       "inbox": "Inbox",
-      "email": "Email"
+      "email": "Email",
+      "push": "Push"
     },
     "digests": {
       "off": "One at a time",
@@ -4522,6 +4523,34 @@
     "errors": {
       "locked": "Security and account messages can't be turned off.",
       "noDigest": "This kind can't go into a digest."
+    },
+    "push": {
+      "someone": "Someone",
+      "inGroup": "{{name}} in {{group}}",
+      "more": "{{title}} · {{count}} new messages",
+      "files_one": "Sent a file",
+      "files_other": "Sent {{count}} files"
+    },
+    "phones": {
+      "none": "Push goes to the REOS app on your phone. Turn on notifications in the app to get it.",
+      "some_one": "Push goes to {{count}} phone with the REOS app.",
+      "some_other": "Push goes to {{count}} phones with the REOS app."
+    },
+    "thisPhone": {
+      "title": "Push on this phone",
+      "on": "Notifications are on for this phone.",
+      "off": "Turn on notifications to get messages and alerts on this phone, even when REOS is closed.",
+      "turnOn": "Turn on notifications",
+      "blocked": "Notifications for REOS are off in your phone’s settings.",
+      "openSettings": "Open phone settings",
+      "turnOff": "Turn off on this phone",
+      "failed": "We couldn’t turn on notifications. Try again."
+    },
+    "prompt": {
+      "title": "Get messages on this phone",
+      "body": "Turn on notifications so messages and alerts reach you, even when REOS is closed. Quiet hours still apply.",
+      "action": "Turn on",
+      "later": "Not now"
     }
   }
 }

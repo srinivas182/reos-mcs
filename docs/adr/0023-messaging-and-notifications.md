@@ -1,6 +1,6 @@
 # 0023: Messaging and notifications
 
-**Status:** accepted for messaging (B6.1a and B6.1b) and the notification centre (B6.2a), 22 November 2026; push, SMS and email bounces (B6.2b) extend it.
+**Status:** accepted for messaging (B6.1a and B6.1b), the notification centre (B6.2a) and push (B6.2b), 22 November 2026; SMS and email bounces (B6.2c) extend it.
 
 ## Context
 
@@ -25,8 +25,12 @@ Brokerages, schools and mentors talk to their people in Slack, texts and CRM inb
 13. **What was sent** is logged per kind, channel and outcome (`notification_deliveries`: sent, held, released, digested, failed), never the words.
 14. **Settings:** Settings › Notifications on the web (every role) and Me › Notifications on the phone: each kind by channel, digests, quiet hours and the time zone they follow (the browser's or phone's zone offered).
 
+15. **Push through Expo (B6.2b).** A phone sends its Expo push token after the person allows notifications (`POST /api/v1/me/push-devices`); the system prompt only follows a tap on Turn on (Today's card or Me › Notifications), never at launch. Each token belongs to the phone's sign-in (`push_devices.personal_access_token_id`, cascade), so signing out or revoking the phone in Devices removes it; a phone that signs in as someone else moves the token to them. `PushChannel` sends to every phone (title, short body, the badge = unread inbox, the app path a tap opens, Android channel `messages` or `alerts`, high priority and a 1-hour lifetime for urgent kinds). Expo's `DeviceNotRegistered` removes a phone at once (ticket) or 15 minutes later (`reos:push:receipts`, receipts kept a day). Push is a channel like email: on by default for every kind, held in quiet hours, gathered into digests, turned off per kind. Off in production until Expo push is set up in Settings › Integrations (`expo-push`); the simulator keeps an outbox elsewhere.
+16. **Messages push when the person isn't looking (B6.2b).** Each message sends `NewMessage` to the other participants (not to anyone who blocked the sender): push only by default (the Messages badge already counts chats, so not the inbox), collapsed per conversation (`collapseId`), titled "Linda Park · 3 new messages" when several wait. Laravel's `shouldSend` drops it if the person read the conversation first or the message was deleted, so a chat held overnight isn't pushed in the morning once read. While REOS is open on that conversation, the phone doesn't show it.
+
 ## Consequences
 
 - Who can message whom is code, reviewed with the journeys; a tenant can't open messaging to everyone.
 - Participant-scoped tables need their access check kept in the service and the channel; tests cover both.
 - Reverb is another process to run and monitor (B6 platform health); the app degrades to refresh-on-open without it.
+- Push needs the EAS project id in the app config and the Apple push key and Firebase project (store accounts) before TestFlight; until then development builds use Expo's sandbox.

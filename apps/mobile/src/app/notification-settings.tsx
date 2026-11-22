@@ -1,10 +1,11 @@
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Linking, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { deviceTimezone, type KindSetting, useNotificationSettings } from '@/lib/notifications';
+import { type PushPermission, pushPermission, turnOffPush, turnOnPush } from '@/lib/push';
 import { Button, Callout, Eyebrow, MenuGroup, Screen, SwitchRow, Text, TextField, TitleBar } from '@/ui';
 
 /** The API takes `channels.{kind}.{channel}`; its generated type flattens the keyed object to arrays. */
@@ -13,9 +14,9 @@ const channelChange = (kind: string, channel: string, on: boolean) => ({ [kind]:
 const GROUPS = ['messages', 'learning', 'organisation', 'tools', 'billing', 'account'] as const;
 
 /**
- * Me › Notifications (B6.2): quiet hours in the phone's time zone (default
- * 9 PM to 7 AM; urgent alerts still arrive), and each kind by channel.
- * Security and account messages can't be turned off.
+ * Me › Notifications (B6.2): push on this phone (B6.2b), quiet hours in the
+ * phone's time zone (default 9 PM to 7 AM; urgent alerts still arrive), and
+ * each kind by channel. Security and account messages can't be turned off.
  */
 export default function NotificationSettingsScreen() {
   const { t } = useTranslation();
@@ -28,12 +29,53 @@ export default function NotificationSettingsScreen() {
   const start = startEdit ?? settings?.quiet.start ?? '21:00';
   const end = endEdit ?? settings?.quiet.end ?? '07:00';
 
+  const [permission, setPermission] = useState<PushPermission | null>(null);
+  const [pushFailed, setPushFailed] = useState(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      void pushPermission()
+        .then(setPermission)
+        .catch(() => setPermission(null));
+    }, []),
+  );
+
+  const turnOn = async () => {
+    const on = await turnOnPush(true).catch(() => false);
+    setPushFailed(!on);
+    setPermission(await pushPermission());
+  };
+
+  const turnOff = async () => {
+    await turnOffPush().catch(() => false);
+    setPushFailed(false);
+  };
+
   const name = (kind: KindSetting) => t(`notifications.names.${kind.kind}` as 'notifications.names.message');
 
   return (
     <Screen>
       <TitleBar title={t('notifications.settingsTitle')} onBack={() => router.back()} />
       {failed ? <Callout tone="danger" title={t('consents.errors.generic')} live /> : null}
+
+      <Eyebrow>{t('notifications.thisPhone.title')}</Eyebrow>
+      {permission === 'granted' ? (
+        <View style={styles.block}>
+          <Text tone="muted">{t('notifications.thisPhone.on')}</Text>
+          <Button variant="ghost" label={t('notifications.thisPhone.turnOff')} onPress={() => void turnOff()} />
+        </View>
+      ) : permission === 'denied' ? (
+        <View style={styles.block}>
+          <Text tone="muted">{t('notifications.thisPhone.blocked')}</Text>
+          <Button variant="secondary" label={t('notifications.thisPhone.openSettings')} onPress={() => void Linking.openSettings()} />
+        </View>
+      ) : permission === 'undetermined' ? (
+        <View style={styles.block}>
+          <Text tone="muted">{t('notifications.thisPhone.off')}</Text>
+          <Button label={t('notifications.thisPhone.turnOn')} onPress={() => void turnOn()} />
+        </View>
+      ) : null}
+      {pushFailed ? <Callout tone="danger" title={t('notifications.thisPhone.failed')} live /> : null}
 
       <Eyebrow>{t('notifications.quiet.title')}</Eyebrow>
       <Text tone="muted">{t('notifications.quiet.description')}</Text>

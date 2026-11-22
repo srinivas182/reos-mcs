@@ -47,3 +47,5 @@ Schedule::command('reos:flags:watch')->everyMinute()->withoutOverlapping()->onOn
 // The notification centre (B6.2): alerts held in quiet hours, and digests at 8 AM local time.
 Schedule::command('reos:notifications:release')->everyFiveMinutes()->withoutOverlapping()->onOneServer();
 Schedule::command('reos:notifications:digests')->hourlyAt(2)->withoutOverlapping()->onOneServer();
+Schedule::command('reos:push:receipts')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+Schedule::command('reos:notifications:prune')->dailyAt('04:45')->onOneServer();

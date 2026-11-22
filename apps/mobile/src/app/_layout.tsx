@@ -10,6 +10,7 @@ import { useUnistyles } from 'react-native-unistyles';
 import { AuthProvider, useAuth } from '@/lib/auth';
 import { deviceLocale, i18n } from '@/lib/i18n';
 import { appConfig, startMonitoring, trackScreen } from '@/lib/monitoring';
+import { usePush } from '@/lib/push';
 import { useShortcuts } from '@/lib/shortcuts';
 import { useTodoReminderActions } from '@/lib/todoReminders';
 import { useTodoQueueFlush } from '@/lib/todos';
@@ -49,8 +50,11 @@ export default function RootLayout() {
 function Navigator() {
   const { theme } = useUnistyles();
   const { status } = useAuth();
+  const pathname = usePathname();
 
   useAuthGate();
+  // Push (B6.2b): renew this phone's token and open what a tap points to.
+  usePush(status === 'signedIn', pathname);
   // Voice to-dos (B4.3b): Done and Snooze on reminders, the offline queue, and the "Add a to-do" shortcut.
   useTodoReminderActions();
   useTodoQueueFlush();

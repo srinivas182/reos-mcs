@@ -41,6 +41,9 @@ jest.mock('@/lib/messages', () => ({
   useAnnouncements: () => ({ announcements: mockAnnouncements.current, markRead: mockMarkRead }),
 }));
 
+const mockPushPrompt = { show: false, answer: jest.fn() };
+jest.mock('@/lib/push', () => ({ usePushPrompt: () => mockPushPrompt }));
+
 jest.mock('@/lib/api', () => ({
   fetchHealth: jest.fn().mockResolvedValue({ status: 'ok', app: 'REOS', version: '0.1.0-dev', time: 'now' }),
 }));
@@ -147,5 +150,16 @@ describe('HomeScreen', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Mark Office closed Friday as read' }));
     expect(mockMarkRead).toHaveBeenCalledWith('a-1');
     mockAnnouncements.current = null;
+  });
+
+  it('offers push on Today once, asking the phone only after Turn on', async () => {
+    mockPushPrompt.show = true;
+    await renderHome();
+    expect(await screen.findByText('Get messages on this phone')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Turn on' }));
+    expect(mockPushPrompt.answer).toHaveBeenCalledWith(true);
+    await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
+    expect(mockPushPrompt.answer).toHaveBeenCalledWith(false);
+    mockPushPrompt.show = false;
   });
 });

@@ -129,6 +129,15 @@ final readonly class DataExport
                     ->where('announcement_recipients.user_id', $user->id)->get(['announcements.title', 'announcements.sent_at', 'announcement_recipients.read_at'])
                     ->map(static fn ($r): array => (array) $r)->all(),
             ],
+            // The notification centre (B6.2): the inbox, choices and phones with push (never the token).
+            'notifications' => [
+                'inbox' => $user->notifications()->latest()->get(['data', 'read_at', 'created_at'])->map(static fn ($n): array => [
+                    'notification' => $n->data, 'read_at' => $n->read_at?->toIso8601String(), 'at' => $n->created_at?->toIso8601String(),
+                ])->all(),
+                'settings' => DB::table('notification_settings')->where('user_id', $user->id)->get(['quiet_enabled', 'quiet_start', 'quiet_end', 'timezone', 'channels', 'digests'])
+                    ->map(static fn ($r): array => (array) $r)->first(),
+                'phones' => DB::table('push_devices')->where('user_id', $user->id)->get(['name', 'platform', 'created_at', 'last_used_at'])->map(static fn ($r): array => (array) $r)->all(),
+            ],
             // What they agreed to and withdrew (A6.3): purpose, version, when and how.
             'consents' => DB::table('consent_records')->where('user_id', $user->id)->orderBy('id')
                 ->get(['purpose', 'subject', 'granted', 'version', 'method', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
