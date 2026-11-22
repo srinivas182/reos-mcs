@@ -39,11 +39,11 @@ export function Avatar({ name, label, onPress }: { name: string; label?: string;
   );
 }
 
-/** A round 48-pt icon button with a label for screen readers (bell, settings, back). */
-export function IconButton({ icon, label, onPress }: { icon: LucideIcon; label: string; onPress: () => void }) {
+/** A round 48-pt icon button with a label for screen readers (bell, settings, back); `primary` fills it blue (the + on My licences). */
+export function IconButton({ icon, label, onPress, primary = false }: { icon: LucideIcon; label: string; onPress: () => void; primary?: boolean }) {
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={({ pressed }) => [styles.iconButton, pressed && styles.pressed]}>
-      <Icon icon={icon} />
+    <Pressable accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={({ pressed }) => [styles.iconButton, primary && styles.primary, pressed && styles.pressed]}>
+      <Icon icon={icon} color={primary ? 'onAction' : 'text'} />
     </Pressable>
   );
 }
@@ -81,6 +81,7 @@ const styles = StyleSheet.create((theme) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  primary: { backgroundColor: theme.colors.action, borderColor: theme.colors.action },
   section: { marginTop: theme.space.sm },
   pressed: { opacity: 0.85 },
 }));

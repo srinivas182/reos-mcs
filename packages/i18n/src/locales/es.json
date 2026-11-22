@@ -190,7 +190,9 @@
       "twoStepTitle": "Active la verificación en dos pasos para usar {{role}}",
       "twoStepBody": "Los roles de administración necesitan un segundo paso al iniciar sesión. Actívelo en el sitio web de REOS, en Configuración › Seguridad. Tarda alrededor de un minuto.",
       "openWeb": "Abrir el sitio web",
-      "connections": "Conexiones"
+      "connections": "Conexiones",
+      "licences": "Mis licencias",
+      "state": "Trabajando en"
     },
     "organisations": {
       "title": "Sus organizaciones",
@@ -214,6 +216,34 @@
       "highContrast": "Alto contraste",
       "highContrastHint": "El mayor contraste, para baja visión o pleno sol",
       "note": "Funciona con VoiceOver y TalkBack. Cumple con WCAG 2.2 AA."
+    },
+    "licences": {
+      "title": "Mis licencias",
+      "add": "Agregar una licencia",
+      "live": "Disponible",
+      "verifiedOn": "verificada el {{date}}",
+      "approvedOn": "aprobada el {{date}}",
+      "footer": "Las licencias se verifican con el regulador de cada estado.",
+      "emptyTitle": "Agregue su primera licencia",
+      "emptyBody": "REOS verifica el número con el regulador del estado. Su educación continua (CE) y su fecha de renovación se basan en ella.",
+      "detailTitle": "Licencia de {{state}}",
+      "choose": "Elija un estado",
+      "check": "Verificar número",
+      "checking": "Verificando…",
+      "found": "Encontrada: {{name}}",
+      "foundDetail": "{{type}} · {{status}} · vence el {{date}}",
+      "foundDetailNoDate": "{{type}} · {{status}}",
+      "otherName": "El registro está a otro nombre: {{name}}. Un revisor lo verifica antes de que cuente.",
+      "notFound": "No hay ninguna licencia con este número en los registros de {{state}}. Revise el número o envíelo a un revisor.",
+      "noLookup": "Los registros de {{state}} aún no se pueden verificar automáticamente. Un revisor lo verifica antes de que cuente.",
+      "sendForReview": "Enviar a revisión",
+      "added": "Licencia de {{state}} agregada.",
+      "sentForReview": "Licencia de {{state}} enviada a revisión."
+    },
+    "states": {
+      "title": "Cambiar de estado",
+      "intro": "Los cursos, la educación continua (CE) y los planes siguen el estado que elija.",
+      "switched": "Ahora trabaja en {{state}}."
     }
   },
   "tabs": {

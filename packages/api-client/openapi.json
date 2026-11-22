@@ -1598,8 +1598,32 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "integer",
-                                    "const": 201
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/LicenceResource"
+                                        },
+                                        "check": {
+                                            "type": "string",
+                                            "enum": [
+                                                "verified",
+                                                "name_mismatch",
+                                                "not_found",
+                                                "no_lookup"
+                                            ]
+                                        },
+                                        "source": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "check",
+                                        "source"
+                                    ]
                                 }
                             }
                         }
@@ -1628,6 +1652,118 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/licences/check": {
+            "post": {
+                "operationId": "me.licences.check",
+                "description": "Looks the number up with the state's regulator without saving it, so\nthe person sees the name, type, status and expiry first. Adding it\n(`POST /me/licences`) checks again.",
+                "summary": "Check a licence number",
+                "tags": [
+                    "Licence"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CheckLicenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "check": {
+                                            "type": "string",
+                                            "enum": [
+                                                "verified",
+                                                "name_mismatch",
+                                                "not_found",
+                                                "no_lookup"
+                                            ]
+                                        },
+                                        "record": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "sales_agent",
+                                                        "broker"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "expires_on": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "type",
+                                                "status",
+                                                "expires_on"
+                                            ]
+                                        },
+                                        "source": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "check",
+                                        "record",
+                                        "source"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -3332,6 +3468,28 @@
                     "retired"
                 ],
                 "title": "CatalogueStatus"
+            },
+            "CheckLicenceRequest": {
+                "type": "object",
+                "description": "Look a licence number up before adding it (agent journey screen 149).",
+                "properties": {
+                    "state": {
+                        "type": "string",
+                        "description": "The state's two-letter code, for example `TX`.",
+                        "minLength": 2,
+                        "maxLength": 2
+                    },
+                    "number": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9 -]*$",
+                        "maxLength": 40
+                    }
+                },
+                "required": [
+                    "state",
+                    "number"
+                ],
+                "title": "CheckLicenceRequest"
             },
             "ChooseStateRequest": {
                 "type": "object",

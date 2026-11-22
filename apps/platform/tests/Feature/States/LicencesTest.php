@@ -267,3 +267,20 @@ describe('the state switcher and what each state sees (A5.1 done when)', functio
         expect($export['licences'])->toHaveCount(1)->and($export['licences'][0]['number'])->toBe('0798765');
     });
 });
+
+describe('checking a number before adding it (agent journey screen 149)', function () {
+    it('shows what the regulator holds without saving', function () {
+        $this->actingAs($this->james);
+
+        $this->postJson('/api/v1/me/licences/check', ['state' => 'tx', 'number' => '0798765'])->assertOk()->assertExactJson([
+            'check' => 'verified',
+            'record' => ['name' => 'James Miller', 'type' => 'sales_agent', 'status' => 'active', 'expires_on' => '2027-03-31'],
+            'source' => 'Checked with REOS demo license records (Simulator).',
+        ]);
+        $this->postJson('/api/v1/me/licences/check', ['state' => 'TX', 'number' => '0798888'])->assertJsonPath('check', 'name_mismatch')->assertJsonPath('record.name', 'Pat Jordan');
+        $this->postJson('/api/v1/me/licences/check', ['state' => 'TX', 'number' => '0790000'])->assertJsonPath('check', 'not_found')->assertJsonPath('record', null);
+        $this->postJson('/api/v1/me/licences/check', ['state' => 'LA', 'number' => '1'])->assertJsonPath('check', 'no_lookup')->assertJsonPath('source', null);
+
+        expect(Licence::query()->count())->toBe(0);
+    });
+});
