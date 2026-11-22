@@ -12,6 +12,8 @@ use App\Models\User;
 use App\Services\Authorization\Memberships;
 use Database\Seeders\Demo\DemoCatalogue;
 use Database\Seeders\Demo\DemoConnections;
+use Database\Seeders\Demo\DemoLicences;
+use Database\Seeders\Demo\DemoStates;
 use Database\Seeders\Demo\DemoTenants;
 use Database\Seeders\Demo\Personas;
 use Illuminate\Database\Seeder;
@@ -65,6 +67,10 @@ final class DemoSeeder extends Seeder
 
         // Tenant details for the Tenants screens (A4.1b).
         app(DemoTenants::class)->seed();
+        // States being prepared and waited for (screen 61), then licences (A5.1).
+        app(DemoStates::class)->seed();
+        // State licences, as on "My licences" (A5.1).
+        app(DemoLicences::class)->seed();
     }
 
     private function organisation(string $name): Organisation

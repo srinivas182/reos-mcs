@@ -21,6 +21,8 @@ use Illuminate\Support\Carbon;
  * @property int|null $qualifying_hours
  * @property int|null $ce_hours
  * @property int|null $waitlist_count
+ * @property array<string, mixed>|null $launch_checklist Who ticked each launch checklist item, and when (A5.1)
+ * @property Carbon|null $went_live_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -48,6 +50,8 @@ final class State extends Model
             'status' => StateStatus::class,
             'qualifying_hours' => 'integer',
             'ce_hours' => 'integer',
+            'launch_checklist' => 'array',
+            'went_live_at' => 'datetime',
         ];
     }
 }

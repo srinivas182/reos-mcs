@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Enums\StateStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Http\Resources\Licences\LicenceResource;
 use App\Models\PrivacyRequest;
+use App\Models\State;
 use App\Models\User;
 use App\Services\Identity\AccountDeletion;
+use App\Services\Licences\Licences;
 use App\Services\Privacy\PrivacyRequests;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -29,6 +33,11 @@ class ProfileController extends Controller
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            // Licences in every state (A5.1, web journey screen 23).
+            'licences' => $user instanceof User ? LicenceResource::collection(app(Licences::class)->of($user))->resolve($request) : [],
+            // States to add a licence in: live ones first, then coming soon (tracked for renewal only).
+            'licenceStates' => State::query()->orderByRaw("case when status = 'live' then 0 else 1 end")->orderBy('name')->get(['code', 'name', 'status'])
+                ->map(static fn (State $state): array => ['code' => $state->code, 'name' => $state->name, 'live' => $state->status === StateStatus::Live])->all(),
             // "Your data" (A4.3b, TDPSA): the person's own requests.
             'privacyRequests' => $user instanceof User ? PrivacyRequest::query()->where('user_id', $user->id)->latest('id')->limit(10)->get()
                 ->map(static fn (PrivacyRequest $r): array => [

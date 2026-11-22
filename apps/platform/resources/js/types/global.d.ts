@@ -11,8 +11,15 @@ declare module '@inertiajs/core' {
         sharedPageProps: {
             name: string;
             auth: Auth;
-            /** The state you're working in (the journey's state chip). */
-            region: { code: string; name: string } | null;
+            /**
+             * The state you're working in (the journey's state chip), and the
+             * states you can switch to (A5.1; more than one shows the switcher).
+             */
+            region: {
+                code: string;
+                name: string;
+                options?: { code: string; name: string }[];
+            } | null;
             sidebarOpen: boolean;
             /** The tenant's brand (A4.2a): the role in use, or the tenant whose address this is. */
             brand: import('@/types/brand').BrandProps | null;

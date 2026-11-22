@@ -9,8 +9,10 @@ use App\Models\AuditEvent;
 use App\Models\Invitation;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
+use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
+use App\Services\Licences\Licences;
 use App\Services\Privacy\PrivacyRequests;
 use App\Services\Tenancy\Invitations;
 use App\Services\Tenancy\SingleSignOn;
@@ -111,6 +113,18 @@ function adminActions(): array
             return auditCase(auditOps(), 'DELETE', "/admin/people/{$person->id}/roles", ['role' => 'agent', 'organisation_id' => $lone->id], confirmed: true);
         },
         'states.update' => fn () => auditCase(auditOps(), 'PATCH', '/admin/states/LA', ['status' => 'in_preparation'], confirmed: true),
+        'states.prepare' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/LA/details', ['regulator' => 'LREC', 'exam_vendor' => 'PSI', 'qualifying_hours' => 90, 'ce_hours' => 12], confirmed: true),
+        'states.checklist' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/LA/checklist', ['item' => 'rules', 'done' => true], confirmed: true),
+        'people.licences.approve' => function () {
+            [$licence] = app(Licences::class)->add(User::factory()->create(['name' => 'James Miller']), State::query()->findOrFail('TX'), '0798888', null, null);
+
+            return auditCase(auditOps(), 'POST', "/admin/people/licences/{$licence->id}/approve", confirmed: true);
+        },
+        'people.licences.reject' => function () {
+            [$licence] = app(Licences::class)->add(User::factory()->create(['name' => 'James Miller']), State::query()->findOrFail('TX'), '0798888', null, null);
+
+            return auditCase(auditOps(), 'POST', "/admin/people/licences/{$licence->id}/reject", ['note' => 'Not on the TREC record.'], confirmed: true);
+        },
         'tenants.store' => fn () => auditCase(auditOps(), 'POST', '/admin/tenants', ['name' => 'Gulf Coast Homes', 'type' => 'brokerage', 'states' => ['TX'], 'plan' => 'brokerage', 'seats' => 40], confirmed: true),
         'tenants.update' => function () {
             [$lone] = auditBrokerage();
@@ -315,7 +329,7 @@ it('audits the admin action', function (string $name) {
 
 /** Routes that change a value (rather than add, remove or start something). */
 const CHANGES = [
-    'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update',
+    'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update',
 ];

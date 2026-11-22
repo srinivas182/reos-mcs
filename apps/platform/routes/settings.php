@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Settings\ActiveRoleController;
 use App\Http\Controllers\Settings\AppearanceController;
+use App\Http\Controllers\Settings\CurrentStateController;
+use App\Http\Controllers\Settings\LicenceController;
 use App\Http\Controllers\Settings\PrivacyController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\Settings\SecurityController;
@@ -43,6 +45,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('settings/active-role', [ActiveRoleController::class, 'update'])
         ->middleware('throttle:30,1,active-role-update')
         ->name('active-role.update');
+
+    // Licences and the state switcher (A5.1).
+    Route::post('settings/licences', [LicenceController::class, 'store'])->middleware('throttle:10,1,licences-store')->name('licences.store');
+    Route::patch('settings/licences/{licence}', [LicenceController::class, 'update'])->whereNumber('licence')->middleware('throttle:30,1,licences-update')->name('licences.update');
+    Route::delete('settings/licences/{licence}', [LicenceController::class, 'destroy'])->whereNumber('licence')->middleware('throttle:30,1,licences-destroy')->name('licences.destroy');
+    Route::post('settings/licences/{licence}/restore', [LicenceController::class, 'restore'])->whereNumber('licence')->middleware('throttle:30,1,licences-restore')->name('licences.restore');
+    Route::put('settings/current-state', [CurrentStateController::class, 'update'])->middleware('throttle:30,1,current-state-update')->name('current-state.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');
     Route::patch('settings/appearance', [AppearanceController::class, 'update'])

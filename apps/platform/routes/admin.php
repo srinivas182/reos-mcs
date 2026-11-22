@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\IntegrationCheckController;
 use App\Http\Controllers\Admin\IntegrationController;
 use App\Http\Controllers\Admin\IntegrationCredentialController;
 use App\Http\Controllers\Admin\IntegrationModeController;
+use App\Http\Controllers\Admin\LicenceReviewController;
 use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\StateController;
@@ -70,6 +71,12 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:people.ma
             Route::post('{person}/roles', [PersonRoleController::class, 'store'])->whereNumber('person')->name('roles.store');
             Route::delete('{person}/roles', [PersonRoleController::class, 'destroy'])->whereNumber('person')->name('roles.destroy');
         });
+
+        // Licence reviews (A5.1): no licence counts without a regulator match or this approval.
+        Route::middleware('throttle:60,1,admin-licence-reviews')->group(function () {
+            Route::post('licences/{licence}/approve', [LicenceReviewController::class, 'approve'])->whereNumber('licence')->name('licences.approve');
+            Route::post('licences/{licence}/reject', [LicenceReviewController::class, 'reject'])->whereNumber('licence')->name('licences.reject');
+        });
     });
 
 // States (A3.3, web journey screen 61): launch status and waitlists.
@@ -79,6 +86,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:states.ma
     ->group(function () {
         Route::get('/', [StateController::class, 'index'])->name('index');
         Route::patch('{state}', [StateController::class, 'update'])->middleware('throttle:30,1,admin-states-update')->name('update');
+        Route::put('{state}/details', [StateController::class, 'prepare'])->middleware('throttle:30,1,admin-states-prepare')->name('prepare');
+        Route::put('{state}/checklist', [StateController::class, 'checklist'])->middleware('throttle:60,1,admin-states-checklist')->name('checklist');
     });
 
 // Tenants (A4.1b, web journey screens 59 and 60): every organisation. Super

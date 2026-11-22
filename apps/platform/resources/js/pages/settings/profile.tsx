@@ -8,12 +8,13 @@ import DeleteUser from '@/components/delete-user';
 import { YourData } from '@/components/your-data';
 import type { MyPrivacyRequest } from '@/components/your-data';
 import Heading from '@/components/heading';
+import { LicenceList } from '@/components/licence-list';
 import { MembershipList } from '@/components/membership-list';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { Auth } from '@/types';
+import type { Auth, Licence, LicenceState } from '@/types';
 /* @chisel-email-verification */
 import { send } from '@/routes/verification';
 /* @end-chisel-email-verification */
@@ -28,10 +29,14 @@ export default function Profile(
         mustVerifyEmail,
         status,
         privacyRequests = [],
+        licences = [],
+        licenceStates = [],
     }: {
         mustVerifyEmail: boolean;
         status?: string;
         privacyRequests?: MyPrivacyRequest[];
+        licences?: Licence[];
+        licenceStates?: LicenceState[];
     },
     /* @end-chisel-email-verification */
 ) {
@@ -52,6 +57,15 @@ export default function Profile(
                     <MembershipList memberships={auth.roles.held} />
                 </div>
             ) : null}
+
+            <div className="space-y-4">
+                <Heading
+                    variant="small"
+                    title={t('licences.heading')}
+                    description={t('licences.description')}
+                />
+                <LicenceList licences={licences} states={licenceStates} />
+            </div>
 
             <div className="space-y-6">
                 <Heading

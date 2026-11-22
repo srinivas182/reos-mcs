@@ -69,3 +69,9 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Beta | Beta | |
 | Deals (tab) | Operaciones | A real estate transaction is an "operación" |
 | Up to date | Al día | |
+| Designated broker | Bróker designado | TREC role |
+| Delegated supervisor | Supervisor delegado | TREC role |
+| Sponsoring broker | Bróker patrocinador | |
+| Regulator (state real estate commission) | Regulador | |
+| Launch checklist (state) | Lista de lanzamiento | |
+| State switcher | Selector de estados | |

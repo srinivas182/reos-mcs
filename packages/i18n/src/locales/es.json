@@ -37,7 +37,8 @@
     "brandingAndDomain": "Marca y dominio",
     "brokerageSettings": "Configuración de la agencia",
     "agents": "Agentes",
-    "complianceAndAudit": "Cumplimiento y auditoría"
+    "complianceAndAudit": "Cumplimiento y auditoría",
+    "switchState": "Cambiar de estado"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -854,7 +855,8 @@
       "examVendor": "Proveedor del examen",
       "qualifyingHours": "Horas de calificación",
       "ceHours": "CE por renovación",
-      "waitlist": "Lista de espera"
+      "waitlist": "Lista de espera",
+      "coursesApproved": "Cursos aprobados"
     },
     "statuses": {
       "live": "Activo",
@@ -868,10 +870,43 @@
     "noResults": "Ningún estado coincide con «{{search}}»",
     "goesLive": {
       "title": "Qué cambia cuando un estado se activa",
-      "register": "Las personas pueden elegirlo y registrarse en la aplicación y en reos.com.",
-      "waitlist": "Su lista de espera se conserva, para avisar a quienes esperan cuando lleguen las notificaciones.",
-      "fill": "Complete el regulador, el proveedor del examen y las horas antes de abrir un estado."
-    }
+      "register": "Las personas de ese estado pueden registrarse; su lista de espera recibe una invitación por correo.",
+      "switcher": "El estado aparece en el selector de estados.",
+      "content": "En él solo se muestra el contenido etiquetado para ese estado.",
+      "licences": "Los agentes con licencias en varios estados ven cada una."
+    },
+    "add": {
+      "button": "Agregar estado",
+      "title": "Agregar un estado",
+      "intro": "Empiece a preparar un estado: su regulador, proveedor del examen y horas. Se abre cuando su lista de lanzamiento esté completa.",
+      "state": "Estado",
+      "choose": "Elija un estado",
+      "submit": "Empezar a preparar"
+    },
+    "checklist": {
+      "title": "Lista de lanzamiento · {{state}}",
+      "progress": "{{done}} de {{total}} completados",
+      "open": "Abrir la lista de lanzamiento de {{state}}",
+      "beforeLive": "El estado puede abrirse cuando todos los puntos estén completos.",
+      "incomplete": "{{state}} aún no puede abrirse: primero complete su lista de lanzamiento.",
+      "unknown": "Ese no es un punto de la lista de lanzamiento.",
+      "items": {
+        "rules": "Reglas del regulador y temario del examen cargados",
+        "approvals": "Aprobaciones de cursos con una escuela de {{state}}",
+        "advertising": "Reglas de publicidad para publicaciones",
+        "plans": "Planes y precios en USD",
+        "integrations": "Integraciones permitidas en {{state}}",
+        "legal": "Revisión legal de RESPA y de las reglas del estado"
+      }
+    },
+    "liveMail": {
+      "subject": "REOS ya está disponible en {{state}}",
+      "body": "Nos pidió que le avisáramos cuando REOS abriera en {{state}}. Ya está disponible.",
+      "action": "Comenzar",
+      "bonus": "Sus créditos de bono por estar en la lista de espera se agregan a su primera membresía."
+    },
+    "showAll": "Mostrar {{count}} estados más",
+    "showActive": "Mostrar solo los estados disponibles, en preparación y con lista de espera"
   },
   "onboarding": {
     "path": {
@@ -1799,7 +1834,15 @@
         "state.status_changed": "Cambió el estado de lanzamiento de un estado",
         "privacy.requested": "Hizo una solicitud de privacidad",
         "privacy.updated": "Actualizó una solicitud de privacidad",
-        "audit.exported": "Exportó el registro de auditoría"
+        "audit.exported": "Exportó el registro de auditoría",
+        "state.prepared": "Empezó a preparar un estado",
+        "state.checklist_ticked": "Actualizó la lista de lanzamiento de un estado",
+        "licence.added": "Agregó una licencia",
+        "licence.role_changed": "Cambió a quién supervisa el titular de una licencia",
+        "licence.removed": "Quitó una licencia",
+        "licence.restored": "Restauró una licencia",
+        "licence.approved": "Aprobó una licencia",
+        "licence.rejected": "No aprobó una licencia"
       }
     }
   },
@@ -2582,5 +2625,78 @@
     "emptyTitle": "Aquí están sus tareas",
     "add": "Agregar una tarea",
     "undone": "De vuelta en su lista."
+  },
+  "licences": {
+    "heading": "Licencias",
+    "description": "Todas sus licencias estatales. Cada una se verifica con el regulador de ese estado.",
+    "emptyTitle": "Aquí están sus licencias",
+    "emptyDescription": "Agregue su número de licencia y REOS lo verifica con el regulador del estado. Su educación continua y su fecha de renovación se basan en ella.",
+    "add": "Agregar una licencia estatal",
+    "title": "{{state}} · {{type}}",
+    "types": {
+      "sales_agent": "Agente de ventas",
+      "broker": "Bróker"
+    },
+    "verifiedBy": {
+      "regulator": "verificada con el regulador el {{date}}",
+      "reviewer": "aprobada por REOS el {{date}}"
+    },
+    "comingSoon": "Próximamente",
+    "statuses": {
+      "active": "Activa",
+      "inactive": "Inactiva",
+      "expired": "Vencida",
+      "pending_review": "En revisión",
+      "rejected": "No aprobada"
+    },
+    "sponsor": "Bróker patrocinador",
+    "renewal": "Renovación",
+    "trackedOnly": "REOS aún no está disponible en {{state}}. Llevamos el control de su fecha de renovación y se la recordamos; los cursos y la educación continua llegarán cuando se abra el estado.",
+    "waiting": "Un revisor está verificando esta licencia. Contará una vez aprobada. {{note}}",
+    "rejectedNote": "Esta licencia no fue aprobada: {{note}}",
+    "role": "A quién supervisa",
+    "roles": {
+      "none": "A nadie",
+      "sponsoring_broker": "Patrocino agentes de ventas",
+      "designated_broker": "Bróker designado de una agencia inmobiliaria patrocinadora",
+      "delegated_supervisor": "Supervisor delegado"
+    },
+    "remove": "Quitar la licencia de {{state}}",
+    "removed": "Licencia de {{state}} quitada.",
+    "addTitle": "Agregar una licencia estatal",
+    "addIntro": "Elija el estado e ingrese su número de licencia.",
+    "state": "Estado",
+    "liveStates": "Disponible en REOS",
+    "laterStates": "Próximamente (solo control de renovación)",
+    "number": "Número de licencia",
+    "askReview": "Mi número es correcto: enviarlo a un revisor",
+    "howChecked": "REOS verifica el número en los registros públicos de licencias del estado. El nombre debe coincidir con su cuenta; si no coincide, lo revisa un revisor.",
+    "addButton": "Agregar licencia",
+    "added": "Su licencia de {{state}} se verificó y se agregó.",
+    "sentForReview": "Su licencia de {{state}} se envió a revisión. Contará una vez aprobada.",
+    "source": {
+      "simulator": "Verificada con los registros de licencias de demostración de REOS (Simulador)."
+    },
+    "errors": {
+      "already": "Ya tiene una licencia de {{state}}. Quítela primero para agregar otra.",
+      "notFound": "Los registros de {{state}} no tienen una licencia con este número. Revíselo o envíelo a un revisor.",
+      "role": "Solo una licencia de bróker puede patrocinar agentes o ser bróker designado.",
+      "notYours": "Elija un estado disponible en el que tenga licencia o para el que esté estudiando."
+    },
+    "review": {
+      "nameMismatch": "El registro del regulador está a otro nombre: {{name}}.",
+      "notFound": "Los registros del regulador no tienen una licencia con este número.",
+      "noLookup": "Los registros de este estado aún no se pueden verificar automáticamente."
+    },
+    "reviews": {
+      "title_one": "{{count}} licencia por revisar",
+      "title_other": "{{count}} licencias por revisar",
+      "none": "Aún no tiene licencias.",
+      "onRecord": "registrada como {{name}}",
+      "why": "¿Por qué no se aprueba? La persona verá este motivo.",
+      "reject": "No aprobar",
+      "approve": "Aprobar",
+      "description": "Ninguna licencia cuenta sin una coincidencia con el regulador o su aprobación."
+    }
   }
 }
