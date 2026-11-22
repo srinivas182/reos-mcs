@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\Licences;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Licences\AddLicenceRequest;
+use App\Http\Requests\Licences\CheckLicenceRequest;
 use App\Http\Requests\Licences\LicenceRoleRequest;
 use App\Http\Resources\Licences\LicenceResource;
 use App\Models\Licence;
@@ -36,7 +37,9 @@ final class LicenceController extends Controller
      * check yet, or (with `review: true`) a number the regulator doesn't have
      * goes to a reviewer. Without `review`, an unknown number is refused (422).
      *
-     * @response 201 array{data: LicenceResource, check: 'verified'|'name_mismatch'|'not_found'|'no_lookup', source: string|null}
+     * @status 201
+     *
+     * @response array{data: LicenceResource, check: 'verified'|'name_mismatch'|'not_found'|'no_lookup', source: string|null}
      */
     public function store(AddLicenceRequest $request, #[CurrentUser] User $user, Licences $licences): JsonResponse
     {
@@ -47,6 +50,32 @@ final class LicenceController extends Controller
             'check' => $check->value,
             'source' => $source,
         ], 201);
+    }
+
+    /**
+     * Check a licence number.
+     *
+     * Looks the number up with the state's regulator without saving it, so
+     * the person sees the name, type, status and expiry first. Adding it
+     * (`POST /me/licences`) checks again.
+     *
+     * @return array{check: 'verified'|'name_mismatch'|'not_found'|'no_lookup', record: array{name: string, type: 'sales_agent'|'broker', status: string, expires_on: string|null}|null, source: string|null} The record's status is active, inactive or expired.
+     */
+    public function check(CheckLicenceRequest $request, #[CurrentUser] User $user, Licences $licences): array
+    {
+        $preview = $licences->preview($user, $request->state(), $request->number());
+        $record = $preview['record'];
+
+        return [
+            'check' => $preview['result']->value,
+            'record' => $record === null ? null : [
+                'name' => $record->name,
+                'type' => $record->type->value,
+                'status' => $record->status->value,
+                'expires_on' => $record->expiresOn?->toDateString(),
+            ],
+            'source' => $preview['source'],
+        ];
     }
 
     /** Set who you supervise (changes your CE). */

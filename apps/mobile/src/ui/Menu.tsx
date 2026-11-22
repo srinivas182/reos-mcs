@@ -156,8 +156,8 @@ export function ChoiceRow({
   );
 }
 
-/** Back arrow and the screen's title on one line (journey settings screens). */
-export function TitleBar({ title, onBack }: { title: string; onBack: () => void }) {
+/** Back arrow and the screen's title on one line (journey settings screens), with an optional action on the right (the round + on My licences). */
+export function TitleBar({ title, onBack, action }: { title: string; onBack: () => void; action?: ReactNode }) {
   const { t } = useTranslation();
 
   return (
@@ -168,6 +168,7 @@ export function TitleBar({ title, onBack }: { title: string; onBack: () => void 
       <Text variant="title" style={styles.titleText}>
         {title}
       </Text>
+      {action}
     </View>
   );
 }

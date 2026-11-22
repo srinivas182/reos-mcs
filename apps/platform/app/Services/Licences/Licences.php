@@ -122,6 +122,29 @@ final readonly class Licences
         return [$licence->load('state'), $check, $lookup?->source()];
     }
 
+    /**
+     * Looks a number up without saving it, so the phone can show what the
+     * regulator holds before "Add licence" (agent journey screen 149).
+     *
+     * @return array{result: LicenceCheck, record: LicenceRecord|null, source: string|null}
+     */
+    public function preview(User $user, State $state, string $number): array
+    {
+        $lookup = $this->lookups->for($state);
+        $record = $lookup?->find($state, trim($number), $user->name);
+
+        return [
+            'result' => match (true) {
+                $lookup === null => LicenceCheck::NoLookup,
+                $record === null => LicenceCheck::NotFound,
+                ! self::sameName($record->name, $user->name) => LicenceCheck::NameMismatch,
+                default => LicenceCheck::Verified,
+            },
+            'record' => $record,
+            'source' => $lookup?->source(),
+        ];
+    }
+
     /** Sets who the licence holder supervises (changes their CE, A5.2). */
     public function setRole(Licence $licence, ?BrokerRole $role, User $actor): Licence
     {

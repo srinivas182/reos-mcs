@@ -190,7 +190,9 @@
       "twoStepTitle": "Set up two-step to use {{role}}",
       "twoStepBody": "Admin roles need a second step when you sign in. Set it up on the REOS website in Settings › Security. It takes about a minute.",
       "openWeb": "Open the website",
-      "connections": "Connections"
+      "connections": "Connections",
+      "licences": "My licenses",
+      "state": "Working in"
     },
     "organisations": {
       "title": "Your organizations",
@@ -214,6 +216,34 @@
       "highContrast": "High contrast",
       "highContrastHint": "The strongest contrast, for low vision or bright sun",
       "note": "Works with VoiceOver and TalkBack. Built to WCAG 2.2 AA."
+    },
+    "licences": {
+      "title": "My licenses",
+      "add": "Add a license",
+      "live": "Live",
+      "verifiedOn": "verified {{date}}",
+      "approvedOn": "approved {{date}}",
+      "footer": "Licenses are checked with each state's regulator.",
+      "emptyTitle": "Add your first license",
+      "emptyBody": "REOS checks the number with the state's regulator. Your CE and renewal date follow from it.",
+      "detailTitle": "{{state}} license",
+      "choose": "Choose a state",
+      "check": "Check number",
+      "checking": "Checking…",
+      "found": "Found: {{name}}",
+      "foundDetail": "{{type}} · {{status}} · expires {{date}}",
+      "foundDetailNoDate": "{{type}} · {{status}}",
+      "otherName": "The record is under another name: {{name}}. A reviewer checks it before it counts.",
+      "notFound": "No license with this number in {{state}}'s records. Check the number, or send it to a reviewer.",
+      "noLookup": "{{state}}'s records can't be checked automatically yet. A reviewer checks it before it counts.",
+      "sendForReview": "Send for review",
+      "added": "{{state}} license added.",
+      "sentForReview": "{{state}} license sent for review."
+    },
+    "states": {
+      "title": "Switch state",
+      "intro": "Courses, CE and plans follow the state you choose.",
+      "switched": "Now working in {{state}}."
     }
   },
   "tabs": {

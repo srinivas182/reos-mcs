@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Languages, ShieldCheck, Plug } from 'lucide-react-native';
+import { ArrowLeftRight, IdCard, Languages, Map, ShieldCheck, Plug } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { webBaseUrl } from '@/lib/api';
 import { useAuth, type Membership } from '@/lib/auth';
+import { switchState } from '@/lib/licences';
 import { activeMembership, organisationsOf, roleName } from '@/lib/roles';
 import { Button, Callout, ChoiceRow, MenuCard, MenuGroup, MenuRow, ProfileHeader, Screen, Sheet, Text, TitleBar, useUndoToast } from '@/ui';
 
@@ -20,13 +21,31 @@ import { Button, Callout, ChoiceRow, MenuCard, MenuGroup, MenuRow, ProfileHeader
  */
 export default function MeScreen() {
   const { t } = useTranslation();
-  const { user, switchRole, signOut } = useAuth();
+  const { user, switchRole, signOut, refresh } = useAuth();
   const showToast = useUndoToast();
-  const [sheet, setSheet] = useState<'organisations' | 'roles' | null>(null);
+  const [sheet, setSheet] = useState<'organisations' | 'roles' | 'states' | null>(null);
   const current = activeMembership(user);
   const name = user?.name ?? user?.email ?? user?.phone ?? '';
   const others = (user?.roles ?? []).filter((m) => m !== current);
   const organisations = organisationsOf(user);
+  const states = user?.states;
+  const licensed = current !== null && current.role !== 'candidate';
+
+  // Switching state is reversible too: Undo switches back.
+  const chooseState = async (code: string, name: string) => {
+    setSheet(null);
+    const previous = states?.current.code;
+
+    if (code !== previous && (await switchState(code))) {
+      await refresh();
+      showToast({
+        message: t('mobile.states.switched', { state: name }),
+        onUndo: async () => {
+          if (previous && (await switchState(previous))) await refresh();
+        },
+      });
+    }
+  };
 
   // Reversible, so an Undo toast rather than a confirmation.
   const choose = async (membership: Membership, message: string) => {
@@ -67,6 +86,8 @@ export default function MeScreen() {
       ) : null}
 
       <MenuGroup>
+        {licensed ? <MenuRow icon={IdCard} title={t('mobile.me.licences')} onPress={() => router.push('/licences')} /> : null}
+        {states && states.options.length > 1 ? <MenuRow icon={Map} title={t('mobile.me.state')} value={states.current.name} onPress={() => setSheet('states')} /> : null}
         <MenuRow icon={Plug} title={t('mobile.me.connections')} onPress={() => router.push('/connections')} />
         <MenuRow icon={ShieldCheck} title={t('mobile.me.privacy')} onPress={() => router.push('/privacy')} />
         <MenuRow icon={Languages} title={t('mobile.me.accessibility')} onPress={() => router.push('/accessibility')} />
@@ -105,6 +126,15 @@ export default function MeScreen() {
         <Text variant="caption" tone="muted">
           {t('mobile.organisations.note')}
         </Text>
+      </Sheet>
+
+      <Sheet open={sheet === 'states'} onClose={() => setSheet(null)} title={t('mobile.states.title')}>
+        <Text tone="muted">{t('mobile.states.intro')}</Text>
+        <View accessibilityRole="radiogroup">
+          {(states?.options ?? []).map((option) => (
+            <ChoiceRow key={option.code} title={option.name} tile={option.code} selected={option.code === states?.current.code} onPress={() => void chooseState(option.code, option.name)} />
+          ))}
+        </View>
       </Sheet>
 
       <Sheet open={sheet === 'roles'} onClose={() => setSheet(null)} title={t('mobile.roles.title')}>

@@ -458,6 +458,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/licences/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a licence number
+         * @description Looks the number up with the state's regulator without saving it, so
+         *     the person sees the name, type, status and expiry first. Adding it
+         *     (`POST /me/licences`) checks again.
+         */
+        post: operations["me.licences.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/licences/{licence}": {
         parameters: {
             query?: never;
@@ -971,6 +993,15 @@ export interface components {
          * @enum {string}
          */
         CatalogueStatus: "enabled" | "beta" | "coming_soon" | "paused" | "retired";
+        /**
+         * CheckLicenceRequest
+         * @description Look a licence number up before adding it (agent journey screen 149).
+         */
+        CheckLicenceRequest: {
+            /** @description The state's two-letter code, for example `TX`. */
+            state: string;
+            number: string;
+        };
         /**
          * ChooseStateRequest
          * @description The state switcher (A5.1).
@@ -1649,6 +1680,7 @@ export type SchemaCalendarEventResource = components['schemas']['CalendarEventRe
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
 export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemResource'];
 export type SchemaCatalogueStatus = components['schemas']['CatalogueStatus'];
+export type SchemaCheckLicenceRequest = components['schemas']['CheckLicenceRequest'];
 export type SchemaChooseStateRequest = components['schemas']['ChooseStateRequest'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
@@ -2644,7 +2676,60 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": 201;
+                    "application/json": {
+                        data: components["schemas"]["LicenceResource"];
+                        /** @enum {string} */
+                        check: "verified" | "name_mismatch" | "not_found" | "no_lookup";
+                        source: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.licences.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckLicenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        check: "verified" | "name_mismatch" | "not_found" | "no_lookup";
+                        record: {
+                            name: string;
+                            /** @enum {string} */
+                            type: "sales_agent" | "broker";
+                            status: string;
+                            expires_on: string | null;
+                        } | null;
+                        source: string | null;
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];
