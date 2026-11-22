@@ -22,3 +22,6 @@ GoogleService-Info.plist
 .idea/
 .vscode/
 *.log
+
+# Preview environment (P7.0)
+deploy/preview/backups/

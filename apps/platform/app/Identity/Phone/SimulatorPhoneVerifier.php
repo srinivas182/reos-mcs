@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Identity\Phone;
 
+use App\Support\Preview;
 use Illuminate\Contracts\Cache\Repository as Cache;
 use Illuminate\Support\Facades\Hash;
 use Psr\Log\LoggerInterface;
@@ -11,7 +12,8 @@ use Psr\Log\LoggerInterface;
 /**
  * Demo codes (Twilio Verify on demo data, never in production): the code is
  * written to the log instead of a text message, so phone sign-in can be
- * tried on development and staging before Twilio keys exist.
+ * tried on development and staging before Twilio keys exist. In the
+ * preview (P7.0) the code is always the preview code, shown on screen.
  */
 final readonly class SimulatorPhoneVerifier implements PhoneVerifier
 {
@@ -21,7 +23,7 @@ final readonly class SimulatorPhoneVerifier implements PhoneVerifier
 
     public function send(string $phone, string $locale): void
     {
-        $code = str_pad((string) random_int(0, 999_999), 6, '0', STR_PAD_LEFT);
+        $code = Preview::on() ? Preview::code() : str_pad((string) random_int(0, 999_999), 6, '0', STR_PAD_LEFT);
         $this->cache->put($this->key($phone), Hash::make($code), self::TTL_SECONDS);
 
         $this->log->info("[REOS demo] Sign-in code for {$phone}: {$code}");

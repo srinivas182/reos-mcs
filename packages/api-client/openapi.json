@@ -10736,6 +10736,21 @@
                             "port",
                             "scheme"
                         ]
+                    },
+                    "preview": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "The private preview for usability checks (P7.0): show the preview\nbanner, with the one code every verification uses. `null` elsewhere.",
+                        "properties": {
+                            "code": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "code"
+                        ]
                     }
                 },
                 "required": [
@@ -10744,7 +10759,8 @@
                     "sentry",
                     "posthog",
                     "sign_in",
-                    "realtime"
+                    "realtime",
+                    "preview"
                 ],
                 "title": "AppConfigResource"
             },

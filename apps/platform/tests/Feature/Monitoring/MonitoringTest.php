@@ -107,11 +107,14 @@ it('gives the web and phone apps their own public settings, never secrets', func
             'sign_in' => ['google' => true, 'apple' => true, 'phone' => true, 'demo' => true],
             // Live messages are off without Reverb (B6.1).
             'realtime' => null,
+            'preview' => null,
         ]);
 
     // With Reverb: the public key and address only, never the secret.
     config(['broadcasting.default' => 'reverb', 'broadcasting.connections.reverb.key' => 'reos-key', 'broadcasting.connections.reverb.secret' => 'reos-secret',
-        'broadcasting.connections.reverb.options' => ['host' => 'ws.reos.com', 'port' => 443, 'scheme' => 'https']]);
+        // The app publishes to Reverb inside the network; phones get the public address.
+        'broadcasting.connections.reverb.options' => ['host' => 'reverb', 'port' => 8080, 'scheme' => 'http'],
+        'broadcasting.connections.reverb.public' => ['host' => 'ws.reos.com', 'port' => 443, 'scheme' => 'https']]);
     $this->getJson('/api/v1/app-config')
         ->assertJsonPath('realtime', ['key' => 'reos-key', 'host' => 'ws.reos.com', 'port' => 443, 'scheme' => 'https'])
         ->assertDontSee('reos-secret');

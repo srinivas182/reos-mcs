@@ -25,6 +25,8 @@ declare module '@inertiajs/core' {
             brand: import('@/types/brand').BrandProps | null;
             /** REOS support inside a tenant with the owner's consent (A4.1c). */
             supportSession: { tenant: string; ends_at: string | null } | null;
+            /** The private preview for usability checks (P7.0). */
+            preview: { code: string } | null;
             /** Your connections that need a reconnect (B3.1). */
             connectionAlerts: import('@/components/connection-alert').ConnectionAlertItem[];
             whatsNew: import('@/components/whats-new').WhatsNewItem | null;

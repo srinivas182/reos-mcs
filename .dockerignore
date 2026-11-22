@@ -1,0 +1,17 @@
+# Keeps the preview image build small and free of local secrets.
+**/node_modules
+**/vendor
+**/.env
+**/.env.*
+!**/.env.example
+.git
+apps/platform/storage/logs/*
+apps/platform/storage/framework/**/*
+apps/platform/storage/app/**/*
+apps/platform/storybook-static
+apps/platform/public/build
+apps/platform/public/vendor/excalidraw
+apps/platform/database/*.sqlite
+deploy/preview/backups
+**/.turbo
+**/coverage

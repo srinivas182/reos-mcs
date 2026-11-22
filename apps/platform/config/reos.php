@@ -17,6 +17,14 @@ return [
     'demo_password' => env('REOS_DEMO_PASSWORD', 'password'),
 
     /*
+    | The private preview for usability checks (P7.0, docs/preview.md): a
+    | banner on every screen, every integration on its simulator, and one
+    | known code for every code REOS asks for. Never on in production.
+    */
+    'preview' => (bool) env('REOS_PREVIEW', false) && env('APP_ENV') !== 'production',
+    'preview_code' => '123456',
+
+    /*
     | Integration Hub (Sprint 2.4, ADR 0009). The catalogue is generated from
     | docs/integrations/register.yaml. Integration keys are encrypted with their
     | own key, never APP_KEY; previous keys stay readable during rotation.

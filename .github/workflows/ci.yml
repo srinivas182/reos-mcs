@@ -36,6 +36,7 @@ jobs:
       platform: ${{ steps.filter.outputs.platform }}
       mobile: ${{ steps.filter.outputs.mobile }}
       devenv: ${{ steps.filter.outputs.devenv }}
+      preview: ${{ steps.filter.outputs.preview }}
       repo-scripts: ${{ steps.filter.outputs.repo-scripts }}
     steps:
       - uses: actions/checkout@v5
@@ -69,6 +70,9 @@ jobs:
               - 'apps/platform/config/filesystems.php'
               - 'apps/platform/config/database.php'
               - '.github/workflows/ci.yml'
+            preview:
+              - 'deploy/preview/**'
+              - '.dockerignore'
             repo-scripts:
               - 'scripts/**'
               - 'docs/integrations/**'
@@ -266,6 +270,27 @@ jobs:
         if: failure()
         run: docker compose logs --tail=80
 
+  preview-image:
+    # The preview environment for usability checks (P7.0, docs/preview.md).
+    name: Preview image
+    needs: changes
+    if: needs.changes.outputs.preview == 'true' && (github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v5
+      - name: Compose file is valid with the example settings
+        working-directory: deploy/preview
+        run: |
+          sed 's/CHANGE-ME[^ ]*/ci-placeholder/' .env.example > .env
+          docker compose config --quiet
+      - name: Image builds
+        run: docker build -f deploy/preview/Dockerfile -t reos-preview:ci .
+      - name: Image runs the app with the PHP extensions we need
+        run: |
+          docker run --rm --entrypoint sh reos-preview:ci -c \
+            'php -m | grep -E "^(pdo_pgsql|redis|intl|bcmath|pcntl|gd)$" | wc -l | grep -qx 6 && php artisan --version && test -f public/build/manifest.json'
+
   repo-scripts:
     # Cheap (no PHP), so it runs on drafts too.
     name: Repo scripts, tokens, translations and integrations register
@@ -292,7 +317,7 @@ jobs:
   result:
     name: CI result
     if: always()
-    needs: [changes, platform-quick, platform-tests, mobile-quick, mobile-tests, dev-environment, repo-scripts]
+    needs: [changes, platform-quick, platform-tests, mobile-quick, mobile-tests, dev-environment, preview-image, repo-scripts]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:

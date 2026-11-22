@@ -1838,6 +1838,13 @@ export interface components {
                 port: number;
                 scheme: string;
             } | null;
+            /**
+             * @description The private preview for usability checks (P7.0): show the preview
+             *     banner, with the one code every verification uses. `null` elsewhere.
+             */
+            preview: {
+                code: string;
+            } | null;
         };
         /**
          * BrokerRole

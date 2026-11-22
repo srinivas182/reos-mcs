@@ -4,6 +4,7 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { AppSidebarHeader } from '@/components/app-sidebar-header';
 import { PageBrandStyle } from '@/components/brand-style';
 import { ConnectionAlerts } from '@/components/connection-alert';
+import { PreviewBanner } from '@/components/preview-banner';
 import { SupportSessionBanner } from '@/components/support-session-banner';
 import { AdminTwoStepBanner } from '@/components/two-step-notice';
 import { WhatsNew } from '@/components/whats-new';
@@ -19,6 +20,7 @@ export default function AppSidebarLayout({ children }: AppLayoutProps) {
             <PageBrandStyle />
             <AppSidebar />
             <AppContent variant="sidebar" className="min-w-0 overflow-x-clip">
+                <PreviewBanner />
                 <SupportSessionBanner />
                 <AppSidebarHeader />
                 <AdminTwoStepBanner />
