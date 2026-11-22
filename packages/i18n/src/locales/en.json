@@ -3292,7 +3292,8 @@
       "open": "Open {{name}}",
       "page": "Page {{page}}",
       "here": "From your search",
-      "empty": "This lesson has no text or files yet."
+      "empty": "This lesson has no text or files yet.",
+      "noVideo": "Video not added yet. This is the transcript only."
     }
   },
   "billing": {

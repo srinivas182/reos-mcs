@@ -191,8 +191,6 @@ final readonly class Learning
 
     private function link(LessonMedia $media): string
     {
-        return LessonFiles::disk()->temporaryUrl($media->path, now()->addMinutes(self::LINK_MINUTES), [
-            'ResponseContentDisposition' => 'inline; filename="'.addcslashes($media->original_name, '"\\').'"',
-        ]);
+        return LessonFiles::playableUrl($media, self::LINK_MINUTES);
     }
 }

@@ -132,6 +132,17 @@ describe('a lesson', () => {
     expect(player.play).toHaveBeenCalled();
   });
 
+  it('says when there is no video yet, and the transcript times are not buttons', async () => {
+    jest.mocked(useLocalSearchParams).mockReturnValue({ id: '7' });
+    mockApi.GET.mockResolvedValue(ok({ data: { ...lesson, video: null } }));
+
+    await render(wrap(<LessonScreen />));
+
+    expect(await screen.findByText('Video not added yet. This is the transcript only.')).toBeTruthy();
+    expect(screen.getByText('Welcome back.')).toBeTruthy();
+    expect(screen.queryByLabelText('Play from 0:01. Welcome back.')).toBeNull();
+  });
+
   it('shows the page a result came from first', async () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({ id: '7', page: '2' });
     mockApi.GET.mockResolvedValue(ok({ data: lesson }));

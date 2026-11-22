@@ -38,6 +38,7 @@ final readonly class DemoContent
             ."A substantive contact is any talk about a specific property, price or terms.\n\n"
             ."# Who you represent\nExplain whether you represent the buyer, the seller, or act as an intermediary. "
             .'An intermediary needs written consent from both parties and must treat them fairly.');
+        $this->video($agency);
         $this->captions($agency);
         $this->lesson($principles, '6.3 Intermediary and appointed agents', 'en', 20,
             "# Appointments\nWith written consent, the broker may appoint a different license holder to each party. "
@@ -87,6 +88,29 @@ final readonly class DemoContent
     }
 
     /** The lesson video's captions, so what's said is searchable with its moment. */
+    /**
+     * A short demo video for the lesson (a title card with the clock and the
+     * caption lines at their times), so the player shows and a transcript
+     * line plays from its moment. Real lessons upload theirs in the content
+     * library and stream through Mux.
+     */
+    private function video(Lesson $lesson): void
+    {
+        $path = 'platform/lessons/'.$lesson->id.'/demo-agency-disclosure.mp4';
+        $bytes = (string) file_get_contents(__DIR__.'/assets/agency-disclosure.mp4');
+        LessonFiles::disk()->put($path, $bytes);
+
+        $lesson->media()->updateOrCreate(['path' => $path], [
+            'kind' => MediaKind::Video,
+            'original_name' => 'agency-disclosure.mp4',
+            'mime' => 'video/mp4',
+            'size' => strlen($bytes),
+            'status' => MediaStatus::Ready,
+            'duration_seconds' => 262,
+            'scanned_at' => now(),
+        ]);
+    }
+
     private function captions(Lesson $lesson): void
     {
         $path = 'platform/lessons/'.$lesson->id.'/demo-captions.vtt';

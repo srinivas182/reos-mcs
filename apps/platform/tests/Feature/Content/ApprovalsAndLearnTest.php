@@ -175,8 +175,31 @@ describe('learn (A5.3b)', function () {
 
         $this->getJson("/api/v1/learn/lessons/{$lesson->id}")->assertOk()
             ->assertJsonPath('data.documents.0.pages.1', ['page' => 2, 'text' => 'IABS'])
-            ->assertJsonPath('data.video', null)
+            ->assertJsonPath('data.video.type', 'file')
+            ->assertJsonPath('data.video.duration', 262)
             ->assertJsonPath('data.transcript.2.seconds', 245);
+    });
+
+    it('plays the demo video from a signed link that can seek, and never without the signature', function () {
+        $lesson = Lesson::query()->where('title', '6.2 Agency disclosure')->sole();
+        $url = $this->actingAs($this->candidate)->getJson("/api/v1/learn/lessons/{$lesson->id}")->assertOk()->json('data.video.url');
+
+        expect($url)->toContain('/lesson-media/')->toContain('signature=');
+
+        // The phone's player sends no cookies: the signature is the permission.
+        $this->app['auth']->forgetGuards();
+        $this->get($url, ['Range' => 'bytes=0-99'])->assertStatus(206)->assertHeader('Content-Type', 'video/mp4')->assertHeader('Content-Length', '100');
+        $this->get(strtok($url, '?'))->assertForbidden();
+        $this->get(str_replace('signature=', 'signature=0', $url))->assertForbidden();
+    });
+
+    it('says when a lesson has a transcript but no video yet', function () {
+        $lesson = Lesson::query()->where('title', '6.2 Agency disclosure')->sole();
+        LessonMedia::query()->where('lesson_id', $lesson->id)->where('kind', 'video')->delete();
+
+        $this->actingAs($this->candidate)->get("/learn/lessons/{$lesson->id}")->assertInertia(fn (Assert $page) => $page
+            ->where('lesson.video', null)
+            ->where('lesson.transcript.0.seconds', 1));
     });
 
     it('streams Mux video with signed tokens', function () {
@@ -185,6 +208,7 @@ describe('learn (A5.3b)', function () {
         app(CredentialVault::class)->put('mux', CredentialEnvironment::Sandbox, ['access_token_id' => 'id', 'secret_key' => 'secret', 'key_id' => 'k1', 'private_key' => $pem], null);
         IntegrationSetting::query()->create(['integration_id' => 'mux', 'mode' => IntegrationMode::Sandbox]);
         $lesson = Lesson::query()->where('title', '6.2 Agency disclosure')->sole();
+        LessonMedia::query()->where('lesson_id', $lesson->id)->where('kind', 'video')->delete();
         LessonMedia::query()->create(['lesson_id' => $lesson->id, 'kind' => 'video', 'path' => 'platform/v.mp4', 'original_name' => 'v.mp4', 'mime' => 'video/mp4', 'size' => 10, 'status' => 'ready', 'mux_asset_id' => 'a1', 'mux_playback_id' => 'play-1', 'duration_seconds' => 754]);
 
         $this->actingAs($this->candidate);

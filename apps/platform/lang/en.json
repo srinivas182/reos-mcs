@@ -1346,6 +1346,7 @@
     "learn.lesson.here": "From your search",
     "learn.lesson.jump": "Play from :time",
     "learn.lesson.next": "Next lesson",
+    "learn.lesson.noVideo": "Video not added yet. This is the transcript only.",
     "learn.lesson.open": "Open :name",
     "learn.lesson.page": "Page :page",
     "learn.lesson.previous": "Previous lesson",

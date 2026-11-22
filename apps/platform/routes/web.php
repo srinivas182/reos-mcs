@@ -16,6 +16,7 @@ use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Learn\LearnController;
+use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
@@ -164,6 +165,10 @@ Route::middleware(['auth', 'verified', 'throttle:20,1,payouts-simulate'])->prefi
     Route::get('/', [PayoutSimulatorController::class, 'show'])->name('simulate');
     Route::post('/', [PayoutSimulatorController::class, 'finish'])->name('simulate.finish');
 });
+// Lesson files on the local disk (development and demos): a signed,
+// short-lived link like object storage's, answering range requests so video seeks.
+Route::get('lesson-media/{media}', LessonMediaController::class)->whereNumber('media')
+    ->middleware(['signed', 'throttle:120,1,lesson-media'])->name('lesson-media.show');
 // A tenant's logo: public (its sign-in page shows it).
 Route::get('brand/{tenant}/logo', BrandLogoController::class)->where('tenant', '[a-z0-9-]+')->name('brand.logo');
 
