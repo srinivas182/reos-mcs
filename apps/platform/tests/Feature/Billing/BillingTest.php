@@ -171,7 +171,10 @@ describe('checkout on the Simulator (screen 3)', function () {
 
         $this->actingAs($this->sofia)->get("/learn/lessons/{$second->id}")->assertInertia(fn (Assert $page) => $page->component('learn/locked'));
         $this->getJson("/api/v1/learn/lessons/{$second->id}")->assertStatus(402)->assertJson(['membership_required' => true]);
-        $this->getJson('/api/v1/learn/courses')->assertJsonPath('data.0.lessons.1.locked', true);
+        $principles = collect($this->getJson('/api/v1/learn/courses')->json('data'))->firstWhere('title', 'Principles of Real Estate II');
+        expect($principles['unlocked'])->toBeFalse()
+            ->and($principles['lessons'][0]['locked'])->toBeFalse()
+            ->and($principles['lessons'][1]['locked'])->toBeTrue();
 
         $started = $this->postJson("/checkout/{$this->complete->id}")->json();
         $this->post("/checkout/orders/{$started['order']}/simulate");
