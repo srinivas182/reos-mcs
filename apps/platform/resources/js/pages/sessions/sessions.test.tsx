@@ -316,4 +316,161 @@ describe('Sessions (web, B6.3)', () => {
             'Not quite. Agents owe their clients loyalty. Source: TREC Rule 535.2',
         );
     });
+
+    it('asks everyone before recording, and shows Recording with Stop', async () => {
+        postJson.mockResolvedValue({});
+        const asking = {
+            id: 'r-1',
+            status: 'asking' as const,
+            requested_by: 'Dr. Rachel Hughes',
+            started_at: null,
+            stopped_at: null,
+            duration_seconds: null,
+            expires_at: null,
+            play_url: null,
+            agreed: ['Dr. Rachel Hughes'],
+            waiting: ['Sofia Reyes'],
+            my_answer: null,
+        };
+        const { rerender } = render(
+            <SessionPage
+                session={session({
+                    me: 'guest',
+                    can_join: true,
+                    status: 'live',
+                    recordings: [asking],
+                })}
+                simulated
+            />,
+        );
+        postJson.mockResolvedValueOnce({
+            simulated: true,
+            url: null,
+            token: null,
+            ends_at: new Date(Date.now() + 30 * 60_000).toISOString(),
+        });
+        await userEvent.click(screen.getByRole('button', { name: 'Join' }));
+        expect(
+            await screen.findByText(
+                'Dr. Rachel Hughes asks to record this session.',
+            ),
+        ).toBeInTheDocument();
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Agree to record' }),
+        );
+        expect(postJson).toHaveBeenLastCalledWith(
+            '/sessions/s-1/recordings/r-1/answer',
+            { agreed: true },
+        );
+
+        rerender(
+            <I18nextProvider i18n={i18n}>
+                <SessionPage
+                    session={session({
+                        me: 'guest',
+                        can_join: true,
+                        status: 'live',
+                        recordings: [
+                            { ...asking, status: 'recording', my_answer: true },
+                        ],
+                    })}
+                    simulated
+                />
+            </I18nextProvider>,
+        );
+        await userEvent.click(
+            await screen.findByRole('button', { name: 'Stop recording' }),
+        );
+        expect(postJson).toHaveBeenLastCalledWith(
+            '/sessions/s-1/recordings/r-1/stop',
+            {},
+        );
+    });
+
+    it('asks someone joining while it records to agree first', async () => {
+        postJson.mockResolvedValue({
+            simulated: true,
+            url: null,
+            token: null,
+            ends_at: new Date(Date.now() + 30 * 60_000).toISOString(),
+        });
+        render(
+            <SessionPage
+                session={session({
+                    me: 'guest',
+                    can_join: true,
+                    status: 'live',
+                    recordings: [
+                        {
+                            id: 'r-1',
+                            status: 'recording',
+                            requested_by: 'Dr. Rachel Hughes',
+                            started_at: '2026-11-24T21:05:00Z',
+                            stopped_at: null,
+                            duration_seconds: null,
+                            expires_at: null,
+                            play_url: null,
+                            agreed: ['Dr. Rachel Hughes'],
+                            waiting: [],
+                            my_answer: null,
+                        },
+                    ],
+                })}
+                simulated
+            />,
+        );
+        expect(
+            screen.getByRole('heading', {
+                name: 'This session is being recorded',
+            }),
+        ).toBeInTheDocument();
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Agree and join' }),
+        );
+        expect(postJson).toHaveBeenNthCalledWith(
+            1,
+            '/sessions/s-1/recordings/r-1/answer',
+            { agreed: true },
+        );
+        expect(postJson).toHaveBeenNthCalledWith(2, '/sessions/s-1/join');
+    });
+
+    it('lists finished recordings with when they are deleted', () => {
+        render(
+            <SessionPage
+                session={session({
+                    status: 'ended',
+                    recordings: [
+                        {
+                            id: 'r-1',
+                            status: 'ready',
+                            requested_by: 'Dr. Rachel Hughes',
+                            started_at: '2026-11-24T21:05:00Z',
+                            stopped_at: '2026-11-24T21:45:00Z',
+                            duration_seconds: 2400,
+                            expires_at: '2027-02-22T21:45:00Z',
+                            play_url:
+                                '/sessions/recordings/r-1/file?signature=x',
+                            agreed: ['Dr. Rachel Hughes', 'Sofia Reyes'],
+                            waiting: [],
+                            my_answer: true,
+                        },
+                    ],
+                })}
+                simulated
+            />,
+        );
+        expect(screen.getByLabelText('Watch recording')).toHaveAttribute(
+            'src',
+            '/sessions/recordings/r-1/file?signature=x',
+        );
+        expect(
+            screen.getByText(
+                /40 min · Kept until Feb 2[23], 2027 · Agreed: Dr. Rachel Hughes, Sofia Reyes/,
+            ),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Delete recording' }),
+        ).toBeInTheDocument();
+    });
 });

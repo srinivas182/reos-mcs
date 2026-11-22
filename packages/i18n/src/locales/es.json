@@ -1997,7 +1997,9 @@
         "announcement.sent": "Envió un anuncio",
         "account.phone_changed": "Número móvil cambiado",
         "email.suppressed": "Correo detenido por rebote o queja",
-        "email.resumed": "Correo reanudado"
+        "email.resumed": "Correo reanudado",
+        "session.recording_started": "Grabación de sesión iniciada",
+        "session.recording_deleted": "Grabación de sesión eliminada"
       }
     }
   },
@@ -4737,6 +4739,36 @@
         "lesson": "Elija una lección publicada.",
         "topic": "Aún no hay preguntas de práctica sobre ese tema."
       }
+    },
+    "recording": {
+      "record": "Grabar",
+      "asking": "{{name}} pide grabar esta sesión.",
+      "askBody": "Solo empieza si todos en la sala están de acuerdo. La grabación se guarda con la sesión durante 90 días y solo las personas que participan pueden verla.",
+      "agree": "Acepto la grabación",
+      "decline": "No grabar",
+      "waiting": "Esperando a {{names}}",
+      "recording": "Grabando",
+      "stop": "Detener grabación",
+      "declined": "No se grabó: alguien dijo que no.",
+      "stopping": "Guardando la grabación…",
+      "title": "Grabaciones",
+      "duration": "{{minutes}} min",
+      "expires": "Se conserva hasta el {{date}}",
+      "delete": "Eliminar grabación",
+      "deleted": "Grabación eliminada.",
+      "failed": "No se pudo guardar la grabación.",
+      "simulated": "Sala de práctica: aquí no se graba video.",
+      "agreedBy": "Aceptaron: {{names}}",
+      "joinFirst": "Esta sesión se está grabando",
+      "joinBody": "Puede unirse cuando acepte ser grabado. La grabación se guarda durante 90 días y solo las personas de esta sesión pueden verla.",
+      "watch": "Ver grabación",
+      "errors": {
+        "storage": "El almacenamiento de grabaciones aún no está configurado.",
+        "cannotAsk": "No se puede empezar a grabar ahora.",
+        "notAsking": "Nadie está pidiendo grabar ahora.",
+        "agreeFirst": "Esta sesión se está grabando. Acepte ser grabado para unirse."
+      },
+      "agreeAndJoin": "Aceptar y unirse"
     }
   }
 }

@@ -1434,6 +1434,101 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sessions/{session}/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Leave the room (B6.3c)
+         * @description Recording only asks the people still in the room.
+         */
+        post: operations["sessions.leave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/recordings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask to record (B6.3c). Host only
+         * @description Everyone in the room is asked; it starts only when all of them agree.
+         */
+        post: operations["sessions.recordings.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/recordings/{recording}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Agree or not to recording (B6.3c)
+         * @description Saved as a consent record. One "no" cancels the request; someone
+         *     joining while it records must agree first.
+         */
+        post: operations["sessions.recordings.answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/recordings/{recording}/stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Stop recording (B6.3c). Anyone in the session */
+        post: operations["sessions.recordings.stop"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/recordings/{recording}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete a recording for everyone (B6.3c). Anyone in the session */
+        delete: operations["sessions.recordings.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/states": {
         parameters: {
             query?: never;
@@ -2393,6 +2488,13 @@ export interface components {
          */
         QuizTopic: "agency" | "contracts" | "math" | "ownership" | "finance" | "state_rules";
         /**
+         * RecordingAnswerRequest
+         * @description Agree or not to recording the session (B6.3c).
+         */
+        RecordingAnswerRequest: {
+            agreed: boolean;
+        };
+        /**
          * ReportRequest
          * @description Report a conversation (B6.1b): why, optional details, who (in a group), and whether to block too.
          */
@@ -2796,6 +2898,7 @@ export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest
 export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
 export type SchemaQuizResultResource = components['schemas']['QuizResultResource'];
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
+export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswerRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
@@ -5744,6 +5847,20 @@ export interface operations {
                                     source: string;
                                 }[];
                             }[];
+                            recordings: {
+                                id: string;
+                                /** @enum {string} */
+                                status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                                requested_by: string | null;
+                                started_at: string | null;
+                                stopped_at: string | null;
+                                duration_seconds: number | null;
+                                expires_at: string | null;
+                                play_url: string | null;
+                                agreed: string[];
+                                waiting: string[];
+                                my_answer: boolean | null;
+                            }[];
                         }[];
                         can_host: boolean;
                         contacts: {
@@ -5829,6 +5946,20 @@ export interface operations {
                                 explanation: string;
                                 source: string;
                             }[];
+                        }[];
+                        recordings: {
+                            id: string;
+                            /** @enum {string} */
+                            status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                            requested_by: string | null;
+                            started_at: string | null;
+                            stopped_at: string | null;
+                            duration_seconds: number | null;
+                            expires_at: string | null;
+                            play_url: string | null;
+                            agreed: string[];
+                            waiting: string[];
+                            my_answer: boolean | null;
                         }[];
                     };
                 };
@@ -5918,6 +6049,20 @@ export interface operations {
                                 explanation: string;
                                 source: string;
                             }[];
+                        }[];
+                        recordings: {
+                            id: string;
+                            /** @enum {string} */
+                            status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                            requested_by: string | null;
+                            started_at: string | null;
+                            stopped_at: string | null;
+                            duration_seconds: number | null;
+                            expires_at: string | null;
+                            play_url: string | null;
+                            agreed: string[];
+                            waiting: string[];
+                            my_answer: boolean | null;
                         }[];
                     };
                 };
@@ -6037,6 +6182,20 @@ export interface operations {
                                 source: string;
                             }[];
                         }[];
+                        recordings: {
+                            id: string;
+                            /** @enum {string} */
+                            status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                            requested_by: string | null;
+                            started_at: string | null;
+                            stopped_at: string | null;
+                            duration_seconds: number | null;
+                            expires_at: string | null;
+                            play_url: string | null;
+                            agreed: string[];
+                            waiting: string[];
+                            my_answer: boolean | null;
+                        }[];
                     };
                 };
             };
@@ -6125,6 +6284,20 @@ export interface operations {
                                 explanation: string;
                                 source: string;
                             }[];
+                        }[];
+                        recordings: {
+                            id: string;
+                            /** @enum {string} */
+                            status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                            requested_by: string | null;
+                            started_at: string | null;
+                            stopped_at: string | null;
+                            duration_seconds: number | null;
+                            expires_at: string | null;
+                            play_url: string | null;
+                            agreed: string[];
+                            waiting: string[];
+                            my_answer: boolean | null;
                         }[];
                     };
                 };
@@ -6218,6 +6391,20 @@ export interface operations {
                                 explanation: string;
                                 source: string;
                             }[];
+                        }[];
+                        recordings: {
+                            id: string;
+                            /** @enum {string} */
+                            status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                            requested_by: string | null;
+                            started_at: string | null;
+                            stopped_at: string | null;
+                            duration_seconds: number | null;
+                            expires_at: string | null;
+                            play_url: string | null;
+                            agreed: string[];
+                            waiting: string[];
+                            my_answer: boolean | null;
                         }[];
                     };
                 };
@@ -6332,6 +6519,237 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        left: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.recordings.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                        requested_by: string | null;
+                        started_at: string | null;
+                        stopped_at: string | null;
+                        duration_seconds: number | null;
+                        expires_at: string | null;
+                        play_url: string | null;
+                        agreed: string[];
+                        waiting: string[];
+                        my_answer: boolean | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.recordings.answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The recording UUID */
+                recording: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordingAnswerRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                        requested_by: string | null;
+                        started_at: string | null;
+                        stopped_at: string | null;
+                        duration_seconds: number | null;
+                        expires_at: string | null;
+                        play_url: string | null;
+                        agreed: string[];
+                        waiting: string[];
+                        my_answer: boolean | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.recordings.stop": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The recording UUID */
+                recording: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        status: "asking" | "declined" | "recording" | "stopping" | "ready" | "failed";
+                        requested_by: string | null;
+                        started_at: string | null;
+                        stopped_at: string | null;
+                        duration_seconds: number | null;
+                        expires_at: string | null;
+                        play_url: string | null;
+                        agreed: string[];
+                        waiting: string[];
+                        my_answer: boolean | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.recordings.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The recording UUID */
+                recording: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {

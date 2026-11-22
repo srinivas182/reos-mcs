@@ -1,6 +1,6 @@
 # 0024: Video sessions
 
-**Status:** accepted for sessions, the room and notes (B6.3a) and the whiteboard, quick actions and scheduling on the phone (B6.3b), 22 November 2026. Recording with consent (B6.3c) extends it.
+**Status:** accepted for sessions, the room and notes (B6.3a) the whiteboard, quick actions and scheduling on the phone (B6.3b), and recording with consent (B6.3c), 22 November 2026.
 
 ## Context
 
@@ -21,10 +21,13 @@ Instructors and mentors teach and coach one to one and in live classes. Today th
 11. **Quick actions** (host): share a lesson (live courses in the host's state; guests open it in Learn, where their own access applies) or send three practice questions on a topic from the question bank, answered in the room with the answer, why and its source. Shares are kept with the session and arrive at once (`session.shared` on each participant's channel).
 12. **Scheduling on the phone** for instructors and mentors (B6.3b), with the same rules as the web: pick the type, title, a day in the next two weeks, a start time (half hours, 7 AM to 9:30 PM in the phone's zone), the length and who.
 13. **Times are stored in UTC** whatever zone they arrive in (`VideoSessions::schedule` converts); found by a test in B6.3b.
+14. **Recording only with everyone's consent (B6.3c).** The host asks; everyone in the room right now is asked and answers in the room, each answer saved as a consent record (`session_recording`, subject `recording:<id>`, web or app) and on the recording (`video_recording_consents`). It starts only when all of them agree (the host's ask counts as theirs); one "no" cancels the request. Anyone in the session can stop it. Someone who joins while it records must agree before they get a room token. "In the room" is kept on `video_session_participants.in_room`: set on join, cleared by Leave, by the booked end and by LiveKit's `participant_left` webhook.
+15. **LiveKit records to REOS's storage.** Room composite egress (grid layout, MP4) uploads to the content bucket (`recordings/<session>/<recording>.mp4`) with that bucket's keys; LiveKit's `egress_ended` webhook (`/webhooks/livekit`, verified with the API secret: a signed token carrying the body's SHA-256) marks it ready with its length and size, or failed. The room closing at the booked end stops any recording. On the simulator nothing is recorded and the screens say so.
+16. **Playback and retention.** Only the people in the session see recordings, through a 60-minute signed link (S3, or a signed REOS route on the local disk that answers range requests). Each is deleted 90 days after the session ends (`reos:recordings:prune`, daily; decision of 22 November 2026), and anyone in the session can delete it sooner for everyone; both are audited. Recordings are listed in "Download my data"; the agreements are under consents.
 
 ## Consequences
 
 - Rooms work across tenants without exposing directories; the participant check is in one place.
 - LiveKit Cloud is billed per participant-minute; a closed room stops the meter at the booked end.
 - The phone needs a development build with WebRTC (no Expo Go), already the rule.
-- Recording (B6.3b) will need LiveKit egress to S3 and a consent record from everyone in the room before it starts.
+- Recording needs an S3 access key that LiveKit can upload with (the content bucket's) and the LiveKit webhook pointed at `/webhooks/livekit`; until then recording is simulated outside production.

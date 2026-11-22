@@ -1997,7 +1997,9 @@
         "announcement.sent": "Sent an announcement",
         "account.phone_changed": "Mobile number changed",
         "email.suppressed": "Email stopped after a bounce or complaint",
-        "email.resumed": "Email resumed"
+        "email.resumed": "Email resumed",
+        "session.recording_started": "Session recording started",
+        "session.recording_deleted": "Session recording deleted"
       }
     }
   },
@@ -4737,6 +4739,36 @@
         "lesson": "Choose a live lesson.",
         "topic": "There are no practice questions on that topic yet."
       }
+    },
+    "recording": {
+      "record": "Record",
+      "asking": "{{name}} asks to record this session.",
+      "askBody": "It starts only if everyone in the room agrees. The recording is kept with the session for 90 days, and only the people in it can watch it.",
+      "agree": "Agree to record",
+      "decline": "Don’t record",
+      "waiting": "Waiting for {{names}}",
+      "recording": "Recording",
+      "stop": "Stop recording",
+      "declined": "Not recorded: someone said no.",
+      "stopping": "Saving the recording…",
+      "title": "Recordings",
+      "duration": "{{minutes}} min",
+      "expires": "Kept until {{date}}",
+      "delete": "Delete recording",
+      "deleted": "Recording deleted.",
+      "failed": "The recording couldn’t be saved.",
+      "simulated": "Practice room: no video is recorded here.",
+      "agreedBy": "Agreed: {{names}}",
+      "joinFirst": "This session is being recorded",
+      "joinBody": "You can join once you agree to be recorded. The recording is kept for 90 days, and only the people in this session can watch it.",
+      "watch": "Watch recording",
+      "errors": {
+        "storage": "Recording storage isn’t set up yet.",
+        "cannotAsk": "Recording can’t be started now.",
+        "notAsking": "Nobody is asking to record now.",
+        "agreeFirst": "This session is being recorded. Agree to be recorded to join."
+      },
+      "agreeAndJoin": "Agree and join"
     }
   }
 }

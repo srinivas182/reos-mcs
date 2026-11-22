@@ -134,6 +134,12 @@ Route::middleware('auth:sanctum')->group(function () {
         // Quick actions (B6.3b); the whiteboard is drawn on the web, the phone shows its picture.
         Route::get('{session}/share-options', 'shareOptions')->whereUuid('session')->middleware('throttle:30,1,api-sessions-share')->name('share-options');
         Route::post('{session}/shares', 'share')->whereUuid('session')->middleware('throttle:20,1,api-sessions-share')->name('shares');
+        // Recording only with consent (B6.3c).
+        Route::post('{session}/leave', 'leave')->whereUuid('session')->middleware('throttle:30,1,api-sessions-leave')->name('leave');
+        Route::post('{session}/recordings', 'record')->whereUuid('session')->middleware('throttle:10,1,api-sessions-record')->name('recordings.store');
+        Route::post('{session}/recordings/{recording}/answer', 'answerRecording')->whereUuid(['session', 'recording'])->middleware('throttle:30,1,api-sessions-record-answer')->name('recordings.answer');
+        Route::post('{session}/recordings/{recording}/stop', 'stopRecording')->whereUuid(['session', 'recording'])->middleware('throttle:20,1,api-sessions-record-stop')->name('recordings.stop');
+        Route::delete('{session}/recordings/{recording}', 'deleteRecording')->whereUuid(['session', 'recording'])->middleware('throttle:10,1,api-sessions-record-delete')->name('recordings.destroy');
     });
     // The notification centre (B6.2): the inbox and my settings.
     Route::get('notifications', [ApiNotificationsController::class, 'index'])->name('api.notifications.index');

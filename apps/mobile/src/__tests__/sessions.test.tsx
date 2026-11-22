@@ -40,6 +40,7 @@ const session = (over: Partial<Session> = {}): Session => ({
   notes_updated_by: null,
   whiteboard: { image_url: null, updated_at: null },
   shares: [],
+  recordings: [],
   ...over,
 });
 
@@ -160,5 +161,49 @@ describe('Sessions on the phone (B6.3)', () => {
     expect(mockPost).toHaveBeenCalledWith('/sessions', {
       body: expect.objectContaining({ kind: 'one_on_one', title: 'Contract review', minutes: '45', guests: [2] }),
     });
+  });
+
+  it('asks to record only with everyone agreeing, and makes late joiners agree first', async () => {
+    const recording = {
+      id: 'r-1',
+      status: 'recording' as const,
+      requested_by: 'Dr. Rachel Hughes',
+      started_at: '2026-11-24T21:05:00Z',
+      stopped_at: null,
+      duration_seconds: null,
+      expires_at: null,
+      play_url: null,
+      agreed: ['Dr. Rachel Hughes'],
+      waiting: [],
+      my_answer: null,
+    };
+    mockGet.mockResolvedValue({ data: session({ recordings: [recording] }) });
+    mockPost.mockImplementation((path: string) =>
+      Promise.resolve(
+        path.endsWith('/join')
+          ? { data: { simulated: true, url: null, token: null, ends_at: new Date(Date.now() + 30 * 60_000).toISOString() } }
+          : { data: { ...recording, my_answer: true } },
+      ),
+    );
+    await wrap(<SessionScreen />);
+
+    expect(await screen.findByText('This session is being recorded')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Agree and join' }));
+    expect(mockPost).toHaveBeenNthCalledWith(1, '/sessions/{session}/recordings/{recording}/answer', {
+      params: { path: { session: 's-1', recording: 'r-1' } },
+      body: { agreed: true },
+    });
+    expect(mockPost).toHaveBeenNthCalledWith(2, '/sessions/{session}/join', { params: { path: { session: 's-1' } } });
+    expect(await screen.findByRole('button', { name: 'Stop recording' })).toBeOnTheScreen();
+  });
+
+  it('lets the host ask to record from the room', async () => {
+    mockGet.mockResolvedValue({ data: session({ me: 'host' }) });
+    mockPost.mockResolvedValue({ data: { simulated: true, url: null, token: null, ends_at: new Date(Date.now() + 30 * 60_000).toISOString() } });
+    await wrap(<SessionScreen />);
+
+    await fireEvent.press(await screen.findByRole('button', { name: 'Join' }));
+    await fireEvent.press(await screen.findByRole('button', { name: 'Record' }));
+    expect(mockPost).toHaveBeenLastCalledWith('/sessions/{session}/recordings', { params: { path: { session: 's-1' } } });
   });
 });

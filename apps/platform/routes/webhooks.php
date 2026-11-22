@@ -4,6 +4,7 @@ use App\Billing\Gateways\Gateways;
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Connections\WebhookController;
 use App\Http\Controllers\Webhooks\ConnectWebhookController;
+use App\Http\Controllers\Webhooks\LiveKitWebhookController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Http\Controllers\Webhooks\PaymentWebhookController;
 use App\Http\Controllers\Webhooks\SesWebhookController;
@@ -31,6 +32,11 @@ Route::post('webhooks/twilio-sms', TwilioSmsWebhookController::class)
 Route::post('webhooks/ses', SesWebhookController::class)
     ->middleware('throttle:webhooks')
     ->name('webhooks.ses');
+
+// LiveKit (B6.3c): who is in each room, and finished recordings. Signed with the API secret.
+Route::post('webhooks/livekit', LiveKitWebhookController::class)
+    ->middleware('throttle:webhooks')
+    ->name('webhooks.livekit');
 
 // Inbound webhooks from connected tools (B3.1, ADR 0013). No session or CSRF:
 // each tool's own signature check (in its driver) protects the endpoint.

@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { contacts, session } from '@/components/sessions/fixtures';
+import {
+    RecordingBanner,
+    SessionRecordingsList,
+} from '@/components/sessions/recording';
 import { ScheduleDialog } from '@/components/sessions/schedule-dialog';
 import { SessionCard } from '@/components/sessions/session-card';
 import { SessionNotes } from '@/components/sessions/session-notes';
@@ -112,6 +116,72 @@ export const Shared: Story = {
                     ],
                 },
             ]}
+        />
+    ),
+};
+export const RecordingAsked: Story = {
+    render: () => (
+        <RecordingBanner
+            session={session({ me: 'guest' })}
+            onChanged={() => undefined}
+            recording={{
+                id: 'r-1',
+                status: 'asking',
+                requested_by: 'Dr. Rachel Hughes',
+                started_at: '2026-11-24T21:05:00Z',
+                stopped_at: null,
+                duration_seconds: null,
+                expires_at: null,
+                play_url: null,
+                agreed: ['Dr. Rachel Hughes'],
+                waiting: ['Sofia Reyes'],
+                my_answer: null,
+            }}
+        />
+    ),
+};
+export const RecordingOn: Story = {
+    render: () => (
+        <RecordingBanner
+            session={session()}
+            onChanged={() => undefined}
+            recording={{
+                id: 'r-1',
+                status: 'recording',
+                requested_by: 'Dr. Rachel Hughes',
+                started_at: '2026-11-24T21:05:00Z',
+                stopped_at: null,
+                duration_seconds: null,
+                expires_at: null,
+                play_url: null,
+                agreed: ['Dr. Rachel Hughes'],
+                waiting: [],
+                my_answer: null,
+            }}
+        />
+    ),
+};
+export const Recordings: Story = {
+    render: () => (
+        <SessionRecordingsList
+            session={session({
+                status: 'ended',
+                recordings: [
+                    {
+                        id: 'r-1',
+                        status: 'ready',
+                        requested_by: 'Dr. Rachel Hughes',
+                        started_at: '2026-11-24T21:05:00Z',
+                        stopped_at: '2026-11-24T21:45:00Z',
+                        duration_seconds: 2400,
+                        expires_at: '2027-02-22T21:45:00Z',
+                        play_url: null,
+                        agreed: ['Dr. Rachel Hughes'],
+                        waiting: [],
+                        my_answer: null,
+                    },
+                ],
+            })}
         />
     ),
 };

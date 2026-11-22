@@ -12,7 +12,8 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
-import { clock, type RoomConnection, type Session } from '@/lib/sessions';
+import { RecordingBanner } from '@/features/sessions/Recording';
+import { activeRecording, askToRecord, clock, type RoomConnection, type Session } from '@/lib/sessions';
 import { Button, Callout, initialsOf, Text } from '@/ui';
 
 function useSecondsLeft(until: string): number {
@@ -71,14 +72,18 @@ export function SessionRoom({
   me,
   onLeave,
   onEnd,
+  onChanged = () => undefined,
 }: {
   session: Session;
   connection: RoomConnection;
   me: number;
   onLeave: () => void;
   onEnd: () => void;
+  /** Recording changed (reload the session). */
+  onChanged?: () => void;
 }) {
   const { t, i18n } = useTranslation();
+  const recording = activeRecording(session);
   const left = useSecondsLeft(connection.ends_at);
   const closesAt = new Date(connection.ends_at).toLocaleTimeString(i18n.language, { hour: 'numeric', minute: '2-digit' });
   const live = !connection.simulated && connection.url !== null && connection.token !== null;
@@ -105,6 +110,7 @@ export function SessionRoom({
         </Text>
         <Text tone="muted">{t('sessions.room.left', { time: closesAt })}</Text>
       </View>
+      {recording ? <RecordingBanner session={session} recording={recording} onChanged={onChanged} /> : null}
       {left > 0 && left <= 120 ? <Callout tone="warning" title={t('sessions.room.twoMinutes', { time: closesAt })} live /> : null}
       {live ? (
         <LiveKitRoom serverUrl={connection.url ?? undefined} token={connection.token ?? undefined} connect audio video onDisconnected={onLeave}>
@@ -118,6 +124,9 @@ export function SessionRoom({
       )}
       <View style={styles.actions}>
         <Button variant="secondary" label={t('sessions.room.leave')} onPress={onLeave} />
+        {session.me === 'host' && recording === null ? (
+          <Button variant="secondary" label={t('sessions.recording.record')} onPress={() => void askToRecord(session.id).finally(onChanged)} />
+        ) : null}
         {session.me === 'host' ? <Button variant="destructive" label={t('sessions.room.end')} onPress={onEnd} /> : null}
       </View>
     </View>

@@ -69,7 +69,7 @@ export function useSession(id: string, userId: number | null, onEnded: () => voi
     () =>
       userId === null
         ? undefined
-        : listen(`users.${userId}`, ['session.ended', 'session.shared'], (event) => {
+        : listen(`users.${userId}`, ['session.ended', 'session.shared', 'session.recording'], (event) => {
             const data = event as { session?: string } | undefined;
 
             if (data?.session !== id) return;
@@ -130,4 +130,39 @@ export async function scheduleSession(plan: Plan): Promise<Result<Session>> {
   const { data, error } = await api().POST('/sessions', { body: plan });
 
   return data ? { ok: true, data } : { ok: false, message: problem(error) };
+}
+
+export type Recording = Session['recordings'][number];
+
+/** The recording being asked for or made, if any (B6.3c). */
+export function activeRecording(session: Session): Recording | null {
+  return session.recordings.find((r) => r.status === 'asking' || r.status === 'recording' || r.status === 'stopping') ?? null;
+}
+
+export async function askToRecord(id: string): Promise<Result<Recording>> {
+  const { data, error } = await api().POST('/sessions/{session}/recordings', { params: { path: { session: id } } });
+
+  return data ? { ok: true, data } : { ok: false, message: problem(error) };
+}
+
+export async function answerRecording(id: string, recording: string, agreed: boolean): Promise<Result<Recording>> {
+  const { data, error } = await api().POST('/sessions/{session}/recordings/{recording}/answer', {
+    params: { path: { session: id, recording } },
+    body: { agreed },
+  });
+
+  return data ? { ok: true, data } : { ok: false, message: problem(error) };
+}
+
+export async function stopRecording(id: string, recording: string): Promise<void> {
+  await api().POST('/sessions/{session}/recordings/{recording}/stop', { params: { path: { session: id, recording } } });
+}
+
+export async function deleteRecording(id: string, recording: string): Promise<void> {
+  await api().DELETE('/sessions/{session}/recordings/{recording}', { params: { path: { session: id, recording } } });
+}
+
+/** Out of the room: recording no longer waits for this person (B6.3c). */
+export async function leaveSession(id: string): Promise<void> {
+  await api().POST('/sessions/{session}/leave', { params: { path: { session: id } } });
 }

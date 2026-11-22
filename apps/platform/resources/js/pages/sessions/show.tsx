@@ -1,12 +1,16 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEcho } from '@laravel/echo-react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Circle } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
 import { PageHeader } from '@/components/page-header';
 import { SessionStatus, sessionTime } from '@/components/sessions/session-card';
 import { SessionNotes } from '@/components/sessions/session-notes';
+import {
+    activeRecording,
+    SessionRecordingsList,
+} from '@/components/sessions/recording';
 import { SessionRoom } from '@/components/sessions/session-room';
 import { SessionShares } from '@/components/sessions/session-shares';
 import type { RoomConnection, Session } from '@/components/sessions/types';
@@ -14,7 +18,14 @@ import { withWhom } from '@/components/sessions/types';
 import { Button } from '@/components/ui/button';
 import { postJson } from '@/lib/content';
 import { realtimeEnabled } from '@/lib/realtime';
-import { cancel, end, index, join } from '@/routes/sessions';
+import {
+    cancel,
+    end,
+    index,
+    join,
+    leave as leaveRoute,
+} from '@/routes/sessions';
+import { answer } from '@/routes/sessions/recordings';
 
 /** Closes the room at once when the session ends elsewhere (the host, or the booked end). */
 function LiveEnd({
@@ -38,10 +49,10 @@ function LiveEnd({
         },
         [session],
     );
-    // The host shared a lesson or practice questions (B6.3b).
+    // The host shared a lesson or practice questions (B6.3b), or recording changed (B6.3c).
     useEcho<{ session: string }>(
         `users.${me}`,
-        '.session.shared',
+        ['.session.shared', '.session.recording'],
         (event) => {
             if (event.session === session) {
                 onShared();
@@ -75,8 +86,16 @@ export default function SessionPage({
 
     const leave = useCallback(() => {
         setConnection(null);
+        // Out of the room: recording no longer waits for this person (B6.3c).
+        void postJson(leaveRoute(session.id).url).catch(() => undefined);
         router.reload({ only: ['session'] });
-    }, []);
+    }, [session.id]);
+    const recording = activeRecording(session);
+    // Joining while it records: agree first (B6.3c).
+    const mustAgree =
+        recording !== null &&
+        recording.status === 'recording' &&
+        recording.my_answer !== true;
     const refresh = useCallback(() => router.reload({ only: ['session'] }), []);
 
     const enter = async () => {
@@ -89,6 +108,8 @@ export default function SessionPage({
             router.reload({ only: ['session'] });
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
+            // A recording may have started meanwhile: show its prompt.
+            refresh();
         } finally {
             setJoining(false);
         }
@@ -175,14 +196,40 @@ export default function SessionPage({
                                 ? t('sessions.ready')
                                 : t('sessions.opensNote', { time: opens })}
                         </p>
+                        {mustAgree && session.can_join && recording ? (
+                            <div className="space-y-3 rounded-reos-md border border-reos-tone-danger-fg bg-reos-tone-danger-bg p-4 text-reos-tone-danger-fg">
+                                <h2 className="flex items-center gap-2 text-base font-semibold">
+                                    <Circle
+                                        aria-hidden
+                                        className="size-4 fill-current"
+                                    />
+                                    {t('sessions.recording.joinFirst')}
+                                </h2>
+                                <p className="text-base">
+                                    {t('sessions.recording.joinBody')}
+                                </p>
+                            </div>
+                        ) : null}
                         <Button
                             size="lg"
                             disabled={!session.can_join || joining}
-                            onClick={() => void enter()}
+                            onClick={() =>
+                                void (mustAgree && recording
+                                    ? postJson(
+                                          answer({
+                                              session: session.id,
+                                              recording: recording.id,
+                                          }).url,
+                                          { agreed: true },
+                                      ).then(enter)
+                                    : enter())
+                            }
                         >
-                            {session.can_join
-                                ? t('sessions.join')
-                                : t('sessions.opensAt', { time: opens })}
+                            {!session.can_join
+                                ? t('sessions.opensAt', { time: opens })
+                                : mustAgree
+                                  ? t('sessions.recording.agreeAndJoin')
+                                  : t('sessions.join')}
                         </Button>
                         <InputError message={error} />
                     </section>
@@ -195,6 +242,10 @@ export default function SessionPage({
                 ) : null}
 
                 <SessionShares shares={session.shares} />
+
+                {!connection ? (
+                    <SessionRecordingsList session={session} />
+                ) : null}
 
                 {!connection && session.whiteboard.image_url ? (
                     <section className="space-y-3">

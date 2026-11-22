@@ -138,6 +138,14 @@ final readonly class DataExport
                 ->orderBy('video_sessions.starts_at')
                 ->get(['video_sessions.title', 'video_sessions.kind', 'video_sessions.starts_at', 'video_sessions.ends_at', 'video_sessions.status', 'hosts.name as host', 'video_session_participants.role', 'video_session_participants.first_joined_at', 'video_sessions.notes', 'video_sessions.whiteboard_updated_at'])
                 ->map(static fn ($r): array => (array) $r)->all(),
+            // Recordings of sessions you were in (B6.3c): when, and when they're deleted (your agreement is under consents).
+            'session_recordings' => DB::table('video_recordings')
+                ->join('video_sessions', 'video_sessions.id', '=', 'video_recordings.video_session_id')
+                ->join('video_session_participants', 'video_session_participants.video_session_id', '=', 'video_sessions.id')
+                ->where('video_session_participants.user_id', $user->id)
+                ->where('video_recordings.status', '!=', 'deleted')
+                ->get(['video_sessions.title', 'video_recordings.status', 'video_recordings.started_at', 'video_recordings.stopped_at', 'video_recordings.expires_at'])
+                ->map(static fn ($r): array => (array) $r)->all(),
             // The notification centre (B6.2): the inbox, choices and phones with push (never the token).
             'notifications' => [
                 'inbox' => $user->notifications()->latest()->get(['data', 'read_at', 'created_at'])->map(static fn ($n): array => [
