@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Messaging;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Messaging\ReportRequest;
 use App\Http\Requests\Messaging\SendMessageRequest;
 use App\Http\Requests\Messaging\StartConversationRequest;
+use App\Messaging\Announcements;
 use App\Messaging\Contacts;
 use App\Messaging\Conversations;
+use App\Messaging\Safety;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\User;
@@ -27,7 +30,7 @@ use Inertia\Response;
  */
 final class MessagesController extends Controller
 {
-    public function index(Request $request, #[CurrentUser] User $user, Conversations $conversations, Contacts $contacts): Response
+    public function index(Request $request, #[CurrentUser] User $user, Conversations $conversations, Contacts $contacts, Announcements $announcements): Response
     {
         $inbox = $conversations->inbox($user);
         $open = $request->string('c')->toString();
@@ -41,19 +44,21 @@ final class MessagesController extends Controller
             'inbox' => $inbox,
             'conversation' => $selected === null ? null : $conversations->show($user, $selected),
             'contacts' => Inertia::defer(static fn (): array => $contacts->for($user)),
+            // Announcements not yet read (B6.1b), above the conversations.
+            'announcements' => $announcements->mine($user, unreadOnly: true),
         ]);
     }
 
     public function store(StartConversationRequest $request, #[CurrentUser] User $user, Conversations $conversations): RedirectResponse
     {
-        $conversation = $conversations->start($user, $request->people(), $request->string('body')->toString(), $request->string('title')->toString());
+        $conversation = $conversations->start($user, $request->people(), $request->string('body')->toString(), $request->string('title')->toString(), $request->attachments());
 
         return redirect()->route('messages.index', ['c' => $conversation->uuid]);
     }
 
     public function send(SendMessageRequest $request, Conversation $conversation, #[CurrentUser] User $user, Conversations $conversations): RedirectResponse
     {
-        $conversations->post($user, $conversation, $request->string('body')->toString(), $request->replyTo());
+        $conversations->post($user, $conversation, $request->string('body')->toString(), $request->replyTo(), $request->attachments());
 
         return redirect()->route('messages.index', ['c' => $conversation->uuid]);
     }
@@ -77,6 +82,32 @@ final class MessagesController extends Controller
         $conversations->read($user, $conversation);
 
         return response()->json(['unread' => $conversations->unread($user)]);
+    }
+
+    /** Report the conversation (and block, if asked) (B6.1b). */
+    public function report(ReportRequest $request, Conversation $conversation, #[CurrentUser] User $user, Conversations $conversations, Safety $safety): RedirectResponse
+    {
+        abort_unless($conversations->isParticipant($user, $conversation), 404);
+        $safety->report($user, $conversation, $request->string('reason')->toString(), $request->string('details')->toString() ?: null, $request->filled('user') ? $request->integer('user') : null, $request->boolean('block'));
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('messages.report.sent')]);
+
+        return back();
+    }
+
+    public function block(Request $request, #[CurrentUser] User $user, Safety $safety): RedirectResponse
+    {
+        $safety->block($user, User::query()->findOrFail($request->integer('user')));
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('messages.blocked')]);
+
+        return back();
+    }
+
+    public function unblock(User $person, #[CurrentUser] User $user, Safety $safety): RedirectResponse
+    {
+        $safety->unblock($user, $person);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('messages.unblocked')]);
+
+        return back();
     }
 
     /** Older messages, a page at a time, as the person scrolls up. */

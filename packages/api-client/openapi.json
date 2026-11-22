@@ -69,6 +69,142 @@
                 }
             }
         },
+        "/announcements": {
+            "get": {
+                "operationId": "announcements.index",
+                "description": "From each brokerage, school or association I belong to, newest first\n(the latest 20), with whether I've read each. New ones arrive live on\n`users.{id}` (`announcement.posted`).",
+                "summary": "My announcements (B6.1b, Today)",
+                "tags": [
+                    "Announcement"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "unread": {
+                                            "type": "integer"
+                                        },
+                                        "announcements": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "body": {
+                                                        "type": "string"
+                                                    },
+                                                    "from": {
+                                                        "type": "string"
+                                                    },
+                                                    "author": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "sent_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "read": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "body",
+                                                    "from",
+                                                    "author",
+                                                    "sent_at",
+                                                    "read"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "unread",
+                                        "announcements"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/announcements/{announcement}/read": {
+            "post": {
+                "operationId": "announcements.read",
+                "summary": "Mark an announcement read (B6.1b): it counts toward \"Read by\"",
+                "tags": [
+                    "Announcement"
+                ],
+                "parameters": [
+                    {
+                        "name": "announcement",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "read": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "read"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/app-config": {
             "get": {
                 "operationId": "app-config",
@@ -3582,6 +3718,9 @@
                                                             "deleted": {
                                                                 "type": "boolean"
                                                             },
+                                                            "files": {
+                                                                "type": "integer"
+                                                            },
                                                             "at": {
                                                                 "type": "string"
                                                             }
@@ -3590,11 +3729,23 @@
                                                             "body",
                                                             "sender",
                                                             "deleted",
+                                                            "files",
                                                             "at"
                                                         ]
                                                     },
                                                     "unread": {
                                                         "type": "integer"
+                                                    },
+                                                    "blocked": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "enum": [
+                                                            "by_me",
+                                                            "by_them",
+                                                            null
+                                                        ]
                                                     },
                                                     "updated_at": {
                                                         "type": [
@@ -3610,6 +3761,7 @@
                                                     "people",
                                                     "last_message",
                                                     "unread",
+                                                    "blocked",
                                                     "updated_at"
                                                 ]
                                             }
@@ -3630,7 +3782,7 @@
             },
             "post": {
                 "operationId": "messages.store",
-                "description": "With one person an existing conversation is reused; with several (up\nto 19) a group starts, optionally named. Returns the conversation.",
+                "description": "With one person an existing conversation is reused; with several (up\nto 19) a group starts, optionally named. Up to 5 `files[]` (images and\nPDFs, 20 MB each; multipart) open once virus-scanned. Returns the\nconversation.",
                 "summary": "Start a conversation (B6.1)",
                 "tags": [
                     "Messages"
@@ -3638,7 +3790,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/StartConversationRequest"
                             }
@@ -3783,6 +3935,52 @@
                                                             "string",
                                                             "null"
                                                         ]
+                                                    },
+                                                    "attachments": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "mime": {
+                                                                    "type": "string"
+                                                                },
+                                                                "size": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "image": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "pending",
+                                                                        "clean",
+                                                                        "infected"
+                                                                    ]
+                                                                },
+                                                                "url": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "mime",
+                                                                "size",
+                                                                "image",
+                                                                "status",
+                                                                "url"
+                                                            ]
+                                                        }
                                                     }
                                                 },
                                                 "required": [
@@ -3793,12 +3991,24 @@
                                                     "edited",
                                                     "deleted",
                                                     "created_at",
-                                                    "changeable_until"
+                                                    "changeable_until",
+                                                    "attachments"
                                                 ]
                                             }
                                         },
                                         "older": {
                                             "type": "boolean"
+                                        },
+                                        "blocked": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ],
+                                            "enum": [
+                                                "by_me",
+                                                "by_them",
+                                                null
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -3808,7 +4018,8 @@
                                         "people",
                                         "reads",
                                         "messages",
-                                        "older"
+                                        "older",
+                                        "blocked"
                                     ]
                                 }
                             }
@@ -4055,6 +4266,52 @@
                                                             "string",
                                                             "null"
                                                         ]
+                                                    },
+                                                    "attachments": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "mime": {
+                                                                    "type": "string"
+                                                                },
+                                                                "size": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "image": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "pending",
+                                                                        "clean",
+                                                                        "infected"
+                                                                    ]
+                                                                },
+                                                                "url": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "mime",
+                                                                "size",
+                                                                "image",
+                                                                "status",
+                                                                "url"
+                                                            ]
+                                                        }
                                                     }
                                                 },
                                                 "required": [
@@ -4065,12 +4322,24 @@
                                                     "edited",
                                                     "deleted",
                                                     "created_at",
-                                                    "changeable_until"
+                                                    "changeable_until",
+                                                    "attachments"
                                                 ]
                                             }
                                         },
                                         "older": {
                                             "type": "boolean"
+                                        },
+                                        "blocked": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ],
+                                            "enum": [
+                                                "by_me",
+                                                "by_them",
+                                                null
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -4080,7 +4349,8 @@
                                         "people",
                                         "reads",
                                         "messages",
-                                        "older"
+                                        "older",
+                                        "blocked"
                                     ]
                                 }
                             }
@@ -4096,6 +4366,7 @@
             },
             "post": {
                 "operationId": "messages.send",
+                "description": "Words, files or both: up to 5 `files[]` (images and PDFs, 20 MB each;\nmultipart). Files show `pending` until scanned, then a short-lived `url`.",
                 "summary": "Send a message (B6.1), optionally replying to one",
                 "tags": [
                     "Messages"
@@ -4112,9 +4383,8 @@
                     }
                 ],
                 "requestBody": {
-                    "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/SendMessageRequest"
                             }
@@ -4202,6 +4472,52 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "attachments": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "mime": {
+                                                        "type": "string"
+                                                    },
+                                                    "size": {
+                                                        "type": "integer"
+                                                    },
+                                                    "image": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "pending",
+                                                            "clean",
+                                                            "infected"
+                                                        ]
+                                                    },
+                                                    "url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "mime",
+                                                    "size",
+                                                    "image",
+                                                    "status",
+                                                    "url"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -4212,7 +4528,8 @@
                                         "edited",
                                         "deleted",
                                         "created_at",
-                                        "changeable_until"
+                                        "changeable_until",
+                                        "attachments"
                                     ]
                                 }
                             }
@@ -4333,9 +4650,8 @@
                     }
                 ],
                 "requestBody": {
-                    "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/SendMessageRequest"
                             }
@@ -4423,6 +4739,52 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "attachments": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "mime": {
+                                                        "type": "string"
+                                                    },
+                                                    "size": {
+                                                        "type": "integer"
+                                                    },
+                                                    "image": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "pending",
+                                                            "clean",
+                                                            "infected"
+                                                        ]
+                                                    },
+                                                    "url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "mime",
+                                                    "size",
+                                                    "image",
+                                                    "status",
+                                                    "url"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -4433,7 +4795,8 @@
                                         "edited",
                                         "deleted",
                                         "created_at",
-                                        "changeable_until"
+                                        "changeable_until",
+                                        "attachments"
                                     ]
                                 }
                             }
@@ -4567,6 +4930,52 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "attachments": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "mime": {
+                                                        "type": "string"
+                                                    },
+                                                    "size": {
+                                                        "type": "integer"
+                                                    },
+                                                    "image": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "pending",
+                                                            "clean",
+                                                            "infected"
+                                                        ]
+                                                    },
+                                                    "url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "mime",
+                                                    "size",
+                                                    "image",
+                                                    "status",
+                                                    "url"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -4577,7 +4986,228 @@
                                         "edited",
                                         "deleted",
                                         "created_at",
-                                        "changeable_until"
+                                        "changeable_until",
+                                        "attachments"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/messages/{conversation}/report": {
+            "post": {
+                "operationId": "messages.report",
+                "description": "Copies the reported person's recent messages (the other person in a\none-to-one, or `user` in a group) and sends them to the tenant's\nadmins and REOS. `block` also blocks them.",
+                "summary": "Report a conversation (B6.1b)",
+                "tags": [
+                    "Messages"
+                ],
+                "parameters": [
+                    {
+                        "name": "conversation",
+                        "in": "path",
+                        "required": true,
+                        "description": "The conversation UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReportRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "reported": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "reported"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/messages/blocks": {
+            "post": {
+                "operationId": "messages.block",
+                "description": "Neither of you can message the other one to one, and they no longer\nsee when you've read their messages.",
+                "summary": "Block someone (B6.1b)",
+                "tags": [
+                    "Messages"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "user"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "blocked": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "blocked"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/messages/blocks/{person}": {
+            "delete": {
+                "operationId": "messages.unblock",
+                "summary": "Unblock someone (B6.1b)",
+                "tags": [
+                    "Messages"
+                ],
+                "parameters": [
+                    {
+                        "name": "person",
+                        "in": "path",
+                        "required": true,
+                        "description": "The person ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "blocked": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "blocked"
                                     ]
                                 }
                             }
@@ -7635,6 +8265,41 @@
                 ],
                 "title": "QuizTopic"
             },
+            "ReportRequest": {
+                "type": "object",
+                "description": "Report a conversation (B6.1b): why, optional details, who (in a group), and whether to block too.",
+                "properties": {
+                    "reason": {
+                        "type": "string",
+                        "enum": [
+                            "spam",
+                            "harassment",
+                            "inappropriate",
+                            "other"
+                        ]
+                    },
+                    "details": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "user": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "block": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "reason"
+                ],
+                "title": "ReportRequest"
+            },
             "Role": {
                 "type": "string",
                 "description": "The roles from the journey documents, plus the platform's super admin. A person can hold several, each in an organisation.\n",
@@ -7819,8 +8484,25 @@
                 "description": "Send or edit a message (B6.1), optionally as a reply.",
                 "properties": {
                     "body": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "maxLength": 4000
+                    },
+                    "files": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "description": "Images and PDFs, scanned before anyone opens them (B6.1b).",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                            "contentMediaType": "application/octet-stream",
+                            "description": "Maximum file size: 20480 kilobytes."
+                        },
+                        "maxItems": 5
                     },
                     "reply_to": {
                         "type": [
@@ -7830,9 +8512,6 @@
                         "format": "uuid"
                     }
                 },
-                "required": [
-                    "body"
-                ],
                 "title": "SendMessageRequest"
             },
             "SignInResource": {
@@ -7917,13 +8596,29 @@
                         "maxLength": 120
                     },
                     "body": {
-                        "type": "string",
+                        "type": [
+                            "string",
+                            "null"
+                        ],
                         "maxLength": 4000
+                    },
+                    "files": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "description": "Images and PDFs, scanned before anyone opens them (B6.1b).",
+                        "items": {
+                            "type": "string",
+                            "format": "binary",
+                            "contentMediaType": "application/octet-stream",
+                            "description": "Maximum file size: 20480 kilobytes."
+                        },
+                        "maxItems": 5
                     }
                 },
                 "required": [
-                    "people",
-                    "body"
+                    "people"
                 ],
                 "title": "StartConversationRequest"
             },

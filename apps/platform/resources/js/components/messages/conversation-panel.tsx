@@ -1,8 +1,19 @@
 import { router } from '@inertiajs/react';
-import { CornerUpLeft, Pencil, Trash2, X } from 'lucide-react';
+import {
+    Ban,
+    CornerUpLeft,
+    Flag,
+    Paperclip,
+    Pencil,
+    ShieldOff,
+    Trash2,
+    X,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
+import { AttachmentList } from '@/components/messages/attachment-list';
+import { ReportDialog } from '@/components/messages/report-dialog';
 import type {
     ConversationView,
     MessageItem,
@@ -10,7 +21,7 @@ import type {
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
-import { destroy, send, update } from '@/routes/messages';
+import { block, destroy, send, unblock, update } from '@/routes/messages';
 
 const time = (iso: string, language: string) =>
     new Date(iso).toLocaleString(language, {
@@ -79,9 +90,12 @@ function Bubble({
                             : message.reply_to.body}
                     </p>
                 ) : null}
-                <p className="break-words whitespace-pre-wrap">
-                    {message.deleted ? t('messages.deleted') : message.body}
-                </p>
+                {message.deleted || message.body ? (
+                    <p className="break-words whitespace-pre-wrap">
+                        {message.deleted ? t('messages.deleted') : message.body}
+                    </p>
+                ) : null}
+                <AttachmentList attachments={message.attachments} mine={mine} />
             </div>
             <span className="flex flex-wrap items-center gap-x-3 px-1 text-sm text-muted-foreground">
                 <time dateTime={message.created_at}>
@@ -155,7 +169,13 @@ export function ConversationPanel({
     const [editing, setEditing] = useState<MessageItem | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
+    const [files, setFiles] = useState<File[]>([]);
+    const [reporting, setReporting] = useState(false);
+    const picker = useRef<HTMLInputElement>(null);
     const end = useRef<HTMLDivElement>(null);
+    const other =
+        conversation.kind === 'direct' ? conversation.people[0] : undefined;
+    const blocked = conversation.blocked !== null;
     const last = conversation.messages.at(-1)?.id;
 
     useEffect(() => {
@@ -172,7 +192,7 @@ export function ConversationPanel({
     const submit = () => {
         const text = body.trim();
 
-        if (text === '') {
+        if (text === '' && (editing || files.length === 0)) {
             return;
         }
 
@@ -181,9 +201,17 @@ export function ConversationPanel({
             onStart: () => setBusy(true),
             onFinish: () => setBusy(false),
             onError: (errors: Record<string, string>) =>
-                setError(errors.body ?? t('messages.errors.send')),
+                setError(
+                    errors.body ??
+                        errors.files ??
+                        Object.entries(errors).find(([key]) =>
+                            key.startsWith('files.'),
+                        )?.[1] ??
+                        t('messages.errors.send'),
+                ),
             onSuccess: () => {
                 setBody('');
+                setFiles([]);
                 setReplyTo(null);
                 setEditing(null);
                 setError(null);
@@ -195,8 +223,12 @@ export function ConversationPanel({
         } else {
             router.post(
                 send(conversation.id).url,
-                { body: text, reply_to: replyTo?.id ?? null },
-                options,
+                {
+                    body: text,
+                    reply_to: replyTo?.id ?? null,
+                    ...(files.length > 0 ? { files } : {}),
+                },
+                { ...options, forceFormData: files.length > 0 },
             );
         }
     };
@@ -206,18 +238,81 @@ export function ConversationPanel({
             aria-labelledby="conversation-title"
             className="flex h-full min-h-[32rem] flex-col"
         >
-            <header className="border-b border-border px-5 py-4">
-                <h2 id="conversation-title" className="text-lg font-semibold">
-                    {conversation.title}
-                </h2>
-                {conversation.kind === 'group' ? (
-                    <p className="text-sm text-muted-foreground">
-                        {t('messages.people', {
-                            count: conversation.people.length + 1,
-                        })}
-                    </p>
-                ) : null}
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4">
+                <div>
+                    <h2
+                        id="conversation-title"
+                        className="text-lg font-semibold"
+                    >
+                        {conversation.title}
+                    </h2>
+                    {conversation.kind === 'group' ? (
+                        <p className="text-sm text-muted-foreground">
+                            {t('messages.people', {
+                                count: conversation.people.length + 1,
+                            })}
+                        </p>
+                    ) : null}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    {other ? (
+                        conversation.blocked === 'by_me' ? (
+                            <Button
+                                variant="outline"
+                                onClick={() =>
+                                    router.delete(unblock(other.id).url, {
+                                        preserveScroll: true,
+                                    })
+                                }
+                            >
+                                <ShieldOff aria-hidden />
+                                {t('messages.unblock')}
+                            </Button>
+                        ) : (
+                            <Button
+                                variant="outline"
+                                onClick={() =>
+                                    router.post(
+                                        block().url,
+                                        { user: other.id },
+                                        { preserveScroll: true },
+                                    )
+                                }
+                                aria-label={t('messages.blockPerson', {
+                                    name: other.name,
+                                })}
+                            >
+                                <Ban aria-hidden />
+                                {t('messages.block')}
+                            </Button>
+                        )
+                    ) : null}
+                    <Button
+                        variant="outline"
+                        onClick={() => setReporting(true)}
+                    >
+                        <Flag aria-hidden />
+                        {t('messages.report.action')}
+                    </Button>
+                </div>
             </header>
+            {blocked ? (
+                <p
+                    role="status"
+                    className="bg-reos-tone-warning-bg px-5 py-3 text-body text-reos-tone-warning-fg"
+                >
+                    {conversation.blocked === 'by_me'
+                        ? t('messages.blockedByMe', { name: other?.name ?? '' })
+                        : t('messages.blockedByThem')}
+                </p>
+            ) : null}
+            <ReportDialog
+                open={reporting}
+                conversation={conversation.id}
+                people={conversation.people}
+                group={conversation.kind === 'group'}
+                onOpenChange={setReporting}
+            />
 
             <div
                 className="flex-1 space-y-4 overflow-y-auto px-5 py-4"
@@ -295,7 +390,68 @@ export function ConversationPanel({
                 <label htmlFor="message-body" className="sr-only">
                     {t('messages.write')}
                 </label>
+                {files.length > 0 ? (
+                    <ul
+                        className="flex flex-wrap gap-2"
+                        aria-label={t('messages.files.chosen')}
+                    >
+                        {files.map((file, index) => (
+                            <li
+                                key={`${file.name}-${index}`}
+                                className="flex items-center gap-1 rounded-reos-md bg-muted py-1 pr-1 pl-3 text-sm"
+                            >
+                                {file.name}
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    aria-label={t('messages.files.remove', {
+                                        name: file.name,
+                                    })}
+                                    onClick={() =>
+                                        setFiles(
+                                            files.filter((_, i) => i !== index),
+                                        )
+                                    }
+                                >
+                                    <X aria-hidden />
+                                </Button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : null}
+                <input
+                    ref={picker}
+                    type="file"
+                    multiple
+                    accept="image/*,application/pdf"
+                    className="sr-only"
+                    tabIndex={-1}
+                    aria-hidden
+                    onChange={(e) => {
+                        setFiles(
+                            [
+                                ...files,
+                                ...Array.from(e.target.files ?? []),
+                            ].slice(0, 5),
+                        );
+                        e.target.value = '';
+                    }}
+                />
                 <div className="flex items-end gap-3">
+                    {!editing ? (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="size-12"
+                            aria-label={t('messages.files.add')}
+                            disabled={blocked}
+                            onClick={() => picker.current?.click()}
+                        >
+                            <Paperclip aria-hidden />
+                        </Button>
+                    ) : null}
                     <Textarea
                         id="message-body"
                         rows={2}
@@ -311,7 +467,15 @@ export function ConversationPanel({
                         }}
                         className="min-h-12 flex-1"
                     />
-                    <Button type="submit" disabled={busy || body.trim() === ''}>
+                    <Button
+                        type="submit"
+                        disabled={
+                            busy ||
+                            blocked ||
+                            (body.trim() === '' &&
+                                (editing !== null || files.length === 0))
+                        }
+                    >
                         {editing ? t('messages.save') : t('messages.send')}
                     </Button>
                 </div>

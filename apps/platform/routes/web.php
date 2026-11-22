@@ -18,6 +18,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\Messaging\AnnouncementController;
+use App\Http\Controllers\Messaging\AttachmentController;
 use App\Http\Controllers\Messaging\MessagesController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
@@ -182,6 +184,21 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix(
     Route::get('{conversation}/older', [MessagesController::class, 'older'])->whereUuid('conversation')->middleware('throttle:60,1,messages-older')->name('older');
     Route::patch('items/{message}', [MessagesController::class, 'update'])->whereUuid('message')->middleware('throttle:30,1,messages-edit')->name('update');
     Route::delete('items/{message}', [MessagesController::class, 'destroy'])->whereUuid('message')->middleware('throttle:30,1,messages-edit')->name('destroy');
+    // Report and block (B6.1b).
+    Route::post('{conversation}/report', [MessagesController::class, 'report'])->whereUuid('conversation')->middleware('throttle:10,10,messages-report')->name('report');
+    Route::post('blocks', [MessagesController::class, 'block'])->middleware('throttle:20,1,messages-block')->name('block');
+    Route::delete('blocks/{person}', [MessagesController::class, 'unblock'])->whereNumber('person')->middleware('throttle:20,1,messages-block')->name('unblock');
+});
+
+// A file sent with a message, through its short-lived signed link (B6.1b).
+Route::get('messages/attachments/{attachment}', AttachmentController::class)->whereUuid('attachment')
+    ->middleware(['signed', 'throttle:120,1,message-attachments'])->name('messages.attachments.show');
+
+// Announcements (B6.1b): admins send; everyone reads theirs on Messages and Today.
+Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix('announcements')->name('announcements.')->group(function () {
+    Route::get('/', [AnnouncementController::class, 'index'])->name('index');
+    Route::post('/', [AnnouncementController::class, 'store'])->middleware('throttle:10,1,announcements-send')->name('store');
+    Route::post('{announcement}/read', [AnnouncementController::class, 'read'])->whereUuid('announcement')->middleware('throttle:120,1,announcements-read')->name('read');
 });
 
 // "What's new" (A6.2): dismissed once, gone on the web and the phone.

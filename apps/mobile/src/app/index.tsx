@@ -15,7 +15,7 @@ import { activeMembership } from '@/lib/roles';
 import { timeAgo } from '@/lib/time';
 import { useOpenTodos } from '@/lib/todos';
 import { useWhatsNew } from '@/lib/whatsNew';
-import { useInbox } from '@/lib/messages';
+import { useAnnouncements, useInbox } from '@/lib/messages';
 import { AskBar, Avatar, Button, Callout, Card, ListRow, Screen, SyncAlert, Text } from '@/ui';
 
 type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
@@ -49,6 +49,9 @@ export default function HomeScreen() {
   const whatsNew = useWhatsNew();
   // Messages once rolled out to this person (B6.1); null hides the entry.
   const { inbox } = useInbox(user?.id ?? null);
+  // Announcements from my brokerage, school or association (B6.1b), until read.
+  const { announcements, markRead } = useAnnouncements(user?.id ?? null);
+  const unreadAnnouncements = (announcements ?? []).filter((a) => !a.read);
   const closeCapture = () => {
     setCapturing(null);
     if (capture !== undefined) router.setParams({ capture: undefined });
@@ -112,6 +115,15 @@ export default function HomeScreen() {
           action={<Button variant="ghost" label={t('whatsNew.dismiss')} accessibilityLabel={t('whatsNew.dismissLabel', { version: whatsNew.item.version })} onPress={whatsNew.dismiss} />}
         />
       ) : null}
+      {unreadAnnouncements.map((announcement) => (
+        <Callout
+          key={announcement.id}
+          tone="info"
+          title={announcement.title}
+          body={`${announcement.body}\n${t('announcements.from', { from: announcement.from, ago: timeAgo(announcement.sent_at, i18n.language) })}`}
+          action={<Button variant="ghost" label={t('announcements.markRead')} accessibilityLabel={t('announcements.markReadFor', { title: announcement.title })} onPress={() => void markRead(announcement.id)} />}
+        />
+      ))}
       {inbox !== null ? (
         <ListRow
           icon={MessageSquare}

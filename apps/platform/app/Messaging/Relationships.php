@@ -87,6 +87,11 @@ final readonly class Relationships
             }
         }
 
+        // Blocked either way: not offered (B6.1b).
+        foreach (app(Safety::class)->blockedWith($user->id) as $id) {
+            unset($found[$id]);
+        }
+
         if ($found === []) {
             return [];
         }

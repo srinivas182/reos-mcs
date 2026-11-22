@@ -6,7 +6,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
+use App\Messaging\Safety;
 use App\Models\AuditEvent;
+use App\Models\MessageReport;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
 use App\Models\User;
@@ -48,6 +50,20 @@ final class ComplianceController extends Controller
                     'extended' => $r->extended,
                     'created_at' => $r->created_at?->toIso8601String(),
                     'response' => $r->response,
+                ])->all(),
+            // Reported messages (B6.1b), open first.
+            'messageReports' => MessageReport::query()->with(['reporter', 'reported', 'organisation'])
+                ->orderByRaw("CASE WHEN status = 'open' THEN 0 ELSE 1 END")->latest('id')->limit(50)->get()
+                ->map(static fn (MessageReport $r): array => [
+                    'id' => $r->uuid,
+                    'reason' => $r->reason,
+                    'details' => $r->details,
+                    'reporter' => $r->reporter?->name,
+                    'reported' => $r->reported?->name,
+                    'tenant' => $r->organisation?->name,
+                    'messages' => $r->messages,
+                    'status' => $r->status,
+                    'created_at' => $r->created_at?->toIso8601String(),
                 ])->all(),
             'limitDays' => PrivacyRequests::DAYS,
             'dataMapReviewed' => config()->string('reos.privacy.data_map_reviewed'),
@@ -99,6 +115,15 @@ final class ComplianceController extends Controller
 
             fclose($out);
         }, 'reos-audit-'.now()->format('Y-m-d-His').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8', 'Cache-Control' => 'no-store']);
+    }
+
+    /** Mark a message report handled (B6.1b). */
+    public function resolveReport(MessageReport $report, Safety $safety, #[CurrentUser] User $user): RedirectResponse
+    {
+        $safety->resolve($report, $user);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('messages.report.resolved')]);
+
+        return back();
     }
 
     public function privacy(Request $request, PrivacyRequest $privacyRequest, PrivacyRequests $privacy, #[CurrentUser] User $user): RedirectResponse

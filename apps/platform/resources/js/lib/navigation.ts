@@ -9,6 +9,7 @@ import {
     House,
     LayoutGrid,
     Map as MapIcon,
+    Megaphone,
     MessageSquare,
     Palette,
     Plug,
@@ -26,6 +27,7 @@ import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
+import { index as announcementsIndex } from '@/routes/announcements';
 import { index as messagesIndex } from '@/routes/messages';
 import { index as billingIndex } from '@/routes/billing';
 import { index as gateways } from '@/routes/gateways';
@@ -65,6 +67,7 @@ export type NavLabel =
     | 'aiAndCredits'
     | 'featuresAndReleases'
     | 'messages'
+    | 'announcements'
     | 'salesAndPayouts'
     | 'earnings'
     | 'plansAndPricing'
@@ -116,6 +119,15 @@ export function roleNavigation(
     const messages = options.messages
         ? item('messages', MessageSquare, messagesIndex(), '/messages')
         : planned('messages');
+    // Admins of brokerages, schools and associations announce (B6.1b), with Messages.
+    const announcements = options.messages
+        ? item(
+              'announcements',
+              Megaphone,
+              announcementsIndex(),
+              '/announcements',
+          )
+        : planned('announcements');
 
     const menus: Record<RoleName, RoleNavItem[]> = {
         candidate: [
@@ -160,6 +172,7 @@ export function roleNavigation(
         broker: [
             home,
             messages,
+            announcements,
             planned('approvals'),
             item('agents', Users, agentsIndex()),
             planned('ceCompliance'),
@@ -194,6 +207,7 @@ export function roleNavigation(
         school_admin: [
             home,
             messages,
+            announcements,
             planned('courseCatalogue'),
             planned('stateApprovals'),
             planned('ceReporting'),
@@ -208,7 +222,7 @@ export function roleNavigation(
             planned('members'),
             planned('memberCe'),
             planned('events'),
-            planned('announcements'),
+            announcements,
             planned('programs'),
             item('brandingAndDomain', Palette, brandingShow()),
             planned('reports'),

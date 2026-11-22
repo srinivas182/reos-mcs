@@ -52,7 +52,8 @@
     "aiAndCredits": "IA y créditos",
     "featuresAndReleases": "Funciones y versiones",
     "privacy": "Privacidad",
-    "messages": "Mensajes"
+    "messages": "Mensajes",
+    "announcements": "Anuncios"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1987,7 +1988,10 @@
         "flag.restored": "Volvió a encender una función",
         "flag.rolled_back": "Una función retrocedió automáticamente",
         "release.published": "Publicó una versión",
-        "privacy.consent_changed": "Cambió una opción de privacidad de otra persona"
+        "privacy.consent_changed": "Cambió una opción de privacidad de otra persona",
+        "message.reported": "Denunció mensajes",
+        "message.report_resolved": "Marcó una denuncia como atendida",
+        "announcement.sent": "Envió un anuncio"
       }
     }
   },
@@ -4331,8 +4335,97 @@
       "notAllowed": "Solo puede escribir a personas con quienes trabaja.",
       "body": "Escriba un mensaje de hasta {{max}} caracteres.",
       "tooLate": "Los mensajes se pueden cambiar durante {{minutes}} minutos después de enviarlos.",
-      "send": "No se envió. Inténtelo de nuevo."
+      "send": "No se envió. Inténtelo de nuevo.",
+      "files": "Envíe hasta {{max}} archivos a la vez.",
+      "blocked": "No pueden escribirse: uno de ustedes bloqueó al otro.",
+      "blockSelf": "No puede bloquearse a sí mismo.",
+      "reportWho": "Elija a alguien de esta conversación para denunciar."
     },
-    "allRead": "Está al día"
+    "allRead": "Está al día",
+    "block": "Bloquear",
+    "blockPerson": "Bloquear a {{name}}",
+    "unblock": "Desbloquear",
+    "blocked": "Bloqueado. No recibirá mensajes individuales de esa persona.",
+    "unblocked": "Desbloqueado.",
+    "blockedByMe": "Usted bloqueó a {{name}}. Desbloquee para volver a escribirse.",
+    "blockedByThem": "No puede responder en esta conversación.",
+    "files": {
+      "label": "Archivos",
+      "add": "Adjuntar imágenes o PDF",
+      "chosen": "Archivos para enviar",
+      "remove": "Quitar {{name}}",
+      "checking": "Revisando si hay virus…",
+      "infected": "Eliminado: no pasó la revisión de virus",
+      "sent_one": "Envió un archivo",
+      "sent_other": "Envió {{count}} archivos",
+      "open": "Toque para abrir"
+    },
+    "report": {
+      "action": "Denunciar",
+      "title": "Denunciar esta conversación",
+      "description": "Una copia de sus mensajes recientes se envía a los administradores de su organización y a REOS. No se le dirá quién lo denunció.",
+      "who": "¿A quién denuncia?",
+      "why": "¿Qué ocurre?",
+      "details": "Algo más que debamos saber (opcional)",
+      "alsoBlock": "También bloquearlo",
+      "send": "Enviar denuncia",
+      "sent": "Denuncia enviada. Gracias por avisarnos.",
+      "resolved": "Denuncia marcada como atendida.",
+      "reasons": {
+        "spam": "Spam o ventas",
+        "harassment": "Acoso o intimidación",
+        "inappropriate": "Inapropiado u ofensivo",
+        "other": "Otra cosa"
+      },
+      "mail": {
+        "subject": "Se denunciaron mensajes en REOS",
+        "body": "{{reporter}} denunció a {{reported}} por: {{reason}}. Abajo se copian {{count}} mensajes recientes tal como estaban al denunciarse.",
+        "details": "Su nota: {{details}}",
+        "someone": "alguien en un grupo",
+        "action": "Revisar en Cumplimiento y auditoría",
+        "privacy": "Comparta esto solo con quienes deben actuar."
+      },
+      "admin": {
+        "title": "Mensajes denunciados",
+        "empty": "No hay denuncias",
+        "emptyBody": "Cuando alguien denuncie mensajes, aparecerán aquí con una copia de lo que se dijo.",
+        "line": "{{reporter}} denunció a {{reported}}: {{reason}}",
+        "resolve": "Marcar como atendida",
+        "messages_one": "{{count}} mensaje",
+        "messages_other": "{{count}} mensajes",
+        "statuses": {
+          "open": "Abierta",
+          "resolved": "Atendida"
+        }
+      }
+    }
+  },
+  "announcements": {
+    "title": "Anuncios",
+    "purpose": "Avise a todos en {{organisation}}, o a un grupo, a la vez. Vea quién lo leyó.",
+    "new": "Nuevo anuncio",
+    "newDescription": "Aparece en Mensajes en la web y en Hoy en la aplicación hasta que cada persona lo lea.",
+    "empty": "Aún no hay anuncios",
+    "emptyBody": "Envíe noticias, plazos o cambios de políticas a todos sus miembros o a un grupo.",
+    "everyone": "Todos",
+    "to": "Para: {{audience}}",
+    "readBy": "Leído por {{read}} de {{total}}",
+    "send": "Enviar anuncio",
+    "sent_one": "Enviado a {{count}} persona.",
+    "sent_other": "Enviado a {{count}} personas.",
+    "audienceHint": "Deje todo sin marcar para enviarlo a todos. Las marcas lo limitan a esos roles, equipos o estados.",
+    "fields": {
+      "title": "Título",
+      "body": "Anuncio",
+      "roles": "Roles",
+      "teams": "Equipos",
+      "states": "Estados"
+    },
+    "from": "De {{from}} · {{ago}}",
+    "markRead": "Marcar como leído",
+    "markReadFor": "Marcar {{title}} como leído",
+    "errors": {
+      "nobody": "Nadie coincide con ese grupo. Elija menos filtros."
+    }
   }
 }

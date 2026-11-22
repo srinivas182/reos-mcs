@@ -42,7 +42,7 @@ export function ConversationList({
                 const preview = last
                     ? last.deleted
                         ? t('messages.deleted')
-                        : `${last.sender ? `${last.sender}: ` : ''}${last.body ?? ''}`
+                        : `${last.sender ? `${last.sender}: ` : ''}${last.body ?? t('messages.files.sent', { count: last.files })}`
                     : '';
 
                 return (

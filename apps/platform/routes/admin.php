@@ -149,6 +149,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:audit.vie
     ->group(function () {
         Route::get('/', [ComplianceController::class, 'index'])->name('index');
         Route::get('audit.csv', [ComplianceController::class, 'export'])->middleware('throttle:10,1,compliance-export')->name('export');
+        Route::patch('message-reports/{report:uuid}', [ComplianceController::class, 'resolveReport'])->middleware('throttle:30,1,compliance-reports')->name('reports.resolve');
         Route::patch('privacy/{privacyRequest}', [ComplianceController::class, 'privacy'])->whereNumber('privacyRequest')->middleware('throttle:30,1,compliance-privacy')->name('privacy.update');
     });
 

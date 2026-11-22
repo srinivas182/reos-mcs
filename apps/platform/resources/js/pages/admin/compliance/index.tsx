@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import InputError from '@/components/input-error';
+import type { MessageReportRow } from '@/components/message-reports';
+import { MessageReports } from '@/components/message-reports';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import {
@@ -62,6 +64,7 @@ type Filters = {
 
 type Props = {
     privacy: PrivacyRow[];
+    messageReports?: MessageReportRow[];
     limitDays: number;
     dataMapReviewed: string;
     audit: { rows: AuditRow[]; next: string | null; previous: string | null };
@@ -113,6 +116,7 @@ const statusTone: Record<PrivacyRow['status'], string> = {
  */
 export default function Compliance({
     privacy,
+    messageReports = [],
     limitDays,
     dataMapReviewed,
     audit,
@@ -352,6 +356,17 @@ export default function Compliance({
                         </ul>
                     </section>
                 </div>
+
+                <section
+                    id="message-reports"
+                    className={cn(card, 'space-y-2')}
+                    aria-labelledby="reports-title"
+                >
+                    <h2 id="reports-title" className="font-semibold">
+                        {t('messages.report.admin.title')}
+                    </h2>
+                    <MessageReports reports={messageReports} />
+                </section>
 
                 <section
                     className={cn(card, 'space-y-4')}

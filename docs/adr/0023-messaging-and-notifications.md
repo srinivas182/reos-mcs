@@ -1,6 +1,6 @@
 # 0023: Messaging and notifications
 
-**Status:** accepted for messaging (B6.1a, 22 November 2026); attachments, report and block, announcements (B6.1b) and the notification centre (B6.2) extend it.
+**Status:** accepted for messaging (B6.1a and B6.1b, 22 November 2026); the notification centre (B6.2) extends it.
 
 ## Context
 
@@ -14,6 +14,10 @@ Brokerages, schools and mentors talk to their people in Slack, texts and CRM inb
 4. **Live through Laravel Reverb.** Each change is broadcast at once (`ShouldBroadcastNow`) on private channels: `users.{id}` (the inbox: `message.posted`) and `conversations.{uuid}` (`message.posted`, `message.changed`, `conversation.read`), authorised for participants with the flag on. The web signs channels with its session (`/broadcasting/auth`, `@laravel/echo-react`), the phone with its token (`/api/v1/broadcasting/auth`, `laravel-echo` with `pusher-js`), reading the public key and address from `/api/v1/app-config`. A message is saved before it is broadcast, and an unreachable Reverb never fails a send (`Realtime::send`); screens catch up on load. Reverb scales horizontally with Redis (`REVERB_SCALING_ENABLED`). When the app is in the background, push carries messages (B6.2).
 5. **Behind the `messages` flag** (ADR 0022): REOS staff first, then tenants on screen 70. Off for a person means a 404 on the pages, the API and the channels, and no menu entry.
 6. **Screens.** Web: Messages for every role (provider screen 26): conversation list with unread counts, the open conversation, New message with only the people you may message; the menu shows unread. Phone: Messages from Today (unread count), a conversation, New message.
+
+7. **Attachments (B6.1b).** Up to 5 images or PDFs per message, 20 MB each, stored on the content disk under `messages/<conversation>/` and virus-scanned by the same ClamAV scanner as lesson files (`ScanMessageAttachment`; an unreachable scanner retries; production refuses unscanned files). A file shows "Checking for viruses…" until clean, then opens through a 30-minute signed link; an infected file is deleted and marked removed. Deleting a message for everyone deletes its files.
+8. **Report and block (B6.1b).** On every conversation. A block works both ways for one-to-one messages (neither can message the other; neither is offered in New message) and the blocked person no longer sees read state. A report copies the reported person's last 20 messages as they were (so a later edit or delete can't hide them), is audited, and emails the tenant's admins (with the copy) and REOS's super admins; REOS reviews and marks it handled on Compliance and audit (screen 71). `message_reports` keeps row-level security (written in platform scope for the tenant where the conversation started).
+9. **Announcements (B6.1b).** Brokerage, school and association admins send to all members or a group (roles, teams, states); recipients are fixed when it's sent (`announcement_recipients`, row-level security on the sending tenant) and read their own across tenants (a team agent gets the brokerage's). Unread announcements show above Messages on the web and on Today on the phone, live (`announcement.posted`), until marked read; the admin sees "Read by 82 of 140".
 
 ## Consequences
 

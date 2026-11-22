@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Demo;
 
+use App\Messaging\Announcements;
 use App\Messaging\Conversations;
 use App\Models\Conversation;
+use App\Models\Organisation;
 use App\Models\User;
+use App\Tenancy\Tenancy;
 
 /**
  * Messages as at Lone Star Realty (B6.1): James Miller and his broker Linda
@@ -15,7 +18,7 @@ use App\Models\User;
  */
 final readonly class DemoMessages
 {
-    public function __construct(private Conversations $conversations) {}
+    public function __construct(private Conversations $conversations, private Announcements $announcements, private Tenancy $tenancy) {}
 
     public function seed(): void
     {
@@ -33,5 +36,14 @@ final readonly class DemoMessages
 
         $huddle = $this->conversations->start($dana, [$james->id, $linda->id], 'Friday huddle moves to 9:30 so we can cover the new CE rules.', 'Friday huddle');
         $this->conversations->post($linda, $huddle, 'Works for me. I will bring the TREC update.');
+
+        // An announcement from the broker (B6.1b), sent as Linda.
+        $organisation = Organisation::query()->where('name', 'Lone Star Realty')->first();
+
+        if ($organisation !== null) {
+            $this->tenancy->run($organisation->id, function () use ($linda): void {
+                $this->announcements->send($linda, 'Office closed Friday afternoon', 'The office closes at 1 PM on Friday for the team training. Showings and closings go ahead as planned; call me if anything comes up.', ['roles' => [], 'teams' => [], 'states' => []]);
+            });
+        }
     }
 }

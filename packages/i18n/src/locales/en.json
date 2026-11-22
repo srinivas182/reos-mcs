@@ -52,7 +52,8 @@
     "aiAndCredits": "AI and credits",
     "featuresAndReleases": "Features and releases",
     "privacy": "Privacy",
-    "messages": "Messages"
+    "messages": "Messages",
+    "announcements": "Announcements"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1987,7 +1988,10 @@
         "flag.restored": "Turned a feature back on",
         "flag.rolled_back": "A feature rolled back on its own",
         "release.published": "Published a release",
-        "privacy.consent_changed": "Changed a privacy switch for someone"
+        "privacy.consent_changed": "Changed a privacy switch for someone",
+        "message.reported": "Reported messages",
+        "message.report_resolved": "Marked a message report handled",
+        "announcement.sent": "Sent an announcement"
       }
     }
   },
@@ -4331,8 +4335,97 @@
       "notAllowed": "You can only message people you work with.",
       "body": "Write a message of up to {{max}} characters.",
       "tooLate": "Messages can be changed for {{minutes}} minutes after sending.",
-      "send": "That didn't send. Try again."
+      "send": "That didn't send. Try again.",
+      "files": "Send up to {{max}} files at a time.",
+      "blocked": "You can't message each other: one of you blocked the other.",
+      "blockSelf": "You can't block yourself.",
+      "reportWho": "Choose someone in this conversation to report."
     },
-    "allRead": "You're all caught up"
+    "allRead": "You're all caught up",
+    "block": "Block",
+    "blockPerson": "Block {{name}}",
+    "unblock": "Unblock",
+    "blocked": "Blocked. You won't get one-to-one messages from them.",
+    "unblocked": "Unblocked.",
+    "blockedByMe": "You blocked {{name}}. Unblock to message each other again.",
+    "blockedByThem": "You can't reply in this conversation.",
+    "files": {
+      "label": "Files",
+      "add": "Attach images or PDFs",
+      "chosen": "Files to send",
+      "remove": "Remove {{name}}",
+      "checking": "Checking for viruses…",
+      "infected": "Removed: it didn't pass the virus check",
+      "sent_one": "Sent a file",
+      "sent_other": "Sent {{count}} files",
+      "open": "Tap to open"
+    },
+    "report": {
+      "action": "Report",
+      "title": "Report this conversation",
+      "description": "A copy of their recent messages goes to your organization's admins and REOS. They won't be told who reported them.",
+      "who": "Who are you reporting?",
+      "why": "What's wrong?",
+      "details": "Anything else we should know (optional)",
+      "alsoBlock": "Also block them",
+      "send": "Send report",
+      "sent": "Report sent. Thank you for telling us.",
+      "resolved": "Report marked handled.",
+      "reasons": {
+        "spam": "Spam or selling",
+        "harassment": "Harassment or bullying",
+        "inappropriate": "Inappropriate or offensive",
+        "other": "Something else"
+      },
+      "mail": {
+        "subject": "Messages were reported in REOS",
+        "body": "{{reporter}} reported {{reported}} for: {{reason}}. {{count}} recent messages are copied below as they were when reported.",
+        "details": "Their note: {{details}}",
+        "someone": "someone in a group",
+        "action": "Review on Compliance and audit",
+        "privacy": "Keep this to the people who need to act on it."
+      },
+      "admin": {
+        "title": "Reported messages",
+        "empty": "No reports",
+        "emptyBody": "When someone reports messages, they appear here with a copy of what was said.",
+        "line": "{{reporter}} reported {{reported}}: {{reason}}",
+        "resolve": "Mark handled",
+        "messages_one": "{{count}} message",
+        "messages_other": "{{count}} messages",
+        "statuses": {
+          "open": "Open",
+          "resolved": "Handled"
+        }
+      }
+    }
+  },
+  "announcements": {
+    "title": "Announcements",
+    "purpose": "Tell everyone at {{organisation}}, or a group, at once. See who has read it.",
+    "new": "New announcement",
+    "newDescription": "It shows on Messages on the web and on Today in the app until each person reads it.",
+    "empty": "No announcements yet",
+    "emptyBody": "Send news, deadlines or policy changes to all your members or a group.",
+    "everyone": "Everyone",
+    "to": "To: {{audience}}",
+    "readBy": "Read by {{read}} of {{total}}",
+    "send": "Send announcement",
+    "sent_one": "Sent to {{count}} person.",
+    "sent_other": "Sent to {{count}} people.",
+    "audienceHint": "Leave everything unticked to send to everyone. Ticks narrow it to those roles, teams or states.",
+    "fields": {
+      "title": "Title",
+      "body": "Announcement",
+      "roles": "Roles",
+      "teams": "Teams",
+      "states": "States"
+    },
+    "from": "From {{from}} · {{ago}}",
+    "markRead": "Mark as read",
+    "markReadFor": "Mark {{title}} as read",
+    "errors": {
+      "nobody": "No one matches that group. Choose fewer filters."
+    }
   }
 }

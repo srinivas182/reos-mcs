@@ -34,7 +34,12 @@ const mockWhatsNew: { current: { item: { id: number; version: string; released_o
 };
 jest.mock('@/lib/whatsNew', () => ({ useWhatsNew: () => mockWhatsNew.current }));
 const mockInbox: { current: { unread: number; conversations: unknown[] } | null } = { current: null };
-jest.mock('@/lib/messages', () => ({ useInbox: () => ({ inbox: mockInbox.current, reload: jest.fn() }) }));
+const mockAnnouncements: { current: { id: string; title: string; body: string; from: string; author: string | null; sent_at: string; read: boolean }[] | null } = { current: null };
+const mockMarkRead = jest.fn();
+jest.mock('@/lib/messages', () => ({
+  useInbox: () => ({ inbox: mockInbox.current, reload: jest.fn() }),
+  useAnnouncements: () => ({ announcements: mockAnnouncements.current, markRead: mockMarkRead }),
+}));
 
 jest.mock('@/lib/api', () => ({
   fetchHealth: jest.fn().mockResolvedValue({ status: 'ok', app: 'REOS', version: '0.1.0-dev', time: 'now' }),
@@ -133,5 +138,14 @@ describe('HomeScreen', () => {
     await fireEvent.press(screen.getByText('Messages'));
     expect(router.push).toHaveBeenCalledWith('/messages');
     mockInbox.current = null;
+  });
+
+  it('shows unread announcements on Today until read', async () => {
+    mockAnnouncements.current = [{ id: 'a-1', title: 'Office closed Friday', body: 'Showings still run.', from: 'Lone Star Realty', author: 'Linda Park', sent_at: new Date().toISOString(), read: false }];
+    await renderHome();
+    expect(screen.getByText('Office closed Friday')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Mark Office closed Friday as read' }));
+    expect(mockMarkRead).toHaveBeenCalledWith('a-1');
+    mockAnnouncements.current = null;
   });
 });

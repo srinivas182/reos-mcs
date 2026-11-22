@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace App\Messaging;
 
+use App\Enums\OrganisationType;
 use App\Events\Messaging\ConversationRead;
 use App\Events\Messaging\MessageChanged;
 use App\Events\Messaging\MessagePosted;
 use App\Models\Conversation;
 use App\Models\ConversationParticipant;
 use App\Models\Message;
+use App\Models\MessageAttachment;
 use App\Models\User;
+use App\Services\Authorization\ActiveRole;
 use App\Tenancy\Tenancy;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -29,14 +34,17 @@ final readonly class Conversations
     public function __construct(
         private Relationships $relationships,
         private Tenancy $tenancy,
+        private Safety $safety,
+        private ActiveRole $roles,
     ) {}
 
     /**
      * Starts a conversation with people the sender may message, with its first message.
      *
      * @param  list<int>  $userIds
+     * @param  list<UploadedFile>  $files
      */
-    public function start(User $from, array $userIds, string $body, ?string $title = null): Conversation
+    public function start(User $from, array $userIds, string $body, ?string $title = null, array $files = []): Conversation
     {
         $others = array_values(array_unique(array_filter($userIds, static fn (int $id): bool => $id !== $from->id)));
 
@@ -51,7 +59,7 @@ final readonly class Conversations
         }
 
         if (count($others) === 1 && ($existing = $this->direct($from->id, $others[0])) !== null) {
-            $this->post($from, $existing, $body);
+            $this->post($from, $existing, $body, null, $files);
 
             return $existing;
         }
@@ -59,7 +67,7 @@ final readonly class Conversations
         $conversation = DB::transaction(function () use ($from, $others, $title): Conversation {
             $conversation = Conversation::query()->create([
                 'uuid' => (string) Str::uuid7(),
-                'organisation_id' => $this->tenancy->tenant(),
+                'organisation_id' => $this->tenancy->tenant() ?? $this->homeOrganisation($from),
                 'kind' => count($others) === 1 ? Conversation::DIRECT : Conversation::GROUP,
                 'title' => count($others) === 1 || $title === null || trim($title) === '' ? null : Str::limit(trim($title), 120, ''),
                 'created_by' => $from->id,
@@ -72,23 +80,34 @@ final readonly class Conversations
             return $conversation;
         });
 
-        $this->post($from, $conversation, $body);
+        $this->post($from, $conversation, $body, null, $files);
 
         return $conversation;
     }
 
-    public function post(User $from, Conversation $conversation, string $body, ?string $replyTo = null): Message
+    /** @param  list<UploadedFile>  $files  images and PDFs (B6.1b) */
+    public function post(User $from, Conversation $conversation, string $body, ?string $replyTo = null, array $files = []): Message
     {
         $this->participant($from, $conversation);
         $body = trim($body);
 
-        if ($body === '' || mb_strlen($body) > Message::MAX_LENGTH) {
+        if (count($files) > MessageAttachment::MAX_FILES) {
+            throw ValidationException::withMessages(['files' => __('messages.errors.files', ['max' => MessageAttachment::MAX_FILES])]);
+        }
+
+        // A message is words, files or both.
+        if (($body === '' && $files === []) || mb_strlen($body) > Message::MAX_LENGTH) {
             throw ValidationException::withMessages(['body' => __('messages.errors.body', ['max' => Message::MAX_LENGTH])]);
         }
 
         // A one-to-one needs the relationship still in place (an agent who left the brokerage can't be messaged).
         if ($conversation->kind === Conversation::DIRECT) {
             $other = $this->others($conversation, $from)[0] ?? null;
+
+            // Blocked either way: no more one-to-one messages (B6.1b).
+            if ($other !== null && $this->safety->between($from->id, $other->id)) {
+                throw ValidationException::withMessages(['body' => __('messages.errors.blocked')]);
+            }
 
             if ($other === null || ! $this->relationships->canMessage($from, $other)) {
                 throw ValidationException::withMessages(['body' => __('messages.errors.notAllowed')]);
@@ -97,12 +116,12 @@ final readonly class Conversations
 
         $reply = $replyTo === null ? null : Message::query()->where('conversation_id', $conversation->id)->where('uuid', $replyTo)->first();
 
-        $message = DB::transaction(function () use ($from, $conversation, $body, $reply): Message {
+        $message = DB::transaction(function () use ($from, $conversation, $body, $reply, $files): Message {
             $message = Message::query()->create([
                 'uuid' => (string) Str::uuid7(),
                 'conversation_id' => $conversation->id,
                 'user_id' => $from->id,
-                'body' => $body,
+                'body' => $body === '' ? null : $body,
                 'reply_to_id' => $reply?->id,
                 'created_at' => now(),
             ]);
@@ -111,10 +130,16 @@ final readonly class Conversations
             ConversationParticipant::query()->where('conversation_id', $conversation->id)->where('user_id', $from->id)
                 ->update(['last_read_message_id' => $message->id, 'last_read_at' => $message->created_at]);
 
+            if ($files !== []) {
+                $message->setRelation('conversation', $conversation);
+                Attachments::store($message, $files);
+            }
+
             return $message;
         });
 
         $message->setRelation('conversation', $conversation);
+        $message->load(['attachments', 'sender', 'replyTo.sender']);
         Realtime::send(new MessagePosted($message, $this->participantIds($conversation)));
 
         return $message;
@@ -142,6 +167,9 @@ final readonly class Conversations
     {
         $this->mayChange($by, $message);
         $message->forceFill(['body' => null, 'deleted_at' => now()])->save();
+        // Its files go too.
+        Attachments::forget($message);
+        $message->setRelation('attachments', new Collection);
         Realtime::send(new MessageChanged($message));
 
         return $message;
@@ -165,7 +193,7 @@ final readonly class Conversations
     /**
      * The person's conversations, latest first, with unread counts.
      *
-     * @return list<array{id: string, kind: string, title: string, people: list<array{id: int, name: string}>, last_message: array{body: string|null, sender: string|null, deleted: bool, at: string}|null, unread: int, updated_at: string|null}>
+     * @return list<array{id: string, kind: string, title: string, people: list<array{id: int, name: string}>, last_message: array{body: string|null, sender: string|null, deleted: bool, files: int, at: string}|null, unread: int, blocked: string|null, updated_at: string|null}>
      */
     public function inbox(User $user): array
     {
@@ -179,7 +207,10 @@ final readonly class Conversations
 
         foreach ($participants as $participant) {
             $conversation = $participant->conversation;
-            $last = Message::query()->with('sender')->where('conversation_id', $conversation->id)->latest('id')->first();
+            $last = Message::query()->with('sender')->withCount('attachments')->where('conversation_id', $conversation->id)->latest('id')->first();
+            $other = $conversation->kind === Conversation::DIRECT
+                ? $conversation->participants->first(static fn (ConversationParticipant $p): bool => $p->user_id !== $user->id)
+                : null;
             $unread = Message::query()->where('conversation_id', $conversation->id)
                 ->where('id', '>', $participant->last_read_message_id ?? 0)
                 ->where(static fn ($q) => $q->whereNull('user_id')->orWhere('user_id', '!=', $user->id))
@@ -195,9 +226,11 @@ final readonly class Conversations
                     'body' => $last->deleted_at === null && $last->body !== null ? Str::limit($last->body, 140) : null,
                     'sender' => $last->sender?->name,
                     'deleted' => $last->deleted_at !== null,
+                    'files' => is_numeric($last->attachments_count ?? null) ? (int) $last->attachments_count : 0,
                     'at' => $last->created_at->toIso8601String(),
                 ],
                 'unread' => $unread,
+                'blocked' => $this->blockState($user, $other?->user_id),
                 'updated_at' => ($conversation->last_message_at ?? $conversation->created_at)?->toIso8601String(),
             ];
         }
@@ -217,7 +250,7 @@ final readonly class Conversations
      * One conversation: its people, how far each has read, and a page of
      * messages (newest last), older pages before a message id.
      *
-     * @return array{id: string, kind: string, title: string, people: list<array{id: int, name: string}>, reads: list<array{user: int, read_at: string|null}>, messages: list<array<string, mixed>>, older: bool}
+     * @return array{id: string, kind: string, title: string, people: list<array{id: int, name: string}>, reads: list<array{user: int, read_at: string|null}>, messages: list<array<string, mixed>>, older: bool, blocked: string|null}
      */
     public function show(User $user, Conversation $conversation, ?string $before = null): array
     {
@@ -226,7 +259,7 @@ final readonly class Conversations
         $beforeId = $before === null ? null : Message::query()->where('conversation_id', $conversation->id)->where('uuid', $before)->value('id');
 
         $page = Message::query()
-            ->with(['sender', 'replyTo.sender'])
+            ->with(['sender', 'replyTo.sender', 'attachments'])
             ->where('conversation_id', $conversation->id)
             ->when(is_numeric($beforeId), static fn ($q) => $q->where('id', '<', $beforeId))
             ->latest('id')
@@ -234,6 +267,11 @@ final readonly class Conversations
             ->get();
 
         $messages = $page->take(self::PAGE)->reverse()->values();
+        // People who blocked the viewer don't share their read state with them (B6.1b).
+        $hidden = $this->safety->blockedWith($user->id);
+        $other = $conversation->kind === Conversation::DIRECT
+            ? $conversation->participants->first(static fn (ConversationParticipant $p): bool => $p->user_id !== $user->id)
+            : null;
 
         return [
             'id' => $conversation->uuid,
@@ -241,12 +279,32 @@ final readonly class Conversations
             'title' => $this->title($conversation, $user),
             'people' => $this->people($conversation, $user),
             'reads' => array_values($conversation->participants
-                ->filter(static fn (ConversationParticipant $p): bool => $p->user_id !== $user->id && $p->left_at === null)
+                ->filter(static fn (ConversationParticipant $p): bool => $p->user_id !== $user->id && $p->left_at === null && ! in_array($p->user_id, $hidden, true))
                 ->map(static fn (ConversationParticipant $p): array => ['user' => $p->user_id, 'read_at' => $p->last_read_at?->toIso8601String()])
                 ->all()),
             'messages' => array_values($messages->map(static fn (Message $m): array => MessagePresenter::message($m))->all()),
             'older' => $page->count() > self::PAGE,
+            'blocked' => $this->blockState($user, $other?->user_id),
         ];
+    }
+
+    /** Where the sender works (outside a request's tenant scope, such as jobs and seeding). */
+    private function homeOrganisation(User $user): ?int
+    {
+        $membership = $this->roles->for($user);
+
+        return $membership !== null && $membership->organisation->type !== OrganisationType::Platform ? $membership->organisation->id : null;
+    }
+
+    /** `by_me`, `by_them` or null, for a one-to-one. */
+    private function blockState(User $viewer, ?int $other): ?string
+    {
+        return match (true) {
+            $other === null => null,
+            $this->safety->blocked($viewer->id, $other) => 'by_me',
+            $this->safety->blocked($other, $viewer->id) => 'by_them',
+            default => null,
+        };
     }
 
     public function isParticipant(User $user, Conversation $conversation): bool
