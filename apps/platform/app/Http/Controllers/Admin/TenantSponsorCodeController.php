@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Billing\Ledger\SponsorPools;
 use App\Billing\SponsorCodes;
 use App\Http\Controllers\Controller;
 use App\Models\Organisation;
@@ -18,8 +19,8 @@ use Illuminate\Validation\Rule;
 
 /**
  * Sponsor codes on a tenant's Plan tab (B5.1b; screen 60): REOS issues a
- * code for seats the tenant pays for, and stops it. B5.3 lets sponsors fund
- * them from their own pools.
+ * code for seats the tenant pays for, and stops it; B5.3 adds the tenant's
+ * sponsor pools (credits and seats), which codes draw on.
  */
 final class TenantSponsorCodeController extends Controller
 {
@@ -44,6 +45,26 @@ final class TenantSponsorCodeController extends Controller
         );
 
         return back()->with('toast', ['type' => 'success', 'message' => __('billing.codes.created', ['code' => $code->code])]);
+    }
+
+    /** Adds what the tenant paid for to its sponsor pools (B5.3): AI credits for its people, seats for its codes. */
+    public function fund(Request $request, Organisation $tenant, #[CurrentUser] User $actor, SponsorPools $pools): RedirectResponse
+    {
+        $data = $request->validate([
+            'credits' => ['required', 'integer', 'min:0', 'max:10000000'],
+            'seats' => ['required', 'integer', 'min:0', 'max:100000'],
+            'note' => ['required', 'string', 'min:3', 'max:200'],
+        ]);
+        $credits = is_numeric($data['credits']) ? (int) $data['credits'] : 0;
+        $seats = is_numeric($data['seats']) ? (int) $data['seats'] : 0;
+
+        if ($credits + $seats === 0) {
+            return back()->withErrors(['credits' => __('billing.pools.nothing')]);
+        }
+
+        $pools->fund($tenant, $credits, $seats, is_string($data['note']) ? $data['note'] : '', $actor);
+
+        return back()->with('toast', ['type' => 'success', 'message' => __('billing.pools.funded')]);
     }
 
     public function destroy(Organisation $tenant, SponsorCode $code, #[CurrentUser] User $actor, SponsorCodes $codes): RedirectResponse

@@ -107,6 +107,7 @@ Benchmarks from the sprint plan: The CE Shop and Colibri state catalogues; Strip
 - **Invoices, refunds and sponsor discounts:** full or partial refunds from screen 66 or the order, reversing entitlements and ledger entries; sponsor discounts recorded as their own entries.
 - **Reconciliation:** a daily job matches ledger money entries to the gateway's payouts and balance transactions and lists any difference (addition 7).
 - **Done when:** after purchases, a refund and AI use, ledger balances reconcile with Stripe (test against recorded Stripe balance transactions), and credit balances match what each person sees.
+- **As built (ADR 0021 items 16–20):** double-entry ledger (never edited; balances under row locks; each event posted once) for orders, sponsor discounts, tax, earnings, payouts, payout reversals and refunds; AI credits from the ledger (monthly credits that expire at month end, top-ups that never do, candidates never charged: sponsor pool, else platform); Plan and billing shows credits; sponsor pools (credits and seats) on the tenant's Plan tab, which sponsor codes draw on; points accounts and entries; refunds from screen 66 (Orders and refunds: full or partial, policy shown and stored, through each gateway once); daily reconciliation with Stripe's balance transactions (and each other gateway's confirmed orders) shown on screen 66.
 
 ## 4. Definition of done (whole sprint)
 

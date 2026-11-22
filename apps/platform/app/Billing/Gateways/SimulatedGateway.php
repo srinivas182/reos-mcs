@@ -111,6 +111,11 @@ final readonly class SimulatedGateway implements PaymentGateway
         return null;
     }
 
+    public function refund(Order $order, int $amountCents, string $key): string
+    {
+        return 'sim_re_'.substr(hash('sha256', $key), 0, 20);
+    }
+
     private static function key(string $sessionId): string
     {
         return 'billing.simulator.'.$sessionId;

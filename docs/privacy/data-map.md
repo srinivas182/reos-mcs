@@ -1,6 +1,6 @@
 # Personal data map
 
-Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 21 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1, ZIP codes for tax in B5.2a, payouts in B5.2b); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
+Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 21 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1, ZIP codes for tax in B5.2a, payouts in B5.2b, the ledger and refunds in B5.3); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
 
 | Data | Where | Why | See ("Download my data") | Delete (account deletion, after 30 days) |
 | --- | --- | --- | --- | --- |
@@ -25,6 +25,8 @@ Where REOS keeps personal data, why, and how each right under the Texas Data Pri
 | Sponsor codes used (which code, when); the sponsor sees the person's name on its codes | `sponsor_code_redemptions` | Sponsored seats (B5.1b) | Purchases | Deleted (cascade) |
 | The person's customer id at each payment gateway | `gateway_customers` | Receipts and the gateway's card and invoice portal (card details stay with the gateway, never REOS) | Purchases | Deleted (cascade); the gateway keeps its own records under its own policy |
 | Instructors' and mentors' Stripe account id (never bank or tax details), revenue shares and what each sale earned them | `connected_accounts`, `product_splits`, `payout_lines` | Payouts (B5.2b); Stripe holds bank and tax details | Payouts | Shares and the account link are deleted (cascade); earnings already paid stay with their orders for tax records, linked to no one |
+| AI credits and points: balances and every movement (grants, use, top-ups, expiry, awards, redemptions); never what was asked | `ledger_accounts`, `ledger_entries` (the person's accounts) | The AI allowance and points (B5.3) | Ledger | Entries kept with the ledger (never edited), linked to no one |
+| Refunds of their orders (amount, full or partial, the reason REOS gave) | `refunds` | Refunds from REOS (B5.3) | Refunds | Kept for tax records with the order, linked to no one |
 | Tool interests and requests | `integration_interests`, `tool_requests` | Catalogue demand | Tool interests | Deleted (cascade) |
 | Invitations sent to them | `invitations` (email or phone) | Joining a tenant | — (the tenant's record) | Expire after 14 days |
 | Privacy requests | `privacy_requests` | TDPSA duties | Privacy requests | Kept as a record without name, email or details |

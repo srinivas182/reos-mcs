@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Billing\Ledger\SponsorPools;
 use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Tenants\StoreTenantRequest;
@@ -129,6 +130,8 @@ final class TenantController extends Controller
                     ])->values()->all(),
                 'products' => Product::query()->where('status', 'live')->orderBy('name')->get(['id', 'name'])
                     ->map(static fn (Product $p): array => ['id' => $p->id, 'name' => $p->name])->values()->all(),
+                // Sponsor pools (B5.3).
+                'pools' => app(SponsorPools::class)->balances($tenant),
             ] : null,
         ]);
     }

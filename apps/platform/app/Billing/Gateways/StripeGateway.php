@@ -163,6 +163,26 @@ final readonly class StripeGateway implements PaymentGateway
         };
     }
 
+    public function refund(Order $order, int $amountCents, string $key): string
+    {
+        if ($order->gateway_payment_id === null) {
+            throw new RuntimeException('Stripe has no payment for this order to refund.');
+        }
+
+        $refund = $this->post('/refunds', [
+            'payment_intent' => $order->gateway_payment_id,
+            'amount' => $amountCents,
+            'metadata' => ['order' => $order->uuid, 'reos_refund' => $key],
+        ], 'refund:'.$key);
+        $id = $refund['id'] ?? null;
+
+        if (! is_string($id)) {
+            throw new RuntimeException('Stripe made no refund.');
+        }
+
+        return $id;
+    }
+
     /** `Stripe-Signature: t=<time>,v1=<HMAC-SHA256 of "<time>.<body>">`. */
     public static function verify(string $body, string $header, string $secret, int $now): bool
     {

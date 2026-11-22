@@ -78,6 +78,13 @@ final readonly class DataExport
                     ->where('sponsor_code_redemptions.user_id', $user->id)->get(['sponsor_codes.code', 'sponsor_code_redemptions.created_at'])->map(static fn ($r): array => (array) $r)->all(),
                 'gateway_customers' => DB::table('gateway_customers')->where('user_id', $user->id)->get(['gateway', 'environment', 'customer_id'])->map(static fn ($r): array => (array) $r)->all(),
             ],
+            // AI credits and points in the ledger (B5.3): balances and every entry.
+            'ledger' => DB::table('ledger_entries')->join('ledger_accounts', 'ledger_accounts.id', '=', 'ledger_entries.ledger_account_id')
+                ->where('ledger_accounts.owner_type', 'user')->where('ledger_accounts.owner_id', $user->id)->orderBy('ledger_entries.id')->limit(5000)
+                ->get(['ledger_accounts.type as account', 'ledger_entries.unit', 'ledger_entries.amount', 'ledger_entries.balance_after', 'ledger_entries.reason', 'ledger_entries.created_at'])
+                ->map(static fn ($r): array => (array) $r)->all(),
+            'refunds' => DB::table('refunds')->join('orders', 'orders.id', '=', 'refunds.order_id')->where('orders.user_id', $user->id)
+                ->get(['orders.uuid as order', 'refunds.amount_cents', 'refunds.full', 'refunds.status', 'refunds.created_at'])->map(static fn ($r): array => (array) $r)->all(),
             // Earnings and payouts for instructors and mentors (B5.2b). Bank and tax details stay with Stripe.
             'payouts' => [
                 'stripe_accounts' => DB::table('connected_accounts')->where('owner_type', 'user')->where('owner_id', $user->id)

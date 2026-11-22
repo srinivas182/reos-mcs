@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\Price;
 use App\Models\Subscription;
 use App\Models\User;
+use App\Services\Ai\AiCredits;
 use App\Services\Authorization\ActiveRole;
 use App\Services\States\PersonStates;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -32,7 +33,7 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
  */
 final class BillingController extends Controller
 {
-    public function index(#[CurrentUser] User $user, ActiveRole $role, PersonStates $states, Checkout $checkout): Response
+    public function index(#[CurrentUser] User $user, ActiveRole $role, PersonStates $states, Checkout $checkout, AiCredits $credits): Response
     {
         $buyer = Buyer::forRole($role->for($user)?->role);
         $state = $states->current($user);
@@ -46,6 +47,8 @@ final class BillingController extends Controller
             ->get();
 
         return Inertia::render('settings/billing', [
+            // AI credits from the ledger (B5.3).
+            'credits' => $credits->summary($user),
             'state' => CheckoutController::stateName($state),
             'plans' => $prices->map(static function (Price $price) use ($user, $checkout): array {
                 $quote = $checkout->quote($user, $price);

@@ -4,51 +4,184 @@ declare(strict_types=1);
 
 namespace App\Services\Ai;
 
+use App\Authorization\Role;
+use App\Billing\Ledger\Ledger;
+use App\Billing\ProductKind;
+use App\Billing\SubscriptionStatus;
+use App\Models\LedgerAccount;
+use App\Models\Product;
+use App\Models\SponsorCodeRedemption;
+use App\Models\Subscription;
 use App\Models\User;
-use Illuminate\Support\Carbon;
+use App\Services\Authorization\ActiveRole;
+use App\Services\Authorization\Memberships;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 /**
- * AI credits (B4.3 stub; the full ledger, pools per seat and top-ups arrive
- * in Sprint 6). Each person has a monthly allowance (`reos.ai.monthly_credits`);
- * every AI call records its feature, engine and cost, never its content.
- * Out of credits, features fall back to what runs without AI.
+ * AI credits, read from the ledger (B5.3; the B4.3 stub's interface kept).
+ * Each person's seat gets its plan's monthly credits (the largest of their
+ * active plans and sponsored seats, else `reos.ai.monthly_credits`), which
+ * expire at month end; top-up packs never expire. Spending takes the
+ * month's credits first, then top-ups. **Candidates are never charged**
+ * (screen 67): their AI use draws on a sponsor's credit pool, else the
+ * platform's. Every call is also logged by feature and engine, never its
+ * content (`ai_credit_uses`).
  */
 final readonly class AiCredits
 {
+    public function __construct(private Ledger $ledger, private ActiveRole $roles, private Memberships $memberships) {}
+
+    /** The person's monthly credits. */
+    public function allowanceFor(User $user): int
+    {
+        $products = Product::query()->whereNotNull('credits')->where('kind', '!=', ProductKind::CreditPack)
+            ->where(static fn ($q) => $q
+                ->whereIn('id', Subscription::query()->select('product_id')->where('user_id', $user->id)->whereIn('status', [SubscriptionStatus::Active, SubscriptionStatus::PastDue]))
+                ->orWhereIn('id', SponsorCodeRedemption::query()->join('sponsor_codes', 'sponsor_codes.id', '=', 'sponsor_code_redemptions.sponsor_code_id')
+                    ->where('sponsor_code_redemptions.user_id', $user->id)->select('sponsor_codes.product_id')))
+            ->max('credits');
+
+        return is_numeric($products) ? (int) $products : $this->allowance();
+    }
+
+    /** The default monthly allowance, for people without a plan that sets one. */
     public function allowance(): int
     {
         return max(0, config()->integer('reos.ai.monthly_credits', 500));
     }
 
+    /** Credits spent this month. */
     public function used(User $user): int
     {
-        $used = DB::table('ai_credit_uses')
+        return (int) DB::table('ai_credit_uses')
             ->where('user_id', $user->id)
-            ->where('created_at', '>=', Carbon::now()->startOfMonth())
+            ->where('created_at', '>=', CarbonImmutable::now()->startOfMonth())
             ->sum('credits');
-
-        return (int) $used;
     }
 
+    /** What's left: this month's credits plus top-ups. */
     public function left(User $user): int
     {
-        return max(0, $this->allowance() - $this->used($user));
+        $this->ensureMonth($user);
+
+        return max(0, $this->ledger->balance($this->ledger->person($user, 'monthly')) + $this->ledger->balance($this->ledger->person($user, 'topup')));
+    }
+
+    /**
+     * Credits this month and top-ups, for Plan and billing.
+     *
+     * @return array{monthly: int, topup: int, allowance: int, used: int, sponsored: bool}
+     */
+    public function summary(User $user): array
+    {
+        $this->ensureMonth($user);
+
+        return [
+            'monthly' => max(0, $this->ledger->balance($this->ledger->person($user, 'monthly'))),
+            'topup' => max(0, $this->ledger->balance($this->ledger->person($user, 'topup'))),
+            'allowance' => $this->allowanceFor($user),
+            'used' => $this->used($user),
+            'sponsored' => $this->isCandidate($user),
+        ];
     }
 
     public function canSpend(User $user, int $credits = 1): bool
     {
-        return $this->left($user) >= $credits;
+        return $this->isCandidate($user) || $this->left($user) >= $credits;
     }
 
     public function charge(User $user, string $feature, string $engine, int $credits = 1): void
     {
-        DB::table('ai_credit_uses')->insert([
-            'user_id' => $user->id,
-            'feature' => $feature,
-            'engine' => $engine,
-            'credits' => $credits,
-            'created_at' => Carbon::now(),
-        ]);
+        DB::transaction(function () use ($user, $feature, $engine, $credits): void {
+            $used = $this->ledger->platform('ai_used');
+
+            if ($this->isCandidate($user)) {
+                // Never the candidate: their sponsor's pool, else the platform's.
+                $pool = $this->sponsorPool($user, $credits) ?? $this->ledger->platform('ai_pool');
+                $this->ledger->post('ai_use', [[$pool, -$credits], [$used, $credits]], 'user', (string) $user->id, $feature);
+            } else {
+                $this->ensureMonth($user);
+                $monthly = $this->ledger->person($user, 'monthly');
+                $fromMonth = min($credits, max(0, $this->ledger->balance($monthly)));
+                $this->ledger->post('ai_use', [
+                    [$monthly, -$fromMonth],
+                    [$this->ledger->person($user, 'topup'), -($credits - $fromMonth)],
+                    [$used, $credits],
+                ], 'user', (string) $user->id, $feature);
+            }
+
+            DB::table('ai_credit_uses')->insert([
+                'user_id' => $user->id,
+                'feature' => $feature,
+                'engine' => $engine,
+                'credits' => $credits,
+                'created_at' => CarbonImmutable::now(),
+            ]);
+        });
+    }
+
+    /** A top-up pack (never expires). */
+    public function topUp(User $user, int $credits, string $orderUuid): void
+    {
+        if ($credits <= 0 || $this->ledger->posted('topup', 'order', $orderUuid)) {
+            return;
+        }
+
+        $this->ledger->post('topup', [[$this->ledger->platform('credits_sold'), -$credits], [$this->ledger->person($user, 'topup'), $credits]], 'order', $orderUuid);
+    }
+
+    /**
+     * The month's credits: last month's leftovers expire, this month's arrive.
+     * Once per person and month, even when two requests arrive together.
+     */
+    public function ensureMonth(User $user): void
+    {
+        $month = CarbonImmutable::now()->format('Y-m');
+        $reference = $user->id.':'.$month;
+
+        if ($this->ledger->posted('monthly_grant', 'credit_month', $reference)) {
+            return;
+        }
+
+        DB::transaction(function () use ($user, $reference): void {
+            $monthly = $this->ledger->person($user, 'monthly');
+            LedgerAccount::query()->whereKey($monthly->id)->lockForUpdate()->first();
+
+            if ($this->ledger->posted('monthly_grant', 'credit_month', $reference)) {
+                return;
+            }
+
+            $pool = $this->ledger->platform('ai_pool');
+            $left = $this->ledger->balance($monthly);
+
+            if ($left > 0) {
+                $this->ledger->post('monthly_expired', [[$monthly, -$left], [$pool, $left]], 'credit_month', $reference);
+            }
+
+            $allowance = $this->allowanceFor($user);
+            // Posted even when zero, so the month counts as granted.
+            $this->ledger->post('monthly_grant', [[$pool, -$allowance], [$monthly, $allowance]], 'credit_month', $reference, keepZero: true);
+        });
+    }
+
+    private function isCandidate(User $user): bool
+    {
+        return $this->roles->for($user)?->role === Role::Candidate;
+    }
+
+    /** A sponsor of this person (their school, brokerage or association) with enough credits in its pool. */
+    private function sponsorPool(User $user, int $credits): ?LedgerAccount
+    {
+        foreach ($this->memberships->of($user) as $membership) {
+            $organisation = $membership->organisation;
+            $pool = $this->ledger->find("organisation:{$organisation->id}:credits");
+
+            if ($pool !== null && $this->ledger->balance($pool) >= $credits) {
+                return $pool;
+            }
+        }
+
+        return null;
     }
 }

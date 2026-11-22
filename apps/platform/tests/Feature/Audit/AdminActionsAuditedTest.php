@@ -16,6 +16,7 @@ use App\Models\GatewaySetting;
 use App\Models\Invitation;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
+use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
 use App\Models\Product;
@@ -40,6 +41,7 @@ use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 uses(RefreshDatabase::class);
@@ -260,6 +262,26 @@ function adminActions(): array
             GatewaySetting::query()->create(['gateway' => 'stripe', 'paused' => true, 'paused_reason' => 'Outage']);
 
             return auditCase($ops, 'DELETE', '/admin/gateways/stripe/pause', confirmed: true);
+        },
+        // Sponsor pools (B5.3).
+        'tenants.pool.fund' => function () {
+            [$lone] = auditBrokerage();
+
+            return auditCase(auditOps(), 'POST', "/admin/tenants/{$lone->id}/pool", ['credits' => 1000, 'seats' => 5, 'note' => 'Invoice INV-1042'], $lone->id, true);
+        },
+        // Refunds from REOS (B5.3, screen 66).
+        'gateways.refund' => function () {
+            $ops = auditOps();
+            $plan = auditPlan($ops);
+            app(Plans::class)->setPrice($plan, 'TX', PriceInterval::Once, 2900, null, $ops);
+            $buyer = User::factory()->create();
+            $order = Order::query()->create([
+                'uuid' => (string) Str::uuid(), 'user_id' => $buyer->id, 'product_id' => $plan->id, 'price_id' => $plan->prices()->firstOrFail()->id,
+                'state_code' => 'TX', 'amount_cents' => 2900, 'discount_cents' => 0, 'tax_cents' => 0, 'total_cents' => 2900,
+                'status' => 'paid', 'gateway' => 'stripe', 'environment' => 'simulator', 'gateway_payment_id' => 'sim_pi_1', 'paid_at' => now(),
+            ]);
+
+            return auditCase($ops, 'POST', "/admin/gateways/orders/{$order->uuid}/refund", ['amount' => '5', 'reason' => 'Goodwill'], confirmed: true);
         },
         'tenants.codes.store' => function () {
             [$lone] = auditBrokerage();
@@ -518,5 +540,5 @@ const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
-    'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits',
+    'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund',
 ];

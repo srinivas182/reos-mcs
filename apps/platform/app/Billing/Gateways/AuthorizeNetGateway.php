@@ -131,6 +131,43 @@ final readonly class AuthorizeNetGateway implements PaymentGateway
         };
     }
 
+    /**
+     * Today's payments (not yet settled) are voided in full; settled ones
+     * are refunded to the card's last four digits, as Authorize.net asks.
+     */
+    public function refund(Order $order, int $amountCents, string $key): string
+    {
+        $transaction = $order->gateway_payment_id ?? throw new RuntimeException('Authorize.net has no transaction for this order to refund.');
+        $details = $this->call('getTransactionDetailsRequest', ['transId' => $transaction]);
+        $info = is_array($details['transaction'] ?? null) ? $details['transaction'] : [];
+        $total = is_numeric($info['settleAmount'] ?? null) ? (int) round((float) $info['settleAmount'] * 100) : null;
+        $unsettled = in_array($info['transactionStatus'] ?? null, ['capturedPendingSettlement', 'authorizedPendingCapture'], true);
+
+        if ($unsettled && $total === $amountCents) {
+            $request = ['transactionType' => 'voidTransaction', 'refTransId' => $transaction];
+        } else {
+            $payment = is_array($info['payment'] ?? null) ? $info['payment'] : [];
+            $card = is_array($payment['creditCard'] ?? null) ? $payment['creditCard'] : [];
+            $number = is_string($card['cardNumber'] ?? null) ? substr($card['cardNumber'], -4) : '';
+            $request = [
+                'transactionType' => 'refundTransaction',
+                'amount' => number_format($amountCents / 100, 2, '.', ''),
+                'payment' => ['creditCard' => ['cardNumber' => $number, 'expirationDate' => 'XXXX']],
+                'refTransId' => $transaction,
+            ];
+        }
+
+        $response = $this->call('createTransactionRequest', ['refId' => substr(str_replace('-', '', $key), 0, 20), 'transactionRequest' => $request]);
+        $result = is_array($response['transactionResponse'] ?? null) ? $response['transactionResponse'] : [];
+        $id = $result['transId'] ?? null;
+
+        if (! is_string($id) || ($result['responseCode'] ?? null) !== '1') {
+            throw new RuntimeException('Authorize.net made no refund.');
+        }
+
+        return $id;
+    }
+
     /** Invoice numbers are at most 20 characters: R, the date and the last ten of the order's id (17). */
     public static function invoice(Order $order): string
     {

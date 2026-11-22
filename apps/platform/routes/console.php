@@ -38,3 +38,5 @@ Schedule::command('reos:knowledge:embed')->hourlyAt(23)->withoutOverlapping()->o
 Schedule::command('reos:billing:reconcile')->everyTenMinutes()->withoutOverlapping()->onOneServer();
 // Payouts (B5.2b): schools, instructors and mentors, weekly (Monday morning, US Central).
 Schedule::command('reos:payouts:run')->weeklyOn(1, '09:17')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
+// The ledger (B5.3): yesterday's money against each gateway's records.
+Schedule::command('reos:ledger:reconcile')->dailyAt('05:20')->withoutOverlapping()->onOneServer();

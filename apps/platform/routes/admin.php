@@ -126,6 +126,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:tenants.m
         Route::post('{tenant}/support', [TenantSupportController::class, 'store'])->whereNumber('tenant')->middleware('throttle:10,1,admin-tenants-support')->name('support.store');
         // Sponsor codes (B5.1b) on the Plan tab.
         Route::post('{tenant}/codes', [TenantSponsorCodeController::class, 'store'])->whereNumber('tenant')->middleware('throttle:30,1,admin-tenants-codes')->name('codes.store');
+        // Sponsor pools (B5.3): credits and seats the tenant paid for.
+        Route::post('{tenant}/pool', [TenantSponsorCodeController::class, 'fund'])->whereNumber('tenant')->middleware('throttle:30,1,admin-tenants-pool')->name('pool.fund');
         Route::delete('{tenant}/codes/{code}', [TenantSponsorCodeController::class, 'destroy'])->whereNumber('tenant')->whereNumber('code')->middleware('throttle:30,1,admin-tenants-codes')->name('codes.destroy');
         Route::post('{tenant}/support/start', [TenantSupportController::class, 'start'])->whereNumber('tenant')->middleware('throttle:10,1,admin-tenants-support-start')->name('support.start');
     });
@@ -197,6 +199,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.man
             Route::put('{gateway}', [GatewayController::class, 'update'])->whereIn('gateway', Gateways::CHECKOUT)->name('update');
             Route::post('{gateway}/pause', [GatewayController::class, 'pause'])->whereIn('gateway', Gateways::CHECKOUT)->name('pause');
             Route::delete('{gateway}/pause', [GatewayController::class, 'resume'])->whereIn('gateway', Gateways::CHECKOUT)->name('resume');
+            // Refunds from REOS (B5.3).
+            Route::post('orders/{order:uuid}/refund', [GatewayController::class, 'refund'])->middleware(ConfirmIdentity::class)->name('refund');
         });
     });
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Billing;
 
+use App\Billing\Ledger\SponsorPools;
 use App\Models\Organisation;
 use App\Models\Product;
 use App\Models\SponsorCode;
@@ -28,7 +29,7 @@ final readonly class SponsorCodes
     /** Letters and digits that can't be confused (no 0/O, 1/I). */
     private const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
-    public function __construct(private Entitlements $entitlements, private AuditLogger $audit) {}
+    public function __construct(private Entitlements $entitlements, private AuditLogger $audit, private SponsorPools $pools) {}
 
     public function create(Organisation $sponsor, Product $product, string $state, int $seats, ?int $accessMonths, ?CarbonInterface $expiresAt, User $actor): SponsorCode
     {
@@ -38,25 +39,31 @@ final readonly class SponsorCodes
             $code = $prefix.'-'.collect(range(1, 6))->map(static fn (): string => self::ALPHABET[random_int(0, strlen(self::ALPHABET) - 1)])->implode('');
         } while (SponsorCode::query()->where('code', $code)->exists());
 
-        $sponsorCode = SponsorCode::query()->create([
-            'code' => $code,
-            'sponsor_organisation_id' => $sponsor->id,
-            'product_id' => $product->id,
-            'state_code' => $state,
-            'seats' => $seats,
-            'access_months' => $accessMonths,
-            'expires_at' => $expiresAt,
-            'created_by' => $actor->id,
-        ]);
+        return DB::transaction(function () use ($sponsor, $product, $state, $seats, $accessMonths, $expiresAt, $actor, $code): SponsorCode {
+            // Seats come from the sponsor's pool, when it has one (B5.3).
+            $this->pools->drawSeats($sponsor, $seats, $code);
 
-        $this->audit->record('code.created', self::AUDIT_SUBJECT, $code, ['product' => $product->key, 'seats' => $seats], $actor, $sponsor->id);
+            $sponsorCode = SponsorCode::query()->create([
+                'code' => $code,
+                'sponsor_organisation_id' => $sponsor->id,
+                'product_id' => $product->id,
+                'state_code' => $state,
+                'seats' => $seats,
+                'access_months' => $accessMonths,
+                'expires_at' => $expiresAt,
+                'created_by' => $actor->id,
+            ]);
 
-        return $sponsorCode;
+            $this->audit->record('code.created', self::AUDIT_SUBJECT, $code, ['product' => $product->key, 'seats' => $seats], $actor, $sponsor->id);
+
+            return $sponsorCode;
+        });
     }
 
     public function deactivate(SponsorCode $code, User $actor): void
     {
         $code->forceFill(['active' => false])->save();
+        $this->pools->returnSeats($code);
         $this->audit->record('code.deactivated', self::AUDIT_SUBJECT, $code->code, ['from' => 'active', 'to' => 'stopped', 'used' => $code->used], $actor, $code->sponsor_organisation_id);
     }
 
