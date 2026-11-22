@@ -54,7 +54,8 @@
     "privacy": "Privacy",
     "messages": "Messages",
     "announcements": "Announcements",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "liveClasses": "Live classes"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -4510,7 +4511,8 @@
       "connection_reconnect": "A connection needs you",
       "message": "Messages",
       "announcement": "Announcements",
-      "session_starting": "Session starting"
+      "session_starting": "Session starting",
+      "session_booked": "Sessions booked or cancelled"
     },
     "digest": {
       "subject": {
@@ -4597,5 +4599,114 @@
       "resume": "Resume email",
       "resumed": "Email resumed."
     }
+  },
+  "sessions": {
+    "title": "Sessions and live classes",
+    "purpose": "Join from five minutes before the start. The room closes for everyone at the booked end.",
+    "coming": "Coming up",
+    "past": "Past sessions",
+    "empty": "No sessions coming up",
+    "emptyHost": "Schedule a 1-on-1 session or a live class with people you work with.",
+    "emptyGuest": "When an instructor or mentor schedules a session with you, it shows here and on Today.",
+    "kinds": {
+      "one_on_one": "1-on-1 session",
+      "live_class": "Live class"
+    },
+    "statuses": {
+      "scheduled": "Scheduled",
+      "live": "Live now",
+      "ended": "Ended",
+      "cancelled": "Cancelled"
+    },
+    "people_one": "{{count}} person",
+    "people_other": "{{count}} people",
+    "with": "with {{names}}",
+    "join": "Join",
+    "view": "View",
+    "open": "{{action}}: {{title}}",
+    "opensAt": "Opens at {{time}}",
+    "opensNote": "You can join from five minutes before the start ({{time}}).",
+    "ready": "The room is open.",
+    "agenda": "Agenda",
+    "cancel": "Cancel session",
+    "wasCancelled": "This session was cancelled.",
+    "scheduled": "Session scheduled. Everyone invited has been told.",
+    "cancelled": "Session cancelled. Everyone invited has been told.",
+    "host": "Host",
+    "next": "Next session",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "schedule": {
+      "open": "Schedule a session",
+      "title": "Schedule a session",
+      "description": "Everyone you invite gets it in their notifications and can join from five minutes before.",
+      "kind": "Type",
+      "oneOnOne": "One person, both on camera.",
+      "liveClass": "Up to 100 people watch; you’re on camera.",
+      "name": "Title",
+      "namePlaceholder": "Contract review with James",
+      "date": "Date",
+      "time": "Start time",
+      "length": "Length",
+      "who": "Who",
+      "whoMany": "Who’s invited",
+      "find": "Find someone",
+      "noContacts": "Nobody to invite yet. People you work with show here.",
+      "agenda": "Agenda (optional)",
+      "submit": "Schedule"
+    },
+    "room": {
+      "label": "Session room",
+      "timeLeft": "{{time}} left",
+      "left": "left · closes at {{time}}",
+      "leave": "Leave",
+      "end": "End for everyone",
+      "twoMinutes": "Two minutes left. The room closes for everyone at {{time}}.",
+      "simulated": "Practice room: video isn’t set up here, so people show as name tiles. Everything else works as in a real session.",
+      "people": "People in the room",
+      "you": "{{name}} (you)",
+      "ended": "The session has ended.",
+      "joining": "Joining…",
+      "failed": "We couldn’t open the room. Try again."
+    },
+    "notes": {
+      "title": "Session notes",
+      "description": "Notes kept with the session. Everyone in it can read and edit them.",
+      "placeholder": "What you covered, next steps, links…",
+      "save": "Save notes",
+      "saved": "Notes saved.",
+      "shared": "Shared with everyone in the session.",
+      "updated": "Last edited by {{name}}, {{when}}"
+    },
+    "errors": {
+      "notHost": "Only instructors and mentors can schedule sessions.",
+      "guests": "Choose people you work with.",
+      "oneGuest": "A 1-on-1 session has exactly one other person.",
+      "past": "Choose a time in the future.",
+      "overlap": "You already have a session then.",
+      "cannotCancel": "This session can’t be cancelled now.",
+      "over": "This session has ended.",
+      "notYet": "The room opens five minutes before the start.",
+      "unavailable": "Video sessions aren’t available yet.",
+      "hostOnly": "Only the host can do that.",
+      "cancelled": "This session was cancelled."
+    },
+    "mail": {
+      "booked": {
+        "title": "{{host}} scheduled “{{title}}” with you"
+      },
+      "cancelled": {
+        "title": "{{host}} cancelled “{{title}}”"
+      },
+      "when": "{{when}} · {{minutes}} minutes",
+      "joinWhen": "You can join from five minutes before the start, on the web or in the REOS app.",
+      "open": "Open the session",
+      "starting": {
+        "title": "“{{title}}” starts soon",
+        "body": "Starts {{when}}. The room is open."
+      },
+      "join": "Join now"
+    },
+    "emptyHostPhone": "Schedule sessions on the web; they show here and on Today."
   }
 }

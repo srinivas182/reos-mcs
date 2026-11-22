@@ -1276,6 +1276,124 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your sessions (B6.3)
+         * @description Coming up and the last 30 days. Hosts (instructors and mentors) also
+         *     get the people they can invite.
+         */
+        get: operations["sessions.index"];
+        put?: never;
+        /**
+         * Schedule a session (B6.3)
+         * @description Instructors and mentors only, with people they work with.
+         */
+        post: operations["sessions.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A session (B6.3) */
+        get: operations["sessions.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join the room (B6.3)
+         * @description From five minutes before the start until the end. Returns the LiveKit
+         *     server and a token for this person and room that stops working at the
+         *     end; `simulated` is true where LiveKit isn't set up (outside production).
+         */
+        post: operations["sessions.join"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** End the session for everyone (B6.3). Host only */
+        post: operations["sessions.end"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cancel a session (B6.3). Host only, before it starts */
+        post: operations["sessions.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save the session notes (B6.3, screen 16)
+         * @description Shared by everyone in the session.
+         */
+        put: operations["sessions.notes"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/states": {
         parameters: {
             query?: never;
@@ -2335,6 +2453,29 @@ export interface components {
             source?: "typed" | "voice";
         };
         /**
+         * ScheduleSessionRequest
+         * @description Scheduling a 1-on-1 session or a live class (B6.3).
+         */
+        ScheduleSessionRequest: {
+            /** @enum {string} */
+            kind: "one_on_one" | "live_class";
+            title: string;
+            agenda?: string | null;
+            /**
+             * Format: date-time
+             * @description The start, with its time zone.
+             * @example 2026-11-24T15:00:00-06:00
+             */
+            starts_at: string;
+            /**
+             * @description Length in minutes.
+             * @enum {integer}
+             */
+            minutes: "15" | "30" | "45" | "60" | "90" | "120";
+            /** @description People to invite (from the people you work with). */
+            guests: number[];
+        };
+        /**
          * SendMessageRequest
          * @description Send or edit a message (B6.1), optionally as a reply.
          */
@@ -2344,6 +2485,13 @@ export interface components {
             files?: string[] | null;
             /** Format: uuid */
             reply_to?: string | null;
+        };
+        /**
+         * SessionNotesRequest
+         * @description Session notes (screen 16).
+         */
+        SessionNotesRequest: {
+            notes: string | null;
         };
         /** SignInResource */
         SignInResource: {
@@ -2602,7 +2750,9 @@ export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
+export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessionRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
+export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
@@ -5461,6 +5611,419 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        sessions: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "one_on_one" | "live_class";
+                            title: string;
+                            agenda: string | null;
+                            starts_at: string;
+                            ends_at: string;
+                            join_opens_at: string;
+                            /** @enum {string} */
+                            status: "scheduled" | "live" | "ended" | "cancelled";
+                            host: {
+                                id: number;
+                                name: string;
+                            };
+                            people: {
+                                id: number;
+                                name: string;
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                joined: boolean;
+                            }[];
+                            /** @enum {string} */
+                            me: "host" | "guest";
+                            can_join: boolean;
+                            notes: string | null;
+                            notes_updated_at: string | null;
+                            notes_updated_by: string | null;
+                        }[];
+                        can_host: boolean;
+                        contacts: {
+                            id: number;
+                            name: string;
+                            role: string;
+                            organisation: string;
+                        }[];
+                        lengths: number[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "sessions.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScheduleSessionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "one_on_one" | "live_class";
+                        title: string;
+                        agenda: string | null;
+                        starts_at: string;
+                        ends_at: string;
+                        join_opens_at: string;
+                        /** @enum {string} */
+                        status: "scheduled" | "live" | "ended" | "cancelled";
+                        host: {
+                            id: number;
+                            name: string;
+                        };
+                        people: {
+                            id: number;
+                            name: string;
+                            /** @enum {string} */
+                            role: "host" | "guest";
+                            joined: boolean;
+                        }[];
+                        /** @enum {string} */
+                        me: "host" | "guest";
+                        can_join: boolean;
+                        notes: string | null;
+                        notes_updated_at: string | null;
+                        notes_updated_by: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "one_on_one" | "live_class";
+                        title: string;
+                        agenda: string | null;
+                        starts_at: string;
+                        ends_at: string;
+                        join_opens_at: string;
+                        /** @enum {string} */
+                        status: "scheduled" | "live" | "ended" | "cancelled";
+                        host: {
+                            id: number;
+                            name: string;
+                        };
+                        people: {
+                            id: number;
+                            name: string;
+                            /** @enum {string} */
+                            role: "host" | "guest";
+                            joined: boolean;
+                        }[];
+                        /** @enum {string} */
+                        me: "host" | "guest";
+                        can_join: boolean;
+                        notes: string | null;
+                        notes_updated_at: string | null;
+                        notes_updated_by: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "sessions.join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        simulated: boolean;
+                        url: string | null;
+                        token: string | null;
+                        ends_at: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "one_on_one" | "live_class";
+                        title: string;
+                        agenda: string | null;
+                        starts_at: string;
+                        ends_at: string;
+                        join_opens_at: string;
+                        /** @enum {string} */
+                        status: "scheduled" | "live" | "ended" | "cancelled";
+                        host: {
+                            id: number;
+                            name: string;
+                        };
+                        people: {
+                            id: number;
+                            name: string;
+                            /** @enum {string} */
+                            role: "host" | "guest";
+                            joined: boolean;
+                        }[];
+                        /** @enum {string} */
+                        me: "host" | "guest";
+                        can_join: boolean;
+                        notes: string | null;
+                        notes_updated_at: string | null;
+                        notes_updated_by: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "one_on_one" | "live_class";
+                        title: string;
+                        agenda: string | null;
+                        starts_at: string;
+                        ends_at: string;
+                        join_opens_at: string;
+                        /** @enum {string} */
+                        status: "scheduled" | "live" | "ended" | "cancelled";
+                        host: {
+                            id: number;
+                            name: string;
+                        };
+                        people: {
+                            id: number;
+                            name: string;
+                            /** @enum {string} */
+                            role: "host" | "guest";
+                            joined: boolean;
+                        }[];
+                        /** @enum {string} */
+                        me: "host" | "guest";
+                        can_join: boolean;
+                        notes: string | null;
+                        notes_updated_at: string | null;
+                        notes_updated_by: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionNotesRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "one_on_one" | "live_class";
+                        title: string;
+                        agenda: string | null;
+                        starts_at: string;
+                        ends_at: string;
+                        join_opens_at: string;
+                        /** @enum {string} */
+                        status: "scheduled" | "live" | "ended" | "cancelled";
+                        host: {
+                            id: number;
+                            name: string;
+                        };
+                        people: {
+                            id: number;
+                            name: string;
+                            /** @enum {string} */
+                            role: "host" | "guest";
+                            joined: boolean;
+                        }[];
+                        /** @enum {string} */
+                        me: "host" | "guest";
+                        can_join: boolean;
+                        notes: string | null;
+                        notes_updated_at: string | null;
+                        notes_updated_by: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

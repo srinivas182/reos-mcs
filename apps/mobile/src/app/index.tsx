@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bell, BookOpen, MessageSquare, Palette } from 'lucide-react-native';
+import { Bell, BookOpen, MessageSquare, Palette, Video } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,8 @@ import { timeAgo } from '@/lib/time';
 import { useOpenTodos } from '@/lib/todos';
 import { useWhatsNew } from '@/lib/whatsNew';
 import { useAnnouncements, useInbox } from '@/lib/messages';
+import { nextSession, useSessions } from '@/lib/sessions';
+import { sessionTime } from '@/features/sessions/SessionRow';
 import { useNotificationInbox } from '@/lib/notifications';
 import { usePushPrompt } from '@/lib/push';
 import { AskBar, Avatar, Button, Callout, Card, IconButton, ListRow, Screen, SyncAlert, Text } from '@/ui';
@@ -52,6 +54,8 @@ export default function HomeScreen() {
   const notificationInbox = useNotificationInbox();
   // Messages once rolled out to this person (B6.1); null hides the entry.
   const { inbox } = useInbox(user?.id ?? null);
+  const { list: sessions } = useSessions();
+  const next = nextSession(sessions);
   // Announcements from my brokerage, school or association (B6.1b), until read.
   const { announcements, markRead } = useAnnouncements(user?.id ?? null);
   const unreadAnnouncements = (announcements ?? []).filter((a) => !a.read);
@@ -153,6 +157,16 @@ export default function HomeScreen() {
           title={t('messages.title')}
           subtitle={inbox.unread > 0 ? t('messages.unreadCount', { count: inbox.unread }) : t('messages.allRead')}
           onPress={() => router.push('/messages')}
+        />
+      ) : null}
+      {/* The next session (B6.3), and every session behind it. */}
+      {sessions !== null ? (
+        <ListRow
+          icon={Video}
+          tone={next?.can_join ? 'success' : 'info'}
+          title={next ? next.title : t('sessions.title')}
+          subtitle={next ? `${sessionTime(next, i18n.language)}${next.can_join ? ` · ${t('sessions.ready')}` : ''}` : t('sessions.empty')}
+          onPress={() => (next ? router.push({ pathname: '/sessions/[id]', params: { id: next.id } }) : router.push('/sessions'))}
         />
       ) : null}
       {/* Today's calendar for agents (B4.1); the rest of Today arrives with the agent sprints. */}

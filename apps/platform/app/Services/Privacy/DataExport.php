@@ -130,6 +130,14 @@ final readonly class DataExport
                     ->where('announcement_recipients.user_id', $user->id)->get(['announcements.title', 'announcements.sent_at', 'announcement_recipients.read_at'])
                     ->map(static fn ($r): array => (array) $r)->all(),
             ],
+            // Video sessions (B6.3): what, when, who hosted, your part and the shared notes.
+            'sessions' => DB::table('video_session_participants')
+                ->join('video_sessions', 'video_sessions.id', '=', 'video_session_participants.video_session_id')
+                ->leftJoin('users as hosts', 'hosts.id', '=', 'video_sessions.host_id')
+                ->where('video_session_participants.user_id', $user->id)
+                ->orderBy('video_sessions.starts_at')
+                ->get(['video_sessions.title', 'video_sessions.kind', 'video_sessions.starts_at', 'video_sessions.ends_at', 'video_sessions.status', 'hosts.name as host', 'video_session_participants.role', 'video_session_participants.first_joined_at', 'video_sessions.notes'])
+                ->map(static fn ($r): array => (array) $r)->all(),
             // The notification centre (B6.2): the inbox, choices and phones with push (never the token).
             'notifications' => [
                 'inbox' => $user->notifications()->latest()->get(['data', 'read_at', 'created_at'])->map(static fn ($n): array => [

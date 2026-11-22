@@ -1,6 +1,7 @@
 // Themes must be registered before any StyleSheet is created.
 import '@/ui/unistyles';
 
+import { registerGlobals } from '@livekit/react-native';
 import { SplashScreen, Stack, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -18,6 +19,8 @@ import { useAuthGate } from '@/lib/useAuthGate';
 import { initPreferences, OfflineBanner, ToastProvider } from '@/ui';
 
 initPreferences(deviceLocale);
+// WebRTC for video sessions (B6.3): LiveKit needs it set up once, before any room.
+registerGlobals();
 
 // Error tracking and analytics, if switched on in Settings › Integrations.
 const monitoring = appConfig().then(startMonitoring);

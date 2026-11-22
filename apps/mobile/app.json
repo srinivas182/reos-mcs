@@ -49,7 +49,7 @@
       [
         "expo-speech-recognition",
         {
-          "microphonePermission": "REOS uses the microphone when you hold the mic to add a to-do. What you say is turned into words on your phone when it can be.",
+          "microphonePermission": "REOS uses the microphone in video sessions with your instructor or mentor, and when you hold the mic to add a to-do.",
           "speechRecognitionPermission": "REOS turns what you say into a to-do. Nothing is saved until you check it and tap Save.",
           "androidSpeechServicePackages": [
             "com.google.android.googlequicksearchbox"
@@ -63,7 +63,15 @@
         }
       ],
       "expo-quick-actions",
-      "expo-video"
+      "expo-video",
+      "@livekit/react-native-expo-plugin",
+      [
+        "@config-plugins/react-native-webrtc",
+        {
+          "cameraPermission": "REOS uses the camera in video sessions with your instructor or mentor. You can turn it off at any time in the session.",
+          "microphonePermission": "REOS uses the microphone in video sessions with your instructor or mentor, and when you hold the mic to add a to-do."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,0 +1,178 @@
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { useEcho } from '@laravel/echo-react';
+import { ArrowLeft } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import InputError from '@/components/input-error';
+import { PageHeader } from '@/components/page-header';
+import { SessionStatus, sessionTime } from '@/components/sessions/session-card';
+import { SessionNotes } from '@/components/sessions/session-notes';
+import { SessionRoom } from '@/components/sessions/session-room';
+import type { RoomConnection, Session } from '@/components/sessions/types';
+import { withWhom } from '@/components/sessions/types';
+import { Button } from '@/components/ui/button';
+import { postJson } from '@/lib/content';
+import { realtimeEnabled } from '@/lib/realtime';
+import { cancel, end, index, join } from '@/routes/sessions';
+
+/** Closes the room at once when the session ends elsewhere (the host, or the booked end). */
+function LiveEnd({
+    me,
+    session,
+    onEnded,
+}: {
+    me: number;
+    session: string;
+    onEnded: () => void;
+}) {
+    useEcho<{ session: string }>(
+        `users.${me}`,
+        '.session.ended',
+        (event) => {
+            if (event.session === session) {
+                onEnded();
+            }
+        },
+        [session],
+    );
+
+    return null;
+}
+
+/**
+ * A session (B6.3): before it opens, when and with whom, and Join from five
+ * minutes before; inside, the room (instructor screen 15); afterwards, the
+ * session notes (screen 16) everyone in it shares.
+ */
+export default function SessionPage({
+    session,
+}: {
+    session: Session;
+    simulated: boolean;
+}) {
+    const { t, i18n } = useTranslation();
+    const { auth } = usePage().props;
+    const me = auth.user?.id ?? 0;
+    const [connection, setConnection] = useState<RoomConnection | null>(null);
+    const [joining, setJoining] = useState(false);
+    const [error, setError] = useState<string | undefined>();
+    const others = withWhom(session, me);
+    const over = session.status === 'ended' || session.status === 'cancelled';
+
+    const leave = useCallback(() => {
+        setConnection(null);
+        router.reload({ only: ['session'] });
+    }, []);
+
+    const enter = async () => {
+        setJoining(true);
+        setError(undefined);
+
+        try {
+            setConnection(await postJson<RoomConnection>(join(session.id).url));
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setJoining(false);
+        }
+    };
+
+    const opens = new Date(session.join_opens_at).toLocaleTimeString(
+        i18n.language,
+        { hour: 'numeric', minute: '2-digit' },
+    );
+
+    return (
+        <>
+            <Head title={session.title} />
+            {realtimeEnabled() && me > 0 ? (
+                <LiveEnd me={me} session={session.id} onEnded={leave} />
+            ) : null}
+            <div className="space-y-8 px-4 py-6 md:px-8">
+                <PageHeader
+                    back={
+                        <Link
+                            href={index().url}
+                            className="inline-flex min-h-12 items-center gap-2 text-base text-muted-foreground hover:text-foreground"
+                        >
+                            <ArrowLeft aria-hidden className="size-4" />
+                            {t('sessions.title')}
+                        </Link>
+                    }
+                    title={session.title}
+                    description={`${sessionTime(session, i18n.language)} · ${
+                        session.kind === 'live_class'
+                            ? t('sessions.people', { count: others.length })
+                            : t('sessions.with', { names: others.join(', ') })
+                    }`}
+                    actions={
+                        <>
+                            <SessionStatus status={session.status} />
+                            {session.me === 'host' &&
+                            session.status === 'scheduled' &&
+                            !connection ? (
+                                <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                        router.post(cancel(session.id).url)
+                                    }
+                                >
+                                    {t('sessions.cancel')}
+                                </Button>
+                            ) : null}
+                        </>
+                    }
+                />
+
+                {connection ? (
+                    <SessionRoom
+                        session={session}
+                        connection={connection}
+                        me={me}
+                        onLeave={leave}
+                        onEnd={() => {
+                            setConnection(null);
+                            router.post(end(session.id).url);
+                        }}
+                    />
+                ) : over ? null : (
+                    <section className="space-y-4 rounded-reos-lg border border-border bg-card p-6">
+                        {session.agenda ? (
+                            <div className="space-y-1">
+                                <h2 className="text-base font-semibold">
+                                    {t('sessions.agenda')}
+                                </h2>
+                                <p className="text-base whitespace-pre-line">
+                                    {session.agenda}
+                                </p>
+                            </div>
+                        ) : null}
+                        <p className="text-base text-muted-foreground">
+                            {session.can_join
+                                ? t('sessions.ready')
+                                : t('sessions.opensNote', { time: opens })}
+                        </p>
+                        <Button
+                            size="lg"
+                            disabled={!session.can_join || joining}
+                            onClick={() => void enter()}
+                        >
+                            {session.can_join
+                                ? t('sessions.join')
+                                : t('sessions.opensAt', { time: opens })}
+                        </Button>
+                        <InputError message={error} />
+                    </section>
+                )}
+
+                {session.status === 'cancelled' ? (
+                    <p className="text-base text-muted-foreground">
+                        {t('sessions.wasCancelled')}
+                    </p>
+                ) : null}
+
+                <SessionNotes session={session} />
+            </div>
+        </>
+    );
+}
