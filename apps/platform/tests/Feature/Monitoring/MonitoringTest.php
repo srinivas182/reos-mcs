@@ -105,7 +105,16 @@ it('gives the web and phone apps their own public settings, never secrets', func
             'sentry' => ['dsn' => SENTRY_KEYS['mobile_dsn']],
             'posthog' => ['key' => 'phc_public_key', 'host' => 'https://us.i.posthog.com'],
             'sign_in' => ['google' => true, 'apple' => true, 'phone' => true, 'demo' => true],
+            // Live messages are off without Reverb (B6.1).
+            'realtime' => null,
         ]);
+
+    // With Reverb: the public key and address only, never the secret.
+    config(['broadcasting.default' => 'reverb', 'broadcasting.connections.reverb.key' => 'reos-key', 'broadcasting.connections.reverb.secret' => 'reos-secret',
+        'broadcasting.connections.reverb.options' => ['host' => 'ws.reos.com', 'port' => 443, 'scheme' => 'https']]);
+    $this->getJson('/api/v1/app-config')
+        ->assertJsonPath('realtime', ['key' => 'reos-key', 'host' => 'ws.reos.com', 'port' => 443, 'scheme' => 'https'])
+        ->assertDontSee('reos-secret');
 });
 
 it('tells the phone app when everything is off', function () {

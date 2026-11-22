@@ -33,6 +33,8 @@ const mockWhatsNew: { current: { item: { id: number; version: string; released_o
   current: { item: null, dismiss: jest.fn() },
 };
 jest.mock('@/lib/whatsNew', () => ({ useWhatsNew: () => mockWhatsNew.current }));
+const mockInbox: { current: { unread: number; conversations: unknown[] } | null } = { current: null };
+jest.mock('@/lib/messages', () => ({ useInbox: () => ({ inbox: mockInbox.current, reload: jest.fn() }) }));
 
 jest.mock('@/lib/api', () => ({
   fetchHealth: jest.fn().mockResolvedValue({ status: 'ok', app: 'REOS', version: '0.1.0-dev', time: 'now' }),
@@ -118,5 +120,18 @@ describe('HomeScreen', () => {
     await fireEvent.press(screen.getByRole('button', { name: "Dismiss what's new in 6.2.0" }));
     expect(dismiss).toHaveBeenCalled();
     mockWhatsNew.current = { item: null, dismiss: jest.fn() };
+  });
+
+  it('opens Messages from Today once it is rolled out, with the unread count', async () => {
+    const { router } = jest.requireMock('expo-router') as { router: { push: jest.Mock } };
+    await renderHome();
+    expect(screen.queryByText('Messages')).toBeNull();
+
+    mockInbox.current = { unread: 2, conversations: [] };
+    await renderHome();
+    expect(screen.getByText('2 unread messages')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByText('Messages'));
+    expect(router.push).toHaveBeenCalledWith('/messages');
+    mockInbox.current = null;
   });
 });

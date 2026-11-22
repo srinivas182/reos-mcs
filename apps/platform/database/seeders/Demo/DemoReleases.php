@@ -31,7 +31,7 @@ final readonly class DemoReleases
         FeatureFlag::query()->where('key', 'messages')->update([
             'stage' => RolloutStage::Tenants->value,
             'tenant_ids' => json_encode(is_int($loneStar) ? [$loneStar] : [], JSON_THROW_ON_ERROR),
-            'roles' => json_encode(['agent', 'broker'], JSON_THROW_ON_ERROR),
+            'roles' => json_encode(['agent', 'broker', 'mentor'], JSON_THROW_ON_ERROR),
             'stage_changed_at' => now()->subDays(3),
         ]);
 

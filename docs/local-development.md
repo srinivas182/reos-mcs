@@ -16,7 +16,10 @@ Prefer not to install PHP? Open the repo in the dev container (VS Code: "Reopen 
 ```bash
 pnpm dev:up                          # start services (if they're stopped)
 cd apps/platform && composer dev     # Laravel, queue worker, logs and Vite
+cd apps/platform && php artisan reverb:start   # live messages (B6.1) on port 8080
 ```
+
+Live messages need Reverb running and the `REVERB_*` keys from `.env.example` (any values work locally). Without it, messages still send; screens catch up when they load. The phone reads the Reverb key and address from `/api/v1/app-config`; on a real phone set `REVERB_HOST` to your computer's LAN address. The phone's live connection needs the `@react-native-community/netinfo` native module, so rebuild the development build once after pulling B6.1.
 
 | Command | What it does |
 | --- | --- |

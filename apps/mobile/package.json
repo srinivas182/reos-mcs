@@ -4,6 +4,7 @@
   "main": "expo-router/entry",
   "dependencies": {
     "@expo/ui": "~58.0.29",
+    "@react-native-community/netinfo": "12.0.1",
     "@reos/api-client": "workspace:*",
     "@reos/i18n": "workspace:*",
     "@reos/tokens": "workspace:*",
@@ -37,8 +38,10 @@
     "expo-video": "~58.0.14",
     "expo-web-browser": "~58.1.0",
     "i18next": "^27.2.2",
+    "laravel-echo": "^2.6.3",
     "lucide-react-native": "^1.77.0",
     "posthog-react-native": "^4.87.1",
+    "pusher-js": "^8.6.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-i18next": "^18.0.3",

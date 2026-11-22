@@ -20,6 +20,7 @@ import { Platform } from 'react-native';
 import { api, webBaseUrl } from '@/lib/api';
 import { i18n } from '@/lib/i18n';
 import { attachDraft, markSignedIn } from '@/lib/onboarding';
+import { disconnectRealtime } from '@/lib/realtime';
 import { biometricAsked, biometricEnabled, clearToken, deviceInfo, loadToken, onSessionExpired, saveToken } from '@/lib/session';
 
 export type Me = Schemas['MeResource'];
@@ -261,6 +262,8 @@ export function AuthProvider({ children, client = api() }: { children: ReactNode
   const signOut = useCallback(async () => {
     await client.POST('/auth/sign-out').catch(() => undefined);
     await clearToken();
+    // The live connection was made with the old token (B6.1).
+    disconnectRealtime();
     setUser(null);
     setStatus('signedOut');
   }, [client]);

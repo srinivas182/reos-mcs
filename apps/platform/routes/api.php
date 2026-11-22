@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
+use App\Http\Controllers\Api\Messaging\MessagesController as ApiMessagesController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\Voice\VoiceController;
+use App\Http\Middleware\RequireFlag;
 use App\Http\Middleware\ResolveTenant;
 use Illuminate\Support\Facades\Route;
 
@@ -95,6 +97,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('me/codes', [MembershipController::class, 'redeem'])->middleware('throttle:10,10,api-codes')->name('api.me.codes');
     // Earnings for instructors and mentors (B5.2b).
     Route::get('me/earnings', EarningsController::class)->name('api.me.earnings');
+    // Messages (B6.1), behind the `messages` flag.
+    Route::middleware(RequireFlag::class.':messages')->prefix('messages')->name('api.messages.')->controller(ApiMessagesController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('contacts', 'contacts')->name('contacts');
+        Route::post('/', 'store')->middleware('throttle:20,1,api-messages-start')->name('store');
+        Route::get('{conversation}', 'show')->whereUuid('conversation')->name('show');
+        Route::post('{conversation}', 'send')->whereUuid('conversation')->middleware('throttle:60,1,api-messages-send')->name('send');
+        Route::post('{conversation}/read', 'read')->whereUuid('conversation')->middleware('throttle:120,1,api-messages-read')->name('read');
+        Route::patch('items/{message}', 'update')->whereUuid('message')->middleware('throttle:30,1,api-messages-edit')->name('update');
+        Route::delete('items/{message}', 'destroy')->whereUuid('message')->middleware('throttle:30,1,api-messages-edit')->name('destroy');
+    });
     // Privacy switches and consents (A6.3, Me › Privacy).
     Route::get('me/consents', [ConsentController::class, 'index'])->name('api.me.consents');
     Route::put('me/consents/{purpose}', [ConsentController::class, 'update'])->middleware('throttle:30,1,api-consents')->name('api.me.consents.update');

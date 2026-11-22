@@ -51,7 +51,8 @@
     "providerCategories": "Provider categories",
     "aiAndCredits": "AI and credits",
     "featuresAndReleases": "Features and releases",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "messages": "Messages"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -4288,5 +4289,50 @@
       "notSwitch": "Only the privacy switches can be changed for someone.",
       "generic": "That didn't save. Try again."
     }
+  },
+  "messages": {
+    "title": "Messages",
+    "purpose": "Talk with the people you work with. Messages arrive live on the web and in the app.",
+    "new": "New message",
+    "newDescription": "Only people you work with are listed: your broker and team, your school's staff and students, your mentor or mentees.",
+    "list": "Conversations",
+    "empty": "No messages yet",
+    "emptyBody": "Start a conversation with someone you work with.",
+    "pick": "Pick a conversation",
+    "pickBody": "Choose one on the left, or start a new message.",
+    "unreadCount_one": "{{count}} unread message",
+    "unreadCount_other": "{{count}} unread messages",
+    "deleted": "This message was deleted.",
+    "edited": "Edited",
+    "read": "Read",
+    "formerMember": "Former member",
+    "reply": "Reply",
+    "replyTo": "Reply to {{name}}",
+    "replyingTo": "Replying to {{name}}",
+    "editing": "Editing your message",
+    "edit": "Edit",
+    "deleteForEveryone": "Delete for everyone",
+    "cancel": "Cancel",
+    "send": "Send",
+    "save": "Save",
+    "write": "Message",
+    "writePlaceholder": "Write a message. Enter sends; Shift+Enter adds a line.",
+    "older": "Show earlier messages",
+    "people_one": "{{count}} person",
+    "people_other": "{{count}} people",
+    "search": "Search people",
+    "to": "To",
+    "loading": "Loading people…",
+    "noContacts": "There's no one you can message yet. People appear here when you join a brokerage, school or team.",
+    "noMatch": "No one matches that search.",
+    "groupName": "Group name (optional)",
+    "errors": {
+      "people": "Choose between 1 and {{max}} people.",
+      "notAllowed": "You can only message people you work with.",
+      "body": "Write a message of up to {{max}} characters.",
+      "tooLate": "Messages can be changed for {{minutes}} minutes after sending.",
+      "send": "That didn't send. Try again."
+    },
+    "allRead": "You're all caught up"
   }
 }

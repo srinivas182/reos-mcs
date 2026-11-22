@@ -163,3 +163,5 @@ jest.mock('expo-video', () => {
   };
 });
 jest.mock('expo-quick-actions/router', () => ({ useQuickActionRouting: jest.fn() }));
+// Live updates (B6.1) need Reverb; screens are tested without a socket.
+jest.mock('@/lib/realtime', () => ({ listen: () => () => undefined, disconnectRealtime: jest.fn() }));

@@ -18,6 +18,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\Messaging\MessagesController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
@@ -37,6 +38,7 @@ use App\Http\Controllers\SupportSessionController;
 use App\Http\Controllers\WhatsNewController;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Http\Middleware\EnsureOnboarded;
+use App\Http\Middleware\RequireFlag;
 use App\Services\Tenancy\TenantSignups;
 use Illuminate\Support\Facades\Route;
 
@@ -171,6 +173,17 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::get('own-account', [SalesController::class, 'ownAccount'])->middleware('throttle:10,1,sales-own-back')->name('own-account');
 });
 // Earnings (B5.2b): instructors and mentors.
+// Messages (B6.1): behind the `messages` flag (screen 70) while it rolls out.
+Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix('messages')->name('messages.')->group(function () {
+    Route::get('/', [MessagesController::class, 'index'])->name('index');
+    Route::post('/', [MessagesController::class, 'store'])->middleware('throttle:20,1,messages-start')->name('store');
+    Route::post('{conversation}', [MessagesController::class, 'send'])->whereUuid('conversation')->middleware('throttle:60,1,messages-send')->name('send');
+    Route::post('{conversation}/read', [MessagesController::class, 'read'])->whereUuid('conversation')->middleware('throttle:120,1,messages-read')->name('read');
+    Route::get('{conversation}/older', [MessagesController::class, 'older'])->whereUuid('conversation')->middleware('throttle:60,1,messages-older')->name('older');
+    Route::patch('items/{message}', [MessagesController::class, 'update'])->whereUuid('message')->middleware('throttle:30,1,messages-edit')->name('update');
+    Route::delete('items/{message}', [MessagesController::class, 'destroy'])->whereUuid('message')->middleware('throttle:30,1,messages-edit')->name('destroy');
+});
+
 // "What's new" (A6.2): dismissed once, gone on the web and the phone.
 Route::post('whats-new/{release}/dismiss', [WhatsNewController::class, 'dismiss'])->whereNumber('release')->middleware(['auth', 'throttle:30,1,whats-new'])->name('whats-new.dismiss');
 
