@@ -22,6 +22,7 @@ export const session = (over: Partial<Session> = {}): Session => ({
     notes_updated_by: null,
     whiteboard: { image_url: null, updated_at: null },
     shares: [],
+    recordings: [],
     ...over,
 });
 

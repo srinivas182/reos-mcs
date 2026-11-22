@@ -224,7 +224,17 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->pref
     Route::post('{session}/whiteboard', 'saveWhiteboard')->whereUuid('session')->middleware('throttle:30,1,sessions-board-save')->name('whiteboard.save');
     Route::get('{session}/share-options', 'shareOptions')->whereUuid('session')->middleware('throttle:30,1,sessions-share')->name('share-options');
     Route::post('{session}/shares', 'share')->whereUuid('session')->middleware('throttle:20,1,sessions-share')->name('shares');
+    // Recording only with consent (B6.3c).
+    Route::post('{session}/leave', 'leave')->whereUuid('session')->middleware('throttle:30,1,sessions-leave')->name('leave');
+    Route::post('{session}/recordings', 'record')->whereUuid('session')->middleware('throttle:10,1,sessions-record')->name('recordings.store');
+    Route::post('{session}/recordings/{recording}/answer', 'answerRecording')->whereUuid(['session', 'recording'])->middleware('throttle:30,1,sessions-record-answer')->name('recordings.answer');
+    Route::post('{session}/recordings/{recording}/stop', 'stopRecording')->whereUuid(['session', 'recording'])->middleware('throttle:20,1,sessions-record-stop')->name('recordings.stop');
+    Route::delete('{session}/recordings/{recording}', 'deleteRecording')->whereUuid(['session', 'recording'])->middleware('throttle:10,1,sessions-record-delete')->name('recordings.destroy');
 });
+
+// A recording on the local disk, through its short-lived signed link (B6.3c).
+Route::get('sessions/recordings/{recording}/file', [SessionsController::class, 'recordingFile'])->whereUuid('recording')
+    ->middleware(['signed', 'throttle:120,1,sessions-recording-file'])->name('sessions.recordings.file');
 
 // The picture of a session's whiteboard, through its short-lived signed link (B6.3b).
 Route::get('sessions/{session}/whiteboard.png', [SessionsController::class, 'whiteboardImage'])->whereUuid('session')

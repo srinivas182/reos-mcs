@@ -7,9 +7,10 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { SessionRoom } from '@/features/sessions/SessionRoom';
 import { sessionTime } from '@/features/sessions/SessionRow';
+import { RecordingsList } from '@/features/sessions/Recording';
 import { SessionShares } from '@/features/sessions/SessionShares';
 import { useAuth } from '@/lib/auth';
-import { endSession, joinSession, type RoomConnection, saveNotes, useSession } from '@/lib/sessions';
+import { activeRecording, answerRecording, endSession, joinSession, leaveSession, type RoomConnection, saveNotes, useSession } from '@/lib/sessions';
 import { Button, Callout, Eyebrow, Screen, Text, TextField, TitleBar } from '@/ui';
 
 /**
@@ -26,7 +27,11 @@ export default function SessionScreen() {
   const [busy, setBusy] = useState(false);
   const [draft, setDraft] = useState<string | null>(null);
   const [notesError, setNotesError] = useState<string | null>(null);
-  const leave = useCallback(() => setConnection(null), []);
+  const leave = useCallback(() => {
+    setConnection(null);
+    // Out of the room: recording no longer waits for this person (B6.3c).
+    void leaveSession(id).catch(() => undefined);
+  }, [id]);
   const { session, failed, reload, setSession } = useSession(id, user?.id ?? null, leave);
 
   // In the room, the whiteboard picture follows the web's drawing (saved every few seconds).
@@ -59,8 +64,17 @@ export default function SessionScreen() {
   const over = session.status === 'ended' || session.status === 'cancelled';
   const notes = draft ?? session.notes ?? '';
 
+  const recording = activeRecording(session);
+  // Joining while it records: agree first (B6.3c).
+  const mustAgree = recording !== null && recording.status === 'recording' && recording.my_answer !== true;
+
   const join = async () => {
     setBusy(true);
+
+    if (mustAgree && recording) {
+      await answerRecording(session.id, recording.id, true).catch(() => undefined);
+    }
+
     const result = await joinSession(session.id).catch(() => ({ ok: false as const, message: '' }));
     setBusy(false);
 
@@ -70,6 +84,8 @@ export default function SessionScreen() {
       reload();
     } else {
       setError(result.message || t('sessions.room.failed'));
+      // A recording may have started meanwhile: show its prompt.
+      reload();
     }
   };
 
@@ -100,7 +116,7 @@ export default function SessionScreen() {
       </Text>
 
       {connection ? (
-        <SessionRoom session={session} connection={connection} me={me} onLeave={leave} onEnd={() => void end()} />
+        <SessionRoom session={session} connection={connection} me={me} onLeave={leave} onEnd={() => void end()} onChanged={reload} />
       ) : over ? (
         <Callout tone="neutral" title={session.status === 'cancelled' ? t('sessions.wasCancelled') : t('sessions.room.ended')} />
       ) : (
@@ -112,8 +128,9 @@ export default function SessionScreen() {
             </>
           ) : null}
           <Text tone="muted">{session.can_join ? t('sessions.ready') : t('sessions.opensNote', { time: opens })}</Text>
+          {mustAgree && session.can_join ? <Callout tone="danger" title={t('sessions.recording.joinFirst')} body={t('sessions.recording.joinBody')} /> : null}
           <Button
-            label={session.can_join ? t('sessions.join') : t('sessions.opensAt', { time: opens })}
+            label={!session.can_join ? t('sessions.opensAt', { time: opens }) : mustAgree ? t('sessions.recording.agreeAndJoin') : t('sessions.join')}
             disabled={!session.can_join}
             loading={busy}
             fullWidth
@@ -124,6 +141,8 @@ export default function SessionScreen() {
       )}
 
       <SessionShares shares={session.shares} />
+
+      {connection === null ? <RecordingsList session={session} onChanged={reload} /> : null}
 
       {/* The shared whiteboard (B6.3b): drawn on the web; the latest picture here. */}
       {session.status !== 'cancelled' ? (

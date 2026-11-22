@@ -26,6 +26,28 @@ export type Session = {
     whiteboard: { image_url: string | null; updated_at: string | null };
     /** Lessons and practice questions the host shared (B6.3b). */
     shares: Share[];
+    /** Recordings (B6.3c), latest first. */
+    recordings: Recording[];
+};
+
+export type Recording = {
+    id: string;
+    status:
+        | 'asking'
+        | 'declined'
+        | 'recording'
+        | 'stopping'
+        | 'ready'
+        | 'failed';
+    requested_by: string | null;
+    started_at: string | null;
+    stopped_at: string | null;
+    duration_seconds: number | null;
+    expires_at: string | null;
+    play_url: string | null;
+    agreed: string[];
+    waiting: string[];
+    my_answer: boolean | null;
 };
 
 export type PracticeQuestion = {

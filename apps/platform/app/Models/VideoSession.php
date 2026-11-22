@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read User $host
  * @property-read Collection<int, VideoSessionParticipant> $participants
  * @property-read Collection<int, VideoSessionShare> $shares
+ * @property-read Collection<int, VideoRecording> $recordings
  */
 final class VideoSession extends Model
 {
@@ -91,6 +92,12 @@ final class VideoSession extends Model
     public function shares(): HasMany
     {
         return $this->hasMany(VideoSessionShare::class);
+    }
+
+    /** @return HasMany<VideoRecording, $this> */
+    public function recordings(): HasMany
+    {
+        return $this->hasMany(VideoRecording::class);
     }
 
     /** The LiveKit room name. */

@@ -51,3 +51,5 @@ Schedule::command('reos:push:receipts')->everyFifteenMinutes()->withoutOverlappi
 Schedule::command('reos:notifications:prune')->dailyAt('04:45')->onOneServer();
 // Video sessions (B6.3): rooms close at the booked end; "starting soon" 10 minutes before.
 Schedule::command('reos:sessions:tick')->everyMinute()->withoutOverlapping()->onOneServer();
+// Recordings are deleted 90 days after the session (B6.3c).
+Schedule::command('reos:recordings:prune')->dailyAt('04:15')->onOneServer();

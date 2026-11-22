@@ -556,7 +556,7 @@ Mentor sessions and live classes (rooms, whiteboard, consented recording).
 - **Sandbox:** Free tier project.
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Per participant-minute.
-- **Notes:** B6.3a mints room tokens (one person, one room, until the booked end) and closes rooms at the end through the RoomService API. Until set up, rooms are simulated outside production and refused in production. Recording to S3 (egress) arrives with B6.3b.
+- **Notes:** B6.3a mints room tokens (one person, one room, until the booked end) and closes rooms at the end through the RoomService API. Until set up, rooms are simulated outside production and refused in production. B6.3c records with egress to the content bucket (needs that bucket's access key) and reads https://reos.com/webhooks/livekit (set it as the project's webhook URL) for finished recordings and who is in each room.
 
 ### Mux Video
 <a id="mux"></a>

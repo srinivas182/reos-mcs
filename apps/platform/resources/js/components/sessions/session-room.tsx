@@ -9,7 +9,7 @@ import {
     useTracks,
 } from '@livekit/components-react';
 import { Track } from 'livekit-client';
-import { Clock, PenLine, Video } from 'lucide-react';
+import { Circle, Clock, PenLine, Video } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RoomConnection, Session } from '@/components/sessions/types';
@@ -18,12 +18,18 @@ import {
     decodeBoard,
     encodeBoard,
 } from '@/components/sessions/board-channel';
+import {
+    activeRecording,
+    RecordingBanner,
+} from '@/components/sessions/recording';
 import { ShareActions } from '@/components/sessions/share-actions';
 import { clock, useCountdown } from '@/components/sessions/use-countdown';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { postJson } from '@/lib/content';
 import { cn } from '@/lib/utils';
+import { store as recordRoute } from '@/routes/sessions/recordings';
 
 // Excalidraw is large; it loads only when someone opens the whiteboard.
 const Whiteboard = lazy(() => import('@/components/sessions/whiteboard'));
@@ -183,6 +189,7 @@ export function SessionRoom({
 }) {
     const { t, i18n } = useTranslation();
     const [view, setView] = useState<'video' | 'board'>('video');
+    const recording = activeRecording(session);
     const left = useCountdown(connection.ends_at);
     const warn = left > 0 && left <= 120;
     const closesAt = new Date(connection.ends_at).toLocaleTimeString(
@@ -239,6 +246,19 @@ export function SessionRoom({
                             onShared={onShared}
                         />
                     ) : null}
+                    {session.me === 'host' && recording === null ? (
+                        <Button
+                            variant="outline"
+                            onClick={() =>
+                                void postJson(recordRoute(session.id).url)
+                                    .then(onShared)
+                                    .catch(onShared)
+                            }
+                        >
+                            <Circle aria-hidden className="fill-current" />
+                            {t('sessions.recording.record')}
+                        </Button>
+                    ) : null}
                     <Button variant="outline" onClick={() => onLeave('left')}>
                         {t('sessions.room.leave')}
                     </Button>
@@ -249,6 +269,14 @@ export function SessionRoom({
                     ) : null}
                 </div>
             </div>
+
+            {recording ? (
+                <RecordingBanner
+                    session={session}
+                    recording={recording}
+                    onChanged={onShared}
+                />
+            ) : null}
 
             <div aria-live="polite">
                 {warn ? (

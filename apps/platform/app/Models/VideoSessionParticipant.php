@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $first_joined_at
  * @property CarbonImmutable|null $last_joined_at
  * @property int $joins
+ * @property bool $in_room In the room right now (B6.3c)
  * @property-read User $user
  * @property-read VideoSession $session
  */
@@ -29,11 +30,11 @@ final class VideoSessionParticipant extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['video_session_id', 'user_id', 'role', 'first_joined_at', 'last_joined_at', 'joins'];
+    protected $fillable = ['video_session_id', 'user_id', 'role', 'first_joined_at', 'last_joined_at', 'joins', 'in_room'];
 
     protected function casts(): array
     {
-        return ['first_joined_at' => 'datetime', 'last_joined_at' => 'datetime', 'joins' => 'integer'];
+        return ['first_joined_at' => 'datetime', 'last_joined_at' => 'datetime', 'joins' => 'integer', 'in_room' => 'boolean'];
     }
 
     /** @return BelongsTo<User, $this> */

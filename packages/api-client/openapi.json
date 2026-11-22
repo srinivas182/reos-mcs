@@ -6447,6 +6447,95 @@
                                                                 "questions"
                                                             ]
                                                         }
+                                                    },
+                                                    "recordings": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "asking",
+                                                                        "declined",
+                                                                        "recording",
+                                                                        "stopping",
+                                                                        "ready",
+                                                                        "failed"
+                                                                    ]
+                                                                },
+                                                                "requested_by": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "started_at": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "stopped_at": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "duration_seconds": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "expires_at": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "play_url": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "agreed": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "waiting": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "my_answer": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "status",
+                                                                "requested_by",
+                                                                "started_at",
+                                                                "stopped_at",
+                                                                "duration_seconds",
+                                                                "expires_at",
+                                                                "play_url",
+                                                                "agreed",
+                                                                "waiting",
+                                                                "my_answer"
+                                                            ]
+                                                        }
                                                     }
                                                 },
                                                 "required": [
@@ -6466,7 +6555,8 @@
                                                     "notes_updated_at",
                                                     "notes_updated_by",
                                                     "whiteboard",
-                                                    "shares"
+                                                    "shares",
+                                                    "recordings"
                                                 ]
                                             }
                                         },
@@ -6777,6 +6867,95 @@
                                                     "questions"
                                                 ]
                                             }
+                                        },
+                                        "recordings": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "asking",
+                                                            "declined",
+                                                            "recording",
+                                                            "stopping",
+                                                            "ready",
+                                                            "failed"
+                                                        ]
+                                                    },
+                                                    "requested_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "started_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "stopped_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "duration_seconds": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "expires_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "play_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "agreed": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "waiting": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "my_answer": {
+                                                        "type": [
+                                                            "boolean",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "status",
+                                                    "requested_by",
+                                                    "started_at",
+                                                    "stopped_at",
+                                                    "duration_seconds",
+                                                    "expires_at",
+                                                    "play_url",
+                                                    "agreed",
+                                                    "waiting",
+                                                    "my_answer"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -6796,7 +6975,8 @@
                                         "notes_updated_at",
                                         "notes_updated_by",
                                         "whiteboard",
-                                        "shares"
+                                        "shares",
+                                        "recordings"
                                     ]
                                 }
                             }
@@ -7087,6 +7267,95 @@
                                                     "questions"
                                                 ]
                                             }
+                                        },
+                                        "recordings": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "asking",
+                                                            "declined",
+                                                            "recording",
+                                                            "stopping",
+                                                            "ready",
+                                                            "failed"
+                                                        ]
+                                                    },
+                                                    "requested_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "started_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "stopped_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "duration_seconds": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "expires_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "play_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "agreed": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "waiting": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "my_answer": {
+                                                        "type": [
+                                                            "boolean",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "status",
+                                                    "requested_by",
+                                                    "started_at",
+                                                    "stopped_at",
+                                                    "duration_seconds",
+                                                    "expires_at",
+                                                    "play_url",
+                                                    "agreed",
+                                                    "waiting",
+                                                    "my_answer"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -7106,7 +7375,8 @@
                                         "notes_updated_at",
                                         "notes_updated_by",
                                         "whiteboard",
-                                        "shares"
+                                        "shares",
+                                        "recordings"
                                     ]
                                 }
                             }
@@ -7462,6 +7732,95 @@
                                                     "questions"
                                                 ]
                                             }
+                                        },
+                                        "recordings": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "asking",
+                                                            "declined",
+                                                            "recording",
+                                                            "stopping",
+                                                            "ready",
+                                                            "failed"
+                                                        ]
+                                                    },
+                                                    "requested_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "started_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "stopped_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "duration_seconds": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "expires_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "play_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "agreed": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "waiting": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "my_answer": {
+                                                        "type": [
+                                                            "boolean",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "status",
+                                                    "requested_by",
+                                                    "started_at",
+                                                    "stopped_at",
+                                                    "duration_seconds",
+                                                    "expires_at",
+                                                    "play_url",
+                                                    "agreed",
+                                                    "waiting",
+                                                    "my_answer"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -7481,7 +7840,8 @@
                                         "notes_updated_at",
                                         "notes_updated_by",
                                         "whiteboard",
-                                        "shares"
+                                        "shares",
+                                        "recordings"
                                     ]
                                 }
                             }
@@ -7772,6 +8132,95 @@
                                                     "questions"
                                                 ]
                                             }
+                                        },
+                                        "recordings": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "asking",
+                                                            "declined",
+                                                            "recording",
+                                                            "stopping",
+                                                            "ready",
+                                                            "failed"
+                                                        ]
+                                                    },
+                                                    "requested_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "started_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "stopped_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "duration_seconds": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "expires_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "play_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "agreed": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "waiting": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "my_answer": {
+                                                        "type": [
+                                                            "boolean",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "status",
+                                                    "requested_by",
+                                                    "started_at",
+                                                    "stopped_at",
+                                                    "duration_seconds",
+                                                    "expires_at",
+                                                    "play_url",
+                                                    "agreed",
+                                                    "waiting",
+                                                    "my_answer"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -7791,7 +8240,8 @@
                                         "notes_updated_at",
                                         "notes_updated_by",
                                         "whiteboard",
-                                        "shares"
+                                        "shares",
+                                        "recordings"
                                     ]
                                 }
                             }
@@ -8093,6 +8543,95 @@
                                                     "questions"
                                                 ]
                                             }
+                                        },
+                                        "recordings": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "asking",
+                                                            "declined",
+                                                            "recording",
+                                                            "stopping",
+                                                            "ready",
+                                                            "failed"
+                                                        ]
+                                                    },
+                                                    "requested_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "started_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "stopped_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "duration_seconds": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "expires_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "play_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "agreed": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "waiting": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "my_answer": {
+                                                        "type": [
+                                                            "boolean",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "status",
+                                                    "requested_by",
+                                                    "started_at",
+                                                    "stopped_at",
+                                                    "duration_seconds",
+                                                    "expires_at",
+                                                    "play_url",
+                                                    "agreed",
+                                                    "waiting",
+                                                    "my_answer"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -8112,7 +8651,8 @@
                                         "notes_updated_at",
                                         "notes_updated_by",
                                         "whiteboard",
-                                        "shares"
+                                        "shares",
+                                        "recordings"
                                     ]
                                 }
                             }
@@ -8415,6 +8955,584 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/leave": {
+            "post": {
+                "operationId": "sessions.leave",
+                "description": "Recording only asks the people still in the room.",
+                "summary": "Leave the room (B6.3c)",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "left": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "left"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/recordings": {
+            "post": {
+                "operationId": "sessions.recordings.store",
+                "description": "Everyone in the room is asked; it starts only when all of them agree.",
+                "summary": "Ask to record (B6.3c). Host only",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "asking",
+                                                "declined",
+                                                "recording",
+                                                "stopping",
+                                                "ready",
+                                                "failed"
+                                            ]
+                                        },
+                                        "requested_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "started_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "stopped_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "duration_seconds": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
+                                        },
+                                        "expires_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "play_url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "agreed": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "waiting": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "my_answer": {
+                                            "type": [
+                                                "boolean",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "status",
+                                        "requested_by",
+                                        "started_at",
+                                        "stopped_at",
+                                        "duration_seconds",
+                                        "expires_at",
+                                        "play_url",
+                                        "agreed",
+                                        "waiting",
+                                        "my_answer"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/recordings/{recording}/answer": {
+            "post": {
+                "operationId": "sessions.recordings.answer",
+                "description": "Saved as a consent record. One \"no\" cancels the request; someone\njoining while it records must agree first.",
+                "summary": "Agree or not to recording (B6.3c)",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "recording",
+                        "in": "path",
+                        "required": true,
+                        "description": "The recording UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RecordingAnswerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "asking",
+                                                "declined",
+                                                "recording",
+                                                "stopping",
+                                                "ready",
+                                                "failed"
+                                            ]
+                                        },
+                                        "requested_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "started_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "stopped_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "duration_seconds": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
+                                        },
+                                        "expires_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "play_url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "agreed": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "waiting": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "my_answer": {
+                                            "type": [
+                                                "boolean",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "status",
+                                        "requested_by",
+                                        "started_at",
+                                        "stopped_at",
+                                        "duration_seconds",
+                                        "expires_at",
+                                        "play_url",
+                                        "agreed",
+                                        "waiting",
+                                        "my_answer"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/recordings/{recording}/stop": {
+            "post": {
+                "operationId": "sessions.recordings.stop",
+                "summary": "Stop recording (B6.3c). Anyone in the session",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "recording",
+                        "in": "path",
+                        "required": true,
+                        "description": "The recording UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "asking",
+                                                "declined",
+                                                "recording",
+                                                "stopping",
+                                                "ready",
+                                                "failed"
+                                            ]
+                                        },
+                                        "requested_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "started_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "stopped_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "duration_seconds": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
+                                        },
+                                        "expires_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "play_url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "agreed": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "waiting": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "my_answer": {
+                                            "type": [
+                                                "boolean",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "status",
+                                        "requested_by",
+                                        "started_at",
+                                        "stopped_at",
+                                        "duration_seconds",
+                                        "expires_at",
+                                        "play_url",
+                                        "agreed",
+                                        "waiting",
+                                        "my_answer"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/recordings/{recording}": {
+            "delete": {
+                "operationId": "sessions.recordings.destroy",
+                "summary": "Delete a recording for everyone (B6.3c). Anyone in the session",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "recording",
+                        "in": "path",
+                        "required": true,
+                        "description": "The recording UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -11587,6 +12705,19 @@
                     "state_rules"
                 ],
                 "title": "QuizTopic"
+            },
+            "RecordingAnswerRequest": {
+                "type": "object",
+                "description": "Agree or not to recording the session (B6.3c).",
+                "properties": {
+                    "agreed": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "agreed"
+                ],
+                "title": "RecordingAnswerRequest"
             },
             "ReportRequest": {
                 "type": "object",

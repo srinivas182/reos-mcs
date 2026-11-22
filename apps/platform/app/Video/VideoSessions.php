@@ -193,11 +193,17 @@ final readonly class VideoSessions
             throw ValidationException::withMessages(['session' => __('sessions.errors.unavailable')]);
         }
 
+        // While it's being recorded, only people who agreed may come in (B6.3c).
+        if (! app(SessionRecordings::class)->mayJoin($session, $user)) {
+            throw ValidationException::withMessages(['recording' => __('sessions.recording.errors.agreeFirst')]);
+        }
+
         $now = now();
         $participant->forceFill([
             'first_joined_at' => $participant->first_joined_at ?? $now,
             'last_joined_at' => $now,
             'joins' => $participant->joins + 1,
+            'in_room' => true,
         ])->save();
 
         if ($session->status === VideoSession::SCHEDULED) {
@@ -214,6 +220,12 @@ final readonly class VideoSessions
         ];
     }
 
+    /** Someone left the room (their Leave, or LiveKit says they're gone). */
+    public function leave(VideoSession $session, User $user): void
+    {
+        $this->ensureParticipant($session, $user)->forceFill(['in_room' => false])->save();
+    }
+
     /** The host ends it early, or the booked end arrives. */
     public function end(VideoSession $session, ?User $by = null): void
     {
@@ -226,6 +238,9 @@ final readonly class VideoSessions
         }
 
         $session->forceFill(['status' => VideoSession::ENDED, 'ended_at' => now()])->save();
+        // Recording stops with the room (B6.3c); nobody is in it any more.
+        app(SessionRecordings::class)->sessionEnded($session);
+        $session->participants()->update(['in_room' => false]);
         $this->livekit->close($session);
         $ids = [];
 

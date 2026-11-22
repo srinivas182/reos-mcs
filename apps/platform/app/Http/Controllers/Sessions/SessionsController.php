@@ -6,17 +6,21 @@ namespace App\Http\Controllers\Sessions;
 
 use App\Enums\QuizTopic;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Sessions\RecordingAnswerRequest;
 use App\Http\Requests\Sessions\ScheduleSessionRequest;
 use App\Http\Requests\Sessions\SessionNotesRequest;
 use App\Http\Requests\Sessions\ShareRequest;
 use App\Http\Requests\Sessions\WhiteboardRequest;
 use App\Messaging\Contacts;
 use App\Models\User;
+use App\Models\VideoRecording;
 use App\Models\VideoSession;
+use App\Privacy\ConsentMethod;
 use App\Services\Content\LessonFiles;
 use App\Video\LiveKit;
 use App\Video\SessionBoard;
 use App\Video\SessionPresenter;
+use App\Video\SessionRecordings;
 use App\Video\SessionShares;
 use App\Video\VideoSessions;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -132,6 +136,63 @@ final class SessionsController extends Controller
             'Content-Type' => 'image/png',
             'X-Content-Type-Options' => 'nosniff',
             'Content-Security-Policy' => "default-src 'none'; sandbox",
+            'Cache-Control' => 'private, max-age=600',
+        ]);
+    }
+
+    /** Leave the room (B6.3c): recording asks only the people still in it. */
+    public function leave(VideoSession $session, #[CurrentUser] User $user, VideoSessions $sessions): JsonResponse
+    {
+        $sessions->leave($session, $user);
+
+        return response()->json(['left' => true]);
+    }
+
+    /** The host asks to record (B6.3c). */
+    public function record(VideoSession $session, #[CurrentUser] User $user, SessionRecordings $recordings): JsonResponse
+    {
+        $recording = $recordings->ask($session, $user, ConsentMethod::Web);
+
+        return response()->json($recordings->present($recording->refresh(), $user), 201);
+    }
+
+    /** Yes or no to recording (B6.3c); each answer is a consent record. */
+    public function answerRecording(RecordingAnswerRequest $request, VideoSession $session, VideoRecording $recording, #[CurrentUser] User $user, SessionRecordings $recordings): JsonResponse
+    {
+        abort_unless($recording->video_session_id === $session->id, 404);
+        $recordings->answer($recording, $user, $request->boolean('agreed'), ConsentMethod::Web);
+
+        return response()->json($recordings->present($recording->refresh(), $user));
+    }
+
+    /** Anyone in the session stops it (B6.3c). */
+    public function stopRecording(VideoSession $session, VideoRecording $recording, #[CurrentUser] User $user, SessionRecordings $recordings): JsonResponse
+    {
+        abort_unless($recording->video_session_id === $session->id, 404);
+        $recordings->stop($recording, $user);
+
+        return response()->json($recordings->present($recording->refresh(), $user));
+    }
+
+    /** Anyone in the session deletes it for everyone (B6.3c). */
+    public function deleteRecording(VideoSession $session, VideoRecording $recording, #[CurrentUser] User $user, SessionRecordings $recordings): RedirectResponse
+    {
+        abort_unless($recording->video_session_id === $session->id, 404);
+        $recordings->delete($recording, $user);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('sessions.recording.deleted')]);
+
+        return back();
+    }
+
+    /** A recording on the local disk, through its signed link (seeking works). */
+    public function recordingFile(VideoRecording $recording): BinaryFileResponse
+    {
+        $disk = LessonFiles::disk();
+        abort_unless($recording->status === VideoRecording::READY && $recording->path !== null && $disk->exists($recording->path), 404);
+
+        return response()->file($disk->path($recording->path), [
+            'Content-Type' => 'video/mp4',
+            'X-Content-Type-Options' => 'nosniff',
             'Cache-Control' => 'private, max-age=600',
         ]);
     }
