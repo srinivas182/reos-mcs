@@ -2797,6 +2797,206 @@
                 }
             }
         },
+        "/me/membership": {
+            "get": {
+                "operationId": "me.membership",
+                "description": "Whether I have access, what a plan includes (never its price) and how\nthe iPhone app points to buying (`email`: \"Email me the link\";\n`link`: open `buy_url`).",
+                "summary": "My membership",
+                "tags": [
+                    "Membership"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "active": {
+                                            "type": "boolean"
+                                        },
+                                        "features": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "includes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "ios_buy_link": {
+                                            "type": "string",
+                                            "enum": [
+                                                "email",
+                                                "link"
+                                            ]
+                                        },
+                                        "buy_url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "active",
+                                        "features",
+                                        "includes",
+                                        "ios_buy_link",
+                                        "buy_url"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/membership/email-link": {
+            "post": {
+                "operationId": "me.membership.email-link",
+                "description": "Sends the plans page on reos.com to my email.",
+                "summary": "Email me the link",
+                "tags": [
+                    "Membership"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sent": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "sent"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/codes": {
+            "post": {
+                "operationId": "me.codes",
+                "description": "A school, brokerage or association's code: unlocks what it sponsors\nat once. 422 when the code is unknown, expired, full or already used.",
+                "summary": "Enter a code",
+                "tags": [
+                    "Membership"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "minLength": 4,
+                                        "maxLength": 40
+                                    }
+                                },
+                                "required": [
+                                    "code"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sponsor": {
+                                            "type": "string"
+                                        },
+                                        "product": {
+                                            "type": "string"
+                                        },
+                                        "features": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "sponsor",
+                                        "product",
+                                        "features"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/onboarding": {
             "put": {
                 "operationId": "me.onboarding",

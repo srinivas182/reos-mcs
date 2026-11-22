@@ -107,6 +107,16 @@ describe('Learn (screen 8)', () => {
 });
 
 describe('a lesson', () => {
+  it('opens the Membership screen when the lesson needs a plan', async () => {
+    jest.mocked(useLocalSearchParams).mockReturnValue({ id: '8' });
+    mockApi.GET.mockResolvedValue({ data: undefined, error: { membership_required: true }, response: { ok: false, status: 402 } });
+
+    await render(wrap(<LessonScreen />));
+
+    await screen.findByText('Learn');
+    expect(router.replace).toHaveBeenCalledWith('/membership');
+  });
+
   it('starts the video at the moment, and a transcript line plays from there', async () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({ id: '7', t: '245' });
     mockApi.GET.mockResolvedValue(ok({ data: lesson }));

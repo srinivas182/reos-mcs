@@ -251,6 +251,26 @@
       "title": "Cambiar de estado",
       "intro": "Los cursos, la educación continua (CE) y los planes siguen el estado que elija.",
       "switched": "Ahora trabaja en {{state}}."
+    },
+    "membership": {
+      "freePlan": "Plan gratis",
+      "title": "Desbloquee todos los cursos, la preparación para el examen y Preguntar sin límites",
+      "body": "Ya usó la lección gratis de hoy. Su progreso está guardado.",
+      "includes": "La membresía incluye",
+      "sponsorTitle": "¿Su escuela, agencia o asociación paga?",
+      "sponsorBody": "Introduzca su código y listo.",
+      "continue": "Continuar en reos.com",
+      "emailMe": "Enviarme el enlace por correo",
+      "sent": "Enviado a {{email}}. Ábralo en cualquier dispositivo para elegir un plan.",
+      "noEmail": "Agregue un correo en Configuración para recibir el enlace.",
+      "android": "Los planes se eligen en reos.com desde cualquier navegador. Su acceso aparece aquí en cuanto lo tenga.",
+      "iosNote": "Los planes se eligen en reos.com. La aplicación se desbloquea en segundos.",
+      "enterCode": "Introducir un código",
+      "codeTitle": "Introduzca su código",
+      "useCode": "Usar código",
+      "unlockedTitle": "Listo",
+      "unlocked": "{{product}} de {{sponsor}} ya está disponible.",
+      "done": "Empezar a aprender"
     }
   },
   "tabs": {
@@ -1910,7 +1930,11 @@
         "price.ended": "Dejó de vender un precio",
         "order.started": "Empezó un pago",
         "order.paid": "Pagó un pedido",
-        "order.refunded": "Se reembolsó un pedido"
+        "order.refunded": "Se reembolsó un pedido",
+        "code.created": "Creó un código de patrocinio",
+        "code.deactivated": "Detuvo un código de patrocinio",
+        "code.redeemed": "Usó un código de patrocinio",
+        "platform.setting_changed": "Cambió un ajuste de la plataforma"
       }
     }
   },
@@ -3349,6 +3373,40 @@
       "title": "Forma parte de un plan",
       "body": "«{{lesson}}» es parte de {{course}}. La primera lección de cada curso es gratis; las demás vienen con un plan.",
       "see": "Ver planes"
+    },
+    "codes": {
+      "title": "Códigos de patrocinio",
+      "intro": "Códigos que paga esta organización. Cada persona que introduce uno obtiene el acceso del plan, una vez.",
+      "product": "Plan",
+      "state": "Estado",
+      "seats": "Puestos",
+      "months": "Acceso durante (meses; vacío mientras dure el plan)",
+      "expires": "Vencimiento del código",
+      "create": "Crear código",
+      "created": "Se creó el código {{code}}.",
+      "stop": "Detener {{code}}",
+      "stopped": "Detenido",
+      "used": "{{used}} de {{seats}} usados",
+      "people": "Lo usaron {{names}}",
+      "empty": "Todavía no hay códigos.",
+      "haveCode": "¿Tiene un código de su escuela, agencia o asociación?",
+      "label": "Código",
+      "use": "Usar código",
+      "redeemed": "{{sponsor}} paga {{product}}. Ya está disponible.",
+      "errors": {
+        "unknown": "Ese código no funciona. Compruébelo con quien se lo dio.",
+        "expired": "Ese código venció.",
+        "used": "Ya usó este código.",
+        "full": "Todos los puestos de este código están ocupados. Pida otro a quien se lo dio."
+      }
+    },
+    "membership": {
+      "mail": {
+        "subject": "Su enlace a los planes de REOS",
+        "body": "Estos son los planes para su estado en reos.com. Elija uno en cualquier dispositivo.",
+        "action": "Ver planes",
+        "unlock": "La aplicación se desbloquea segundos después de comprar; en la aplicación no se compra nada."
+      }
     }
   },
   "plans": {
@@ -3430,6 +3488,12 @@
     "ended": "Se dejó de vender en {{state}}.",
     "current": "Actual",
     "from": "Desde el {{date}}",
-    "until": "hasta el {{date}}"
+    "until": "hasta el {{date}}",
+    "iosBuyLink": {
+      "title": "Compras desde la aplicación para iPhone",
+      "email": "Enviarme el enlace por correo (sin enlace en la aplicación)",
+      "link": "Enlace a reos.com",
+      "help": "La aplicación nunca muestra precios. Android siempre muestra el texto sin enlace. Cámbielo sin publicar una nueva versión."
+    }
   }
 }

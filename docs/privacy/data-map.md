@@ -22,9 +22,11 @@ Where REOS keeps personal data, why, and how each right under the Texas Data Pri
 | The phone's address book | Not stored | Searched on the phone for a name said in a to-do; only the chosen contact's id and name are saved with the to-do | — | — |
 | Purchases (product, state, price, sponsor discount, tax, total, gateway, payment and session ids, receipt link, date) | `orders` | Checkout on reos.com and receipts (B5.1) | Purchases | Kept for tax records (7 years), linked to no one |
 | Plans (product, gateway subscription id, status, renewal date) and what they unlock | `subscriptions`, `entitlements` | Access on the web and in the app (B5.1) | Purchases | Deleted (cascade); cancel the plan first in Plan and billing |
+| Sponsor codes used (which code, when); the sponsor sees the person's name on its codes | `sponsor_code_redemptions` | Sponsored seats (B5.1b) | Purchases | Deleted (cascade) |
 | The person's customer id at each payment gateway | `gateway_customers` | Receipts and the gateway's card and invoice portal (card details stay with the gateway, never REOS) | Purchases | Deleted (cascade); the gateway keeps its own records under its own policy |
 | Tool interests and requests | `integration_interests`, `tool_requests` | Catalogue demand | Purchases (product, state, price, sponsor discount, tax, total, gateway, payment and session ids, receipt link, date) | `orders` | Checkout on reos.com and receipts (B5.1) | Purchases | Kept for tax records (7 years), linked to no one |
 | Plans (product, gateway subscription id, status, renewal date) and what they unlock | `subscriptions`, `entitlements` | Access on the web and in the app (B5.1) | Purchases | Deleted (cascade); cancel the plan first in Plan and billing |
+| Sponsor codes used (which code, when); the sponsor sees the person's name on its codes | `sponsor_code_redemptions` | Sponsored seats (B5.1b) | Purchases | Deleted (cascade) |
 | The person's customer id at each payment gateway | `gateway_customers` | Receipts and the gateway's card and invoice portal (card details stay with the gateway, never REOS) | Purchases | Deleted (cascade); the gateway keeps its own records under its own policy |
 | Tool interests and requests | Deleted (cascade) |
 | Invitations sent to them | `invitations` (email or phone) | Joining a tenant | — (the tenant's record) | Expire after 14 days |

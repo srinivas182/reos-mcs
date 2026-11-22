@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
 use App\Http\Controllers\Api\Billing\EntitlementController;
+use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
@@ -85,6 +86,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // What I may use (B5.1): the app unlocks from this within seconds of a purchase.
     Route::get('me/entitlements', [EntitlementController::class, 'index'])->name('api.me.entitlements');
+    // The Membership screen (B5.1b, candidate screen 6): no prices in the app.
+    Route::get('me/membership', [MembershipController::class, 'show'])->name('api.me.membership');
+    Route::post('me/membership/email-link', [MembershipController::class, 'emailLink'])->middleware('throttle:3,10,api-membership-email')->name('api.me.membership.email-link');
+    Route::post('me/codes', [MembershipController::class, 'redeem'])->middleware('throttle:10,10,api-codes')->name('api.me.codes');
 
     // Learn (A5.3b): my courses, search inside them, and a lesson to open.
     Route::middleware('can:learning.study')->prefix('learn')->name('api.learn.')->controller(LearnController::class)->group(function () {

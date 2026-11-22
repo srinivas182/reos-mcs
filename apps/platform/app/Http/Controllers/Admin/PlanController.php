@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Billing\Buyer;
+use App\Billing\Membership;
 use App\Billing\Plans;
 use App\Billing\PriceInterval;
 use App\Billing\ProductKind;
@@ -76,6 +77,7 @@ final class PlanController extends Controller
                     'ends_at' => $price->ends_at?->toIso8601String(),
                 ])->values()->all(),
             ])->values()->all(),
+            'iosBuyLink' => app(Membership::class)->iosBuyLink(),
             'options' => [
                 'kinds' => ProductKind::values(),
                 'buyers' => Buyer::values(),
@@ -120,6 +122,15 @@ final class PlanController extends Controller
     {
         abort_unless($price->product_id === $product->id, 404);
         $plans->endPrice($price, $actor);
+
+        return back();
+    }
+
+    /** "Email me the link" (default) or a link to reos.com from the iPhone app's Membership screen. */
+    public function iosBuyLink(Request $request, #[CurrentUser] User $actor, Membership $membership): RedirectResponse
+    {
+        $mode = $request->validate(['mode' => ['required', Rule::in([Membership::EMAIL, Membership::LINK])]])['mode'];
+        $membership->setIosBuyLink(is_string($mode) ? $mode : Membership::EMAIL, $actor);
 
         return back();
     }

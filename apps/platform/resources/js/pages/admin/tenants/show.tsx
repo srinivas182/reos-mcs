@@ -1,3 +1,5 @@
+import { SponsorCodesCard } from '@/components/sponsor-codes-card';
+import type { SponsorCodeRow } from '@/components/sponsor-codes-card';
 import { Head, Link, router } from '@inertiajs/react';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -46,6 +48,10 @@ type Props = {
     audit: TenantAuditEvent[];
     options: TenantOptions;
     support: TenantSupport;
+    sponsor?: {
+        codes: SponsorCodeRow[];
+        products: { id: number; name: string }[];
+    } | null;
 };
 
 type Draft = {
@@ -80,6 +86,7 @@ export default function TenantShow({
     audit,
     options,
     support,
+    sponsor,
 }: Props) {
     const { t, i18n } = useTranslation();
 
@@ -489,6 +496,15 @@ export default function TenantShow({
                             {t('tenants.plan.billingNote')}
                         </p>
                     </section>
+                ) : null}
+
+                {tab === 'plan' && sponsor ? (
+                    <SponsorCodesCard
+                        tenantId={tenant.id}
+                        codes={sponsor.codes}
+                        products={sponsor.products}
+                        states={options.states}
+                    />
                 ) : null}
 
                 {tab === 'features' ? (

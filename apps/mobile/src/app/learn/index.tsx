@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { BookOpen, FileText, Presentation, Search, Video } from 'lucide-react-native';
+import { BookOpen, FileText, Lock, Presentation, Search, Video } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -96,11 +96,11 @@ export default function Learn() {
           {course.lessons.map((lesson) => (
             <ListRow
               key={lesson.id}
-              icon={BookOpen}
-              tone="info"
+              icon={lesson.locked ? Lock : BookOpen}
+              tone={lesson.locked ? 'neutral' : 'info'}
               title={lesson.title}
               subtitle={[lesson.minutes !== null ? t('learn.minutes', { count: lesson.minutes }) : null, lesson.language !== 'en' ? t(`content.languages.${lesson.language}`) : null].filter(Boolean).join(' · ') || undefined}
-              onPress={() => router.push({ pathname: '/learn/[id]', params: { id: String(lesson.id) } })}
+              onPress={() => (lesson.locked ? router.push('/membership') : router.push({ pathname: '/learn/[id]', params: { id: String(lesson.id) } }))}
             />
           ))}
         </View>

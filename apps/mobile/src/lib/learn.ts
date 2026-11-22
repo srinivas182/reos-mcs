@@ -45,8 +45,11 @@ export async function searchLessons(q: string): Promise<SearchHit[]> {
   return data?.data ?? [];
 }
 
-export async function loadLesson(id: number): Promise<LearnLesson | null> {
-  const { data } = await api().GET('/learn/lessons/{lesson}', { params: { path: { lesson: id } } });
+/** The lesson, `'locked'` when it needs a plan (402: the Membership screen), or null when it isn't there. */
+export async function loadLesson(id: number): Promise<LearnLesson | 'locked' | null> {
+  const { data, response } = await api().GET('/learn/lessons/{lesson}', { params: { path: { lesson: id } } });
+
+  if (response.status === 402) return 'locked';
 
   return data?.data ?? null;
 }

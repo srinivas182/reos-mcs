@@ -8,6 +8,7 @@ use App\Billing\Buyer;
 use App\Billing\Checkout;
 use App\Billing\Gateways\Gateways;
 use App\Billing\ProductStatus;
+use App\Billing\SponsorCodes;
 use App\Http\Controllers\Controller;
 use App\Models\Entitlement;
 use App\Models\Order;
@@ -71,6 +72,16 @@ final class BillingController extends Controller
                     'receipt_url' => $o->receipt_url,
                 ])->values()->all(),
         ]);
+    }
+
+    /** "Enter a code" on the web: a sponsor's code unlocks what it pays for (B5.1b). */
+    public function redeem(Request $request, #[CurrentUser] User $user, SponsorCodes $codes): RedirectResponse
+    {
+        $input = $request->validate(['code' => ['required', 'string', 'min:4', 'max:40']])['code'];
+        $code = $codes->redeem($user, is_string($input) ? $input : '');
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('billing.codes.redeemed', ['sponsor' => $code->sponsor->name, 'product' => $code->product->name])]);
+
+        return back();
     }
 
     /** Cards, cancelling and invoices at the gateway's own portal. */

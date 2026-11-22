@@ -5,6 +5,8 @@ declare(strict_types=1);
 use App\Authorization\Role;
 use App\Billing\Plans;
 use App\Billing\PriceInterval;
+use App\Billing\ProductStatus;
+use App\Billing\SponsorCodes;
 use App\Content\MediaKind;
 use App\Enums\OrganisationType;
 use App\Http\Middleware\EnsureAdminTwoStep;
@@ -248,6 +250,23 @@ function adminActions(): array
 
             return auditCase($ops, 'DELETE', "/admin/plans/{$plan->id}/prices/{$price->id}", confirmed: true);
         },
+        'plans.ios-buy-link' => fn () => auditCase(auditOps(), 'PUT', '/admin/plans/ios-buy-link', ['mode' => 'link'], confirmed: true),
+        'tenants.codes.store' => function () {
+            [$lone] = auditBrokerage();
+            $ops = auditOps();
+            $plan = auditPlan($ops);
+            app(Plans::class)->setPrice($plan, 'TX', PriceInterval::Month, 2900, null, $ops);
+            app(Plans::class)->setStatus($plan, ProductStatus::Live, $ops);
+
+            return auditCase($ops, 'POST', "/admin/tenants/{$lone->id}/codes", ['product_id' => $plan->id, 'state' => 'TX', 'seats' => 5], $lone->id, true);
+        },
+        'tenants.codes.destroy' => function () {
+            [$lone] = auditBrokerage();
+            $ops = auditOps();
+            $code = app(SponsorCodes::class)->create($lone, auditPlan($ops), 'TX', 5, null, null, $ops);
+
+            return auditCase($ops, 'DELETE', "/admin/tenants/{$lone->id}/codes/{$code->id}", tenant: $lone->id, confirmed: true);
+        },
         'states.checklist' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/LA/checklist', ['item' => 'rules', 'done' => true], confirmed: true),
         'people.licences.approve' => function () {
             [$licence] = app(Licences::class)->add(User::factory()->create(['name' => 'James Miller']), State::query()->findOrFail('TX'), '0798888', null, null);
@@ -465,5 +484,5 @@ it('audits the admin action', function (string $name) {
 const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
-    'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy',
+    'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
 ];
