@@ -61,8 +61,64 @@ export function useConversation(id: string) {
   return { conversation, failed, reload: load };
 }
 
-export async function sendMessage(conversation: string, body: string, replyTo: string | null): Promise<boolean> {
-  const { data } = await api().POST('/messages/{conversation}', { params: { path: { conversation } }, body: { body, reply_to: replyTo } });
+/** A file picked on the phone (an image or a PDF), sent as multipart (B6.1b). */
+export type PickedFile = { uri: string; name: string; type: string };
+
+export async function sendMessage(conversation: string, body: string, replyTo: string | null, files: PickedFile[] = []): Promise<boolean> {
+  const form = new FormData();
+  if (body !== '') form.append('body', body);
+  if (replyTo !== null) form.append('reply_to', replyTo);
+  // React Native's FormData takes { uri, name, type } for a file.
+  files.forEach((file) => form.append('files[]', file as unknown as Blob));
+
+  const { data } = await api().POST('/messages/{conversation}', {
+    params: { path: { conversation } },
+    body: { body: body === '' ? null : body, reply_to: replyTo },
+    bodySerializer: () => form,
+  });
+
+  return data !== undefined;
+}
+
+export type Attachment = MessageItem['attachments'][number];
+
+export type Announcement = Json<'/announcements'>['announcements'][number];
+
+/** Announcements from my brokerage, school or association (B6.1b, Today); null when Messages isn't on. */
+export function useAnnouncements(userId: number | null) {
+  const [announcements, setAnnouncements] = useState<Announcement[] | null>(null);
+
+  const load = useCallback(() => {
+    void api()
+      .GET('/announcements')
+      .then(({ data }) => setAnnouncements(data?.announcements ?? null))
+      .catch(() => undefined);
+  }, []);
+
+  useFocusEffect(load);
+
+  useEffect(() => (userId === null ? undefined : listen(`users.${userId}`, ['announcement.posted'], load)), [userId, load]);
+
+  const markRead = useCallback(async (id: string) => {
+    setAnnouncements((current) => current?.map((a) => (a.id === id ? { ...a, read: true } : a)) ?? null);
+    await api().POST('/announcements/{announcement}/read', { params: { path: { announcement: id } } }).catch(() => undefined);
+  }, []);
+
+  return { announcements, markRead };
+}
+
+export type ReportReason = 'spam' | 'harassment' | 'inappropriate' | 'other';
+
+export async function reportConversation(conversation: string, reason: ReportReason, details: string | null, user: number | null, block: boolean): Promise<boolean> {
+  const { data } = await api().POST('/messages/{conversation}/report', { params: { path: { conversation } }, body: { reason, details, user, block } });
+
+  return data?.reported === true;
+}
+
+export async function setBlocked(user: number, blocked: boolean): Promise<boolean> {
+  const { data } = blocked
+    ? await api().POST('/messages/blocks', { body: { user } })
+    : await api().DELETE('/messages/blocks/{person}', { params: { path: { person: user } } });
 
   return data !== undefined;
 }

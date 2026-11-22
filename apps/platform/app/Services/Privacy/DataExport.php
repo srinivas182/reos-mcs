@@ -110,6 +110,25 @@ final readonly class DataExport
             ],
             'tool_interests' => DB::table('integration_interests')->where('user_id', $user->id)->get(['integration_id', 'kind', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             'tool_requests' => DB::table('tool_requests')->where('user_id', $user->id)->get(['name', 'note', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+            // Messages they sent and their files (B6.1); the other people's messages are theirs, not exported.
+            'messages' => [
+                'sent' => DB::table('messages')->join('conversations', 'conversations.id', '=', 'messages.conversation_id')
+                    ->where('messages.user_id', $user->id)->orderBy('messages.id')->limit(10000)
+                    ->get(['conversations.uuid as conversation', 'messages.body', 'messages.edited_at', 'messages.deleted_at', 'messages.created_at'])
+                    ->map(static fn ($r): array => (array) $r)->all(),
+                'files' => DB::table('message_attachments')->join('messages', 'messages.id', '=', 'message_attachments.message_id')
+                    ->where('messages.user_id', $user->id)->get(['message_attachments.name', 'message_attachments.mime', 'message_attachments.size', 'message_attachments.created_at'])
+                    ->map(static fn ($r): array => (array) $r)->all(),
+                'conversations' => DB::table('conversation_participants')->join('conversations', 'conversations.id', '=', 'conversation_participants.conversation_id')
+                    ->where('conversation_participants.user_id', $user->id)->get(['conversations.uuid', 'conversations.kind', 'conversations.title', 'conversation_participants.joined_at', 'conversation_participants.last_read_at'])
+                    ->map(static fn ($r): array => (array) $r)->all(),
+                'blocked' => DB::table('message_blocks')->join('users', 'users.id', '=', 'message_blocks.blocked_id')->where('message_blocks.blocker_id', $user->id)
+                    ->get(['users.name', 'message_blocks.created_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'reports_made' => DB::table('message_reports')->where('reporter_id', $user->id)->get(['reason', 'details', 'status', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'announcements_received' => DB::table('announcement_recipients')->join('announcements', 'announcements.id', '=', 'announcement_recipients.announcement_id')
+                    ->where('announcement_recipients.user_id', $user->id)->get(['announcements.title', 'announcements.sent_at', 'announcement_recipients.read_at'])
+                    ->map(static fn ($r): array => (array) $r)->all(),
+            ],
             // What they agreed to and withdrew (A6.3): purpose, version, when and how.
             'consents' => DB::table('consent_records')->where('user_id', $user->id)->orderBy('id')
                 ->get(['purpose', 'subject', 'granted', 'version', 'method', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),

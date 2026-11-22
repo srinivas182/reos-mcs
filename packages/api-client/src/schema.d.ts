@@ -28,6 +28,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/announcements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My announcements (B6.1b, Today)
+         * @description From each brokerage, school or association I belong to, newest first
+         *     (the latest 20), with whether I've read each. New ones arrive live on
+         *     `users.{id}` (`announcement.posted`).
+         */
+        get: operations["announcements.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/announcements/{announcement}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark an announcement read (B6.1b): it counts toward "Read by" */
+        post: operations["announcements.read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/app-config": {
         parameters: {
             query?: never;
@@ -874,7 +913,9 @@ export interface paths {
         /**
          * Start a conversation (B6.1)
          * @description With one person an existing conversation is reused; with several (up
-         *     to 19) a group starts, optionally named. Returns the conversation.
+         *     to 19) a group starts, optionally named. Up to 5 `files[]` (images and
+         *     PDFs, 20 MB each; multipart) open once virus-scanned. Returns the
+         *     conversation.
          */
         post: operations["messages.store"];
         delete?: never;
@@ -920,7 +961,11 @@ export interface paths {
          */
         get: operations["messages.show"];
         put?: never;
-        /** Send a message (B6.1), optionally replying to one */
+        /**
+         * Send a message (B6.1), optionally replying to one
+         * @description Words, files or both: up to 5 `files[]` (images and PDFs, 20 MB each;
+         *     multipart). Files show `pending` until scanned, then a short-lived `url`.
+         */
         post: operations["messages.send"];
         delete?: never;
         options?: never;
@@ -961,6 +1006,66 @@ export interface paths {
         head?: never;
         /** Edit my message (B6.1), within 5 minutes of sending */
         patch: operations["messages.update"];
+        trace?: never;
+    };
+    "/messages/{conversation}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Report a conversation (B6.1b)
+         * @description Copies the reported person's recent messages (the other person in a
+         *     one-to-one, or `user` in a group) and sends them to the tenant's
+         *     admins and REOS. `block` also blocks them.
+         */
+        post: operations["messages.report"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/messages/blocks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Block someone (B6.1b)
+         * @description Neither of you can message the other one to one, and they no longer
+         *     see when you've read their messages.
+         */
+        post: operations["messages.block"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/messages/blocks/{person}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Unblock someone (B6.1b) */
+        delete: operations["messages.unblock"];
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/me/onboarding": {
@@ -1903,6 +2008,17 @@ export interface components {
          */
         QuizTopic: "agency" | "contracts" | "math" | "ownership" | "finance" | "state_rules";
         /**
+         * ReportRequest
+         * @description Report a conversation (B6.1b): why, optional details, who (in a group), and whether to block too.
+         */
+        ReportRequest: {
+            /** @enum {string} */
+            reason: "spam" | "harassment" | "inappropriate" | "other";
+            details?: string | null;
+            user?: number | null;
+            block?: boolean;
+        };
+        /**
          * Role
          * @description The roles from the journey documents, plus the platform's super admin. A person can hold several, each in an organisation.
          * @enum {string}
@@ -1996,7 +2112,9 @@ export interface components {
          * @description Send or edit a message (B6.1), optionally as a reply.
          */
         SendMessageRequest: {
-            body: string;
+            body?: string | null;
+            /** @description Images and PDFs, scanned before anyone opens them (B6.1b). */
+            files?: string[] | null;
             /** Format: uuid */
             reply_to?: string | null;
         };
@@ -2031,7 +2149,9 @@ export interface components {
         StartConversationRequest: {
             people: number[];
             title?: string | null;
-            body: string;
+            body?: string | null;
+            /** @description Images and PDFs, scanned before anyone opens them (B6.1b). */
+            files?: string[] | null;
         };
         /** StateResource */
         StateResource: {
@@ -2229,6 +2349,7 @@ export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest
 export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
 export type SchemaQuizResultResource = components['schemas']['QuizResultResource'];
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
+export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
@@ -2273,6 +2394,73 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "announcements.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unread: number;
+                        announcements: {
+                            id: string;
+                            title: string;
+                            body: string;
+                            from: string;
+                            author: string | null;
+                            sent_at: string;
+                            read: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "announcements.read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                announcement: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        read: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -4036,9 +4224,12 @@ export interface operations {
                                 body: string | null;
                                 sender: string | null;
                                 deleted: boolean;
+                                files: number;
                                 at: string;
                             } | null;
                             unread: number;
+                            /** @enum {string|null} */
+                            blocked: "by_me" | "by_them" | null;
                             updated_at: string | null;
                         }[];
                     };
@@ -4056,7 +4247,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["StartConversationRequest"];
+                "multipart/form-data": components["schemas"]["StartConversationRequest"];
             };
         };
         responses: {
@@ -4095,8 +4286,20 @@ export interface operations {
                             deleted: boolean;
                             created_at: string;
                             changeable_until: string | null;
+                            attachments: {
+                                id: string;
+                                name: string;
+                                mime: string;
+                                size: number;
+                                image: boolean;
+                                /** @enum {string} */
+                                status: "pending" | "clean" | "infected";
+                                url: string | null;
+                            }[];
                         }[];
                         older: boolean;
+                        /** @enum {string|null} */
+                        blocked: "by_me" | "by_them" | null;
                     };
                 };
             };
@@ -4190,8 +4393,20 @@ export interface operations {
                             deleted: boolean;
                             created_at: string;
                             changeable_until: string | null;
+                            attachments: {
+                                id: string;
+                                name: string;
+                                mime: string;
+                                size: number;
+                                image: boolean;
+                                /** @enum {string} */
+                                status: "pending" | "clean" | "infected";
+                                url: string | null;
+                            }[];
                         }[];
                         older: boolean;
+                        /** @enum {string|null} */
+                        blocked: "by_me" | "by_them" | null;
                     };
                 };
             };
@@ -4209,9 +4424,9 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
+        requestBody?: {
             content: {
-                "application/json": components["schemas"]["SendMessageRequest"];
+                "multipart/form-data": components["schemas"]["SendMessageRequest"];
             };
         };
         responses: {
@@ -4237,6 +4452,16 @@ export interface operations {
                         deleted: boolean;
                         created_at: string;
                         changeable_until: string | null;
+                        attachments: {
+                            id: string;
+                            name: string;
+                            mime: string;
+                            size: number;
+                            image: boolean;
+                            /** @enum {string} */
+                            status: "pending" | "clean" | "infected";
+                            url: string | null;
+                        }[];
                     };
                 };
             };
@@ -4329,6 +4554,16 @@ export interface operations {
                         deleted: boolean;
                         created_at: string;
                         changeable_until: string | null;
+                        attachments: {
+                            id: string;
+                            name: string;
+                            mime: string;
+                            size: number;
+                            image: boolean;
+                            /** @enum {string} */
+                            status: "pending" | "clean" | "infected";
+                            url: string | null;
+                        }[];
                     };
                 };
             };
@@ -4358,9 +4593,9 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody: {
+        requestBody?: {
             content: {
-                "application/json": components["schemas"]["SendMessageRequest"];
+                "multipart/form-data": components["schemas"]["SendMessageRequest"];
             };
         };
         responses: {
@@ -4386,12 +4621,145 @@ export interface operations {
                         deleted: boolean;
                         created_at: string;
                         changeable_until: string | null;
+                        attachments: {
+                            id: string;
+                            name: string;
+                            mime: string;
+                            size: number;
+                            image: boolean;
+                            /** @enum {string} */
+                            status: "pending" | "clean" | "infected";
+                            url: string | null;
+                        }[];
                     };
                 };
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The conversation UUID */
+                conversation: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        reported: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.block": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    user: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        blocked: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.unblock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The person ID */
+                person: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        blocked: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {

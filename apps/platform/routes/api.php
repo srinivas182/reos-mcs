@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
+use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
 use App\Http\Controllers\Api\Messaging\MessagesController as ApiMessagesController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
@@ -107,6 +108,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{conversation}/read', 'read')->whereUuid('conversation')->middleware('throttle:120,1,api-messages-read')->name('read');
         Route::patch('items/{message}', 'update')->whereUuid('message')->middleware('throttle:30,1,api-messages-edit')->name('update');
         Route::delete('items/{message}', 'destroy')->whereUuid('message')->middleware('throttle:30,1,api-messages-edit')->name('destroy');
+        // Report and block (B6.1b).
+        Route::post('{conversation}/report', 'report')->whereUuid('conversation')->middleware('throttle:10,10,api-messages-report')->name('report');
+        Route::post('blocks', 'block')->middleware('throttle:20,1,api-messages-block')->name('block');
+        Route::delete('blocks/{person}', 'unblock')->whereNumber('person')->middleware('throttle:20,1,api-messages-block')->name('unblock');
+    });
+    // Announcements on Today (B6.1b).
+    Route::middleware(RequireFlag::class.':messages')->prefix('announcements')->name('api.announcements.')->controller(ApiAnnouncementController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('{announcement}/read', 'read')->whereUuid('announcement')->middleware('throttle:120,1,api-announcements-read')->name('read');
     });
     // Privacy switches and consents (A6.3, Me › Privacy).
     Route::get('me/consents', [ConsentController::class, 'index'])->name('api.me.consents');

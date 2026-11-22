@@ -21,9 +21,11 @@ const meta = {
                     body: 'On it. I will send comments by 5.',
                     sender: 'Linda Park',
                     deleted: false,
+                    files: 0,
                     at,
                 },
                 unread: 2,
+                blocked: null,
                 updated_at: at,
             },
             {
@@ -35,9 +37,11 @@ const meta = {
                     body: 'Agenda is in the shared folder.',
                     sender: 'Ana Okoye',
                     deleted: false,
+                    files: 0,
                     at,
                 },
                 unread: 0,
+                blocked: null,
                 updated_at: at,
             },
         ],
@@ -62,6 +66,7 @@ export const OpenConversation: Story = {
                 people: [{ id: 2, name: 'Linda Park' }],
                 reads: [{ user: 2, read_at: '2026-11-22T15:10:00Z' }],
                 older: true,
+                blocked: null,
                 messages: [
                     {
                         id: 'm-1',
@@ -72,6 +77,7 @@ export const OpenConversation: Story = {
                         deleted: false,
                         created_at: at,
                         changeable_until: null,
+                        attachments: [],
                     },
                     {
                         id: 'm-2',
@@ -87,6 +93,7 @@ export const OpenConversation: Story = {
                         deleted: false,
                         created_at: at,
                         changeable_until: null,
+                        attachments: [],
                     },
                     {
                         id: 'm-3',
@@ -97,6 +104,7 @@ export const OpenConversation: Story = {
                         deleted: true,
                         created_at: at,
                         changeable_until: null,
+                        attachments: [],
                     },
                 ],
             }}

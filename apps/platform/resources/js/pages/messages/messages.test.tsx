@@ -52,9 +52,11 @@ const props = {
                 body: 'On it.',
                 sender: 'Linda Park',
                 deleted: false,
+                files: 0,
                 at: new Date().toISOString(),
             },
             unread: 1,
+            blocked: null,
             updated_at: null,
         },
         {
@@ -66,9 +68,11 @@ const props = {
                 body: null,
                 sender: 'Ana Okoye',
                 deleted: true,
+                files: 0,
                 at: new Date().toISOString(),
             },
             unread: 0,
+            blocked: null,
             updated_at: null,
         },
     ],
@@ -81,6 +85,7 @@ const props = {
             { user: 2, read_at: new Date(Date.now() + 60_000).toISOString() },
         ],
         older: false,
+        blocked: null,
         messages: [
             {
                 id: 'm-1',
@@ -91,6 +96,26 @@ const props = {
                 deleted: false,
                 created_at: new Date().toISOString(),
                 changeable_until: soon,
+                attachments: [
+                    {
+                        id: 'f-1',
+                        name: 'elm-st-offer.pdf',
+                        mime: 'application/pdf',
+                        size: 245760,
+                        image: false,
+                        status: 'clean' as const,
+                        url: '/messages/attachments/f-1?signature=x',
+                    },
+                    {
+                        id: 'f-2',
+                        name: 'survey.jpg',
+                        mime: 'image/jpeg',
+                        size: 1000,
+                        image: true,
+                        status: 'pending' as const,
+                        url: null,
+                    },
+                ],
             },
             {
                 id: 'm-2',
@@ -106,6 +131,7 @@ const props = {
                 deleted: false,
                 created_at: new Date().toISOString(),
                 changeable_until: null,
+                attachments: [],
             },
         ],
     },
@@ -189,5 +215,63 @@ describe('Messages (web, B6.1)', () => {
             { people: [2], title: null, body: 'Hi Linda' },
             expect.anything(),
         );
+    });
+
+    it('shows files once scanned, and offers report and block', async () => {
+        render(<Messages {...props} />);
+        expect(
+            screen.getByRole('link', { name: /elm-st-offer\.pdf/ }),
+        ).toHaveAttribute('href', '/messages/attachments/f-1?signature=x');
+        expect(screen.getByText('Checking for viruses…')).toBeInTheDocument();
+
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Block Linda Park' }),
+        );
+        expect(router.post).toHaveBeenCalledWith(
+            '/messages/blocks',
+            { user: 2 },
+            expect.anything(),
+        );
+
+        await userEvent.click(screen.getByRole('button', { name: 'Report' }));
+        const dialog = screen.getByRole('dialog', {
+            name: 'Report this conversation',
+        });
+        await userEvent.click(within(dialog).getByLabelText('Spam or selling'));
+        await userEvent.click(
+            within(dialog).getByRole('button', { name: 'Send report' }),
+        );
+        expect(router.post).toHaveBeenCalledWith(
+            '/messages/c-1/report',
+            { reason: 'spam', details: null, user: null, block: true },
+            expect.anything(),
+        );
+    });
+
+    it('shows unread announcements above the conversations', () => {
+        render(
+            <Messages
+                {...props}
+                announcements={[
+                    {
+                        id: 'a-1',
+                        title: 'Office closed Friday',
+                        body: 'Showings still run.',
+                        from: 'Lone Star Realty',
+                        author: 'Linda Park',
+                        sent_at: new Date().toISOString(),
+                        read: false,
+                    },
+                ]}
+            />,
+        );
+        expect(
+            screen.getByRole('heading', { name: 'Office closed Friday' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', {
+                name: 'Mark Office closed Friday as read',
+            }),
+        ).toBeInTheDocument();
     });
 });

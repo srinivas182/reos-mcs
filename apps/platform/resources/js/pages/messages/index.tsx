@@ -7,7 +7,9 @@ import { EmptyState } from '@/components/empty-state';
 import { ConversationList } from '@/components/messages/conversation-list';
 import { ConversationPanel } from '@/components/messages/conversation-panel';
 import { NewMessageDialog } from '@/components/messages/new-message-dialog';
+import { AnnouncementCards } from '@/components/messages/announcement-cards';
 import type {
+    AnnouncementItem,
     Contact,
     ConversationView,
     InboxItem,
@@ -17,6 +19,7 @@ import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { postJson } from '@/lib/content';
 import { realtimeEnabled } from '@/lib/realtime';
+import { read as readAnnouncement } from '@/routes/announcements';
 import { older as olderRoute, read } from '@/routes/messages';
 
 /** Reloads the lists when something changes, live through Reverb (B6.1). */
@@ -30,7 +33,15 @@ function LiveUpdates({
     const refresh = () =>
         router.reload({ only: ['inbox', 'conversation', 'messages'] });
 
-    useEcho(`users.${me}`, '.message.posted', refresh, [me]);
+    useEcho(
+        `users.${me}`,
+        ['.message.posted', '.announcement.posted'],
+        () =>
+            router.reload({
+                only: ['inbox', 'conversation', 'messages', 'announcements'],
+            }),
+        [me],
+    );
     useEcho(
         `conversations.${conversation ?? 'none'}`,
         ['.message.changed', '.conversation.read'],
@@ -51,10 +62,12 @@ export default function Messages({
     inbox,
     conversation,
     contacts,
+    announcements = [],
 }: {
     inbox: InboxItem[];
     conversation: ConversationView | null;
     contacts?: Contact[];
+    announcements?: AnnouncementItem[];
 }) {
     const { t } = useTranslation();
     const { messages } = usePage().props;
@@ -132,6 +145,14 @@ export default function Messages({
                             <Plus aria-hidden />
                             {t('messages.new')}
                         </Button>
+                    }
+                />
+                <AnnouncementCards
+                    announcements={announcements}
+                    onRead={(item) =>
+                        void postJson(readAnnouncement(item.id).url).then(() =>
+                            router.reload({ only: ['announcements'] }),
+                        )
                     }
                 />
                 <div className="grid overflow-hidden rounded-reos-lg border border-border bg-card lg:grid-cols-[22rem_minmax(0,1fr)]">

@@ -18,6 +18,7 @@ use App\Models\GatewaySetting;
 use App\Models\Invitation;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
+use App\Models\MessageReport;
 use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
@@ -366,6 +367,11 @@ function adminActions(): array
         },
 
         // Super admin: privacy requests on Compliance and audit (screen 71).
+        'compliance.reports.resolve' => function () {
+            $report = MessageReport::query()->create(['uuid' => (string) Str::uuid7(), 'reason' => 'spam', 'messages' => [], 'status' => 'open']);
+
+            return auditCase(auditOps(), 'PATCH', "/admin/compliance/message-reports/{$report->uuid}", confirmed: true);
+        },
         'compliance.privacy.update' => function () {
             $person = User::factory()->create();
             $request = app(PrivacyRequests::class)->submit($person, PrivacyRequest::CORRECT, 'My last name is Lima, not Lim.');
@@ -572,5 +578,5 @@ const CHANGES = [
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
     'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund', 'gateways.refund-policy', 'provider-categories.update', 'ai.update',
-    'features.rollout', 'features.kill', 'features.restore', 'releases.store', 'people.consents.update',
+    'features.rollout', 'features.kill', 'features.restore', 'releases.store', 'people.consents.update', 'compliance.reports.resolve',
 ];

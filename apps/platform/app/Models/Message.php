@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -24,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property-read User|null $sender
  * @property-read Message|null $replyTo
  * @property-read Conversation $conversation
+ * @property-read Collection<int, MessageAttachment> $attachments
  */
 final class Message extends Model
 {
@@ -51,6 +54,12 @@ final class Message extends Model
     public function replyTo(): BelongsTo
     {
         return $this->belongsTo(self::class, 'reply_to_id');
+    }
+
+    /** @return HasMany<MessageAttachment, $this> */
+    public function attachments(): HasMany
+    {
+        return $this->hasMany(MessageAttachment::class);
     }
 
     /** @return BelongsTo<Conversation, $this> */
