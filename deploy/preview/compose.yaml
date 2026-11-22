@@ -1,0 +1,107 @@
+# REOS preview (P7.0): a small private server for usability check 1.
+# See docs/preview.md. Nothing listens on the internet: Cloudflare Tunnel
+# (cloudflared) carries traffic in, and Cloudflare Access asks for an email
+# one-time code before anything reaches REOS.
+#
+#   cp deploy/preview/.env.example deploy/preview/.env   # then fill it in
+#   deploy/preview/bin/deploy.sh
+
+name: reos-preview
+
+x-app: &app
+  image: reos-preview:${REOS_PREVIEW_TAG:-latest}
+  env_file: .env
+  restart: unless-stopped
+  depends_on:
+    postgres: { condition: service_healthy }
+    redis: { condition: service_healthy }
+  volumes:
+    - storage:/app/storage/app
+
+services:
+  web:
+    <<: *app
+    command: ['web']
+    healthcheck:
+      test: ['CMD', 'php', '-r', "exit(@file_get_contents('http://127.0.0.1:8000/up') === false ? 1 : 0);"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  worker:
+    <<: *app
+    command: ['worker']
+
+  scheduler:
+    <<: *app
+    command: ['scheduler']
+
+  reverb:
+    <<: *app
+    command: ['reverb']
+
+  # Routes the one public host: WebSockets to Reverb, everything else to the app.
+  caddy:
+    image: caddy:2.10-alpine
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    depends_on: [web, reverb]
+
+  cloudflared:
+    image: cloudflare/cloudflared:2025.11.1
+    restart: unless-stopped
+    command: ['tunnel', '--no-autoupdate', 'run']
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?Set CLOUDFLARE_TUNNEL_TOKEN in deploy/preview/.env}
+    depends_on: [caddy]
+
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: reos
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in deploy/preview/.env}
+      POSTGRES_DB: reos
+      REOS_APP_DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in deploy/preview/.env}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./postgres-init.sh:/docker-entrypoint-initdb.d/10-reos.sh:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U reos -d reos']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes:
+      - redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.57.0
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY:?Set MEILISEARCH_KEY in deploy/preview/.env}
+      MEILI_ENV: production
+      MEILI_NO_ANALYTICS: 'true'
+    volumes:
+      - meilisearch:/meili_data
+
+  # Catches every email the preview sends (texts and pushes go to the simulators).
+  mailpit:
+    image: axllent/mailpit:v1.34.0
+    restart: unless-stopped
+
+volumes:
+  postgres:
+  redis:
+  meilisearch:
+  storage:

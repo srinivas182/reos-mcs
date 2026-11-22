@@ -16,6 +16,7 @@ import { useShortcuts } from '@/lib/shortcuts';
 import { useTodoReminderActions } from '@/lib/todoReminders';
 import { useTodoQueueFlush } from '@/lib/todos';
 import { useAuthGate } from '@/lib/useAuthGate';
+import { PreviewBanner } from '@/features/preview/PreviewBanner';
 import { initPreferences, OfflineBanner, ToastProvider } from '@/ui';
 
 initPreferences(deviceLocale);
@@ -41,6 +42,7 @@ export default function RootLayout() {
       <AuthProvider>
         <ToastProvider>
           <StatusBar style={theme.name === 'dark' ? 'light' : 'dark'} />
+          <PreviewBanner />
           <OfflineBanner />
           <Navigator />
         </ToastProvider>

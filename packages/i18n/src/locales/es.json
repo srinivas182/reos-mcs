@@ -4770,5 +4770,10 @@
       },
       "agreeAndJoin": "Aceptar y unirse"
     }
+  },
+  "preview": {
+    "label": "Versión de prueba",
+    "title": "Versión de prueba.",
+    "text": "Nada de lo que ve aquí es real, y no se envían mensajes de texto ni correos. Cualquier código que REOS le pida es {{code}}."
   }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AppConfigResource;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Identity\SignInOptions;
+use App\Support\Preview;
 
 /**
  * Settings the phone app reads when it starts: which error tracking and
@@ -35,6 +36,7 @@ final class AppConfigController extends Controller
                 'demo' => $signIn->demo('google-sign-in') || $signIn->demo('apple-sign-in'),
             ],
             'realtime' => self::realtime(),
+            'preview' => Preview::on() ? ['code' => Preview::code()] : null,
         ]);
     }
 
@@ -46,7 +48,7 @@ final class AppConfigController extends Controller
     private static function realtime(): ?array
     {
         $key = config('broadcasting.connections.reverb.key');
-        $options = config('broadcasting.connections.reverb.options');
+        $options = config('broadcasting.connections.reverb.public') ?? config('broadcasting.connections.reverb.options');
 
         if (config('broadcasting.default') !== 'reverb' || ! is_string($key) || $key === '' || ! is_array($options)) {
             return null;

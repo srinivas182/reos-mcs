@@ -1,0 +1,193 @@
+# Sprint 7: Schools and AI course builder · CRM I (1 to 12 March 2027)
+
+**Goal:** by the end of the sprint a Texas school runs its own courses in REOS:
+- every CE and qualifying course carries a recorded state approval;
+- instructors join with their avatar consent on record;
+- an instructor turns source files into a module;
+- the AI drafts a lesson and renders it as an avatar video with English and Spanish captions, with its check-ins, questions and flashcards waiting for review.
+
+On the agent side, REOS gets one contact model that several CRMs feed without duplicates, and it syncs two ways with Follow Up Boss and kvCORE/BoldTrail.
+
+**Status:** spec agreed 23 November 2026 (decisions in section 6). Source: REOS Sprint Plan v1.0 (Sprint 7: A7.1–A7.3, B7.1–B7.3), the Web App Journey (instructor screens 42–45, school admin screens 49–52), the Instructor and Mentor Journey (avatar consent, course builder), the Connections and Sync Journey (screens 13–15, 22–24 and 31) and the PRD (SCH-01, LRN-01).
+
+## 0. What earlier sprints already delivered (scope adjusted)
+
+| Planned for Sprint 7 | Already in place | Sprint 7 now does |
+| --- | --- | --- |
+| A7.1 School tenant | School tenants with school admins, instructors and candidates (S2–S3), self-serve "Start your school" with payment (A6.1b), Sales and payouts (53) | **Course approvals per state** as their own records (number, hours, delivery, approval and expiry dates, seat-time and attendance rules), screen 50, expiring approvals on the school dashboard (49), **Instructors (52)** with invitations and **avatar consent** |
+| A7.1 Approvals | One approval number per state on each course (`courses.approvals`), checked before Live (A5.3) | Moves those numbers into `course_approvals` with the full record; the "no label without approval" check also covers expiry and delivery method |
+| A7.2 Course builder | The REOS content library for super admins (A5.3a): courses › modules › lessons, uploads to storage, virus scan, Mux video, slides, PDF, Word and captions read into the knowledge base | **School-owned courses** (content under `tenants/<id>/`) and the **instructor's Course builder (43)**: modules with their source material, upload scripts, slides, forms and recorded classes, and the lessons with status |
+| A7.3 AI lesson pipeline | Claude on Bedrock (voice to-dos), Titan embeddings and course search, AI and credits settings (69), legal-line checks on lesson text (A5.3b), the review queue on screen 63 | **Script drafting** from the module's sources (each line cites its source), **avatar render** through a video driver, **captions in English and Spanish**, and **check-ins, questions and flashcards** drafted into review. Review screens 44–45 are Sprint 8 (A8.1) |
+| B7.1 CRM data model | Connections framework (B3.2): connected accounts, sync runs, cursors, webhooks, a simulator and two-way calendar sync with Google and Outlook; to-dos (B4.3) | **Contacts, notes, tasks, tags and activities** with a link to each source CRM, matching and merging without duplicates, and the conflict rule (newest change wins, logged in Sync activity, screen 23) |
+| B7.2 Follow Up Boss | Register entry (system key, user API key); listed on Connections | **Two-way people, notes, tasks and stages**, with Follow Up Boss webhooks for live updates |
+| B7.3 kvCORE / BoldTrail | Register entry; listed on Connections | **Two-way contacts, notes and tasks**, plus smart campaign status (read) |
+| Carried from Sprint 6 | Usability check kit (`docs/usability/check-1.md`) | **Usability check 1 in week 1** (Nelle), with findings triaged into this sprint |
+
+## 1. Dependencies
+
+| Needs | For | Owner | If late |
+| --- | --- | --- | --- |
+| HeyGen API credits and a Synthesia plan with API access, and the instructor avatar consent template signed off by counsel | A7.3 | Client | The **simulator** renders a placeholder video with the script as captions; human-recorded video stays the fallback for approved courses |
+| A real instructor's 2-minute sample and signed consent, for the first avatar | A7.3 done-when | Nelle | A stock avatar for the end-to-end render; the instructor's twin follows |
+| Follow Up Boss system registration (free) and a trial account | B7.2 | Client with Mayura | Built and tested against the documented API with the simulator; switched on once the key exists |
+| kvCORE/BoldTrail API token from a test account (generated in Lead Engine › Lead Dropbox) and Developer Portal access | B7.3 | Client with Mayura | Simulator; notes and tasks confirmed against the V2 API when the token arrives |
+| TREC approval of REOS-delivered courses (16 weeks; needed by Sprint 19) | Labels | Nelle | Approval records hold Nelle's existing approved courses; avatar courses stay unlabelled until approved |
+| 40 pilot users (Nelle); a small server, `preview.reos.com` DNS and a Cloudflare account for the preview (client) | Usability check 1, P7.0 | Nelle, client | Moderated sessions over screen share on a Mayura laptop |
+
+## 2. Market leaders: what they do, where they fall short, what we do
+
+| Leader | What they do well (we match it) | Where they fall short | REOS answer in this sprint |
+| --- | --- | --- | --- |
+| **Colibri, Kaplan, The CE Shop** | Large approved catalogues, seat-time rules, CE reporting | Schools can't build their own courses; slow to update; approvals managed outside the product | Schools **build and own** courses in REOS. Each course's approvals per state live **next to the course**, and expiry blocks the label automatically |
+| **Synthesia, HeyGen** | Realistic avatars, many languages, an API | No idea what's legally true for Texas real estate; consent is a checkbox at the vendor | REOS drafts the script **from the school's own sources with a citation on every line**, runs the legal-line checks before rendering, and keeps the **avatar consent record in REOS**. Withdrawal flags lessons within 30 days |
+| **Articulate, Teachable course builders** | Easy module and lesson building | Building is manual; no grounding in state rules | Upload sources once. **"Generate module"** drafts lessons, check-ins, questions and flashcards, and nothing publishes without review |
+| **Follow Up Boss, BoldTrail** | Great CRMs with mobile apps and smart campaigns | Each is an island; agents with two CRMs see duplicates; integrations are one-way | **One person, all sources** (Connections screen 14): contacts merged across CRMs, two-way notes and tasks, and conflicts resolved by **newest change wins**, every change logged in plain English |
+| **Zapier-style syncs** | Connect anything | Loops, duplicates, silent failures | Echo suppression (REOS never re-imports its own write), idempotent webhooks, and a sync activity log with reconnect prompts |
+
+## 3. Sub-sprints
+
+### P7.0 Preview environment for usability check 1 (week 1)
+
+- **One small private server**, not the AWS build: Docker Compose with the app (Octane), queue worker, scheduler, Reverb, PostgreSQL with pgvector, Redis and Meilisearch.
+  - Seeded with the journey personas, one account per pilot user.
+  - Every integration on its simulator, so nothing reaches a real phone or inbox.
+  - Nightly backup; wiped after Sprint 7.
+- **Private:** behind Cloudflare Access with email one-time codes for the pilot users, Nelle, Mayura and the client. REOS's own sign-in still applies.
+- **Phones:** an EAS development build pointed at the preview (iOS internal distribution and an Android APK).
+- `docs/preview.md` covers setup, adding pilot users, resetting and removal; deployed from `main` with one command.
+- **Needs from the client:** the server (2 vCPU, 4 GB is enough for 40 people), a subdomain such as `preview.reos.com`, and a Cloudflare account. **Done when:** a pilot user signs in on the web and the phone and completes a candidate task.
+- **As built, P7.0:**
+  - **Files:** `deploy/preview/` holds one image (FrankenPHP with Octane; the same image runs the worker, scheduler and Reverb), Compose with PostgreSQL and pgvector, Redis, Meilisearch, Mailpit, Caddy and cloudflared, plus `bin/deploy.sh`, `reset.sh`, `backup.sh` and `pilots.sh`.
+  - **`REOS_PREVIEW=true`** (never in production) adds a banner on every web and phone screen. It also makes every simulator verification code `123456`, so pilot users can verify a phone number.
+  - **`reos:preview:pilots`** creates pilot accounts from a CSV next to each role's persona (same organisation and roles) and prints temporary passwords.
+  - **Reverb split:** the app publishes to Reverb inside the network, while phones and browsers get the public host.
+  - **Phone app:** an EAS `preview` profile points the app at the preview.
+  - **Access:** the phone can't answer Cloudflare Access's email code, so `/api` and `/app` bypass Access and still need a REOS sign-in.
+  - **Checks:** the CI **Preview image** job builds the image and checks it. Setup is in `docs/preview.md`.
+
+
+### A7.1 Schools and approvals (Team A)
+
+- **Course approvals (`course_approvals`):** one row per course and state, with:
+  - type (qualifying, CE, post-licence) and the regulator's approval number;
+  - approved hours;
+  - delivery (classroom, live online, self-paced online, AI avatar);
+  - approved on, expires on, status (pending, approved, expired, withdrawn);
+  - **seat-time rules**: minimum minutes per credit hour, maximum hours per day, check-in frequency;
+  - **attendance rules** for live delivery: joined for at least N% and answered the check-ins.
+
+  Defaults come from the state's rules (screen 62), so Texas values are set once. The A5.3 approval numbers move here.
+- **No label without approval:** the CE or qualifying label, price "for credit" and the CE certificate need an approved, unexpired approval for that state and that delivery method. An AI avatar course needs an approval whose delivery is AI avatar.
+- **Expiry:** the school admin is told 60 and 30 days before an approval expires. On expiry the course stays visible but loses its label and can't be sold for credit. Audited.
+- **Screens:**
+  - **Course catalogue and state approvals (50):** table of type, state, approval number, hours, expiry, delivery, status. Actions: Add approval, Add state, Renew.
+  - **School dashboard (49):** students, courses, CE completions, sales, and a "Needs attention" list (expiring approvals, lessons waiting for review).
+  - **Instructors (52):** approvals, courses, avatar consent, rating, price, status. Actions: Invite, Edit, Revoke.
+- **Avatar consent (new consent purpose `avatar_likeness`):**
+  - The instructor reads the signed template (versioned like Terms), agrees, and uploads or records a 2-minute sample.
+  - The consent says the avatar is used only by their school and only for lessons they approve.
+  - Withdrawal flags every lesson that uses the avatar; within 30 days the lessons are unpublished or re-rendered with another presenter.
+  - In "Download my data" and the data map.
+- **Done when:** no CE or qualifying label appears without a recorded, unexpired approval for that state and delivery (Pest, plus a browser check on Learn).
+
+### A7.2 Course builder (Team A)
+
+- **School-owned courses:** courses get an owner (REOS or a school). A school's courses, files and knowledge-base passages live under `tenants/<id>/`, are sold only by that school, and are seen only by its admins and assigned instructors. The REOS library is unchanged.
+- **Course builder (43), for instructors and school admins:**
+  - courses the person can edit;
+  - a course's modules with status;
+  - each module's **source material**: scripts (Word, PDF), slides (PowerPoint, PDF), forms (PDF), recorded classes (video, including B6.3c session recordings the people in them agreed to);
+  - **what AI will make** (lessons, check-ins, questions, flashcards, with counts and credit cost);
+  - settings (language, target minutes per lesson, presenter);
+  - lessons with status (draft, generating, in review, approved, live).
+- Uploads reuse the A5.3 pipeline: signed upload, size and first-byte checks, virus scan, extraction, captions.
+- **Seat-time changes go to the school for TREC:** changing minutes or hours on an approved course creates a change request for the school admin instead of editing the approval.
+- **Instructor dashboard (42):** reviews, questions, sessions, pass rate, and today's list. "Start live class" links to B6.3.
+- **Done when:** an instructor builds a module from source files (uploads, sees them read and indexed, arranges lessons), on the web.
+
+### A7.3 AI lesson pipeline (Team A)
+
+- **Script drafting:** Claude (on Bedrock, the model set on screen 69) writes each lesson's script from the module's sources only.
+  - The script is a list of lines; each line cites its source (file, page or timestamp) and the state rule where one applies.
+  - The legal-line checks (A5.3b) run on every line before anything renders.
+  - The draft's credit cost is shown before it runs and charged to the school.
+- **Avatar render (`AvatarVideo` driver, HeyGen and Synthesia, decision 1):** the approved presenter (a consented instructor's twin or a stock avatar) and the script go to the school's chosen vendor, once in English and once in Spanish (decision 4). The finished video goes into REOS's video pipeline (Mux, signed playback), and the vendor's copy is deleted. Signed webhook or polling, retries, a cost record per render. The simulator renders a placeholder.
+- **Both languages:**
+  - The script is translated per line by Claude, using the GLOSSARY for Spanish (formal "usted"), and the instructor sees both side by side.
+  - Each video gets captions in its spoken language from the script with the vendor's timings, plus the other language's captions.
+  - Learners get the video in their language. Both versions are indexed for search.
+- **Check-ins, questions and flashcards:** check-ins every few minutes (from the seat-time rule), multiple-choice questions with a source and topic, and flashcards, all drafted into a review queue with status "to review". Approving, editing and rejecting is A8.1.
+- **Versions:** each generation is a version of the lesson, and earlier versions are kept.
+- **Done when:** one lesson renders end to end: sources → script with citations → legal check → English and Spanish avatar videos with captions → check-ins, questions and flashcards in review.
+
+### B7.1 CRM data model (Team B)
+
+- **Model:**
+  - `contacts`: a person in the agent's world, with names, emails, phones in E.164, addresses, birthday, stage, tags and source;
+  - `contact_links`: the same contact in each connected CRM, with the external id, its version or updated-at, and its last sync;
+  - `contact_notes`, `contact_tasks` (linked to REOS to-dos, so done in one is done in the other), `contact_activities` (calls, emails, showings, stage changes), `tags`.
+
+  Contacts belong to the agent (personal tools) or the brokerage (brokerage CRM), as in the Connections journey's ownership rules.
+- **Matching:** a contact from a second source joins an existing one on a verified email or phone. Name alone suggests a merge but never merges on its own. Merges keep both links, a merged contact can be split again, and both are audited.
+- **Conflicts:** newest change wins, field by field. The losing value is kept in the activity log ("Follow Up Boss changed the phone to …; REOS's earlier value …"). REOS never echoes its own writes back as changes.
+- **Sync engine:** contact drivers on the B3.2 connections framework (cursors, webhooks, rate limits, reconnect), the default CRM for new contacts (screen 24), and **Sync activity (23)** in plain English.
+- **Phone contacts** as the first source: read on the phone with permission, matched like any other source, and never written back.
+- **Done when:** two sources merge without duplicates (the same people from the simulator CRM and phone contacts end up once each, with both links).
+
+### B7.2 Follow Up Boss (Team B)
+
+- Connect with the agent's Follow Up Boss API key under REOS's registered system name and key.
+- Two-way: people, notes, tasks, stages (and tags).
+- Follow Up Boss webhooks (`peopleCreated`, `peopleUpdated`, `notesCreated`, and others) for live updates, checked against the system key's signature, with polling as a backstop.
+- Rate limits respected, deletes handled as "removed in Follow Up Boss".
+- Connections screens 13–15 for Follow Up Boss: what's synced, counts, direction, Sync now, activity.
+- **Done when:** a note written in REOS appears in Follow Up Boss (and one written there appears in REOS).
+
+### B7.3 kvCORE / BoldTrail (Team B)
+
+- Connect with the agent's kvCORE API token (Contacts scope; V2 API).
+- Two-way contacts, notes and tasks where the V2 API allows; smart campaign status is read-only on the contact.
+- Polling on a cursor, since there are no webhooks for partners until approved.
+- **Done when:** the same as Follow Up Boss: a note written in REOS appears in BoldTrail.
+
+## 4. Definition of done (whole sprint)
+
+- Each sub-sprint has its own PR with green CI, merged before the next starts.
+- Web and phone screens match the locked journey screens side by side, in English and Spanish.
+- Every new endpoint is in `/api/v1` (or a web route), documented, with the api-client regenerated and Pest feature tests.
+- **Security tests:**
+  - a school sees only its own courses, files, students and approvals;
+  - instructors edit only courses they're assigned to;
+  - nothing renders without the presenter's avatar consent, and withdrawal flags lessons;
+  - AI drafts use only the course's sources and never another tenant's;
+  - contacts are visible only to their owner (agent or brokerage rules);
+  - CRM keys are stored in the credential vault, never shown again;
+  - webhooks are signed and idempotent.
+- **Gate (from the plan):** none this sprint. Usability check 1 runs in week 1, and its severity 3–4 findings are fixed in this sprint.
+- **ADRs:**
+  - 0025 schools, approvals and avatar consent;
+  - 0026 AI lesson pipeline;
+  - 0027 CRM model and sync.
+
+## 5. Risks
+
+| Risk | Mitigation |
+| --- | --- |
+| TREC hasn't approved AI avatar delivery | Approvals record delivery per course; avatar lessons stay unlabelled until approved; human-recorded video for approved courses |
+| Avatar vendor cost or quality | One driver interface (HeyGen, Synthesia, simulator); cost per render recorded and shown before rendering; switch vendor without changing lessons |
+| AI script says something legally wrong | Script only from the school's sources with citations; legal-line checks; nothing publishes without instructor approval (A8.1) |
+| Duplicate contacts across CRMs | Merge only on a verified email or phone; suggested merges for names; split again with Undo |
+| Sync loops between REOS and a CRM | Echo suppression by remembering our own writes (version and hash); idempotent webhooks |
+| CRM partner access slow (kvCORE) | Personal API tokens for the build; partner application in parallel; simulator in CI |
+
+## 6. Decisions (23 November 2026)
+
+1. **Avatar vendors:** both from the start. **HeyGen** (API credits, digital twins through the API) and **Synthesia** (API plan) are drivers behind one `AvatarVideo` interface, chosen per school in Settings › Integrations, with the simulator everywhere else. The cost per render is recorded per vendor so the two can be compared on real lessons.
+2. **Usability check 1 environment:** a **small private preview environment** (P7.0 below), seeded with the journey personas, behind email one-time codes (Cloudflare Access), on the simulators. AWS staging stays at the end.
+3. **Course ownership:** **the school** owns what it builds (content, files, passages under `tenants/<id>/`), and only it sells those courses. The REOS library stays separate.
+4. **Spanish in AI lessons:** **always both voices.** Every lesson is rendered twice, an English-voiced and a Spanish-voiced video from the line-by-line translated script, each with captions in both languages. The credit cost shown before rendering covers both.
+
+## Sources
+
+- REOS Sprint Plan v1.0, Sprint 7; Web App Journey screens 42–45 and 49–52; Instructor and Mentor Journey (avatar consent); Connections and Sync Journey; PRD SCH-01 and LRN-01.
+- HeyGen API pricing (help.heygen.com), Synthesia plans (synthesia.io/pricing), Follow Up Boss API (docs.followupboss.com), kvCORE API tokens (help.insiderealestate.com).

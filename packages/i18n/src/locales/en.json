@@ -4770,5 +4770,10 @@
       },
       "agreeAndJoin": "Agree and join"
     }
+  },
+  "preview": {
+    "label": "Preview",
+    "title": "Preview for testing.",
+    "text": "Nothing here is real, and no texts or emails go out. Any code REOS asks for is {{code}}."
   }
 }

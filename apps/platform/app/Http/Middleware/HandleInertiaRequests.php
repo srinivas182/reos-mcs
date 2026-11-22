@@ -19,6 +19,7 @@ use App\Services\Authorization\Memberships;
 use App\Services\States\PersonStates;
 use App\Services\Tenancy\Brands;
 use App\Services\Tenancy\SupportAccess;
+use App\Support\Preview;
 use App\Video\VideoSessions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
@@ -57,6 +58,8 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
+            // The private preview for usability checks (P7.0): banner and code.
+            'preview' => Preview::on() ? ['code' => Preview::code()] : null,
             'auth' => [
                 'user' => $request->user(),
                 // People who signed up with a phone, Google or Apple have no password.

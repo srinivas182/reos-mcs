@@ -1,3 +1,4 @@
+import { PreviewBanner } from '@/components/preview-banner';
 import AuthLayoutTemplate from '@/layouts/auth/auth-split-layout';
 
 export default function AuthLayout({
@@ -10,8 +11,11 @@ export default function AuthLayout({
     children: React.ReactNode;
 }) {
     return (
-        <AuthLayoutTemplate title={title} description={description}>
-            {children}
-        </AuthLayoutTemplate>
+        <>
+            <PreviewBanner />
+            <AuthLayoutTemplate title={title} description={description}>
+                {children}
+            </AuthLayoutTemplate>
+        </>
     );
 }
