@@ -64,6 +64,18 @@ final readonly class DataExport
             // CE completed (A5.2).
             'ce_completions' => DB::table('ce_completions')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('completed_on')
                 ->get(['state_code', 'title', 'course_code', 'hours', 'provider', 'source', 'completed_on'])->map(static fn ($r): array => (array) $r)->all(),
+            // Purchases, plans and what they unlock (B5.1). Card details are never held by REOS.
+            'billing' => [
+                'orders' => DB::table('orders')->join('products', 'products.id', '=', 'orders.product_id')->where('orders.user_id', $user->id)->orderBy('orders.id')
+                    ->get(['products.name as product', 'orders.state_code', 'orders.amount_cents', 'orders.discount_cents', 'orders.tax_cents', 'orders.total_cents', 'orders.currency', 'orders.status', 'orders.gateway', 'orders.paid_at', 'orders.created_at'])
+                    ->map(static fn ($r): array => (array) $r)->all(),
+                'subscriptions' => DB::table('subscriptions')->join('products', 'products.id', '=', 'subscriptions.product_id')->where('subscriptions.user_id', $user->id)
+                    ->get(['products.name as product', 'subscriptions.gateway', 'subscriptions.status', 'subscriptions.current_period_end', 'subscriptions.canceled_at'])
+                    ->map(static fn ($r): array => (array) $r)->all(),
+                'entitlements' => DB::table('entitlements')->where('user_id', $user->id)->orderBy('id')
+                    ->get(['feature', 'source', 'state_code', 'starts_at', 'ends_at', 'revoked_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'gateway_customers' => DB::table('gateway_customers')->where('user_id', $user->id)->get(['gateway', 'environment', 'customer_id'])->map(static fn ($r): array => (array) $r)->all(),
+            ],
             // To-dos, typed or spoken (B4.3); what was said is never stored.
             'todos' => DB::table('todos')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')->limit(5000)
                 ->get(['title', 'notes', 'due_at', 'due_date', 'remind_at', 'related_label', 'source', 'done_at', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),

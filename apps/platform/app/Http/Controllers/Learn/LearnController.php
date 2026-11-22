@@ -53,6 +53,10 @@ final class LearnController extends Controller
             'heading' => ['nullable', 'string', 'max:200'],
         ]);
 
+        if (! $learning->canOpen($user, $found)) {
+            return Inertia::render('learn/locked', ['lesson' => ['id' => $found->id, 'title' => $found->title, 'course' => $found->course->title]]);
+        }
+
         return Inertia::render('learn/lesson', [
             'lesson' => $learning->lesson($found),
             'at' => [

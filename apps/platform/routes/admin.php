@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\IntegrationModeController;
 use App\Http\Controllers\Admin\LicenceReviewController;
 use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonRoleController;
+use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\StateRuleController;
 use App\Http\Controllers\Admin\TenantController;
@@ -176,4 +177,21 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:content.m
 
         Route::get('courses/{course}', [CourseController::class, 'show'])->whereNumber('course')->name('courses.show');
         Route::get('lessons/{lesson}', [LessonController::class, 'show'])->whereNumber('lesson')->name('lessons.show');
+    });
+
+// Plans and pricing (B5.1, web journey screen 67): products and prices per
+// state, with history. Super admin only, with two-step; every change audited.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.manage'])
+    ->prefix('admin/plans')
+    ->name('plans.')
+    ->group(function () {
+        Route::get('/', [PlanController::class, 'index'])->name('index');
+
+        Route::middleware('throttle:60,1,admin-plans')->group(function () {
+            Route::post('/', [PlanController::class, 'store'])->name('store');
+            Route::patch('{product}', [PlanController::class, 'update'])->whereNumber('product')->name('update');
+            Route::put('{product}/status', [PlanController::class, 'status'])->whereNumber('product')->name('status');
+            Route::post('{product}/prices', [PlanController::class, 'price'])->whereNumber('product')->name('prices.store');
+            Route::delete('{product}/prices/{price}', [PlanController::class, 'endPrice'])->whereNumber('product')->whereNumber('price')->name('prices.destroy');
+        });
     });

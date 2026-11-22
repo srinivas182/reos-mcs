@@ -25,6 +25,7 @@ final readonly class AuditLog
         'integrations' => ['integration.', 'catalogue.', 'connection.'],
         'states' => ['state.'],
         'content' => ['course.', 'lesson.'],
+        'billing' => ['order.', 'product.', 'price.'],
         'privacy' => ['privacy.'],
     ];
 

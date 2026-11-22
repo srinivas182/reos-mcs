@@ -3,7 +3,14 @@
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Connections\WebhookController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
+use App\Http\Controllers\Webhooks\PaymentWebhookController;
 use Illuminate\Support\Facades\Route;
+
+// Payments (B5.1): Stripe, signed with the webhook secret. Before the
+// connections route so the gateway never reaches a tool's driver.
+Route::post('webhooks/stripe', PaymentWebhookController::class)
+    ->middleware('throttle:webhooks')
+    ->name('webhooks.stripe');
 
 // Inbound webhooks from connected tools (B3.1, ADR 0013). No session or CSRF:
 // each tool's own signature check (in its driver) protects the endpoint.

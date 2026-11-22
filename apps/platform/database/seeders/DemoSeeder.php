@@ -10,6 +10,7 @@ use App\Enums\OrganisationType;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\Memberships;
+use Database\Seeders\Demo\DemoBilling;
 use Database\Seeders\Demo\DemoCatalogue;
 use Database\Seeders\Demo\DemoConnections;
 use Database\Seeders\Demo\DemoContent;
@@ -74,6 +75,8 @@ final class DemoSeeder extends Seeder
         app(DemoLicences::class)->seed();
         // REOS courses and the knowledge base, as on screen 63 (A5.3).
         app(DemoContent::class)->seed();
+        // Plans, prices and a sponsor discount, as on screens 67 and 3 (B5.1).
+        app(DemoBilling::class)->seed();
     }
 
     private function organisation(string $name): Organisation

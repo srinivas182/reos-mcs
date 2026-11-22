@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
 import { PageTabs } from '@/components/page-tabs';
 import { edit as editAppearance } from '@/routes/appearance';
+import { index as billing } from '@/routes/billing';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 
@@ -27,6 +28,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                     { title: t('nav.profile'), href: edit() },
                     { title: t('nav.security'), href: editSecurity() },
                     { title: t('nav.appearance'), href: editAppearance() },
+                    { title: t('nav.planAndBilling'), href: billing() },
                 ]}
             />
 
