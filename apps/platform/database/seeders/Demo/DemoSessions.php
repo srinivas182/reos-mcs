@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace Database\Seeders\Demo;
 
 use App\Models\User;
+use App\Models\VideoRecording;
 use App\Models\VideoSession;
+use App\Privacy\ConsentMethod;
+use App\Privacy\ConsentPurpose;
+use App\Services\Privacy\Consents;
 use App\Video\VideoSessions;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
@@ -13,11 +17,12 @@ use Illuminate\Support\Str;
 /**
  * Video sessions (B6.3): Dr. Rachel Hughes with her candidate Sofia Reyes (a
  * 1-on-1 contract review tomorrow and a live exam-prep class), a past
- * session with shared notes, and Dana Brooks mentoring James Miller.
+ * session with shared notes and a recording both agreed to (practice room,
+ * no video file), and Dana Brooks mentoring James Miller.
  */
 final readonly class DemoSessions
 {
-    public function __construct(private VideoSessions $sessions) {}
+    public function __construct(private VideoSessions $sessions, private Consents $consents) {}
 
     public function seed(): void
     {
@@ -54,5 +59,17 @@ final readonly class DemoSessions
         ]);
         $past->participants()->create(['user_id' => $rachel->id, 'role' => 'host', 'first_joined_at' => $at(-6, '15:58'), 'last_joined_at' => $at(-6, '15:58'), 'joins' => 1]);
         $past->participants()->create(['user_id' => $sofia->id, 'role' => 'guest', 'first_joined_at' => $at(-6, '16:00'), 'last_joined_at' => $at(-6, '16:00'), 'joins' => 1]);
+
+        // Recorded with both agreeing (B6.3c), kept 90 days from the session.
+        $recording = $past->recordings()->create([
+            'uuid' => (string) Str::uuid(), 'requested_by' => $rachel->id, 'status' => VideoRecording::READY,
+            'started_at' => $at(-6, '16:02'), 'stopped_at' => $at(-6, '16:29'), 'stopped_by' => $rachel->id,
+            'duration_seconds' => 27 * 60, 'expires_at' => $at(-6, '16:30')->addDays(VideoRecording::KEEP_DAYS),
+        ]);
+
+        foreach ([$rachel, $sofia] as $person) {
+            $consent = $this->consents->grant($person, ConsentPurpose::SessionRecording, ConsentMethod::Web, $recording->consentSubject());
+            $recording->consents()->create(['user_id' => $person->id, 'agreed' => true, 'consent_record_id' => $consent->id]);
+        }
     }
 }

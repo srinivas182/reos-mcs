@@ -1,5 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import { LayoutDashboard } from 'lucide-react';
+import { firstName } from '@/lib/person-name';
 import { useTranslation } from 'react-i18next';
 import { CeHoursTile } from '@/components/ce-requirement';
 import { EmptyState } from '@/components/empty-state';
@@ -27,7 +28,7 @@ export default function Dashboard({
     const { t } = useTranslation();
     const { auth, sessions } = usePage().props;
     const current = activeMembership(auth.roles);
-    const first = auth.user.name?.split(' ')[0];
+    const first = firstName(auth.user.name);
     const title = first
         ? t('dashboard.greeting', { name: first })
         : t('dashboard.greetingNoName');
