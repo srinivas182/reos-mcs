@@ -4,6 +4,7 @@ import {
     BookOpen,
     Building2,
     CreditCard,
+    Flag,
     GraduationCap,
     House,
     LayoutGrid,
@@ -31,6 +32,7 @@ import { show as aiSettings } from '@/routes/ai';
 import { index as providerCategories } from '@/routes/provider-categories';
 import { index as sales } from '@/routes/sales';
 import { index as earnings } from '@/routes/earnings';
+import { index as featuresIndex } from '@/routes/features';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -59,6 +61,7 @@ export type NavLabel =
     | 'paymentGateways'
     | 'providerCategories'
     | 'aiAndCredits'
+    | 'featuresAndReleases'
     | 'salesAndPayouts'
     | 'earnings'
     | 'plansAndPricing'
@@ -214,7 +217,12 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
                 '/admin/provider-categories',
             ),
             item('aiAndCredits', Sparkles, aiSettings(), '/admin/ai'),
-            planned('featuresAndReleases'),
+            item(
+                'featuresAndReleases',
+                Flag,
+                featuresIndex(),
+                '/admin/features',
+            ),
             planned('platformHealth'),
             item('complianceAndAudit', ShieldCheck, complianceIndex()),
         ],

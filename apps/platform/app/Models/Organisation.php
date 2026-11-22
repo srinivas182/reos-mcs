@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\OrganisationType;
+use App\Features\Flags;
 use App\Tenancy\TenantFeature;
 use App\Tenancy\TenantLimits;
 use App\Tenancy\TenantPlan;
@@ -63,6 +64,13 @@ final class Organisation extends Model
                 $organisation->slug = $slug;
             }
         });
+
+        // Flag answers are stored per tenant (A6.2): a change to what they depend on forgets them.
+        self::updated(static function (self $organisation): void {
+            if ($organisation->wasChanged(['features', 'states', 'type'])) {
+                app(Flags::class)->tenantChanged();
+            }
+        });
     }
 
     /** Limits and data, with the defaults for its type filled in (screen 60). */
@@ -71,12 +79,14 @@ final class Organisation extends Model
         return TenantLimits::for($this->type, $this->limits);
     }
 
-    /** Whether a feature is on for this tenant: its own choice, else the default (screen 60). */
+    /**
+     * Whether a feature is on for this tenant (screen 60, A6.2): its own
+     * choice, else the default for its type once the feature's rollout
+     * reaches it; never while the feature is turned off everywhere.
+     */
     public function hasFeature(TenantFeature $feature): bool
     {
-        $choice = $this->features[$feature->value] ?? null;
-
-        return is_bool($choice) && $feature->switchable() ? $choice : $feature->defaultFor($this->type);
+        return app(Flags::class)->forTenant($this, $feature->value);
     }
 
     public function effectivePlan(): TenantPlan

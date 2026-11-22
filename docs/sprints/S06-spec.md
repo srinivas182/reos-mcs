@@ -55,6 +55,7 @@
 - **Automatic rollback:** if a flagged feature's error rate (exceptions tagged with the flag) passes a threshold for 10 minutes, its rollout steps back one stage and the super admin is told. Canary cells wait for the AWS build; until then the rollback works per feature.
 - **What's new:** release notes for a person's role appear once in the web app and the phone (dismissible).
 - **Done when:** a feature turns on for one tenant only, and turning it off rolls it back everywhere.
+- **As built, A6.2:** Pennant (database store) with every flag declared in `FlagCatalogue` and its rollout in `feature_flags` (ADR 0022); the six tenant features are flags (switches on Tenant detail stay as overrides; the kill switch beats them), and Messages, Notification center and Video rooms start with REOS staff for B6. Rollout steps REOS staff → named tenants → states → a stable share of tenants → everyone, with an optional list of roles; screen 70 with Change rollout, Turn off everywhere (with Undo) and Turn back on, errors since the rollout, and releases with notes per role that roll their flags out to everyone; "What's new" once per role on the web and on Today in the app; `reos:flags:watch` every minute steps a flag back one stage when its error rate stays above its threshold for 10 minutes and emails the super admins. All audited.
 
 ### A6.3 Privacy foundation (Team A)
 

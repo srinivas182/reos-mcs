@@ -49,7 +49,8 @@
     "earnings": "Ganancias",
     "salesAndPayouts": "Ventas y pagos",
     "providerCategories": "Categorías de proveedores",
-    "aiAndCredits": "IA y créditos"
+    "aiAndCredits": "IA y créditos",
+    "featuresAndReleases": "Funciones y versiones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1978,7 +1979,12 @@
         "provider_category.created": "Agregó una categoría de proveedores",
         "provider_category.updated": "Cambió una categoría de proveedores",
         "ai.settings_changed": "Cambió la configuración de IA",
-        "tenant.signed_up": "Se registró y pagó en la web"
+        "tenant.signed_up": "Se registró y pagó en la web",
+        "flag.rollout_changed": "Cambió la implementación de una función",
+        "flag.killed": "Apagó una función en todas partes",
+        "flag.restored": "Volvió a encender una función",
+        "flag.rolled_back": "Una función retrocedió automáticamente",
+        "release.published": "Publicó una versión"
       }
     }
   },
@@ -2573,7 +2579,8 @@
         "states": "Estados",
         "privacy": "Privacidad",
         "content": "Cursos y lecciones",
-        "billing": "Planes y pagos"
+        "billing": "Planes y pagos",
+        "releases": "Funciones y versiones"
       },
       "columns": {
         "time": "Hora",
@@ -4078,5 +4085,113 @@
     "errors": {
       "plan": "Ese plan no está disponible para esta organización y estado."
     }
+  },
+  "features": {
+    "title": "Funciones y versiones",
+    "purpose": "Implemente con seguridad: primero el personal de REOS, luego algunas organizaciones, un estado, una parte de las organizaciones y todos.",
+    "flagsTitle": "Indicadores de funciones",
+    "columns": {
+      "feature": "Función",
+      "rollout": "Etapa de implementación",
+      "who": "Quién la ve",
+      "errors": "Errores desde la implementación",
+      "actions": "Acciones"
+    },
+    "stages": {
+      "off": "Apagada",
+      "internal": "Personal de REOS",
+      "tenants": "Organizaciones elegidas",
+      "states": "Estados",
+      "percent": "Parte de las organizaciones",
+      "everyone": "Todos"
+    },
+    "stageHints": {
+      "off": "Nadie la tiene.",
+      "internal": "Solo el personal de REOS.",
+      "tenants": "El personal de REOS y las organizaciones que usted elija.",
+      "states": "También todas las organizaciones que trabajan en estos estados.",
+      "percent": "También esta parte de todas las organizaciones (las mismas a medida que crece).",
+      "everyone": "Todas las organizaciones y personas."
+    },
+    "detail": {
+      "tenants_one": "{{count}} organización",
+      "tenants_other": "{{count}} organizaciones",
+      "percent": "{{percent}} % de las organizaciones"
+    },
+    "everyRole": "Todos los roles",
+    "onlyRoles": "Solo {{roles}}",
+    "uses": "{{errors}} errores en {{uses}} usos",
+    "rate": "{{rate}} por cada 100 usos",
+    "noUses": "Aún no hay usos",
+    "tenantFeature": "Función de la organización: también se puede activar en el detalle de la organización",
+    "offEverywhere": "Apagada en todas partes",
+    "rolledBack": "Retrocedió automáticamente {{ago}} desde {{from}}: los errores se mantuvieron en {{threshold}} o más por cada 100 usos durante {{minutes}} minutos.",
+    "changeRollout": "Cambiar implementación",
+    "changeRolloutFor": "Cambiar la implementación de {{name}}",
+    "kill": "Apagar en todas partes",
+    "killFor": "Apagar {{name}} en todas partes",
+    "restore": "Volver a encender",
+    "restoreFor": "Volver a encender {{name}}",
+    "killed": "{{name}} está apagada en todas partes.",
+    "restored": "{{name}} está encendida de nuevo.",
+    "rolloutSaved": "Implementación guardada.",
+    "owner": "Responsable: {{owner}}",
+    "dialog": {
+      "title": "Cambiar implementación: {{name}}",
+      "description": "Cada etapa incluye las anteriores. Los cambios se aplican de inmediato y quedan en el registro de auditoría.",
+      "stage": "Etapa de implementación",
+      "tenants": "Organizaciones elegidas",
+      "tenantsHint": "Elija las organizaciones que la prueban primero.",
+      "noTenants": "Aún no hay organizaciones.",
+      "states": "Estados",
+      "percent": "Parte de las organizaciones (%)",
+      "percentHint": "Las mismas organizaciones siguen incluidas a medida que crece la parte.",
+      "roles": "Quién la ve",
+      "rolesHint": "Deje todo sin marcar para todos los roles.",
+      "threshold": "Retroceder cuando los errores lleguen a (por cada 100 usos)",
+      "thresholdHint": "Retrocede una etapa si los errores se mantienen así durante {{minutes}} minutos seguidos.",
+      "save": "Guardar implementación",
+      "cancel": "Cancelar"
+    },
+    "releases": {
+      "title": "Versiones",
+      "new": "Nueva versión",
+      "empty": "Aún no hay versiones",
+      "emptyBody": "Publique una versión para contarle a cada rol qué cambió, en palabras sencillas. Aparece una vez como \"Novedades\" en la web y en el teléfono.",
+      "version": "Versión",
+      "date": "Fecha de la versión",
+      "notes": "Novedades, por rol",
+      "notesHint": "Palabras sencillas, una o dos oraciones. Los roles sin nota no ven nada.",
+      "noteFor": "Nota para {{role}}",
+      "flags": "Indicadores que implementa para todos",
+      "noFlags": "Sin indicadores",
+      "rollsOut": "Implementa: {{flags}}",
+      "dismissed_one": "Cerrada por {{count}} persona",
+      "dismissed_other": "Cerrada por {{count}} personas",
+      "by": "Por {{name}}",
+      "publish": "Publicar versión",
+      "dialogTitle": "Nueva versión",
+      "dialogDescription": "Al publicar, las notas aparecen como \"Novedades\" y los indicadores marcados se implementan para todos.",
+      "roles_one": "{{count}} rol",
+      "roles_other": "{{count}} roles"
+    },
+    "releasePublished": "Versión {{version}} publicada.",
+    "errors": {
+      "noNotes": "Escriba una nota para al menos un rol."
+    },
+    "notifications": {
+      "rolledBack": {
+        "subject": "{{name}} retrocedió",
+        "body": "Los errores de {{name}} se mantuvieron en {{rate}} por cada 100 usos durante 10 minutos, así que REOS retrocedió su implementación de {{from}} a {{to}}.",
+        "action": "Abrir Funciones y versiones",
+        "next": "Corrija la causa y vuelva a cambiar la implementación cuando esté lista."
+      }
+    }
+  },
+  "whatsNew": {
+    "label": "Novedades",
+    "title": "Novedades de la versión {{version}}",
+    "dismiss": "Cerrar",
+    "dismissLabel": "Cerrar las novedades de la versión {{version}}"
   }
 }

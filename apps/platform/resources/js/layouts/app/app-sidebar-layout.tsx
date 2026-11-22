@@ -6,6 +6,7 @@ import { PageBrandStyle } from '@/components/brand-style';
 import { ConnectionAlerts } from '@/components/connection-alert';
 import { SupportSessionBanner } from '@/components/support-session-banner';
 import { AdminTwoStepBanner } from '@/components/two-step-notice';
+import { WhatsNew } from '@/components/whats-new';
 import type { AppLayoutProps } from '@/types';
 
 /**
@@ -22,6 +23,7 @@ export default function AppSidebarLayout({ children }: AppLayoutProps) {
                 <AppSidebarHeader />
                 <AdminTwoStepBanner />
                 <ConnectionAlerts />
+                <WhatsNew />
                 {children}
             </AppContent>
         </AppShell>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Billing\Gateways\Gateways;
+use App\Features\FlagCatalogue;
 use App\Http\Controllers\Admin\AiSettingsController;
 use App\Http\Controllers\Admin\CatalogueController;
 use App\Http\Controllers\Admin\ComplianceController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\Admin\Content\CourseModuleController;
 use App\Http\Controllers\Admin\Content\LessonController;
 use App\Http\Controllers\Admin\Content\LessonFileController;
 use App\Http\Controllers\Admin\DemandController;
+use App\Http\Controllers\Admin\FeatureController;
 use App\Http\Controllers\Admin\GatewayController;
 use App\Http\Controllers\Admin\IntegrationCheckController;
 use App\Http\Controllers\Admin\IntegrationController;
@@ -216,6 +218,20 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.man
         Route::patch('provider-categories/{category}', [ProviderCategoryController::class, 'update'])->whereNumber('category')->middleware('throttle:60,1,admin-provider-categories')->name('provider-categories.update');
         Route::get('ai', [AiSettingsController::class, 'show'])->name('ai.show');
         Route::put('ai', [AiSettingsController::class, 'update'])->middleware('throttle:30,1,admin-ai')->name('ai.update');
+    });
+
+// Features and releases (screen 70, A6.2): rollouts, the kill switch and releases.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:tenants.manage'])
+    ->prefix('admin')
+    ->group(function () {
+        Route::get('features', [FeatureController::class, 'index'])->name('features.index');
+
+        Route::middleware('throttle:60,1,admin-features')->group(function () {
+            Route::put('features/{flag}/rollout', [FeatureController::class, 'rollout'])->whereIn('flag', FlagCatalogue::keys())->name('features.rollout');
+            Route::post('features/{flag}/kill', [FeatureController::class, 'kill'])->whereIn('flag', FlagCatalogue::keys())->name('features.kill');
+            Route::delete('features/{flag}/kill', [FeatureController::class, 'restore'])->whereIn('flag', FlagCatalogue::keys())->name('features.restore');
+            Route::post('releases', [FeatureController::class, 'publish'])->name('releases.store');
+        });
     });
 
 // Plans and pricing (B5.1, web journey screen 67): products and prices per

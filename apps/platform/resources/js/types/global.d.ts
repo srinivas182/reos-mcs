@@ -27,6 +27,7 @@ declare module '@inertiajs/core' {
             supportSession: { tenant: string; ends_at: string | null } | null;
             /** Your connections that need a reconnect (B3.1). */
             connectionAlerts: import('@/components/connection-alert').ConnectionAlertItem[];
+            whatsNew: import('@/components/whats-new').WhatsNewItem | null;
             /** Live states' names, for the public site's state chip. */
             liveStates: string[];
             /** One-time notices after a redirect. */

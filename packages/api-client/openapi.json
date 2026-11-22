@@ -4013,6 +4013,113 @@
                     }
                 }
             }
+        },
+        "/me/whats-new": {
+            "get": {
+                "operationId": "me.whats-new",
+                "description": "The latest release note for the person's active role that they haven't\ndismissed (released in the last 30 days), or null. Shown once on Today.",
+                "summary": "What's new (A6.2)",
+                "tags": [
+                    "WhatsNew"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "release": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "version": {
+                                                    "type": "string"
+                                                },
+                                                "released_on": {
+                                                    "type": "string"
+                                                },
+                                                "note": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "version",
+                                                "released_on",
+                                                "note"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "release"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/whats-new/{release}/dismiss": {
+            "post": {
+                "operationId": "me.whats-new.dismiss",
+                "description": "It doesn't show again on the phone or the web.",
+                "summary": "Dismiss what's new (A6.2)",
+                "tags": [
+                    "WhatsNew"
+                ],
+                "parameters": [
+                    {
+                        "name": "release",
+                        "in": "path",
+                        "required": true,
+                        "description": "The release ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
         }
     },
     "components": {
