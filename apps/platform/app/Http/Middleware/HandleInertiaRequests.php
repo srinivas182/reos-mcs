@@ -6,8 +6,10 @@ use App\Authorization\Membership;
 use App\Authorization\Permission;
 use App\Connections\ConnectionStatus;
 use App\Enums\StateStatus;
+use App\Features\Flags;
 use App\Features\Releases;
 use App\Integrations\Catalogue;
+use App\Messaging\Conversations;
 use App\Models\Connection;
 use App\Models\State;
 use App\Models\User;
@@ -80,6 +82,10 @@ class HandleInertiaRequests extends Middleware
             'supportSession' => fn (): ?array => $this->support($request),
             // Connections that stopped syncing and need the person to sign in again (B3.1).
             'connectionAlerts' => fn (): array => $this->connectionAlerts($request),
+            // Messages (B6.1): null unless rolled out to the person; the unread count for the menu badge.
+            'messages' => fn (): ?array => $request->user() instanceof User && app(Flags::class)->forUser($request->user(), 'messages')
+                ? ['unread' => app(Conversations::class)->unread($request->user()), 'user' => $request->user()->id]
+                : null,
             // "What's new" for the person's role (A6.2), until dismissed.
             'whatsNew' => fn (): ?array => $request->user() instanceof User ? app(Releases::class)->card($request->user()) : null,
             // The public site's state chip and headline ("Now live in Texas").

@@ -11,6 +11,10 @@ import { identify, startMonitoring, trackPageView } from '@/lib/monitoring';
 import AuthLayout from '@/layouts/auth-layout';
 import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
+import { configureRealtime } from '@/lib/realtime';
+
+// Live messages through Reverb (B6.1), when this build has its key.
+configureRealtime();
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

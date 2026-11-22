@@ -9,6 +9,7 @@ import {
     House,
     LayoutGrid,
     Map as MapIcon,
+    MessageSquare,
     Palette,
     Plug,
     Settings,
@@ -25,6 +26,7 @@ import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
+import { index as messagesIndex } from '@/routes/messages';
 import { index as billingIndex } from '@/routes/billing';
 import { index as gateways } from '@/routes/gateways';
 import { index as plans } from '@/routes/plans';
@@ -62,6 +64,7 @@ export type NavLabel =
     | 'providerCategories'
     | 'aiAndCredits'
     | 'featuresAndReleases'
+    | 'messages'
     | 'salesAndPayouts'
     | 'earnings'
     | 'plansAndPricing'
@@ -104,12 +107,20 @@ const planned = (label: string): RoleNavItem => ({
  * and stay hidden; give them one in the sprint that builds the page.
  * The REOS super admin also has People (Sprint 3 spec, A3.2).
  */
-export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
+export function roleNavigation(
+    role: RoleName | null,
+    options: { messages?: boolean } = {},
+): BuiltNavItem[] {
     const home = item('dashboard', House, dashboard());
+    // Messages for every role once rolled out to the person (B6.1, flag `messages`).
+    const messages = options.messages
+        ? item('messages', MessageSquare, messagesIndex(), '/messages')
+        : planned('messages');
 
     const menus: Record<RoleName, RoleNavItem[]> = {
         candidate: [
             home,
+            messages,
             item('courses', BookOpen, learn(), '/learn'),
             planned('studyPlan'),
             planned('practiceAndExams'),
@@ -121,6 +132,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         ],
         agent: [
             home,
+            messages,
             planned('contacts'),
             planned('deals'),
             planned('virtualBroker'),
@@ -134,7 +146,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         provider: [
             home,
             planned('agentsInMyAreas'),
-            planned('messages'),
+            messages,
             planned('profile'),
             planned('community'),
             planned('results'),
@@ -147,6 +159,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         ],
         broker: [
             home,
+            messages,
             planned('approvals'),
             item('agents', Users, agentsIndex()),
             planned('ceCompliance'),
@@ -163,11 +176,13 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         // Earnings for mentors too, as for instructors (decision of 22 November 2026).
         mentor: [
             home,
+            messages,
             planned('mentorWorkspace'),
             item('earnings', Wallet, earnings()),
         ],
         instructor: [
             home,
+            messages,
             planned('courseBuilder'),
             planned('aiLessons'),
             planned('questionBank'),
@@ -178,6 +193,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         ],
         school_admin: [
             home,
+            messages,
             planned('courseCatalogue'),
             planned('stateApprovals'),
             planned('ceReporting'),
@@ -188,6 +204,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
         ],
         association_admin: [
             home,
+            messages,
             planned('members'),
             planned('memberCe'),
             planned('events'),

@@ -51,7 +51,8 @@
     "providerCategories": "Categorías de proveedores",
     "aiAndCredits": "IA y créditos",
     "featuresAndReleases": "Funciones y versiones",
-    "privacy": "Privacidad"
+    "privacy": "Privacidad",
+    "messages": "Mensajes"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -4288,5 +4289,50 @@
       "notSwitch": "Solo las opciones de privacidad se pueden cambiar para otra persona.",
       "generic": "No se guardó. Inténtelo de nuevo."
     }
+  },
+  "messages": {
+    "title": "Mensajes",
+    "purpose": "Hable con las personas con quienes trabaja. Los mensajes llegan en vivo a la web y a la aplicación.",
+    "new": "Nuevo mensaje",
+    "newDescription": "Solo aparecen las personas con quienes trabaja: su bróker y su equipo, el personal y los estudiantes de su escuela, su mentor o sus aprendices.",
+    "list": "Conversaciones",
+    "empty": "Aún no hay mensajes",
+    "emptyBody": "Inicie una conversación con alguien con quien trabaja.",
+    "pick": "Elija una conversación",
+    "pickBody": "Elija una a la izquierda o inicie un nuevo mensaje.",
+    "unreadCount_one": "{{count}} mensaje sin leer",
+    "unreadCount_other": "{{count}} mensajes sin leer",
+    "deleted": "Este mensaje fue eliminado.",
+    "edited": "Editado",
+    "read": "Leído",
+    "formerMember": "Exmiembro",
+    "reply": "Responder",
+    "replyTo": "Responder a {{name}}",
+    "replyingTo": "Respondiendo a {{name}}",
+    "editing": "Editando su mensaje",
+    "edit": "Editar",
+    "deleteForEveryone": "Eliminar para todos",
+    "cancel": "Cancelar",
+    "send": "Enviar",
+    "save": "Guardar",
+    "write": "Mensaje",
+    "writePlaceholder": "Escriba un mensaje. Enter envía; Mayús+Enter agrega una línea.",
+    "older": "Ver mensajes anteriores",
+    "people_one": "{{count}} persona",
+    "people_other": "{{count}} personas",
+    "search": "Buscar personas",
+    "to": "Para",
+    "loading": "Cargando personas…",
+    "noContacts": "Aún no hay nadie a quien pueda escribir. Las personas aparecen aquí cuando se une a una agencia, escuela o equipo.",
+    "noMatch": "Nadie coincide con esa búsqueda.",
+    "groupName": "Nombre del grupo (opcional)",
+    "errors": {
+      "people": "Elija entre 1 y {{max}} personas.",
+      "notAllowed": "Solo puede escribir a personas con quienes trabaja.",
+      "body": "Escriba un mensaje de hasta {{max}} caracteres.",
+      "tooLate": "Los mensajes se pueden cambiar durante {{minutes}} minutos después de enviarlos.",
+      "send": "No se envió. Inténtelo de nuevo."
+    },
+    "allRead": "Está al día"
   }
 }

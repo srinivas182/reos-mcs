@@ -74,6 +74,7 @@
 - **Announcements:** school, brokerage and association admins send to all members or a group (role, team, state), with read receipts and a "Read by 82 of 140" count; the phone shows them on Today.
 - **Screens:** web Messages (each role's messages entry; provider screen 26), the phone's Messages tab or sheet as the phone journeys place it, announcements on the admin screens and Today.
 - **Done when:** a message arrives live on the web and in the app.
+- **As built, B6.1a:** conversations (one-to-one, reused, or groups up to 20), replies, edit or delete for everyone within 5 minutes, read state ("Read") and unread counts; who can message whom by relationship (ADR 0023); live through Laravel Reverb on private channels for the web (session) and the phone (token, key from app config); web Messages for every role with the unread count in the menu; phone Messages from Today, a conversation and New message; all behind the `messages` flag (demo: Lone Star Realty's agents, brokers and mentors). Attachments, report and block, and announcements follow in B6.1b.
 
 ### B6.2 Notifications (Team B)
 

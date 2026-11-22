@@ -37,10 +37,27 @@ export interface paths {
         };
         /**
          * Get the app's runtime settings
-         * @description Public values only (Sentry DSN, PostHog project key), the same ones a
-         *     browser receives. `null` means the service is switched off.
+         * @description Public values only (Sentry DSN, PostHog project key, the Reverb key), the
+         *     same ones a browser receives. `null` means the service is switched off.
          */
         get: operations["app-config"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/broadcasting/auth": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Authenticate the request for channel access */
+        get: operations["broadcast.authenticate"];
         put?: never;
         post?: never;
         delete?: never;
@@ -838,6 +855,114 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My conversations (B6.1)
+         * @description Latest first, each with the other people, the last message and how
+         *     many are unread; `unread` is the total for the Messages badge. Live
+         *     updates arrive on the private Reverb channel `users.{id}`
+         *     (`message.posted`). 404 when Messages isn't rolled out to the person.
+         */
+        get: operations["messages.index"];
+        put?: never;
+        /**
+         * Start a conversation (B6.1)
+         * @description With one person an existing conversation is reused; with several (up
+         *     to 19) a group starts, optionally named. Returns the conversation.
+         */
+        post: operations["messages.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/messages/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * People I may message (B6.1)
+         * @description Only people with a working relationship: brokers and their agents,
+         *     school staff and their students, mentors and mentees.
+         */
+        get: operations["messages.contacts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/messages/{conversation}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One conversation (B6.1)
+         * @description Its people, how far each has read (`reads`, for "Read" under your
+         *     messages) and the latest 50 messages, oldest first; `before` (a message
+         *     id) pages back. Live on the private channel `conversations.{id}`:
+         *     `message.posted`, `message.changed`, `conversation.read`.
+         */
+        get: operations["messages.show"];
+        put?: never;
+        /** Send a message (B6.1), optionally replying to one */
+        post: operations["messages.send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/messages/{conversation}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark a conversation read (B6.1) */
+        post: operations["messages.read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/messages/items/{message}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete my message for everyone (B6.1), within 5 minutes of sending */
+        delete: operations["messages.destroy"];
+        options?: never;
+        head?: never;
+        /** Edit my message (B6.1), within 5 minutes of sending */
+        patch: operations["messages.update"];
+        trace?: never;
+    };
     "/me/onboarding": {
         parameters: {
             query?: never;
@@ -1142,6 +1267,16 @@ export interface components {
                 phone: boolean;
                 demo: boolean;
             };
+            /**
+             * @description Live messages (B6.1): the public Reverb key and where to connect,
+             *     or `null` when live updates are off (the app refreshes instead).
+             */
+            realtime: {
+                key: string;
+                host: string;
+                port: number;
+                scheme: string;
+            } | null;
         };
         /**
          * BrokerRole
@@ -1856,6 +1991,15 @@ export interface components {
              */
             source?: "typed" | "voice";
         };
+        /**
+         * SendMessageRequest
+         * @description Send or edit a message (B6.1), optionally as a reply.
+         */
+        SendMessageRequest: {
+            body: string;
+            /** Format: uuid */
+            reply_to?: string | null;
+        };
         /** SignInResource */
         SignInResource: {
             /** @description Bearer token for this device. Keep it in secure storage. */
@@ -1879,6 +2023,15 @@ export interface components {
              */
             integration: "google-calendar" | "outlook-calendar";
             history?: components["schemas"]["HistoryRange"] | null;
+        };
+        /**
+         * StartConversationRequest
+         * @description New message (B6.1): who to (people the sender may message), an optional group name and the first message.
+         */
+        StartConversationRequest: {
+            people: number[];
+            title?: string | null;
+            body: string;
         };
         /** StateResource */
         StateResource: {
@@ -2079,8 +2232,10 @@ export type SchemaQuizTopic = components['schemas']['QuizTopic'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
+export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
+export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
 export type SchemaTodoResource = components['schemas']['TodoResource'];
@@ -2162,6 +2317,26 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "broadcast.authenticate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": Record<string, never>;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "calendar.index": {
@@ -3817,6 +3992,405 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unread: number;
+                        conversations: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "direct" | "group";
+                            title: string;
+                            people: {
+                                id: number;
+                                name: string;
+                            }[];
+                            last_message: {
+                                body: string | null;
+                                sender: string | null;
+                                deleted: boolean;
+                                at: string;
+                            } | null;
+                            unread: number;
+                            updated_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "messages.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartConversationRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "direct" | "group";
+                        title: string;
+                        people: {
+                            id: number;
+                            name: string;
+                        }[];
+                        reads: {
+                            user: number;
+                            read_at: string | null;
+                        }[];
+                        messages: {
+                            id: string;
+                            body: string | null;
+                            sender: {
+                                id: number;
+                                name: string;
+                            } | null;
+                            reply_to: {
+                                id: string;
+                                body: string | null;
+                                sender: string | null;
+                                deleted: boolean;
+                            } | null;
+                            edited: boolean;
+                            deleted: boolean;
+                            created_at: string;
+                            changeable_until: string | null;
+                        }[];
+                        older: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contacts: {
+                            id: number;
+                            name: string;
+                            role: string;
+                            organisation: string;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "messages.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The conversation UUID */
+                conversation: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        /** @enum {string} */
+                        kind: "direct" | "group";
+                        title: string;
+                        people: {
+                            id: number;
+                            name: string;
+                        }[];
+                        reads: {
+                            user: number;
+                            read_at: string | null;
+                        }[];
+                        messages: {
+                            id: string;
+                            body: string | null;
+                            sender: {
+                                id: number;
+                                name: string;
+                            } | null;
+                            reply_to: {
+                                id: string;
+                                body: string | null;
+                                sender: string | null;
+                                deleted: boolean;
+                            } | null;
+                            edited: boolean;
+                            deleted: boolean;
+                            created_at: string;
+                            changeable_until: string | null;
+                        }[];
+                        older: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "messages.send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The conversation UUID */
+                conversation: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessageRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        body: string | null;
+                        sender: {
+                            id: number;
+                            name: string;
+                        } | null;
+                        reply_to: {
+                            id: string;
+                            body: string | null;
+                            sender: string | null;
+                            deleted: boolean;
+                        } | null;
+                        edited: boolean;
+                        deleted: boolean;
+                        created_at: string;
+                        changeable_until: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The conversation UUID */
+                conversation: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unread: number;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The message UUID */
+                message: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        body: string | null;
+                        sender: {
+                            id: number;
+                            name: string;
+                        } | null;
+                        reply_to: {
+                            id: string;
+                            body: string | null;
+                            sender: string | null;
+                            deleted: boolean;
+                        } | null;
+                        edited: boolean;
+                        deleted: boolean;
+                        created_at: string;
+                        changeable_until: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "messages.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The message UUID */
+                message: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessageRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: string;
+                        body: string | null;
+                        sender: {
+                            id: number;
+                            name: string;
+                        } | null;
+                        reply_to: {
+                            id: string;
+                            body: string | null;
+                            sender: string | null;
+                            deleted: boolean;
+                        } | null;
+                        edited: boolean;
+                        deleted: boolean;
+                        created_at: string;
+                        changeable_until: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

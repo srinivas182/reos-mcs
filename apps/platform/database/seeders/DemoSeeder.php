@@ -17,6 +17,7 @@ use Database\Seeders\Demo\DemoConsents;
 use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
+use Database\Seeders\Demo\DemoMessages;
 use Database\Seeders\Demo\DemoPayouts;
 use Database\Seeders\Demo\DemoReleases;
 use Database\Seeders\Demo\DemoStates;
@@ -89,6 +90,8 @@ final class DemoSeeder extends Seeder
         app(DemoReleases::class)->seed();
         // What each persona agreed to (A6.3).
         app(DemoConsents::class)->seed();
+        // Conversations at Lone Star Realty (B6.1).
+        app(DemoMessages::class)->seed();
     }
 
     private function organisation(string $name): Organisation

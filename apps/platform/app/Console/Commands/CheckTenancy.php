@@ -29,6 +29,7 @@ final class CheckTenancy extends Command
         'roles' => 'Role names per organisation (Spatie teams); read to check any permission.',
         'model_has_roles' => 'Who holds which role where; the role switcher lists all of a person\'s organisations.',
         'model_has_permissions' => 'Direct permissions per organisation; same as model_has_roles.',
+        'conversations' => 'Messages (B6.1, ADR 0023): a conversation spans tenants (a team agent and the brokerage\'s broker); only its participants can open it, checked in Conversations and on the live channel. organisation_id is only where it started.',
     ];
 
     public function handle(): int

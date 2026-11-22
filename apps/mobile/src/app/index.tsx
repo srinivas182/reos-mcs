@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { BookOpen, Palette } from 'lucide-react-native';
+import { BookOpen, MessageSquare, Palette } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +15,7 @@ import { activeMembership } from '@/lib/roles';
 import { timeAgo } from '@/lib/time';
 import { useOpenTodos } from '@/lib/todos';
 import { useWhatsNew } from '@/lib/whatsNew';
+import { useInbox } from '@/lib/messages';
 import { AskBar, Avatar, Button, Callout, Card, ListRow, Screen, SyncAlert, Text } from '@/ui';
 
 type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
@@ -46,6 +47,8 @@ export default function HomeScreen() {
   const capturing = chosen ?? (agent && (capture === 'voice' || capture === 'type') ? capture : null);
   const todos = useOpenTodos();
   const whatsNew = useWhatsNew();
+  // Messages once rolled out to this person (B6.1); null hides the entry.
+  const { inbox } = useInbox(user?.id ?? null);
   const closeCapture = () => {
     setCapturing(null);
     if (capture !== undefined) router.setParams({ capture: undefined });
@@ -107,6 +110,15 @@ export default function HomeScreen() {
           title={t('whatsNew.title', { version: whatsNew.item.version })}
           body={whatsNew.item.note}
           action={<Button variant="ghost" label={t('whatsNew.dismiss')} accessibilityLabel={t('whatsNew.dismissLabel', { version: whatsNew.item.version })} onPress={whatsNew.dismiss} />}
+        />
+      ) : null}
+      {inbox !== null ? (
+        <ListRow
+          icon={MessageSquare}
+          tone="info"
+          title={t('messages.title')}
+          subtitle={inbox.unread > 0 ? t('messages.unreadCount', { count: inbox.unread }) : t('messages.allRead')}
+          onPress={() => router.push('/messages')}
         />
       ) : null}
       {/* Today's calendar for agents (B4.1); the rest of Today arrives with the agent sprints. */}

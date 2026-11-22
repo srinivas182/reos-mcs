@@ -19,8 +19,8 @@ final class AppConfigController extends Controller
     /**
      * Get the app's runtime settings.
      *
-     * Public values only (Sentry DSN, PostHog project key), the same ones a
-     * browser receives. `null` means the service is switched off.
+     * Public values only (Sentry DSN, PostHog project key, the Reverb key), the
+     * same ones a browser receives. `null` means the service is switched off.
      *
      * @unauthenticated
      */
@@ -34,6 +34,33 @@ final class AppConfigController extends Controller
                 ...$options,
                 'demo' => $signIn->demo('google-sign-in') || $signIn->demo('apple-sign-in'),
             ],
+            'realtime' => self::realtime(),
         ]);
+    }
+
+    /**
+     * The public side of Reverb (B6.1); the secret never leaves the server.
+     *
+     * @return array{key: string, host: string, port: int, scheme: string}|null
+     */
+    private static function realtime(): ?array
+    {
+        $key = config('broadcasting.connections.reverb.key');
+        $options = config('broadcasting.connections.reverb.options');
+
+        if (config('broadcasting.default') !== 'reverb' || ! is_string($key) || $key === '' || ! is_array($options)) {
+            return null;
+        }
+
+        $host = $options['host'] ?? null;
+        $port = $options['port'] ?? null;
+        $scheme = $options['scheme'] ?? null;
+
+        return [
+            'key' => $key,
+            'host' => is_string($host) ? $host : 'localhost',
+            'port' => is_numeric($port) ? (int) $port : 443,
+            'scheme' => is_string($scheme) ? $scheme : 'https',
+        ];
     }
 }

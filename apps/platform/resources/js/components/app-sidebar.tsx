@@ -21,10 +21,12 @@ import { dashboard } from '@/routes';
  */
 export function AppSidebar() {
     const { t } = useTranslation();
-    const { auth } = usePage().props;
+    const { auth, messages } = usePage().props;
     const { isCurrentOrParentUrl } = useCurrentUrl();
     const current = activeMembership(auth.roles);
-    const items = roleNavigation(current?.role ?? null);
+    const items = roleNavigation(current?.role ?? null, {
+        messages: messages !== null,
+    });
     const organisation = current?.organisation;
     // People on their own (REOS's own organisation, not super admins) have no brand to show.
     const showOrganisation =
@@ -88,9 +90,24 @@ export function AppSidebar() {
                                                 }
                                             >
                                                 <entry.icon aria-hidden />
-                                                <span>
+                                                <span className="flex-1">
                                                     {t(`nav.${entry.label}`)}
                                                 </span>
+                                                {entry.label === 'messages' &&
+                                                messages !== null &&
+                                                messages.unread > 0 ? (
+                                                    <span
+                                                        className="rounded-full bg-reos-tone-danger-fg px-2 text-sm font-semibold text-background"
+                                                        aria-label={t(
+                                                            'messages.unreadCount',
+                                                            {
+                                                                count: messages.unread,
+                                                            },
+                                                        )}
+                                                    >
+                                                        {messages.unread}
+                                                    </span>
+                                                ) : null}
                                             </Link>
                                         </SidebarMenuButton>
                                     </SidebarMenuItem>
