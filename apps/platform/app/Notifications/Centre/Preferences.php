@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications\Centre;
 
+use App\Models\PushDevice;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
@@ -17,7 +18,7 @@ final readonly class Preferences
     public function __construct(private NotificationCentre $centre) {}
 
     /**
-     * @return array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: string|null}>, channels: list<string>, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     * @return array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: string|null}>, channels: list<string>, phones: int, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
      */
     public function summary(User $user): array
     {
@@ -34,6 +35,8 @@ final readonly class Preferences
                 'digest' => $this->centre->digest($user, $kind),
             ], NotificationKind::settable()),
             'channels' => NotificationKind::CHANNELS,
+            // Phones signed in with push turned on.
+            'phones' => PushDevice::query()->where('user_id', $user->id)->count(),
             'quiet' => ['enabled' => $settings->quiet_enabled, 'start' => $settings->quiet_start, 'end' => $settings->quiet_end],
             'timezone' => $settings->timezone,
         ];

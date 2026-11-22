@@ -6,12 +6,13 @@ namespace App\Notifications\Centre;
 
 use App\Models\NotificationSetting;
 use App\Models\User;
+use App\Notifications\Centre\Push\PushChannel;
 use Carbon\CarbonImmutable;
 
 /**
  * The notification centre (B6.2, ADR 0023). For each notification it picks
  * the channels from the person's choices for its kind: the inbox always
- * (silent), and alerts (email now; push and SMS in B6.2b) unless they're
+ * (silent), and alerts (push and email; SMS in B6.2c) unless they're
  * off. In quiet hours (default 9 PM to 7 AM in the person's time zone) an
  * alert that isn't urgent is held and sent when they end; a kind the person
  * gets as a digest is gathered instead.
@@ -19,7 +20,7 @@ use Carbon\CarbonImmutable;
 final class NotificationCentre
 {
     /** Channel names Laravel sends through. */
-    public const SEND_AS = [NotificationKind::INBOX => 'database', NotificationKind::EMAIL => 'mail'];
+    public const SEND_AS = [NotificationKind::INBOX => 'database', NotificationKind::PUSH => PushChannel::class, NotificationKind::EMAIL => 'mail'];
 
     /** @var array<int, NotificationSetting> */
     private array $settings = [];

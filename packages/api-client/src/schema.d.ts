@@ -1214,6 +1214,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/push-devices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Turn on push for this phone (B6.2b)
+         * @description Send the Expo push token after the person allows notifications. The
+         *     token belongs to this sign-in: signing out removes it. Sending it
+         *     again (each app start) is safe.
+         */
+        post: operations["me.push-devices.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/push-devices/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Turn off push for this phone (B6.2b)
+         * @description Removes the push token sent with this sign-in.
+         */
+        delete: operations["me.push-devices.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/states": {
         parameters: {
             query?: never;
@@ -2060,6 +2102,16 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /**
+         * PushDeviceRequest
+         * @description A phone turning on push notifications (B6.2b).
+         */
+        PushDeviceRequest: {
+            token: string;
+            /** @enum {string} */
+            platform: "ios" | "android";
+            name?: string | null;
+        };
         /** QuizAttemptRequest */
         QuizAttemptRequest: {
             /** @description The state the quiz was taken for. */
@@ -2442,6 +2494,7 @@ export type SchemaOrganisationType = components['schemas']['OrganisationType'];
 export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
 export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
 export type SchemaQuizResultResource = components['schemas']['QuizResultResource'];
@@ -4994,12 +5047,15 @@ export interface operations {
                             urgent: boolean;
                             digestible: boolean;
                             channels: {
-                                [key: string]: boolean;
+                                inbox: boolean;
+                                push: boolean;
+                                email: boolean;
                             };
                             /** @enum {string|null} */
                             digest: "daily" | "weekly" | null;
                         }[];
-                        channels: string[];
+                        channels: ("inbox" | "push" | "email")[];
+                        phones: number;
                         quiet: {
                             enabled: boolean;
                             start: string;
@@ -5038,12 +5094,15 @@ export interface operations {
                             urgent: boolean;
                             digestible: boolean;
                             channels: {
-                                [key: string]: boolean;
+                                inbox: boolean;
+                                push: boolean;
+                                email: boolean;
                             };
                             /** @enum {string|null} */
                             digest: "daily" | "weekly" | null;
                         }[];
-                        channels: string[];
+                        channels: ("inbox" | "push" | "email")[];
+                        phones: number;
                         quiet: {
                             enabled: boolean;
                             start: string;
@@ -5164,6 +5223,76 @@ export interface operations {
                 };
             };
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.push-devices.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushDeviceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        phones: number;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.push-devices.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

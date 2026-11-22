@@ -90,7 +90,7 @@ describe('Notifications (B6.2)', () => {
                         locked: false,
                         urgent: false,
                         digestible: true,
-                        channels: { inbox: true, email: false },
+                        channels: { inbox: true, push: true, email: false },
                         digest: null,
                     },
                     {
@@ -99,18 +99,30 @@ describe('Notifications (B6.2)', () => {
                         locked: true,
                         urgent: true,
                         digestible: false,
-                        channels: { inbox: true, email: true },
+                        channels: { inbox: true, push: true, email: true },
                         digest: null,
                     },
                 ]}
-                channels={['inbox', 'email']}
+                channels={['inbox', 'push', 'email']}
+                phones={1}
                 quiet={{ enabled: true, start: '21:00', end: '07:00' }}
                 timezone="America/Chicago"
                 browserTimezone="America/Chicago"
             />,
         );
+        expect(
+            screen.getByText('Push goes to 1 phone with the REOS app.'),
+        ).toBeInTheDocument();
         await userEvent.click(
             screen.getByRole('switch', { name: 'Announcements by Email' }),
+        );
+        await userEvent.click(
+            screen.getByRole('switch', { name: 'Announcements by Push' }),
+        );
+        expect(router.put).toHaveBeenCalledWith(
+            '/settings/notifications',
+            { channels: { announcement: { push: false } } },
+            expect.anything(),
         );
         expect(router.put).toHaveBeenCalledWith(
             '/settings/notifications',

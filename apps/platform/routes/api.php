@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
 use App\Http\Controllers\Api\Messaging\MessagesController as ApiMessagesController;
 use App\Http\Controllers\Api\Notifications\NotificationsController as ApiNotificationsController;
+use App\Http\Controllers\Api\Notifications\PushDeviceController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
@@ -125,6 +126,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('notifications/{notification}/read', [ApiNotificationsController::class, 'read'])->whereUuid('notification')->middleware('throttle:120,1,api-notifications-read')->name('api.notifications.read');
     Route::get('me/notification-settings', [ApiNotificationsController::class, 'settings'])->name('api.me.notification-settings');
     Route::put('me/notification-settings', [ApiNotificationsController::class, 'update'])->middleware('throttle:30,1,api-notification-settings')->name('api.me.notification-settings.update');
+    // Push to this phone (B6.2b).
+    Route::post('me/push-devices', [PushDeviceController::class, 'store'])->middleware('throttle:20,1,api-push-devices')->name('api.me.push-devices.store');
+    Route::delete('me/push-devices/current', [PushDeviceController::class, 'destroy'])->middleware('throttle:20,1,api-push-devices')->name('api.me.push-devices.destroy');
     // Privacy switches and consents (A6.3, Me › Privacy).
     Route::get('me/consents', [ConsentController::class, 'index'])->name('api.me.consents');
     Route::put('me/consents/{purpose}', [ConsentController::class, 'update'])->middleware('throttle:30,1,api-consents')->name('api.me.consents.update');

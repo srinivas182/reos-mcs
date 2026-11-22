@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { nativeSelect } from '@/lib/tenants';
 import { update } from '@/routes/notification-settings';
 
-type Channel = 'inbox' | 'email';
+type Channel = 'inbox' | 'push' | 'email';
 
 export type NotificationKindName =
     | 'new_device'
@@ -65,12 +65,15 @@ export default function NotificationSettings({
     quiet,
     timezone,
     browserTimezone,
+    phones = 0,
 }: {
     kinds: KindRow[];
     channels: Channel[];
     quiet: { enabled: boolean; start: string; end: string };
     timezone: string;
     browserTimezone: string;
+    /** Phones signed in with push on (B6.2b). */
+    phones?: number;
 }) {
     const { t } = useTranslation();
     const [hours, setHours] = useState(quiet);
@@ -182,6 +185,11 @@ export default function NotificationSettings({
                         title={t('notifications.kinds.title')}
                         description={t('notifications.kinds.description')}
                     />
+                    <p className="text-base text-muted-foreground">
+                        {phones === 0
+                            ? t('notifications.phones.none')
+                            : t('notifications.phones.some', { count: phones })}
+                    </p>
                     <InputError message={errors.channels ?? errors.digests} />
                     {GROUPS.map((group) => {
                         const rows = kinds.filter((k) => k.group === group);

@@ -4471,7 +4471,8 @@
     },
     "channels": {
       "inbox": "Bandeja",
-      "email": "Correo"
+      "email": "Correo",
+      "push": "Push"
     },
     "digests": {
       "off": "Una por una",
@@ -4522,6 +4523,34 @@
     "errors": {
       "locked": "Los mensajes de seguridad y de la cuenta no se pueden desactivar.",
       "noDigest": "Este tipo no puede ir en un resumen."
+    },
+    "push": {
+      "someone": "Alguien",
+      "inGroup": "{{name}} en {{group}}",
+      "more": "{{title}} · {{count}} mensajes nuevos",
+      "files_one": "Envió un archivo",
+      "files_other": "Envió {{count}} archivos"
+    },
+    "phones": {
+      "none": "Las notificaciones push llegan a la app REOS en su teléfono. Actívelas en la app para recibirlas.",
+      "some_one": "Las notificaciones push llegan a {{count}} teléfono con la app REOS.",
+      "some_other": "Las notificaciones push llegan a {{count}} teléfonos con la app REOS."
+    },
+    "thisPhone": {
+      "title": "Push en este teléfono",
+      "on": "Las notificaciones están activadas en este teléfono.",
+      "off": "Active las notificaciones para recibir mensajes y alertas en este teléfono, incluso con REOS cerrado.",
+      "turnOn": "Activar notificaciones",
+      "blocked": "Las notificaciones de REOS están desactivadas en la configuración de su teléfono.",
+      "openSettings": "Abrir la configuración del teléfono",
+      "turnOff": "Desactivar en este teléfono",
+      "failed": "No pudimos activar las notificaciones. Inténtelo de nuevo."
+    },
+    "prompt": {
+      "title": "Reciba mensajes en este teléfono",
+      "body": "Active las notificaciones para que los mensajes y las alertas le lleguen, incluso con REOS cerrado. Las horas de silencio se respetan.",
+      "action": "Activar",
+      "later": "Ahora no"
     }
   }
 }

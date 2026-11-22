@@ -85,7 +85,7 @@ jest.mock('expo-apple-authentication', () => ({
   AppleAuthenticationButtonStyle: { BLACK: 2, WHITE: 0 },
 }));
 
-jest.mock('expo-device', () => ({ deviceName: "Sofia's iPhone", modelName: 'iPhone 16' }));
+jest.mock('expo-device', () => ({ deviceName: "Sofia's iPhone", modelName: 'iPhone 16', isDevice: true }));
 jest.mock('expo-application', () => ({ nativeApplicationVersion: '1.0.0' }));
 
 jest.mock('expo-notifications', () => ({
@@ -95,6 +95,9 @@ jest.mock('expo-notifications', () => ({
   setNotificationCategoryAsync: jest.fn().mockResolvedValue(undefined),
   setNotificationHandler: jest.fn(),
   addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
+  useLastNotificationResponse: jest.fn(() => null),
+  DEFAULT_ACTION_IDENTIFIER: 'expo.modules.notifications.actions.DEFAULT',
+  getExpoPushTokenAsync: jest.fn().mockResolvedValue({ type: 'expo', data: 'ExponentPushToken[abcdefghijklmnop]' }),
   dismissNotificationAsync: jest.fn().mockResolvedValue(undefined),
   cancelScheduledNotificationAsync: jest.fn().mockResolvedValue(undefined),
   scheduleNotificationAsync: jest.fn().mockResolvedValue('id'),

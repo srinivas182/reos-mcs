@@ -13,11 +13,13 @@ use App\Models\ConversationParticipant;
 use App\Models\Message;
 use App\Models\MessageAttachment;
 use App\Models\User;
+use App\Notifications\NewMessage;
 use App\Services\Authorization\ActiveRole;
 use App\Tenancy\Tenancy;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -141,8 +143,23 @@ final readonly class Conversations
         $message->setRelation('conversation', $conversation);
         $message->load(['attachments', 'sender', 'replyTo.sender']);
         Realtime::send(new MessagePosted($message, $this->participantIds($conversation)));
+        $this->notify($from, $conversation, $message);
 
         return $message;
+    }
+
+    /**
+     * Push to everyone else's phone (B6.2b); the web shows it live. Not to
+     * people who blocked the sender.
+     */
+    private function notify(User $from, Conversation $conversation, Message $message): void
+    {
+        $blocked = $this->safety->blockedWith($from->id);
+        $recipients = array_values(array_filter($this->others($conversation, $from), static fn (User $u): bool => ! in_array($u->id, $blocked, true)));
+
+        if ($recipients !== []) {
+            Notification::send($recipients, new NewMessage($message));
+        }
     }
 
     public function edit(User $by, Message $message, string $body): Message

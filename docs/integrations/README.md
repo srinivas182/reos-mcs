@@ -513,7 +513,7 @@ Push notifications to the iOS and Android apps.
 - **Sandbox:** Development builds.
 - **Credentials:** REOS app keys · **Personal data:** no
 - **Cost:** Included with Expo.
-- **Notes:** Needs the Apple push key and Firebase project from the store accounts.
+- **Notes:** B6.2b sends through it (PushChannel; receipts checked by reos:push:receipts). Needs the EAS project id in the app config and the Apple push key and Firebase project from the store accounts; until set up, production sends no push and the simulator keeps an outbox elsewhere. The access token is only needed if push security is turned on in Expo.
 
 ### Amazon SES (email)
 <a id="amazon-ses"></a>

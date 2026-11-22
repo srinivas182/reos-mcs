@@ -520,7 +520,11 @@ entries:
         - { key: access_token, secret: true, required: false }
     personal_data: false
     cost: Included with Expo.
-    notes: Needs the Apple push key and Firebase project from the store accounts.
+    notes: >-
+      B6.2b sends through it (PushChannel; receipts checked by reos:push:receipts). Needs the EAS
+      project id in the app config and the Apple push key and Firebase project from the store
+      accounts; until set up, production sends no push and the simulator keeps an outbox elsewhere.
+      The access token is only needed if push security is turned on in Expo.
 
   - id: amazon-ses
     name: Amazon SES (email)

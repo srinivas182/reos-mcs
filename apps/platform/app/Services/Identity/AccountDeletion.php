@@ -63,6 +63,8 @@ final readonly class AccountDeletion
             ->each(function (User $user) use (&$count): void {
                 $id = (string) $user->id;
                 $this->privacy->deletionDone($user);
+                // The inbox is polymorphic, so it has no cascade (B6.2).
+                $user->notifications()->delete();
                 $user->delete();
                 // The audit row keeps only the id: the person's details are gone.
                 $this->audit->record('account.deleted', 'user', $id);
