@@ -1970,7 +1970,9 @@
         "payouts.sent": "Envió un pago",
         "payouts.reversed": "Recuperó un pago después de un reembolso",
         "product.splits_changed": "Cambió un reparto de ingresos",
-        "payouts.own_account_started": "Empezó a conectar su propia cuenta de Stripe"
+        "payouts.own_account_started": "Empezó a conectar su propia cuenta de Stripe",
+        "pool.funded": "Agregó a un fondo de patrocinio",
+        "order.refund_issued": "Reembolsó un pedido"
       }
     }
   },
@@ -3455,6 +3457,91 @@
       "continue": "Volver a REOS",
       "cancel": "Cancelar",
       "pay": "Pagar"
+    },
+    "pools": {
+      "title": "Fondos de patrocinio",
+      "intro": "Créditos de IA que usan las personas de este cliente (a los candidatos nunca se les cobra) y lugares de los que se toman sus códigos de patrocinio.",
+      "notFunded": "Aún no se ha agregado nada. Hasta que se agreguen lugares, REOS emite los códigos directamente.",
+      "credits": "Créditos de IA",
+      "seats": "Lugares",
+      "addCredits": "Agregar créditos",
+      "addSeats": "Agregar lugares",
+      "note": "Lo que pagaron (factura o contrato)",
+      "notePlaceholder": "Factura INV-1042",
+      "add": "Agregar al fondo",
+      "nothing": "Agregue algunos créditos o lugares.",
+      "funded": "Agregado al fondo.",
+      "notEnoughSeats_one": "Solo queda {{count}} lugar en el fondo. Primero agregue lugares en la pestaña Plan.",
+      "notEnoughSeats_other": "Solo quedan {{count}} lugares en el fondo. Primero agregue lugares en la pestaña Plan."
+    },
+    "points": {
+      "notEnough": "No hay suficientes puntos para eso."
+    },
+    "credits": {
+      "title": "Créditos de IA",
+      "sponsored": "Como candidato, nunca se le cobran créditos: su ayuda de IA la cubre su escuela o REOS.",
+      "monthly": "Este mes",
+      "ofAllowance": "Quedan {{left}} de {{allowance}}",
+      "topup": "Recargas",
+      "rules": "Los créditos del mes terminan con el mes; las recargas nunca vencen. Cada función de IA muestra su costo antes de usarse."
+    },
+    "refunds": {
+      "ordersTitle": "Pedidos y reembolsos",
+      "ordersHelp": "Los últimos pedidos pagados, o busque uno por correo o número de pedido.",
+      "search": "Correo o número de pedido",
+      "find": "Buscar",
+      "noOrdersTitle": "No se encontraron pedidos",
+      "noOrders": "Los pedidos pagados aparecen aquí en cuanto alguien compra en reos.com.",
+      "columns": {
+        "product": "Producto",
+        "buyer": "Comprador",
+        "gateway": "Pasarela",
+        "total": "Total",
+        "paid": "Pagado",
+        "status": "Estado"
+      },
+      "paid": "Pagado",
+      "refunded": "Reembolsado",
+      "partlyRefunded": "{{amount}} reembolsado",
+      "refund": "Reembolsar",
+      "title": "Reembolsar {{product}}",
+      "help": "Se pueden reembolsar hasta {{amount}}. Un reembolso completo termina el acceso de inmediato; uno parcial lo conserva.",
+      "within_one": "Dentro de la política: comprado hace {{count}} día (reembolsos completos dentro de {{window}} días).",
+      "within_other": "Dentro de la política: comprado hace {{count}} días (reembolsos completos dentro de {{window}} días).",
+      "outside_one": "Fuera de la política (comprado hace {{count}} día; reembolsos completos dentro de {{window}} días). Explique el motivo abajo.",
+      "outside_other": "Fuera de la política (comprado hace {{count}} días; reembolsos completos dentro de {{window}} días). Explique el motivo abajo.",
+      "progressNote": "El avance del curso (menos del 25%) se podrá revisar cuando el reproductor de cursos lo registre.",
+      "amount": "Monto (USD)",
+      "amountHelp": "Déjelo vacío para reembolsar todo lo que queda.",
+      "reason": "Motivo (se guarda en el registro de auditoría)",
+      "refundAll": "Reembolsar todo",
+      "refundPart": "Reembolsar este monto",
+      "doneFull": "Reembolsado por completo. El acceso terminó.",
+      "donePartial": "Reembolsado en parte. El acceso se mantiene.",
+      "errors": {
+        "notPaid": "Solo se pueden reembolsar pedidos pagados.",
+        "amount": "Eso es más de lo que se puede reembolsar.",
+        "gateway": "La pasarela del pedido no está conectada en este momento.",
+        "failed": "La pasarela no hizo el reembolso. No cambió nada; inténtelo de nuevo."
+      }
+    },
+    "reconciliation": {
+      "title": "Conciliación",
+      "help": "Cada mañana, el libro contable de ayer se compara con cada pasarela: pedidos, reembolsos y pagos, monto por monto.",
+      "none": "Aún no hay revisiones. La primera es mañana por la mañana.",
+      "status": {
+        "matched": "{{matched}} coinciden",
+        "differences_one": "{{count}} diferencia",
+        "differences_other": "{{count}} diferencias",
+        "failed": "No se pudo conectar con la pasarela"
+      },
+      "difference": "{{kind}} {{reference}}: libro {{ledger}}, pasarela {{gateway}}",
+      "kinds": {
+        "order": "Pedido",
+        "refund": "Reembolso",
+        "transfer": "Pago",
+        "balance": "Cuenta"
+      }
     }
   },
   "plans": {

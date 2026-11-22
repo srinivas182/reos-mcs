@@ -8,6 +8,7 @@ use App\Billing\Gateways\CheckoutSession;
 use App\Billing\Gateways\Gateways;
 use App\Billing\Gateways\PaymentGateway;
 use App\Billing\Gateways\PaymentResult;
+use App\Billing\Ledger\MoneyPostings;
 use App\Billing\Payouts\RevenueSplit;
 use App\Models\Order;
 use App\Models\Organisation;
@@ -17,6 +18,7 @@ use App\Models\Subscription;
 use App\Models\User;
 use App\Notifications\PaymentFailed;
 use App\Notifications\PurchaseReceipt;
+use App\Services\Ai\AiCredits;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
 use Carbon\CarbonImmutable;
@@ -46,6 +48,8 @@ final readonly class Checkout
         private AuditLogger $audit,
         private TaxCalculator $tax,
         private RevenueSplit $split,
+        private MoneyPostings $money,
+        private AiCredits $credits,
     ) {}
 
     /**
@@ -210,6 +214,12 @@ final readonly class Checkout
             $this->tax->record($order);
             // What the sale earns the school, its instructors and mentors (B5.2b).
             $this->split->record($order);
+            // The ledger (B5.3): the money, and a top-up pack's credits.
+            $this->money->orderPaid($order);
+
+            if ($order->product->kind === ProductKind::CreditPack && $order->user !== null) {
+                $this->credits->topUp($order->user, $order->product->credits ?? 0, $order->uuid);
+            }
             $order->user?->notify(new PurchaseReceipt($order));
         }
 
@@ -276,6 +286,7 @@ final readonly class Checkout
         }
 
         $this->split->reverse($order);
+        $this->money->fullRefund($order);
         $this->audit->record('order.refunded', 'order', $order->uuid, ['total' => $order->total_cents], null, null);
     }
 }

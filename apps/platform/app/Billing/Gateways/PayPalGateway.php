@@ -150,6 +150,26 @@ final readonly class PayPalGateway implements PaymentGateway
         };
     }
 
+    public function refund(Order $order, int $amountCents, string $key): string
+    {
+        if ($order->gateway_payment_id === null) {
+            throw new RuntimeException('PayPal has no capture for this order to refund.');
+        }
+
+        $response = $this->api()->withHeaders(['PayPal-Request-Id' => 'refund-'.$key])
+            ->post('/v2/payments/captures/'.rawurlencode($order->gateway_payment_id).'/refund', [
+                'amount' => ['value' => self::money($amountCents), 'currency_code' => strtoupper($order->currency)],
+                'invoice_id' => 'refund-'.$key,
+            ]);
+        $id = $response->json('id');
+
+        if (! $response->successful() || ! is_string($id)) {
+            throw new RuntimeException('PayPal made no refund (HTTP '.$response->status().').');
+        }
+
+        return $id;
+    }
+
     /** @param  array<mixed>  $resource */
     private static function refundedCapture(array $resource): ?string
     {

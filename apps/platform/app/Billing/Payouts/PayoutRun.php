@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Billing\Payouts;
 
+use App\Billing\Ledger\MoneyPostings;
 use App\Models\ConnectedAccount;
 use App\Models\Payout;
 use App\Models\PayoutLine;
@@ -23,7 +24,7 @@ use Throwable;
  */
 final readonly class PayoutRun
 {
-    public function __construct(private PayoutProviders $providers, private ConnectedAccounts $accounts, private AuditLogger $audit) {}
+    public function __construct(private PayoutProviders $providers, private ConnectedAccounts $accounts, private AuditLogger $audit, private MoneyPostings $money) {}
 
     /** @return RunResult */
     public function run(): array
@@ -94,6 +95,7 @@ final readonly class PayoutRun
                 $payout->forceFill(['status' => Payout::SENT, 'transfer_id' => $transfer])->save();
                 PayoutLine::query()->where('payout_id', $payout->id)->update(['status' => PayoutLineStatus::Paid]);
             });
+            $this->money->payoutSent($payout);
             $this->audit->record('payouts.sent', 'payout', $payout->uuid, ['amount' => $payout->amount_cents, 'account' => $account->id]);
 
             return $payout;

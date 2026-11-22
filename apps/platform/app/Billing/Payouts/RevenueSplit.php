@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Billing\Payouts;
 
+use App\Billing\Ledger\MoneyPostings;
 use App\Models\ConnectedAccount;
 use App\Models\Order;
 use App\Models\Payout;
@@ -23,7 +24,7 @@ use Throwable;
  */
 final readonly class RevenueSplit
 {
-    public function __construct(private PayoutProviders $providers, private AuditLogger $audit) {}
+    public function __construct(private PayoutProviders $providers, private AuditLogger $audit, private MoneyPostings $money) {}
 
     public static function platformFeePercent(): int
     {
@@ -101,6 +102,7 @@ final readonly class RevenueSplit
             try {
                 $provider->reverse($payout->transfer_id, $line->amount_cents, 'line:'.$line->id);
                 $line->forceFill(['status' => PayoutLineStatus::Reversed])->save();
+                $this->money->payoutReversed($line, $payout);
                 $this->audit->record('payouts.reversed', 'payout', $payout->uuid, ['from' => PayoutLineStatus::Paid->value, 'to' => PayoutLineStatus::Reversed->value, 'amount' => $line->amount_cents, 'order' => $order->uuid]);
             } catch (Throwable $e) {
                 // Left as paid; the daily reconciliation (B5.3) lists it.

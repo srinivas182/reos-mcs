@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Demo;
 
+use App\Billing\Ledger\MoneyPostings;
 use App\Billing\OrderStatus;
 use App\Billing\Payouts\PayeeRole;
 use App\Billing\Payouts\RevenueSplit;
@@ -24,7 +25,7 @@ use Illuminate\Support\Str;
  */
 final readonly class DemoPayouts
 {
-    public function __construct(private RevenueSplit $split) {}
+    public function __construct(private RevenueSplit $split, private MoneyPostings $money) {}
 
     public function seed(): void
     {
@@ -73,6 +74,7 @@ final readonly class DemoPayouts
                 'gateway_session_id' => 'demo_payout_'.$n, 'paid_at' => now()->startOfMonth()->addDays($n),
             ]);
             $this->split->record($order);
+            $this->money->orderPaid($order);
         }
     }
 }

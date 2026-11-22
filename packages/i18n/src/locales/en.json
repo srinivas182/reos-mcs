@@ -1970,7 +1970,9 @@
         "payouts.sent": "Sent a payout",
         "payouts.reversed": "Took back a payout after a refund",
         "product.splits_changed": "Changed a revenue split",
-        "payouts.own_account_started": "Started connecting its own Stripe account"
+        "payouts.own_account_started": "Started connecting its own Stripe account",
+        "pool.funded": "Added to a sponsor pool",
+        "order.refund_issued": "Refunded an order"
       }
     }
   },
@@ -3455,6 +3457,91 @@
       "continue": "Back to REOS",
       "cancel": "Cancel",
       "pay": "Pay"
+    },
+    "pools": {
+      "title": "Sponsor pools",
+      "intro": "AI credits this tenant's people use (candidates are never charged), and seats its sponsor codes draw on.",
+      "notFunded": "Nothing added yet. Until seats are added, codes are issued by REOS outright.",
+      "credits": "AI credits",
+      "seats": "Seats",
+      "addCredits": "Add credits",
+      "addSeats": "Add seats",
+      "note": "What they paid (invoice or contract)",
+      "notePlaceholder": "Invoice INV-1042",
+      "add": "Add to pool",
+      "nothing": "Add some credits or seats.",
+      "funded": "Added to the pool.",
+      "notEnoughSeats_one": "Only {{count}} seat is left in the pool. Add seats on the Plan tab first.",
+      "notEnoughSeats_other": "Only {{count}} seats are left in the pool. Add seats on the Plan tab first."
+    },
+    "points": {
+      "notEnough": "There aren't enough points for that."
+    },
+    "credits": {
+      "title": "AI credits",
+      "sponsored": "As a candidate you are never charged credits: your AI help is covered by your school or REOS.",
+      "monthly": "This month",
+      "ofAllowance": "{{left}} of {{allowance}} left",
+      "topup": "Top-ups",
+      "rules": "This month's credits end with the month; top-ups never expire. Each AI feature shows its cost before it runs."
+    },
+    "refunds": {
+      "ordersTitle": "Orders and refunds",
+      "ordersHelp": "The latest paid orders, or find one by email or order number.",
+      "search": "Email or order number",
+      "find": "Find",
+      "noOrdersTitle": "No orders found",
+      "noOrders": "Paid orders appear here as soon as someone buys on reos.com.",
+      "columns": {
+        "product": "Product",
+        "buyer": "Buyer",
+        "gateway": "Gateway",
+        "total": "Total",
+        "paid": "Paid",
+        "status": "Status"
+      },
+      "paid": "Paid",
+      "refunded": "Refunded",
+      "partlyRefunded": "{{amount}} refunded",
+      "refund": "Refund",
+      "title": "Refund {{product}}",
+      "help": "Up to {{amount}} can be refunded. A full refund ends access at once; a partial one keeps it.",
+      "within_one": "Within the policy: bought {{count}} day ago (full refunds within {{window}} days).",
+      "within_other": "Within the policy: bought {{count}} days ago (full refunds within {{window}} days).",
+      "outside_one": "Outside the policy (bought {{count}} day ago; full refunds within {{window}} days). Say why below.",
+      "outside_other": "Outside the policy (bought {{count}} days ago; full refunds within {{window}} days). Say why below.",
+      "progressNote": "Course progress (under 25%) can be checked once the course player tracks it.",
+      "amount": "Amount (USD)",
+      "amountHelp": "Leave empty to refund everything left.",
+      "reason": "Reason (kept in the audit log)",
+      "refundAll": "Refund in full",
+      "refundPart": "Refund this amount",
+      "doneFull": "Refunded in full. Access has ended.",
+      "donePartial": "Partly refunded. Access stays.",
+      "errors": {
+        "notPaid": "Only paid orders can be refunded.",
+        "amount": "That's more than can be refunded.",
+        "gateway": "The order's gateway isn't connected right now.",
+        "failed": "The gateway didn't make the refund. Nothing changed; try again."
+      }
+    },
+    "reconciliation": {
+      "title": "Reconciliation",
+      "help": "Each morning, yesterday's ledger is matched with each gateway: orders, refunds and payouts, amount for amount.",
+      "none": "No runs yet. The first runs tomorrow morning.",
+      "status": {
+        "matched": "{{matched}} matched",
+        "differences_one": "{{count}} difference",
+        "differences_other": "{{count}} differences",
+        "failed": "Couldn't reach the gateway"
+      },
+      "difference": "{{kind}} {{reference}}: ledger {{ledger}}, gateway {{gateway}}",
+      "kinds": {
+        "order": "Order",
+        "refund": "Refund",
+        "transfer": "Payout",
+        "balance": "Account"
+      }
     }
   },
   "plans": {

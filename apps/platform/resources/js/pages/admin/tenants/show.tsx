@@ -1,4 +1,6 @@
 import { SponsorCodesCard } from '@/components/sponsor-codes-card';
+import type { SponsorPools } from '@/components/sponsor-pool-card';
+import { SponsorPoolCard } from '@/components/sponsor-pool-card';
 import type { SponsorCodeRow } from '@/components/sponsor-codes-card';
 import { Head, Link, router } from '@inertiajs/react';
 import { AlertTriangle, ArrowLeft } from 'lucide-react';
@@ -51,6 +53,7 @@ type Props = {
     sponsor?: {
         codes: SponsorCodeRow[];
         products: { id: number; name: string }[];
+        pools: SponsorPools;
     } | null;
 };
 
@@ -496,6 +499,13 @@ export default function TenantShow({
                             {t('tenants.plan.billingNote')}
                         </p>
                     </section>
+                ) : null}
+
+                {tab === 'plan' && sponsor ? (
+                    <SponsorPoolCard
+                        tenantId={tenant.id}
+                        pools={sponsor.pools}
+                    />
                 ) : null}
 
                 {tab === 'plan' && sponsor ? (

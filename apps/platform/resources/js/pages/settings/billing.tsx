@@ -30,7 +30,16 @@ export default function Billing({
     access,
     subscriptions,
     orders,
+    credits,
 }: {
+    /** AI credits (B5.3): this month's (expire at month end) and top-ups (never expire). */
+    credits: {
+        monthly: number;
+        topup: number;
+        allowance: number;
+        used: number;
+        sponsored: boolean;
+    };
     state: string;
     plans: Plan[];
     access: {
@@ -102,6 +111,45 @@ export default function Billing({
                     </ul>
                 )}
             </div>
+
+            <section
+                aria-labelledby="ai-credits"
+                className="space-y-3 rounded-reos-lg border border-border bg-card p-4"
+            >
+                <h2 id="ai-credits" className="font-semibold">
+                    {t('billing.credits.title')}
+                </h2>
+                {credits.sponsored ? (
+                    <p className="text-body text-muted-foreground">
+                        {t('billing.credits.sponsored')}
+                    </p>
+                ) : (
+                    <dl className="grid gap-3 sm:grid-cols-2">
+                        <div>
+                            <dt className="text-muted-foreground">
+                                {t('billing.credits.monthly')}
+                            </dt>
+                            <dd className="text-title font-semibold tabular-nums">
+                                {t('billing.credits.ofAllowance', {
+                                    left: credits.monthly,
+                                    allowance: credits.allowance,
+                                })}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt className="text-muted-foreground">
+                                {t('billing.credits.topup')}
+                            </dt>
+                            <dd className="text-title font-semibold tabular-nums">
+                                {credits.topup}
+                            </dd>
+                        </div>
+                    </dl>
+                )}
+                <p className="text-sm text-muted-foreground">
+                    {t('billing.credits.rules')}
+                </p>
+            </section>
 
             <Form
                 {...codes.form()}

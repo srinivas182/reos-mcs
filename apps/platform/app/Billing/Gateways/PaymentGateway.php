@@ -36,4 +36,10 @@ interface PaymentGateway
 
     /** Checks the signature and reads the event; null when it isn't genuine. */
     public function event(string $body, ?string $signature): ?GatewayEvent;
+
+    /**
+     * Refunds all or part of a paid order at the gateway (B5.3), once per
+     * key; returns the gateway's refund id.
+     */
+    public function refund(Order $order, int $amountCents, string $key): string;
 }
