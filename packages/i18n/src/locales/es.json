@@ -511,7 +511,8 @@
       "verify_service_sid": "SID del servicio Verify",
       "api_token": "Token de API",
       "zone_id": "ID de la zona",
-      "cname_target": "Destino CNAME"
+      "cname_target": "Destino CNAME",
+      "sns_topic_arn": "ARN del tema de SNS (rebotes y quejas)"
     },
     "checks": {
       "test": "Probar conexión",
@@ -1993,7 +1994,9 @@
         "message.reported": "Denunció mensajes",
         "message.report_resolved": "Marcó una denuncia como atendida",
         "announcement.sent": "Envió un anuncio",
-        "account.phone_changed": "Número móvil cambiado"
+        "account.phone_changed": "Número móvil cambiado",
+        "email.suppressed": "Correo detenido por rebote o queja",
+        "email.resumed": "Correo reanudado"
       }
     }
   },
@@ -4587,6 +4590,12 @@
         "welcome": "REOS: Usted se suscribió a las alertas de REOS. La frecuencia varía. Pueden aplicarse tarifas de mensajes y datos. Responda HELP para obtener ayuda o STOP para cancelar.",
         "help": "Alertas de REOS: obtenga ayuda en reos.com/help o support@reos.com. La frecuencia varía. Pueden aplicarse tarifas de mensajes y datos. Responda STOP para cancelar."
       }
+    },
+    "email": {
+      "bounce": "El correo a {{email}} rebotó el {{date}}, así que REOS dejó de enviarle correos. Revise la dirección o su buzón y luego reanude el correo.",
+      "complaint": "Un correo de REOS a {{email}} se marcó como spam el {{date}}, así que REOS dejó de enviarle correos. Reanude el correo si desea recibirlo de nuevo.",
+      "resume": "Reanudar correo",
+      "resumed": "Correo reanudado."
     }
   }
 }

@@ -16,6 +16,8 @@ use App\Integrations\Credentials\CredentialCipher;
 use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\Credentials\DatabaseCredentialVault;
 use App\Jobs\SyncConnection;
+use App\Mail\Ses\OutgoingMail;
+use App\Mail\Ses\SesMailer;
 use App\Models\Connection;
 use App\Models\PersonalAccessToken;
 use App\Models\State;
@@ -28,12 +30,14 @@ use App\Sso\TestIdentityProvider;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Notifications\Events\NotificationFailed;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
@@ -99,6 +103,9 @@ class AppServiceProvider extends ServiceProvider
         Flags::define();
         // What each notification sent where (B6.2).
         Event::listen(NotificationSent::class, [Deliveries::class, 'sent']);
+        // Email (B6.2d): SES from Settings › Integrations, and no mail to addresses that bounced or complained.
+        Mail::extend('reos-ses', fn () => $this->app->make(SesMailer::class)->transport());
+        Event::listen(MessageSending::class, [OutgoingMail::class, 'handle']);
         Event::listen(NotificationFailed::class, [Deliveries::class, 'failed']);
     }
 

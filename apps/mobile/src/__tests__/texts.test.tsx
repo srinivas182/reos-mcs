@@ -8,6 +8,10 @@ import { ToastProvider } from '@/ui';
 const mockSendCode = jest.fn().mockResolvedValue({ ok: true });
 const mockVerify = jest.fn().mockResolvedValue({ ok: true });
 const mockTurn = jest.fn().mockResolvedValue({ ok: true });
+const mockResume = jest.fn().mockResolvedValue(true);
+const mockEmail: { current: { address: string | null; stopped: { reason: 'bounce' | 'complaint'; at: string } | null } } = {
+  current: { address: 'james.miller@lonestar.example', stopped: null },
+};
 const mockTexts: { current: { phone: string | null; on: boolean; available: boolean } } = { current: { phone: null, on: false, available: true } };
 
 jest.mock('expo-router', () => ({ router: { push: jest.fn(), back: jest.fn() }, useFocusEffect: jest.fn() }));
@@ -19,6 +23,7 @@ jest.mock('@/lib/notifications', () => ({
       channels: ['inbox', 'push', 'email', 'sms'],
       phones: 1,
       texts: mockTexts.current,
+      email: mockEmail.current,
       quiet: { enabled: true, start: '21:00', end: '07:00' },
       timezone: 'America/Chicago',
     },
@@ -27,6 +32,7 @@ jest.mock('@/lib/notifications', () => ({
     sendCode: mockSendCode,
     verifyNumber: mockVerify,
     turnTexts: mockTurn,
+    resumeEmail: mockResume,
   }),
 }));
 
@@ -69,5 +75,14 @@ describe('Texts on the phone (B6.2c)', () => {
       </I18nextProvider>,
     );
     expect(screen.getByRole('switch', { name: 'Session starting by Text' })).toBeEnabled();
+  });
+
+  it('says why email stopped and resumes it (B6.2d)', async () => {
+    mockEmail.current = { address: 'james.miller@lonestar.example', stopped: { reason: 'complaint', at: '2026-11-24T18:00:00Z' } };
+    await wrap(<NotificationSettingsScreen />);
+    expect(screen.getByText(/An email from REOS to james\.miller@lonestar\.example was marked as spam/)).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('button', { name: 'Resume email' }));
+    expect(mockResume).toHaveBeenCalled();
+    mockEmail.current = { address: 'james.miller@lonestar.example', stopped: null };
   });
 });

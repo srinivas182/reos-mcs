@@ -170,4 +170,33 @@ describe('Notifications (B6.2)', () => {
             expect.anything(),
         );
     });
+
+    it('says why email stopped after a bounce, and resumes it (B6.2d)', async () => {
+        render(
+            <NotificationSettings
+                kinds={[]}
+                channels={['inbox', 'push', 'email', 'sms']}
+                quiet={{ enabled: true, start: '21:00', end: '07:00' }}
+                timezone="America/Chicago"
+                browserTimezone="America/Chicago"
+                email={{
+                    address: 'james.miller@lonestar.example',
+                    stopped: { reason: 'bounce', at: '2026-11-24T18:00:00Z' },
+                }}
+            />,
+        );
+        expect(
+            screen.getByText(
+                /Email to james\.miller@lonestar\.example bounced on Nov 24, 2026/,
+            ),
+        ).toBeInTheDocument();
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Resume email' }),
+        );
+        expect(router.post).toHaveBeenCalledWith(
+            '/settings/notifications/email/resume',
+            {},
+            expect.anything(),
+        );
+    });
 });

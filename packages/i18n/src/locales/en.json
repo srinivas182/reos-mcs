@@ -511,7 +511,8 @@
       "verify_service_sid": "Verify service SID",
       "api_token": "API token",
       "zone_id": "Zone ID",
-      "cname_target": "CNAME target"
+      "cname_target": "CNAME target",
+      "sns_topic_arn": "SNS topic ARN (bounces and complaints)"
     },
     "checks": {
       "test": "Test connection",
@@ -1993,7 +1994,9 @@
         "message.reported": "Reported messages",
         "message.report_resolved": "Marked a message report handled",
         "announcement.sent": "Sent an announcement",
-        "account.phone_changed": "Mobile number changed"
+        "account.phone_changed": "Mobile number changed",
+        "email.suppressed": "Email stopped after a bounce or complaint",
+        "email.resumed": "Email resumed"
       }
     }
   },
@@ -4587,6 +4590,12 @@
         "welcome": "REOS: You’re signed up for REOS alerts. Msg frequency varies. Msg & data rates may apply. Reply HELP for help, STOP to cancel.",
         "help": "REOS alerts: get help at reos.com/help or support@reos.com. Msg frequency varies. Msg & data rates may apply. Reply STOP to cancel."
       }
+    },
+    "email": {
+      "bounce": "Email to {{email}} bounced on {{date}}, so REOS stopped emailing you. Check the address or your mailbox, then resume email.",
+      "complaint": "An email from REOS to {{email}} was marked as spam on {{date}}, so REOS stopped emailing you. Resume email if you want it again.",
+      "resume": "Resume email",
+      "resumed": "Email resumed."
     }
   }
 }

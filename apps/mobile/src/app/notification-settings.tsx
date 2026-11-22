@@ -19,8 +19,8 @@ const GROUPS = ['messages', 'learning', 'organisation', 'tools', 'billing', 'acc
  * each kind by channel. Security and account messages can't be turned off.
  */
 export default function NotificationSettingsScreen() {
-  const { t } = useTranslation();
-  const { settings, failed, save, sendCode, verifyNumber, turnTexts } = useNotificationSettings();
+  const { t, i18n } = useTranslation();
+  const { settings, failed, save, sendCode, verifyNumber, turnTexts, resumeEmail } = useNotificationSettings();
   // What the person typed, else what's saved.
   const [startEdit, setStart] = useState<string | null>(null);
   const [endEdit, setEnd] = useState<string | null>(null);
@@ -90,6 +90,16 @@ export default function NotificationSettingsScreen() {
     <Screen>
       <TitleBar title={t('notifications.settingsTitle')} onBack={() => router.back()} />
       {failed ? <Callout tone="danger" title={t('consents.errors.generic')} live /> : null}
+      {settings?.email?.stopped ? (
+        <Callout
+          tone="danger"
+          title={t(`notifications.email.${settings.email.stopped.reason}`, {
+            email: settings.email.address ?? '',
+            date: new Date(settings.email.stopped.at).toLocaleDateString(i18n.language, { dateStyle: 'medium' }),
+          })}
+          action={<Button variant="secondary" label={t('notifications.email.resume')} onPress={() => void resumeEmail()} />}
+        />
+      ) : null}
 
       <Eyebrow>{t('notifications.thisPhone.title')}</Eyebrow>
       {permission === 'granted' ? (

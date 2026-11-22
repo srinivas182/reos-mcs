@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Notifications\Centre;
 
+use App\Mail\Ses\EmailSuppressions;
 use App\Models\PushDevice;
 use App\Models\User;
 use App\Notifications\Centre\Sms\TextAlerts;
@@ -16,10 +17,10 @@ use Illuminate\Validation\ValidationException;
  */
 final readonly class Preferences
 {
-    public function __construct(private NotificationCentre $centre, private TextAlerts $texts) {}
+    public function __construct(private NotificationCentre $centre, private TextAlerts $texts, private EmailSuppressions $suppressions) {}
 
     /**
-     * @return array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: string|null}>, channels: list<string>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     * @return array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: string|null}>, channels: list<string>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, email: array{address: string|null, stopped: array{reason: string, at: string}|null}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
      */
     public function summary(User $user): array
     {
@@ -40,6 +41,8 @@ final readonly class Preferences
             'phones' => PushDevice::query()->where('user_id', $user->id)->count(),
             // Texts (B6.2c): the verified number, masked, and whether they turned texts on.
             'texts' => $this->texts->status($user),
+            // Email stopped after a bounce or complaint (B6.2d), with a way to resume.
+            'email' => ['address' => $user->email, 'stopped' => $this->suppressions->for($user)],
             'quiet' => ['enabled' => $settings->quiet_enabled, 'start' => $settings->quiet_start, 'end' => $settings->quiet_end],
             'timezone' => $settings->timezone,
         ];

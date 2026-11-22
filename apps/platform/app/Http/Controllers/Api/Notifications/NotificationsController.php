@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api\Notifications;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\NotificationSettingsRequest;
+use App\Mail\Ses\EmailSuppressions;
 use App\Models\User;
 use App\Notifications\Centre\Inbox;
 use App\Notifications\Centre\Preferences;
@@ -37,6 +38,20 @@ final class NotificationsController extends Controller
     }
 
     /**
+     * Resume email after a bounce or complaint (B6.2d).
+     *
+     * For people who fixed their mailbox. If it bounces again, it stops again.
+     *
+     * @response array{address: string|null, stopped: array{reason: 'bounce'|'complaint', at: string}|null}
+     */
+    public function resumeEmail(#[CurrentUser] User $user, EmailSuppressions $suppressions): JsonResponse
+    {
+        $suppressions->resume($user);
+
+        return response()->json(['address' => $user->email, 'stopped' => $suppressions->for($user)]);
+    }
+
+    /**
      * Mark all read (B6.2).
      *
      * @response array{unread: int}
@@ -53,7 +68,7 @@ final class NotificationsController extends Controller
      * messages), urgent (arrives in quiet hours) or can be a digest; quiet
      * hours and the time zone they follow.
      *
-     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool, sms: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'|'sms'>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool, sms: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'|'sms'>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, email: array{address: string|null, stopped: array{reason: 'bounce'|'complaint', at: string}|null}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
      */
     public function settings(#[CurrentUser] User $user, Preferences $preferences): JsonResponse
     {
@@ -67,7 +82,7 @@ final class NotificationsController extends Controller
      * `digests.{kind}` daily, weekly or null, `quiet` (enabled, start, end as
      * HH:MM) and `timezone`. Locked kinds can't be turned off (422).
      *
-     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool, sms: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'|'sms'>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array{inbox: bool, push: bool, email: bool, sms: bool}, digest: 'daily'|'weekly'|null}>, channels: list<'inbox'|'push'|'email'|'sms'>, phones: int, texts: array{phone: string|null, on: bool, available: bool}, email: array{address: string|null, stopped: array{reason: 'bounce'|'complaint', at: string}|null}, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
      */
     public function update(NotificationSettingsRequest $request, #[CurrentUser] User $user, Preferences $preferences): JsonResponse
     {

@@ -14,7 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { nativeSelect } from '@/lib/tenants';
-import { update } from '@/routes/notification-settings';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { resumeEmail, update } from '@/routes/notification-settings';
 
 type Channel = 'inbox' | 'push' | 'email' | 'sms';
 
@@ -71,6 +72,7 @@ export default function NotificationSettings({
     browserTimezone,
     phones = 0,
     texts = null,
+    email = null,
 }: {
     kinds: KindRow[];
     channels: Channel[];
@@ -81,8 +83,13 @@ export default function NotificationSettings({
     phones?: number;
     /** Texts (B6.2c): the verified number and whether they're on. */
     texts?: TextsStatus | null;
+    /** Email stopped after a bounce or complaint (B6.2d). */
+    email?: {
+        address: string | null;
+        stopped: { reason: 'bounce' | 'complaint'; at: string } | null;
+    } | null;
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [hours, setHours] = useState(quiet);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [busy, setBusy] = useState(false);
@@ -102,6 +109,38 @@ export default function NotificationSettings({
             <h1 className="sr-only">{t('notifications.settingsTitle')}</h1>
 
             <div className="space-y-10">
+                {email?.stopped ? (
+                    <Alert variant="destructive">
+                        <AlertDescription className="space-y-3">
+                            <p className="text-base">
+                                {t(
+                                    `notifications.email.${email.stopped.reason}`,
+                                    {
+                                        email: email.address ?? '',
+                                        date: new Date(
+                                            email.stopped.at,
+                                        ).toLocaleDateString(i18n.language, {
+                                            dateStyle: 'medium',
+                                        }),
+                                    },
+                                )}
+                            </p>
+                            <Button
+                                variant="outline"
+                                disabled={busy}
+                                onClick={() =>
+                                    router.post(
+                                        resumeEmail().url,
+                                        {},
+                                        { preserveScroll: true },
+                                    )
+                                }
+                            >
+                                {t('notifications.email.resume')}
+                            </Button>
+                        </AlertDescription>
+                    </Alert>
+                ) : null}
                 <section className="space-y-4">
                     <Heading
                         variant="small"

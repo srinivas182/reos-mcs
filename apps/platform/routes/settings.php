@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Notifications by kind and channel, quiet hours and digests (B6.2).
     Route::get('settings/notifications', [NotificationsController::class, 'settings'])->name('notification-settings.edit');
     Route::put('settings/notifications', [NotificationsController::class, 'update'])->middleware('throttle:30,1,notification-settings')->name('notification-settings.update');
+    Route::post('settings/notifications/email/resume', [NotificationsController::class, 'resumeEmail'])->middleware('throttle:5,10,email-resume')->name('notification-settings.resume-email');
     // Texts (B6.2c): the mobile number and the texts switch.
     Route::post('settings/notifications/phone', [TextsController::class, 'sendCode'])->middleware('throttle:5,10,texts-code')->name('texts.phone');
     Route::post('settings/notifications/phone/verify', [TextsController::class, 'verify'])->middleware('throttle:10,10,texts-verify')->name('texts.verify');

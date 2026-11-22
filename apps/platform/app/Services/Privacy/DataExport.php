@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Services\Authorization\Memberships;
 use App\Tenancy\Tenancy;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 /**
  * "Download my data" (TDPSA right of access and portability, A4.3b): what
@@ -136,6 +137,7 @@ final readonly class DataExport
                 ])->all(),
                 'settings' => DB::table('notification_settings')->where('user_id', $user->id)->get(['quiet_enabled', 'quiet_start', 'quiet_end', 'timezone', 'channels', 'digests'])
                     ->map(static fn ($r): array => (array) $r)->first(),
+                'email_stopped' => $user->email === null ? null : DB::table('email_suppressions')->where('email', Str::lower($user->email))->first(['reason', 'detail', 'created_at']),
                 'phones' => DB::table('push_devices')->where('user_id', $user->id)->get(['name', 'platform', 'created_at', 'last_used_at'])->map(static fn ($r): array => (array) $r)->all(),
             ],
             // What they agreed to and withdrew (A6.3): purpose, version, when and how.
