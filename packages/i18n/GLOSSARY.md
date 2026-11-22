@@ -75,3 +75,12 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Regulator (state real estate commission) | Regulador | |
 | Launch checklist (state) | Lista de lanzamiento | |
 | State switcher | Selector de estados | |
+| Content library | Biblioteca de contenido | |
+| Knowledge base | Base de conocimientos | |
+| Passage (search result) | Pasaje | |
+| Captions (video) | Subtítulos | |
+| Live (course status) | Publicado | A course shown to learners |
+| Qualifying (course) | Precalificación | TREC qualifying education |
+| Post-license | Poslicencia | |
+| Elective | Optativo | |
+| Approval number (regulator) | Número de aprobación | |

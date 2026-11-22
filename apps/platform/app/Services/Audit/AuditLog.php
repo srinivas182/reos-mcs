@@ -24,6 +24,7 @@ final readonly class AuditLog
         'brand' => ['brand.', 'domain.', 'sso.'],
         'integrations' => ['integration.', 'catalogue.', 'connection.'],
         'states' => ['state.'],
+        'content' => ['course.', 'lesson.'],
         'privacy' => ['privacy.'],
     ];
 

@@ -39,6 +39,7 @@ enum Permission: string
     case TenantsManage = 'tenants.manage';
     case IntegrationsManage = 'integrations.manage';
     case StatesManage = 'states.manage';
+    case ContentManage = 'content.manage';
     case AuditView = 'audit.view';
 
     /** The area a permission is grouped under on screens. */

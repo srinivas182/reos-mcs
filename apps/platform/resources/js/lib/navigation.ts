@@ -1,6 +1,7 @@
 import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import {
+    BookOpen,
     Building2,
     House,
     Map as MapIcon,
@@ -15,6 +16,7 @@ import { show as brandingShow } from '@/routes/branding';
 import { index as agentsIndex } from '@/routes/agents';
 import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
+import { library as contentLibrary } from '@/routes/content';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -37,6 +39,7 @@ export type NavLabel =
     | 'brokerageSettings'
     | 'agents'
     | 'complianceAndAudit'
+    | 'contentAndApprovals'
     | 'connections';
 
 export type RoleNavItem = {
@@ -162,7 +165,12 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             item('tenants', Building2, tenantsIndex()),
             item('people', Users, people()),
             item('states', MapIcon, states()),
-            planned('contentAndApprovals'),
+            item(
+                'contentAndApprovals',
+                BookOpen,
+                contentLibrary(),
+                '/admin/content',
+            ),
             item('integrations', Plug, integrations()),
             planned('paymentGateways'),
             planned('plansAndPricing'),

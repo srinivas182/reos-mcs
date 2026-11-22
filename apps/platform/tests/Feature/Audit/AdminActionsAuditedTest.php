@@ -3,15 +3,22 @@
 declare(strict_types=1);
 
 use App\Authorization\Role;
+use App\Content\MediaKind;
 use App\Enums\OrganisationType;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Models\AuditEvent;
+use App\Models\Course;
 use App\Models\Invitation;
+use App\Models\Lesson;
+use App\Models\LessonMedia;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
+use App\Services\Content\Courses;
+use App\Services\Content\LessonFiles;
+use App\Services\Content\Lessons;
 use App\Services\Licences\Licences;
 use App\Services\Privacy\PrivacyRequests;
 use App\Services\StateRules\StateRules;
@@ -79,6 +86,26 @@ function auditGrant(Organisation $lone, User $ops, bool $approve = false, ?User 
     return $approve && $linda !== null ? app(SupportAccess::class)->answer($grant, $linda, true) : $grant;
 }
 
+function auditCourse(User $ops): Course
+{
+    return app(Courses::class)->create(['title' => 'Principles of Real Estate II', 'type' => 'test_prep', 'states' => ['TX']], $ops);
+}
+
+function auditLesson(User $ops): Lesson
+{
+    return app(Lessons::class)->create(auditCourse($ops), ['title' => 'Agency disclosure'], $ops);
+}
+
+/** A captions file uploaded to storage, waiting for "done". */
+function auditFile(User $ops): LessonMedia
+{
+    $bytes = "WEBVTT\n\n00:00:01.000 --> 00:00:02.000\nHello";
+    $media = app(LessonFiles::class)->begin(auditLesson($ops), MediaKind::Captions, 'a.vtt', strlen($bytes), $ops)['media'];
+    LessonFiles::disk()->put($media->path, $bytes);
+
+    return $media;
+}
+
 /** @return array<string, Closure(TestCase): array<string, mixed>> */
 function adminActions(): array
 {
@@ -127,6 +154,51 @@ function adminActions(): array
             app(StateRules::class)->draft(State::query()->findOrFail('TX'), 'ce.hours', ['value' => ['number' => 18], 'citation' => 'x', 'effective_from' => '2027-01-01'], $ops);
 
             return auditCase($ops, 'POST', '/admin/states/TX/rules/publish', confirmed: true);
+        },
+        // Super admin: content library (A5.3).
+        'content.courses.store' => fn () => auditCase(auditOps(), 'POST', '/admin/content/courses', ['title' => 'Legal Update I', 'type' => 'ce', 'states' => ['TX']], confirmed: true),
+        'content.courses.update' => fn () => auditCase($ops = auditOps(), 'PATCH', '/admin/content/courses/'.auditCourse($ops)->id, ['title' => 'Legal Update II'], confirmed: true),
+        'content.courses.status' => fn () => auditCase($ops = auditOps(), 'PUT', '/admin/content/courses/'.auditCourse($ops)->id.'/status', ['status' => 'in_review'], confirmed: true),
+        'content.courses.destroy' => fn () => auditCase($ops = auditOps(), 'DELETE', '/admin/content/courses/'.auditCourse($ops)->id, confirmed: true),
+        'content.courses.restore' => function () {
+            $ops = auditOps();
+            $course = auditCourse($ops);
+            $course->delete();
+
+            return auditCase($ops, 'POST', "/admin/content/courses/{$course->id}/restore", confirmed: true);
+        },
+        'content.modules.store' => fn () => auditCase($ops = auditOps(), 'POST', '/admin/content/courses/'.auditCourse($ops)->id.'/modules', ['title' => 'Unit 6'], confirmed: true),
+        'content.modules.update' => fn () => auditCase($ops = auditOps(), 'PATCH', '/admin/content/modules/'.auditCourse($ops)->modules()->create(['title' => 'Unit 6'])->id, ['title' => 'Unit 6: Agency'], confirmed: true),
+        'content.modules.destroy' => fn () => auditCase($ops = auditOps(), 'DELETE', '/admin/content/modules/'.auditCourse($ops)->modules()->create(['title' => 'Unit 6'])->id, confirmed: true),
+        'content.lessons.store' => fn () => auditCase($ops = auditOps(), 'POST', '/admin/content/courses/'.auditCourse($ops)->id.'/lessons', ['title' => 'Agency disclosure'], confirmed: true),
+        'content.lessons.update' => fn () => auditCase($ops = auditOps(), 'PATCH', '/admin/content/lessons/'.auditLesson($ops)->id, ['body' => 'The IABS notice.'], confirmed: true),
+        'content.lessons.destroy' => fn () => auditCase($ops = auditOps(), 'DELETE', '/admin/content/lessons/'.auditLesson($ops)->id, confirmed: true),
+        'content.lessons.restore' => function () {
+            $ops = auditOps();
+            $lesson = auditLesson($ops);
+            $lesson->delete();
+
+            return auditCase($ops, 'POST', "/admin/content/lessons/{$lesson->id}/restore", confirmed: true);
+        },
+        'content.lessons.reindex' => fn () => auditCase($ops = auditOps(), 'POST', '/admin/content/lessons/'.auditLesson($ops)->id.'/reindex', confirmed: true),
+        'content.files.store' => function () {
+            Storage::fake();
+            $ops = auditOps();
+
+            return auditCase($ops, 'POST', '/admin/content/lessons/'.auditLesson($ops)->id.'/files', ['kind' => 'captions', 'name' => 'a.vtt', 'size' => 10], confirmed: true);
+        },
+        'content.files.complete' => function () {
+            Storage::fake();
+            $ops = auditOps();
+            $media = auditFile($ops);
+
+            return auditCase($ops, 'POST', "/admin/content/files/{$media->id}/complete", confirmed: true);
+        },
+        'content.files.destroy' => function () {
+            Storage::fake();
+            $ops = auditOps();
+
+            return auditCase($ops, 'DELETE', '/admin/content/files/'.auditFile($ops)->id, confirmed: true);
         },
         'states.checklist' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/LA/checklist', ['item' => 'rules', 'done' => true], confirmed: true),
         'people.licences.approve' => function () {
@@ -345,5 +417,5 @@ it('audits the admin action', function (string $name) {
 const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
-    'compliance.privacy.update',
+    'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update',
 ];

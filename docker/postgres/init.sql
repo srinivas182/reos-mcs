@@ -10,3 +10,7 @@ CREATE DATABASE reos_testing OWNER reos;
 CREATE EXTENSION IF NOT EXISTS vector;
 CREATE EXTENSION IF NOT EXISTS citext;
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+-- Parallel test databases are copies of template1 (pgvector for the knowledge base, A5.3).
+\connect template1
+CREATE EXTENSION IF NOT EXISTS vector;
