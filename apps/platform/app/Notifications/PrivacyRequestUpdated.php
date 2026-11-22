@@ -5,27 +5,31 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use App\Models\PrivacyRequest;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use App\Services\Privacy\PrivacyRequests;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /**
  * The person hears about their privacy request (A4.3b): received with the
  * date REOS answers by, extended (with why), done (with the download link
  * for "see my data") or declined (with why).
  */
-final class PrivacyRequestUpdated extends Notification implements ShouldQueue
+final class PrivacyRequestUpdated extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(public readonly PrivacyRequest $request, public readonly ?string $downloadLink = null) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::PrivacyRequest;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('privacy.inbox.updated');
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => url('/settings/profile')];
     }
 
     public function toMail(object $notifiable): MailMessage

@@ -29,6 +29,7 @@ declare module '@inertiajs/core' {
             connectionAlerts: import('@/components/connection-alert').ConnectionAlertItem[];
             whatsNew: import('@/components/whats-new').WhatsNewItem | null;
             messages: { unread: number; user: number } | null;
+            notifications: { unread: number } | null;
             /** Live states' names, for the public site's state chip. */
             liveStates: string[];
             /** One-time notices after a redirect. */

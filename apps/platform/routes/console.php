@@ -44,3 +44,6 @@ Schedule::command('reos:ledger:reconcile')->dailyAt('05:20')->withoutOverlapping
 Schedule::command('reos:health:check')->everyMinute()->withoutOverlapping()->onOneServer();
 // Feature flags (A6.2): error rates per flag and the automatic rollback.
 Schedule::command('reos:flags:watch')->everyMinute()->withoutOverlapping()->onOneServer();
+// The notification centre (B6.2): alerts held in quiet hours, and digests at 8 AM local time.
+Schedule::command('reos:notifications:release')->everyFiveMinutes()->withoutOverlapping()->onOneServer();
+Schedule::command('reos:notifications:digests')->hourlyAt(2)->withoutOverlapping()->onOneServer();

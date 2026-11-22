@@ -53,7 +53,8 @@
     "featuresAndReleases": "Features and releases",
     "privacy": "Privacy",
     "messages": "Messages",
-    "announcements": "Announcements"
+    "announcements": "Announcements",
+    "notifications": "Notifications"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2494,6 +2495,9 @@
       "note": "Note from REOS: {{note}}",
       "download": "Download my data",
       "linkDays": "The link works for {{days}} days."
+    },
+    "inbox": {
+      "updated": "Your privacy request was updated"
     }
   },
   "compliance": {
@@ -4426,6 +4430,98 @@
     "markReadFor": "Mark {{title}} as read",
     "errors": {
       "nobody": "No one matches that group. Choose fewer filters."
+    },
+    "mail": {
+      "from": "From {{from}}",
+      "open": "Open in REOS"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "purpose": "Everything REOS told you, newest first.",
+    "bell": "Notifications",
+    "bellUnread_one": "Notifications, {{count}} unread",
+    "bellUnread_other": "Notifications, {{count}} unread",
+    "readAll": "Mark all read",
+    "settings": "Notification settings",
+    "empty": "No notifications yet",
+    "emptyBody": "Receipts, messages, announcements and alerts appear here.",
+    "unread": "unread",
+    "settingsTitle": "Notifications",
+    "saved": "Notification settings saved.",
+    "quiet": {
+      "title": "Quiet hours",
+      "description": "Anything that isn't urgent waits until quiet hours end. Security alerts and sessions about to start still arrive.",
+      "on": "Quiet hours on",
+      "start": "From",
+      "end": "Until",
+      "zone": "Times are in {{zone}}.",
+      "useZone": "Use {{zone}} instead",
+      "save": "Save quiet hours"
+    },
+    "kinds": {
+      "title": "What you hear about",
+      "description": "Choose where each kind goes. The inbox is the bell in REOS; it never makes a sound.",
+      "kind": "Notification",
+      "digest": "Digest",
+      "locked": "Can't be turned off",
+      "urgent": "Urgent: arrives in quiet hours",
+      "switch": "{{kind}} by {{channel}}",
+      "digestFor": "Digest for {{kind}}"
+    },
+    "channels": {
+      "inbox": "Inbox",
+      "email": "Email"
+    },
+    "digests": {
+      "off": "One at a time",
+      "daily": "Daily at 8 AM",
+      "weekly": "Weekly, Monday 8 AM"
+    },
+    "groups": {
+      "messages": "Messages",
+      "learning": "Learning and sessions",
+      "organisation": "Your organization",
+      "tools": "Tools and integrations",
+      "billing": "Billing",
+      "account": "Account and security"
+    },
+    "names": {
+      "new_device": "New device sign-in",
+      "account_deletion": "Account deletion",
+      "privacy_request": "Privacy requests",
+      "purchase_receipt": "Receipts",
+      "payment_failed": "Failed payments",
+      "membership_link": "Membership link",
+      "seats_requested": "Seat requests",
+      "broker_asked": "Agents asking for a tool",
+      "support_access": "Support access requests",
+      "integration_paused": "Integration paused",
+      "flag_rolled_back": "Feature rolled back",
+      "messages_reported": "Reported messages",
+      "state_rules_changed": "State rule changes",
+      "state_went_live": "A state went live",
+      "connection_reconnect": "A connection needs you",
+      "message": "Messages",
+      "announcement": "Announcements",
+      "session_starting": "Session starting"
+    },
+    "digest": {
+      "subject": {
+        "daily_one": "Your daily REOS digest: {{count}} update",
+        "daily_other": "Your daily REOS digest: {{count}} updates",
+        "weekly_one": "Your weekly REOS digest: {{count}} update",
+        "weekly_other": "Your weekly REOS digest: {{count}} updates"
+      },
+      "intro": {
+        "daily": "Here's what happened since yesterday.",
+        "weekly": "Here's what happened this week."
+      },
+      "settings": "Change what you get"
+    },
+    "errors": {
+      "locked": "Security and account messages can't be turned off.",
+      "noDigest": "This kind can't go into a digest."
     }
   }
 }

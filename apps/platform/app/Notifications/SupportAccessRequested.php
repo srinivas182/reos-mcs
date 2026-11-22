@@ -5,23 +5,27 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use App\Models\SupportAccessGrant;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use App\Services\Tenancy\SupportAccess;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** "REOS support asks to sign in to Lone Star Realty" (A4.1c), to each of the tenant's owners. */
-final class SupportAccessRequested extends Notification implements ShouldQueue
+final class SupportAccessRequested extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(public readonly SupportAccessGrant $grant) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::SupportAccess;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('support.mail.subject', ['tenant' => $this->grant->organisation->name]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => route('support-access.show', ['grant' => $this->grant->id])];
     }
 
     public function toMail(object $notifiable): MailMessage

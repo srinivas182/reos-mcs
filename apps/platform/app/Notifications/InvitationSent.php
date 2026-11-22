@@ -5,26 +5,30 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use App\Models\Invitation;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /**
  * "Linda Park invited you to Lone Star Realty" (A4.3a), by email, or as a
  * text through {@see text()}. In the language chosen when inviting, with
  * the link, the code and the expiry date. The day-7 reminder says so.
  */
-final class InvitationSent extends Notification implements ShouldQueue
+final class InvitationSent extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(public readonly Invitation $invitation, public readonly string $link, public readonly bool $reminder = false) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::Invitation;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __($this->reminder ? 'invites.mail.reminderSubject' : 'invites.mail.subject', $this->words(), $this->invitation->locale);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => $this->link];
     }
 
     public function toMail(object $notifiable): MailMessage

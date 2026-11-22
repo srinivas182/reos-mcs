@@ -1068,6 +1068,88 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My notifications (B6.2, the bell)
+         * @description The latest 30, newest first, and how many are unread.
+         */
+        get: operations["notifications.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark all read (B6.2) */
+        post: operations["notifications.read-all"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/notifications/{notification}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Mark one read (B6.2) */
+        post: operations["notifications.read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/notification-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My notification settings (B6.2, Me › Notifications)
+         * @description Each kind with its channels (on or off), whether it's locked (security
+         *     messages), urgent (arrives in quiet hours) or can be a digest; quiet
+         *     hours and the time zone they follow.
+         */
+        get: operations["me.notification-settings"];
+        /**
+         * Change my notification settings (B6.2)
+         * @description Send only what changes: `channels.{kind}.{channel}` true or false,
+         *     `digests.{kind}` daily, weekly or null, `quiet` (enabled, start, end as
+         *     HH:MM) and `timezone`. Locked kinds can't be turned off (422).
+         */
+        put: operations["me.notification-settings.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/onboarding": {
         parameters: {
             query?: never;
@@ -1863,6 +1945,20 @@ export interface components {
             admin: boolean;
         };
         /**
+         * NotificationSettingsRequest
+         * @description Notification settings (B6.2): channels per kind, digests, quiet hours and time zone.
+         */
+        NotificationSettingsRequest: {
+            channels?: boolean[][];
+            digests?: ("daily" | "weekly" | null)[];
+            quiet?: {
+                enabled?: boolean;
+                start?: string;
+                end?: string;
+            };
+            timezone?: string;
+        };
+        /**
          * OnboardingPath
          * @description The cards on "Choose your path" (mobile journey screen 1).
          *     | |
@@ -2338,6 +2434,7 @@ export type SchemaLicenceType = components['schemas']['LicenceType'];
 export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
+export type SchemaNotificationSettingsRequest = components['schemas']['NotificationSettingsRequest'];
 export type SchemaOnboardingPath = components['schemas']['OnboardingPath'];
 export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest'];
 export type SchemaOnboardingResource = components['schemas']['OnboardingResource'];
@@ -4760,6 +4857,204 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "notifications.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unread: number;
+                        items: {
+                            id: string;
+                            kind: string;
+                            title: string;
+                            body: string | null;
+                            url: string | null;
+                            read: boolean;
+                            at: string;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "notifications.read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unread: number;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "notifications.read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notification: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unread: number;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.notification-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        kinds: {
+                            kind: string;
+                            group: string;
+                            locked: boolean;
+                            urgent: boolean;
+                            digestible: boolean;
+                            channels: {
+                                [key: string]: boolean;
+                            };
+                            /** @enum {string|null} */
+                            digest: "daily" | "weekly" | null;
+                        }[];
+                        channels: string[];
+                        quiet: {
+                            enabled: boolean;
+                            start: string;
+                            end: string;
+                        };
+                        timezone: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.notification-settings.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["NotificationSettingsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        kinds: {
+                            kind: string;
+                            group: string;
+                            locked: boolean;
+                            urgent: boolean;
+                            digestible: boolean;
+                            channels: {
+                                [key: string]: boolean;
+                            };
+                            /** @enum {string|null} */
+                            digest: "daily" | "weekly" | null;
+                        }[];
+                        channels: string[];
+                        quiet: {
+                            enabled: boolean;
+                            start: string;
+                            end: string;
+                        };
+                        timezone: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

@@ -5,23 +5,27 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use App\Models\State;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** "Texas CE rules change on 1 September 2027" (A5.2, rule change alert), to every licence holder in the state. */
-final class StateRulesChanged extends Notification implements ShouldQueue
+final class StateRulesChanged extends CentreNotification
 {
-    use Queueable;
-
     /** @param list<string> $keys */
     public function __construct(public readonly State $state, public readonly array $keys, public readonly string $from) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::StateRulesChanged;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('stateRules.changedMail.subject', ['state' => $this->state->name]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => url('/settings/profile')];
     }
 
     public function toMail(object $notifiable): MailMessage

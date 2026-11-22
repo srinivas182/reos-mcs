@@ -85,6 +85,7 @@
 - **Quiet hours** in the person's time zone (default 9 PM to 7 AM): anything not urgent waits until the morning; urgent kinds (security, a session starting in 5 minutes) still arrive.
 - **Digests:** daily or weekly summaries instead of single messages, per kind.
 - **Done when:** quiet hours hold back non-urgent alerts and deliver them in the morning.
+- **As built, B6.2a:** one notification centre for all 16 existing notifications plus announcements (ADR 0023): the inbox (bell on the web top bar and on Today), channels by kind with security messages locked, quiet hours in the person's time zone (default 9 PM to 7 AM) that hold non-urgent alerts and release them when they end, daily or weekly digests at 8 AM local time, and a delivery log; Settings › Notifications and Me › Notifications. Push (Expo), SMS (Twilio with consent, STOP and HELP) and SES bounces follow in B6.2b.
 
 ### B6.3 Video rooms (Team B)
 

@@ -5241,6 +5241,445 @@
                 }
             }
         },
+        "/notifications": {
+            "get": {
+                "operationId": "notifications.index",
+                "description": "The latest 30, newest first, and how many are unread.",
+                "summary": "My notifications (B6.2, the bell)",
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "unread": {
+                                            "type": "integer"
+                                        },
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "body": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "read": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "title",
+                                                    "body",
+                                                    "url",
+                                                    "read",
+                                                    "at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "unread",
+                                        "items"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/read": {
+            "post": {
+                "operationId": "notifications.read-all",
+                "summary": "Mark all read (B6.2)",
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "unread": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "unread"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/notifications/{notification}/read": {
+            "post": {
+                "operationId": "notifications.read",
+                "summary": "Mark one read (B6.2)",
+                "tags": [
+                    "Notifications"
+                ],
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "unread": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "unread"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/notification-settings": {
+            "get": {
+                "operationId": "me.notification-settings",
+                "description": "Each kind with its channels (on or off), whether it's locked (security\nmessages), urgent (arrives in quiet hours) or can be a digest; quiet\nhours and the time zone they follow.",
+                "summary": "My notification settings (B6.2, Me \u203a Notifications)",
+                "tags": [
+                    "Notifications"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "kinds": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "kind": {
+                                                        "type": "string"
+                                                    },
+                                                    "group": {
+                                                        "type": "string"
+                                                    },
+                                                    "locked": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "urgent": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "digestible": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "channels": {
+                                                        "type": "object",
+                                                        "additionalProperties": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "digest": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "enum": [
+                                                            "daily",
+                                                            "weekly",
+                                                            null
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "kind",
+                                                    "group",
+                                                    "locked",
+                                                    "urgent",
+                                                    "digestible",
+                                                    "channels",
+                                                    "digest"
+                                                ]
+                                            }
+                                        },
+                                        "channels": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "quiet": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "start": {
+                                                    "type": "string"
+                                                },
+                                                "end": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "start",
+                                                "end"
+                                            ]
+                                        },
+                                        "timezone": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "kinds",
+                                        "channels",
+                                        "quiet",
+                                        "timezone"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "me.notification-settings.update",
+                "description": "Send only what changes: `channels.{kind}.{channel}` true or false,\n`digests.{kind}` daily, weekly or null, `quiet` (enabled, start, end as\nHH:MM) and `timezone`. Locked kinds can't be turned off (422).",
+                "summary": "Change my notification settings (B6.2)",
+                "tags": [
+                    "Notifications"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/NotificationSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "kinds": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "kind": {
+                                                        "type": "string"
+                                                    },
+                                                    "group": {
+                                                        "type": "string"
+                                                    },
+                                                    "locked": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "urgent": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "digestible": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "channels": {
+                                                        "type": "object",
+                                                        "additionalProperties": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "digest": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "enum": [
+                                                            "daily",
+                                                            "weekly",
+                                                            null
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "kind",
+                                                    "group",
+                                                    "locked",
+                                                    "urgent",
+                                                    "digestible",
+                                                    "channels",
+                                                    "digest"
+                                                ]
+                                            }
+                                        },
+                                        "channels": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "quiet": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "start": {
+                                                    "type": "string"
+                                                },
+                                                "end": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "start",
+                                                "end"
+                                            ]
+                                        },
+                                        "timezone": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "kinds",
+                                        "channels",
+                                        "quiet",
+                                        "timezone"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/me/onboarding": {
             "put": {
                 "operationId": "me.onboarding",
@@ -7846,6 +8285,53 @@
                     "admin"
                 ],
                 "title": "MembershipResource"
+            },
+            "NotificationSettingsRequest": {
+                "type": "object",
+                "description": "Notification settings (B6.2): channels per kind, digests, quiet hours and time zone.",
+                "properties": {
+                    "channels": {
+                        "type": "array",
+                        "items": {
+                            "type": "array",
+                            "items": {
+                                "type": "boolean"
+                            }
+                        }
+                    },
+                    "digests": {
+                        "type": "array",
+                        "items": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "daily",
+                                "weekly",
+                                null
+                            ]
+                        }
+                    },
+                    "quiet": {
+                        "type": "object",
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean"
+                            },
+                            "start": {
+                                "type": "string"
+                            },
+                            "end": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "timezone": {
+                        "type": "string"
+                    }
+                },
+                "title": "NotificationSettingsRequest"
             },
             "OnboardingPath": {
                 "type": "string",

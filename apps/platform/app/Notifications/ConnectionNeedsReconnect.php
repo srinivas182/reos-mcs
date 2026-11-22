@@ -6,22 +6,26 @@ namespace App\Notifications;
 
 use App\Integrations\Catalogue;
 use App\Models\Connection;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** "Reconnect Google Calendar": the tool stopped accepting REOS's sign-in. */
-final class ConnectionNeedsReconnect extends Notification implements ShouldQueue
+final class ConnectionNeedsReconnect extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(public readonly Connection $toolConnection) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::ConnectionNeedsReconnect;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('connections.reconnect.subject', ['tool' => $this->toolConnection->integration_id]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => route('connections.connect', ['tool' => $this->toolConnection->integration_id])];
     }
 
     public function toMail(object $notifiable): MailMessage

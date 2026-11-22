@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Notifications\NotificationsController;
 use App\Http\Controllers\Settings\ActiveRoleController;
 use App\Http\Controllers\Settings\AppearanceController;
 use App\Http\Controllers\Settings\ConsentController;
@@ -37,6 +38,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->whereNumber('privacyRequest')
         ->middleware(['signed', 'throttle:20,60,privacy-download'])
         ->name('privacy.download');
+
+    // Notifications by kind and channel, quiet hours and digests (B6.2).
+    Route::get('settings/notifications', [NotificationsController::class, 'settings'])->name('notification-settings.edit');
+    Route::put('settings/notifications', [NotificationsController::class, 'update'])->middleware('throttle:30,1,notification-settings')->name('notification-settings.update');
 
     // Privacy switches and "Your consents" (A6.3).
     Route::get('settings/privacy', [ConsentController::class, 'edit'])->name('consents.edit');

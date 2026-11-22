@@ -82,6 +82,8 @@ class HandleInertiaRequests extends Middleware
             'supportSession' => fn (): ?array => $this->support($request),
             // Connections that stopped syncing and need the person to sign in again (B3.1).
             'connectionAlerts' => fn (): array => $this->connectionAlerts($request),
+            // The bell's count (B6.2).
+            'notifications' => fn (): ?array => $request->user() instanceof User ? ['unread' => $request->user()->unreadNotifications()->count()] : null,
             // Messages (B6.1): null unless rolled out to the person; the unread count for the menu badge.
             'messages' => fn (): ?array => $request->user() instanceof User && app(Flags::class)->forUser($request->user(), 'messages')
                 ? ['unread' => app(Conversations::class)->unread($request->user()), 'user' => $request->user()->id]

@@ -1,6 +1,6 @@
 # 0023: Messaging and notifications
 
-**Status:** accepted for messaging (B6.1a and B6.1b, 22 November 2026); the notification centre (B6.2) extends it.
+**Status:** accepted for messaging (B6.1a and B6.1b) and the notification centre (B6.2a), 22 November 2026; push, SMS and email bounces (B6.2b) extend it.
 
 ## Context
 
@@ -18,6 +18,12 @@ Brokerages, schools and mentors talk to their people in Slack, texts and CRM inb
 7. **Attachments (B6.1b).** Up to 5 images or PDFs per message, 20 MB each, stored on the content disk under `messages/<conversation>/` and virus-scanned by the same ClamAV scanner as lesson files (`ScanMessageAttachment`; an unreachable scanner retries; production refuses unscanned files). A file shows "Checking for viruses…" until clean, then opens through a 30-minute signed link; an infected file is deleted and marked removed. Deleting a message for everyone deletes its files.
 8. **Report and block (B6.1b).** On every conversation. A block works both ways for one-to-one messages (neither can message the other; neither is offered in New message) and the blocked person no longer sees read state. A report copies the reported person's last 20 messages as they were (so a later edit or delete can't hide them), is audited, and emails the tenant's admins (with the copy) and REOS's super admins; REOS reviews and marks it handled on Compliance and audit (screen 71). `message_reports` keeps row-level security (written in platform scope for the tenant where the conversation started).
 9. **Announcements (B6.1b).** Brokerage, school and association admins send to all members or a group (roles, teams, states); recipients are fixed when it's sent (`announcement_recipients`, row-level security on the sending tenant) and read their own across tenants (a team agent gets the brokerage's). Unread announcements show above Messages on the web and on Today on the phone, live (`announcement.posted`), until marked read; the admin sees "Read by 82 of 140".
+
+10. **One notification centre (B6.2a).** Every notification REOS sends extends `CentreNotification`: it names its kind (`NotificationKind`: defaults per channel, urgent, locked, digestible, group) and its inbox line; `NotificationCentre` picks the channels from the person's choices. The inbox (Laravel's database channel, the bell on the web and the phone) is silent and always immediate. Security and account messages (new device, account deletion, privacy requests, receipts, failed payments) can't be turned off.
+11. **Quiet hours** (default 9 PM to 7 AM in the person's time zone; on by default): an alert that isn't urgent goes to `held_notifications` (serialized, with the channels it was going to use) and `reos:notifications:release` (every 5 minutes) sends it when quiet hours end, claiming each row first so it goes once. Urgent kinds (new device, account deletion, failed payment, support access, integration paused, feature rolled back, session starting) still arrive.
+12. **Digests:** a kind the person chose as daily or weekly is gathered in `digest_items`; `reos:notifications:digests` (hourly) sends one email at 8 AM in their time zone (weekly on Mondays).
+13. **What was sent** is logged per kind, channel and outcome (`notification_deliveries`: sent, held, released, digested, failed), never the words.
+14. **Settings:** Settings › Notifications on the web (every role) and Me › Notifications on the phone: each kind by channel, digests, quiet hours and the time zone they follow (the browser's or phone's zone offered).
 
 ## Consequences
 
