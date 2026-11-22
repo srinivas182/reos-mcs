@@ -221,6 +221,27 @@ describe('refunds from REOS (screen 66)', function () {
         expect(Refund::query()->sole()->within_policy)->toBeFalse();
     });
 
+    it('follows the super admin\'s refund policy: full only, or none', function () {
+        $order = buy($this, $this->sofia, $this->complete);
+        $this->actingAs($this->ops)->withSession(['auth.password_confirmed_at' => now()->getTimestamp()]);
+
+        $this->put('/admin/gateways/refund-policy', ['mode' => 'full_only', 'window_days' => 14, 'max_progress_percent' => 20])->assertSessionHasNoErrors();
+        expect(AuditEvent::query()->where('action', 'platform.setting_changed')->where('subject_id', 'billing.refund_policy')->sole()->properties)
+            ->toMatchArray(['from' => ['mode' => 'full_and_partial', 'window_days' => 7, 'max_progress_percent' => 25], 'to' => ['mode' => 'full_only', 'window_days' => 14, 'max_progress_percent' => 20]]);
+        $this->get('/admin/gateways')->assertInertia(fn (Assert $page) => $page
+            ->where('refund_policy.mode', 'full_only')
+            ->where('orders.0.policy.mode', 'full_only')
+            ->where('orders.0.policy.window_days', 14));
+
+        $this->post("/admin/gateways/orders/{$order->uuid}/refund", ['amount' => '50', 'reason' => 'Goodwill'])->assertSessionHasErrors('amount');
+
+        $this->put('/admin/gateways/refund-policy', ['mode' => 'none', 'window_days' => 14, 'max_progress_percent' => 20]);
+        $this->post("/admin/gateways/orders/{$order->uuid}/refund", ['reason' => 'Asked nicely'])->assertSessionHasErrors('amount');
+        $this->put('/admin/gateways/refund-policy', ['mode' => 'sometimes', 'window_days' => 14, 'max_progress_percent' => 20])->assertSessionHasErrors('mode');
+
+        expect(Refund::query()->count())->toBe(0)->and($order->refresh()->status)->toBe(OrderStatus::Paid);
+    });
+
     it('refunds through Stripe once per refund', function () {
         app(CredentialVault::class)->put('stripe', CredentialEnvironment::Sandbox, ['publishable_key' => 'pk_test', 'secret_key' => 'sk_test', 'webhook_secret' => 'whsec'], null);
         IntegrationSetting::query()->updateOrCreate(['integration_id' => 'stripe'], ['mode' => IntegrationMode::Sandbox]);

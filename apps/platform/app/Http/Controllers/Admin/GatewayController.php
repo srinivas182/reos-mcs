@@ -8,6 +8,7 @@ use App\Billing\GatewaySettings;
 use App\Billing\OrderStatus;
 use App\Billing\Payouts\PayoutStatements;
 use App\Billing\ProductKind;
+use App\Billing\RefundPolicy;
 use App\Billing\Refunds;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Billing\GatewayRequest;
@@ -18,6 +19,7 @@ use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,7 +31,7 @@ use Inertia\Response;
  */
 final class GatewayController extends Controller
 {
-    public function index(Request $request, GatewaySettings $settings, PayoutStatements $payouts, Refunds $refunds): Response
+    public function index(Request $request, GatewaySettings $settings, PayoutStatements $payouts, Refunds $refunds, RefundPolicy $refundPolicy): Response
     {
         $search = $request->validate(['q' => ['nullable', 'string', 'max:120']])['q'] ?? null;
         $search = is_string($search) ? trim($search) : '';
@@ -38,8 +40,8 @@ final class GatewayController extends Controller
             'gateways' => $settings->overview(),
             'fees' => [
                 'platform_fee_percent' => config()->integer('reos.billing.platform_fee_percent', 10),
-                'refund_days' => config()->integer('reos.billing.refund_days', 7),
             ],
+            'refund_policy' => $refundPolicy->get(),
             // Stripe Connect payouts (B5.2b).
             'payouts' => $payouts->platform(),
             // Orders and refunds, and the ledger's daily reconciliation (B5.3).
@@ -91,6 +93,24 @@ final class GatewayController extends Controller
         $reason = $request->validate(['reason' => ['required', 'string', 'min:3', 'max:200']])['reason'];
         $settings->pause($gateway, is_string($reason) ? $reason : '', $actor);
         Inertia::flash('toast', ['type' => 'success', 'message' => __('gateways.pausedToast')]);
+
+        return back();
+    }
+
+    /** The refund policy: full and partial, full only, or none; the window and course progress limit. */
+    public function refundPolicy(Request $request, #[CurrentUser] User $actor, RefundPolicy $policy): RedirectResponse
+    {
+        $data = $request->validate([
+            'mode' => ['required', Rule::in(RefundPolicy::MODES)],
+            'window_days' => ['required', 'integer', 'min:0', 'max:365'],
+            'max_progress_percent' => ['required', 'integer', 'min:0', 'max:100'],
+        ]);
+        $policy->set([
+            'mode' => is_string($data['mode']) ? $data['mode'] : RefundPolicy::FULL_AND_PARTIAL,
+            'window_days' => is_numeric($data['window_days']) ? (int) $data['window_days'] : 7,
+            'max_progress_percent' => is_numeric($data['max_progress_percent']) ? (int) $data['max_progress_percent'] : 25,
+        ], $actor);
+        Inertia::flash('toast', ['type' => 'success', 'message' => __('billing.refunds.policySaved')]);
 
         return back();
     }

@@ -21,6 +21,11 @@ describe('roleNavigation (web journey, Navigation by role)', () => {
         ]);
     });
 
+    it('gives mentors Earnings, like instructors', () => {
+        expect(menu('mentor')).toContainEqual(['earnings', '/earnings']);
+        expect(menu('instructor')).toContainEqual(['earnings', '/earnings']);
+    });
+
     it('ends the candidate menu with Account and the agent menu with Settings', () => {
         expect(menu('candidate').at(-1)).toEqual([
             'account',

@@ -3510,7 +3510,7 @@
       "within_other": "Dentro de la política: comprado hace {{count}} días (reembolsos completos dentro de {{window}} días).",
       "outside_one": "Fuera de la política (comprado hace {{count}} día; reembolsos completos dentro de {{window}} días). Explique el motivo abajo.",
       "outside_other": "Fuera de la política (comprado hace {{count}} días; reembolsos completos dentro de {{window}} días). Explique el motivo abajo.",
-      "progressNote": "El avance del curso (menos del 25%) se podrá revisar cuando el reproductor de cursos lo registre.",
+      "progressNote": "El avance del curso se revisará cuando el reproductor de cursos lo registre (Sprint 8).",
       "amount": "Monto (USD)",
       "amountHelp": "Déjelo vacío para reembolsar todo lo que queda.",
       "reason": "Motivo (se guarda en el registro de auditoría)",
@@ -3522,8 +3522,22 @@
         "notPaid": "Solo se pueden reembolsar pedidos pagados.",
         "amount": "Eso es más de lo que se puede reembolsar.",
         "gateway": "La pasarela del pedido no está conectada en este momento.",
-        "failed": "La pasarela no hizo el reembolso. No cambió nada; inténtelo de nuevo."
-      }
+        "failed": "La pasarela no hizo el reembolso. No cambió nada; inténtelo de nuevo.",
+        "disabled": "Los reembolsos están desactivados en la política de reembolsos.",
+        "fullOnly": "La política de reembolsos solo permite reembolsos completos."
+      },
+      "policySaved": "Política de reembolsos guardada.",
+      "policyTitle": "Política de reembolsos",
+      "modes": {
+        "full_and_partial": "Reembolsos completos y parciales",
+        "full_only": "Solo reembolsos completos",
+        "none": "Sin reembolsos"
+      },
+      "windowDays": "Plazo de reembolso (días)",
+      "maxProgress": "Máximo del curso hecho (%)",
+      "noneHelp": "REOS no reembolsará pedidos. Un reembolso hecho directamente en la pasarela igual termina el acceso.",
+      "savePolicy": "Guardar política",
+      "fullOnlyNote": "La política de reembolsos solo permite reembolsos completos: se reembolsa todo lo que queda."
     },
     "reconciliation": {
       "title": "Conciliación",
@@ -3716,8 +3730,8 @@
       "refunds": "Plazo de reembolso",
       "allReos": "100% REOS",
       "stripeTax": "Stripe Tax · reglas estatales",
-      "refundRule_one": "{{count}} día, con menos del 25% del curso hecho",
-      "refundRule_other": "{{count}} días, con menos del 25% del curso hecho"
+      "refundRule_one": "{{count}} día, con menos del {{percent}}% del curso hecho",
+      "refundRule_other": "{{count}} días, con menos del {{percent}}% del curso hecho"
     },
     "rules": {
       "title": "Reglas",

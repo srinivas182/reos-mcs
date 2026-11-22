@@ -28,6 +28,7 @@ export type RefundableOrder = {
     status: 'paid' | 'refunded';
     paid_at: string | null;
     policy: {
+        mode: 'full_and_partial' | 'full_only' | 'none';
         refundable: number;
         days: number;
         window_days: number;
@@ -133,29 +134,38 @@ function RefundForm({
                       })}{' '}
                 {t('billing.refunds.progressNote')}
             </p>
-            <div className="grid gap-2">
-                <Label htmlFor="refund-amount">
-                    {t('billing.refunds.amount')}
-                </Label>
-                <Input
-                    id="refund-amount"
-                    type="number"
-                    min={0.01}
-                    step={0.01}
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder={(order.policy.refundable / 100).toFixed(2)}
-                    aria-describedby="refund-amount-help"
-                    className="max-w-48"
-                />
-                <p
-                    id="refund-amount-help"
-                    className="text-sm text-muted-foreground"
-                >
-                    {t('billing.refunds.amountHelp')}
+            {order.policy.mode === 'full_only' ? (
+                <p className="text-sm text-muted-foreground">
+                    {t('billing.refunds.fullOnlyNote')}
                 </p>
+            ) : (
+                <div className="grid gap-2">
+                    <Label htmlFor="refund-amount">
+                        {t('billing.refunds.amount')}
+                    </Label>
+                    <Input
+                        id="refund-amount"
+                        type="number"
+                        min={0.01}
+                        step={0.01}
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder={(order.policy.refundable / 100).toFixed(2)}
+                        aria-describedby="refund-amount-help"
+                        className="max-w-48"
+                    />
+                    <p
+                        id="refund-amount-help"
+                        className="text-sm text-muted-foreground"
+                    >
+                        {t('billing.refunds.amountHelp')}
+                    </p>
+                    <InputError message={errors.amount} />
+                </div>
+            )}
+            {order.policy.mode === 'full_only' ? (
                 <InputError message={errors.amount} />
-            </div>
+            ) : null}
             <div className="grid gap-2">
                 <Label htmlFor="refund-reason">
                     {t('billing.refunds.reason')}

@@ -151,7 +151,12 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             item('brokerageSettings', Building2, organisationSettings()),
         ],
         // Mentors work in the mentor workspace (web journey screen 48).
-        mentor: [home, planned('mentorWorkspace')],
+        // Earnings for mentors too, as for instructors (decision of 22 November 2026).
+        mentor: [
+            home,
+            planned('mentorWorkspace'),
+            item('earnings', Wallet, earnings()),
+        ],
         instructor: [
             home,
             planned('courseBuilder'),

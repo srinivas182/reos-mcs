@@ -199,7 +199,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.man
             Route::put('{gateway}', [GatewayController::class, 'update'])->whereIn('gateway', Gateways::CHECKOUT)->name('update');
             Route::post('{gateway}/pause', [GatewayController::class, 'pause'])->whereIn('gateway', Gateways::CHECKOUT)->name('pause');
             Route::delete('{gateway}/pause', [GatewayController::class, 'resume'])->whereIn('gateway', Gateways::CHECKOUT)->name('resume');
-            // Refunds from REOS (B5.3).
+            // Refunds from REOS (B5.3) and the policy they follow.
+            Route::put('refund-policy', [GatewayController::class, 'refundPolicy'])->name('refund-policy');
             Route::post('orders/{order:uuid}/refund', [GatewayController::class, 'refund'])->middleware(ConfirmIdentity::class)->name('refund');
         });
     });

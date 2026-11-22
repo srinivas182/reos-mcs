@@ -23,6 +23,8 @@ import {
 import { PageHeader } from '@/components/page-header';
 import type { RefundableOrder } from '@/components/refund-dialog';
 import { RefundDialog } from '@/components/refund-dialog';
+import type { RefundPolicy } from '@/components/refund-policy-card';
+import { RefundPolicyCard } from '@/components/refund-policy-card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -99,6 +101,7 @@ const RUN_TONE = {
 export default function PaymentGateways({
     gateways,
     fees,
+    refund_policy,
     payouts,
     search,
     orders,
@@ -109,7 +112,8 @@ export default function PaymentGateways({
     orders: RefundableOrder[];
     reconciliation: ReconciliationRow[];
     gateways: GatewayRow[];
-    fees: { platform_fee_percent: number; refund_days: number };
+    fees: { platform_fee_percent: number };
+    refund_policy: RefundPolicy;
     payouts: {
         pending: number;
         ready: number;
@@ -413,9 +417,13 @@ export default function PaymentGateways({
                                     ['salesTax', t('gateways.fees.stripeTax')],
                                     [
                                         'refunds',
-                                        t('gateways.fees.refundRule', {
-                                            count: fees.refund_days,
-                                        }),
+                                        refund_policy.mode === 'none'
+                                            ? t('billing.refunds.modes.none')
+                                            : t('gateways.fees.refundRule', {
+                                                  count: refund_policy.window_days,
+                                                  percent:
+                                                      refund_policy.max_progress_percent,
+                                              }),
                                     ],
                                 ] as const
                             ).map(([key, value]) => (
@@ -554,6 +562,7 @@ export default function PaymentGateways({
                             </Button>
                         </form>
                     </div>
+                    <RefundPolicyCard policy={refund_policy} />
                     {orders.length === 0 ? (
                         <EmptyState
                             icon={Receipt}
@@ -660,6 +669,7 @@ export default function PaymentGateways({
                                             </td>
                                             <td className="px-3 py-3 text-right">
                                                 {o.status === 'paid' &&
+                                                o.policy.mode !== 'none' &&
                                                 o.policy.refundable > 0 ? (
                                                     <Button
                                                         variant="outline"

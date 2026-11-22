@@ -17,9 +17,11 @@ use Throwable;
 
 /**
  * Refunds from REOS (B5.3; screen 66's Orders and refunds). The policy
- * (Sprint 5 defaults): a full refund within 7 days of purchase if less than
- * a quarter of the course is done. Course progress arrives with the player
- * (Sprint 8), so today the check is the date; a refund outside the policy
+ * (`RefundPolicy`, set on screen 66; Sprint 5 defaults): full and partial
+ * refunds, a full refund within 7 days of purchase if less than a quarter
+ * of the course is done. The super admin can allow full refunds only, or no
+ * refunds. Course progress arrives with the player (Sprint 8, which adds
+ * the progress check here), so today the check is the date; a refund outside the policy
  * needs its reason and is marked as such. A full refund ends access and
  * reverses the order in the ledger and its shares; a partial one keeps
  * access and comes out of REOS's revenue. Every refund is audited.
@@ -27,6 +29,7 @@ use Throwable;
 final readonly class Refunds
 {
     public function __construct(
+        private RefundPolicy $settings,
         private Gateways $gateways,
         private Checkout $checkout,
         private MoneyPostings $money,
@@ -36,14 +39,17 @@ final readonly class Refunds
     /**
      * What the refund dialog shows: what's left to refund and the policy check.
      *
-     * @return array{refundable: int, days: int, window_days: int, within_policy: bool}
+     * @return array{mode: string, refundable: int, days: int, window_days: int, within_policy: bool}
      */
     public function policy(Order $order): array
     {
         $days = $order->paid_at === null ? 0 : (int) $order->paid_at->diffInDays(now());
-        $window = config()->integer('reos.billing.refund_days', 7);
+        $settings = $this->settings->get();
+        $window = $settings['window_days'];
 
         return [
+            // What screen 66 allows: full and partial, full only, or none.
+            'mode' => $settings['mode'],
             'refundable' => $this->refundable($order),
             'days' => $days,
             'window_days' => $window,
@@ -68,8 +74,16 @@ final readonly class Refunds
         $policy = $this->policy($order);
         $amount ??= $policy['refundable'];
 
+        if ($policy['mode'] === RefundPolicy::NONE) {
+            throw ValidationException::withMessages(['amount' => __('billing.refunds.errors.disabled')]);
+        }
+
         if ($amount < 1 || $amount > $policy['refundable']) {
             throw ValidationException::withMessages(['amount' => __('billing.refunds.errors.amount')]);
+        }
+
+        if ($policy['mode'] === RefundPolicy::FULL_ONLY && ($amount !== $policy['refundable'] || $policy['refundable'] !== ($order->total_cents ?? 0))) {
+            throw ValidationException::withMessages(['amount' => __('billing.refunds.errors.fullOnly')]);
         }
 
         $gateway = $this->gateways->driver($order->gateway);
