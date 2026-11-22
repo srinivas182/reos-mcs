@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Content\Learning;
 
+use App\Billing\Entitlements;
 use App\Content\CourseStatus;
 use App\Content\Extraction\Captions;
 use App\Content\Knowledge\KnowledgeSearch;
@@ -22,15 +23,16 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * What a learner sees (A5.3b; web Learn, phone Learn screen 8): live courses
  * for their current state, search inside them, and a lesson opened at the
- * heading, page or second a search result points to. Access by purchase or
- * sponsored seat joins these filters with B5.1.
+ * heading, page or second a search result points to. Each course's first
+ * lesson is free; the rest need its feature (`learn.<course type>`) from a
+ * purchase, subscription or sponsored seat (B5.1).
  */
 final readonly class Learning
 {
     /** Signed media links last this long; the page asks again after. */
     private const LINK_MINUTES = 120;
 
-    public function __construct(private PersonStates $states, private KnowledgeSearch $search, private VideoHosts $videos) {}
+    public function __construct(private PersonStates $states, private KnowledgeSearch $search, private VideoHosts $videos, private Entitlements $entitlements) {}
 
     public function state(User $user): string
     {
@@ -40,28 +42,37 @@ final readonly class Learning
     /**
      * Live courses in the person's state, with their lessons.
      *
-     * @return list<array{id: int, title: string, type: string, hours: float|null, lessons: list<array{id: int, title: string, minutes: int|null, language: string}>}>
+     * @return list<array{id: int, title: string, type: string, hours: float|null, unlocked: bool, lessons: list<array{id: int, title: string, minutes: int|null, language: string, locked: bool}>}>
      */
     public function courses(User $user): array
     {
+        $state = $this->state($user);
+        $features = $this->entitlements->features($user, $state);
+
         return array_values(Course::query()
             ->where('status', CourseStatus::Live)
             ->forStates([$this->state($user)])
             ->with(['lessons' => static fn ($q) => $q->select(['id', 'course_id', 'title', 'minutes', 'language', 'position'])])
             ->orderBy('title')
             ->get()
-            ->map(static fn (Course $course): array => [
-                'id' => $course->id,
-                'title' => $course->title,
-                'type' => $course->type->value,
-                'hours' => $course->hours === null ? null : (float) $course->hours,
-                'lessons' => array_values($course->lessons->map(static fn (Lesson $lesson): array => [
-                    'id' => $lesson->id,
-                    'title' => $lesson->title,
-                    'minutes' => $lesson->minutes,
-                    'language' => $lesson->language,
-                ])->all()),
-            ])
+            ->map(static function (Course $course) use ($features): array {
+                $unlocked = in_array(Entitlements::courseFeature($course->type), $features, true);
+
+                return [
+                    'id' => $course->id,
+                    'title' => $course->title,
+                    'type' => $course->type->value,
+                    'hours' => $course->hours === null ? null : (float) $course->hours,
+                    'unlocked' => $unlocked,
+                    'lessons' => array_values($course->lessons->values()->map(static fn (Lesson $lesson, int $index): array => [
+                        'id' => $lesson->id,
+                        'title' => $lesson->title,
+                        'minutes' => $lesson->minutes,
+                        'language' => $lesson->language,
+                        'locked' => ! $unlocked && $index > 0,
+                    ])->all()),
+                ];
+            })
             ->all());
     }
 
@@ -78,6 +89,14 @@ final readonly class Learning
             ->whereKey($id)
             ->whereHas('course', fn (Builder $course) => $course->where('status', CourseStatus::Live)->whereNull('deleted_at')->forStates([$this->state($user)]))
             ->first();
+    }
+
+    /** The course's first lesson is free; the rest need the course's feature in the person's state. */
+    public function canOpen(User $user, Lesson $lesson): bool
+    {
+        $first = Lesson::query()->where('course_id', $lesson->course_id)->orderBy('position')->orderBy('id')->value('id');
+
+        return $first === $lesson->id || $this->entitlements->has($user, Entitlements::courseFeature($lesson->course->type), $this->state($user));
     }
 
     /**

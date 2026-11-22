@@ -312,7 +312,9 @@ describe('inbound webhooks', function () {
         IntegrationSetting::query()->create(['integration_id' => CALENDAR, 'mode' => IntegrationMode::Off]);
 
         $this->postJson('/webhooks/'.CALENDAR, [])->assertStatus(401);
-        $this->postJson('/webhooks/stripe', [])->assertNotFound();
+        $this->postJson('/webhooks/not-a-tool', [])->assertNotFound();
+        // Payments have their own signed endpoint (B5.1): unsigned is refused.
+        $this->postJson('/webhooks/stripe', [])->assertStatus(400);
     });
 });
 

@@ -1270,6 +1270,89 @@
                 }
             }
         },
+        "/me/entitlements": {
+            "get": {
+                "operationId": "me.entitlements",
+                "description": "`features` lists what's active in my current state; `active` is false\nwhen I have nothing paid or sponsored (the app shows the Membership\nscreen).",
+                "summary": "My entitlements",
+                "tags": [
+                    "Entitlement"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "active": {
+                                            "type": "boolean"
+                                        },
+                                        "state": {
+                                            "type": "string"
+                                        },
+                                        "features": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "feature": {
+                                                        "type": "string"
+                                                    },
+                                                    "source": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "order",
+                                                            "subscription",
+                                                            "sponsor",
+                                                            "admin"
+                                                        ]
+                                                    },
+                                                    "state": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "ends_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "feature",
+                                                    "source",
+                                                    "state",
+                                                    "ends_at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "active",
+                                        "state",
+                                        "features",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/auth/exchange": {
             "post": {
                 "operationId": "auth.exchange",
@@ -1587,6 +1670,9 @@
                                                             "null"
                                                         ]
                                                     },
+                                                    "unlocked": {
+                                                        "type": "boolean"
+                                                    },
                                                     "lessons": {
                                                         "type": "array",
                                                         "items": {
@@ -1610,13 +1696,17 @@
                                                                         "en",
                                                                         "es"
                                                                     ]
+                                                                },
+                                                                "locked": {
+                                                                    "type": "boolean"
                                                                 }
                                                             },
                                                             "required": [
                                                                 "id",
                                                                 "title",
                                                                 "minutes",
-                                                                "language"
+                                                                "language",
+                                                                "locked"
                                                             ]
                                                         }
                                                     }
@@ -1626,6 +1716,7 @@
                                                     "title",
                                                     "type",
                                                     "hours",
+                                                    "unlocked",
                                                     "lessons"
                                                 ]
                                             }
@@ -1739,7 +1830,7 @@
         "/learn/lessons/{lesson}": {
             "get": {
                 "operationId": "learn.lesson",
-                "description": "Its text by heading, slides and documents page by page (with a signed\nlink to the file), the video (Mux `hls` with a signed token, or the\noriginal `file`) and its captions with timings. Links last two hours.\n404 unless the lesson is in a live course for my current state.",
+                "description": "Its text by heading, slides and documents page by page (with a signed\nlink to the file), the video (Mux `hls` with a signed token, or the\noriginal `file`) and its captions with timings. Links last two hours.\n404 unless the lesson is in a live course for my current state; 402\n(`membership_required`) when it needs a plan I don't have yet (each\ncourse's first lesson is free).",
                 "summary": "Open a lesson",
                 "tags": [
                     "Learn"

@@ -42,7 +42,9 @@
     "contentAndApprovals": "Content and approvals",
     "courses": "Courses",
     "learnAndCe": "Learn and CE",
-    "search": "Search your lessons"
+    "search": "Search your lessons",
+    "plansAndPricing": "Plans and pricing",
+    "planAndBilling": "Plan and billing"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1900,7 +1902,15 @@
         "lesson.file_added": "Uploaded a lesson file",
         "lesson.file_removed": "Removed a lesson file",
         "course.flag_cleared": "Cleared a content flag",
-        "course.flag_restored": "Put back a content flag"
+        "course.flag_restored": "Put back a content flag",
+        "product.created": "Created a plan",
+        "product.updated": "Changed a plan",
+        "product.status_changed": "Changed a plan's status",
+        "price.changed": "Changed a price",
+        "price.ended": "Stopped selling a price",
+        "order.started": "Started a checkout",
+        "order.paid": "Paid for an order",
+        "order.refunded": "An order was refunded"
       }
     }
   },
@@ -2494,7 +2504,8 @@
         "integrations": "Integrations and connections",
         "states": "States",
         "privacy": "Privacy",
-        "content": "Courses and lessons"
+        "content": "Courses and lessons",
+        "billing": "Plans and payments"
       },
       "columns": {
         "time": "Time",
@@ -3223,5 +3234,202 @@
       "here": "From your search",
       "empty": "This lesson has no text or files yet."
     }
+  },
+  "billing": {
+    "errors": {
+      "paused": "Purchases are paused right now. Try again soon.",
+      "notForSale": "This plan isn't for sale right now.",
+      "noPrice": "Set a price in at least one state before the plan goes live.",
+      "floor": "The lowest price can't be more than the price."
+    },
+    "membershipRequired": "This lesson is part of a plan. See the plans on reos.com.",
+    "noPortal": "Card and invoice settings aren't available yet.",
+    "features": {
+      "learn": {
+        "qualifying": "Qualifying courses",
+        "ce": "CE courses",
+        "test_prep": "Exam prep",
+        "post_licence": "Post-license courses",
+        "elective": "Electives"
+      },
+      "agent": {
+        "core": "Agent tools"
+      }
+    },
+    "receipt": {
+      "subject": "Your receipt: {{product}}",
+      "body": "Thank you. You bought {{product}} for {{total}}, tax included.",
+      "unlocked": "It's unlocked on the web and in the REOS app now.",
+      "action": "View receipt",
+      "billing": "Plan and billing"
+    },
+    "failedMail": {
+      "subject": "Your {{product}} payment didn't go through",
+      "body": "We couldn't take this renewal. You keep access until {{date}}; update your card to keep it after that.",
+      "action": "Update my card"
+    },
+    "checkout": {
+      "title": "REOS checkout",
+      "secure": "Secure payment",
+      "setBy": "Set by REOS for {{state}}",
+      "includes": "What's included",
+      "summary": "Order summary",
+      "discount": "Sponsor discount · {{sponsor}}",
+      "tax": "Sales tax ({{state}})",
+      "taxLater": "Calculated at payment",
+      "total": "Total today",
+      "totalBeforeTax": "Total before tax",
+      "pay": "Pay {{amount}}",
+      "webOnly": "Bought on the web only. The app unlocks within seconds; there are no purchases inside the iPhone or Android app.",
+      "processedBy": "Payments are processed by Stripe, the gateway enabled for {{state}} in the REOS back office. Card details never touch REOS servers.",
+      "paymentMethod": "Payment method",
+      "simulator": "Simulator: no real payment. Use it to try checkout before Stripe is connected.",
+      "testCard": "Test card",
+      "simulatorPay": "Pay {{amount}} (Simulator)",
+      "loading": "Loading the secure payment form…",
+      "startFailed": "The payment form didn't load. Try again.",
+      "intervals": {
+        "once": "Flat fee",
+        "month": "Every month",
+        "year": "Every year"
+      },
+      "perMonth": "{{amount}} / month",
+      "perYear": "{{amount}} / year"
+    },
+    "complete": {
+      "title": "You're in",
+      "paid": "{{product}} is unlocked on the web and in the app.",
+      "pendingTitle": "Confirming your payment",
+      "pending": "This usually takes a few seconds. You can leave this page; we'll email your receipt.",
+      "expiredTitle": "This checkout expired",
+      "expired": "Nothing was charged. Start again from Plan and billing.",
+      "receipt": "View receipt",
+      "learn": "Start learning",
+      "billing": "Plan and billing",
+      "unlocked": "Unlocked now",
+      "paidTotal": "Paid {{total}}"
+    },
+    "index": {
+      "title": "Plan and billing",
+      "description": "Your plan, what it includes, and every receipt.",
+      "plansTitle": "Plans for {{state}}",
+      "noPlansTitle": "No plans for your role here yet",
+      "noPlans": "Plans appear here as soon as REOS sets them for your state.",
+      "choose": "Choose plan",
+      "access": "What you have now",
+      "noAccess": "Nothing yet. The first lesson of every course is free.",
+      "sources": {
+        "order": "Bought",
+        "subscription": "Plan",
+        "sponsor": "Sponsored",
+        "admin": "Given by REOS"
+      },
+      "until": "until {{date}}",
+      "forever": "no end date",
+      "subscriptions": "Subscriptions",
+      "manage": "Cards and cancelling",
+      "statuses": {
+        "active": "Active",
+        "past_due": "Payment failed",
+        "canceled": "Canceled"
+      },
+      "renews": "Renews {{date}}",
+      "grace": "Access until {{date}} unless the card is updated",
+      "orders": "Receipts",
+      "noOrders": "No receipts yet.",
+      "receipt": "Receipt",
+      "orderStatus": {
+        "paid": "Paid",
+        "refunded": "Refunded"
+      },
+      "sponsorPays": "{{sponsor}} pays part",
+      "noOrdersBody": "Receipts for everything you buy on reos.com appear here."
+    },
+    "locked": {
+      "title": "Part of a plan",
+      "body": "“{{lesson}}” is in {{course}}. The first lesson of every course is free; the rest come with a plan.",
+      "see": "See plans"
+    }
+  },
+  "plans": {
+    "title": "Plans and pricing",
+    "description": "Prices per state · what each plan includes · sold on reos.com",
+    "new": "New plan",
+    "history": "Price history",
+    "historyIntro": "Every price each plan has had, with when it started and ended. Subscribers keep their price until they renew.",
+    "tabs": {
+      "agents": "Agents and brokerages",
+      "candidates": "Candidate packages",
+      "providers": "Service providers",
+      "schools": "Schools",
+      "associations": "Associations",
+      "credit_packs": "Credit packs"
+    },
+    "columns": {
+      "package": "Package",
+      "state": "State",
+      "type": "Type",
+      "price": "Price",
+      "includes": "Includes",
+      "ai": "AI help",
+      "status": "Status"
+    },
+    "intervals": {
+      "once": "Flat fee",
+      "month": "Monthly",
+      "year": "Yearly"
+    },
+    "statuses": {
+      "draft": "Draft",
+      "live": "Live",
+      "retired": "Retired"
+    },
+    "candidatesNote": "Candidates are never charged AI credits. Brokerages and associations can sponsor extra AI help from their own credit pools.",
+    "emptyTitle": "No plans here yet",
+    "empty": "Add a plan, then set its price in each state. It goes on sale on reos.com when it's live.",
+    "fields": {
+      "name": "Plan name",
+      "kind": "Kind",
+      "buyer": "Who buys it",
+      "description": "Description",
+      "includes": "What's included (one per line)",
+      "features": "What it unlocks (feature keys, one per line)",
+      "ai_help": "AI help",
+      "credits": "AI credits",
+      "seats": "Seats"
+    },
+    "kinds": {
+      "plan": "Plan",
+      "course": "Course",
+      "package": "Package",
+      "credit_pack": "Credit pack",
+      "seat_pack": "Seat pack"
+    },
+    "buyers": {
+      "candidate": "Candidates",
+      "agent": "Agents",
+      "broker": "Brokerages",
+      "school": "Schools",
+      "provider": "Service providers",
+      "association": "Associations"
+    },
+    "edit": "Edit {{name}}",
+    "create": "Create plan",
+    "save": "Save",
+    "setPrice": "Set a price",
+    "changeStatus": "Status of {{name}}",
+    "price": {
+      "state": "State",
+      "interval": "Billing",
+      "amount": "Price (USD)",
+      "floor": "Lowest price after sponsor discounts (USD)",
+      "save": "Save price"
+    },
+    "priceSaved": "New price for {{state}} from today; the old one stays in the history.",
+    "endPrice": "Stop selling in {{state}}",
+    "ended": "Price for {{state}} stopped.",
+    "current": "Current",
+    "from": "From {{date}}",
+    "until": "until {{date}}"
   }
 }

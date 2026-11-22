@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Authorization\Role;
+use App\Billing\Plans;
+use App\Billing\PriceInterval;
 use App\Content\MediaKind;
 use App\Enums\OrganisationType;
 use App\Http\Middleware\EnsureAdminTwoStep;
@@ -13,6 +15,7 @@ use App\Models\Lesson;
 use App\Models\LessonMedia;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
+use App\Models\Product;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
@@ -94,6 +97,11 @@ function auditCourse(User $ops): Course
 function auditLesson(User $ops): Lesson
 {
     return app(Lessons::class)->create(auditCourse($ops), ['title' => 'Agency disclosure'], $ops);
+}
+
+function auditPlan(User $ops): Product
+{
+    return app(Plans::class)->create(['name' => 'Agent Core', 'kind' => 'plan', 'buyer' => 'agent'], $ops);
 }
 
 /** @return array{0: Course, 1: string} a course with a flagged line, and the flag */
@@ -221,6 +229,24 @@ function adminActions(): array
             $ops = auditOps();
 
             return auditCase($ops, 'DELETE', '/admin/content/files/'.auditFile($ops)->id, confirmed: true);
+        },
+        // Super admin: plans and pricing (B5.1, screen 67).
+        'plans.store' => fn () => auditCase(auditOps(), 'POST', '/admin/plans', ['name' => 'Agent Core', 'kind' => 'plan', 'buyer' => 'agent'], confirmed: true),
+        'plans.update' => fn () => auditCase($ops = auditOps(), 'PATCH', '/admin/plans/'.auditPlan($ops)->id, ['name' => 'Agent Core Plus'], confirmed: true),
+        'plans.status' => function () {
+            $ops = auditOps();
+            $plan = auditPlan($ops);
+            app(Plans::class)->setPrice($plan, 'TX', PriceInterval::Month, 2900, null, $ops);
+
+            return auditCase($ops, 'PUT', "/admin/plans/{$plan->id}/status", ['status' => 'live'], confirmed: true);
+        },
+        'plans.prices.store' => fn () => auditCase($ops = auditOps(), 'POST', '/admin/plans/'.auditPlan($ops)->id.'/prices', ['state' => 'TX', 'interval' => 'month', 'amount' => 29], confirmed: true),
+        'plans.prices.destroy' => function () {
+            $ops = auditOps();
+            $plan = auditPlan($ops);
+            $price = app(Plans::class)->setPrice($plan, 'TX', PriceInterval::Month, 2900, null, $ops);
+
+            return auditCase($ops, 'DELETE', "/admin/plans/{$plan->id}/prices/{$price->id}", confirmed: true);
         },
         'states.checklist' => fn () => auditCase(auditOps(), 'PUT', '/admin/states/LA/checklist', ['item' => 'rules', 'done' => true], confirmed: true),
         'people.licences.approve' => function () {
@@ -439,5 +465,5 @@ it('audits the admin action', function (string $name) {
 const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
-    'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update',
+    'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy',
 ];

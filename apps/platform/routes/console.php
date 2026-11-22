@@ -34,3 +34,5 @@ Schedule::command('reos:calendar:prune')->dailyAt('04:35')->onOneServer();
 Schedule::command('model:prune', ['--model' => [SyncRun::class, WebhookReceipt::class]])->dailyAt('04:10');
 // Knowledge base (A5.3): passages still without an embedding (Titan switched on later, or a failed try).
 Schedule::command('reos:knowledge:embed')->hourlyAt(23)->withoutOverlapping()->onOneServer();
+// Payments (B5.1): checkouts whose webhook never came, and old unpaid ones.
+Schedule::command('reos:billing:reconcile')->everyTenMinutes()->withoutOverlapping()->onOneServer();

@@ -39,6 +39,8 @@
         "@reos/i18n": "workspace:*",
         "@reos/tokens": "workspace:*",
         "@sentry/react": "^11.16.0",
+        "@stripe/react-stripe-js": "3.10.0",
+        "@stripe/stripe-js": "7.9.0",
         "@tailwindcss/vite": "^4.1.11",
         "@types/react": "^19.2.0",
         "@types/react-dom": "^19.2.0",

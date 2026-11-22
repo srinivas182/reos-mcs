@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
+use App\Http\Controllers\Api\Billing\EntitlementController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
@@ -81,6 +82,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{licence}/restore', 'restore')->whereNumber('licence')->middleware('throttle:30,1,api-licences-restore')->name('restore');
     });
     Route::get('me/states', [CurrentStateController::class, 'show'])->name('api.me.states');
+
+    // What I may use (B5.1): the app unlocks from this within seconds of a purchase.
+    Route::get('me/entitlements', [EntitlementController::class, 'index'])->name('api.me.entitlements');
 
     // Learn (A5.3b): my courses, search inside them, and a lesson to open.
     Route::middleware('can:learning.study')->prefix('learn')->name('api.learn.')->controller(LearnController::class)->group(function () {

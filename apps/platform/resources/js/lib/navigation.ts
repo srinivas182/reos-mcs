@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
     BookOpen,
     Building2,
+    CreditCard,
     GraduationCap,
     House,
     Map as MapIcon,
@@ -10,6 +11,7 @@ import {
     Plug,
     Settings,
     ShieldCheck,
+    Tag,
     Users,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
@@ -19,6 +21,8 @@ import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
+import { index as billingIndex } from '@/routes/billing';
+import { index as plans } from '@/routes/plans';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -44,6 +48,8 @@ export type NavLabel =
     | 'contentAndApprovals'
     | 'courses'
     | 'learnAndCe'
+    | 'plansAndPricing'
+    | 'planAndBilling'
     | 'connections';
 
 export type RoleNavItem = {
@@ -116,7 +122,12 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('profile'),
             planned('community'),
             planned('results'),
-            planned('planAndBilling'),
+            item(
+                'planAndBilling',
+                CreditCard,
+                billingIndex(),
+                '/settings/billing',
+            ),
         ],
         broker: [
             home,
@@ -177,7 +188,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             ),
             item('integrations', Plug, integrations()),
             planned('paymentGateways'),
-            planned('plansAndPricing'),
+            item('plansAndPricing', Tag, plans(), '/admin/plans'),
             planned('providerCategories'),
             planned('aiAndCredits'),
             planned('featuresAndReleases'),

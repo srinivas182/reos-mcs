@@ -326,6 +326,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/entitlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My entitlements
+         * @description `features` lists what's active in my current state; `active` is false
+         *     when I have nothing paid or sponsored (the app shows the Membership
+         *     screen).
+         */
+        get: operations["me.entitlements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/exchange": {
         parameters: {
             query?: never;
@@ -487,7 +509,9 @@ export interface paths {
          * @description Its text by heading, slides and documents page by page (with a signed
          *     link to the file), the video (Mux `hls` with a signed token, or the
          *     original `file`) and its captions with timings. Links last two hours.
-         *     404 unless the lesson is in a live course for my current state.
+         *     404 unless the lesson is in a live course for my current state; 402
+         *     (`membership_required`) when it needs a plan I don't have yet (each
+         *     course's first lesson is free).
          */
         get: operations["learn.lesson"];
         put?: never;
@@ -2616,6 +2640,37 @@ export interface operations {
             };
         };
     };
+    "me.entitlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        active: boolean;
+                        state: string;
+                        features: string[];
+                        data: {
+                            feature: string;
+                            /** @enum {string} */
+                            source: "order" | "subscription" | "sponsor" | "admin";
+                            state: string | null;
+                            ends_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
     "auth.exchange": {
         parameters: {
             query?: never;
@@ -2812,12 +2867,14 @@ export interface operations {
                             /** @enum {string} */
                             type: "qualifying" | "ce" | "post_licence" | "test_prep" | "elective";
                             hours: number | null;
+                            unlocked: boolean;
                             lessons: {
                                 id: number;
                                 title: string;
                                 minutes: number | null;
                                 /** @enum {string} */
                                 language: "en" | "es";
+                                locked: boolean;
                             }[];
                         }[];
                     };

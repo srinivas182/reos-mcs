@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
 use App\Http\Controllers\Auth\SsoSignInController;
 use App\Http\Controllers\Auth\TestIdentityProviderController;
+use App\Http\Controllers\Billing\BillingController;
+use App\Http\Controllers\Billing\CheckoutController;
 use App\Http\Controllers\BrandLogoController;
 use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Connections\ConnectController;
@@ -74,6 +76,16 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::post('{connection}/sync', 'sync')->whereNumber('connection')->middleware('throttle:10,1,sync')->name('sync');
         Route::patch('{connection}', 'update')->whereNumber('connection')->middleware('throttle:30,1,update')->name('update');
         Route::delete('{connection}', 'destroy')->whereNumber('connection')->middleware('throttle:30,1,destroy')->name('destroy');
+    });
+
+    // Plan and billing (B5.1, screen 29 and each role's equivalent) and checkout on reos.com (screen 3).
+    Route::get('settings/billing', [BillingController::class, 'index'])->name('billing.index');
+    Route::post('settings/billing/portal', [BillingController::class, 'portal'])->middleware('throttle:10,1,billing-portal')->name('billing.portal');
+    Route::controller(CheckoutController::class)->prefix('checkout')->name('checkout.')->group(function () {
+        Route::get('{price}', 'show')->whereNumber('price')->name('show');
+        Route::post('{price}', 'start')->whereNumber('price')->middleware('throttle:10,1,checkout-start')->name('start');
+        Route::post('orders/{order}/simulate', 'simulate')->middleware('throttle:10,1,checkout-simulate')->name('simulate');
+        Route::get('orders/{order}/return', 'complete')->middleware('throttle:30,1,checkout-return')->name('complete');
     });
 
     // Learn (A5.3b): courses for my state, search inside them, a lesson opened at its place.
