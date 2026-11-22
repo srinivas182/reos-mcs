@@ -4,6 +4,7 @@ import { ScheduleDialog } from '@/components/sessions/schedule-dialog';
 import { SessionCard } from '@/components/sessions/session-card';
 import { SessionNotes } from '@/components/sessions/session-notes';
 import { SessionRoom } from '@/components/sessions/session-room';
+import { SessionShares } from '@/components/sessions/session-shares';
 
 /** Video sessions (B6.3): Dr. Rachel Hughes and Sofia Reyes at Texas Realty School. */
 const meta = {
@@ -65,6 +66,52 @@ export const Schedule: Story = {
             onOpenChange={() => undefined}
             contacts={contacts}
             lengths={[15, 30, 45, 60, 90, 120]}
+        />
+    ),
+};
+export const Shared: Story = {
+    render: () => (
+        <SessionShares
+            shares={[
+                {
+                    id: 1,
+                    kind: 'lesson',
+                    at: '2026-11-24T21:10:00Z',
+                    by: 'Dr. Rachel Hughes',
+                    lesson: {
+                        id: 12,
+                        title: 'Earnest money and the option fee',
+                        course: 'Principles of Real Estate II',
+                    },
+                    topic: null,
+                    questions: [],
+                },
+                {
+                    id: 2,
+                    kind: 'questions',
+                    at: '2026-11-24T21:20:00Z',
+                    by: 'Dr. Rachel Hughes',
+                    lesson: null,
+                    topic: 'agency',
+                    questions: [
+                        {
+                            id: 3,
+                            question:
+                                'A buyer’s agent learns the seller will accept less. The buyer asks. What should the agent do?',
+                            options: [
+                                'Keep it to themselves',
+                                'Share it with the buyer, their client',
+                                'Tell the seller’s agent first',
+                                'Ask the broker to decide',
+                            ],
+                            correct: 1,
+                            explanation:
+                                'A buyer’s agent owes the buyer loyalty and disclosure of facts that matter to them.',
+                            source: 'TREC Rule 535.2',
+                        },
+                    ],
+                },
+            ]}
         />
     ),
 };

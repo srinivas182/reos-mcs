@@ -136,7 +136,7 @@ final readonly class DataExport
                 ->leftJoin('users as hosts', 'hosts.id', '=', 'video_sessions.host_id')
                 ->where('video_session_participants.user_id', $user->id)
                 ->orderBy('video_sessions.starts_at')
-                ->get(['video_sessions.title', 'video_sessions.kind', 'video_sessions.starts_at', 'video_sessions.ends_at', 'video_sessions.status', 'hosts.name as host', 'video_session_participants.role', 'video_session_participants.first_joined_at', 'video_sessions.notes'])
+                ->get(['video_sessions.title', 'video_sessions.kind', 'video_sessions.starts_at', 'video_sessions.ends_at', 'video_sessions.status', 'hosts.name as host', 'video_session_participants.role', 'video_session_participants.first_joined_at', 'video_sessions.notes', 'video_sessions.whiteboard_updated_at'])
                 ->map(static fn ($r): array => (array) $r)->all(),
             // The notification centre (B6.2): the inbox, choices and phones with push (never the token).
             'notifications' => [

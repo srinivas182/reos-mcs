@@ -131,6 +131,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{session}/end', 'end')->whereUuid('session')->middleware('throttle:10,1,api-sessions-end')->name('end');
         Route::post('{session}/cancel', 'cancel')->whereUuid('session')->middleware('throttle:10,1,api-sessions-cancel')->name('cancel');
         Route::put('{session}/notes', 'notes')->whereUuid('session')->middleware('throttle:60,1,api-sessions-notes')->name('notes');
+        // Quick actions (B6.3b); the whiteboard is drawn on the web, the phone shows its picture.
+        Route::get('{session}/share-options', 'shareOptions')->whereUuid('session')->middleware('throttle:30,1,api-sessions-share')->name('share-options');
+        Route::post('{session}/shares', 'share')->whereUuid('session')->middleware('throttle:20,1,api-sessions-share')->name('shares');
     });
     // The notification centre (B6.2): the inbox and my settings.
     Route::get('notifications', [ApiNotificationsController::class, 'index'])->name('api.notifications.index');

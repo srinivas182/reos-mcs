@@ -3,7 +3,7 @@
  * its room (LiveKit, or a simulated room where LiveKit isn't set up) and
  * the shared notes. A 404 on the list means sessions aren't rolled out to
  * this person yet (flag `video_rooms`), and the entries stay hidden.
- * Instructors and mentors schedule on the web for now.
+ * Instructors and mentors schedule here or on the web (B6.3b).
  */
 import type { paths } from '@reos/api-client';
 import { useFocusEffect } from 'expo-router';
@@ -69,16 +69,24 @@ export function useSession(id: string, userId: number | null, onEnded: () => voi
     () =>
       userId === null
         ? undefined
-        : listen(`users.${userId}`, ['session.ended'], (event) => {
-            if ((event as { session?: string } | undefined)?.session === id) {
-              onEnded();
-              load();
-            }
+        : listen(`users.${userId}`, ['session.ended', 'session.shared'], (event) => {
+            const data = event as { session?: string } | undefined;
+
+            if (data?.session !== id) return;
+
+            // Ended closes the room; shared (B6.3b) just brings in what the host shared.
+            if (!sharedOnly(event)) onEnded();
+            load();
           }),
     [userId, id, load, onEnded],
   );
 
   return { session, failed, reload: load, setSession };
+}
+
+/** `session.shared` carries only the session; `session.ended` also says when it ended. */
+function sharedOnly(event: unknown): boolean {
+  return !Object.prototype.hasOwnProperty.call(event ?? {}, 'ended_at');
 }
 
 type Result<T> = { ok: true; data: T } | { ok: false; message: string };
@@ -113,4 +121,13 @@ export async function saveNotes(id: string, notes: string): Promise<Result<Sessi
 /** 2700 → "45:00". */
 export function clock(seconds: number): string {
   return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
+type Plan = NonNullable<paths['/sessions']['post']['requestBody']>['content']['application/json'];
+
+/** Schedule a session (B6.3b on the phone; instructors and mentors). */
+export async function scheduleSession(plan: Plan): Promise<Result<Session>> {
+  const { data, error } = await api().POST('/sessions', { body: plan });
+
+  return data ? { ok: true, data } : { ok: false, message: problem(error) };
 }

@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Sessions;
 
+use App\Enums\QuizTopic;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Sessions\ScheduleSessionRequest;
 use App\Http\Requests\Sessions\SessionNotesRequest;
+use App\Http\Requests\Sessions\ShareRequest;
 use App\Messaging\Contacts;
 use App\Models\User;
 use App\Models\VideoSession;
 use App\Video\SessionPresenter;
+use App\Video\SessionShares;
 use App\Video\VideoSessions;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +26,7 @@ final class SessionsController extends Controller
      * Coming up and the last 30 days. Hosts (instructors and mentors) also
      * get the people they can invite.
      *
-     * @response array{sessions: list<array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null}>, can_host: bool, contacts: list<array{id: int, name: string, role: string, organisation: string}>, lengths: list<int>}
+     * @response array{sessions: list<array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<array{id: int, kind: 'lesson'|'questions', at: string, by: string|null, lesson: array{id: int, title: string, course: string}|null, topic: string|null, questions: list<array{id: int, question: string, options: list<string>, correct: int, explanation: string, source: string}>}>}>, can_host: bool, contacts: list<array{id: int, name: string, role: string, organisation: string}>, lengths: list<int>}
      */
     public function index(#[CurrentUser] User $user, VideoSessions $sessions, Contacts $contacts): JsonResponse
     {
@@ -44,7 +47,7 @@ final class SessionsController extends Controller
      *
      * @status 201
      *
-     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null}
+     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<array{id: int, kind: 'lesson'|'questions', at: string, by: string|null, lesson: array{id: int, title: string, course: string}|null, topic: string|null, questions: list<array{id: int, question: string, options: list<string>, correct: int, explanation: string, source: string}>}>}
      */
     public function store(ScheduleSessionRequest $request, #[CurrentUser] User $user, VideoSessions $sessions): JsonResponse
     {
@@ -57,7 +60,7 @@ final class SessionsController extends Controller
     /**
      * A session (B6.3).
      *
-     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null}
+     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<array{id: int, kind: 'lesson'|'questions', at: string, by: string|null, lesson: array{id: int, title: string, course: string}|null, topic: string|null, questions: list<array{id: int, question: string, options: list<string>, correct: int, explanation: string, source: string}>}>}
      */
     public function show(VideoSession $session, #[CurrentUser] User $user, VideoSessions $sessions): JsonResponse
     {
@@ -84,7 +87,7 @@ final class SessionsController extends Controller
     /**
      * End the session for everyone (B6.3). Host only.
      *
-     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null}
+     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<array{id: int, kind: 'lesson'|'questions', at: string, by: string|null, lesson: array{id: int, title: string, course: string}|null, topic: string|null, questions: list<array{id: int, question: string, options: list<string>, correct: int, explanation: string, source: string}>}>}
      */
     public function end(VideoSession $session, #[CurrentUser] User $user, VideoSessions $sessions): JsonResponse
     {
@@ -96,7 +99,7 @@ final class SessionsController extends Controller
     /**
      * Cancel a session (B6.3). Host only, before it starts.
      *
-     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null}
+     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<array{id: int, kind: 'lesson'|'questions', at: string, by: string|null, lesson: array{id: int, title: string, course: string}|null, topic: string|null, questions: list<array{id: int, question: string, options: list<string>, correct: int, explanation: string, source: string}>}>}
      */
     public function cancel(VideoSession $session, #[CurrentUser] User $user, VideoSessions $sessions): JsonResponse
     {
@@ -110,12 +113,42 @@ final class SessionsController extends Controller
      *
      * Shared by everyone in the session.
      *
-     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null}
+     * @response array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<array{id: int, kind: 'lesson'|'questions', at: string, by: string|null, lesson: array{id: int, title: string, course: string}|null, topic: string|null, questions: list<array{id: int, question: string, options: list<string>, correct: int, explanation: string, source: string}>}>}
      */
     public function notes(SessionNotesRequest $request, VideoSession $session, #[CurrentUser] User $user, VideoSessions $sessions): JsonResponse
     {
         $sessions->saveNotes($session, $user, $request->notes());
 
         return $this->show($session->refresh(), $user, $sessions);
+    }
+
+    /**
+     * What the host can share in the room (B6.3b).
+     *
+     * Lessons live in the host's state and practice-question topics. Host only.
+     *
+     * @response array{lessons: list<array{id: int, title: string, course: string}>, topics: list<array{topic: string, count: int}>}
+     */
+    public function shareOptions(VideoSession $session, #[CurrentUser] User $user, SessionShares $shares): JsonResponse
+    {
+        return response()->json($shares->options($session, $user));
+    }
+
+    /**
+     * Share a lesson or send practice questions (B6.3b).
+     *
+     * Host only, while the session is on. Everyone in it sees it at once.
+     *
+     * @status 201
+     *
+     * @response array{id: int, kind: 'lesson'|'questions', at: string, by: string|null, lesson: array{id: int, title: string, course: string}|null, topic: string|null, questions: list<array{id: int, question: string, options: list<string>, correct: int, explanation: string, source: string}>}
+     */
+    public function share(ShareRequest $request, VideoSession $session, #[CurrentUser] User $user, SessionShares $shares): JsonResponse
+    {
+        $share = $request->string('kind')->toString() === 'lesson'
+            ? $shares->shareLesson($session, $user, $request->integer('lesson'))
+            : $shares->shareQuestions($session, $user, QuizTopic::from($request->string('topic')->toString()));
+
+        return response()->json(SessionShares::present($share, app()->getLocale()), 201);
     }
 }

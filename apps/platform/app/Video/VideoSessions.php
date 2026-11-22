@@ -82,7 +82,8 @@ final readonly class VideoSessions
             throw ValidationException::withMessages(['guests' => __('sessions.errors.oneGuest')]);
         }
 
-        $starts = $plan['starts_at'];
+        // Stored in UTC whatever zone the time came in.
+        $starts = $plan['starts_at']->utc();
         $ends = $starts->addMinutes($plan['minutes']);
 
         if ($starts->lessThan(now()->subMinute())) {

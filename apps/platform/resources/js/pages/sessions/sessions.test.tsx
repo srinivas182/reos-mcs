@@ -40,6 +40,14 @@ vi.mock('@inertiajs/react', async (original) => ({
     usePage: () => ({ url: '/sessions', props: { auth: { user: { id: 7 } } } }),
 }));
 vi.mock('@/lib/content', () => ({ postJson }));
+// Excalidraw needs a real canvas; the room's switching and sharing are what's tested here.
+vi.mock('@/components/sessions/whiteboard', () => ({
+    default: ({ sessionId }: { sessionId: string }) => (
+        <div role="application" aria-label="Shared whiteboard">
+            {sessionId}
+        </div>
+    ),
+}));
 
 vi.stubGlobal(
     'ResizeObserver',
@@ -215,6 +223,97 @@ describe('Sessions (web, B6.3)', () => {
             '/sessions/s-1/notes',
             { notes: 'Read section 4.' },
             expect.anything(),
+        );
+    });
+
+    it('switches to the whiteboard and lets the host share practice questions', async () => {
+        postJson.mockResolvedValueOnce({
+            simulated: true,
+            url: null,
+            token: null,
+            ends_at: new Date(Date.now() + 30 * 60_000).toISOString(),
+        });
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(() =>
+                Promise.resolve(
+                    new Response(
+                        JSON.stringify({
+                            lessons: [],
+                            topics: [{ topic: 'agency', count: 4 }],
+                        }),
+                    ),
+                ),
+            ),
+        );
+        render(
+            <SessionPage
+                session={session({ can_join: true, status: 'live' })}
+                simulated
+            />,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Join' }));
+
+        await userEvent.click(
+            await screen.findByRole('radio', { name: 'Whiteboard' }),
+        );
+        expect(
+            await screen.findByRole('application', {
+                name: 'Shared whiteboard',
+            }),
+        ).toBeInTheDocument();
+
+        postJson.mockResolvedValueOnce({});
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Send practice questions' }),
+        );
+        await userEvent.click(
+            await screen.findByRole('button', { name: 'Agency' }),
+        );
+        expect(postJson).toHaveBeenLastCalledWith('/sessions/s-1/shares', {
+            kind: 'questions',
+            topic: 'agency',
+        });
+        expect(router.reload).toHaveBeenCalledWith({ only: ['session'] });
+    });
+
+    it('lets everyone answer shared practice questions', async () => {
+        render(
+            <SessionPage
+                session={session({
+                    status: 'ended',
+                    shares: [
+                        {
+                            id: 2,
+                            kind: 'questions',
+                            at: '2026-11-24T21:20:00Z',
+                            by: 'Dr. Rachel Hughes',
+                            lesson: null,
+                            topic: 'agency',
+                            questions: [
+                                {
+                                    id: 3,
+                                    question:
+                                        'What does a buyer’s agent owe the buyer?',
+                                    options: [
+                                        'Nothing',
+                                        'Loyalty and disclosure',
+                                    ],
+                                    correct: 1,
+                                    explanation:
+                                        'Agents owe their clients loyalty.',
+                                    source: 'TREC Rule 535.2',
+                                },
+                            ],
+                        },
+                    ],
+                })}
+                simulated
+            />,
+        );
+        await userEvent.click(screen.getByRole('button', { name: 'Nothing' }));
+        expect(screen.getByRole('status')).toHaveTextContent(
+            'Not quite. Agents owe their clients loyalty. Source: TREC Rule 535.2',
         );
     });
 });

@@ -4653,7 +4653,9 @@
       "find": "Find someone",
       "noContacts": "Nobody to invite yet. People you work with show here.",
       "agenda": "Agenda (optional)",
-      "submit": "Schedule"
+      "submit": "Schedule",
+      "today": "Today",
+      "tomorrow": "Tomorrow"
     },
     "room": {
       "label": "Session room",
@@ -4667,7 +4669,9 @@
       "you": "{{name}} (you)",
       "ended": "The session has ended.",
       "joining": "Joining…",
-      "failed": "We couldn’t open the room. Try again."
+      "failed": "We couldn’t open the room. Try again.",
+      "view": "Show",
+      "video": "Video"
     },
     "notes": {
       "title": "Session notes",
@@ -4707,6 +4711,32 @@
       },
       "join": "Join now"
     },
-    "emptyHostPhone": "Schedule sessions on the web; they show here and on Today."
+    "whiteboard": {
+      "title": "Whiteboard",
+      "label": "Shared whiteboard",
+      "loading": "Loading…",
+      "tooBig": "The whiteboard is too big to save. Remove some drawings and try again.",
+      "picture": "Whiteboard from {{title}}",
+      "phone": "Draw together on the web; the latest picture shows here.",
+      "updated": "Updated {{time}}"
+    },
+    "share": {
+      "lesson": "Share a lesson",
+      "questions": "Send practice questions",
+      "lessonHelp": "Everyone in the session can open it right away.",
+      "questionsHelp": "Three questions on the topic you choose. Everyone answers them in the room.",
+      "find": "Find a lesson",
+      "noLessons": "No lessons found.",
+      "shared": "Shared in this session",
+      "openLesson": "Open lesson",
+      "practice": "Practice questions: {{topic}}",
+      "right": "Correct.",
+      "wrong": "Not quite.",
+      "source": "Source: {{source}}",
+      "errors": {
+        "lesson": "Choose a live lesson.",
+        "topic": "There are no practice questions on that topic yet."
+      }
+    }
   }
 }

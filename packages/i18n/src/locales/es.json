@@ -4653,7 +4653,9 @@
       "find": "Buscar a alguien",
       "noContacts": "Aún no hay a quién invitar. Aquí aparecen las personas con quienes trabaja.",
       "agenda": "Agenda (opcional)",
-      "submit": "Programar"
+      "submit": "Programar",
+      "today": "Hoy",
+      "tomorrow": "Mañana"
     },
     "room": {
       "label": "Sala de la sesión",
@@ -4667,7 +4669,9 @@
       "you": "{{name}} (usted)",
       "ended": "La sesión terminó.",
       "joining": "Uniéndose…",
-      "failed": "No pudimos abrir la sala. Inténtelo de nuevo."
+      "failed": "No pudimos abrir la sala. Inténtelo de nuevo.",
+      "view": "Mostrar",
+      "video": "Video"
     },
     "notes": {
       "title": "Notas de la sesión",
@@ -4707,6 +4711,32 @@
       },
       "join": "Unirse ahora"
     },
-    "emptyHostPhone": "Programe sesiones en la web; aparecerán aquí y en Hoy."
+    "whiteboard": {
+      "title": "Pizarra",
+      "label": "Pizarra compartida",
+      "loading": "Cargando…",
+      "tooBig": "La pizarra es demasiado grande para guardarla. Quite algunos dibujos e inténtelo de nuevo.",
+      "picture": "Pizarra de {{title}}",
+      "phone": "Dibujen juntos en la web; aquí aparece la imagen más reciente.",
+      "updated": "Actualizada {{time}}"
+    },
+    "share": {
+      "lesson": "Compartir una lección",
+      "questions": "Enviar preguntas de práctica",
+      "lessonHelp": "Todos en la sesión pueden abrirla de inmediato.",
+      "questionsHelp": "Tres preguntas sobre el tema que elija. Todos las responden en la sala.",
+      "find": "Buscar una lección",
+      "noLessons": "No se encontraron lecciones.",
+      "shared": "Compartido en esta sesión",
+      "openLesson": "Abrir lección",
+      "practice": "Preguntas de práctica: {{topic}}",
+      "right": "Correcto.",
+      "wrong": "No exactamente.",
+      "source": "Fuente: {{source}}",
+      "errors": {
+        "lesson": "Elija una lección publicada.",
+        "topic": "Aún no hay preguntas de práctica sobre ese tema."
+      }
+    }
   }
 }

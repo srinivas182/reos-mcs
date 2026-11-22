@@ -1,11 +1,13 @@
+import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { SessionRoom } from '@/features/sessions/SessionRoom';
 import { sessionTime } from '@/features/sessions/SessionRow';
+import { SessionShares } from '@/features/sessions/SessionShares';
 import { useAuth } from '@/lib/auth';
 import { endSession, joinSession, type RoomConnection, saveNotes, useSession } from '@/lib/sessions';
 import { Button, Callout, Eyebrow, Screen, Text, TextField, TitleBar } from '@/ui';
@@ -26,6 +28,14 @@ export default function SessionScreen() {
   const [notesError, setNotesError] = useState<string | null>(null);
   const leave = useCallback(() => setConnection(null), []);
   const { session, failed, reload, setSession } = useSession(id, user?.id ?? null, leave);
+
+  // In the room, the whiteboard picture follows the web's drawing (saved every few seconds).
+  useEffect(() => {
+    if (connection === null) return undefined;
+    const timer = setInterval(reload, 15_000);
+
+    return () => clearInterval(timer);
+  }, [connection, reload]);
 
   if (failed) {
     return (
@@ -113,6 +123,30 @@ export default function SessionScreen() {
         </View>
       )}
 
+      <SessionShares shares={session.shares} />
+
+      {/* The shared whiteboard (B6.3b): drawn on the web; the latest picture here. */}
+      {session.status !== 'cancelled' ? (
+        <View style={styles.block}>
+          <Eyebrow>{t('sessions.whiteboard.title')}</Eyebrow>
+          {session.whiteboard.image_url ? (
+            <Image
+              source={{ uri: session.whiteboard.image_url }}
+              style={styles.board}
+              contentFit="contain"
+              accessibilityLabel={t('sessions.whiteboard.picture', { title: session.title })}
+            />
+          ) : null}
+          <Text variant="caption" tone="muted">
+            {session.whiteboard.updated_at
+              ? t('sessions.whiteboard.updated', {
+                  time: new Date(session.whiteboard.updated_at).toLocaleTimeString(i18n.language, { hour: 'numeric', minute: '2-digit' }),
+                })
+              : t('sessions.whiteboard.phone')}
+          </Text>
+        </View>
+      ) : null}
+
       {session.status !== 'cancelled' ? (
         <View style={styles.block}>
           <Eyebrow>{t('sessions.notes.title')}</Eyebrow>
@@ -136,4 +170,5 @@ export default function SessionScreen() {
 
 const styles = StyleSheet.create((theme) => ({
   block: { gap: theme.space.md },
+  board: { width: '100%', aspectRatio: 4 / 3, borderRadius: theme.radius.lg, backgroundColor: theme.colors.surface },
 }));

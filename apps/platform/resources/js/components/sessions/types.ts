@@ -22,6 +22,29 @@ export type Session = {
     notes: string | null;
     notes_updated_at: string | null;
     notes_updated_by: string | null;
+    /** The shared whiteboard's picture (B6.3b). */
+    whiteboard: { image_url: string | null; updated_at: string | null };
+    /** Lessons and practice questions the host shared (B6.3b). */
+    shares: Share[];
+};
+
+export type PracticeQuestion = {
+    id: number;
+    question: string;
+    options: string[];
+    correct: number;
+    explanation: string;
+    source: string;
+};
+
+export type Share = {
+    id: number;
+    kind: 'lesson' | 'questions';
+    at: string;
+    by: string | null;
+    lesson: { id: number; title: string; course: string } | null;
+    topic: string | null;
+    questions: PracticeQuestion[];
 };
 
 /** What Join returns: the room server and token, or a simulated room. */

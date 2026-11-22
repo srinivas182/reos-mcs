@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/page-header';
 import { SessionStatus, sessionTime } from '@/components/sessions/session-card';
 import { SessionNotes } from '@/components/sessions/session-notes';
 import { SessionRoom } from '@/components/sessions/session-room';
+import { SessionShares } from '@/components/sessions/session-shares';
 import type { RoomConnection, Session } from '@/components/sessions/types';
 import { withWhom } from '@/components/sessions/types';
 import { Button } from '@/components/ui/button';
@@ -20,10 +21,12 @@ function LiveEnd({
     me,
     session,
     onEnded,
+    onShared,
 }: {
     me: number;
     session: string;
     onEnded: () => void;
+    onShared: () => void;
 }) {
     useEcho<{ session: string }>(
         `users.${me}`,
@@ -31,6 +34,17 @@ function LiveEnd({
         (event) => {
             if (event.session === session) {
                 onEnded();
+            }
+        },
+        [session],
+    );
+    // The host shared a lesson or practice questions (B6.3b).
+    useEcho<{ session: string }>(
+        `users.${me}`,
+        '.session.shared',
+        (event) => {
+            if (event.session === session) {
+                onShared();
             }
         },
         [session],
@@ -63,6 +77,7 @@ export default function SessionPage({
         setConnection(null);
         router.reload({ only: ['session'] });
     }, []);
+    const refresh = useCallback(() => router.reload({ only: ['session'] }), []);
 
     const enter = async () => {
         setJoining(true);
@@ -70,6 +85,8 @@ export default function SessionPage({
 
         try {
             setConnection(await postJson<RoomConnection>(join(session.id).url));
+            // The session is live now.
+            router.reload({ only: ['session'] });
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
         } finally {
@@ -86,7 +103,12 @@ export default function SessionPage({
         <>
             <Head title={session.title} />
             {realtimeEnabled() && me > 0 ? (
-                <LiveEnd me={me} session={session.id} onEnded={leave} />
+                <LiveEnd
+                    me={me}
+                    session={session.id}
+                    onEnded={leave}
+                    onShared={refresh}
+                />
             ) : null}
             <div className="space-y-8 px-4 py-6 md:px-8">
                 <PageHeader
@@ -130,6 +152,7 @@ export default function SessionPage({
                         connection={connection}
                         me={me}
                         onLeave={leave}
+                        onShared={refresh}
                         onEnd={() => {
                             setConnection(null);
                             router.post(end(session.id).url);
@@ -169,6 +192,23 @@ export default function SessionPage({
                     <p className="text-base text-muted-foreground">
                         {t('sessions.wasCancelled')}
                     </p>
+                ) : null}
+
+                <SessionShares shares={session.shares} />
+
+                {!connection && session.whiteboard.image_url ? (
+                    <section className="space-y-3">
+                        <h2 className="text-lg font-semibold">
+                            {t('sessions.whiteboard.title')}
+                        </h2>
+                        <img
+                            src={session.whiteboard.image_url}
+                            alt={t('sessions.whiteboard.picture', {
+                                title: session.title,
+                            })}
+                            className="max-h-[60vh] w-full rounded-reos-lg border border-border bg-card object-contain"
+                        />
+                    </section>
                 ) : null}
 
                 <SessionNotes session={session} />
