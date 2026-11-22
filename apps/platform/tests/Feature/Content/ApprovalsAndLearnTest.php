@@ -131,7 +131,7 @@ describe('learn (A5.3b)', function () {
         $this->actingAs($this->candidate)->get('/learn?q=IABS')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('learn/index')
             ->has('courses', 2)
-            ->where('courses.0.title', 'Principles of Real Estate II')
+            ->where('courses', fn ($courses) => collect($courses)->pluck('title')->sort()->values()->all() === ['Principles of Real Estate II', 'Éxito en el examen: Texas'])
             ->where('search.results', fn ($results) => collect($results)->contains(fn ($r) => $r['seconds'] === 245)));
 
         $lesson = Lesson::query()->where('title', '6.2 Agency disclosure')->sole();
