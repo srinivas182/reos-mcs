@@ -15,6 +15,7 @@ use App\Models\TenantSignup;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
+use App\Tenancy\Tenancy;
 use App\Tenancy\TenantPlan;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,7 @@ final readonly class TenantSignups
         'school' => ['type' => OrganisationType::School, 'buyer' => Buyer::School, 'role' => Role::SchoolAdmin],
     ];
 
-    public function __construct(private Tenants $tenants, private Memberships $memberships, private AuditLogger $audit) {}
+    public function __construct(private Tenants $tenants, private Memberships $memberships, private AuditLogger $audit, private Tenancy $tenancy) {}
 
     /**
      * The plans this kind of tenant can buy in a state.
@@ -79,7 +80,8 @@ final readonly class TenantSignups
     /** The order is paid: create the tenant and make the owner its admin (once). */
     public function complete(Order $order): ?TenantSignup
     {
-        return DB::transaction(function () use ($order): ?TenantSignup {
+        // Creating a tenant writes rows for it, outside the buyer's own scope (row-level security).
+        return $this->tenancy->asPlatform(fn (): ?TenantSignup => DB::transaction(function () use ($order): ?TenantSignup {
             $signup = TenantSignup::query()->where('order_id', $order->id)->where('status', 'pending')->lockForUpdate()->first();
 
             if ($signup === null) {
@@ -102,6 +104,6 @@ final readonly class TenantSignups
             $this->audit->record('tenant.signed_up', 'tenant', (string) $tenant->id, ['order' => $order->uuid, 'product' => $order->product->key], $owner, $tenant->id);
 
             return $signup;
-        });
+        }));
     }
 }
