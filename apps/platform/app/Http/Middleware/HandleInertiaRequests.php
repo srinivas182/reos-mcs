@@ -19,6 +19,7 @@ use App\Services\Authorization\Memberships;
 use App\Services\States\PersonStates;
 use App\Services\Tenancy\Brands;
 use App\Services\Tenancy\SupportAccess;
+use App\Video\VideoSessions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\View;
 use Inertia\Middleware;
@@ -87,6 +88,10 @@ class HandleInertiaRequests extends Middleware
             // Messages (B6.1): null unless rolled out to the person; the unread count for the menu badge.
             'messages' => fn (): ?array => $request->user() instanceof User && app(Flags::class)->forUser($request->user(), 'messages')
                 ? ['unread' => app(Conversations::class)->unread($request->user()), 'user' => $request->user()->id]
+                : null,
+            // Video sessions (B6.3): null unless rolled out to the person; the next one for Home.
+            'sessions' => fn (): ?array => $request->user() instanceof User && app(Flags::class)->forUser($request->user(), 'video_rooms')
+                ? ['next' => app(VideoSessions::class)->next($request->user())]
                 : null,
             // "What's new" for the person's role (A6.2), until dismissed.
             'whatsNew' => fn (): ?array => $request->user() instanceof User ? app(Releases::class)->card($request->user()) : null,

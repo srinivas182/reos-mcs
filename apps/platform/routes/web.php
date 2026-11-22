@@ -35,6 +35,7 @@ use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\Payouts\EarningsController;
 use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
+use App\Http\Controllers\Sessions\SessionsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
@@ -207,6 +208,17 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix(
     Route::get('/', [AnnouncementController::class, 'index'])->name('index');
     Route::post('/', [AnnouncementController::class, 'store'])->middleware('throttle:10,1,announcements-send')->name('store');
     Route::post('{announcement}/read', [AnnouncementController::class, 'read'])->whereUuid('announcement')->middleware('throttle:120,1,announcements-read')->name('read');
+});
+
+// Video sessions (B6.3): behind the `video_rooms` flag while it rolls out.
+Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->prefix('sessions')->name('sessions.')->controller(SessionsController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->middleware('throttle:20,1,sessions-schedule')->name('store');
+    Route::get('{session}', 'show')->whereUuid('session')->name('show');
+    Route::post('{session}/join', 'join')->whereUuid('session')->middleware('throttle:30,1,sessions-join')->name('join');
+    Route::post('{session}/end', 'end')->whereUuid('session')->middleware('throttle:10,1,sessions-end')->name('end');
+    Route::post('{session}/cancel', 'cancel')->whereUuid('session')->middleware('throttle:10,1,sessions-cancel')->name('cancel');
+    Route::put('{session}/notes', 'notes')->whereUuid('session')->middleware('throttle:60,1,sessions-notes')->name('notes');
 });
 
 // "What's new" (A6.2): dismissed once, gone on the web and the phone.

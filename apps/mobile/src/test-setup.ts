@@ -168,3 +168,14 @@ jest.mock('expo-video', () => {
 jest.mock('expo-quick-actions/router', () => ({ useQuickActionRouting: jest.fn() }));
 // Live updates (B6.1) need Reverb; screens are tested without a socket.
 jest.mock('@/lib/realtime', () => ({ listen: () => () => undefined, disconnectRealtime: jest.fn() }));
+
+// Video sessions (B6.3): the native WebRTC modules aren't in Jest; a room renders its children.
+jest.mock('@livekit/react-native', () => ({
+  registerGlobals: jest.fn(),
+  AudioSession: { startAudioSession: jest.fn().mockResolvedValue(undefined), stopAudioSession: jest.fn().mockResolvedValue(undefined) },
+  LiveKitRoom: ({ children }: { children: unknown }) => children,
+  VideoTrack: () => null,
+  useTracks: () => [],
+  isTrackReference: () => false,
+}));
+jest.mock('livekit-client', () => ({ Track: { Source: { Camera: 'camera', ScreenShare: 'screen_share' } } }));

@@ -29,6 +29,10 @@ declare module '@inertiajs/core' {
             connectionAlerts: import('@/components/connection-alert').ConnectionAlertItem[];
             whatsNew: import('@/components/whats-new').WhatsNewItem | null;
             messages: { unread: number; user: number } | null;
+            /** Video sessions (B6.3): null unless rolled out to the person. */
+            sessions: {
+                next: import('@/components/sessions/types').Session | null;
+            } | null;
             notifications: { unread: number } | null;
             /** Live states' names, for the public site's state chip. */
             liveStates: string[];

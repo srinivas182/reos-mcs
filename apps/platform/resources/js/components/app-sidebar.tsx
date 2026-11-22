@@ -21,11 +21,12 @@ import { dashboard } from '@/routes';
  */
 export function AppSidebar() {
     const { t } = useTranslation();
-    const { auth, messages } = usePage().props;
+    const { auth, messages, sessions } = usePage().props;
     const { isCurrentOrParentUrl } = useCurrentUrl();
     const current = activeMembership(auth.roles);
     const items = roleNavigation(current?.role ?? null, {
         messages: messages !== null,
+        sessions: sessions !== null,
     });
     const organisation = current?.organisation;
     // People on their own (REOS's own organisation, not super admins) have no brand to show.

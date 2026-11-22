@@ -18,6 +18,7 @@ import {
     Sparkles,
     Tag,
     Users,
+    Video,
     Wallet,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
@@ -29,6 +30,7 @@ import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as messagesIndex } from '@/routes/messages';
+import { index as sessionsIndex } from '@/routes/sessions';
 import { index as billingIndex } from '@/routes/billing';
 import { index as gateways } from '@/routes/gateways';
 import { index as plans } from '@/routes/plans';
@@ -72,7 +74,8 @@ export type NavLabel =
     | 'earnings'
     | 'plansAndPricing'
     | 'planAndBilling'
-    | 'connections';
+    | 'connections'
+    | 'liveClasses';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -112,7 +115,7 @@ const planned = (label: string): RoleNavItem => ({
  */
 export function roleNavigation(
     role: RoleName | null,
-    options: { messages?: boolean } = {},
+    options: { messages?: boolean; sessions?: boolean } = {},
 ): BuiltNavItem[] {
     const home = item('dashboard', House, dashboard());
     // Messages for every role once rolled out to the person (B6.1, flag `messages`).
@@ -199,7 +202,10 @@ export function roleNavigation(
             planned('courseBuilder'),
             planned('aiLessons'),
             planned('questionBank'),
-            planned('liveClasses'),
+            // Sessions and live classes (B6.3, flag `video_rooms`); the CE report follows.
+            options.sessions
+                ? item('liveClasses', Video, sessionsIndex(), '/sessions')
+                : planned('liveClasses'),
             planned('students'),
             planned('questions'),
             item('earnings', Wallet, earnings()),

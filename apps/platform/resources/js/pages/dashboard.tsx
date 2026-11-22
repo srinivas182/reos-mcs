@@ -1,11 +1,13 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { LayoutDashboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { CeHoursTile } from '@/components/ce-requirement';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
+import { SessionCard } from '@/components/sessions/session-card';
 import { TodayCard } from '@/components/today-card';
 import { activeMembership, roleName } from '@/lib/roles';
+import { index as sessionsIndex } from '@/routes/sessions';
 import type { CeRequirement } from '@/types';
 import type { CalendarDay } from '@/types/calendar';
 
@@ -23,7 +25,7 @@ export default function Dashboard({
     ce?: CeRequirement | null;
 }) {
     const { t } = useTranslation();
-    const { auth } = usePage().props;
+    const { auth, sessions } = usePage().props;
     const current = activeMembership(auth.roles);
     const first = auth.user.name?.split(' ')[0];
     const title = first
@@ -50,6 +52,31 @@ export default function Dashboard({
                     </div>
                 ) : null}
                 {today ? <TodayCard today={today} /> : null}
+                {sessions ? (
+                    <section className="space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-3">
+                            <h2 className="text-lg font-semibold">
+                                {t('sessions.next')}
+                            </h2>
+                            <Link
+                                href={sessionsIndex().url}
+                                className="inline-flex min-h-12 items-center text-base font-medium text-primary underline-offset-4 hover:underline"
+                            >
+                                {t('sessions.title')}
+                            </Link>
+                        </div>
+                        {sessions.next ? (
+                            <SessionCard
+                                session={sessions.next}
+                                me={auth.user.id}
+                            />
+                        ) : (
+                            <p className="text-base text-muted-foreground">
+                                {t('sessions.empty')}
+                            </p>
+                        )}
+                    </section>
+                ) : null}
                 <EmptyState
                     icon={LayoutDashboard}
                     title={t('dashboard.comingTitle')}

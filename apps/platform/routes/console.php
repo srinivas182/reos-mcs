@@ -49,3 +49,5 @@ Schedule::command('reos:notifications:release')->everyFiveMinutes()->withoutOver
 Schedule::command('reos:notifications:digests')->hourlyAt(2)->withoutOverlapping()->onOneServer();
 Schedule::command('reos:push:receipts')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
 Schedule::command('reos:notifications:prune')->dailyAt('04:45')->onOneServer();
+// Video sessions (B6.3): rooms close at the booked end; "starting soon" 10 minutes before.
+Schedule::command('reos:sessions:tick')->everyMinute()->withoutOverlapping()->onOneServer();

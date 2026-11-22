@@ -6195,6 +6195,1216 @@
                 }
             }
         },
+        "/sessions": {
+            "get": {
+                "operationId": "sessions.index",
+                "description": "Coming up and the last 30 days. Hosts (instructors and mentors) also\nget the people they can invite.",
+                "summary": "Your sessions (B6.3)",
+                "tags": [
+                    "Sessions"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sessions": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "one_on_one",
+                                                            "live_class"
+                                                        ]
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "agenda": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "starts_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "ends_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "join_opens_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "scheduled",
+                                                            "live",
+                                                            "ended",
+                                                            "cancelled"
+                                                        ]
+                                                    },
+                                                    "host": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    },
+                                                    "people": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "role": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "host",
+                                                                        "guest"
+                                                                    ]
+                                                                },
+                                                                "joined": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "role",
+                                                                "joined"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "me": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "host",
+                                                            "guest"
+                                                        ]
+                                                    },
+                                                    "can_join": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "notes": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "notes_updated_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "notes_updated_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "title",
+                                                    "agenda",
+                                                    "starts_at",
+                                                    "ends_at",
+                                                    "join_opens_at",
+                                                    "status",
+                                                    "host",
+                                                    "people",
+                                                    "me",
+                                                    "can_join",
+                                                    "notes",
+                                                    "notes_updated_at",
+                                                    "notes_updated_by"
+                                                ]
+                                            }
+                                        },
+                                        "can_host": {
+                                            "type": "boolean"
+                                        },
+                                        "contacts": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string"
+                                                    },
+                                                    "organisation": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "role",
+                                                    "organisation"
+                                                ]
+                                            }
+                                        },
+                                        "lengths": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "sessions",
+                                        "can_host",
+                                        "contacts",
+                                        "lengths"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "sessions.store",
+                "description": "Instructors and mentors only, with people they work with.",
+                "summary": "Schedule a session (B6.3)",
+                "tags": [
+                    "Sessions"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ScheduleSessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "type": "string",
+                                            "enum": [
+                                                "one_on_one",
+                                                "live_class"
+                                            ]
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "agenda": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "starts_at": {
+                                            "type": "string"
+                                        },
+                                        "ends_at": {
+                                            "type": "string"
+                                        },
+                                        "join_opens_at": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "scheduled",
+                                                "live",
+                                                "ended",
+                                                "cancelled"
+                                            ]
+                                        },
+                                        "host": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name"
+                                            ]
+                                        },
+                                        "people": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "host",
+                                                            "guest"
+                                                        ]
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "role",
+                                                    "joined"
+                                                ]
+                                            }
+                                        },
+                                        "me": {
+                                            "type": "string",
+                                            "enum": [
+                                                "host",
+                                                "guest"
+                                            ]
+                                        },
+                                        "can_join": {
+                                            "type": "boolean"
+                                        },
+                                        "notes": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "kind",
+                                        "title",
+                                        "agenda",
+                                        "starts_at",
+                                        "ends_at",
+                                        "join_opens_at",
+                                        "status",
+                                        "host",
+                                        "people",
+                                        "me",
+                                        "can_join",
+                                        "notes",
+                                        "notes_updated_at",
+                                        "notes_updated_by"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}": {
+            "get": {
+                "operationId": "sessions.show",
+                "summary": "A session (B6.3)",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "type": "string",
+                                            "enum": [
+                                                "one_on_one",
+                                                "live_class"
+                                            ]
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "agenda": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "starts_at": {
+                                            "type": "string"
+                                        },
+                                        "ends_at": {
+                                            "type": "string"
+                                        },
+                                        "join_opens_at": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "scheduled",
+                                                "live",
+                                                "ended",
+                                                "cancelled"
+                                            ]
+                                        },
+                                        "host": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name"
+                                            ]
+                                        },
+                                        "people": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "host",
+                                                            "guest"
+                                                        ]
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "role",
+                                                    "joined"
+                                                ]
+                                            }
+                                        },
+                                        "me": {
+                                            "type": "string",
+                                            "enum": [
+                                                "host",
+                                                "guest"
+                                            ]
+                                        },
+                                        "can_join": {
+                                            "type": "boolean"
+                                        },
+                                        "notes": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "kind",
+                                        "title",
+                                        "agenda",
+                                        "starts_at",
+                                        "ends_at",
+                                        "join_opens_at",
+                                        "status",
+                                        "host",
+                                        "people",
+                                        "me",
+                                        "can_join",
+                                        "notes",
+                                        "notes_updated_at",
+                                        "notes_updated_by"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/join": {
+            "post": {
+                "operationId": "sessions.join",
+                "description": "From five minutes before the start until the end. Returns the LiveKit\nserver and a token for this person and room that stops working at the\nend; `simulated` is true where LiveKit isn't set up (outside production).",
+                "summary": "Join the room (B6.3)",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "simulated": {
+                                            "type": "boolean"
+                                        },
+                                        "url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "token": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "ends_at": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "simulated",
+                                        "url",
+                                        "token",
+                                        "ends_at"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/end": {
+            "post": {
+                "operationId": "sessions.end",
+                "summary": "End the session for everyone (B6.3). Host only",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "type": "string",
+                                            "enum": [
+                                                "one_on_one",
+                                                "live_class"
+                                            ]
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "agenda": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "starts_at": {
+                                            "type": "string"
+                                        },
+                                        "ends_at": {
+                                            "type": "string"
+                                        },
+                                        "join_opens_at": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "scheduled",
+                                                "live",
+                                                "ended",
+                                                "cancelled"
+                                            ]
+                                        },
+                                        "host": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name"
+                                            ]
+                                        },
+                                        "people": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "host",
+                                                            "guest"
+                                                        ]
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "role",
+                                                    "joined"
+                                                ]
+                                            }
+                                        },
+                                        "me": {
+                                            "type": "string",
+                                            "enum": [
+                                                "host",
+                                                "guest"
+                                            ]
+                                        },
+                                        "can_join": {
+                                            "type": "boolean"
+                                        },
+                                        "notes": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "kind",
+                                        "title",
+                                        "agenda",
+                                        "starts_at",
+                                        "ends_at",
+                                        "join_opens_at",
+                                        "status",
+                                        "host",
+                                        "people",
+                                        "me",
+                                        "can_join",
+                                        "notes",
+                                        "notes_updated_at",
+                                        "notes_updated_by"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/cancel": {
+            "post": {
+                "operationId": "sessions.cancel",
+                "summary": "Cancel a session (B6.3). Host only, before it starts",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "type": "string",
+                                            "enum": [
+                                                "one_on_one",
+                                                "live_class"
+                                            ]
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "agenda": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "starts_at": {
+                                            "type": "string"
+                                        },
+                                        "ends_at": {
+                                            "type": "string"
+                                        },
+                                        "join_opens_at": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "scheduled",
+                                                "live",
+                                                "ended",
+                                                "cancelled"
+                                            ]
+                                        },
+                                        "host": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name"
+                                            ]
+                                        },
+                                        "people": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "host",
+                                                            "guest"
+                                                        ]
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "role",
+                                                    "joined"
+                                                ]
+                                            }
+                                        },
+                                        "me": {
+                                            "type": "string",
+                                            "enum": [
+                                                "host",
+                                                "guest"
+                                            ]
+                                        },
+                                        "can_join": {
+                                            "type": "boolean"
+                                        },
+                                        "notes": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "kind",
+                                        "title",
+                                        "agenda",
+                                        "starts_at",
+                                        "ends_at",
+                                        "join_opens_at",
+                                        "status",
+                                        "host",
+                                        "people",
+                                        "me",
+                                        "can_join",
+                                        "notes",
+                                        "notes_updated_at",
+                                        "notes_updated_by"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/notes": {
+            "put": {
+                "operationId": "sessions.notes",
+                "description": "Shared by everyone in the session.",
+                "summary": "Save the session notes (B6.3, screen 16)",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SessionNotesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string"
+                                        },
+                                        "kind": {
+                                            "type": "string",
+                                            "enum": [
+                                                "one_on_one",
+                                                "live_class"
+                                            ]
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "agenda": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "starts_at": {
+                                            "type": "string"
+                                        },
+                                        "ends_at": {
+                                            "type": "string"
+                                        },
+                                        "join_opens_at": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "scheduled",
+                                                "live",
+                                                "ended",
+                                                "cancelled"
+                                            ]
+                                        },
+                                        "host": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "name"
+                                            ]
+                                        },
+                                        "people": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "host",
+                                                            "guest"
+                                                        ]
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "role",
+                                                    "joined"
+                                                ]
+                                            }
+                                        },
+                                        "me": {
+                                            "type": "string",
+                                            "enum": [
+                                                "host",
+                                                "guest"
+                                            ]
+                                        },
+                                        "can_join": {
+                                            "type": "boolean"
+                                        },
+                                        "notes": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "notes_updated_by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "kind",
+                                        "title",
+                                        "agenda",
+                                        "starts_at",
+                                        "ends_at",
+                                        "join_opens_at",
+                                        "status",
+                                        "host",
+                                        "people",
+                                        "me",
+                                        "can_join",
+                                        "notes",
+                                        "notes_updated_at",
+                                        "notes_updated_by"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/states": {
             "get": {
                 "operationId": "states",
@@ -9578,6 +10788,68 @@
                 ],
                 "title": "SaveTodoRequest"
             },
+            "ScheduleSessionRequest": {
+                "type": "object",
+                "description": "Scheduling a 1-on-1 session or a live class (B6.3).",
+                "properties": {
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "one_on_one",
+                            "live_class"
+                        ]
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 120
+                    },
+                    "agenda": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 2000
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The start, with its time zone.",
+                        "examples": [
+                            "2026-11-24T15:00:00-06:00"
+                        ]
+                    },
+                    "minutes": {
+                        "type": "integer",
+                        "description": "Length in minutes.",
+                        "enum": [
+                            "15",
+                            "30",
+                            "45",
+                            "60",
+                            "90",
+                            "120"
+                        ]
+                    },
+                    "guests": {
+                        "type": "array",
+                        "description": "People to invite (from the people you work with).",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 1,
+                        "maxItems": 100,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "kind",
+                    "title",
+                    "starts_at",
+                    "minutes",
+                    "guests"
+                ],
+                "title": "ScheduleSessionRequest"
+            },
             "SendMessageRequest": {
                 "type": "object",
                 "description": "Send or edit a message (B6.1), optionally as a reply.",
@@ -9612,6 +10884,23 @@
                     }
                 },
                 "title": "SendMessageRequest"
+            },
+            "SessionNotesRequest": {
+                "type": "object",
+                "description": "Session notes (screen 16).",
+                "properties": {
+                    "notes": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 20000
+                    }
+                },
+                "required": [
+                    "notes"
+                ],
+                "title": "SessionNotesRequest"
             },
             "SignInResource": {
                 "type": "object",

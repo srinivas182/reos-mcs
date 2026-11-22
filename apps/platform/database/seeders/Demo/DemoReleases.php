@@ -13,8 +13,9 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Features and releases as on screen 70 (A6.2): Messages tried by Lone Star
- * Realty, Video rooms with REOS staff, a release with notes per role, and a
- * week of uses for the error column.
+ * Realty, Video rooms tried by Lone Star Realty and Texas Realty School
+ * (B6.3), a release with notes per role, and a week of uses for the error
+ * column.
  */
 final readonly class DemoReleases
 {
@@ -33,6 +34,13 @@ final readonly class DemoReleases
             'tenant_ids' => json_encode(is_int($loneStar) ? [$loneStar] : [], JSON_THROW_ON_ERROR),
             'roles' => json_encode(['agent', 'broker', 'mentor'], JSON_THROW_ON_ERROR),
             'stage_changed_at' => now()->subDays(3),
+        ]);
+
+        $school = Organisation::query()->where('name', 'Texas Realty School')->value('id');
+        FeatureFlag::query()->where('key', 'video_rooms')->update([
+            'stage' => RolloutStage::Tenants->value,
+            'tenant_ids' => json_encode(array_values(array_filter([$loneStar, $school], is_int(...))), JSON_THROW_ON_ERROR),
+            'stage_changed_at' => now()->subDays(1),
         ]);
 
         $flags = FeatureFlag::query()->whereIn('key', ['messages', 'spanish_ui', 'virtual_broker'])->pluck('id', 'key');

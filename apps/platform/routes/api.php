@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
+use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
 use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\Voice\VoiceController;
@@ -120,6 +121,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(RequireFlag::class.':messages')->prefix('announcements')->name('api.announcements.')->controller(ApiAnnouncementController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('{announcement}/read', 'read')->whereUuid('announcement')->middleware('throttle:120,1,api-announcements-read')->name('read');
+    });
+    // Video sessions (B6.3), behind the `video_rooms` flag.
+    Route::middleware(RequireFlag::class.':video_rooms')->prefix('sessions')->name('api.sessions.')->controller(ApiSessionsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->middleware('throttle:20,1,api-sessions-schedule')->name('store');
+        Route::get('{session}', 'show')->whereUuid('session')->name('show');
+        Route::post('{session}/join', 'join')->whereUuid('session')->middleware('throttle:30,1,api-sessions-join')->name('join');
+        Route::post('{session}/end', 'end')->whereUuid('session')->middleware('throttle:10,1,api-sessions-end')->name('end');
+        Route::post('{session}/cancel', 'cancel')->whereUuid('session')->middleware('throttle:10,1,api-sessions-cancel')->name('cancel');
+        Route::put('{session}/notes', 'notes')->whereUuid('session')->middleware('throttle:60,1,api-sessions-notes')->name('notes');
     });
     // The notification centre (B6.2): the inbox and my settings.
     Route::get('notifications', [ApiNotificationsController::class, 'index'])->name('api.notifications.index');

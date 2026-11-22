@@ -20,6 +20,7 @@ use Database\Seeders\Demo\DemoLicences;
 use Database\Seeders\Demo\DemoMessages;
 use Database\Seeders\Demo\DemoPayouts;
 use Database\Seeders\Demo\DemoReleases;
+use Database\Seeders\Demo\DemoSessions;
 use Database\Seeders\Demo\DemoStates;
 use Database\Seeders\Demo\DemoTenantPlans;
 use Database\Seeders\Demo\DemoTenants;
@@ -92,6 +93,8 @@ final class DemoSeeder extends Seeder
         app(DemoConsents::class)->seed();
         // Conversations at Lone Star Realty (B6.1).
         app(DemoMessages::class)->seed();
+        // Sessions with Dr. Rachel Hughes and Dana Brooks (B6.3).
+        app(DemoSessions::class)->seed();
     }
 
     private function organisation(string $name): Organisation

@@ -99,6 +99,7 @@
 - **Scheduling for now:** an instructor or mentor schedules a session with a student from a simple form (time, length, who). Booking, payment and availability arrive with the marketplace sprints; the room doesn't change.
 - **Session notes (screen 16):** notes and the whiteboard saved with the session, visible to both.
 - **Done when:** two users hold a 45-minute session that ends on time.
+- **As built, B6.3a** (ADR 0024): sessions behind the `video_rooms` flag. Instructors and mentors schedule a 1-on-1 or a live class on the web (people they work with; 15 to 120 minutes; no double-booking); guests are told and reminded 10 minutes before (urgent). Join opens five minutes before; REOS mints a LiveKit token per person and room valid until the booked end; `reos:sessions:tick` closes the room on LiveKit and in every open screen at the end. The room on the web and the phone has the videos, a timer with a two-minute warning, Leave and End for everyone; outside production, until LiveKit is set up, it's simulated with name tiles. Shared session notes (screen 16). Screens: the instructor's Live classes (web screen 46, week list and Schedule), every role's sessions list and a Next session card on Home; on the phone, the next session on Today, Sessions and the session screen. Sessions are in "Download my data". Scheduling on the phone, the whiteboard, recording with consent and quick actions follow in B6.3b.
 
 ## 4. Definition of done (whole sprint)
 

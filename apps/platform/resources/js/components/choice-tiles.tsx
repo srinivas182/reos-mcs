@@ -22,6 +22,8 @@ type ChoiceTilesProps<T extends string> = {
     options: readonly ChoiceTile<T>[];
     onChange: (value: T) => void;
     className?: string;
+    /** Tiles per row on wide screens (two in a dialog). */
+    columns?: 2 | 4;
 };
 
 /**
@@ -35,6 +37,7 @@ export function ChoiceTiles<T extends string>({
     options,
     onChange,
     className,
+    columns = 4,
 }: ChoiceTilesProps<T>) {
     const refs = useRef<Array<HTMLButtonElement | null>>([]);
     const labelId = `choice-${label.toLowerCase().replace(/\W+/g, '-')}`;
@@ -80,7 +83,10 @@ export function ChoiceTiles<T extends string>({
             <div
                 role="radiogroup"
                 aria-labelledby={labelId}
-                className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+                className={cn(
+                    'grid gap-3 sm:grid-cols-2',
+                    columns === 4 && 'lg:grid-cols-4',
+                )}
             >
                 {options.map((option, index) => {
                     const selected = option.value === value;
