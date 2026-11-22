@@ -13,6 +13,7 @@ import {
     ShieldCheck,
     Tag,
     Users,
+    Wallet,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -24,6 +25,8 @@ import { index as learn } from '@/routes/learn';
 import { index as billingIndex } from '@/routes/billing';
 import { index as gateways } from '@/routes/gateways';
 import { index as plans } from '@/routes/plans';
+import { index as sales } from '@/routes/sales';
+import { index as earnings } from '@/routes/earnings';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -50,6 +53,8 @@ export type NavLabel =
     | 'courses'
     | 'learnAndCe'
     | 'paymentGateways'
+    | 'salesAndPayouts'
+    | 'earnings'
     | 'plansAndPricing'
     | 'planAndBilling'
     | 'connections';
@@ -155,7 +160,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('liveClasses'),
             planned('students'),
             planned('questions'),
-            planned('earnings'),
+            item('earnings', Wallet, earnings()),
         ],
         school_admin: [
             home,
@@ -164,7 +169,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('ceReporting'),
             planned('instructors'),
             planned('students'),
-            planned('salesAndPayouts'),
+            item('salesAndPayouts', CreditCard, sales(), '/organisation/sales'),
             planned('schoolSettings'),
         ],
         association_admin: [

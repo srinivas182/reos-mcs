@@ -1270,6 +1270,171 @@
                 }
             }
         },
+        "/me/earnings": {
+            "get": {
+                "operationId": "me.earnings",
+                "description": "Net this month, what goes out in the next weekly payout, each sale's\nshare (newest first) and recent payouts, in cents (USD). Bank and tax\ndetails are managed on Stripe from the web; `account` says whether\npayouts are set up (`ready`, `onboarding`, `needsInfo`, or null).\nInstructors and mentors only (404 for other roles).",
+                "summary": "Earnings (instructor screen 20, mentor screen 28; B5.2b)",
+                "tags": [
+                    "Earnings"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "month": {
+                                            "type": "string"
+                                        },
+                                        "net_this_month": {
+                                            "type": "integer"
+                                        },
+                                        "fee_percent": {
+                                            "type": "integer"
+                                        },
+                                        "pending": {
+                                            "type": "integer"
+                                        },
+                                        "next_payout": {
+                                            "type": "string"
+                                        },
+                                        "account": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "express",
+                                                        "standard"
+                                                    ]
+                                                },
+                                                "state": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "ready",
+                                                        "onboarding",
+                                                        "needsInfo"
+                                                    ]
+                                                },
+                                                "requirements": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "kind",
+                                                "state",
+                                                "requirements"
+                                            ]
+                                        },
+                                        "lines": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "product": {
+                                                        "type": "string"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "seller",
+                                                            "instructor",
+                                                            "mentor"
+                                                        ]
+                                                    },
+                                                    "amount": {
+                                                        "type": "integer"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "pending",
+                                                            "paid",
+                                                            "cancelled",
+                                                            "reversed"
+                                                        ]
+                                                    },
+                                                    "date": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "product",
+                                                    "role",
+                                                    "amount",
+                                                    "status",
+                                                    "date"
+                                                ]
+                                            }
+                                        },
+                                        "payouts": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "amount": {
+                                                        "type": "integer"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "sent",
+                                                            "failed",
+                                                            "sending"
+                                                        ]
+                                                    },
+                                                    "date": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "amount",
+                                                    "status",
+                                                    "date"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "month",
+                                        "net_this_month",
+                                        "fee_percent",
+                                        "pending",
+                                        "next_payout",
+                                        "account",
+                                        "lines",
+                                        "payouts"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/entitlements": {
             "get": {
                 "operationId": "me.entitlements",

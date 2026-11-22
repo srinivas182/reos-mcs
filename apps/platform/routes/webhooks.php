@@ -3,6 +3,7 @@
 use App\Billing\Gateways\Gateways;
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Connections\WebhookController;
+use App\Http\Controllers\Webhooks\ConnectWebhookController;
 use App\Http\Controllers\Webhooks\MuxWebhookController;
 use App\Http\Controllers\Webhooks\PaymentWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,11 @@ Route::post('webhooks/{gateway}', PaymentWebhookController::class)
     ->whereIn('gateway', Gateways::CHECKOUT)
     ->middleware('throttle:webhooks')
     ->name('webhooks.payments');
+
+// Payouts (B5.2b): Stripe Connect account changes, signed with the Connect endpoint's secret.
+Route::post('webhooks/stripe-connect', ConnectWebhookController::class)
+    ->middleware('throttle:webhooks')
+    ->name('webhooks.stripe-connect');
 
 // Inbound webhooks from connected tools (B3.1, ADR 0013). No session or CSRF:
 // each tool's own signature check (in its driver) protects the endpoint.

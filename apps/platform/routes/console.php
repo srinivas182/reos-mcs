@@ -36,3 +36,5 @@ Schedule::command('model:prune', ['--model' => [SyncRun::class, WebhookReceipt::
 Schedule::command('reos:knowledge:embed')->hourlyAt(23)->withoutOverlapping()->onOneServer();
 // Payments (B5.1): checkouts whose webhook never came, and old unpaid ones.
 Schedule::command('reos:billing:reconcile')->everyTenMinutes()->withoutOverlapping()->onOneServer();
+// Payouts (B5.2b): schools, instructors and mentors, weekly (Monday morning, US Central).
+Schedule::command('reos:payouts:run')->weeklyOn(1, '09:17')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();

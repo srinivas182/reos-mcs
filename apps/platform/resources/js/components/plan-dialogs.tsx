@@ -1,4 +1,5 @@
-import { Form } from '@inertiajs/react';
+import { Form, router } from '@inertiajs/react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,7 @@ import type {
 } from '@/lib/billing';
 import { money } from '@/lib/billing';
 import { nativeSelect } from '@/lib/tenants';
-import { store, update } from '@/routes/plans';
+import { splits, store, update } from '@/routes/plans';
 import { store as storePrice } from '@/routes/plans/prices';
 
 export type PlanPrice = {
@@ -49,7 +50,18 @@ export type PlanRow = {
     credits: number | null;
     seats: number | null;
     status: ProductStatus;
+    /** The school that sells it (B5.2b); null: REOS. */
+    seller: { id: number; name: string } | null;
+    splits: PlanSplit[];
     prices: PlanPrice[];
+};
+
+/** An instructor's or mentor's share of a school product's sales (B5.2b). */
+export type PlanSplit = {
+    email: string;
+    name: string;
+    role: 'instructor' | 'mentor';
+    percent: number;
 };
 
 export type PlanOptions = {
@@ -58,6 +70,8 @@ export type PlanOptions = {
     intervals: Interval[];
     statuses: ProductStatus[];
     states: { code: string; name: string }[];
+    schools: { id: number; name: string }[];
+    fee_percent: number;
 };
 
 /**
@@ -152,6 +166,41 @@ export function PlanDialog({
                                         ))}
                                     </select>
                                 </div>
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="plan-seller">
+                                    {t('plans.fields.seller')}
+                                </Label>
+                                <select
+                                    id="plan-seller"
+                                    name="seller_organisation_id"
+                                    className={nativeSelect}
+                                    defaultValue={plan?.seller?.id ?? ''}
+                                    aria-describedby="plan-seller-help"
+                                >
+                                    <option value="">
+                                        {t('plans.fields.sellerReos')}
+                                    </option>
+                                    {options.schools.map((school) => (
+                                        <option
+                                            key={school.id}
+                                            value={school.id}
+                                        >
+                                            {school.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <p
+                                    id="plan-seller-help"
+                                    className="text-sm text-muted-foreground"
+                                >
+                                    {t('plans.fields.sellerHelp', {
+                                        percent: options.fee_percent,
+                                    })}
+                                </p>
+                                <InputError
+                                    message={errors.seller_organisation_id}
+                                />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="plan-description">
@@ -434,5 +483,198 @@ export function PriceHistoryDialog({
                 </div>
             </DialogContent>
         </Dialog>
+    );
+}
+
+type SplitDraft = { email: string; role: PlanSplit['role']; percent: string };
+
+/**
+ * Revenue split (screen 67, B5.2b): instructors' and mentors' shares of a
+ * school product's sales, as a percent of what's left after REOS's
+ * platform fee. The school keeps the rest.
+ */
+export function SplitsDialog({
+    plan,
+    feePercent,
+    onOpenChange,
+}: {
+    plan: PlanRow | null;
+    feePercent: number;
+    onOpenChange: (open: boolean) => void;
+}) {
+    const { t } = useTranslation();
+
+    return (
+        <Dialog open={plan !== null} onOpenChange={onOpenChange}>
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+                <DialogHeader>
+                    <DialogTitle>
+                        {t('plans.splits.title', { name: plan?.name ?? '' })}
+                    </DialogTitle>
+                    <DialogDescription>
+                        {t('plans.splits.help', {
+                            percent: feePercent,
+                            school: plan?.seller?.name ?? '',
+                        })}
+                    </DialogDescription>
+                </DialogHeader>
+                {plan ? (
+                    <SplitsForm
+                        key={plan.id}
+                        plan={plan}
+                        onDone={() => onOpenChange(false)}
+                    />
+                ) : null}
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+function SplitsForm({ plan, onDone }: { plan: PlanRow; onDone: () => void }) {
+    const { t } = useTranslation();
+    const [rows, setRows] = useState<SplitDraft[]>(
+        plan.splits.map((s) => ({
+            email: s.email,
+            role: s.role,
+            percent: String(s.percent),
+        })),
+    );
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [processing, setProcessing] = useState(false);
+    const total = rows.reduce((sum, r) => sum + (Number(r.percent) || 0), 0);
+    const change = (index: number, patch: Partial<SplitDraft>) =>
+        setRows(rows.map((r, i) => (i === index ? { ...r, ...patch } : r)));
+
+    return (
+        <form
+            className="space-y-4"
+            onSubmit={(e) => {
+                e.preventDefault();
+                router.put(
+                    splits(plan.id).url,
+                    {
+                        splits: rows.map((r) => ({
+                            ...r,
+                            percent: Number(r.percent),
+                        })),
+                    },
+                    {
+                        preserveScroll: true,
+                        onStart: () => setProcessing(true),
+                        onFinish: () => setProcessing(false),
+                        onError: setErrors,
+                        onSuccess: onDone,
+                    },
+                );
+            }}
+        >
+            {rows.length === 0 ? (
+                <p className="text-body text-muted-foreground">
+                    {t('plans.splits.none')}
+                </p>
+            ) : null}
+            {rows.map((row, index) => (
+                <fieldset
+                    key={index}
+                    className="grid gap-3 rounded-reos-md border border-border p-3 sm:grid-cols-[2fr_1fr_1fr]"
+                >
+                    <legend className="sr-only">
+                        {t('plans.splits.payee', { number: index + 1 })}
+                    </legend>
+                    <div className="grid gap-2">
+                        <Label htmlFor={`split-email-${index}`}>
+                            {t('plans.splits.email')}
+                        </Label>
+                        <Input
+                            id={`split-email-${index}`}
+                            type="email"
+                            value={row.email}
+                            onChange={(e) =>
+                                change(index, { email: e.target.value })
+                            }
+                            required
+                        />
+                        <InputError message={errors[`splits.${index}.email`]} />
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor={`split-role-${index}`}>
+                            {t('plans.splits.role')}
+                        </Label>
+                        <select
+                            id={`split-role-${index}`}
+                            className={nativeSelect}
+                            value={row.role}
+                            onChange={(e) =>
+                                change(index, {
+                                    role: e.target.value as PlanSplit['role'],
+                                })
+                            }
+                        >
+                            <option value="instructor">
+                                {t('payouts.roles.instructor')}
+                            </option>
+                            <option value="mentor">
+                                {t('payouts.roles.mentor')}
+                            </option>
+                        </select>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label htmlFor={`split-percent-${index}`}>
+                            {t('plans.splits.percent')}
+                        </Label>
+                        <Input
+                            id={`split-percent-${index}`}
+                            type="number"
+                            min={1}
+                            max={100}
+                            value={row.percent}
+                            onChange={(e) =>
+                                change(index, { percent: e.target.value })
+                            }
+                            required
+                        />
+                        <InputError
+                            message={errors[`splits.${index}.percent`]}
+                        />
+                    </div>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="sm:col-span-3"
+                        onClick={() =>
+                            setRows(rows.filter((_, i) => i !== index))
+                        }
+                    >
+                        {t('plans.splits.remove')}
+                    </Button>
+                </fieldset>
+            ))}
+            <InputError message={errors.splits} />
+            <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                    setRows([
+                        ...rows,
+                        { email: '', role: 'instructor', percent: '' },
+                    ])
+                }
+            >
+                {t('plans.splits.add')}
+            </Button>
+            <p className="text-sm text-muted-foreground">
+                {t('plans.splits.schoolKeeps', {
+                    percent: Math.max(0, 100 - total),
+                })}
+            </p>
+            <DialogFooter>
+                <Button type="button" variant="outline" onClick={onDone}>
+                    {t('common.cancel')}
+                </Button>
+                <Button type="submit" disabled={processing || total > 100}>
+                    {t('plans.save')}
+                </Button>
+            </DialogFooter>
+        </form>
     );
 }

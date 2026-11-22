@@ -14,6 +14,7 @@ import {
     PlanDialog,
     PriceDialog,
     PriceHistoryDialog,
+    SplitsDialog,
 } from '@/components/plan-dialogs';
 import { Button } from '@/components/ui/button';
 import type { Buyer, ProductStatus } from '@/lib/billing';
@@ -71,6 +72,7 @@ export default function PlansAndPricing({
     const [editing, setEditing] = useState<PlanRow | null>(null);
     const [creating, setCreating] = useState(false);
     const [pricing, setPricing] = useState<PlanRow | null>(null);
+    const [splitting, setSplitting] = useState<PlanRow | null>(null);
     const [history, setHistory] = useState(false);
 
     const rows = products.flatMap(
@@ -194,6 +196,14 @@ export default function PlansAndPricing({
                                                 className="px-3 py-3 font-medium"
                                             >
                                                 {product.name}
+                                                {product.seller ? (
+                                                    <span className="block text-sm font-normal text-muted-foreground">
+                                                        {t('plans.soldBy', {
+                                                            name: product.seller
+                                                                .name,
+                                                        })}
+                                                    </span>
+                                                ) : null}
                                             </th>
                                             <td className="px-3 py-3">
                                                 {price?.state_name ?? '—'}
@@ -285,6 +295,20 @@ export default function PlansAndPricing({
                                                     >
                                                         {t('plans.setPrice')}
                                                     </Button>
+                                                    {product.seller ? (
+                                                        <Button
+                                                            variant="outline"
+                                                            onClick={() =>
+                                                                setSplitting(
+                                                                    product,
+                                                                )
+                                                            }
+                                                        >
+                                                            {t(
+                                                                'plans.splits.open',
+                                                            )}
+                                                        </Button>
+                                                    ) : null}
                                                 </div>
                                             </td>
                                         </tr>
@@ -357,6 +381,11 @@ export default function PlansAndPricing({
                 plan={pricing}
                 onOpenChange={(open) => (open ? null : setPricing(null))}
                 options={options}
+            />
+            <SplitsDialog
+                plan={splitting}
+                feePercent={options.fee_percent}
+                onOpenChange={(open) => (open ? null : setSplitting(null))}
             />
             <PriceHistoryDialog
                 open={history}

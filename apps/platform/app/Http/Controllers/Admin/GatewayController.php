@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Billing\GatewaySettings;
+use App\Billing\Payouts\PayoutStatements;
 use App\Billing\ProductKind;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Billing\GatewayRequest;
@@ -24,7 +25,7 @@ use Inertia\Response;
  */
 final class GatewayController extends Controller
 {
-    public function index(GatewaySettings $settings): Response
+    public function index(GatewaySettings $settings, PayoutStatements $payouts): Response
     {
         return Inertia::render('admin/gateways/index', [
             'gateways' => $settings->overview(),
@@ -32,6 +33,8 @@ final class GatewayController extends Controller
                 'platform_fee_percent' => config()->integer('reos.billing.platform_fee_percent', 10),
                 'refund_days' => config()->integer('reos.billing.refund_days', 7),
             ],
+            // Stripe Connect payouts (B5.2b).
+            'payouts' => $payouts->platform(),
             'options' => [
                 'kinds' => ProductKind::values(),
                 'states' => State::query()->orderBy('name')->get(['code', 'name'])->map(static fn (State $s): array => ['code' => $s->code, 'name' => $s->name])->values()->all(),

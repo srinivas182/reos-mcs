@@ -25,6 +25,9 @@ use App\Http\Controllers\Organisation\DomainController;
 use App\Http\Controllers\Organisation\InvitationController;
 use App\Http\Controllers\Organisation\SettingsController;
 use App\Http\Controllers\Organisation\SsoController;
+use App\Http\Controllers\Payouts\EarningsController;
+use App\Http\Controllers\Payouts\SalesController;
+use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
 use App\Http\Middleware\EnsureAdminTwoStep;
@@ -142,6 +145,25 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
 // Brokerage settings (A4.2b, broker screen 41): domain, brand, people and plan.
 Route::get('organisation/settings', SettingsController::class)
     ->middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->name('organisation.settings');
+// Sales and payouts (B5.2b, school admin screen 53): products, the payout
+// breakdown, Stripe payouts or the school's own Stripe account, export.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/sales')->name('sales.')->group(function () {
+    Route::get('/', [SalesController::class, 'index'])->name('index');
+    Route::get('export', [SalesController::class, 'export'])->middleware('throttle:20,1,sales-export')->name('export');
+    Route::post('connect', [SalesController::class, 'connect'])->middleware('throttle:10,1,sales-connect')->name('connect');
+    Route::post('own-account', [SalesController::class, 'connectOwn'])->middleware('throttle:10,1,sales-own')->name('connect-own');
+    Route::get('own-account', [SalesController::class, 'ownAccount'])->middleware('throttle:10,1,sales-own-back')->name('own-account');
+});
+// Earnings (B5.2b): instructors and mentors.
+Route::middleware(['auth', 'verified'])->prefix('earnings')->name('earnings.')->group(function () {
+    Route::get('/', [EarningsController::class, 'index'])->name('index');
+    Route::post('connect', [EarningsController::class, 'connect'])->middleware('throttle:10,1,earnings-connect')->name('connect');
+});
+// Stripe's onboarding on the Simulator (never in production).
+Route::middleware(['auth', 'verified', 'throttle:20,1,payouts-simulate'])->prefix('payouts/simulate/{account}')->name('payouts.')->group(function () {
+    Route::get('/', [PayoutSimulatorController::class, 'show'])->name('simulate');
+    Route::post('/', [PayoutSimulatorController::class, 'finish'])->name('simulate.finish');
+});
 // A tenant's logo: public (its sign-in page shows it).
 Route::get('brand/{tenant}/logo', BrandLogoController::class)->where('tenant', '[a-z0-9-]+')->name('brand.logo');
 

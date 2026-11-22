@@ -326,6 +326,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/earnings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Earnings (instructor screen 20, mentor screen 28; B5.2b)
+         * @description Net this month, what goes out in the next weekly payout, each sale's
+         *     share (newest first) and recent payouts, in cents (USD). Bank and tax
+         *     details are managed on Stripe from the web; `account` says whether
+         *     payouts are set up (`ready`, `onboarding`, `needsInfo`, or null).
+         *     Instructors and mentors only (404 for other roles).
+         */
+        get: operations["me.earnings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/entitlements": {
         parameters: {
             query?: never;
@@ -2701,6 +2725,56 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "me.earnings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        month: string;
+                        net_this_month: number;
+                        fee_percent: number;
+                        pending: number;
+                        next_payout: string;
+                        account: {
+                            /** @enum {string} */
+                            kind: "express" | "standard";
+                            /** @enum {string} */
+                            state: "ready" | "onboarding" | "needsInfo";
+                            requirements: number;
+                        } | null;
+                        lines: {
+                            id: number;
+                            product: string;
+                            /** @enum {string} */
+                            role: "seller" | "instructor" | "mentor";
+                            amount: number;
+                            /** @enum {string} */
+                            status: "pending" | "paid" | "cancelled" | "reversed";
+                            date: string | null;
+                        }[];
+                        payouts: {
+                            id: string;
+                            amount: number;
+                            /** @enum {string} */
+                            status: "sent" | "failed" | "sending";
+                            date: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "me.entitlements": {

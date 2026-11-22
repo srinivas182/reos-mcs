@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { PlanRow } from '@/components/plan-dialogs';
-import { PriceHistoryDialog } from '@/components/plan-dialogs';
+import { PriceHistoryDialog, SplitsDialog } from '@/components/plan-dialogs';
 
 const plans: PlanRow[] = [
     {
@@ -16,6 +16,15 @@ const plans: PlanRow[] = [
         credits: null,
         seats: null,
         status: 'live',
+        seller: { id: 4, name: 'Texas Realty School' },
+        splits: [
+            {
+                email: 'maria.lopez@demo.reos.test',
+                name: 'Maria Lopez',
+                role: 'instructor',
+                percent: 15,
+            },
+        ],
         prices: [
             {
                 id: 2,
@@ -54,3 +63,14 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const TexasPreLicence: Story = {};
+
+/** Revenue split (B5.2b): an instructor's share of a school package. */
+export const RevenueSplit: StoryObj<typeof SplitsDialog> = {
+    render: () => (
+        <SplitsDialog
+            plan={plans[0] ?? null}
+            feePercent={10}
+            onOpenChange={() => undefined}
+        />
+    ),
+};

@@ -6,6 +6,7 @@ namespace App\Billing;
 
 use App\Models\Price;
 use App\Models\Product;
+use App\Models\ProductSplit;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,7 @@ final readonly class Plans
 {
     public const AUDIT_SUBJECT = 'product';
 
-    private const AUDITED = ['name', 'kind', 'buyer', 'description', 'includes', 'features', 'ai_help', 'credits', 'seats'];
+    private const AUDITED = ['name', 'kind', 'buyer', 'description', 'includes', 'features', 'ai_help', 'credits', 'seats', 'seller_organisation_id'];
 
     public function __construct(private AuditLogger $audit) {}
 
@@ -134,5 +135,40 @@ final readonly class Plans
         }
 
         return $key;
+    }
+
+    /**
+     * Instructors' and mentors' shares of a school product's sales (B5.2b),
+     * replacing the old ones. Shares are percents of what's left after the
+     * platform fee; the school keeps the rest, so they add up to 100 at most.
+     *
+     * @param  list<array{user_id: int, role: string, percent: int}>  $splits
+     */
+    public function setSplits(Product $product, array $splits, User $actor): void
+    {
+        if ($product->seller_organisation_id === null && $splits !== []) {
+            throw ValidationException::withMessages(['splits' => __('payouts.errors.noSeller')]);
+        }
+
+        if (array_sum(array_column($splits, 'percent')) > 100) {
+            throw ValidationException::withMessages(['splits' => __('payouts.errors.over100')]);
+        }
+
+        $before = $product->splits()->orderBy('payee_user_id')->get(['payee_user_id', 'role', 'percent'])
+            ->map(static fn (ProductSplit $s): array => ['user_id' => $s->payee_user_id, 'role' => $s->role->value, 'percent' => $s->percent])->values()->all();
+
+        DB::transaction(function () use ($product, $splits): void {
+            $product->splits()->delete();
+
+            foreach ($splits as $split) {
+                $product->splits()->create(['payee_user_id' => $split['user_id'], 'role' => $split['role'], 'percent' => $split['percent']]);
+            }
+        });
+
+        usort($splits, static fn (array $a, array $b): int => $a['user_id'] <=> $b['user_id']);
+
+        if ($before !== $splits) {
+            $this->audit->record('product.splits_changed', self::AUDIT_SUBJECT, $product->key, ['before' => $before, 'after' => $splits], $actor);
+        }
     }
 }

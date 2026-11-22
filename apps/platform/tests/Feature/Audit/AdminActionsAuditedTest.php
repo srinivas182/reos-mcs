@@ -428,6 +428,29 @@ function adminActions(): array
 
             return auditCase($linda, 'DELETE', '/organisation/invites/'.auditInvitation($lone, $linda)->id, tenant: $lone->id);
         },
+        // School: Sales and payouts (B5.2b, screen 53).
+        'sales.connect' => function () {
+            $school = Organisation::factory()->ofType(OrganisationType::School)->create();
+            $paul = User::factory()->withTwoFactor()->withRole(Role::SchoolAdmin, $school)->create();
+
+            return auditCase($paul, 'POST', '/organisation/sales/connect', tenant: $school->id);
+        },
+        'sales.connect-own' => function () {
+            $school = Organisation::factory()->ofType(OrganisationType::School)->create();
+            $paul = User::factory()->withTwoFactor()->withRole(Role::SchoolAdmin, $school)->create();
+            GatewaySetting::query()->create(['gateway' => 'stripe', 'is_default' => true, 'tenant_accounts' => true]);
+
+            return auditCase($paul, 'POST', '/organisation/sales/own-account', tenant: $school->id);
+        },
+        'plans.splits' => function () {
+            $ops = auditOps();
+            $plan = auditPlan($ops);
+            $school = Organisation::factory()->ofType(OrganisationType::School)->create();
+            $plan->forceFill(['seller_organisation_id' => $school->id])->save();
+            $rachel = User::factory()->withRole(Role::Instructor, $school)->create();
+
+            return auditCase($ops, 'PUT', "/admin/plans/{$plan->id}/splits", ['splits' => [['email' => $rachel->email, 'role' => 'instructor', 'percent' => 15]]], confirmed: true);
+        },
         'seats.request' => function () {
             [$lone, $linda] = auditBrokerage();
             auditOps();
@@ -495,5 +518,5 @@ const CHANGES = [
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
-    'gateways.update', 'gateways.pause', 'gateways.resume',
+    'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits',
 ];
