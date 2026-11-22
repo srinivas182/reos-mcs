@@ -9,10 +9,12 @@ use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
+use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\Voice\VoiceController;
 use App\Http\Middleware\ResolveTenant;
@@ -66,6 +68,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('me/devices', [MeController::class, 'devices'])->name('api.me.devices');
     Route::delete('me/devices/{device}', [MeController::class, 'revokeDevice'])->whereNumber('device')->name('api.me.devices.destroy');
     Route::post('auth/sign-out', [MeController::class, 'signOut'])->name('api.auth.sign-out');
+
+    // My licences and the state switcher (A5.1).
+    Route::prefix('me/licences')->name('api.me.licences.')->controller(LicenceController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->middleware('throttle:10,1,api-licences-store')->name('store');
+        Route::patch('{licence}', 'update')->whereNumber('licence')->middleware('throttle:30,1,api-licences-update')->name('update');
+        Route::delete('{licence}', 'destroy')->whereNumber('licence')->middleware('throttle:30,1,api-licences-destroy')->name('destroy');
+        Route::post('{licence}/restore', 'restore')->whereNumber('licence')->middleware('throttle:30,1,api-licences-restore')->name('restore');
+    });
+    Route::get('me/states', [CurrentStateController::class, 'show'])->name('api.me.states');
+    Route::put('me/states/current', [CurrentStateController::class, 'update'])->middleware('throttle:30,1,api-me-states')->name('api.me.states.update');
 
     // The Connections library (B3.2, ADR 0014).
     Route::get('catalogue', [CatalogueController::class, 'index'])->name('api.catalogue.index');

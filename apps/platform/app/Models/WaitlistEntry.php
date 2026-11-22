@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -16,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $device_id
  * @property string|null $email
  * @property Carbon|null $notified_at
+ * @property-read User|null $user
  */
 final class WaitlistEntry extends Model
 {
@@ -23,6 +25,12 @@ final class WaitlistEntry extends Model
 
     /** @var list<string> */
     protected $fillable = ['state_code', 'user_id', 'device_id', 'email'];
+
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /** @return array<string, string> */
     protected function casts(): array

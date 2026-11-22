@@ -292,6 +292,40 @@ export interface paths {
         patch: operations["connections.update"];
         trace?: never;
     };
+    "/me/states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Your states */
+        get: operations["me.states"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/states/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Switch state */
+        put: operations["me.states.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/exchange": {
         parameters: {
             query?: never;
@@ -394,6 +428,65 @@ export interface paths {
          *     email. Returns a bearer token for this device.
          */
         post: operations["auth.identity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/licences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List my licences, live states first */
+        get: operations["me.licences.index"];
+        put?: never;
+        /**
+         * Add a licence
+         * @description Checks the number with the state's regulator. A match in your name
+         *     counts at once (`check: verified`); a different name, a state with no
+         *     check yet, or (with `review: true`) a number the regulator doesn't have
+         *     goes to a reviewer. Without `review`, an unknown number is refused (422).
+         */
+        post: operations["me.licences.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/licences/{licence}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a licence (restore undoes it) */
+        delete: operations["me.licences.destroy"];
+        options?: never;
+        head?: never;
+        /** Set who you supervise (changes your CE) */
+        patch: operations["me.licences.update"];
+        trace?: never;
+    };
+    "/me/licences/{licence}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore a removed licence */
+        post: operations["me.licences.restore"];
         delete?: never;
         options?: never;
         head?: never;
@@ -698,6 +791,20 @@ export interface components {
             /** @description The organisation that role is held in. */
             organisation_id: number;
         };
+        /**
+         * AddLicenceRequest
+         * @description "Add a licence" (agent journey screen 149, web screen 23): a state and the licence number.
+         */
+        AddLicenceRequest: {
+            /** @description The state's two-letter code, for example `TX`. */
+            state: string;
+            /** @description The licence number as the regulator shows it. */
+            number: string;
+            type?: components["schemas"]["LicenceType"] | null;
+            broker_role?: components["schemas"]["BrokerRole"] | null;
+            /** @description Send it to a reviewer when the regulator has no such licence. */
+            review?: boolean;
+        };
         /** AppConfigResource */
         AppConfigResource: {
             /**
@@ -730,6 +837,12 @@ export interface components {
                 demo: boolean;
             };
         };
+        /**
+         * BrokerRole
+         * @description Supervising duties that change a licence's CE (A5.2): in Texas, Broker Responsibility is required for brokers who sponsor agents, designated brokers of sponsoring entities and delegated supervisors (22 TAC §535.92(a)(4)).
+         * @enum {string}
+         */
+        BrokerRole: "sponsoring_broker" | "designated_broker" | "delegated_supervisor";
         /** CalendarEventResource */
         CalendarEventResource: {
             id: number;
@@ -858,6 +971,14 @@ export interface components {
          * @enum {string}
          */
         CatalogueStatus: "enabled" | "beta" | "coming_soon" | "paused" | "retired";
+        /**
+         * ChooseStateRequest
+         * @description The state switcher (A5.1).
+         */
+        ChooseStateRequest: {
+            /** @description One of the person's live states, for example `TX`. */
+            state: string;
+        };
         /** ConnectionResource */
         ConnectionResource: {
             id: number;
@@ -1005,6 +1126,49 @@ export interface components {
          * @enum {string}
          */
         LibraryGroup: "crm" | "deals" | "calendar" | "leads" | "more";
+        /** LicenceResource */
+        LicenceResource: {
+            id: number;
+            state: {
+                code: string;
+                name: string;
+                live: boolean;
+            };
+            /** @enum {string} */
+            type: "sales_agent" | "broker";
+            number: string;
+            /** @enum {string} */
+            status: "active" | "inactive" | "expired" | "pending_review" | "rejected";
+            /** @enum {string|null} */
+            broker_role: "sponsoring_broker" | "designated_broker" | "delegated_supervisor" | null;
+            /** @description The name on the regulator's record. */
+            holder_name: string | null;
+            licensed_on: string | null;
+            /** @description The renewal date. */
+            expires_on: string | null;
+            sponsor_name: string | null;
+            first_renewal: boolean;
+            /** @description `simulator`, `trec-licence` or `reviewer`; null while waiting for review. */
+            verified_by: string | null;
+            verified_at: string | null;
+            /** @description Why it's waiting for review, or why it was rejected. */
+            review_note: string | null;
+            /** @description The state isn't live yet: tracked for renewal only. */
+            tracked_only: boolean;
+        };
+        /**
+         * LicenceRoleRequest
+         * @description Who a licence holder supervises (A5.1); changes their CE (A5.2).
+         */
+        LicenceRoleRequest: {
+            broker_role: components["schemas"]["BrokerRole"] | null;
+        };
+        /**
+         * LicenceType
+         * @description A real estate licence (A5.1). Designated brokers and delegated supervisors are a `BrokerRole`.
+         * @enum {string}
+         */
+        LicenceType: "sales_agent" | "broker";
         /**
          * Locale
          * @description Languages REOS is available in. Matches `supportedLocales` in packages/i18n.
@@ -1040,6 +1204,20 @@ export interface components {
             } | null;
             /** @description What the active role allows, such as `learning.study`. */
             permissions: string[];
+            /**
+             * @description The live states the person works in and the one in use (A5.1).
+             *     The switcher shows when there is more than one option.
+             */
+            states: {
+                current: {
+                    code: string;
+                    name: string;
+                };
+                options: {
+                    code: string;
+                    name: string;
+                }[];
+            };
             /** @description Path, target state and setup choices from getting started (A3.3). */
             onboarding: components["schemas"]["OnboardingResource"];
             two_step: {
@@ -1464,11 +1642,14 @@ export interface components {
     pathItems: never;
 }
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
+export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaBrokerRole = components['schemas']['BrokerRole'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
 export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemResource'];
 export type SchemaCatalogueStatus = components['schemas']['CatalogueStatus'];
+export type SchemaChooseStateRequest = components['schemas']['ChooseStateRequest'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
@@ -1478,6 +1659,9 @@ export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
 export type SchemaLibraryGroup = components['schemas']['LibraryGroup'];
+export type SchemaLicenceResource = components['schemas']['LicenceResource'];
+export type SchemaLicenceRoleRequest = components['schemas']['LicenceRoleRequest'];
+export type SchemaLicenceType = components['schemas']['LicenceType'];
 export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
@@ -2170,6 +2354,81 @@ export interface operations {
             };
         };
     };
+    "me.states": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        current: {
+                            code: string;
+                            name: string;
+                        };
+                        options: {
+                            code: string;
+                            name: string;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.states.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChooseStateRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        current: {
+                            code: string;
+                            name: string;
+                        };
+                        options: {
+                            code: string;
+                            name: string;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "auth.exchange": {
         parameters: {
             query?: never;
@@ -2330,6 +2589,179 @@ export interface operations {
             };
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.licences.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `LicenceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LicenceResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.licences.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddLicenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": 201;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.licences.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                licence: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.licences.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                licence: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LicenceRoleRequest"];
+            };
+        };
+        responses: {
+            /** @description `LicenceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LicenceResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.licences.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                licence: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `LicenceResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["LicenceResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {

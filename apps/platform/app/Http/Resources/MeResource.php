@@ -9,6 +9,7 @@ use App\Models\SocialAccount;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
+use App\Services\States\PersonStates;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -68,6 +69,13 @@ final class MeResource extends JsonResource
              * @var list<string>
              */
             'permissions' => $active->permissions($user),
+            /**
+             * The live states the person works in and the one in use (A5.1).
+             * The switcher shows when there is more than one option.
+             *
+             * @var array{current: array{code: string, name: string}, options: list<array{code: string, name: string}>}
+             */
+            'states' => app(PersonStates::class)->switcher($user),
             /** Path, target state and setup choices from getting started (A3.3). */
             'onboarding' => new OnboardingResource($user),
             'two_step' => [

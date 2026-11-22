@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Catalogue\CatalogueStatus;
+use App\Models\Concerns\StateTagged;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
@@ -26,6 +27,9 @@ use Illuminate\Support\Carbon;
  */
 final class CatalogueSetting extends Model
 {
+    /** Integrations are tagged by state like content (A5.1). */
+    use StateTagged;
+
     protected $primaryKey = 'integration_id';
 
     protected $keyType = 'string';

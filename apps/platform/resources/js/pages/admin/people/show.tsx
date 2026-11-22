@@ -10,6 +10,7 @@ import type {
     RoleOption,
 } from '@/components/grant-role-form';
 import Heading from '@/components/heading';
+import { PersonLicences } from '@/components/licence-reviews';
 import { MembershipList } from '@/components/membership-list';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ import {
     store as grantRole,
 } from '@/routes/people/roles';
 import type { Membership, RoleName } from '@/types/auth';
+import type { Licence } from '@/types/licences';
 import type { Person, RoleChange } from '@/types/people';
 
 type Props = {
@@ -28,6 +30,7 @@ type Props = {
     roleOptions: RoleOption[];
     organisations: OrganisationOption[];
     activity: RoleChange[];
+    licences?: Licence[];
 };
 
 /**
@@ -39,6 +42,7 @@ export default function PersonShow({
     roleOptions,
     organisations,
     activity,
+    licences = [],
 }: Props) {
     const { t, i18n: language } = useTranslation();
     const { errors } = usePage().props as { errors: Record<string, string> };
@@ -172,6 +176,15 @@ export default function PersonShow({
                         onRemove={remove}
                         disabled={processing}
                     />
+                </section>
+
+                <section className="space-y-4">
+                    <Heading
+                        variant="small"
+                        title={t('licences.heading')}
+                        description={t('licences.reviews.description')}
+                    />
+                    <PersonLicences licences={licences} />
                 </section>
 
                 <section className="space-y-4">

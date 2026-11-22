@@ -7,12 +7,15 @@ namespace App\Http\Controllers\Admin;
 use App\Authorization\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AuditEventResource;
+use App\Http\Resources\Licences\LicenceResource;
 use App\Http\Resources\People\PersonResource;
 use App\Models\AuditEvent;
+use App\Models\Licence;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\Memberships;
 use App\Services\Authorization\PeopleDirectory;
+use App\Services\Licences\Licences;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -20,7 +23,7 @@ use Inertia\Response;
 /** Settings › People (super admin): find a person, see and change their roles. */
 final class PeopleController extends Controller
 {
-    public function index(Request $request, PeopleDirectory $directory): Response
+    public function index(Request $request, PeopleDirectory $directory, Licences $licences): Response
     {
         $search = $request->string('search')->trim()->limit(100, '')->toString();
         $people = $directory->search($search);
@@ -36,13 +39,24 @@ final class PeopleController extends Controller
                 'last_page' => $people->lastPage(),
                 'total' => $people->total(),
             ],
+            // Licences waiting for a reviewer (A5.1), oldest first.
+            'licenceReviews' => $licences->waitingForReview()->map(static fn (Licence $licence): array => [
+                'id' => $licence->id,
+                'person' => ['id' => $licence->user_id, 'name' => $licence->user->name ?? $licence->user->email ?? $licence->user->phone],
+                'state' => $licence->state->name,
+                'number' => $licence->number,
+                'note' => $licence->review_note,
+                'created_at' => $licence->created_at?->toIso8601String(),
+            ])->all(),
         ]);
     }
 
-    public function show(Request $request, User $person): Response
+    public function show(Request $request, User $person, Licences $licences): Response
     {
         return Inertia::render('admin/people/show', [
             'person' => (new PersonResource($person))->resolve($request),
+            // Their state licences; reviewers approve or reject those waiting (A5.1).
+            'licences' => LicenceResource::collection($licences->of($person))->resolve($request),
             // What can be granted where; the screen offers only valid pairs.
             'roleOptions' => array_map(static fn (Role $role): array => [
                 'role' => $role->value,

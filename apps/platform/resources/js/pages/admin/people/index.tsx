@@ -2,6 +2,8 @@ import { Form, Head, Link } from '@inertiajs/react';
 import { ChevronRight, SearchX, ShieldCheck, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
+import { LicenceReviewQueue } from '@/components/licence-reviews';
+import type { LicenceReviewItem } from '@/components/licence-reviews';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,10 +20,15 @@ type Props = {
         last_page: number;
         total: number;
     };
+    licenceReviews?: LicenceReviewItem[];
 };
 
 /** Settings › People (super admin): find a person and open their roles. */
-export default function PeopleIndex({ search, people }: Props) {
+export default function PeopleIndex({
+    search,
+    people,
+    licenceReviews = [],
+}: Props) {
     const { t } = useTranslation();
     const page = (number: number) =>
         index({ query: { ...(search ? { search } : {}), page: number } });
@@ -35,6 +42,8 @@ export default function PeopleIndex({ search, people }: Props) {
                     title={t('people.title')}
                     description={t('people.description')}
                 />
+
+                <LicenceReviewQueue items={licenceReviews} />
 
                 <Form
                     {...index.form()}

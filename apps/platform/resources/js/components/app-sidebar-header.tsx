@@ -1,7 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import { Map } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { HeaderRoleSwitcher } from '@/components/role-switcher';
+import { StateSwitcher } from '@/components/state-switcher';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -13,8 +13,8 @@ import { useInitials } from '@/hooks/use-initials';
 import { activeMembership } from '@/lib/roles';
 
 /**
- * The web journey's top bar: state chip, role chip (which switches role),
- * then the person and their organisation. Search, the bell and Help arrive
+ * The web journey's top bar: state chip (which switches state, A5.1), role
+ * chip (which switches role), then the person and their organisation. Search, the bell and Help arrive
  * with their own sprints.
  */
 export function AppSidebarHeader() {
@@ -33,13 +33,7 @@ export function AppSidebarHeader() {
 
             <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-3">
                 {region && current?.role !== 'super_admin' ? (
-                    <span
-                        className="hidden items-center gap-1.5 rounded-reos-pill bg-muted px-3 py-1 text-sm font-medium text-foreground sm:inline-flex"
-                        aria-label={t('nav.state', { state: region.name })}
-                    >
-                        <Map aria-hidden className="size-4" />
-                        {region.name}
-                    </span>
+                    <StateSwitcher region={region} />
                 ) : null}
 
                 <HeaderRoleSwitcher />

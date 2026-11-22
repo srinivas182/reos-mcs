@@ -1112,6 +1112,164 @@
                 }
             }
         },
+        "/me/states": {
+            "get": {
+                "operationId": "me.states",
+                "summary": "Your states",
+                "tags": [
+                    "CurrentState"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "current": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "code",
+                                                "name"
+                                            ]
+                                        },
+                                        "options": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "code": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "code",
+                                                    "name"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "current",
+                                        "options"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/states/current": {
+            "put": {
+                "operationId": "me.states.update",
+                "summary": "Switch state",
+                "tags": [
+                    "CurrentState"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChooseStateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "current": {
+                                            "type": "object",
+                                            "properties": {
+                                                "code": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "code",
+                                                "name"
+                                            ]
+                                        },
+                                        "options": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "code": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "code",
+                                                    "name"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "current",
+                                        "options"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/auth/exchange": {
             "post": {
                 "operationId": "auth.exchange",
@@ -1381,6 +1539,279 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/me/licences": {
+            "get": {
+                "operationId": "me.licences.index",
+                "summary": "List my licences, live states first",
+                "tags": [
+                    "Licence"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `LicenceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/LicenceResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "me.licences.store",
+                "description": "Checks the number with the state's regulator. A match in your name\ncounts at once (`check: verified`); a different name, a state with no\ncheck yet, or (with `review: true`) a number the regulator doesn't have\ngoes to a reviewer. Without `review`, an unknown number is refused (422).",
+                "summary": "Add a licence",
+                "tags": [
+                    "Licence"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddLicenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "const": 201
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/licences/{licence}": {
+            "patch": {
+                "operationId": "me.licences.update",
+                "summary": "Set who you supervise (changes your CE)",
+                "tags": [
+                    "Licence"
+                ],
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LicenceRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`LicenceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/LicenceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "me.licences.destroy",
+                "summary": "Remove a licence (restore undoes it)",
+                "tags": [
+                    "Licence"
+                ],
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/licences/{licence}/restore": {
+            "post": {
+                "operationId": "me.licences.restore",
+                "summary": "Restore a removed licence",
+                "tags": [
+                    "Licence"
+                ],
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`LicenceResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/LicenceResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
             }
         },
         "/me": {
@@ -2399,6 +2830,55 @@
                 ],
                 "title": "ActiveRoleRequest"
             },
+            "AddLicenceRequest": {
+                "type": "object",
+                "description": "\"Add a licence\" (agent journey screen 149, web screen 23): a state and the licence number.",
+                "properties": {
+                    "state": {
+                        "type": "string",
+                        "description": "The state's two-letter code, for example `TX`.",
+                        "minLength": 2,
+                        "maxLength": 2
+                    },
+                    "number": {
+                        "type": "string",
+                        "description": "The licence number as the regulator shows it.",
+                        "pattern": "^[A-Za-z0-9][A-Za-z0-9 -]*$",
+                        "maxLength": 40
+                    },
+                    "type": {
+                        "anyOf": [
+                            {
+                                "description": "Used only when the regulator can't be checked; the regulator's record wins.",
+                                "$ref": "#/components/schemas/LicenceType"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "broker_role": {
+                        "anyOf": [
+                            {
+                                "description": "Who they supervise, if anyone (changes their CE).",
+                                "$ref": "#/components/schemas/BrokerRole"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    },
+                    "review": {
+                        "type": "boolean",
+                        "description": "Send it to a reviewer when the regulator has no such licence."
+                    }
+                },
+                "required": [
+                    "state",
+                    "number"
+                ],
+                "title": "AddLicenceRequest"
+            },
             "AppConfigResource": {
                 "type": "object",
                 "properties": {
@@ -2483,6 +2963,16 @@
                     "sign_in"
                 ],
                 "title": "AppConfigResource"
+            },
+            "BrokerRole": {
+                "type": "string",
+                "description": "Supervising duties that change a licence's CE (A5.2): in Texas, Broker Responsibility is required for brokers who sponsor agents, designated brokers of sponsoring entities and delegated supervisors (22 TAC \u00a7535.92(a)(4)).\n",
+                "enum": [
+                    "sponsoring_broker",
+                    "designated_broker",
+                    "delegated_supervisor"
+                ],
+                "title": "BrokerRole"
             },
             "CalendarEventResource": {
                 "type": "object",
@@ -2842,6 +3332,22 @@
                     "retired"
                 ],
                 "title": "CatalogueStatus"
+            },
+            "ChooseStateRequest": {
+                "type": "object",
+                "description": "The state switcher (A5.1).",
+                "properties": {
+                    "state": {
+                        "type": "string",
+                        "description": "One of the person's live states, for example `TX`.",
+                        "minLength": 2,
+                        "maxLength": 2
+                    }
+                },
+                "required": [
+                    "state"
+                ],
+                "title": "ChooseStateRequest"
             },
             "ConnectionResource": {
                 "type": "object",
@@ -3248,6 +3754,166 @@
                 ],
                 "title": "LibraryGroup"
             },
+            "LicenceResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "state": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "live": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "code",
+                            "name",
+                            "live"
+                        ]
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "sales_agent",
+                            "broker"
+                        ]
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "inactive",
+                            "expired",
+                            "pending_review",
+                            "rejected"
+                        ]
+                    },
+                    "broker_role": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "sponsoring_broker",
+                            "designated_broker",
+                            "delegated_supervisor",
+                            null
+                        ]
+                    },
+                    "holder_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The name on the regulator's record."
+                    },
+                    "licensed_on": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "expires_on": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The renewal date."
+                    },
+                    "sponsor_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "first_renewal": {
+                        "type": "boolean"
+                    },
+                    "verified_by": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "`simulator`, `trec-licence` or `reviewer`; null while waiting for review."
+                    },
+                    "verified_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "review_note": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Why it's waiting for review, or why it was rejected."
+                    },
+                    "tracked_only": {
+                        "type": "boolean",
+                        "description": "The state isn't live yet: tracked for renewal only."
+                    }
+                },
+                "required": [
+                    "id",
+                    "state",
+                    "type",
+                    "number",
+                    "status",
+                    "broker_role",
+                    "holder_name",
+                    "licensed_on",
+                    "expires_on",
+                    "sponsor_name",
+                    "first_renewal",
+                    "verified_by",
+                    "verified_at",
+                    "review_note",
+                    "tracked_only"
+                ],
+                "title": "LicenceResource"
+            },
+            "LicenceRoleRequest": {
+                "type": "object",
+                "description": "Who a licence holder supervises (A5.1); changes their CE (A5.2).",
+                "properties": {
+                    "broker_role": {
+                        "anyOf": [
+                            {
+                                "description": "`sponsoring_broker`, `designated_broker`, `delegated_supervisor`, or null for none.",
+                                "$ref": "#/components/schemas/BrokerRole"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "broker_role"
+                ],
+                "title": "LicenceRoleRequest"
+            },
+            "LicenceType": {
+                "type": "string",
+                "description": "A real estate licence (A5.1). Designated brokers and delegated supervisors are a `BrokerRole`.\n",
+                "enum": [
+                    "sales_agent",
+                    "broker"
+                ],
+                "title": "LicenceType"
+            },
             "Locale": {
                 "type": "string",
                 "description": "Languages REOS is available in. Matches `supportedLocales` in packages/i18n.\n",
@@ -3352,6 +4018,49 @@
                             "type": "string"
                         }
                     },
+                    "states": {
+                        "type": "object",
+                        "description": "The live states the person works in and the one in use (A5.1).\nThe switcher shows when there is more than one option.",
+                        "properties": {
+                            "current": {
+                                "type": "object",
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "code",
+                                    "name"
+                                ]
+                            },
+                            "options": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "code": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "name"
+                                    ]
+                                }
+                            }
+                        },
+                        "required": [
+                            "current",
+                            "options"
+                        ]
+                    },
                     "onboarding": {
                         "description": "Path, target state and setup choices from getting started (A3.3).",
                         "$ref": "#/components/schemas/OnboardingResource"
@@ -3388,6 +4097,7 @@
                     "roles",
                     "active_role",
                     "permissions",
+                    "states",
                     "onboarding",
                     "two_step"
                 ],

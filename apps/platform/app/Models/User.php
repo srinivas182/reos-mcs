@@ -32,6 +32,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $deletion_requested_at
  * @property string|null $onboarding_path
  * @property string|null $target_state
+ * @property string|null $current_state The state they work in now (the state switcher, A5.1)
  * @property Carbon|null $exam_month
  * @property int|null $minutes_per_day
  * @property string|null $reminder_time
@@ -47,6 +48,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Collection<int, SocialAccount> $socialAccounts
+ * @property-read Collection<int, Licence> $licences
  */
 #[Fillable(['name', 'email', 'password', 'appearance', 'text_size', 'locale'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
@@ -73,6 +75,12 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
     public function socialAccounts(): HasMany
     {
         return $this->hasMany(SocialAccount::class);
+    }
+
+    /** @return HasMany<Licence, $this> */
+    public function licences(): HasMany
+    {
+        return $this->hasMany(Licence::class);
     }
 
     /**

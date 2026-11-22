@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
+use App\Services\States\PersonStates;
 use App\Services\Tenancy\Brands;
 use App\Services\Tenancy\SupportAccess;
 use Illuminate\Http\Request;
@@ -63,11 +64,8 @@ class HandleInertiaRequests extends Middleware
                 // Roles held, the one in use on this device, and what it allows (A3.2).
                 'roles' => fn () => $this->roles($request),
             ],
-            // The state chip in the top bar. Texas only for now; A5.1 adds the state switcher.
-            'region' => $request->user() === null ? null : [
-                'code' => config()->string('reos.region.code'),
-                'name' => config()->string('reos.region.name'),
-            ],
+            // The state chip in the top bar, a switcher when there's more than one (A5.1).
+            'region' => fn (): ?array => $this->region($request),
             'preferences' => [
                 'appearance' => View::shared('appearance', 'system'),
                 'textSize' => View::shared('textSize', 'standard'),
@@ -89,6 +87,24 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
+    }
+
+    /**
+     * The state in use, and every state the person can switch to.
+     *
+     * @return array{code: string, name: string, options: list<array{code: string, name: string}>}|null
+     */
+    private function region(Request $request): ?array
+    {
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            return null;
+        }
+
+        $switcher = app(PersonStates::class)->switcher($user);
+
+        return [...$switcher['current'], 'options' => $switcher['options']];
     }
 
     /**

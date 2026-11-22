@@ -1,9 +1,13 @@
 import { Head, router } from '@inertiajs/react';
-import { ArrowRight, SearchX } from 'lucide-react';
+import { ArrowRight, Plus, SearchX } from 'lucide-react';
 import { useDeferredValue, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
+import { AddStateDialog, LaunchChecklist } from '@/components/state-launch';
+import type { ChecklistItem } from '@/components/state-launch';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { undoToast } from '@/lib/undo-toast';
@@ -21,9 +25,16 @@ type StateRow = {
     qualifying_hours: number | null;
     ce_hours: number | null;
     waiting: number;
+    courses_approved: number;
+    checklist: Record<string, boolean>;
+    went_live_at: string | null;
 };
 
-type Props = { states: StateRow[]; statuses: StateStatus[] };
+type Props = {
+    states: StateRow[];
+    statuses: StateStatus[];
+    checklistItems: ChecklistItem[];
+};
 
 const tone: Record<StateStatus, string> = {
     live: 'bg-reos-tone-success-bg text-reos-tone-success-fg',
@@ -32,27 +43,44 @@ const tone: Record<StateStatus, string> = {
     not_planned: 'bg-reos-tone-neutral-bg text-reos-tone-neutral-fg',
 };
 
+/** Live, being prepared, or with people waiting: shown first; the rest on request. */
+const active = (s: StateRow) =>
+    s.status === 'live' || s.status === 'in_preparation' || s.waiting > 0;
+
 /**
  * States (web journey screen 61): which states are live, being prepared or
- * on the waitlist, and how many people wait for each. Status changes are
- * audited and can be undone.
+ * on the waitlist, how many people wait for each, and the launch checklist
+ * a state completes before it goes live (A5.1). Status changes are audited
+ * and can be undone; going live tells the state's waitlist.
  */
-export default function StatesIndex({ states, statuses }: Props) {
+export default function StatesIndex({
+    states,
+    statuses,
+    checklistItems,
+}: Props) {
     const { t, i18n } = useTranslation();
     const [query, setQuery] = useState('');
+    const [adding, setAdding] = useState(false);
+    const [chosen, setChosen] = useState<string | null>(null);
+    const preparing =
+        states.find((s) => s.code === chosen) ??
+        states.find((s) => s.status === 'in_preparation') ??
+        null;
     const search = useDeferredValue(query.trim().toLowerCase());
     const number = new Intl.NumberFormat(i18n.language);
     const live = states.filter((s) => s.status === 'live').map((s) => s.name);
 
+    const [showAll, setShowAll] = useState(false);
+    const hidden = states.filter((s) => !active(s)).length;
     const rows = useMemo(
         () =>
-            states.filter(
-                (s) =>
-                    search === '' ||
-                    s.name.toLowerCase().includes(search) ||
-                    s.code.toLowerCase() === search,
+            states.filter((s) =>
+                search === ''
+                    ? showAll || active(s)
+                    : s.name.toLowerCase().includes(search) ||
+                      s.code.toLowerCase() === search,
             ),
-        [states, search],
+        [states, search, showAll],
     );
 
     const change = (state: StateRow, status: StateStatus, undo = true) =>
@@ -61,6 +89,11 @@ export default function StatesIndex({ states, statuses }: Props) {
             { status },
             {
                 preserveScroll: true,
+                onError: (errors) => {
+                    if (errors.status) {
+                        toast.error(errors.status);
+                    }
+                },
                 onSuccess: () => {
                     if (!undo) {
                         return;
@@ -85,6 +118,12 @@ export default function StatesIndex({ states, statuses }: Props) {
                 <PageHeader
                     title={t('states.title')}
                     description={`${t('states.description')}${live.length ? ` · ${live.join(', ')}: ${t('states.statuses.live')}` : ''}`}
+                    actions={
+                        <Button onClick={() => setAdding(true)}>
+                            <Plus aria-hidden />
+                            {t('states.add.button')}
+                        </Button>
+                    }
                 />
 
                 <div className="grid max-w-md gap-2">
@@ -148,6 +187,12 @@ export default function StatesIndex({ states, statuses }: Props) {
                                         scope="col"
                                         className="px-4 py-3 text-right font-semibold"
                                     >
+                                        {t('states.columns.coursesApproved')}
+                                    </th>
+                                    <th
+                                        scope="col"
+                                        className="px-4 py-3 text-right font-semibold"
+                                    >
                                         {t('states.columns.waitlist')}
                                     </th>
                                 </tr>
@@ -162,7 +207,23 @@ export default function StatesIndex({ states, statuses }: Props) {
                                             scope="row"
                                             className="px-4 py-2 font-medium"
                                         >
-                                            {state.name}
+                                            {state.status === 'live' ? (
+                                                state.name
+                                            ) : (
+                                                <button
+                                                    type="button"
+                                                    className="min-h-12 text-left font-medium text-primary underline-offset-4 hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+                                                    aria-label={t(
+                                                        'states.checklist.open',
+                                                        { state: state.name },
+                                                    )}
+                                                    onClick={() =>
+                                                        setChosen(state.code)
+                                                    }
+                                                >
+                                                    {state.name}
+                                                </button>
+                                            )}
                                         </th>
                                         <td className="px-4 py-2">
                                             <label
@@ -213,6 +274,9 @@ export default function StatesIndex({ states, statuses }: Props) {
                                             {state.ce_hours ?? '—'}
                                         </td>
                                         <td className="px-4 py-2 text-right">
+                                            {state.courses_approved}
+                                        </td>
+                                        <td className="px-4 py-2 text-right">
                                             {state.waiting > 0
                                                 ? number.format(state.waiting)
                                                 : '—'}
@@ -224,13 +288,37 @@ export default function StatesIndex({ states, statuses }: Props) {
                     </div>
                 )}
 
-                <section className="max-w-2xl space-y-3 rounded-reos-lg border border-border bg-card p-5">
-                    <h2 className="font-semibold">
-                        {t('states.goesLive.title')}
-                    </h2>
-                    <ul className="space-y-2 text-body">
-                        {(['register', 'waitlist', 'fill'] as const).map(
-                            (key) => (
+                {search === '' && hidden > 0 ? (
+                    <Button
+                        variant="outline"
+                        onClick={() => setShowAll(!showAll)}
+                    >
+                        {showAll
+                            ? t('states.showActive')
+                            : t('states.showAll', { count: hidden })}
+                    </Button>
+                ) : null}
+
+                <div className="grid gap-4 lg:grid-cols-2">
+                    {preparing ? (
+                        <LaunchChecklist
+                            state={preparing}
+                            items={checklistItems}
+                        />
+                    ) : null}
+                    <section className="space-y-3 rounded-reos-lg border border-border bg-card p-5">
+                        <h2 className="font-semibold">
+                            {t('states.goesLive.title')}
+                        </h2>
+                        <ul className="space-y-2 text-body">
+                            {(
+                                [
+                                    'register',
+                                    'switcher',
+                                    'content',
+                                    'licences',
+                                ] as const
+                            ).map((key) => (
                                 <li key={key} className="flex gap-2">
                                     <ArrowRight
                                         aria-hidden
@@ -238,10 +326,16 @@ export default function StatesIndex({ states, statuses }: Props) {
                                     />
                                     {t(`states.goesLive.${key}`)}
                                 </li>
-                            ),
-                        )}
-                    </ul>
-                </section>
+                            ))}
+                        </ul>
+                    </section>
+                </div>
+
+                <AddStateDialog
+                    open={adding}
+                    onOpenChange={setAdding}
+                    states={states.filter((s) => s.status !== 'live')}
+                />
             </div>
         </>
     );

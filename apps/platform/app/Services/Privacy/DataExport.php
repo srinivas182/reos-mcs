@@ -34,6 +34,7 @@ final readonly class DataExport
                 'phone' => $user->phone,
                 'locale' => $user->locale,
                 'target_state' => $user->target_state,
+                'current_state' => $user->current_state,
                 'created_at' => $user->created_at?->toIso8601String(),
             ],
             'roles' => array_map(static fn ($m): array => ['role' => $m->role->value, 'organisation' => $m->organisation->name], $this->memberships->of($user)),
@@ -56,6 +57,10 @@ final readonly class DataExport
                     'status' => $c->status->value,
                     'connected_at' => $c->created_at?->toIso8601String(),
                 ])->all(),
+            // State licences (A5.1).
+            'licences' => DB::table('licences')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')
+                ->get(['state_code', 'type', 'number', 'status', 'broker_role', 'holder_name', 'licensed_on', 'expires_on', 'sponsor_name', 'verified_by', 'verified_at', 'review_note', 'created_at'])
+                ->map(static fn ($r): array => (array) $r)->all(),
             // To-dos, typed or spoken (B4.3); what was said is never stored.
             'todos' => DB::table('todos')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')->limit(5000)
                 ->get(['title', 'notes', 'due_at', 'due_date', 'remind_at', 'related_label', 'source', 'done_at', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),

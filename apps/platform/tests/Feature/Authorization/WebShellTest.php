@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 it('shares the state chip with signed-in people only', function () {
     $this->actingAs(User::factory()->withRole(Role::Agent)->create())
         ->get('/dashboard')
-        ->assertInertia(fn (Assert $page) => $page->where('region', ['code' => 'TX', 'name' => 'Texas']));
+        ->assertInertia(fn (Assert $page) => $page->where('region', ['code' => 'TX', 'name' => 'Texas', 'options' => [['code' => 'TX', 'name' => 'Texas']]]));
 
     auth()->logout();
     $this->get('/login')->assertInertia(fn (Assert $page) => $page->where('region', null));

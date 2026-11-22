@@ -37,7 +37,8 @@
     "brandingAndDomain": "Branding and domain",
     "brokerageSettings": "Brokerage settings",
     "agents": "Agents",
-    "complianceAndAudit": "Compliance and audit"
+    "complianceAndAudit": "Compliance and audit",
+    "switchState": "Switch state"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -854,7 +855,8 @@
       "examVendor": "Exam vendor",
       "qualifyingHours": "Qualifying hours",
       "ceHours": "CE per renewal",
-      "waitlist": "Waitlist"
+      "waitlist": "Waitlist",
+      "coursesApproved": "Courses approved"
     },
     "statuses": {
       "live": "Live",
@@ -868,10 +870,43 @@
     "noResults": "No state matches “{{search}}”",
     "goesLive": {
       "title": "What changes when a state goes live",
-      "register": "People can choose it and register in the app and on reos.com.",
-      "waitlist": "Its waitlist is kept, so everyone waiting can be told when notifications arrive.",
-      "fill": "Fill in the regulator, exam vendor and hours before opening a state."
-    }
+      "register": "People in that state can register; its waitlist is invited by email.",
+      "switcher": "The state appears in the state switcher.",
+      "content": "Only content tagged to the state is shown in it.",
+      "licences": "Agents with licenses in several states see each one."
+    },
+    "add": {
+      "button": "Add state",
+      "title": "Add a state",
+      "intro": "Start preparing a state: its regulator, exam vendor and hours. It opens when its launch checklist is complete.",
+      "state": "State",
+      "choose": "Choose a state",
+      "submit": "Start preparing"
+    },
+    "checklist": {
+      "title": "Launch checklist · {{state}}",
+      "progress": "{{done}} of {{total}} done",
+      "open": "Open the launch checklist for {{state}}",
+      "beforeLive": "The state can go live once every item is done.",
+      "incomplete": "{{state}} can't go live yet: finish its launch checklist first.",
+      "unknown": "That isn't a launch checklist item.",
+      "items": {
+        "rules": "Regulator rules and exam outline loaded",
+        "approvals": "Course approvals with a {{state}} school",
+        "advertising": "Advertising rules for posts",
+        "plans": "Plans and prices in USD",
+        "integrations": "Integrations allowed in {{state}}",
+        "legal": "Legal review of RESPA and state rules"
+      }
+    },
+    "liveMail": {
+      "subject": "REOS is now live in {{state}}",
+      "body": "You asked us to tell you when REOS opens in {{state}}. It's open now.",
+      "action": "Get started",
+      "bonus": "Your waitlist bonus credits are added to your first membership."
+    },
+    "showAll": "Show {{count}} more states",
+    "showActive": "Show only live, preparing and waited-for states"
   },
   "onboarding": {
     "path": {
@@ -1799,7 +1834,15 @@
         "state.status_changed": "Changed a state's status",
         "privacy.requested": "Made a privacy request",
         "privacy.updated": "Updated a privacy request",
-        "audit.exported": "Exported the audit log"
+        "audit.exported": "Exported the audit log",
+        "state.prepared": "Started preparing a state",
+        "state.checklist_ticked": "Updated a state's launch checklist",
+        "licence.added": "Added a license",
+        "licence.role_changed": "Changed who a license holder supervises",
+        "licence.removed": "Removed a license",
+        "licence.restored": "Restored a license",
+        "licence.approved": "Approved a license",
+        "licence.rejected": "Didn't approve a license"
       }
     }
   },
@@ -2582,5 +2625,78 @@
     "emptyTitle": "Your to-dos live here",
     "add": "Add a to-do",
     "undone": "Back on your list."
+  },
+  "licences": {
+    "heading": "Licenses",
+    "description": "Every state license you hold. Each is checked with that state's regulator.",
+    "emptyTitle": "Your licenses live here",
+    "emptyDescription": "Add your license number and REOS checks it with the state's regulator. Your CE and renewal date follow from it.",
+    "add": "Add a state license",
+    "title": "{{state}} · {{type}}",
+    "types": {
+      "sales_agent": "Sales agent",
+      "broker": "Broker"
+    },
+    "verifiedBy": {
+      "regulator": "checked with the regulator {{date}}",
+      "reviewer": "approved by REOS {{date}}"
+    },
+    "comingSoon": "Coming soon",
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "expired": "Expired",
+      "pending_review": "Being reviewed",
+      "rejected": "Not approved"
+    },
+    "sponsor": "Sponsoring broker",
+    "renewal": "Renewal",
+    "trackedOnly": "REOS isn't live in {{state}} yet. We track your renewal date and remind you; courses and CE arrive when the state opens.",
+    "waiting": "A reviewer is checking this license. It counts once approved. {{note}}",
+    "rejectedNote": "This license wasn't approved: {{note}}",
+    "role": "Who you supervise",
+    "roles": {
+      "none": "No one",
+      "sponsoring_broker": "I sponsor sales agents",
+      "designated_broker": "Designated broker of a sponsoring brokerage",
+      "delegated_supervisor": "Delegated supervisor"
+    },
+    "remove": "Remove {{state}} license",
+    "removed": "{{state}} license removed.",
+    "addTitle": "Add a state license",
+    "addIntro": "Choose the state and enter your license number.",
+    "state": "State",
+    "liveStates": "Live on REOS",
+    "laterStates": "Coming soon (tracked for renewal)",
+    "number": "License number",
+    "askReview": "My number is right: send it to a reviewer",
+    "howChecked": "REOS checks the number with the state's public license records. The name must match your account; if it doesn't, a reviewer checks it.",
+    "addButton": "Add license",
+    "added": "Your {{state}} license is checked and added.",
+    "sentForReview": "Your {{state}} license was sent for review. It counts once approved.",
+    "source": {
+      "simulator": "Checked with REOS demo license records (Simulator)."
+    },
+    "errors": {
+      "already": "You already have a {{state}} license. Remove it first to add another.",
+      "notFound": "{{state}}'s records have no license with this number. Check it, or send it to a reviewer.",
+      "role": "Only a broker license can sponsor agents or be a designated broker.",
+      "notYours": "Choose a live state you hold a license in or are studying for."
+    },
+    "review": {
+      "nameMismatch": "The regulator's record is under another name: {{name}}.",
+      "notFound": "The regulator's records have no license with this number.",
+      "noLookup": "This state's records can't be checked automatically yet."
+    },
+    "reviews": {
+      "title_one": "{{count}} license to review",
+      "title_other": "{{count}} licenses to review",
+      "none": "No licenses yet.",
+      "onRecord": "on record as {{name}}",
+      "why": "Why isn't it approved? The person sees this.",
+      "reject": "Don't approve",
+      "approve": "Approve",
+      "description": "No license counts without a regulator match or your approval."
+    }
   }
 }

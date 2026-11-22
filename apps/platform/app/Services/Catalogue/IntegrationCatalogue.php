@@ -21,6 +21,7 @@ use App\Notifications\BrokerAsked;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Integrations\IntegrationHub;
+use App\Services\States\PersonStates;
 use App\Services\Tenancy\SupportAccess;
 use App\Tenancy\Tenancy;
 use Illuminate\Support\Facades\DB;
@@ -118,7 +119,7 @@ final readonly class IntegrationCatalogue
     {
         $settings = CatalogueSetting::query()->get()->keyBy('integration_id');
         $membership = $this->activeRole->for($user);
-        $state = $user->target_state ?? config()->string('reos.region.code');
+        $state = app(PersonStates::class)->current($user);
         $hidden = $membership === null ? [] : $this->hiddenBy($membership->organisation);
         $brokerage = $this->brokerageOf($membership?->organisation);
         $interests = IntegrationInterest::query()->where('user_id', $user->id)->pluck('kind', 'integration_id')->all();
