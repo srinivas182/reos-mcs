@@ -6325,6 +6325,128 @@
                                                             "string",
                                                             "null"
                                                         ]
+                                                    },
+                                                    "whiteboard": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "image_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "updated_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "image_url",
+                                                            "updated_at"
+                                                        ]
+                                                    },
+                                                    "shares": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "lesson",
+                                                                        "questions"
+                                                                    ]
+                                                                },
+                                                                "at": {
+                                                                    "type": "string"
+                                                                },
+                                                                "by": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "lesson": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "title": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "course": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "title",
+                                                                        "course"
+                                                                    ]
+                                                                },
+                                                                "topic": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "questions": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "question": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "options": {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "correct": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "explanation": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "source": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "id",
+                                                                            "question",
+                                                                            "options",
+                                                                            "correct",
+                                                                            "explanation",
+                                                                            "source"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "kind",
+                                                                "at",
+                                                                "by",
+                                                                "lesson",
+                                                                "topic",
+                                                                "questions"
+                                                            ]
+                                                        }
                                                     }
                                                 },
                                                 "required": [
@@ -6342,7 +6464,9 @@
                                                     "can_join",
                                                     "notes",
                                                     "notes_updated_at",
-                                                    "notes_updated_by"
+                                                    "notes_updated_by",
+                                                    "whiteboard",
+                                                    "shares"
                                                 ]
                                             }
                                         },
@@ -6531,6 +6655,128 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "whiteboard": {
+                                            "type": "object",
+                                            "properties": {
+                                                "image_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "image_url",
+                                                "updated_at"
+                                            ]
+                                        },
+                                        "shares": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "lesson",
+                                                            "questions"
+                                                        ]
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    },
+                                                    "by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "lesson": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "course": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "course"
+                                                        ]
+                                                    },
+                                                    "topic": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "questions": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "question": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "correct": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "explanation": {
+                                                                    "type": "string"
+                                                                },
+                                                                "source": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "question",
+                                                                "options",
+                                                                "correct",
+                                                                "explanation",
+                                                                "source"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "at",
+                                                    "by",
+                                                    "lesson",
+                                                    "topic",
+                                                    "questions"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -6548,7 +6794,9 @@
                                         "can_join",
                                         "notes",
                                         "notes_updated_at",
-                                        "notes_updated_by"
+                                        "notes_updated_by",
+                                        "whiteboard",
+                                        "shares"
                                     ]
                                 }
                             }
@@ -6717,6 +6965,128 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "whiteboard": {
+                                            "type": "object",
+                                            "properties": {
+                                                "image_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "image_url",
+                                                "updated_at"
+                                            ]
+                                        },
+                                        "shares": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "lesson",
+                                                            "questions"
+                                                        ]
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    },
+                                                    "by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "lesson": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "course": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "course"
+                                                        ]
+                                                    },
+                                                    "topic": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "questions": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "question": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "correct": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "explanation": {
+                                                                    "type": "string"
+                                                                },
+                                                                "source": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "question",
+                                                                "options",
+                                                                "correct",
+                                                                "explanation",
+                                                                "source"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "at",
+                                                    "by",
+                                                    "lesson",
+                                                    "topic",
+                                                    "questions"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -6734,7 +7104,9 @@
                                         "can_join",
                                         "notes",
                                         "notes_updated_at",
-                                        "notes_updated_by"
+                                        "notes_updated_by",
+                                        "whiteboard",
+                                        "shares"
                                     ]
                                 }
                             }
@@ -6968,6 +7340,128 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "whiteboard": {
+                                            "type": "object",
+                                            "properties": {
+                                                "image_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "image_url",
+                                                "updated_at"
+                                            ]
+                                        },
+                                        "shares": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "lesson",
+                                                            "questions"
+                                                        ]
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    },
+                                                    "by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "lesson": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "course": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "course"
+                                                        ]
+                                                    },
+                                                    "topic": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "questions": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "question": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "correct": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "explanation": {
+                                                                    "type": "string"
+                                                                },
+                                                                "source": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "question",
+                                                                "options",
+                                                                "correct",
+                                                                "explanation",
+                                                                "source"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "at",
+                                                    "by",
+                                                    "lesson",
+                                                    "topic",
+                                                    "questions"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -6985,7 +7479,9 @@
                                         "can_join",
                                         "notes",
                                         "notes_updated_at",
-                                        "notes_updated_by"
+                                        "notes_updated_by",
+                                        "whiteboard",
+                                        "shares"
                                     ]
                                 }
                             }
@@ -7154,6 +7650,128 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "whiteboard": {
+                                            "type": "object",
+                                            "properties": {
+                                                "image_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "image_url",
+                                                "updated_at"
+                                            ]
+                                        },
+                                        "shares": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "lesson",
+                                                            "questions"
+                                                        ]
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    },
+                                                    "by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "lesson": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "course": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "course"
+                                                        ]
+                                                    },
+                                                    "topic": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "questions": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "question": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "correct": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "explanation": {
+                                                                    "type": "string"
+                                                                },
+                                                                "source": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "question",
+                                                                "options",
+                                                                "correct",
+                                                                "explanation",
+                                                                "source"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "at",
+                                                    "by",
+                                                    "lesson",
+                                                    "topic",
+                                                    "questions"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -7171,7 +7789,9 @@
                                         "can_join",
                                         "notes",
                                         "notes_updated_at",
-                                        "notes_updated_by"
+                                        "notes_updated_by",
+                                        "whiteboard",
+                                        "shares"
                                     ]
                                 }
                             }
@@ -7351,6 +7971,128 @@
                                                 "string",
                                                 "null"
                                             ]
+                                        },
+                                        "whiteboard": {
+                                            "type": "object",
+                                            "properties": {
+                                                "image_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "image_url",
+                                                "updated_at"
+                                            ]
+                                        },
+                                        "shares": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "lesson",
+                                                            "questions"
+                                                        ]
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    },
+                                                    "by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "lesson": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "course": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "course"
+                                                        ]
+                                                    },
+                                                    "topic": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "questions": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "question": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "correct": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "explanation": {
+                                                                    "type": "string"
+                                                                },
+                                                                "source": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "question",
+                                                                "options",
+                                                                "correct",
+                                                                "explanation",
+                                                                "source"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "at",
+                                                    "by",
+                                                    "lesson",
+                                                    "topic",
+                                                    "questions"
+                                                ]
+                                            }
                                         }
                                     },
                                     "required": [
@@ -7368,7 +8110,279 @@
                                         "can_join",
                                         "notes",
                                         "notes_updated_at",
-                                        "notes_updated_by"
+                                        "notes_updated_by",
+                                        "whiteboard",
+                                        "shares"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/share-options": {
+            "get": {
+                "operationId": "sessions.share-options",
+                "description": "Lessons live in the host's state and practice-question topics. Host only.",
+                "summary": "What the host can share in the room (B6.3b)",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "lessons": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "course": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "course"
+                                                ]
+                                            }
+                                        },
+                                        "topics": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "topic": {
+                                                        "type": "string"
+                                                    },
+                                                    "count": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "topic",
+                                                    "count"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "lessons",
+                                        "topics"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/sessions/{session}/shares": {
+            "post": {
+                "operationId": "sessions.shares",
+                "description": "Host only, while the session is on. Everyone in it sees it at once.",
+                "summary": "Share a lesson or send practice questions (B6.3b)",
+                "tags": [
+                    "Sessions"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ShareRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "kind": {
+                                            "type": "string",
+                                            "enum": [
+                                                "lesson",
+                                                "questions"
+                                            ]
+                                        },
+                                        "at": {
+                                            "type": "string"
+                                        },
+                                        "by": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "lesson": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "course": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "title",
+                                                "course"
+                                            ]
+                                        },
+                                        "topic": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "questions": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "question": {
+                                                        "type": "string"
+                                                    },
+                                                    "options": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "correct": {
+                                                        "type": "integer"
+                                                    },
+                                                    "explanation": {
+                                                        "type": "string"
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "question",
+                                                    "options",
+                                                    "correct",
+                                                    "explanation",
+                                                    "source"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "id",
+                                        "kind",
+                                        "at",
+                                        "by",
+                                        "lesson",
+                                        "topic",
+                                        "questions"
                                     ]
                                 }
                             }
@@ -10901,6 +11915,39 @@
                     "notes"
                 ],
                 "title": "SessionNotesRequest"
+            },
+            "ShareRequest": {
+                "type": "object",
+                "description": "A quick action in the room (B6.3b): share a lesson, or send practice questions on a topic.",
+                "properties": {
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "lesson",
+                            "questions"
+                        ]
+                    },
+                    "lesson": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "topic": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/QuizTopic"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "required": [
+                    "kind"
+                ],
+                "title": "ShareRequest"
             },
             "SignInResource": {
                 "type": "object",

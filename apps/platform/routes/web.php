@@ -219,7 +219,16 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->pref
     Route::post('{session}/end', 'end')->whereUuid('session')->middleware('throttle:10,1,sessions-end')->name('end');
     Route::post('{session}/cancel', 'cancel')->whereUuid('session')->middleware('throttle:10,1,sessions-cancel')->name('cancel');
     Route::put('{session}/notes', 'notes')->whereUuid('session')->middleware('throttle:60,1,sessions-notes')->name('notes');
+    // The shared whiteboard and quick actions (B6.3b).
+    Route::get('{session}/whiteboard', 'whiteboard')->whereUuid('session')->middleware('throttle:60,1,sessions-board')->name('whiteboard');
+    Route::post('{session}/whiteboard', 'saveWhiteboard')->whereUuid('session')->middleware('throttle:30,1,sessions-board-save')->name('whiteboard.save');
+    Route::get('{session}/share-options', 'shareOptions')->whereUuid('session')->middleware('throttle:30,1,sessions-share')->name('share-options');
+    Route::post('{session}/shares', 'share')->whereUuid('session')->middleware('throttle:20,1,sessions-share')->name('shares');
 });
+
+// The picture of a session's whiteboard, through its short-lived signed link (B6.3b).
+Route::get('sessions/{session}/whiteboard.png', [SessionsController::class, 'whiteboardImage'])->whereUuid('session')
+    ->middleware(['signed', 'throttle:120,1,sessions-board-image'])->name('sessions.whiteboard.image');
 
 // "What's new" (A6.2): dismissed once, gone on the web and the phone.
 Route::post('whats-new/{release}/dismiss', [WhatsNewController::class, 'dismiss'])->whereNumber('release')->middleware(['auth', 'throttle:30,1,whats-new'])->name('whats-new.dismiss');

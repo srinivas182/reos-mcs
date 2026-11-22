@@ -1394,6 +1394,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sessions/{session}/share-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * What the host can share in the room (B6.3b)
+         * @description Lessons live in the host's state and practice-question topics. Host only.
+         */
+        get: operations["sessions.share-options"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sessions/{session}/shares": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Share a lesson or send practice questions (B6.3b)
+         * @description Host only, while the session is on. Everyone in it sees it at once.
+         */
+        post: operations["sessions.shares"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/states": {
         parameters: {
             query?: never;
@@ -2493,6 +2533,16 @@ export interface components {
         SessionNotesRequest: {
             notes: string | null;
         };
+        /**
+         * ShareRequest
+         * @description A quick action in the room (B6.3b): share a lesson, or send practice questions on a topic.
+         */
+        ShareRequest: {
+            /** @enum {string} */
+            kind: "lesson" | "questions";
+            lesson?: number | null;
+            topic?: components["schemas"]["QuizTopic"] | null;
+        };
         /** SignInResource */
         SignInResource: {
             /** @description Bearer token for this device. Keep it in secure storage. */
@@ -2753,6 +2803,7 @@ export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
 export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessionRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
+export type SchemaShareRequest = components['schemas']['ShareRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
@@ -5668,6 +5719,31 @@ export interface operations {
                             notes: string | null;
                             notes_updated_at: string | null;
                             notes_updated_by: string | null;
+                            whiteboard: {
+                                image_url: string | null;
+                                updated_at: string | null;
+                            };
+                            shares: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "lesson" | "questions";
+                                at: string;
+                                by: string | null;
+                                lesson: {
+                                    id: number;
+                                    title: string;
+                                    course: string;
+                                } | null;
+                                topic: string | null;
+                                questions: {
+                                    id: number;
+                                    question: string;
+                                    options: string[];
+                                    correct: number;
+                                    explanation: string;
+                                    source: string;
+                                }[];
+                            }[];
                         }[];
                         can_host: boolean;
                         contacts: {
@@ -5729,6 +5805,31 @@ export interface operations {
                         notes: string | null;
                         notes_updated_at: string | null;
                         notes_updated_by: string | null;
+                        whiteboard: {
+                            image_url: string | null;
+                            updated_at: string | null;
+                        };
+                        shares: {
+                            id: number;
+                            /** @enum {string} */
+                            kind: "lesson" | "questions";
+                            at: string;
+                            by: string | null;
+                            lesson: {
+                                id: number;
+                                title: string;
+                                course: string;
+                            } | null;
+                            topic: string | null;
+                            questions: {
+                                id: number;
+                                question: string;
+                                options: string[];
+                                correct: number;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        }[];
                     };
                 };
             };
@@ -5793,6 +5894,31 @@ export interface operations {
                         notes: string | null;
                         notes_updated_at: string | null;
                         notes_updated_by: string | null;
+                        whiteboard: {
+                            image_url: string | null;
+                            updated_at: string | null;
+                        };
+                        shares: {
+                            id: number;
+                            /** @enum {string} */
+                            kind: "lesson" | "questions";
+                            at: string;
+                            by: string | null;
+                            lesson: {
+                                id: number;
+                                title: string;
+                                course: string;
+                            } | null;
+                            topic: string | null;
+                            questions: {
+                                id: number;
+                                question: string;
+                                options: string[];
+                                correct: number;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        }[];
                     };
                 };
             };
@@ -5886,6 +6012,31 @@ export interface operations {
                         notes: string | null;
                         notes_updated_at: string | null;
                         notes_updated_by: string | null;
+                        whiteboard: {
+                            image_url: string | null;
+                            updated_at: string | null;
+                        };
+                        shares: {
+                            id: number;
+                            /** @enum {string} */
+                            kind: "lesson" | "questions";
+                            at: string;
+                            by: string | null;
+                            lesson: {
+                                id: number;
+                                title: string;
+                                course: string;
+                            } | null;
+                            topic: string | null;
+                            questions: {
+                                id: number;
+                                question: string;
+                                options: string[];
+                                correct: number;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        }[];
                     };
                 };
             };
@@ -5950,6 +6101,31 @@ export interface operations {
                         notes: string | null;
                         notes_updated_at: string | null;
                         notes_updated_by: string | null;
+                        whiteboard: {
+                            image_url: string | null;
+                            updated_at: string | null;
+                        };
+                        shares: {
+                            id: number;
+                            /** @enum {string} */
+                            kind: "lesson" | "questions";
+                            at: string;
+                            by: string | null;
+                            lesson: {
+                                id: number;
+                                title: string;
+                                course: string;
+                            } | null;
+                            topic: string | null;
+                            questions: {
+                                id: number;
+                                question: string;
+                                options: string[];
+                                correct: number;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        }[];
                     };
                 };
             };
@@ -6018,6 +6194,138 @@ export interface operations {
                         notes: string | null;
                         notes_updated_at: string | null;
                         notes_updated_by: string | null;
+                        whiteboard: {
+                            image_url: string | null;
+                            updated_at: string | null;
+                        };
+                        shares: {
+                            id: number;
+                            /** @enum {string} */
+                            kind: "lesson" | "questions";
+                            at: string;
+                            by: string | null;
+                            lesson: {
+                                id: number;
+                                title: string;
+                                course: string;
+                            } | null;
+                            topic: string | null;
+                            questions: {
+                                id: number;
+                                question: string;
+                                options: string[];
+                                correct: number;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.share-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        lessons: {
+                            id: number;
+                            title: string;
+                            course: string;
+                        }[];
+                        topics: {
+                            topic: string;
+                            count: number;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "sessions.shares": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ShareRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        id: number;
+                        /** @enum {string} */
+                        kind: "lesson" | "questions";
+                        at: string;
+                        by: string | null;
+                        lesson: {
+                            id: number;
+                            title: string;
+                            course: string;
+                        } | null;
+                        topic: string | null;
+                        questions: {
+                            id: number;
+                            question: string;
+                            options: string[];
+                            correct: number;
+                            explanation: string;
+                            source: string;
+                        }[];
                     };
                 };
             };

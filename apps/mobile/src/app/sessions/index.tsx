@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Video } from 'lucide-react-native';
+import { CalendarPlus, Video } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,11 +8,11 @@ import { StyleSheet } from 'react-native-unistyles';
 import { useAuth } from '@/lib/auth';
 import { SessionRow } from '@/features/sessions/SessionRow';
 import { useSessions } from '@/lib/sessions';
-import { EmptyState, Eyebrow, Icon, Screen, Text, TitleBar } from '@/ui';
+import { Button, EmptyState, Eyebrow, Icon, Screen, Text, TitleBar } from '@/ui';
 
 /**
  * Sessions on the phone (B6.3), from Today: coming up, then the last month
- * with their notes. Instructors and mentors schedule on the web for now.
+ * with their notes. Instructors and mentors schedule here or on the web.
  */
 export default function SessionsScreen() {
   const { t } = useTranslation();
@@ -26,12 +26,12 @@ export default function SessionsScreen() {
   const past = sessions.filter((s) => !coming.includes(s)).reverse();
 
   return (
-    <Screen>
+    <Screen footer={list?.can_host ? <Button label={t('sessions.schedule.open')} icon={CalendarPlus} fullWidth onPress={() => router.push('/sessions/new')} /> : undefined}>
       <TitleBar title={t('sessions.title')} onBack={() => router.back()} />
       <Text tone="muted">{t('sessions.purpose')}</Text>
       <Eyebrow>{t('sessions.coming')}</Eyebrow>
       {list !== null && coming.length === 0 ? (
-        <EmptyState icon={<Icon icon={Video} color="action" size={32} />} title={t('sessions.empty')} description={list.can_host ? t('sessions.emptyHostPhone') : t('sessions.emptyGuest')} />
+        <EmptyState icon={<Icon icon={Video} color="action" size={32} />} title={t('sessions.empty')} description={list.can_host ? t('sessions.emptyHost') : t('sessions.emptyGuest')} />
       ) : null}
       <View style={styles.list}>
         {coming.map((s) => (

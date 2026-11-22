@@ -4,7 +4,24 @@ import babel from '@rolldown/plugin-babel';
 import tailwindcss from '@tailwindcss/vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
+import { cpSync, existsSync } from 'node:fs';
 import { defineConfig, lazyPlugins } from 'vite-plus';
+
+/**
+ * The whiteboard's fonts (Excalidraw, B6.3b) are served by REOS itself, not
+ * a CDN, so drawing in a session sends nothing to third parties.
+ */
+const excalidrawFonts = () => ({
+    name: 'reos-excalidraw-fonts',
+    buildStart() {
+        const from = 'node_modules/@excalidraw/excalidraw/dist/prod/fonts';
+        const to = 'public/vendor/excalidraw/fonts';
+
+        if (existsSync(from) && !existsSync(to)) {
+            cpSync(from, to, { recursive: true });
+        }
+    },
+});
 
 export default defineConfig({
     plugins: lazyPlugins(() => [
@@ -21,6 +38,7 @@ export default defineConfig({
         wayfinder({
             formVariants: true,
         }),
+        excalidrawFonts(),
     ]),
     server: {
         watch: {

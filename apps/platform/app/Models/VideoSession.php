@@ -31,10 +31,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $notes
  * @property int|null $notes_updated_by
  * @property CarbonImmutable|null $notes_updated_at
+ * @property string|null $whiteboard Excalidraw elements (JSON)
+ * @property string|null $whiteboard_image
+ * @property CarbonImmutable|null $whiteboard_updated_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $host
  * @property-read Collection<int, VideoSessionParticipant> $participants
+ * @property-read Collection<int, VideoSessionShare> $shares
  */
 final class VideoSession extends Model
 {
@@ -56,7 +60,7 @@ final class VideoSession extends Model
     /** A live class: up to 100 people watching. */
     public const MAX_GUESTS = 100;
 
-    protected $fillable = ['uuid', 'organisation_id', 'host_id', 'kind', 'title', 'agenda', 'starts_at', 'ends_at', 'status', 'started_at', 'ended_at', 'reminded_at', 'notes', 'notes_updated_by', 'notes_updated_at'];
+    protected $fillable = ['uuid', 'organisation_id', 'host_id', 'kind', 'title', 'agenda', 'starts_at', 'ends_at', 'status', 'started_at', 'ended_at', 'reminded_at', 'notes', 'notes_updated_by', 'notes_updated_at', 'whiteboard', 'whiteboard_image', 'whiteboard_updated_at'];
 
     protected function casts(): array
     {
@@ -67,6 +71,7 @@ final class VideoSession extends Model
             'ended_at' => 'datetime',
             'reminded_at' => 'datetime',
             'notes_updated_at' => 'datetime',
+            'whiteboard_updated_at' => 'datetime',
         ];
     }
 
@@ -80,6 +85,12 @@ final class VideoSession extends Model
     public function participants(): HasMany
     {
         return $this->hasMany(VideoSessionParticipant::class);
+    }
+
+    /** @return HasMany<VideoSessionShare, $this> */
+    public function shares(): HasMany
+    {
+        return $this->hasMany(VideoSessionShare::class);
     }
 
     /** The LiveKit room name. */

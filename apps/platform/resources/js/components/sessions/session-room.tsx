@@ -5,17 +5,68 @@ import {
     LiveKitRoom,
     ParticipantTile,
     RoomAudioRenderer,
+    useDataChannel,
     useTracks,
 } from '@livekit/components-react';
 import { Track } from 'livekit-client';
-import { Clock } from 'lucide-react';
-import { useEffect } from 'react';
+import { Clock, PenLine, Video } from 'lucide-react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { RoomConnection, Session } from '@/components/sessions/types';
+import {
+    type BoardChannel,
+    decodeBoard,
+    encodeBoard,
+} from '@/components/sessions/board-channel';
+import { ShareActions } from '@/components/sessions/share-actions';
 import { clock, useCountdown } from '@/components/sessions/use-countdown';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
+
+// Excalidraw is large; it loads only when someone opens the whiteboard.
+const Whiteboard = lazy(() => import('@/components/sessions/whiteboard'));
+
+function BoardLoading() {
+    const { t } = useTranslation();
+
+    return (
+        <p className="text-base text-muted-foreground">
+            {t('sessions.whiteboard.loading')}
+        </p>
+    );
+}
+
+/** The whiteboard in a real room: changes travel on the room's data channel. */
+function LiveBoard({ sessionId }: { sessionId: string }) {
+    const listeners = useRef(new Set<(elements: unknown[]) => void>());
+    const { send } = useDataChannel('whiteboard', (message) => {
+        const elements = decodeBoard(message.payload);
+
+        if (elements) {
+            listeners.current.forEach((listener) => listener(elements));
+        }
+    });
+    const channel = useMemo<BoardChannel>(
+        () => ({
+            send: (elements) =>
+                void send(encodeBoard(elements), { reliable: true }),
+            receive: (listener) => {
+                listeners.current.add(listener);
+
+                return () => listeners.current.delete(listener);
+            },
+        }),
+        [send],
+    );
+
+    return (
+        <Suspense fallback={<BoardLoading />}>
+            <Whiteboard sessionId={sessionId} channel={channel} />
+        </Suspense>
+    );
+}
 
 /** Everyone's camera (and a shared screen) in a grid, with mic, camera and share controls. */
 function Stage() {
@@ -120,14 +171,18 @@ export function SessionRoom({
     me,
     onLeave,
     onEnd,
+    onShared = () => undefined,
 }: {
     session: Session;
     connection: RoomConnection;
     me: number;
     onLeave: (reason: 'left' | 'ended') => void;
     onEnd: () => void;
+    /** The host shared a lesson or questions (reload the session). */
+    onShared?: () => void;
 }) {
     const { t, i18n } = useTranslation();
+    const [view, setView] = useState<'video' | 'board'>('video');
     const left = useCountdown(connection.ends_at);
     const warn = left > 0 && left <= 120;
     const closesAt = new Date(connection.ends_at).toLocaleTimeString(
@@ -159,7 +214,31 @@ export function SessionRoom({
                         {t('sessions.room.left', { time: closesAt })}
                     </span>
                 </p>
+                <ToggleGroup
+                    type="single"
+                    variant="outline"
+                    value={view}
+                    aria-label={t('sessions.room.view')}
+                    onValueChange={(next) =>
+                        next ? setView(next as 'video' | 'board') : undefined
+                    }
+                >
+                    <ToggleGroupItem value="video" className="min-h-12 px-4">
+                        <Video aria-hidden />
+                        {t('sessions.room.video')}
+                    </ToggleGroupItem>
+                    <ToggleGroupItem value="board" className="min-h-12 px-4">
+                        <PenLine aria-hidden />
+                        {t('sessions.whiteboard.title')}
+                    </ToggleGroupItem>
+                </ToggleGroup>
                 <div className="flex flex-wrap gap-2">
+                    {session.me === 'host' ? (
+                        <ShareActions
+                            sessionId={session.id}
+                            onShared={onShared}
+                        />
+                    ) : null}
                     <Button variant="outline" onClick={() => onLeave('left')}>
                         {t('sessions.room.leave')}
                     </Button>
@@ -182,7 +261,13 @@ export function SessionRoom({
             </div>
 
             {connection.simulated || !connection.url || !connection.token ? (
-                <SimulatedStage session={session} me={me} />
+                view === 'board' ? (
+                    <Suspense fallback={<BoardLoading />}>
+                        <Whiteboard sessionId={session.id} channel={null} />
+                    </Suspense>
+                ) : (
+                    <SimulatedStage session={session} me={me} />
+                )
             ) : (
                 <LiveKitRoom
                     serverUrl={connection.url}
@@ -193,7 +278,11 @@ export function SessionRoom({
                     data-lk-theme="default"
                     onDisconnected={() => onLeave('left')}
                 >
-                    <Stage />
+                    {view === 'board' ? (
+                        <LiveBoard sessionId={session.id} />
+                    ) : (
+                        <Stage />
+                    )}
                     <RoomAudioRenderer />
                 </LiveKitRoom>
             )}

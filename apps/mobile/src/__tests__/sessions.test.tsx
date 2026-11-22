@@ -3,6 +3,7 @@ import { I18nextProvider } from 'react-i18next';
 
 import SessionScreen from '@/app/sessions/[id]';
 import SessionsScreen from '@/app/sessions/index';
+import NewSessionScreen from '@/app/sessions/new';
 import { i18n } from '@/lib/i18n';
 import { nextSession, type Session } from '@/lib/sessions';
 import { ToastProvider } from '@/ui';
@@ -13,7 +14,7 @@ const mockPut = jest.fn();
 jest.mock('@/lib/api', () => ({ api: () => ({ GET: mockGet, POST: mockPost, PUT: mockPut }) }));
 jest.mock('@/lib/auth', () => ({ useAuth: () => ({ user: { id: 2, name: 'Sofia Reyes' } }) }));
 jest.mock('expo-router', () => ({
-  router: { push: jest.fn(), back: jest.fn() },
+  router: { push: jest.fn(), back: jest.fn(), replace: jest.fn() },
   useLocalSearchParams: () => ({ id: 's-1' }),
   useFocusEffect: (effect: () => void) => jest.requireActual<typeof import('react')>('react').useEffect(effect, [effect]),
 }));
@@ -37,6 +38,8 @@ const session = (over: Partial<Session> = {}): Session => ({
   notes: null,
   notes_updated_at: null,
   notes_updated_by: null,
+  whiteboard: { image_url: null, updated_at: null },
+  shares: [],
   ...over,
 });
 
@@ -112,5 +115,50 @@ describe('Sessions on the phone (B6.3)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Save notes' }));
     expect(mockPut).toHaveBeenCalledWith('/sessions/{session}/notes', { params: { path: { session: 's-1' } }, body: { notes: 'Read section 4.' } });
     expect(await screen.findByText(/Last edited by Sofia Reyes/)).toBeOnTheScreen();
+  });
+
+  it('shows the whiteboard picture and lets everyone answer shared questions', async () => {
+    mockGet.mockResolvedValue({
+      data: session({
+        status: 'ended',
+        can_join: false,
+        whiteboard: { image_url: 'https://reos.test/sessions/s-1/whiteboard.png?signature=x', updated_at: '2026-11-24T21:40:00Z' },
+        shares: [
+          {
+            id: 2,
+            kind: 'questions',
+            at: '2026-11-24T21:20:00Z',
+            by: 'Dr. Rachel Hughes',
+            lesson: null,
+            topic: 'agency',
+            questions: [{ id: 3, question: 'What does a buyer’s agent owe the buyer?', options: ['Nothing', 'Loyalty and disclosure'], correct: 1, explanation: 'Agents owe their clients loyalty.', source: 'TREC Rule 535.2' }],
+          },
+          { id: 1, kind: 'lesson', at: '2026-11-24T21:10:00Z', by: 'Dr. Rachel Hughes', lesson: { id: 12, title: 'Earnest money and the option fee', course: 'Principles of Real Estate II' }, topic: null, questions: [] },
+        ],
+      }),
+    });
+    await wrap(<SessionScreen />);
+
+    expect(await screen.findByLabelText('Whiteboard from Contract review: TREC One to Four')).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole('radio', { name: /Nothing/ }));
+    expect(screen.getByText(/Agents owe their clients loyalty/)).toBeOnTheScreen();
+    await fireEvent.press(screen.getByLabelText('Open lesson: Earnest money and the option fee'));
+    expect(jest.requireMock<{ router: { push: jest.Mock } }>('expo-router').router.push).toHaveBeenCalledWith({ pathname: '/learn/[id]', params: { id: '12' } });
+  });
+
+  it('lets instructors schedule from the phone', async () => {
+    mockGet.mockResolvedValue({
+      data: { sessions: [], can_host: true, contacts: [{ id: 2, name: 'Sofia Reyes', role: 'candidate', organisation: 'Texas Realty School' }], lengths: [30, 45, 60] },
+    });
+    mockPost.mockResolvedValue({ data: session({ id: 's-9', me: 'host' }) });
+    await wrap(<NewSessionScreen />);
+
+    await fireEvent.changeText(screen.getByLabelText('Title'), 'Contract review');
+    await fireEvent.press(await screen.findByLabelText(/Sofia Reyes/));
+    await fireEvent.press(screen.getByRole('button', { name: 'Schedule' }));
+
+    expect(mockPost).toHaveBeenCalledWith('/sessions', {
+      body: expect.objectContaining({ kind: 'one_on_one', title: 'Contract review', minutes: '45', guests: [2] }),
+    });
   });
 });
