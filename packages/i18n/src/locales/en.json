@@ -50,7 +50,8 @@
     "salesAndPayouts": "Sales and payouts",
     "providerCategories": "Provider categories",
     "aiAndCredits": "AI and credits",
-    "featuresAndReleases": "Features and releases"
+    "featuresAndReleases": "Features and releases",
+    "privacy": "Privacy"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1984,7 +1985,8 @@
         "flag.killed": "Turned a feature off everywhere",
         "flag.restored": "Turned a feature back on",
         "flag.rolled_back": "A feature rolled back on its own",
-        "release.published": "Published a release"
+        "release.published": "Published a release",
+        "privacy.consent_changed": "Changed a privacy switch for someone"
       }
     }
   },
@@ -4193,5 +4195,98 @@
     "title": "What's new in {{version}}",
     "dismiss": "Dismiss",
     "dismissLabel": "Dismiss what's new in {{version}}"
+  },
+  "consents": {
+    "title": "Privacy",
+    "switchesTitle": "Privacy switches",
+    "switchesDescription": "Choose what REOS may do with your data. You can change these at any time.",
+    "byDefault": "Default for your role. Turning it on or off records your choice.",
+    "chosenOn": "Your choice, {{date}}",
+    "switchFor": "{{purpose}} for {{person}}",
+    "saved": "Your privacy choice is saved.",
+    "savedFor": "Saved for {{name}}.",
+    "withdrawnToast": "{{purpose}}: consent withdrawn.",
+    "purposes": {
+      "terms": {
+        "title": "Terms of use",
+        "body": "The rules for using REOS."
+      },
+      "privacy_notice": {
+        "title": "Privacy notice",
+        "body": "What REOS keeps about you and why."
+      },
+      "marketing_email": {
+        "title": "News and offers by email",
+        "body": "Occasional emails about new courses and features. Account emails always arrive."
+      },
+      "sms": {
+        "title": "Text messages",
+        "body": "Codes, reminders and session alerts by text. Reply STOP to stop and HELP for help."
+      },
+      "session_recording": {
+        "title": "Session recording",
+        "body": "Recording a session, asked in the room each time."
+      },
+      "contact_sharing": {
+        "title": "Sharing contacts with a provider",
+        "body": "A service provider sees your contact details, asked each time."
+      },
+      "ai_personal_data": {
+        "title": "AI help with your own data",
+        "body": "Your own words go to Claude on Amazon Bedrock to help you (for example, voice to-dos). Never stored by the AI service or used for training. Off: REOS uses its built-in helper."
+      },
+      "provider_network": {
+        "title": "Provider network",
+        "body": "Verified providers (lenders, inspectors) can see that you're a prospect and ask to connect. They see your contact details only if you accept."
+      },
+      "recruiting": {
+        "title": "Open to recruiting",
+        "body": "Brokerages can see that you're open to joining and invite you."
+      }
+    },
+    "methods": {
+      "web": "On the web",
+      "app": "In the app",
+      "admin": "By REOS for you",
+      "sms": "By text reply"
+    },
+    "history": {
+      "title": "Your consents",
+      "description": "Everything you agreed to or withdrew, with the version of the words and how. Records are never changed.",
+      "empty": "No consents yet",
+      "emptyBody": "What you agree to, such as the terms when you sign up, shows here.",
+      "agreed": "Agreed",
+      "withdrawn": "Withdrawn",
+      "version": "Version {{version}}",
+      "current": "In force",
+      "withdraw": "Withdraw",
+      "withdrawFor": "Withdraw consent: {{purpose}}"
+    },
+    "documents": {
+      "title": "Terms and privacy notice",
+      "versionOf": "Version of {{date}}",
+      "yourData": "To download or correct your data, go to",
+      "profileLink": "Profile"
+    },
+    "agree": {
+      "lead": "By continuing, you agree to the",
+      "terms": "Terms of use",
+      "and": "and the",
+      "privacy": "Privacy notice",
+      "checkbox": "I agree to the"
+    },
+    "admin": {
+      "title": "Privacy switches and consents",
+      "description": "Change a switch only when the person asks (for example, by email). The reason is kept with their record and in the audit log.",
+      "note": "Reason (the person's request)",
+      "notePlaceholder": "Asked by email on Nov 22 to stop news emails"
+    },
+    "errors": {
+      "required": "The terms and privacy notice can only be withdrawn by deleting your account.",
+      "askedWhereUsed": "This consent is asked each time it's needed; it can only be withdrawn here.",
+      "noSubject": "This switch applies to your whole account.",
+      "notSwitch": "Only the privacy switches can be changed for someone.",
+      "generic": "That didn't save. Try again."
+    }
   }
 }

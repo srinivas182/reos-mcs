@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Voice;
 
 use App\Models\User;
+use App\Privacy\ConsentPurpose;
 use App\Services\Ai\AiCredits;
 use App\Services\Ai\AiSettings;
+use App\Services\Privacy\Consents;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -26,6 +28,7 @@ final readonly class VoiceParsing
         private UnderstandingFactory $factory,
         private AiCredits $credits,
         private AiSettings $settings,
+        private Consents $consents,
     ) {}
 
     /**
@@ -37,7 +40,8 @@ final readonly class VoiceParsing
     {
         // What a voice to-do costs is set on screen 69 (A6.1).
         $cost = $this->settings->cost('voice_todo');
-        $ai = $this->credits->canSpend($user, $cost) ? $this->factory->ai() : null;
+        // AI help with their own words only while they allow it (A6.3); the built-in parser otherwise.
+        $ai = $this->consents->allows($user, ConsentPurpose::AiPersonalData) && $this->credits->canSpend($user, $cost) ? $this->factory->ai() : null;
         $understanding = $ai ?? $this->factory->builtIn();
         $used = 0;
 

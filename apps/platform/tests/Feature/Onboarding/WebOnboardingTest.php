@@ -111,6 +111,7 @@ describe('becoming an agent on the web (candidate journey screens 2–7)', funct
             'email' => 'maria@example.com',
             'password' => 'a-Strong-passw0rd-2026',
             'password_confirmation' => 'a-Strong-passw0rd-2026',
+            'terms' => '1',
         ])->assertRedirect('/dashboard');
 
         $user = User::query()->where('email', 'maria@example.com')->firstOrFail();
@@ -187,6 +188,7 @@ it('keeps the language a visitor was using when they sign up', function () {
         'email' => 'maria.es@example.com',
         'password' => 'a-Strong-passw0rd-2026',
         'password_confirmation' => 'a-Strong-passw0rd-2026',
+        'terms' => '1',
     ]);
 
     expect(User::query()->where('email', 'maria.es@example.com')->firstOrFail()->locale->value)->toBe('es');

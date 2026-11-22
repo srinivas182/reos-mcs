@@ -17,6 +17,7 @@ use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
+use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
@@ -47,6 +48,9 @@ Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind',
     Route::post('/', [TenantSignupController::class, 'store'])->middleware('throttle:10,1,tenant-signup')->name('store');
 });
 // The public status page (A6.1).
+// The terms and the privacy notice people agree to (A6.3).
+Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
+Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('status', StatusController::class)->middleware('throttle:60,1,status')->name('status');
 Route::get('for/{audience}', [PublicSiteController::class, 'audience'])
     ->whereIn('audience', PublicSiteController::AUDIENCES)->name('audience');

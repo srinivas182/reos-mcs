@@ -14,6 +14,7 @@ import {
 } from '@/components/sign-in-options';
 import TextLink from '@/components/text-link';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AgreementNote } from '@/components/consents';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -164,6 +165,8 @@ export default function Login({
                     {/* @chisel-passkeys */}
                     <PasskeyVerify withSeparator={false} />
                     {/* @end-chisel-passkeys */}
+                    {/* New accounts made with Google, Apple, a code or SSO agree here (A6.3). */}
+                    <AgreementNote />
                 </div>
 
                 <Alert className="border-transparent bg-reos-tone-info-bg text-reos-tone-info-fg">

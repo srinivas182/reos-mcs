@@ -13,6 +13,7 @@ use App\Models\TenantSso;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
+use App\Services\Privacy\Consents;
 use App\Sso\OidcClient;
 use App\Sso\ProviderAddress;
 use App\Sso\SamlClient;
@@ -52,6 +53,7 @@ final readonly class SingleSignOn
         private Memberships $memberships,
         private Http $http,
         private Brands $brands,
+        private Consents $consents,
     ) {}
 
     public function of(Organisation $tenant): ?TenantSso
@@ -334,6 +336,7 @@ final readonly class SingleSignOn
             if ($user === null) {
                 $user = User::query()->create(['name' => $claims->name ?? $claims->email, 'email' => $claims->email, 'locale' => Locale::current()]);
                 $user->forceFill(['email_verified_at' => now()])->save();
+                $this->consents->signedUp($user);
                 [$role, $organisation] = $this->memberRole($tenant);
                 $this->memberships->attach($user, $role, $organisation);
             }

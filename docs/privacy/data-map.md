@@ -1,6 +1,6 @@
 # Personal data map
 
-Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 21 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1, ZIP codes for tax in B5.2a, payouts in B5.2b, the ledger and refunds in B5.3, last activity in A6.1); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
+Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 22 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1, ZIP codes for tax in B5.2a, payouts in B5.2b, the ledger and refunds in B5.3, last activity in A6.1, consent records in A6.3); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
 
 | Data | Where | Why | See ("Download my data") | Delete (account deletion, after 30 days) |
 | --- | --- | --- | --- | --- |
@@ -29,6 +29,7 @@ Where REOS keeps personal data, why, and how each right under the Texas Data Pri
 | Refunds of their orders (amount, full or partial, the reason REOS gave) | `refunds` | Refunds from REOS (B5.3) | Refunds | Kept for tax records with the order, linked to no one |
 | Tool interests and requests | `integration_interests`, `tool_requests` | Catalogue demand | Tool interests | Deleted (cascade) |
 | Invitations sent to them | `invitations` (email or phone) | Joining a tenant | — (the tenant's record) | Expire after 14 days |
+| What they agreed to and withdrew: purpose (terms, privacy notice, marketing email, texts, session recording, contact sharing, AI help with their data, provider network, recruiting), the thing it was for (a session or provider), the version of the words, when, how (web, app, by REOS on their behalf with the reason), IP address and browser | `consent_records` | Proof of consent (TDPSA, TCPA for texts); every feature checks the latest record before acting (A6.3) | Consents; also Settings › Privacy and Me › Privacy | Kept as proof, linked to no one (never edited or deleted) |
 | Privacy requests | `privacy_requests` | TDPSA duties | Privacy requests | Kept as a record without name, email or details |
 | What they did (audit log) | `audit_events` (actor, IP, user agent) | Security and accountability | Activity (last 1,000) | Kept for the tenant's log retention, linked to no one |
 

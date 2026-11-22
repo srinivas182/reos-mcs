@@ -1,5 +1,6 @@
 import { Form, Head } from '@inertiajs/react';
 import { useTranslation } from 'react-i18next';
+import { AgreementNote } from '@/components/consents';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
 import type { SignInOptionsAvailable } from '@/components/sign-in-options';
@@ -10,11 +11,13 @@ import {
 } from '@/components/sign-in-options';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { i18n } from '@/lib/i18n';
 import { login } from '@/routes';
+import { privacy, terms } from '@/routes/legal';
 import { store } from '@/routes/register';
 
 type Props = {
@@ -38,6 +41,7 @@ export default function Register({ passwordRules, signInOptions }: Props) {
                         <div className="space-y-3">
                             <ProviderButtons available={signInOptions} />
                             {signInOptions.phone ? <PhoneSignIn /> : null}
+                            <AgreementNote />
                         </div>
                         <OrDivider />
                     </>
@@ -116,6 +120,45 @@ export default function Register({ passwordRules, signInOptions }: Props) {
                                 <InputError
                                     message={errors.password_confirmation}
                                 />
+                            </div>
+
+                            <div className="grid gap-2">
+                                <label
+                                    htmlFor="terms"
+                                    className="flex min-h-12 items-start gap-3 text-body"
+                                >
+                                    <Checkbox
+                                        id="terms"
+                                        name="terms"
+                                        value="1"
+                                        required
+                                        className="mt-0.5"
+                                        aria-invalid={
+                                            errors.terms ? true : undefined
+                                        }
+                                    />
+                                    <span>
+                                        {t('consents.agree.checkbox')}{' '}
+                                        <a
+                                            href={terms().url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="underline"
+                                        >
+                                            {t('consents.agree.terms')}
+                                        </a>{' '}
+                                        {t('consents.agree.and')}{' '}
+                                        <a
+                                            href={privacy().url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="underline"
+                                        >
+                                            {t('consents.agree.privacy')}
+                                        </a>
+                                    </span>
+                                </label>
+                                <InputError message={errors.terms} />
                             </div>
 
                             <Button

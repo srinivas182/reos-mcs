@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
+use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Todos\TodoController;
@@ -94,6 +95,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('me/codes', [MembershipController::class, 'redeem'])->middleware('throttle:10,10,api-codes')->name('api.me.codes');
     // Earnings for instructors and mentors (B5.2b).
     Route::get('me/earnings', EarningsController::class)->name('api.me.earnings');
+    // Privacy switches and consents (A6.3, Me › Privacy).
+    Route::get('me/consents', [ConsentController::class, 'index'])->name('api.me.consents');
+    Route::put('me/consents/{purpose}', [ConsentController::class, 'update'])->middleware('throttle:30,1,api-consents')->name('api.me.consents.update');
     // What's new (A6.2): the latest release note for my role, shown once on Today.
     Route::get('me/whats-new', [WhatsNewController::class, 'show'])->name('api.me.whats-new');
     Route::post('me/whats-new/{release}/dismiss', [WhatsNewController::class, 'dismiss'])->whereNumber('release')->middleware('throttle:30,1,api-whats-new')->name('api.me.whats-new.dismiss');

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Settings\ActiveRoleController;
 use App\Http\Controllers\Settings\AppearanceController;
+use App\Http\Controllers\Settings\ConsentController;
 use App\Http\Controllers\Settings\CurrentStateController;
 use App\Http\Controllers\Settings\LicenceController;
 use App\Http\Controllers\Settings\PrivacyController;
@@ -36,6 +37,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->whereNumber('privacyRequest')
         ->middleware(['signed', 'throttle:20,60,privacy-download'])
         ->name('privacy.download');
+
+    // Privacy switches and "Your consents" (A6.3).
+    Route::get('settings/privacy', [ConsentController::class, 'edit'])->name('consents.edit');
+    Route::put('settings/privacy/consents/{purpose}', [ConsentController::class, 'update'])
+        ->middleware('throttle:30,1,consents-update')
+        ->name('consents.update');
 
     Route::put('settings/password', [SecurityController::class, 'update'])
         ->middleware('throttle:6,1,user-password-update')

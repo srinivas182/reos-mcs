@@ -6,6 +6,7 @@ use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Enums\Locale;
 use App\Models\User;
+use App\Services\Privacy\Consents;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -23,14 +24,19 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
+            // "I agree to the Terms and the Privacy notice" (A6.3).
+            'terms' => ['accepted'],
         ])->validate();
 
-        return User::create([
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
             // Keep the language they were already using on the site.
             'locale' => Locale::current(),
         ]);
+        app(Consents::class)->signedUp($user);
+
+        return $user;
     }
 }

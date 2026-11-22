@@ -15,6 +15,7 @@ use App\Notifications\InvitationSent;
 use App\Notifications\SeatsRequested;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
+use App\Services\Privacy\Consents;
 use App\Support\PhoneNumber;
 use App\Support\Plural;
 use App\Tenancy\Tenancy;
@@ -61,6 +62,7 @@ final readonly class Invitations
         private TextMessagesFactory $texts,
         private SingleSignOn $sso,
         private SupportAccess $support,
+        private Consents $consents,
     ) {}
 
     /**
@@ -424,6 +426,7 @@ final readonly class Invitations
             $user->forceFill($invitation->email !== null
                 ? ['email_verified_at' => now()]
                 : ['phone' => $invitation->phone, 'phone_verified_at' => now()])->save();
+            $this->consents->signedUp($user);
             $this->accept($invitation, $user);
 
             return $user;

@@ -13,6 +13,7 @@ use App\Services\Authorization\Memberships;
 use Database\Seeders\Demo\DemoBilling;
 use Database\Seeders\Demo\DemoCatalogue;
 use Database\Seeders\Demo\DemoConnections;
+use Database\Seeders\Demo\DemoConsents;
 use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
@@ -86,6 +87,8 @@ final class DemoSeeder extends Seeder
         app(DemoTenantPlans::class)->seed();
         // Flags and a release, as on screen 70 (A6.2).
         app(DemoReleases::class)->seed();
+        // What each persona agreed to (A6.3).
+        app(DemoConsents::class)->seed();
     }
 
     private function organisation(string $name): Organisation
