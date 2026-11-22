@@ -15,6 +15,8 @@ use App\Integrations\Catalogue;
 use App\Models\AuditEvent;
 use App\Models\Connection;
 use App\Models\Organisation;
+use App\Models\Product;
+use App\Models\SponsorCode;
 use App\Models\State;
 use App\Models\User;
 use App\Services\Tenancy\SupportAccess;
@@ -110,6 +112,24 @@ final class TenantController extends Controller
                 ],
             ],
             'options' => self::options(),
+            // Sponsor codes on the Plan tab (B5.1b).
+            'sponsor' => $tab === 'plan' ? [
+                'codes' => SponsorCode::query()->with(['product:id,name', 'redemptions.user:id,name,email'])->where('sponsor_organisation_id', $tenant->id)->latest()->get()
+                    ->map(static fn (SponsorCode $code): array => [
+                        'id' => $code->id,
+                        'code' => $code->code,
+                        'product' => $code->product->name,
+                        'state' => $code->state_code,
+                        'seats' => $code->seats,
+                        'used' => $code->used,
+                        'access_months' => $code->access_months,
+                        'expires_at' => $code->expires_at?->toIso8601String(),
+                        'active' => $code->active,
+                        'people' => $code->redemptions->map(static fn ($r): string => $r->user->name ?? $r->user->email ?? '')->values()->all(),
+                    ])->values()->all(),
+                'products' => Product::query()->where('status', 'live')->orderBy('name')->get(['id', 'name'])
+                    ->map(static fn (Product $p): array => ['id' => $p->id, 'name' => $p->name])->values()->all(),
+            ] : null,
         ]);
     }
 

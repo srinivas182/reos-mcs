@@ -1,13 +1,16 @@
-import { Head, router } from '@inertiajs/react';
+import { Form, Head, router } from '@inertiajs/react';
 import { CreditCard, ExternalLink, Receipt } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import Heading from '@/components/heading';
+import InputError from '@/components/input-error';
 import { PlanCard } from '@/components/plan-card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import type { PriceView } from '@/lib/billing';
 import { featureLabel, money } from '@/lib/billing';
-import { portal } from '@/routes/billing';
+import { codes, portal } from '@/routes/billing';
 
 type Plan = PriceView & {
     charge: number;
@@ -99,6 +102,38 @@ export default function Billing({
                     </ul>
                 )}
             </div>
+
+            <Form
+                {...codes.form()}
+                options={{ preserveScroll: true }}
+                resetOnSuccess
+                className="flex flex-wrap items-end gap-3 rounded-reos-lg border border-border bg-card p-4"
+            >
+                {({ errors, processing }) => (
+                    <>
+                        <div className="grid min-w-56 flex-1 gap-2">
+                            <Label htmlFor="sponsor-code">
+                                {t('billing.codes.haveCode')}
+                            </Label>
+                            <Input
+                                id="sponsor-code"
+                                name="code"
+                                autoComplete="off"
+                                maxLength={40}
+                                className="font-mono uppercase"
+                            />
+                            <InputError message={errors.code} />
+                        </div>
+                        <Button
+                            type="submit"
+                            variant="outline"
+                            disabled={processing}
+                        >
+                            {t('billing.codes.use')}
+                        </Button>
+                    </>
+                )}
+            </Form>
 
             <div className="space-y-4">
                 <Heading

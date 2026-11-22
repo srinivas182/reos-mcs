@@ -74,6 +74,8 @@ final readonly class DataExport
                     ->map(static fn ($r): array => (array) $r)->all(),
                 'entitlements' => DB::table('entitlements')->where('user_id', $user->id)->orderBy('id')
                     ->get(['feature', 'source', 'state_code', 'starts_at', 'ends_at', 'revoked_at'])->map(static fn ($r): array => (array) $r)->all(),
+                'sponsor_codes_used' => DB::table('sponsor_code_redemptions')->join('sponsor_codes', 'sponsor_codes.id', '=', 'sponsor_code_redemptions.sponsor_code_id')
+                    ->where('sponsor_code_redemptions.user_id', $user->id)->get(['sponsor_codes.code', 'sponsor_code_redemptions.created_at'])->map(static fn ($r): array => (array) $r)->all(),
                 'gateway_customers' => DB::table('gateway_customers')->where('user_id', $user->id)->get(['gateway', 'environment', 'customer_id'])->map(static fn ($r): array => (array) $r)->all(),
             ],
             // To-dos, typed or spoken (B4.3); what was said is never stored.

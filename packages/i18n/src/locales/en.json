@@ -251,6 +251,26 @@
       "title": "Switch state",
       "intro": "Courses, CE and plans follow the state you choose.",
       "switched": "Now working in {{state}}."
+    },
+    "membership": {
+      "freePlan": "Free plan",
+      "title": "Unlock every course, exam prep and unlimited Ask",
+      "body": "You've used today's free lesson. Your progress is saved.",
+      "includes": "Membership includes",
+      "sponsorTitle": "Is your school, brokerage or association paying?",
+      "sponsorBody": "Enter their code and you're in.",
+      "continue": "Continue on reos.com",
+      "emailMe": "Email me the link",
+      "sent": "Sent to {{email}}. Open it on any device to choose a plan.",
+      "noEmail": "Add an email in Settings to get the link.",
+      "android": "Plans are chosen on reos.com in any browser. Your access appears here as soon as you're in.",
+      "iosNote": "Plans are chosen on reos.com. The app unlocks within seconds.",
+      "enterCode": "Enter a code",
+      "codeTitle": "Enter your code",
+      "useCode": "Use code",
+      "unlockedTitle": "You're in",
+      "unlocked": "{{product}} from {{sponsor}} is unlocked.",
+      "done": "Start learning"
     }
   },
   "tabs": {
@@ -1910,7 +1930,11 @@
         "price.ended": "Stopped selling a price",
         "order.started": "Started a checkout",
         "order.paid": "Paid for an order",
-        "order.refunded": "An order was refunded"
+        "order.refunded": "An order was refunded",
+        "code.created": "Created a sponsor code",
+        "code.deactivated": "Stopped a sponsor code",
+        "code.redeemed": "Used a sponsor code",
+        "platform.setting_changed": "Changed a platform setting"
       }
     }
   },
@@ -3349,6 +3373,40 @@
       "title": "Part of a plan",
       "body": "“{{lesson}}” is in {{course}}. The first lesson of every course is free; the rest come with a plan.",
       "see": "See plans"
+    },
+    "codes": {
+      "title": "Sponsor codes",
+      "intro": "Codes this organization pays for. Each person who enters one gets the plan's access, once.",
+      "product": "Plan",
+      "state": "State",
+      "seats": "Seats",
+      "months": "Access for (months, empty for as long as the plan)",
+      "expires": "Code expires",
+      "create": "Create code",
+      "created": "Code {{code}} created.",
+      "stop": "Stop {{code}}",
+      "stopped": "Stopped",
+      "used": "{{used}} of {{seats}} used",
+      "people": "Used by {{names}}",
+      "empty": "No codes yet.",
+      "haveCode": "Have a code from your school, brokerage or association?",
+      "label": "Code",
+      "use": "Use code",
+      "redeemed": "{{sponsor}} pays for {{product}}. It's unlocked now.",
+      "errors": {
+        "unknown": "That code doesn't work. Check it with whoever gave it to you.",
+        "expired": "That code has expired.",
+        "used": "You've already used this code.",
+        "full": "Every seat on this code is taken. Ask whoever gave it to you for another."
+      }
+    },
+    "membership": {
+      "mail": {
+        "subject": "Your REOS plans link",
+        "body": "Here are the plans for your state on reos.com. Choose one on any device.",
+        "action": "See plans",
+        "unlock": "The app unlocks within seconds of buying; there's nothing to buy in the app."
+      }
     }
   },
   "plans": {
@@ -3430,6 +3488,12 @@
     "ended": "Price for {{state}} stopped.",
     "current": "Current",
     "from": "From {{date}}",
-    "until": "until {{date}}"
+    "until": "until {{date}}",
+    "iosBuyLink": {
+      "title": "Buying from the iPhone app",
+      "email": "Email me the link (no link in the app)",
+      "link": "Link to reos.com",
+      "help": "The app never shows prices. Android always shows the words without a link. Change this without an app release."
+    }
   }
 }

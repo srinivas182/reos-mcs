@@ -19,7 +19,11 @@ import { Button } from '@/components/ui/button';
 import type { Buyer, ProductStatus } from '@/lib/billing';
 import { priceLabel } from '@/lib/billing';
 import { cn } from '@/lib/utils';
-import { index, status as setStatus } from '@/routes/plans';
+import {
+    index,
+    iosBuyLink as iosBuyLinkRoute,
+    status as setStatus,
+} from '@/routes/plans';
 
 type Tab =
     | 'agents'
@@ -55,11 +59,13 @@ export default function PlansAndPricing({
     tabs,
     products,
     options,
+    iosBuyLink,
 }: {
     tab: Tab;
     tabs: Tab[];
     products: PlanRow[];
     options: PlanOptions;
+    iosBuyLink: 'email' | 'link';
 }) {
     const { t, i18n } = useTranslation();
     const [editing, setEditing] = useState<PlanRow | null>(null);
@@ -296,6 +302,45 @@ export default function PlansAndPricing({
                             {t('plans.candidatesNote')}
                         </p>
                     ) : null}
+                </section>
+
+                <section
+                    className="max-w-2xl space-y-3 rounded-reos-lg border border-border bg-card p-5"
+                    aria-labelledby="ios-buy-link"
+                >
+                    <h2 id="ios-buy-link" className="font-semibold">
+                        {t('plans.iosBuyLink.title')}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                        {t('plans.iosBuyLink.help')}
+                    </p>
+                    <fieldset className="grid gap-2">
+                        <legend className="sr-only">
+                            {t('plans.iosBuyLink.title')}
+                        </legend>
+                        {(['email', 'link'] as const).map((mode) => (
+                            <label
+                                key={mode}
+                                className="flex min-h-12 items-center gap-3 rounded-reos-md border border-input px-3"
+                            >
+                                <input
+                                    type="radio"
+                                    name="ios-buy-link"
+                                    value={mode}
+                                    checked={iosBuyLink === mode}
+                                    onChange={() =>
+                                        router.put(
+                                            iosBuyLinkRoute().url,
+                                            { mode },
+                                            { preserveScroll: true },
+                                        )
+                                    }
+                                    className="size-5 accent-primary"
+                                />
+                                {t(`plans.iosBuyLink.${mode}`)}
+                            </label>
+                        ))}
+                    </fieldset>
                 </section>
             </div>
 

@@ -81,6 +81,7 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // Plan and billing (B5.1, screen 29 and each role's equivalent) and checkout on reos.com (screen 3).
     Route::get('settings/billing', [BillingController::class, 'index'])->name('billing.index');
     Route::post('settings/billing/portal', [BillingController::class, 'portal'])->middleware('throttle:10,1,billing-portal')->name('billing.portal');
+    Route::post('settings/billing/codes', [BillingController::class, 'redeem'])->middleware('throttle:10,10,billing-codes')->name('billing.codes');
     Route::controller(CheckoutController::class)->prefix('checkout')->name('checkout.')->group(function () {
         Route::get('{price}', 'show')->whereNumber('price')->name('show');
         Route::post('{price}', 'start')->whereNumber('price')->middleware('throttle:10,1,checkout-start')->name('start');

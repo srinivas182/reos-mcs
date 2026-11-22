@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\StateRuleController;
 use App\Http\Controllers\Admin\TenantController;
+use App\Http\Controllers\Admin\TenantSponsorCodeController;
 use App\Http\Controllers\Admin\TenantSupportController;
 use App\Http\Middleware\ConfirmIdentity;
 use App\Http\Middleware\EnsureAdminTwoStep;
@@ -121,6 +122,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:tenants.m
         Route::put('{tenant}/status', [TenantController::class, 'status'])->whereNumber('tenant')->middleware('throttle:30,1,admin-tenants-status')->name('status');
         // Support sign-in with the owner's consent (A4.1c).
         Route::post('{tenant}/support', [TenantSupportController::class, 'store'])->whereNumber('tenant')->middleware('throttle:10,1,admin-tenants-support')->name('support.store');
+        // Sponsor codes (B5.1b) on the Plan tab.
+        Route::post('{tenant}/codes', [TenantSponsorCodeController::class, 'store'])->whereNumber('tenant')->middleware('throttle:30,1,admin-tenants-codes')->name('codes.store');
+        Route::delete('{tenant}/codes/{code}', [TenantSponsorCodeController::class, 'destroy'])->whereNumber('tenant')->whereNumber('code')->middleware('throttle:30,1,admin-tenants-codes')->name('codes.destroy');
         Route::post('{tenant}/support/start', [TenantSupportController::class, 'start'])->whereNumber('tenant')->middleware('throttle:10,1,admin-tenants-support-start')->name('support.start');
     });
 
@@ -192,6 +196,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.man
             Route::patch('{product}', [PlanController::class, 'update'])->whereNumber('product')->name('update');
             Route::put('{product}/status', [PlanController::class, 'status'])->whereNumber('product')->name('status');
             Route::post('{product}/prices', [PlanController::class, 'price'])->whereNumber('product')->name('prices.store');
+            // How the iPhone app points to buying (decision 4).
+            Route::put('ios-buy-link', [PlanController::class, 'iosBuyLink'])->name('ios-buy-link');
             Route::delete('{product}/prices/{price}', [PlanController::class, 'endPrice'])->whereNumber('product')->whereNumber('price')->name('prices.destroy');
         });
     });

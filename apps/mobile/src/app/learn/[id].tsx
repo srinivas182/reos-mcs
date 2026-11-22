@@ -38,7 +38,16 @@ export default function LessonScreen() {
     let active = true;
     void loadLesson(id)
       .catch(() => null)
-      .then((found) => active && setLesson(found));
+      .then((found) => {
+        if (!active) return;
+        // Needs a plan: the Membership screen (screen 6) instead.
+        if (found === 'locked') {
+          router.replace('/membership');
+
+          return;
+        }
+        setLesson(found);
+      });
 
     return () => {
       active = false;
