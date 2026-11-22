@@ -38,7 +38,8 @@
     "brokerageSettings": "Configuración de la agencia",
     "agents": "Agentes",
     "complianceAndAudit": "Cumplimiento y auditoría",
-    "switchState": "Cambiar de estado"
+    "switchState": "Cambiar de estado",
+    "contentAndApprovals": "Contenido y aprobaciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1878,7 +1879,23 @@
         "licence.rejected": "No aprobó una licencia",
         "state_rule.drafted": "Redactó un cambio de regla estatal",
         "state_rule.discarded": "Descartó un borrador de regla estatal",
-        "state_rule.published": "Publicó cambios de reglas estatales"
+        "state_rule.published": "Publicó cambios de reglas estatales",
+        "course.created": "Creó un curso",
+        "course.updated": "Cambió un curso",
+        "course.status_changed": "Cambió el estado de un curso",
+        "course.deleted": "Eliminó un curso",
+        "course.restored": "Restauró un curso",
+        "course.module_added": "Agregó un módulo a un curso",
+        "course.module_renamed": "Cambió el nombre de un módulo",
+        "course.module_removed": "Quitó un módulo de un curso",
+        "lesson.created": "Creó una lección",
+        "lesson.updated": "Cambió una lección",
+        "lesson.deleted": "Eliminó una lección",
+        "lesson.restored": "Restauró una lección",
+        "lesson.reindexed": "Pidió volver a leer una lección",
+        "lesson.file_started": "Empezó a subir un archivo de lección",
+        "lesson.file_added": "Subió un archivo de lección",
+        "lesson.file_removed": "Quitó un archivo de lección"
       }
     }
   },
@@ -2471,7 +2488,8 @@
         "brand": "Marca, dominio y SSO",
         "integrations": "Integraciones y conexiones",
         "states": "Estados",
-        "privacy": "Privacidad"
+        "privacy": "Privacidad",
+        "content": "Cursos y lecciones"
       },
       "columns": {
         "time": "Hora",
@@ -2916,5 +2934,204 @@
     "deferral": "¿Le falta tiempo? Puede pagar un cargo de aplazamiento de ${{fee}} y obtener {{days}} días más después de su fecha de renovación.",
     "sources": "Según {{sources}}.",
     "whatYouNeed": "Lo que aún necesita"
+  },
+  "content": {
+    "everyState": "Todos los estados",
+    "choose": "Elija…",
+    "save": "Guardar",
+    "library": {
+      "title": "Biblioteca de contenido",
+      "description": "Cursos y lecciones de REOS. Cada curso se asigna a un estado y se revisa antes de publicarse.",
+      "emptyTitle": "Todavía no hay cursos",
+      "empty": "Agregue un curso y luego sus lecciones, videos y diapositivas. La base de conocimientos los lee para que los estudiantes puedan buscar."
+    },
+    "columns": {
+      "course": "Curso",
+      "type": "Tipo",
+      "states": "Estados",
+      "hours": "Horas",
+      "lessons": "Lecciones",
+      "status": "Estado"
+    },
+    "types": {
+      "qualifying": "Precalificación",
+      "ce": "CE",
+      "post_licence": "Poslicencia",
+      "test_prep": "Preparación para el examen",
+      "elective": "Optativo"
+    },
+    "status": {
+      "draft": "Borrador",
+      "in_review": "En revisión",
+      "live": "Publicado",
+      "hidden": "Oculto",
+      "noApproval": "Oculto: sin aprobación"
+    },
+    "courses": {
+      "new": "Nuevo curso",
+      "newIntro": "Ponga nombre al curso, elija su tipo y los estados a los que se dirige. Las lecciones van después.",
+      "create": "Crear curso",
+      "fields": {
+        "title": "Título del curso",
+        "type": "Tipo",
+        "states": "Estados",
+        "hours": "Horas",
+        "description": "Descripción"
+      },
+      "statesHelp": "No marque ningún estado si el curso sirve para todos.",
+      "description": "{{type}} · {{states}}",
+      "details": "Datos del curso",
+      "delete": "Eliminar curso",
+      "deleted": "Se eliminó «{{title}}».",
+      "saved": "Se guardó el curso.",
+      "statusTitle": "Estado",
+      "statusHelp": "Solo los cursos publicados se muestran a los estudiantes y aparecen en la búsqueda.",
+      "allStates": "Mostrar todos los estados ({{count}} más)",
+      "fewerStates": "Mostrar menos estados"
+    },
+    "approvals": {
+      "title": "Aprobación del regulador",
+      "intro": "Los cursos de CE y de precalificación necesitan el número de aprobación del regulador en cada estado antes de publicarse.",
+      "number": "Número de aprobación",
+      "expires": "Vencimiento de la aprobación",
+      "missing": "Oculto: falta el número de aprobación para {{states}}."
+    },
+    "modules": {
+      "title": "Módulos y lecciones",
+      "none": "Sin módulo",
+      "empty": "Este módulo todavía no tiene lecciones.",
+      "add": "Agregar módulo",
+      "fields": {
+        "title": "Título del módulo"
+      },
+      "remove": "Quitar el módulo {{title}}"
+    },
+    "lessons": {
+      "emptyTitle": "Todavía no hay lecciones",
+      "empty": "Agregue la primera lección abajo. Cada lección tiene su texto, videos, diapositivas y documentos.",
+      "add": "Agregar lección",
+      "fields": {
+        "title": "Título de la lección",
+        "module": "Módulo",
+        "language": "Idioma",
+        "minutes": "Minutos",
+        "body": "Texto de la lección"
+      },
+      "files_one": "{{count}} archivo",
+      "files_other": "{{count}} archivos",
+      "description_one": "Base de conocimientos: {{status}} · {{count}} pasaje",
+      "description_other": "Base de conocimientos: {{status}} · {{count}} pasajes",
+      "text": "Texto de la lección",
+      "bodyHelp": "Texto sin formato. Empiece una línea con # para un título y deje una línea en blanco entre párrafos. Los resultados de búsqueda se abren en el título.",
+      "reindex": "Volver a leer",
+      "delete": "Eliminar lección",
+      "deleted": "Se eliminó «{{title}}».",
+      "saved": "Se guardó la lección."
+    },
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    },
+    "ingest": {
+      "pending": "En espera de lectura",
+      "processing": "Leyéndose",
+      "ready": "Se puede buscar",
+      "failed": "No se pudo leer"
+    },
+    "knowledge": {
+      "title": "Base de conocimientos",
+      "passages_one": "{{count}} pasaje",
+      "passages_other": "{{count}} pasajes",
+      "embedded": "Se puede buscar por significado: {{count}} de {{total}}",
+      "meaningOn": "La búsqueda por significado está activada (incrustaciones de Titan).",
+      "meaningOff": "La búsqueda por significado está desactivada, así que se busca solo por palabras clave. Active Titan en Configuración › Integraciones.",
+      "video": {
+        "mux": "Los videos se transmiten desde Mux con subtítulos.",
+        "simulator": "Los videos usan el Simulador y reproducen el archivo original. Suba subtítulos (.vtt) para que se pueda buscar lo que se dice.",
+        "off": "Mux está desactivado, así que los videos reproducen el archivo original. Suba subtítulos (.vtt) para que se pueda buscar lo que se dice."
+      },
+      "passagesTitle": "Lo que encuentra la búsqueda en esta lección",
+      "passagesIntro": "Cada pasaje abre la lección en su título, página o momento del video.",
+      "none": "Todavía no hay nada. Agregue texto o archivos y los pasajes aparecerán aquí.",
+      "kinds": {
+        "text": "Texto",
+        "slide": "Diapositivas",
+        "transcript": "Video"
+      }
+    },
+    "where": {
+      "at": "En {{time}}",
+      "page": "Página {{page}}",
+      "text": "Texto de la lección"
+    },
+    "kinds": {
+      "video": "Video",
+      "slides": "Diapositivas",
+      "document": "Documento",
+      "captions": "Subtítulos"
+    },
+    "files": {
+      "title": "Archivos",
+      "intro": "Videos, diapositivas, documentos y subtítulos. Cada archivo se revisa contra virus y luego se lee para que sus palabras se puedan buscar.",
+      "emptyTitle": "Todavía no hay archivos",
+      "empty": "Suba el video, las diapositivas o las hojas de trabajo de la lección. Los videos grandes se suben directamente al almacenamiento.",
+      "add": "Subir un archivo",
+      "kind": "Tipo de archivo",
+      "accepts": "{{types}} · hasta {{size}}",
+      "pages_one": "{{count}} página",
+      "pages_other": "{{count}} páginas",
+      "captioned": "Subtítulos",
+      "uploading": "Subiendo {{name}}",
+      "uploadFailed": "No se terminó de subir. Inténtelo de nuevo.",
+      "remove": "Quitar {{name}}",
+      "removeTitle": "¿Quitar {{name}}?",
+      "removeBody": "Se elimina el archivo y sus palabras salen de la base de conocimientos. No se puede deshacer.",
+      "removeConfirm": "Quitar archivo",
+      "status": {
+        "awaiting_upload": "Subiendo",
+        "processing": "Revisando",
+        "ready": "Listo",
+        "rejected": "Rechazado",
+        "failed": "Falló"
+      },
+      "errors": {
+        "type": "Elija un archivo de este tipo: {{types}}.",
+        "size": "Los archivos de este tipo pueden pesar hasta {{size}}.",
+        "missing": "No llegó el archivo. Inténtelo de nuevo.",
+        "done": "Este archivo ya se subió."
+      },
+      "failed": {
+        "size": "El archivo que llegó no tiene el tamaño esperado. Súbalo de nuevo.",
+        "type": "El archivo no es lo que indica su nombre. Suba el archivo original.",
+        "infected": "El antivirus encontró una amenaza, así que se eliminó el archivo.",
+        "scanner": "No se pudo conectar con el antivirus. Suba el archivo de nuevo más tarde.",
+        "missing": "El archivo no está en el almacenamiento. Súbalo de nuevo.",
+        "video": "El servicio de video no pudo procesar este video. Compruebe que se reproduce y súbalo de nuevo.",
+        "unreadable": "No se pudieron leer las palabras de este archivo. Si es un escaneo, suba un PDF con texto seleccionable.",
+        "noCaptions": "No se encontraron subtítulos en este archivo.",
+        "processing": "No se pudo procesar el archivo. Súbalo de nuevo."
+      }
+    },
+    "search": {
+      "title": "Pruebe la base de conocimientos",
+      "intro": "Busque en las lecciones como lo haría un estudiante de un estado. Los resultados son de cursos publicados, a menos que incluya los demás.",
+      "label": "Buscar en el contenido de las lecciones",
+      "state": "Estado",
+      "language": "Idioma",
+      "anyLanguage": "Cualquier idioma",
+      "drafts": "Incluir cursos aún no publicados",
+      "button": "Buscar",
+      "results": "Resultados de {{query}}",
+      "noResults": "No se encontró nada para «{{query}}»",
+      "noResultsHelp": "Pruebe otras palabras, otro estado o incluya cursos aún no publicados.",
+      "match": {
+        "meaning": "Encontrado por significado",
+        "both": "Encontrado por palabra clave y significado"
+      }
+    },
+    "errors": {
+      "noApproval": "Falta el número de aprobación para {{states}}. Agréguelo antes de publicar el curso.",
+      "needsStates": "Elija los estados en los que está aprobado el curso antes de publicarlo."
+    }
   }
 }

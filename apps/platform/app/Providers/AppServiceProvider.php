@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use App\Authorization\Permission;
 use App\Connections\ConnectorRegistry;
+use App\Content\Scanning\ClamAvScanner;
+use App\Content\Scanning\FileScanner;
+use App\Content\Scanning\Unavailable;
+use App\Content\Scanning\UnscannedOutsideProduction;
 use App\Events\IntegrationSettingsChanged;
 use App\Integrations\Catalogue;
 use App\Integrations\Credentials\CredentialCipher;
@@ -61,6 +65,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(ActiveRole::class);
         // Loads its key pair once per process (outside production only).
         $this->app->singleton(TestIdentityProvider::class);
+
+        // Lesson files are virus-scanned by ClamAV (A5.3). Without one, local
+        // machines and CI accept files unscanned; production refuses them.
+        $this->app->bind(FileScanner::class, function (): FileScanner {
+            $host = config('reos.content.clamav.host');
+
+            if (is_string($host) && $host !== '') {
+                return new ClamAvScanner($host, config()->integer('reos.content.clamav.port'), config()->integer('reos.content.clamav.timeout'));
+            }
+
+            return $this->app->isProduction() ? new Unavailable : new UnscannedOutsideProduction;
+        });
     }
 
     /**

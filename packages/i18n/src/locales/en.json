@@ -38,7 +38,8 @@
     "brokerageSettings": "Brokerage settings",
     "agents": "Agents",
     "complianceAndAudit": "Compliance and audit",
-    "switchState": "Switch state"
+    "switchState": "Switch state",
+    "contentAndApprovals": "Content and approvals"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1878,7 +1879,23 @@
         "licence.rejected": "Didn't approve a license",
         "state_rule.drafted": "Drafted a state rule change",
         "state_rule.discarded": "Discarded a state rule draft",
-        "state_rule.published": "Published state rule changes"
+        "state_rule.published": "Published state rule changes",
+        "course.created": "Created a course",
+        "course.updated": "Changed a course",
+        "course.status_changed": "Changed a course's status",
+        "course.deleted": "Deleted a course",
+        "course.restored": "Restored a course",
+        "course.module_added": "Added a course module",
+        "course.module_renamed": "Renamed a course module",
+        "course.module_removed": "Removed a course module",
+        "lesson.created": "Created a lesson",
+        "lesson.updated": "Changed a lesson",
+        "lesson.deleted": "Deleted a lesson",
+        "lesson.restored": "Restored a lesson",
+        "lesson.reindexed": "Asked for a lesson to be read again",
+        "lesson.file_started": "Started uploading a lesson file",
+        "lesson.file_added": "Uploaded a lesson file",
+        "lesson.file_removed": "Removed a lesson file"
       }
     }
   },
@@ -2471,7 +2488,8 @@
         "brand": "Brand, domain and SSO",
         "integrations": "Integrations and connections",
         "states": "States",
-        "privacy": "Privacy"
+        "privacy": "Privacy",
+        "content": "Courses and lessons"
       },
       "columns": {
         "time": "Time",
@@ -2916,5 +2934,204 @@
     "deferral": "Short on time? You can pay a ${{fee}} deferral fee and get {{days}} more days after your renewal date.",
     "sources": "From {{sources}}.",
     "whatYouNeed": "What you still need"
+  },
+  "content": {
+    "everyState": "Every state",
+    "choose": "Choose…",
+    "save": "Save",
+    "library": {
+      "title": "Content library",
+      "description": "REOS courses and lessons. Every course is tagged to a state and checked before it's live.",
+      "emptyTitle": "No courses yet",
+      "empty": "Add a course, then its lessons, videos and slides. The knowledge base reads them so learners can search."
+    },
+    "columns": {
+      "course": "Course",
+      "type": "Type",
+      "states": "States",
+      "hours": "Hours",
+      "lessons": "Lessons",
+      "status": "Status"
+    },
+    "types": {
+      "qualifying": "Qualifying",
+      "ce": "CE",
+      "post_licence": "Post-license",
+      "test_prep": "Exam prep",
+      "elective": "Elective"
+    },
+    "status": {
+      "draft": "Draft",
+      "in_review": "In review",
+      "live": "Live",
+      "hidden": "Hidden",
+      "noApproval": "Hidden: no approval"
+    },
+    "courses": {
+      "new": "New course",
+      "newIntro": "Name the course, choose its type and the states it's for. Lessons come next.",
+      "create": "Create course",
+      "fields": {
+        "title": "Course title",
+        "type": "Type",
+        "states": "States",
+        "hours": "Hours",
+        "description": "Description"
+      },
+      "statesHelp": "Leave every state unticked for a course any state can use.",
+      "description": "{{type}} · {{states}}",
+      "details": "Course details",
+      "delete": "Delete course",
+      "deleted": "“{{title}}” deleted.",
+      "saved": "Course saved.",
+      "statusTitle": "Status",
+      "statusHelp": "Only live courses are shown to learners and found by search.",
+      "allStates": "Show every state ({{count}} more)",
+      "fewerStates": "Show fewer states"
+    },
+    "approvals": {
+      "title": "Regulator approval",
+      "intro": "CE and qualifying courses need the regulator's approval number in each state before they go live.",
+      "number": "Approval number",
+      "expires": "Approval expires",
+      "missing": "Hidden: no approval number for {{states}}."
+    },
+    "modules": {
+      "title": "Modules and lessons",
+      "none": "Not in a module",
+      "empty": "No lessons in this module yet.",
+      "add": "Add module",
+      "fields": {
+        "title": "Module title"
+      },
+      "remove": "Remove module {{title}}"
+    },
+    "lessons": {
+      "emptyTitle": "No lessons yet",
+      "empty": "Add the first lesson below. Each lesson has its text, videos, slides and documents.",
+      "add": "Add lesson",
+      "fields": {
+        "title": "Lesson title",
+        "module": "Module",
+        "language": "Language",
+        "minutes": "Minutes",
+        "body": "Lesson text"
+      },
+      "files_one": "{{count}} file",
+      "files_other": "{{count}} files",
+      "description_one": "Knowledge base: {{status}} · {{count}} passage",
+      "description_other": "Knowledge base: {{status}} · {{count}} passages",
+      "text": "Lesson text",
+      "bodyHelp": "Plain text. Start a line with # for a heading, and leave a blank line between paragraphs. Search results open at the heading.",
+      "reindex": "Read again",
+      "delete": "Delete lesson",
+      "deleted": "“{{title}}” deleted.",
+      "saved": "Lesson saved."
+    },
+    "languages": {
+      "en": "English",
+      "es": "Spanish"
+    },
+    "ingest": {
+      "pending": "Waiting to be read",
+      "processing": "Being read",
+      "ready": "Searchable",
+      "failed": "Couldn't be read"
+    },
+    "knowledge": {
+      "title": "Knowledge base",
+      "passages_one": "{{count}} passage",
+      "passages_other": "{{count}} passages",
+      "embedded": "Searchable by meaning: {{count}} of {{total}}",
+      "meaningOn": "Search by meaning is on (Titan embeddings).",
+      "meaningOff": "Search by meaning is off, so search uses keywords only. Switch on Titan in Settings › Integrations.",
+      "video": {
+        "mux": "Videos stream from Mux with captions.",
+        "simulator": "Videos use the Simulator and play the original file. Upload captions (.vtt) to make what's said searchable.",
+        "off": "Mux is off, so videos play the original file. Upload captions (.vtt) to make what's said searchable."
+      },
+      "passagesTitle": "What search finds in this lesson",
+      "passagesIntro": "Each passage opens the lesson at its heading, page or moment in the video.",
+      "none": "Nothing yet. Add text or files, and the passages appear here.",
+      "kinds": {
+        "text": "Text",
+        "slide": "Slides",
+        "transcript": "Video"
+      }
+    },
+    "where": {
+      "at": "At {{time}}",
+      "page": "Page {{page}}",
+      "text": "Lesson text"
+    },
+    "kinds": {
+      "video": "Video",
+      "slides": "Slides",
+      "document": "Document",
+      "captions": "Captions"
+    },
+    "files": {
+      "title": "Files",
+      "intro": "Videos, slides, documents and captions. Each file is checked for viruses, then read so its words are searchable.",
+      "emptyTitle": "No files yet",
+      "empty": "Upload the lesson's video, slides or worksheets. Large videos upload straight to storage.",
+      "add": "Upload a file",
+      "kind": "Type of file",
+      "accepts": "{{types}} · up to {{size}}",
+      "pages_one": "{{count}} page",
+      "pages_other": "{{count}} pages",
+      "captioned": "Captions",
+      "uploading": "Uploading {{name}}",
+      "uploadFailed": "The upload didn't finish. Try again.",
+      "remove": "Remove {{name}}",
+      "removeTitle": "Remove {{name}}?",
+      "removeBody": "The file is deleted and its words leave the knowledge base. This can't be undone.",
+      "removeConfirm": "Remove file",
+      "status": {
+        "awaiting_upload": "Uploading",
+        "processing": "Checking",
+        "ready": "Ready",
+        "rejected": "Refused",
+        "failed": "Failed"
+      },
+      "errors": {
+        "type": "Choose a file of this type: {{types}}.",
+        "size": "Files of this type can be up to {{size}}.",
+        "missing": "The upload didn't arrive. Try again.",
+        "done": "This file was already uploaded."
+      },
+      "failed": {
+        "size": "The file that arrived isn't the size expected. Upload it again.",
+        "type": "The file isn't what its name says. Upload the original file.",
+        "infected": "The virus scanner found a threat, so the file was deleted.",
+        "scanner": "The virus scanner couldn't be reached. Upload the file again later.",
+        "missing": "The file is missing from storage. Upload it again.",
+        "video": "The video service couldn't process this video. Check that it plays, then upload it again.",
+        "unreadable": "The words in this file couldn't be read. If it's a scan, upload a PDF with selectable text.",
+        "noCaptions": "No captions were found in this file.",
+        "processing": "The file couldn't be processed. Upload it again."
+      }
+    },
+    "search": {
+      "title": "Try the knowledge base",
+      "intro": "Search lessons as a learner in a state would. Results come from live courses unless you include the rest.",
+      "label": "Search lesson content",
+      "state": "State",
+      "language": "Language",
+      "anyLanguage": "Any language",
+      "drafts": "Include courses not live yet",
+      "button": "Search",
+      "results": "Results for {{query}}",
+      "noResults": "Nothing found for “{{query}}”",
+      "noResultsHelp": "Try other words, another state, or include courses not live yet.",
+      "match": {
+        "meaning": "Found by meaning",
+        "both": "Found by keyword and meaning"
+      }
+    },
+    "errors": {
+      "noApproval": "No approval number for {{states}}. Add it before the course goes live.",
+      "needsStates": "Choose the states this course is approved in before it goes live."
+    }
   }
 }

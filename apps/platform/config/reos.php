@@ -64,4 +64,22 @@ return [
         'data_map_reviewed' => '2026-11-21',
     ],
 
+    /*
+    | Content and the knowledge base (A5.3, ADR 0020). Lesson files upload
+    | straight from the browser to this disk with short-lived signed links
+    | (S3 in staging and production, SeaweedFS or the local disk elsewhere),
+    | under platform/ (REOS content) or tenants/<id>/ (school content, Sprint 7).
+    | Every file is virus-scanned by ClamAV before anyone can open it; with no
+    | scanner set, uploads are refused in production.
+    */
+    'content' => [
+        'disk' => env('REOS_CONTENT_DISK', 'local'),
+        'upload_minutes' => 30,
+        'clamav' => [
+            'host' => env('CLAMAV_HOST'),
+            'port' => (int) env('CLAMAV_PORT', 3310),
+            'timeout' => 120,
+        ],
+    ],
+
 ];

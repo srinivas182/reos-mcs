@@ -11,13 +11,13 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 |  | Count |
 | --- | --- |
 | Integrations users connect (catalogue) | 44 (29 enabled, 1 beta, 14 coming soon at the pilot) |
-| Platform services REOS runs on | 17 |
+| Platform services REOS runs on | 18 |
 | Vendor accounts | 7 |
 | Outside approvals | 2 |
 | Access approved | 1 |
 | Filed and waiting | 0 |
 | Blocked | 0 |
-| Not started | 64 |
+| Not started | 65 |
 | Already past their apply-by date on 21 Nov 2026 | **1** |
 
 ## Action list: file in this order
@@ -56,6 +56,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 18 Jan 2027 | [PayPal](#paypal) | Client | Self-serve | 2 wk | S5 (1 Feb 2027) | Not started |
 | 18 Jan 2027 | [Stripe Connect (payouts)](#stripe-connect) | Client | Self-serve | 2 wk | S5 (1 Feb 2027) | Not started |
 | 18 Jan 2027 | [Twilio SMS](#twilio-sms) | Client | Vendor review | 4 wk | S6 (15 Feb 2027) | Not started |
+| 25 Jan 2027 | [Amazon Titan Text Embeddings V2 on Bedrock](#aws-bedrock-embeddings) | Client | Self-serve | 1 wk | S5 (1 Feb 2027) | Not started |
 | 25 Jan 2027 | [Mux Video](#mux) | Mayura | Self-serve | 1 wk | S5 (1 Feb 2027) | Not started |
 | 25 Jan 2027 | [Stripe (Checkout, Billing, Tax)](#stripe) | Client | Self-serve | 1 wk | S5 (1 Feb 2027) | Not started |
 | 1 Feb 2027 | [BrokerBay](#brokerbay) | Client + Mayura | Partner application | 8 wk | S9 (29 Mar 2027) | Not started |
@@ -222,6 +223,7 @@ Services REOS runs on. Users never connect these themselves, so they have no cat
 | [Mux Video](#mux) | Lesson video streaming and offline download. | Mayura | S5 (1 Feb 2027) | Not started |
 | [Synthesia (AI avatar lessons; HeyGen fallback)](#synthesia) | Render AI avatar lesson videos from approved scripts. | Client | S7 (1 Mar 2027) | Not started |
 | [Claude on Amazon Bedrock](#aws-bedrock-claude) | AI answers with sources, course drafting, contract review, role-play; first used to turn spoken notes into to-dos (B4.3). | Client | S4 (18 Jan 2027) | Not started |
+| [Amazon Titan Text Embeddings V2 on Bedrock](#aws-bedrock-embeddings) | Search course content by meaning (knowledge base passages, 1,024 dimensions in pgvector). | Client | S5 (1 Feb 2027) | Not started |
 | [Amazon Textract](#aws-textract) | Read uploaded CE certificates and licences. | Client | S10 (12 Apr 2027) | Not started |
 | [Mapbox](#mapbox) | Provider service areas on a map. | Mayura | S15 (21 Jun 2027) | Not started |
 | [Sentry](#sentry) | Error tracking for web, API and mobile. | Mayura | S19 (16 Aug 2027) | Not started |
@@ -567,6 +569,7 @@ Lesson video streaming and offline download.
 - **Sandbox:** Mux test environment.
 - **Credentials:** REOS app keys · **Personal data:** no
 - **Cost:** Per minute encoded, stored and delivered.
+- **Notes:** Lessons upload to S3 first; Mux copies each video from a short-lived signed link, plays it with signed playback (the signing key) and writes captions in the lesson's language. The webhook (/webhooks/mux, signed with the webhook secret) says when a video and its captions are ready; the captions become searchable passages. Off: the original file plays from S3.
 
 ### Synthesia (AI avatar lessons; HeyGen fallback)
 <a id="synthesia"></a>
@@ -596,6 +599,20 @@ AI answers with sources, course drafting, contract review, role-play; first used
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Per token.
 - **Notes:** Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer data. Voice to-dos (B4.3) use the Converse API with a forced tool for a fixed answer shape; the model id is set in Settings › Integrations. Without keys (Off or Simulator) the built-in date parser runs instead.
+
+### Amazon Titan Text Embeddings V2 on Bedrock
+<a id="aws-bedrock-embeddings"></a>
+
+**Platform service** · AI · built in A5.3 (sprint 5)
+
+Search course content by meaning (knowledge base passages, 1,024 dimensions in pgvector).
+
+- **Owner:** Client
+- **Access:** Self-serve, about 1 week; needed by S5 (1 Feb 2027); apply by 25 Jan 2027. Status: Not started.
+- **Sandbox:** Staging AWS account, us-east-2.
+- **Credentials:** REOS app keys · **Personal data:** no
+- **Cost:** Per input token (about $0.02 per million).
+- **Notes:** Request access to amazon.titan-embed-text-v2:0 in us-east-2. Only course content is embedded, never personal data. Off or Simulator: the knowledge base searches by keyword (PostgreSQL full text) only.
 
 ### Amazon Textract
 <a id="aws-textract"></a>

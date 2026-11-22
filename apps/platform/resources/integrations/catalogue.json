@@ -763,6 +763,20 @@
             "required": true,
             "kind": "text",
             "default": null
+          },
+          {
+            "key": "key_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "private_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
           }
         ]
       }
@@ -836,6 +850,53 @@
             "required": true,
             "kind": "text",
             "default": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "aws-bedrock-embeddings",
+      "name": "Amazon Titan Text Embeddings V2 on Bedrock",
+      "kind": "platform_service",
+      "category": "ai",
+      "purpose": "Search course content by meaning (knowledge base passages, 1,024 dimensions in pgvector).",
+      "launch": "not_applicable",
+      "build_sprint": 5,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": false,
+      "sandbox": "Staging AWS account, us-east-2.",
+      "connection": {
+        "auth": "aws",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "access_key_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "secret_access_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "region",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "us-east-2"
+          },
+          {
+            "key": "model_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "amazon.titan-embed-text-v2:0"
           }
         ]
       }

@@ -32,3 +32,5 @@ Schedule::command('reos:connections:channels')->hourlyAt(7)->withoutOverlapping(
 Schedule::command('reos:calendar:catch-up')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
 Schedule::command('reos:calendar:prune')->dailyAt('04:35')->onOneServer();
 Schedule::command('model:prune', ['--model' => [SyncRun::class, WebhookReceipt::class]])->dailyAt('04:10');
+// Knowledge base (A5.3): passages still without an embedding (Titan switched on later, or a failed try).
+Schedule::command('reos:knowledge:embed')->hourlyAt(23)->withoutOverlapping()->onOneServer();

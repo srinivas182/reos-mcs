@@ -24,6 +24,7 @@
         "open-telemetry/exporter-otlp": "^1.6",
         "open-telemetry/sdk": "^1.17",
         "sentry/sentry-laravel": "^4.31",
+        "smalot/pdfparser": "^2.12",
         "spatie/laravel-permission": "^8.5"
     },
     "require-dev": {

@@ -174,7 +174,10 @@ jobs:
           psql -h 127.0.0.1 -U reos -d reos_testing -v ON_ERROR_STOP=1 \
             -c "CREATE ROLE reos_app LOGIN PASSWORD 'reos-app-ci' CREATEDB NOSUPERUSER NOBYPASSRLS" \
             -c "ALTER DATABASE reos_testing OWNER TO reos_app" \
-            -c "ALTER SCHEMA public OWNER TO reos_app"
+            -c "ALTER SCHEMA public OWNER TO reos_app" \
+            -c "CREATE EXTENSION IF NOT EXISTS vector"
+          # pgvector for the knowledge base (A5.3); parallel test databases copy template1.
+          psql -h 127.0.0.1 -U reos -d template1 -v ON_ERROR_STOP=1 -c "CREATE EXTENSION IF NOT EXISTS vector"
       - uses: ./.github/actions/setup-platform
         with:
           php-version: ${{ env.PHP_VERSION }}

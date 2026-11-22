@@ -630,8 +630,15 @@ entries:
         - { key: access_token_id }
         - { key: secret_key, secret: true }
         - { key: webhook_secret, secret: true }
+        - { key: key_id }
+        - { key: private_key, secret: true }
     personal_data: false
     cost: Per minute encoded, stored and delivered.
+    notes: >-
+      Lessons upload to S3 first; Mux copies each video from a short-lived signed link, plays it with signed
+      playback (the signing key) and writes captions in the lesson's language. The webhook
+      (/webhooks/mux, signed with the webhook secret) says when a video and its captions are ready; the
+      captions become searchable passages. Off: the original file plays from S3.
 
   - id: synthesia
     name: Synthesia (AI avatar lessons; HeyGen fallback)
@@ -687,6 +694,35 @@ entries:
       Request model access and quota increases in us-east-2 (and us-west-2 for recovery). No training on customer
       data. Voice to-dos (B4.3) use the Converse API with a forced tool for a fixed answer shape; the model id
       is set in Settings › Integrations. Without keys (Off or Simulator) the built-in date parser runs instead.
+
+  - id: aws-bedrock-embeddings
+    name: Amazon Titan Text Embeddings V2 on Bedrock
+    kind: platform_service
+    category: ai
+    purpose: Search course content by meaning (knowledge base passages, 1,024 dimensions in pgvector).
+    launch: not_applicable
+    build: { sprint: 5, item: A5.3 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 5
+      status: not_started
+    sandbox: Staging AWS account, us-east-2.
+    credentials: platform
+    connection:
+      auth: aws
+      accounts: platform
+      fields:
+        - { key: access_key_id }
+        - { key: secret_access_key, secret: true }
+        - { key: region, default: us-east-2 }
+        - { key: model_id, default: 'amazon.titan-embed-text-v2:0' }
+    personal_data: false
+    cost: Per input token (about $0.02 per million).
+    notes: >-
+      Request access to amazon.titan-embed-text-v2:0 in us-east-2. Only course content is embedded, never
+      personal data. Off or Simulator: the knowledge base searches by keyword (PostgreSQL full text) only.
 
   - id: aws-textract
     name: Amazon Textract

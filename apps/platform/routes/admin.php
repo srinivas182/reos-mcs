@@ -2,6 +2,11 @@
 
 use App\Http\Controllers\Admin\CatalogueController;
 use App\Http\Controllers\Admin\ComplianceController;
+use App\Http\Controllers\Admin\Content\ContentLibraryController;
+use App\Http\Controllers\Admin\Content\CourseController;
+use App\Http\Controllers\Admin\Content\CourseModuleController;
+use App\Http\Controllers\Admin\Content\LessonController;
+use App\Http\Controllers\Admin\Content\LessonFileController;
 use App\Http\Controllers\Admin\DemandController;
 use App\Http\Controllers\Admin\IntegrationCheckController;
 use App\Http\Controllers\Admin\IntegrationController;
@@ -126,4 +131,43 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:audit.vie
         Route::get('/', [ComplianceController::class, 'index'])->name('index');
         Route::get('audit.csv', [ComplianceController::class, 'export'])->middleware('throttle:10,1,compliance-export')->name('export');
         Route::patch('privacy/{privacyRequest}', [ComplianceController::class, 'privacy'])->whereNumber('privacyRequest')->middleware('throttle:30,1,compliance-privacy')->name('privacy.update');
+    });
+
+// Content library (A5.3; reached from screen 63, Content and approvals):
+// REOS courses, lessons and their files, and the knowledge base built from
+// them. Super admin only, with two-step; every change is audited.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:content.manage'])
+    ->prefix('admin/content')
+    ->name('content.')
+    ->group(function () {
+        Route::get('library', [ContentLibraryController::class, 'index'])->name('library');
+
+        Route::middleware('throttle:60,1,admin-content')->group(function () {
+            Route::post('courses', [CourseController::class, 'store'])->name('courses.store');
+            Route::patch('courses/{course}', [CourseController::class, 'update'])->whereNumber('course')->name('courses.update');
+            Route::put('courses/{course}/status', [CourseController::class, 'status'])->whereNumber('course')->name('courses.status');
+            Route::delete('courses/{course}', [CourseController::class, 'destroy'])->whereNumber('course')->name('courses.destroy');
+            Route::post('courses/{course}/restore', [CourseController::class, 'restore'])->whereNumber('course')->name('courses.restore');
+
+            Route::post('courses/{course}/modules', [CourseModuleController::class, 'store'])->whereNumber('course')->name('modules.store');
+            Route::patch('modules/{module}', [CourseModuleController::class, 'update'])->whereNumber('module')->name('modules.update');
+            Route::delete('modules/{module}', [CourseModuleController::class, 'destroy'])->whereNumber('module')->name('modules.destroy');
+
+            Route::post('courses/{course}/lessons', [LessonController::class, 'store'])->whereNumber('course')->name('lessons.store');
+            Route::patch('lessons/{lesson}', [LessonController::class, 'update'])->whereNumber('lesson')->name('lessons.update');
+            Route::delete('lessons/{lesson}', [LessonController::class, 'destroy'])->whereNumber('lesson')->name('lessons.destroy');
+            Route::post('lessons/{lesson}/restore', [LessonController::class, 'restore'])->whereNumber('lesson')->name('lessons.restore');
+            Route::post('lessons/{lesson}/reindex', [LessonController::class, 'reindex'])->whereNumber('lesson')->name('lessons.reindex');
+
+            Route::delete('files/{media}', [LessonFileController::class, 'destroy'])->whereNumber('media')->name('files.destroy');
+        });
+
+        // Uploads go straight to storage with a signed link; these start and finish one.
+        Route::middleware('throttle:120,1,admin-content-files')->group(function () {
+            Route::post('lessons/{lesson}/files', [LessonFileController::class, 'store'])->whereNumber('lesson')->name('files.store');
+            Route::post('files/{media}/complete', [LessonFileController::class, 'complete'])->whereNumber('media')->name('files.complete');
+        });
+
+        Route::get('courses/{course}', [CourseController::class, 'show'])->whereNumber('course')->name('courses.show');
+        Route::get('lessons/{lesson}', [LessonController::class, 'show'])->whereNumber('lesson')->name('lessons.show');
     });

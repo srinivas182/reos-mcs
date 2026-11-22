@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Services\Authorization\Memberships;
 use Database\Seeders\Demo\DemoCatalogue;
 use Database\Seeders\Demo\DemoConnections;
+use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoLicences;
 use Database\Seeders\Demo\DemoStates;
 use Database\Seeders\Demo\DemoTenants;
@@ -71,6 +72,8 @@ final class DemoSeeder extends Seeder
         app(DemoStates::class)->seed();
         // State licences, as on "My licences" (A5.1).
         app(DemoLicences::class)->seed();
+        // REOS courses and the knowledge base, as on screen 63 (A5.3).
+        app(DemoContent::class)->seed();
     }
 
     private function organisation(string $name): Organisation
