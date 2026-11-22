@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certifi
  && rm -rf /var/lib/apt/lists/*
 
 # Browsers connect to Reverb at the public host (baked into the web assets).
+# The key is Reverb's public app key, not a secret (the secret stays in .env).
 ARG VITE_REVERB_APP_KEY=reos-preview-key
 ARG VITE_REVERB_HOST=preview.reos.com
 ARG VITE_REVERB_PORT=443
@@ -30,12 +31,13 @@ ENV VITE_REVERB_APP_KEY=$VITE_REVERB_APP_KEY VITE_REVERB_HOST=$VITE_REVERB_HOST 
 COPY . /src
 WORKDIR /src/apps/platform
 RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader \
- && cd /src && pnpm install --frozen-lockfile --filter platform... \
+ && cd /src && git init -q \
+ && pnpm install --frozen-lockfile --filter platform... \
  && cd /src/apps/platform \
  && cp .env.example .env && php artisan key:generate --no-interaction \
  && php artisan wayfinder:generate --with-form \
  && pnpm build \
- && rm -rf node_modules .env storage/logs/* bootstrap/cache/*.php
+ && rm -rf node_modules .env .git /src/.git storage/logs/* bootstrap/cache/*.php
 
 # ── Runtime ────────────────────────────────────────────────────────────────
 FROM base AS runtime
