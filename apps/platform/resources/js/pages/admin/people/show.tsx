@@ -3,6 +3,12 @@ import { ArrowLeft, History, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import type {
+    ConsentRecordRow,
+    ConsentSwitch,
+    SwitchPurpose,
+} from '@/components/consents';
+import { ConsentHistory, PrivacySwitches } from '@/components/consents';
 import { EmptyState } from '@/components/empty-state';
 import { GrantRoleForm } from '@/components/grant-role-form';
 import type {
@@ -14,9 +20,12 @@ import { PersonLicences } from '@/components/licence-reviews';
 import { MembershipList } from '@/components/membership-list';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { roleName } from '@/lib/roles';
 import { undoToast } from '@/lib/undo-toast';
 import { index } from '@/routes/people';
+import { update as updateConsent } from '@/routes/people/consents';
 import {
     destroy as removeRole,
     store as grantRole,
@@ -31,6 +40,7 @@ type Props = {
     organisations: OrganisationOption[];
     activity: RoleChange[];
     licences?: Licence[];
+    consents?: { switches: ConsentSwitch[]; records: ConsentRecordRow[] };
 };
 
 /**
@@ -43,6 +53,7 @@ export default function PersonShow({
     organisations,
     activity,
     licences = [],
+    consents = { switches: [], records: [] },
 }: Props) {
     const { t, i18n: language } = useTranslation();
     const { errors } = usePage().props as { errors: Record<string, string> };
@@ -54,6 +65,23 @@ export default function PersonShow({
         null,
     );
     const name = person.name ?? t('people.unnamed');
+    // Why REOS changes a switch for them (their request), kept with the record (A6.3).
+    const [consentNote, setConsentNote] = useState('');
+    const changeConsent = (purpose: SwitchPurpose, on: boolean) =>
+        router.put(
+            updateConsent({ person: person.id, purpose }).url,
+            { granted: on, note: consentNote },
+            {
+                preserveScroll: true,
+                onStart: () => setProcessing(true),
+                onFinish: () => setProcessing(false),
+                onSuccess: () => setConsentNote(''),
+                onError: (e) =>
+                    toast.error(
+                        e.note ?? e.purpose ?? t('consents.errors.generic'),
+                    ),
+            },
+        );
 
     const organisationName = (id?: number): string =>
         organisations.find((o) => o.id === id)?.name ??
@@ -185,6 +213,33 @@ export default function PersonShow({
                         description={t('licences.reviews.description')}
                     />
                     <PersonLicences licences={licences} />
+                </section>
+
+                <section className="space-y-4">
+                    <Heading
+                        variant="small"
+                        title={t('consents.admin.title')}
+                        description={t('consents.admin.description')}
+                    />
+                    <div className="grid gap-2">
+                        <Label htmlFor="consent-note">
+                            {t('consents.admin.note')}
+                        </Label>
+                        <Input
+                            id="consent-note"
+                            value={consentNote}
+                            maxLength={300}
+                            placeholder={t('consents.admin.notePlaceholder')}
+                            onChange={(e) => setConsentNote(e.target.value)}
+                        />
+                    </div>
+                    <PrivacySwitches
+                        switches={consents.switches}
+                        onChange={changeConsent}
+                        disabled={processing || consentNote.trim().length < 5}
+                        person={name}
+                    />
+                    <ConsentHistory records={consents.records} />
                 </section>
 
                 <section className="space-y-4">

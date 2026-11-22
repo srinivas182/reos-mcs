@@ -1112,6 +1112,326 @@
                 }
             }
         },
+        "/me/consents": {
+            "get": {
+                "operationId": "me.consents",
+                "description": "`switches`: each privacy switch, on or off, and whether the person\nchose it (otherwise it's the default for their role). `records`: every\nconsent given or withdrawn, newest first, with the version of the words,\nhow (`web`, `app`, `admin`, `sms`) and whether it can be withdrawn.",
+                "summary": "My privacy switches and consents (A6.3, Me \u203a Privacy)",
+                "tags": [
+                    "Consent"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "switches": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "purpose": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "marketing_email",
+                                                            "sms",
+                                                            "ai_personal_data",
+                                                            "provider_network",
+                                                            "recruiting"
+                                                        ]
+                                                    },
+                                                    "on": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "chosen": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "purpose",
+                                                    "on",
+                                                    "chosen",
+                                                    "at"
+                                                ]
+                                            }
+                                        },
+                                        "records": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "purpose": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "terms",
+                                                            "privacy_notice",
+                                                            "marketing_email",
+                                                            "sms",
+                                                            "session_recording",
+                                                            "contact_sharing",
+                                                            "ai_personal_data",
+                                                            "provider_network",
+                                                            "recruiting"
+                                                        ]
+                                                    },
+                                                    "subject": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "granted": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "version": {
+                                                        "type": "string"
+                                                    },
+                                                    "method": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "web",
+                                                            "app",
+                                                            "admin",
+                                                            "sms"
+                                                        ]
+                                                    },
+                                                    "by_admin": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    },
+                                                    "current": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "withdrawable": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "purpose",
+                                                    "subject",
+                                                    "granted",
+                                                    "version",
+                                                    "method",
+                                                    "by_admin",
+                                                    "at",
+                                                    "current",
+                                                    "withdrawable"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "switches",
+                                        "records"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/consents/{purpose}": {
+            "put": {
+                "operationId": "me.consents.update",
+                "description": "Switches take `granted` true or false. Consents for one thing (a\nsession recording, contact sharing with a provider) can only be\nwithdrawn here, with their `subject`. The terms and privacy notice go\nonly with the account (422).",
+                "summary": "Change a privacy switch or withdraw a consent (A6.3)",
+                "tags": [
+                    "Consent"
+                ],
+                "parameters": [
+                    {
+                        "name": "purpose",
+                        "in": "path",
+                        "required": true,
+                        "description": "The purpose ID",
+                        "schema": {
+                            "$ref": "#/components/schemas/ConsentPurpose"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ConsentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "switches": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "purpose": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "marketing_email",
+                                                            "sms",
+                                                            "ai_personal_data",
+                                                            "provider_network",
+                                                            "recruiting"
+                                                        ]
+                                                    },
+                                                    "on": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "chosen": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "purpose",
+                                                    "on",
+                                                    "chosen",
+                                                    "at"
+                                                ]
+                                            }
+                                        },
+                                        "records": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "purpose": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "terms",
+                                                            "privacy_notice",
+                                                            "marketing_email",
+                                                            "sms",
+                                                            "session_recording",
+                                                            "contact_sharing",
+                                                            "ai_personal_data",
+                                                            "provider_network",
+                                                            "recruiting"
+                                                        ]
+                                                    },
+                                                    "subject": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "granted": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "version": {
+                                                        "type": "string"
+                                                    },
+                                                    "method": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "web",
+                                                            "app",
+                                                            "admin",
+                                                            "sms"
+                                                        ]
+                                                    },
+                                                    "by_admin": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "at": {
+                                                        "type": "string"
+                                                    },
+                                                    "current": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "withdrawable": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "purpose",
+                                                    "subject",
+                                                    "granted",
+                                                    "version",
+                                                    "method",
+                                                    "by_admin",
+                                                    "at",
+                                                    "current",
+                                                    "withdrawable"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "switches",
+                                        "records"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/me/states": {
             "get": {
                 "operationId": "me.states",
@@ -4859,6 +5179,43 @@
                     "failing"
                 ],
                 "title": "ConnectionStatus"
+            },
+            "ConsentPurpose": {
+                "type": "string",
+                "description": "Everything REOS asks a person to agree to (A6.3). Each purpose has the version of the words they agreed to; a new version of the terms or the privacy notice asks again. Some purposes are agreed per thing (a session to record, a provider to share contacts with); some are switches on the privacy settings; the terms and privacy notice can only be withdrawn by deleting the account.\n",
+                "enum": [
+                    "terms",
+                    "privacy_notice",
+                    "marketing_email",
+                    "sms",
+                    "session_recording",
+                    "contact_sharing",
+                    "ai_personal_data",
+                    "provider_network",
+                    "recruiting"
+                ],
+                "title": "ConsentPurpose"
+            },
+            "ConsentRequest": {
+                "type": "object",
+                "description": "Turn a privacy switch on or off, or withdraw a consent given for one thing (A6.3).",
+                "properties": {
+                    "granted": {
+                        "type": "boolean"
+                    },
+                    "subject": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^[a-z_]+:[0-9]+$",
+                        "maxLength": 80
+                    }
+                },
+                "required": [
+                    "granted"
+                ],
+                "title": "ConsentRequest"
             },
             "DeviceResource": {
                 "type": "object",

@@ -8,6 +8,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { useAuth, type Outcome, type SignInOptions } from '@/lib/auth';
 import { appConfig } from '@/lib/monitoring';
+import { AgreementNote } from '@/features/privacy/AgreementNote';
 import { Button, Callout, Screen, Text } from '@/ui';
 
 /**
@@ -79,6 +80,7 @@ export default function SignInScreen() {
         ) : null}
         {options?.phone ? <Button label={t('mobile.signIn.phone')} variant="secondary" icon={Phone} fullWidth onPress={() => router.push('/phone')} /> : null}
       </View>
+      {none ? null : <AgreementNote />}
     </Screen>
   );
 }

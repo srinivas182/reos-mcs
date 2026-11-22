@@ -292,6 +292,52 @@ export interface paths {
         patch: operations["connections.update"];
         trace?: never;
     };
+    "/me/consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My privacy switches and consents (A6.3, Me › Privacy)
+         * @description `switches`: each privacy switch, on or off, and whether the person
+         *     chose it (otherwise it's the default for their role). `records`: every
+         *     consent given or withdrawn, newest first, with the version of the words,
+         *     how (`web`, `app`, `admin`, `sms`) and whether it can be withdrawn.
+         */
+        get: operations["me.consents"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/consents/{purpose}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change a privacy switch or withdraw a consent (A6.3)
+         * @description Switches take `granted` true or false. Consents for one thing (a
+         *     session recording, contact sharing with a provider) can only be
+         *     withdrawn here, with their `subject`. The terms and privacy notice go
+         *     only with the account (422).
+         */
+        put: operations["me.consents.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/states": {
         parameters: {
             query?: never;
@@ -1312,6 +1358,20 @@ export interface components {
          * @enum {string}
          */
         ConnectionStatus: "active" | "reconnect_needed" | "failing";
+        /**
+         * ConsentPurpose
+         * @description Everything REOS asks a person to agree to (A6.3). Each purpose has the version of the words they agreed to; a new version of the terms or the privacy notice asks again. Some purposes are agreed per thing (a session to record, a provider to share contacts with); some are switches on the privacy settings; the terms and privacy notice can only be withdrawn by deleting the account.
+         * @enum {string}
+         */
+        ConsentPurpose: "terms" | "privacy_notice" | "marketing_email" | "sms" | "session_recording" | "contact_sharing" | "ai_personal_data" | "provider_network" | "recruiting";
+        /**
+         * ConsentRequest
+         * @description Turn a privacy switch on or off, or withdraw a consent given for one thing (A6.3).
+         */
+        ConsentRequest: {
+            granted: boolean;
+            subject?: string | null;
+        };
         /** DeviceResource */
         DeviceResource: {
             id: number;
@@ -1989,6 +2049,8 @@ export type SchemaCheckLicenceRequest = components['schemas']['CheckLicenceReque
 export type SchemaChooseStateRequest = components['schemas']['ChooseStateRequest'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
+export type SchemaConsentPurpose = components['schemas']['ConsentPurpose'];
+export type SchemaConsentRequest = components['schemas']['ConsentRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
@@ -2673,6 +2735,111 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: components["schemas"]["ConnectionResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.consents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        switches: {
+                            /** @enum {string} */
+                            purpose: "marketing_email" | "sms" | "ai_personal_data" | "provider_network" | "recruiting";
+                            on: boolean;
+                            chosen: boolean;
+                            at: string | null;
+                        }[];
+                        records: {
+                            id: number;
+                            /** @enum {string} */
+                            purpose: "terms" | "privacy_notice" | "marketing_email" | "sms" | "session_recording" | "contact_sharing" | "ai_personal_data" | "provider_network" | "recruiting";
+                            subject: string | null;
+                            granted: boolean;
+                            version: string;
+                            /** @enum {string} */
+                            method: "web" | "app" | "admin" | "sms";
+                            by_admin: boolean;
+                            at: string;
+                            current: boolean;
+                            withdrawable: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.consents.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The purpose ID */
+                purpose: components["schemas"]["ConsentPurpose"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        switches: {
+                            /** @enum {string} */
+                            purpose: "marketing_email" | "sms" | "ai_personal_data" | "provider_network" | "recruiting";
+                            on: boolean;
+                            chosen: boolean;
+                            at: string | null;
+                        }[];
+                        records: {
+                            id: number;
+                            /** @enum {string} */
+                            purpose: "terms" | "privacy_notice" | "marketing_email" | "sms" | "session_recording" | "contact_sharing" | "ai_personal_data" | "provider_network" | "recruiting";
+                            subject: string | null;
+                            granted: boolean;
+                            version: string;
+                            /** @enum {string} */
+                            method: "web" | "app" | "admin" | "sms";
+                            by_admin: boolean;
+                            at: string;
+                            current: boolean;
+                            withdrawable: boolean;
+                        }[];
                     };
                 };
             };

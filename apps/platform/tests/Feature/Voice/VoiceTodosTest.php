@@ -11,6 +11,9 @@ use App\Models\IntegrationSetting;
 use App\Models\SimulatorRecord;
 use App\Models\Todo;
 use App\Models\User;
+use App\Privacy\ConsentMethod;
+use App\Privacy\ConsentPurpose;
+use App\Services\Privacy\Consents;
 use App\Services\Privacy\DataExport;
 use App\Voice\UnderstandingFactory;
 use Aws\BedrockRuntime\Exception\BedrockRuntimeException;
@@ -158,6 +161,17 @@ describe('Claude on Amazon Bedrock', function () {
         $this->actingAs($james)->postJson('/api/v1/voice/parse', said('Call Maria'))->assertJsonPath('engine', 'ai')->assertJsonPath('credits.left', 0);
         $this->actingAs($james)->postJson('/api/v1/voice/parse', said('Call Maria'))->assertJsonPath('engine', 'parser');
         expect($mock->count())->toBe(0);
+    });
+
+    it('uses the built-in parser when the person turned off AI help with their own data (A6.3)', function () {
+        $mock = new MockHandler;
+        $mock->append(claudeSaid([['title' => 'Call Maria', 'people' => ['Maria'], 'remind' => false]]));
+        claudeAnswers($mock);
+        $james = User::factory()->create();
+        app(Consents::class)->withdraw($james, ConsentPurpose::AiPersonalData, ConsentMethod::App);
+
+        $this->actingAs($james)->postJson('/api/v1/voice/parse', said('Call Maria'))->assertJsonPath('engine', 'parser')->assertJsonPath('credits.used', 0);
+        expect($mock->count())->toBe(1);
     });
 });
 

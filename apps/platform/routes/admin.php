@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\IntegrationCredentialController;
 use App\Http\Controllers\Admin\IntegrationModeController;
 use App\Http\Controllers\Admin\LicenceReviewController;
 use App\Http\Controllers\Admin\PeopleController;
+use App\Http\Controllers\Admin\PersonConsentController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ProviderCategoryController;
@@ -87,6 +88,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:people.ma
             Route::post('{person}/roles', [PersonRoleController::class, 'store'])->whereNumber('person')->name('roles.store');
             Route::delete('{person}/roles', [PersonRoleController::class, 'destroy'])->whereNumber('person')->name('roles.destroy');
         });
+
+        // Privacy switches changed on the person's behalf, with the reason (A6.3).
+        Route::put('{person}/consents/{purpose}', [PersonConsentController::class, 'update'])->whereNumber('person')->middleware('throttle:30,1,admin-people-consents')->name('consents.update');
 
         // Licence reviews (A5.1): no licence counts without a regulator match or this approval.
         Route::middleware('throttle:60,1,admin-licence-reviews')->group(function () {

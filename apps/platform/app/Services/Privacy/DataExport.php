@@ -110,6 +110,9 @@ final readonly class DataExport
             ],
             'tool_interests' => DB::table('integration_interests')->where('user_id', $user->id)->get(['integration_id', 'kind', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             'tool_requests' => DB::table('tool_requests')->where('user_id', $user->id)->get(['name', 'note', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+            // What they agreed to and withdrew (A6.3): purpose, version, when and how.
+            'consents' => DB::table('consent_records')->where('user_id', $user->id)->orderBy('id')
+                ->get(['purpose', 'subject', 'granted', 'version', 'method', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             'privacy_requests' => DB::table('privacy_requests')->where('user_id', $user->id)->get(['kind', 'details', 'status', 'created_at', 'completed_at', 'response'])->map(static fn ($r): array => (array) $r)->all(),
             // What this person did in REOS, newest first (the audit log's own rows).
             'activity' => AuditEvent::query()->where('actor_id', $user->id)->latest('id')->limit(1000)

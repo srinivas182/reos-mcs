@@ -8,6 +8,7 @@ use App\Enums\Locale;
 use App\Identity\IdentityClaims;
 use App\Models\SocialAccount;
 use App\Models\User;
+use App\Services\Privacy\Consents;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -17,6 +18,8 @@ use Illuminate\Support\Facades\DB;
  */
 final class AccountResolver
 {
+    public function __construct(private readonly Consents $consents) {}
+
     /**
      * @return array{user: User, created: bool}
      */
@@ -44,6 +47,8 @@ final class AccountResolver
                     'email' => $claims->emailVerified ? $claims->email : null,
                     'locale' => Locale::current(),
                 ]);
+                // Signing up agrees to the terms and privacy notice (A6.3).
+                $this->consents->signedUp($user);
             } elseif ($user->email_verified_at === null) {
                 // Someone signed up with this email but never proved it. The
                 // provider has now proved who owns it, so the unproven
@@ -83,6 +88,10 @@ final class AccountResolver
 
             $user ??= new User(['locale' => Locale::current()]);
             $user->forceFill(['phone' => $phone, 'phone_verified_at' => $user->phone_verified_at ?? now()])->save();
+
+            if ($created) {
+                $this->consents->signedUp($user);
+            }
 
             return ['user' => $user, 'created' => $created];
         });

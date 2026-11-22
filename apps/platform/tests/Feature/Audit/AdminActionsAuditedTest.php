@@ -155,6 +155,7 @@ function adminActions(): array
         'integrations.pause' => fn () => auditCase(auditOps(), 'PUT', '/admin/integrations/google-calendar/pause', ['paused' => true], confirmed: true),
 
         // Super admin: People, States, Tenants (screens 59–61).
+        'people.consents.update' => fn () => auditCase(auditOps(), 'PUT', '/admin/people/'.User::factory()->create()->id.'/consents/marketing_email', ['granted' => false, 'note' => 'Asked by email to stop news'], confirmed: true),
         'people.roles.store' => function () {
             [$lone] = auditBrokerage();
 
@@ -571,5 +572,5 @@ const CHANGES = [
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',
     'gateways.update', 'gateways.pause', 'gateways.resume', 'plans.splits', 'tenants.pool.fund', 'gateways.refund-policy', 'provider-categories.update', 'ai.update',
-    'features.rollout', 'features.kill', 'features.restore', 'releases.store',
+    'features.rollout', 'features.kill', 'features.restore', 'releases.store', 'people.consents.update',
 ];

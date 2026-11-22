@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Services\Authorization\Memberships;
 use App\Services\Authorization\PeopleDirectory;
 use App\Services\Licences\Licences;
+use App\Services\Privacy\Consents;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -51,12 +52,14 @@ final class PeopleController extends Controller
         ]);
     }
 
-    public function show(Request $request, User $person, Licences $licences): Response
+    public function show(Request $request, User $person, Licences $licences, Consents $consents): Response
     {
         return Inertia::render('admin/people/show', [
             'person' => (new PersonResource($person))->resolve($request),
             // Their state licences; reviewers approve or reject those waiting (A5.1).
             'licences' => LicenceResource::collection($licences->of($person))->resolve($request),
+            // Their privacy switches and consents (A6.3); switches can be changed on their behalf.
+            'consents' => $consents->summary($person),
             // What can be granted where; the screen offers only valid pairs.
             'roleOptions' => array_map(static fn (Role $role): array => [
                 'role' => $role->value,
