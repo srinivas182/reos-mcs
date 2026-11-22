@@ -1,5 +1,5 @@
-import { usePage } from '@inertiajs/react';
-import { Search } from 'lucide-react';
+import { Link, usePage } from '@inertiajs/react';
+import { Bell, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { HeaderRoleSwitcher } from '@/components/role-switcher';
 import { StateSwitcher } from '@/components/state-switcher';
@@ -14,6 +14,7 @@ import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { activeMembership } from '@/lib/roles';
 import { index as learn } from '@/routes/learn';
+import { index as notificationsIndex } from '@/routes/notifications';
 import type { RoleName } from '@/types/auth';
 
 /** Roles that learn: the top bar searches their lessons (A5.3b). */
@@ -23,11 +24,13 @@ const LEARNERS: RoleName[] = ['candidate', 'agent', 'broker'];
  * The web journey's top bar: state chip (which switches state, A5.1), role
  * chip (which switches role), then the person and their organisation.
  * Learners get the search box, which looks inside their lessons (A5.3b);
- * questions to Ask, the bell and Help arrive with their own sprints.
+ * the bell opens the notification inbox (B6.2); questions to Ask and Help
+ * arrive with their own sprints.
  */
 export function AppSidebarHeader() {
     const { t } = useTranslation();
-    const { auth, region } = usePage().props;
+    const { auth, region, notifications } = usePage().props;
+    const unread = notifications?.unread ?? 0;
     const getInitials = useInitials();
     const current = activeMembership(auth.roles);
     const name = auth.user.name ?? auth.user.email ?? auth.user.phone ?? '';
@@ -72,6 +75,27 @@ export function AppSidebarHeader() {
                 ) : null}
 
                 <HeaderRoleSwitcher />
+
+                {/* The bell: the notification inbox (B6.2). */}
+                <Link
+                    href={notificationsIndex()}
+                    className="relative flex size-12 items-center justify-center rounded-reos-md hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
+                    aria-label={
+                        unread > 0
+                            ? t('notifications.bellUnread', { count: unread })
+                            : t('notifications.bell')
+                    }
+                >
+                    <Bell aria-hidden className="size-6" />
+                    {unread > 0 ? (
+                        <span
+                            aria-hidden
+                            className="absolute top-1.5 right-1.5 min-w-5 rounded-full bg-reos-tone-danger-fg px-1 text-center text-xs font-semibold text-background"
+                        >
+                            {unread > 99 ? '99+' : unread}
+                        </span>
+                    ) : null}
+                </Link>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger

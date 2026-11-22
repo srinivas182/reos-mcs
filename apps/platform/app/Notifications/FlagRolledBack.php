@@ -6,26 +6,30 @@ namespace App\Notifications;
 
 use App\Features\RolloutStage;
 use App\Models\FeatureFlag;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** Tells super admins a flag's rollout stepped back on its own (A6.2). */
-final class FlagRolledBack extends Notification implements ShouldQueue
+final class FlagRolledBack extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(
         public readonly FeatureFlag $flag,
         public readonly RolloutStage $from,
         public readonly float $rate,
     ) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::FlagRolledBack;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('features.notifications.rolledBack.subject', ['name' => $this->flag->name]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => route('features.index')];
     }
 
     public function toMail(object $notifiable): MailMessage

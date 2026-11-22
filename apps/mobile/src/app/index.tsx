@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { BookOpen, MessageSquare, Palette } from 'lucide-react-native';
+import { Bell, BookOpen, MessageSquare, Palette } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,8 @@ import { timeAgo } from '@/lib/time';
 import { useOpenTodos } from '@/lib/todos';
 import { useWhatsNew } from '@/lib/whatsNew';
 import { useAnnouncements, useInbox } from '@/lib/messages';
-import { AskBar, Avatar, Button, Callout, Card, ListRow, Screen, SyncAlert, Text } from '@/ui';
+import { useNotificationInbox } from '@/lib/notifications';
+import { AskBar, Avatar, Button, Callout, Card, IconButton, ListRow, Screen, SyncAlert, Text } from '@/ui';
 
 type State = { kind: 'loading' } | { kind: 'ok'; health: Health } | { kind: 'error'; message: string };
 
@@ -47,6 +48,7 @@ export default function HomeScreen() {
   const capturing = chosen ?? (agent && (capture === 'voice' || capture === 'type') ? capture : null);
   const todos = useOpenTodos();
   const whatsNew = useWhatsNew();
+  const notificationInbox = useNotificationInbox();
   // Messages once rolled out to this person (B6.1); null hides the entry.
   const { inbox } = useInbox(user?.id ?? null);
   // Announcements from my brokerage, school or association (B6.1b), until read.
@@ -91,7 +93,11 @@ export default function HomeScreen() {
         <Text variant="caption" weight="bold" tone="action">
           {t('mobile.eyebrow')}
         </Text>
-        {user ? <Avatar name={user.name ?? user.email ?? user.phone ?? '?'} label={t('mobile.me.open')} onPress={() => router.push('/me')} /> : null}
+        <View style={styles.topActions}>
+          {/* The bell: the notification inbox (B6.2). */}
+          {user ? <IconButton icon={Bell} label={notificationInbox.inbox && notificationInbox.inbox.unread > 0 ? t('notifications.bellUnread', { count: notificationInbox.inbox.unread }) : t('notifications.bell')} onPress={() => router.push('/notifications')} /> : null}
+          {user ? <Avatar name={user.name ?? user.email ?? user.phone ?? '?'} label={t('mobile.me.open')} onPress={() => router.push('/me')} /> : null}
+        </View>
       </View>
       {broken.map((connection) => (
         <SyncAlert
@@ -162,4 +168,5 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  topActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
 });

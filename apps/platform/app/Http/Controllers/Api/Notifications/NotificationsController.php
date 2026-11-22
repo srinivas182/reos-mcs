@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Api\Notifications;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Settings\NotificationSettingsRequest;
+use App\Models\User;
+use App\Notifications\Centre\Inbox;
+use App\Notifications\Centre\Preferences;
+use Illuminate\Container\Attributes\CurrentUser;
+use Illuminate\Http\JsonResponse;
+
+final class NotificationsController extends Controller
+{
+    /**
+     * My notifications (B6.2, the bell).
+     *
+     * The latest 30, newest first, and how many are unread.
+     *
+     * @response array{unread: int, items: list<array{id: string, kind: string, title: string, body: string|null, url: string|null, read: bool, at: string}>}
+     */
+    public function index(#[CurrentUser] User $user): JsonResponse
+    {
+        return response()->json(Inbox::for($user));
+    }
+
+    /**
+     * Mark one read (B6.2).
+     *
+     * @response array{unread: int}
+     */
+    public function read(string $notification, #[CurrentUser] User $user): JsonResponse
+    {
+        return response()->json(['unread' => Inbox::read($user, $notification)]);
+    }
+
+    /**
+     * Mark all read (B6.2).
+     *
+     * @response array{unread: int}
+     */
+    public function readAll(#[CurrentUser] User $user): JsonResponse
+    {
+        return response()->json(['unread' => Inbox::read($user)]);
+    }
+
+    /**
+     * My notification settings (B6.2, Me › Notifications).
+     *
+     * Each kind with its channels (on or off), whether it's locked (security
+     * messages), urgent (arrives in quiet hours) or can be a digest; quiet
+     * hours and the time zone they follow.
+     *
+     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: 'daily'|'weekly'|null}>, channels: list<string>, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     */
+    public function settings(#[CurrentUser] User $user, Preferences $preferences): JsonResponse
+    {
+        return response()->json($preferences->summary($user));
+    }
+
+    /**
+     * Change my notification settings (B6.2).
+     *
+     * Send only what changes: `channels.{kind}.{channel}` true or false,
+     * `digests.{kind}` daily, weekly or null, `quiet` (enabled, start, end as
+     * HH:MM) and `timezone`. Locked kinds can't be turned off (422).
+     *
+     * @response array{kinds: list<array{kind: string, group: string, locked: bool, urgent: bool, digestible: bool, channels: array<string, bool>, digest: 'daily'|'weekly'|null}>, channels: list<string>, quiet: array{enabled: bool, start: string, end: string}, timezone: string}
+     */
+    public function update(NotificationSettingsRequest $request, #[CurrentUser] User $user, Preferences $preferences): JsonResponse
+    {
+        $preferences->save($user, $request->changes());
+
+        return response()->json($preferences->summary($user));
+    }
+}

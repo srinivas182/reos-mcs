@@ -53,7 +53,8 @@
     "featuresAndReleases": "Funciones y versiones",
     "privacy": "Privacidad",
     "messages": "Mensajes",
-    "announcements": "Anuncios"
+    "announcements": "Anuncios",
+    "notifications": "Notificaciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2494,6 +2495,9 @@
       "note": "Nota de REOS: {{note}}",
       "download": "Descargar mis datos",
       "linkDays": "El enlace funciona durante {{days}} días."
+    },
+    "inbox": {
+      "updated": "Se actualizó su solicitud de privacidad"
     }
   },
   "compliance": {
@@ -4426,6 +4430,98 @@
     "markReadFor": "Marcar {{title}} como leído",
     "errors": {
       "nobody": "Nadie coincide con ese grupo. Elija menos filtros."
+    },
+    "mail": {
+      "from": "De {{from}}",
+      "open": "Abrir en REOS"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "purpose": "Todo lo que REOS le avisó, de lo más reciente a lo más antiguo.",
+    "bell": "Notificaciones",
+    "bellUnread_one": "Notificaciones, {{count}} sin leer",
+    "bellUnread_other": "Notificaciones, {{count}} sin leer",
+    "readAll": "Marcar todas como leídas",
+    "settings": "Configuración de notificaciones",
+    "empty": "Aún no hay notificaciones",
+    "emptyBody": "Aquí aparecen recibos, mensajes, anuncios y avisos.",
+    "unread": "sin leer",
+    "settingsTitle": "Notificaciones",
+    "saved": "Configuración de notificaciones guardada.",
+    "quiet": {
+      "title": "Horas de silencio",
+      "description": "Lo que no es urgente espera hasta que terminen las horas de silencio. Los avisos de seguridad y las sesiones por comenzar llegan igual.",
+      "on": "Horas de silencio activadas",
+      "start": "Desde",
+      "end": "Hasta",
+      "zone": "Las horas están en {{zone}}.",
+      "useZone": "Usar {{zone}}",
+      "save": "Guardar horas de silencio"
+    },
+    "kinds": {
+      "title": "Qué le avisamos",
+      "description": "Elija a dónde va cada tipo. La bandeja de entrada es la campana de REOS; nunca suena.",
+      "kind": "Notificación",
+      "digest": "Resumen",
+      "locked": "No se puede desactivar",
+      "urgent": "Urgente: llega en horas de silencio",
+      "switch": "{{kind}} por {{channel}}",
+      "digestFor": "Resumen de {{kind}}"
+    },
+    "channels": {
+      "inbox": "Bandeja",
+      "email": "Correo"
+    },
+    "digests": {
+      "off": "Una por una",
+      "daily": "Diario a las 8 a. m.",
+      "weekly": "Semanal, lunes 8 a. m."
+    },
+    "groups": {
+      "messages": "Mensajes",
+      "learning": "Aprendizaje y sesiones",
+      "organisation": "Su organización",
+      "tools": "Herramientas e integraciones",
+      "billing": "Facturación",
+      "account": "Cuenta y seguridad"
+    },
+    "names": {
+      "new_device": "Inicio de sesión en un dispositivo nuevo",
+      "account_deletion": "Eliminación de la cuenta",
+      "privacy_request": "Solicitudes de privacidad",
+      "purchase_receipt": "Recibos",
+      "payment_failed": "Pagos fallidos",
+      "membership_link": "Enlace de membresía",
+      "seats_requested": "Solicitudes de puestos",
+      "broker_asked": "Agentes que piden una herramienta",
+      "support_access": "Solicitudes de acceso de soporte",
+      "integration_paused": "Integración en pausa",
+      "flag_rolled_back": "Función revertida",
+      "messages_reported": "Mensajes denunciados",
+      "state_rules_changed": "Cambios en las reglas del estado",
+      "state_went_live": "Un estado empezó a funcionar",
+      "connection_reconnect": "Una conexión lo necesita",
+      "message": "Mensajes",
+      "announcement": "Anuncios",
+      "session_starting": "Sesión por comenzar"
+    },
+    "digest": {
+      "subject": {
+        "daily_one": "Su resumen diario de REOS: {{count}} novedad",
+        "daily_other": "Su resumen diario de REOS: {{count}} novedades",
+        "weekly_one": "Su resumen semanal de REOS: {{count}} novedad",
+        "weekly_other": "Su resumen semanal de REOS: {{count}} novedades"
+      },
+      "intro": {
+        "daily": "Esto es lo que pasó desde ayer.",
+        "weekly": "Esto es lo que pasó esta semana."
+      },
+      "settings": "Cambiar lo que recibe"
+    },
+    "errors": {
+      "locked": "Los mensajes de seguridad y de la cuenta no se pueden desactivar.",
+      "noDigest": "Este tipo no puede ir en un resumen."
     }
   }
 }

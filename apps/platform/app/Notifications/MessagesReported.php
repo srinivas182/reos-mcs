@@ -7,23 +7,27 @@ namespace App\Notifications;
 use App\Authorization\Role;
 use App\Models\MessageReport;
 use App\Models\User;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use App\Services\Authorization\Memberships;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** Tells the tenant's admins and REOS that someone reported messages (B6.1b). */
-final class MessagesReported extends Notification implements ShouldQueue
+final class MessagesReported extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(public readonly MessageReport $report) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::MessagesReported;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('messages.report.mail.subject');
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => null];
     }
 
     public function toMail(object $notifiable): MailMessage

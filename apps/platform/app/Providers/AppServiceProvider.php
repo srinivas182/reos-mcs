@@ -21,12 +21,15 @@ use App\Models\PersonalAccessToken;
 use App\Models\State;
 use App\Models\User;
 use App\Monitoring\MonitoringRuntime;
+use App\Notifications\Centre\Deliveries;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Connections\SyncEngine;
 use App\Sso\TestIdentityProvider;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Events\NotificationFailed;
+use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -94,6 +97,9 @@ class AppServiceProvider extends ServiceProvider
         $this->configureIdentity();
         $this->configureRoles();
         Flags::define();
+        // What each notification sent where (B6.2).
+        Event::listen(NotificationSent::class, [Deliveries::class, 'sent']);
+        Event::listen(NotificationFailed::class, [Deliveries::class, 'failed']);
     }
 
     /**

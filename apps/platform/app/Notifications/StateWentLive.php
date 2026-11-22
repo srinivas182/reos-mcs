@@ -5,22 +5,26 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use App\Models\State;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** "REOS is now live in Louisiana" (A5.1), to everyone on that state's waitlist, the day it goes live. */
-final class StateWentLive extends Notification implements ShouldQueue
+final class StateWentLive extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(public readonly State $state) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::StateWentLive;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('states.liveMail.subject', ['state' => $this->state->name]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => url('/get-started')];
     }
 
     public function toMail(object $notifiable): MailMessage

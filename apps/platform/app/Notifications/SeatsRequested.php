@@ -6,16 +6,13 @@ namespace App\Notifications;
 
 use App\Models\Organisation;
 use App\Models\User;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** "Linda Park asks for more seats for Lone Star Realty" (A4.3a), to the tenant's owners or REOS. */
-final class SeatsRequested extends Notification implements ShouldQueue
+final class SeatsRequested extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(
         public readonly Organisation $tenant,
         public readonly User $requester,
@@ -23,10 +20,17 @@ final class SeatsRequested extends Notification implements ShouldQueue
         public readonly ?string $note,
     ) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::SeatsRequested;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('invites.seatsMail.subject', ['tenant' => $this->tenant->name]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => null];
     }
 
     public function toMail(object $notifiable): MailMessage

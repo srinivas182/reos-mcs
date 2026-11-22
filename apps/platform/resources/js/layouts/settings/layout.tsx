@@ -1,4 +1,5 @@
 import { edit as editPrivacy } from '@/routes/consents';
+import { edit as editNotifications } from '@/routes/notification-settings';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
@@ -29,6 +30,10 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                     { title: t('nav.profile'), href: edit() },
                     { title: t('nav.security'), href: editSecurity() },
                     { title: t('nav.privacy'), href: editPrivacy() },
+                    {
+                        title: t('nav.notifications'),
+                        href: editNotifications(),
+                    },
                     { title: t('nav.appearance'), href: editAppearance() },
                     { title: t('nav.planAndBilling'), href: billing() },
                 ]}

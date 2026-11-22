@@ -5,23 +5,27 @@ declare(strict_types=1);
 namespace App\Notifications;
 
 use App\Models\Order;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\Number;
 
 /** "You're in" (B5.1, screen 3): what was bought, what it cost with tax, and that the app is already unlocked. */
-final class PurchaseReceipt extends Notification implements ShouldQueue
+final class PurchaseReceipt extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(public readonly Order $order) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::PurchaseReceipt;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('billing.receipt.subject', ['product' => $this->order->product->name]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => url('/settings/billing')];
     }
 
     public function toMail(object $notifiable): MailMessage

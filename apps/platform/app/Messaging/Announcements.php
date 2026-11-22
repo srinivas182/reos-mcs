@@ -12,10 +12,12 @@ use App\Models\Announcement;
 use App\Models\AnnouncementRecipient;
 use App\Models\Organisation;
 use App\Models\User;
+use App\Notifications\NewAnnouncement;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\ActiveRole;
 use App\Tenancy\Tenancy;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -107,6 +109,8 @@ final readonly class Announcements
 
         $this->audit->record('announcement.sent', 'announcement', $announcement->uuid, ['title' => $announcement->title, 'recipients' => count($recipients), 'audience' => $audience], $author, $organisation->id);
         Realtime::send(new AnnouncementPosted($announcement, $recipients));
+        // In each person's inbox, and by email or as a digest if they chose (B6.2).
+        Notification::send(User::query()->whereIn('id', $recipients)->get(), new NewAnnouncement($announcement));
 
         return $announcement;
     }

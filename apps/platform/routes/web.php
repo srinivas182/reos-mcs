@@ -21,6 +21,7 @@ use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Messaging\AnnouncementController;
 use App\Http\Controllers\Messaging\AttachmentController;
 use App\Http\Controllers\Messaging\MessagesController;
+use App\Http\Controllers\Notifications\NotificationsController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
@@ -193,6 +194,13 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix(
 // A file sent with a message, through its short-lived signed link (B6.1b).
 Route::get('messages/attachments/{attachment}', AttachmentController::class)->whereUuid('attachment')
     ->middleware(['signed', 'throttle:120,1,message-attachments'])->name('messages.attachments.show');
+
+// The notification centre (B6.2): the inbox behind the bell.
+Route::middleware(['auth', 'verified'])->prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [NotificationsController::class, 'index'])->name('index');
+    Route::post('read', [NotificationsController::class, 'readAll'])->middleware('throttle:60,1,notifications-read')->name('read-all');
+    Route::post('{notification}/read', [NotificationsController::class, 'read'])->whereUuid('notification')->middleware('throttle:120,1,notifications-read')->name('read');
+});
 
 // Announcements (B6.1b): admins send; everyone reads theirs on Messages and Today.
 Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix('announcements')->name('announcements.')->group(function () {

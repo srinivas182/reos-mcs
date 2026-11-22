@@ -6,26 +6,30 @@ namespace App\Notifications;
 
 use App\Integrations\IntegrationDefinition;
 use App\Models\IntegrationCheck;
+use App\Notifications\Centre\CentreNotification;
+use App\Notifications\Centre\NotificationKind;
 use App\Services\Integrations\HealthMonitor;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 /** Tells super admins that health checks paused an integration. */
-final class IntegrationPaused extends Notification implements ShouldQueue
+final class IntegrationPaused extends CentreNotification
 {
-    use Queueable;
-
     public function __construct(
         public readonly IntegrationDefinition $definition,
         public readonly IntegrationCheck $check,
     ) {}
 
-    /** @return list<string> */
-    public function via(object $notifiable): array
+    public function kind(): NotificationKind
     {
-        return ['mail'];
+        return NotificationKind::IntegrationPaused;
+    }
+
+    /** @return array{title: string, body: string|null, url: string|null} */
+    public function inbox(object $notifiable): array
+    {
+        $title = __('integrations.notifications.paused.subject', ['name' => $this->definition->name]);
+
+        return ['title' => is_string($title) ? $title : '', 'body' => null, 'url' => route('integrations.show', $this->definition->id)];
     }
 
     public function toMail(object $notifiable): MailMessage
