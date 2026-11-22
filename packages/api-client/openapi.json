@@ -1541,6 +1541,435 @@
                 "security": []
             }
         },
+        "/learn/courses": {
+            "get": {
+                "operationId": "learn.courses",
+                "description": "Live courses for my current state, with their lessons.",
+                "summary": "Courses I can learn",
+                "tags": [
+                    "Learn"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "state": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "qualifying",
+                                                            "ce",
+                                                            "post_licence",
+                                                            "test_prep",
+                                                            "elective"
+                                                        ]
+                                                    },
+                                                    "hours": {
+                                                        "type": [
+                                                            "number",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "lessons": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string"
+                                                                },
+                                                                "minutes": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "language": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "en",
+                                                                        "es"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "title",
+                                                                "minutes",
+                                                                "language"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "type",
+                                                    "hours",
+                                                    "lessons"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "state",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/learn/search": {
+            "get": {
+                "operationId": "learn.search",
+                "description": "Finds passages in the lessons of my live courses (keyword and, when\nswitched on, meaning). Each opens at its heading, page or second.",
+                "summary": "Search my courses",
+                "tags": [
+                    "Learn"
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "minLength": 2,
+                            "maxLength": 300
+                        }
+                    },
+                    {
+                        "name": "language",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "en",
+                                "es",
+                                null
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Array of `KnowledgeHitResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/KnowledgeHitResource"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/learn/lessons/{lesson}": {
+            "get": {
+                "operationId": "learn.lesson",
+                "description": "Its text by heading, slides and documents page by page (with a signed\nlink to the file), the video (Mux `hls` with a signed token, or the\noriginal `file`) and its captions with timings. Links last two hours.\n404 unless the lesson is in a live course for my current state.",
+                "summary": "Open a lesson",
+                "tags": [
+                    "Learn"
+                ],
+                "parameters": [
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "language": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "en",
+                                                        "es"
+                                                    ]
+                                                },
+                                                "minutes": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "course": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title"
+                                                    ]
+                                                },
+                                                "sections": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "heading": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "heading",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "documents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "slides",
+                                                                    "document"
+                                                                ]
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "pages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "page": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "text": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "page",
+                                                                        "text"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "kind",
+                                                            "name",
+                                                            "url",
+                                                            "pages"
+                                                        ]
+                                                    }
+                                                },
+                                                "video": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "type": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "hls",
+                                                                "file"
+                                                            ]
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        },
+                                                        "duration": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "poster": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "type",
+                                                        "url",
+                                                        "duration",
+                                                        "poster"
+                                                    ]
+                                                },
+                                                "transcript": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "seconds": {
+                                                                "type": "integer"
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "seconds",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "previous": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "title",
+                                                "language",
+                                                "minutes",
+                                                "course",
+                                                "sections",
+                                                "documents",
+                                                "video",
+                                                "transcript",
+                                                "previous",
+                                                "next"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/licences": {
             "get": {
                 "operationId": "me.licences.index",
@@ -4085,6 +4514,87 @@
                 ],
                 "title": "IdentitySignInRequest"
             },
+            "KnowledgeHitResource": {
+                "type": "object",
+                "properties": {
+                    "passage_id": {
+                        "type": "integer"
+                    },
+                    "lesson_id": {
+                        "type": "integer"
+                    },
+                    "lesson_title": {
+                        "type": "string"
+                    },
+                    "course_id": {
+                        "type": "integer"
+                    },
+                    "course_title": {
+                        "type": "string"
+                    },
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "text",
+                            "slide",
+                            "transcript"
+                        ]
+                    },
+                    "heading": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "page": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Page of the slides or document to open at."
+                    },
+                    "seconds": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Second of the video to start at."
+                    },
+                    "language": {
+                        "type": "string",
+                        "enum": [
+                            "en",
+                            "es"
+                        ]
+                    },
+                    "snippet": {
+                        "type": "string"
+                    },
+                    "match": {
+                        "type": "string",
+                        "enum": [
+                            "keyword",
+                            "meaning",
+                            "both"
+                        ]
+                    }
+                },
+                "required": [
+                    "passage_id",
+                    "lesson_id",
+                    "lesson_title",
+                    "course_id",
+                    "course_title",
+                    "kind",
+                    "heading",
+                    "page",
+                    "seconds",
+                    "language",
+                    "snippet",
+                    "match"
+                ],
+                "title": "KnowledgeHitResource"
+            },
             "LibraryGroup": {
                 "type": "string",
                 "description": "The tabs of the Connections library (Connections and Sync journey, screens 2\u20134).\n",
@@ -5597,6 +6107,25 @@
             },
             "NotFoundHttpException": {
                 "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthorizationException": {
+                "description": "Authorization error",
                 "content": {
                     "application/json": {
                         "schema": {

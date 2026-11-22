@@ -18,7 +18,8 @@ use App\Services\Content\LessonFiles;
  * II (qualifying, TREC-approved, live) with the agency disclosure lesson and
  * its video captions; Contracts for new agents (CE, no approval number yet,
  * so hidden); and Exam success: Texas in Spanish. Their passages are built,
- * so the content library's search works at once. Safe to run again.
+ * so the content library's search works at once; and Exam day strategies
+ * waiting for review with a legal flag. Safe to run again.
  */
 final readonly class DemoContent
 {
@@ -43,6 +44,12 @@ final readonly class DemoContent
             .'Appointed license holders may give opinions and advice to the party they were appointed to.');
 
         $this->course('contracts-for-new-agents', 'Contracts for new agents', CourseType::Ce, 4, CourseStatus::Draft, null);
+
+        // Waiting for review with one legal flag (screen 63).
+        $strategies = $this->course('exam-day-strategies', 'Exam day strategies', CourseType::TestPrep, 2, CourseStatus::InReview, null);
+        $this->lesson($strategies, 'Pacing the national portion', 'en', 12,
+            "# Pacing\nAllow about one minute per question and flag anything that takes longer. "
+            .'Candidates who follow this plan are guaranteed to pass on the first try.');
 
         $exam = $this->course('exito-en-el-examen-texas', 'Éxito en el examen: Texas', CourseType::TestPrep, null, CourseStatus::Live, null);
         $this->lesson($exam, 'Representación y divulgación', 'es', 15,

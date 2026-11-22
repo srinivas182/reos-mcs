@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Palette } from 'lucide-react-native';
+import { BookOpen, Palette } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +34,9 @@ export default function HomeScreen() {
   const { user } = useAuth();
   const { connections } = useConnections();
   const broken = (connections ?? []).filter((connection) => connection.status === 'reconnect_needed');
-  const agent = activeMembership(user)?.role === 'agent';
+  const role = activeMembership(user)?.role;
+  const agent = role === 'agent';
+  const learner = role === 'agent' || role === 'candidate';
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
   const { capture } = useLocalSearchParams<{ capture?: string }>();
@@ -96,6 +98,8 @@ export default function HomeScreen() {
         />
       ))}
       {/* Today's calendar for agents (B4.1); the rest of Today arrives with the agent sprints. */}
+      {/* Learn (candidate screen 8, A5.3b): courses and search inside lessons; the Learn tab arrives with the tab bar. */}
+      {learner ? <ListRow icon={BookOpen} tone="info" title={t('learn.title')} subtitle={t('learn.searchLabel')} onPress={() => router.push('/learn')} /> : null}
       {agent ? <TodayAgenda /> : null}
       {agent ? <TodayTodos rows={todos.rows} onChanged={() => void todos.reload()} onAdd={() => setCapturing('voice')} /> : null}
       <VoiceCaptureSheet mode={capturing} onClose={closeCapture} onSaved={() => void todos.reload()} />

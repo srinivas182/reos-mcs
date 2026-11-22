@@ -39,7 +39,10 @@
     "agents": "Agentes",
     "complianceAndAudit": "Cumplimiento y auditoría",
     "switchState": "Cambiar de estado",
-    "contentAndApprovals": "Contenido y aprobaciones"
+    "contentAndApprovals": "Contenido y aprobaciones",
+    "courses": "Cursos",
+    "learnAndCe": "Aprender y CE",
+    "search": "Buscar en sus lecciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1895,7 +1898,9 @@
         "lesson.reindexed": "Pidió volver a leer una lección",
         "lesson.file_started": "Empezó a subir un archivo de lección",
         "lesson.file_added": "Subió un archivo de lección",
-        "lesson.file_removed": "Quitó un archivo de lección"
+        "lesson.file_removed": "Quitó un archivo de lección",
+        "course.flag_cleared": "Descartó una alerta de contenido",
+        "course.flag_restored": "Restableció una alerta de contenido"
       }
     }
   },
@@ -2943,7 +2948,8 @@
       "title": "Biblioteca de contenido",
       "description": "Cursos y lecciones de REOS. Cada curso se asigna a un estado y se revisa antes de publicarse.",
       "emptyTitle": "Todavía no hay cursos",
-      "empty": "Agregue un curso y luego sus lecciones, videos y diapositivas. La base de conocimientos los lee para que los estudiantes puedan buscar."
+      "empty": "Agregue un curso y luego sus lecciones, videos y diapositivas. La base de conocimientos los lee para que los estudiantes puedan buscar.",
+      "back": "Contenido y aprobaciones"
     },
     "columns": {
       "course": "Curso",
@@ -3131,7 +3137,91 @@
     },
     "errors": {
       "noApproval": "Falta el número de aprobación para {{states}}. Agréguelo antes de publicar el curso.",
-      "needsStates": "Elija los estados en los que está aprobado el curso antes de publicarlo."
+      "needsStates": "Elija los estados en los que está aprobado el curso antes de publicarlo.",
+      "flagged": "Líneas marcadas pendientes de revisar: {{count}}. Corríjalas o descártelas antes de publicar el curso.",
+      "noFlag": "Esa alerta ya no existe."
+    },
+    "review": {
+      "title": "Contenido y aprobaciones",
+      "description": "Cada curso y lección se asigna a un estado y se revisa antes de publicarse.",
+      "library": "Biblioteca de contenido",
+      "queue": "Cola de revisión · {{count}}",
+      "all": "Todo el contenido",
+      "listTitle": "Cola de revisión",
+      "allTitle": "Todo el contenido",
+      "columns": {
+        "item": "Elemento",
+        "tenant": "Organización",
+        "state": "Estado",
+        "checks": "Revisiones",
+        "status": "Situación"
+      },
+      "reos": "REOS",
+      "emptyTitle": "No hay nada pendiente de revisión",
+      "empty": "Los cursos enviados a revisión aparecen aquí con sus revisiones.",
+      "approve": "Aprobar y publicar",
+      "sendBack": "Devolver",
+      "sendForReview": "Enviar a revisión",
+      "note": "Nota para el autor",
+      "approved": "«{{title}}» está publicado.",
+      "sentBack": "«{{title}}» volvió a borrador.",
+      "sent": "«{{title}}» se envió a revisión."
+    },
+    "rules": {
+      "title": "Reglas para el contenido",
+      "approval": "Ninguna etiqueta de CE o precalificación sin una aprobación registrada",
+      "legal": "Las declaraciones legales se revisan según las reglas del estado; las líneas marcadas impiden publicar",
+      "instructor": "Las lecciones con IA requieren la aprobación de un instructor",
+      "sources": "Las respuestas de la base de conocimientos conservan su estado y su fuente",
+      "tenants": "El contenido de una organización nunca se muestra a otra, salvo que se comparta"
+    },
+    "checks": {
+      "title": "Revisiones",
+      "clean": "Sin problemas",
+      "flags_one": "{{count}} alerta legal",
+      "flags_other": "{{count}} alertas legales",
+      "approval": "Aprobación pendiente",
+      "allClear": "No hay alertas abiertas.",
+      "approvalsMissing": "Falta el número de aprobación para {{states}}.",
+      "flagIntro": "Líneas que una persona debe revisar. Corrija la lección o descarte una línea que esté bien en su contexto.",
+      "clear": "Descartar",
+      "clearLabel": "Descartar la alerta en {{lesson}}",
+      "cleared": "Se descartó la alerta en {{lesson}}.",
+      "clearedChip": "Descartada",
+      "rules": {
+        "guarantee": "Promete un resultado",
+        "pass_rate": "Afirma un porcentaje de aprobación",
+        "risk_free": "Afirma que no hay riesgo",
+        "approval_claim": "Afirma una aprobación que no está registrada",
+        "superlative": "Afirma ser «el mejor» sin pruebas"
+      }
+    }
+  },
+  "learn": {
+    "title": "Aprender",
+    "description": "Cursos para {{state}} y búsqueda dentro de cada lección.",
+    "searchLabel": "Buscar en sus lecciones",
+    "searchButton": "Buscar",
+    "coursesTitle": "Sus cursos",
+    "emptyTitle": "Todavía no hay cursos para {{state}}",
+    "empty": "Los cursos aparecen aquí en cuanto se publican para su estado.",
+    "lessons_one": "{{count}} lección",
+    "lessons_other": "{{count}} lecciones",
+    "minutes": "{{count}} min",
+    "hours": "{{count}} horas",
+    "lesson": {
+      "back": "Aprender",
+      "previous": "Lección anterior",
+      "next": "Lección siguiente",
+      "video": "Video",
+      "transcript": "Transcripción",
+      "jump": "Reproducir desde {{time}}",
+      "startsAt": "Empieza en {{time}}",
+      "text": "Lección",
+      "open": "Abrir {{name}}",
+      "page": "Página {{page}}",
+      "here": "Según su búsqueda",
+      "empty": "Esta lección todavía no tiene texto ni archivos."
     }
   }
 }

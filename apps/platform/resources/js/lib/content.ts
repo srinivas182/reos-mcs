@@ -214,3 +214,29 @@ export function put(
         request.send(file);
     });
 }
+
+export type LegalRule =
+    | 'guarantee'
+    | 'pass_rate'
+    | 'risk_free'
+    | 'approval_claim'
+    | 'superlative';
+
+/** A course's checks before it goes live (A5.3b, screen 63). */
+export type CourseChecks = {
+    approvals: string[];
+    flags: {
+        key: string;
+        rule: LegalRule;
+        lesson_id: number;
+        lesson_title: string;
+        kind: PassageKind;
+        heading: string | null;
+        page: number | null;
+        seconds: number | null;
+        excerpt: string;
+        cleared: boolean;
+    }[];
+    open: number;
+    clean: boolean;
+};

@@ -434,6 +434,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/learn/courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Courses I can learn
+         * @description Live courses for my current state, with their lessons.
+         */
+        get: operations["learn.courses"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search my courses
+         * @description Finds passages in the lessons of my live courses (keyword and, when
+         *     switched on, meaning). Each opens at its heading, page or second.
+         */
+        get: operations["learn.search"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/lessons/{lesson}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Open a lesson
+         * @description Its text by heading, slides and documents page by page (with a signed
+         *     link to the file), the video (Mux `hls` with a signed token, or the
+         *     original `file`) and its captions with timings. Links last two hours.
+         *     404 unless the lesson is in a live course for my current state.
+         */
+        get: operations["learn.lesson"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/licences": {
         parameters: {
             query?: never;
@@ -1173,6 +1237,26 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /** KnowledgeHitResource */
+        KnowledgeHitResource: {
+            passage_id: number;
+            lesson_id: number;
+            lesson_title: string;
+            course_id: number;
+            course_title: string;
+            /** @enum {string} */
+            kind: "text" | "slide" | "transcript";
+            heading: string | null;
+            /** @description Page of the slides or document to open at. */
+            page: number | null;
+            /** @description Second of the video to start at. */
+            seconds: number | null;
+            /** @enum {string} */
+            language: "en" | "es";
+            snippet: string;
+            /** @enum {string} */
+            match: "keyword" | "meaning" | "both";
+        };
         /**
          * LibraryGroup
          * @description The tabs of the Connections library (Connections and Sync journey, screens 2–4).
@@ -1723,6 +1807,18 @@ export interface components {
                 };
             };
         };
+        /** @description Authorization error */
+        AuthorizationException: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": {
+                    /** @description Error overview. */
+                    message: string;
+                };
+            };
+        };
     };
     parameters: never;
     requestBodies: never;
@@ -1747,6 +1843,7 @@ export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
 export type SchemaIdentitySignInRequest = components['schemas']['IdentitySignInRequest'];
+export type SchemaKnowledgeHitResource = components['schemas']['KnowledgeHitResource'];
 export type SchemaLibraryGroup = components['schemas']['LibraryGroup'];
 export type SchemaLicenceResource = components['schemas']['LicenceResource'];
 export type SchemaLicenceRoleRequest = components['schemas']['LicenceRoleRequest'];
@@ -1780,6 +1877,7 @@ export type ResponseModelNotFoundException = components['responses']['ModelNotFo
 export type ResponseValidationException = components['responses']['ValidationException'];
 export type ResponseAuthenticationException = components['responses']['AuthenticationException'];
 export type ResponseNotFoundHttpException = components['responses']['NotFoundHttpException'];
+export type ResponseAuthorizationException = components['responses']['AuthorizationException'];
 export type $defs = Record<string, never>;
 export interface operations {
     "me.active-role": {
@@ -2690,6 +2788,147 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "learn.courses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        state: string;
+                        data: {
+                            id: number;
+                            title: string;
+                            /** @enum {string} */
+                            type: "qualifying" | "ce" | "post_licence" | "test_prep" | "elective";
+                            hours: number | null;
+                            lessons: {
+                                id: number;
+                                title: string;
+                                minutes: number | null;
+                                /** @enum {string} */
+                                language: "en" | "es";
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+        };
+    };
+    "learn.search": {
+        parameters: {
+            query: {
+                q: string;
+                language?: "en" | "es" | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `KnowledgeHitResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["KnowledgeHitResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.lesson": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            title: string;
+                            /** @enum {string} */
+                            language: "en" | "es";
+                            minutes: number | null;
+                            course: {
+                                id: number;
+                                title: string;
+                            };
+                            sections: {
+                                heading: string | null;
+                                text: string;
+                            }[];
+                            documents: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "slides" | "document";
+                                name: string;
+                                url: string;
+                                pages: {
+                                    page: number;
+                                    text: string;
+                                }[];
+                            }[];
+                            video: {
+                                /** @enum {string} */
+                                type: "hls" | "file";
+                                url: string;
+                                duration: number | null;
+                                poster: string | null;
+                            } | null;
+                            transcript: {
+                                seconds: number;
+                                text: string;
+                            }[];
+                            previous: number | null;
+                            next: number | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["ModelNotFoundException"];
         };
     };
     "me.licences.index": {

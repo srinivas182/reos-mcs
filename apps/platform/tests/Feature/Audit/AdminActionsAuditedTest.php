@@ -96,6 +96,15 @@ function auditLesson(User $ops): Lesson
     return app(Lessons::class)->create(auditCourse($ops), ['title' => 'Agency disclosure'], $ops);
 }
 
+/** @return array{0: Course, 1: string} a course with a flagged line, and the flag */
+function auditFlag(User $ops): array
+{
+    $lesson = auditLesson($ops);
+    app(Lessons::class)->update($lesson, ['body' => 'We guarantee you pass.'], $ops);
+
+    return [$lesson->course, $lesson->passages()->sole()->content_hash.':guarantee'];
+}
+
 /** A captions file uploaded to storage, waiting for "done". */
 function auditFile(User $ops): LessonMedia
 {
@@ -166,6 +175,19 @@ function adminActions(): array
             $course->delete();
 
             return auditCase($ops, 'POST', "/admin/content/courses/{$course->id}/restore", confirmed: true);
+        },
+        'content.flags.clear' => function () {
+            $ops = auditOps();
+            [$course, $key] = auditFlag($ops);
+
+            return auditCase($ops, 'POST', "/admin/content/courses/{$course->id}/flags/{$key}", confirmed: true);
+        },
+        'content.flags.restore' => function () {
+            $ops = auditOps();
+            [$course, $key] = auditFlag($ops);
+            app(Courses::class)->clearFlag($course, $key, $ops);
+
+            return auditCase($ops, 'DELETE', "/admin/content/courses/{$course->id}/flags/{$key}", confirmed: true);
         },
         'content.modules.store' => fn () => auditCase($ops = auditOps(), 'POST', '/admin/content/courses/'.auditCourse($ops)->id.'/modules', ['title' => 'Unit 6'], confirmed: true),
         'content.modules.update' => fn () => auditCase($ops = auditOps(), 'PATCH', '/admin/content/modules/'.auditCourse($ops)->modules()->create(['title' => 'Unit 6'])->id, ['title' => 'Unit 6: Agency'], confirmed: true),

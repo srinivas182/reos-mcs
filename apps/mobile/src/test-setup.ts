@@ -139,4 +139,27 @@ jest.mock('expo-contacts', () => ({
 }));
 
 jest.mock('expo-quick-actions', () => ({ setItems: jest.fn().mockResolvedValue(undefined), addListener: jest.fn(() => ({ remove: jest.fn() })), initial: undefined }));
+// Lesson video (A5.3b): a player whose position tests can read.
+jest.mock('expo-video', () => {
+  const { View } = jest.requireActual('react-native');
+  const { createElement } = jest.requireActual('react');
+  const player = {
+    currentTime: 0,
+    play: jest.fn(),
+    pause: jest.fn(),
+    seekBy(seconds: number) {
+      player.currentTime += seconds;
+    },
+  };
+
+  return {
+    __player: player,
+    useVideoPlayer: jest.fn((_source: unknown, setup?: (p: typeof player) => void) => {
+      setup?.(player);
+
+      return player;
+    }),
+    VideoView: (props: object) => createElement(View, { testID: 'video', ...props }),
+  };
+});
 jest.mock('expo-quick-actions/router', () => ({ useQuickActionRouting: jest.fn() }));
