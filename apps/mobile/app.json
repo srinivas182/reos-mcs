@@ -62,7 +62,8 @@
           "contactsPermission": "REOS looks up a name you say (\"call Maria\") in your contacts so the to-do can link to them. Your contacts stay on your phone."
         }
       ],
-      "expo-quick-actions"
+      "expo-quick-actions",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,

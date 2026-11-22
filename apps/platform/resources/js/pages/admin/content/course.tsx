@@ -3,6 +3,7 @@ import { ArrowLeft, FileText, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { CourseChecks } from '@/components/course-checks';
 import { CourseStatusBadge } from '@/components/course-status-badge';
 import { EmptyState } from '@/components/empty-state';
 import InputError from '@/components/input-error';
@@ -14,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import type {
+    CourseChecks as Checks,
     CourseStatus,
     CourseType,
     IngestStatus,
@@ -69,6 +71,7 @@ type Props = {
         files: number;
         passages: number;
     }[];
+    checks: Checks;
     types: CourseType[];
     states: StateOption[];
 };
@@ -84,6 +87,7 @@ export default function CoursePage({
     course,
     modules,
     lessons,
+    checks,
     types,
     states,
 }: Props) {
@@ -349,6 +353,7 @@ export default function CoursePage({
                     </section>
 
                     <div className="space-y-6">
+                        <CourseChecks course={course} checks={checks} />
                         <section className="space-y-3 rounded-reos-lg border border-border bg-card p-5">
                             <h2 className="font-semibold">
                                 {t('content.courses.statusTitle')}

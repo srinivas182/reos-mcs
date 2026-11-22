@@ -39,7 +39,10 @@
     "agents": "Agents",
     "complianceAndAudit": "Compliance and audit",
     "switchState": "Switch state",
-    "contentAndApprovals": "Content and approvals"
+    "contentAndApprovals": "Content and approvals",
+    "courses": "Courses",
+    "learnAndCe": "Learn and CE",
+    "search": "Search your lessons"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1895,7 +1898,9 @@
         "lesson.reindexed": "Asked for a lesson to be read again",
         "lesson.file_started": "Started uploading a lesson file",
         "lesson.file_added": "Uploaded a lesson file",
-        "lesson.file_removed": "Removed a lesson file"
+        "lesson.file_removed": "Removed a lesson file",
+        "course.flag_cleared": "Cleared a content flag",
+        "course.flag_restored": "Put back a content flag"
       }
     }
   },
@@ -2943,7 +2948,8 @@
       "title": "Content library",
       "description": "REOS courses and lessons. Every course is tagged to a state and checked before it's live.",
       "emptyTitle": "No courses yet",
-      "empty": "Add a course, then its lessons, videos and slides. The knowledge base reads them so learners can search."
+      "empty": "Add a course, then its lessons, videos and slides. The knowledge base reads them so learners can search.",
+      "back": "Content and approvals"
     },
     "columns": {
       "course": "Course",
@@ -3131,7 +3137,91 @@
     },
     "errors": {
       "noApproval": "No approval number for {{states}}. Add it before the course goes live.",
-      "needsStates": "Choose the states this course is approved in before it goes live."
+      "needsStates": "Choose the states this course is approved in before it goes live.",
+      "flagged": "Flagged lines left to check: {{count}}. Fix or clear them before the course goes live.",
+      "noFlag": "That flag is no longer there."
+    },
+    "review": {
+      "title": "Content and approvals",
+      "description": "Every course and lesson is tagged to a state and checked before it's live.",
+      "library": "Content library",
+      "queue": "Review queue · {{count}}",
+      "all": "All content",
+      "listTitle": "Review queue",
+      "allTitle": "All content",
+      "columns": {
+        "item": "Item",
+        "tenant": "Tenant",
+        "state": "State",
+        "checks": "Checks",
+        "status": "Status"
+      },
+      "reos": "REOS",
+      "emptyTitle": "Nothing waiting for review",
+      "empty": "Courses sent for review appear here with their checks.",
+      "approve": "Approve and publish",
+      "sendBack": "Send back",
+      "sendForReview": "Send for review",
+      "note": "Note for the author",
+      "approved": "“{{title}}” is live.",
+      "sentBack": "“{{title}}” sent back to draft.",
+      "sent": "“{{title}}” sent for review."
+    },
+    "rules": {
+      "title": "Rules for content",
+      "approval": "No CE or qualifying label without a recorded approval",
+      "legal": "Legal statements checked against state rules; flagged lines block publishing",
+      "instructor": "Instructor approval required for AI lessons",
+      "sources": "Knowledge base answers keep their state tag and source",
+      "tenants": "Content from one tenant is never shown to another unless shared"
+    },
+    "checks": {
+      "title": "Checks",
+      "clean": "Clean",
+      "flags_one": "{{count}} legal flag",
+      "flags_other": "{{count}} legal flags",
+      "approval": "Approval pending",
+      "allClear": "No open flags.",
+      "approvalsMissing": "No approval number for {{states}}.",
+      "flagIntro": "Lines a person needs to check. Fix the lesson, or clear a line that's fine in context.",
+      "clear": "Clear",
+      "clearLabel": "Clear the flag in {{lesson}}",
+      "cleared": "Flag cleared in {{lesson}}.",
+      "clearedChip": "Cleared",
+      "rules": {
+        "guarantee": "Promises a result",
+        "pass_rate": "Pass-rate claim",
+        "risk_free": "Risk-free claim",
+        "approval_claim": "Claims an approval not on record",
+        "superlative": "“Best” claim that can't be proven"
+      }
+    }
+  },
+  "learn": {
+    "title": "Learn",
+    "description": "Courses for {{state}}, and a search inside every lesson.",
+    "searchLabel": "Search your lessons",
+    "searchButton": "Search",
+    "coursesTitle": "Your courses",
+    "emptyTitle": "No courses for {{state}} yet",
+    "empty": "Courses appear here as soon as they're live for your state.",
+    "lessons_one": "{{count}} lesson",
+    "lessons_other": "{{count}} lessons",
+    "minutes": "{{count}} min",
+    "hours": "{{count}} hours",
+    "lesson": {
+      "back": "Learn",
+      "previous": "Previous lesson",
+      "next": "Next lesson",
+      "video": "Video",
+      "transcript": "Transcript",
+      "jump": "Play from {{time}}",
+      "startsAt": "Starts at {{time}}",
+      "text": "Lesson",
+      "open": "Open {{name}}",
+      "page": "Page {{page}}",
+      "here": "From your search",
+      "empty": "This lesson has no text or files yet."
     }
   }
 }

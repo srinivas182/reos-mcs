@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Admin\CatalogueController;
 use App\Http\Controllers\Admin\ComplianceController;
+use App\Http\Controllers\Admin\Content\ContentApprovalsController;
 use App\Http\Controllers\Admin\Content\ContentLibraryController;
 use App\Http\Controllers\Admin\Content\CourseController;
+use App\Http\Controllers\Admin\Content\CourseFlagController;
 use App\Http\Controllers\Admin\Content\CourseModuleController;
 use App\Http\Controllers\Admin\Content\LessonController;
 use App\Http\Controllers\Admin\Content\LessonFileController;
@@ -140,6 +142,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:content.m
     ->prefix('admin/content')
     ->name('content.')
     ->group(function () {
+        Route::get('/', [ContentApprovalsController::class, 'index'])->name('index');
         Route::get('library', [ContentLibraryController::class, 'index'])->name('library');
 
         Route::middleware('throttle:60,1,admin-content')->group(function () {
@@ -148,6 +151,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:content.m
             Route::put('courses/{course}/status', [CourseController::class, 'status'])->whereNumber('course')->name('courses.status');
             Route::delete('courses/{course}', [CourseController::class, 'destroy'])->whereNumber('course')->name('courses.destroy');
             Route::post('courses/{course}/restore', [CourseController::class, 'restore'])->whereNumber('course')->name('courses.restore');
+            // Legal flags (A5.3b): clear a line that's fine in context; Undo puts it back.
+            Route::post('courses/{course}/flags/{flag}', [CourseFlagController::class, 'clear'])->whereNumber('course')->where('flag', '[a-f0-9]{64}:[a-z_]+')->name('flags.clear');
+            Route::delete('courses/{course}/flags/{flag}', [CourseFlagController::class, 'restore'])->whereNumber('course')->where('flag', '[a-f0-9]{64}:[a-z_]+')->name('flags.restore');
 
             Route::post('courses/{course}/modules', [CourseModuleController::class, 'store'])->whereNumber('course')->name('modules.store');
             Route::patch('modules/{module}', [CourseModuleController::class, 'update'])->whereNumber('module')->name('modules.update');

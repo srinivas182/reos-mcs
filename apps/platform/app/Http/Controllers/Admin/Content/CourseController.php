@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Content;
 
 use App\Content\CourseType;
+use App\Content\Review\ContentChecks;
 use App\Enums\StateStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Content\CourseRequest;
@@ -37,7 +38,7 @@ final class CourseController extends Controller
         return to_route('content.courses.show', $course);
     }
 
-    public function show(Course $course): Response
+    public function show(Course $course, ContentChecks $checks): Response
     {
         $lessons = Lesson::query()->where('course_id', $course->id)->withCount(['media', 'passages'])->orderBy('position')->orderBy('id')->get();
         $embedded = KbPassage::query()->where('course_id', $course->id)->whereNotNull('embedded_at')->count();
@@ -70,6 +71,7 @@ final class CourseController extends Controller
                 'files' => $l->media_count ?? 0,
                 'passages' => $l->passages_count ?? 0,
             ])->all(),
+            'checks' => $checks->for($course),
             'types' => CourseType::values(),
             'states' => self::stateOptions(),
         ]);

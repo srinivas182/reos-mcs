@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
@@ -80,6 +81,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{licence}/restore', 'restore')->whereNumber('licence')->middleware('throttle:30,1,api-licences-restore')->name('restore');
     });
     Route::get('me/states', [CurrentStateController::class, 'show'])->name('api.me.states');
+
+    // Learn (A5.3b): my courses, search inside them, and a lesson to open.
+    Route::middleware('can:learning.study')->prefix('learn')->name('api.learn.')->controller(LearnController::class)->group(function () {
+        Route::get('courses', 'courses')->name('courses');
+        Route::get('search', 'search')->middleware('throttle:60,1,api-learn-search')->name('search');
+        Route::get('lessons/{lesson}', 'lesson')->whereNumber('lesson')->name('lesson');
+    });
     Route::put('me/states/current', [CurrentStateController::class, 'update'])->middleware('throttle:30,1,api-me-states')->name('api.me.states.update');
 
     // The Connections library (B3.2, ADR 0014).

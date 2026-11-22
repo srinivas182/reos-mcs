@@ -13,6 +13,7 @@ use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Onboarding\GetStartedController;
 use App\Http\Controllers\Onboarding\PlanSetupController;
 use App\Http\Controllers\Onboarding\PublicSiteController;
@@ -73,6 +74,12 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::post('{connection}/sync', 'sync')->whereNumber('connection')->middleware('throttle:10,1,sync')->name('sync');
         Route::patch('{connection}', 'update')->whereNumber('connection')->middleware('throttle:30,1,update')->name('update');
         Route::delete('{connection}', 'destroy')->whereNumber('connection')->middleware('throttle:30,1,destroy')->name('destroy');
+    });
+
+    // Learn (A5.3b): courses for my state, search inside them, a lesson opened at its place.
+    Route::middleware('can:learning.study')->controller(LearnController::class)->prefix('learn')->name('learn.')->group(function () {
+        Route::get('/', 'index')->middleware('throttle:60,1,learn')->name('index');
+        Route::get('lessons/{lesson}', 'lesson')->whereNumber('lesson')->name('lesson');
     });
 });
 

@@ -1,5 +1,5 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import { BookOpen, Plus, Search } from 'lucide-react';
+import { ArrowLeft, BookOpen, Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CourseStatusBadge } from '@/components/course-status-badge';
@@ -27,7 +27,7 @@ import type {
     StateOption,
 } from '@/lib/content';
 import { nativeSelect } from '@/lib/tenants';
-import { library } from '@/routes/content';
+import { index as contentIndex, library } from '@/routes/content';
 import { show, store } from '@/routes/content/courses';
 
 type CourseRow = {
@@ -80,6 +80,15 @@ export default function ContentLibrary({
                 <PageHeader
                     title={t('content.library.title')}
                     description={t('content.library.description')}
+                    back={
+                        <Link
+                            href={contentIndex()}
+                            className="inline-flex min-h-touch items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
+                        >
+                            <ArrowLeft aria-hidden className="size-5" />
+                            {t('content.library.back')}
+                        </Link>
+                    }
                     actions={
                         <Button onClick={() => setCreating(true)}>
                             <Plus aria-hidden />

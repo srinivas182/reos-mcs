@@ -3,6 +3,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
     BookOpen,
     Building2,
+    GraduationCap,
     House,
     Map as MapIcon,
     Palette,
@@ -16,7 +17,8 @@ import { show as brandingShow } from '@/routes/branding';
 import { index as agentsIndex } from '@/routes/agents';
 import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
-import { library as contentLibrary } from '@/routes/content';
+import { index as contentIndex } from '@/routes/content';
+import { index as learn } from '@/routes/learn';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -40,6 +42,8 @@ export type NavLabel =
     | 'agents'
     | 'complianceAndAudit'
     | 'contentAndApprovals'
+    | 'courses'
+    | 'learnAndCe'
     | 'connections';
 
 export type RoleNavItem = {
@@ -84,7 +88,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
     const menus: Record<RoleName, RoleNavItem[]> = {
         candidate: [
             home,
-            planned('courses'),
+            item('courses', BookOpen, learn(), '/learn'),
             planned('studyPlan'),
             planned('practiceAndExams'),
             planned('readiness'),
@@ -99,7 +103,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             planned('deals'),
             planned('virtualBroker'),
             planned('contentStudio'),
-            planned('learnAndCe'),
+            item('learnAndCe', GraduationCap, learn(), '/learn'),
             planned('serviceProviders'),
             planned('goalsAndRewards'),
             item('connections', Plug, connections()),
@@ -168,7 +172,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
             item(
                 'contentAndApprovals',
                 BookOpen,
-                contentLibrary(),
+                contentIndex(),
                 '/admin/content',
             ),
             item('integrations', Plug, integrations()),

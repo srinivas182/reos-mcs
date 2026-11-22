@@ -1,4 +1,5 @@
 import { usePage } from '@inertiajs/react';
+import { Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { HeaderRoleSwitcher } from '@/components/role-switcher';
 import { StateSwitcher } from '@/components/state-switcher';
@@ -7,15 +8,22 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { activeMembership } from '@/lib/roles';
+import { index as learn } from '@/routes/learn';
+import type { RoleName } from '@/types/auth';
+
+/** Roles that learn: the top bar searches their lessons (A5.3b). */
+const LEARNERS: RoleName[] = ['candidate', 'agent', 'broker'];
 
 /**
  * The web journey's top bar: state chip (which switches state, A5.1), role
- * chip (which switches role), then the person and their organisation. Search, the bell and Help arrive
- * with their own sprints.
+ * chip (which switches role), then the person and their organisation.
+ * Learners get the search box, which looks inside their lessons (A5.3b);
+ * questions to Ask, the bell and Help arrive with their own sprints.
  */
 export function AppSidebarHeader() {
     const { t } = useTranslation();
@@ -30,6 +38,33 @@ export function AppSidebarHeader() {
                 className="size-12 md:hidden"
                 aria-label={t('nav.openMenu')}
             />
+
+            {current && LEARNERS.includes(current.role) ? (
+                <form
+                    action={learn().url}
+                    method="get"
+                    role="search"
+                    className="hidden max-w-md flex-1 md:block"
+                >
+                    <label htmlFor="top-search" className="sr-only">
+                        {t('nav.search')}
+                    </label>
+                    <div className="relative">
+                        <Search
+                            aria-hidden
+                            className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted-foreground"
+                        />
+                        <Input
+                            id="top-search"
+                            name="q"
+                            type="search"
+                            maxLength={300}
+                            placeholder={t('nav.search')}
+                            className="pl-10"
+                        />
+                    </div>
+                </form>
+            ) : null}
 
             <div className="ml-auto flex min-w-0 items-center gap-2 sm:gap-3">
                 {region && current?.role !== 'super_admin' ? (

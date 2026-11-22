@@ -6,6 +6,7 @@ namespace App\Services\Content;
 
 use App\Content\CourseStatus;
 use App\Content\CourseType;
+use App\Content\Review\ContentChecks;
 use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\KbPassage;
@@ -28,7 +29,7 @@ final readonly class Courses
     /** Fields whose before and after go in the audit log. */
     private const AUDITED = ['title', 'type', 'description', 'states', 'hours', 'approvals'];
 
-    public function __construct(private AuditLogger $audit) {}
+    public function __construct(private AuditLogger $audit, private ContentChecks $checks) {}
 
     /** @param  array{title: string, type: string, description?: string|null, states?: list<string>|null, hours?: float|int|string|null}  $data */
     public function create(array $data, User $actor): Course
@@ -111,19 +112,54 @@ final readonly class Courses
             if ($missing !== []) {
                 throw ValidationException::withMessages(['status' => __('content.errors.noApproval', ['states' => implode(', ', $missing)])]);
             }
+
+            $open = $this->checks->for($course)['open'];
+
+            if ($open > 0) {
+                throw ValidationException::withMessages(['status' => __('content.errors.flagged', ['count' => $open])]);
+            }
         }
+
+        $reviewed = $from === CourseStatus::InReview && $status !== CourseStatus::InReview;
 
         $course->forceFill([
             'status' => $status,
             'status_note' => $note,
+            'reviewed_by' => $reviewed ? $actor->id : $course->reviewed_by,
+            'reviewed_at' => $reviewed ? now() : $course->reviewed_at,
             'published_at' => $status === CourseStatus::Live ? ($course->published_at ?? now()) : $course->published_at,
         ])->save();
 
         if ($from !== $status) {
-            $this->audit->record('course.status_changed', self::AUDIT_SUBJECT, (string) $course->id, ['from' => $from->value, 'to' => $status->value], $actor);
+            $this->audit->record('course.status_changed', self::AUDIT_SUBJECT, (string) $course->id, array_filter(['from' => $from->value, 'to' => $status->value, 'note' => $note]), $actor);
         }
 
         return $course;
+    }
+
+    /** A reviewer checked a flagged line and it's fine in context: it stops blocking the course. */
+    public function clearFlag(Course $course, string $key, User $actor): void
+    {
+        $flag = collect($this->checks->for($course)['flags'])->firstWhere('key', $key);
+
+        if ($flag === null) {
+            throw ValidationException::withMessages(['flag' => __('content.errors.noFlag')]);
+        }
+
+        $cleared = array_values(array_filter($course->cleared_flags ?? [], static fn (array $c): bool => $c['key'] !== $key));
+        $cleared[] = ['key' => $key, 'by' => $actor->id, 'at' => now()->toIso8601String()];
+        $course->forceFill(['cleared_flags' => $cleared])->save();
+
+        $this->audit->record('course.flag_cleared', self::AUDIT_SUBJECT, (string) $course->id, ['rule' => $flag['rule'], 'lesson' => $flag['lesson_id'], 'excerpt' => $flag['excerpt']], $actor);
+    }
+
+    /** Undo: the line blocks the course again. */
+    public function restoreFlag(Course $course, string $key, User $actor): void
+    {
+        $cleared = array_values(array_filter($course->cleared_flags ?? [], static fn (array $c): bool => $c['key'] !== $key));
+        $course->forceFill(['cleared_flags' => $cleared === [] ? null : $cleared])->save();
+
+        $this->audit->record('course.flag_restored', self::AUDIT_SUBJECT, (string) $course->id, ['key' => $key], $actor);
     }
 
     public function delete(Course $course, User $actor): void

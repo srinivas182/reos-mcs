@@ -27,8 +27,11 @@ use Illuminate\Support\Carbon;
  * @property list<string>|null $states Null: every state
  * @property string|null $hours
  * @property array<string, array{number: string, expires_on: string|null}>|null $approvals
+ * @property list<array{key: string, by: int, at: string}>|null $cleared_flags Legal flags a reviewer checked
  * @property CourseStatus $status
  * @property string|null $status_note
+ * @property int|null $reviewed_by
+ * @property Carbon|null $reviewed_at
  * @property int|null $created_by
  * @property Carbon|null $published_at
  * @property Carbon|null $created_at
@@ -42,7 +45,7 @@ final class Course extends Model
     use SoftDeletes;
     use StateTagged;
 
-    protected $fillable = ['title', 'slug', 'type', 'description', 'states', 'hours', 'approvals', 'status', 'status_note', 'created_by', 'published_at'];
+    protected $fillable = ['title', 'slug', 'type', 'description', 'states', 'hours', 'approvals', 'cleared_flags', 'status', 'status_note', 'reviewed_by', 'reviewed_at', 'created_by', 'published_at'];
 
     protected $attributes = ['status' => 'draft'];
 
@@ -53,6 +56,8 @@ final class Course extends Model
             'status' => CourseStatus::class,
             'states' => 'array',
             'approvals' => 'array',
+            'cleared_flags' => 'array',
+            'reviewed_at' => 'datetime',
             'hours' => 'decimal:1',
             'published_at' => 'datetime',
         ];

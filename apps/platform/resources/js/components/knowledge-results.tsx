@@ -1,3 +1,4 @@
+import type { InertiaLinkProps } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
 import { FileText, Presentation, SearchX, Video } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -17,9 +18,12 @@ const icons = { text: FileText, slide: Presentation, transcript: Video };
 export function KnowledgeResults({
     query,
     results,
+    lessonHref = (hit) => showLesson(hit.lesson_id),
 }: {
     query: string;
     results: SearchHit[];
+    /** Where a result opens: the admin lesson page, or the learner's lesson at its place. */
+    lessonHref?: (hit: SearchHit) => NonNullable<InertiaLinkProps['href']>;
 }) {
     const { t } = useTranslation();
 
@@ -51,7 +55,7 @@ export function KnowledgeResults({
                             <p className="text-sm text-muted-foreground">
                                 {hit.course_title} ·{' '}
                                 <Link
-                                    href={showLesson(hit.lesson_id)}
+                                    href={lessonHref(hit)}
                                     className="font-medium text-primary underline-offset-4 hover:underline"
                                 >
                                     {hit.lesson_title}
