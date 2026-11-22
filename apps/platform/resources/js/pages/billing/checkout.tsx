@@ -10,23 +10,20 @@ import { useTranslation } from 'react-i18next';
 import { BrandMark } from '@/components/brand-mark';
 import { OrderSummary } from '@/components/order-summary';
 import { Button } from '@/components/ui/button';
-import type { PriceView } from '@/lib/billing';
-import { money } from '@/lib/billing';
+import { HostedPayment } from '@/components/hosted-payment';
+import type { GatewayId, PriceView, StartedCheckout } from '@/lib/billing';
+import { goToGateway, money } from '@/lib/billing';
 import { postJson } from '@/lib/content';
 import { simulate, start } from '@/routes/checkout';
 
-type Started = {
-    order: string;
-    client_secret: string | null;
-    simulator: boolean;
-};
-
 /**
- * Checkout on reos.com (web journey screen 3, B5.1): the product and what's
- * included, the payment fields from the gateway (Stripe's own embedded
- * checkout, so card data never touches REOS; or the Simulator's test panel)
- * and the order summary with the sponsor discount and tax. Paying shows the
- * receipt and unlocks the web and the app at once.
+ * Checkout on reos.com (web journey screen 3, B5.1, B5.2a): the product and
+ * what's included, the payment fields from the gateway that serves this
+ * state and product (Stripe's own embedded checkout; PayPal's or
+ * Authorize.net's hosted page after the ZIP code for tax; or the
+ * Simulator's test panel), and the order summary with the sponsor discount
+ * and tax. Card data never touches REOS. Paying shows the receipt and
+ * unlocks the web and the app at once.
  */
 export default function CheckoutPage({
     price,
@@ -40,11 +37,17 @@ export default function CheckoutPage({
         sponsor: string | null;
         charge: number;
     };
-    gateway: { simulator: boolean; publishable_key: string | null } | null;
+    gateway: {
+        id: GatewayId;
+        simulator: boolean;
+        needs_postal_code: boolean;
+        publishable_key: string | null;
+    } | null;
 }) {
     const { t, i18n } = useTranslation();
     const [error, setError] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
+    const [tax, setTax] = useState<number | null>(null);
     const stripe = useMemo(
         () =>
             gateway?.publishable_key
@@ -53,7 +56,7 @@ export default function CheckoutPage({
         [gateway?.publishable_key],
     );
     const fetchClientSecret = useCallback(async () => {
-        const started = await postJson<Started>(start(price.id).url);
+        const started = await postJson<StartedCheckout>(start(price.id).url);
 
         return started.client_secret ?? '';
     }, [price.id]);
@@ -63,7 +66,9 @@ export default function CheckoutPage({
         setError(null);
 
         try {
-            const started = await postJson<Started>(start(price.id).url);
+            const started = await postJson<StartedCheckout>(
+                start(price.id).url,
+            );
             router.post(simulate(started.order).url);
         } catch (e) {
             setError(
@@ -72,6 +77,23 @@ export default function CheckoutPage({
                     : t('billing.checkout.startFailed'),
             );
             setBusy(false);
+        }
+    };
+
+    const startWithPostalCode = async (postalCode: string) => {
+        const started = await postJson<StartedCheckout>(start(price.id).url, {
+            postal_code: postalCode,
+        });
+        setTax(started.tax);
+
+        return started;
+    };
+
+    const payHosted = (started: StartedCheckout) => {
+        if (started.simulator) {
+            router.post(simulate(started.order).url);
+        } else if (started.redirect) {
+            goToGateway(started.redirect);
         }
     };
 
@@ -144,6 +166,13 @@ export default function CheckoutPage({
                                 >
                                     {t('billing.errors.paused')}
                                 </p>
+                            ) : gateway.needs_postal_code ? (
+                                <HostedPayment
+                                    gateway={gateway.id}
+                                    simulator={gateway.simulator}
+                                    onStart={startWithPostalCode}
+                                    onPay={payHosted}
+                                />
                             ) : gateway.simulator ? (
                                 <div className="space-y-3">
                                     <p className="flex gap-2 rounded-reos-md bg-reos-tone-info-bg p-3 text-sm text-reos-tone-info-fg">
@@ -199,6 +228,9 @@ export default function CheckoutPage({
                         <p className="text-sm text-muted-foreground">
                             {t('billing.checkout.processedBy', {
                                 state: price.state,
+                                gateway: t(
+                                    `gateways.names.${gateway?.id ?? 'stripe'}`,
+                                ),
                             })}
                         </p>
                     </div>
@@ -209,7 +241,7 @@ export default function CheckoutPage({
                             amount={quote.amount}
                             discount={quote.discount}
                             sponsor={quote.sponsor}
-                            tax={null}
+                            tax={tax}
                             state={price.state}
                         />
                         <p className="flex gap-2 rounded-reos-md bg-reos-tone-info-bg p-3 text-sm text-reos-tone-info-fg">

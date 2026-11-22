@@ -1,6 +1,6 @@
 # Personal data map
 
-Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 21 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
+Where REOS keeps personal data, why, and how each right under the Texas Data Privacy and Security Act (TDPSA) reaches it. Reviewed 21 November 2026 (A4.3b; calendar rows added in B4.1, to-dos in B4.3, licences in A5.1, purchases in B5.1, ZIP codes for tax in B5.2a); the review date shows on Compliance and audit (screen 71, `reos.privacy.data_map_reviewed`). Add a row, and the field to `App\Services\Privacy\DataExport`, in the same change that adds personal data.
 
 | Data | Where | Why | See ("Download my data") | Delete (account deletion, after 30 days) |
 | --- | --- | --- | --- | --- |
@@ -20,15 +20,11 @@ Where REOS keeps personal data, why, and how each right under the Texas Data Pri
 | AI credit use (feature, engine, count; never what was said) | `ai_credit_uses` | The monthly AI allowance | AI credit uses | Deleted (cascade) |
 | What was said for a voice to-do | Not stored | Speech becomes words on the phone (no audio leaves it); the words are sent to Claude on Amazon Bedrock (no training on it) or read by the built-in parser, then discarded | — | — |
 | The phone's address book | Not stored | Searched on the phone for a name said in a to-do; only the chosen contact's id and name are saved with the to-do | — | — |
-| Purchases (product, state, price, sponsor discount, tax, total, gateway, payment and session ids, receipt link, date) | `orders` | Checkout on reos.com and receipts (B5.1) | Purchases | Kept for tax records (7 years), linked to no one |
+| Purchases (product, state, ZIP code when the gateway needs it for tax, price, sponsor discount, tax, total, gateway, payment and session ids, receipt link, date) | `orders` | Checkout on reos.com and receipts (B5.1); the ZIP code works out sales tax at PayPal and Authorize.net (B5.2a) | Purchases | Kept for tax records (7 years), linked to no one |
 | Plans (product, gateway subscription id, status, renewal date) and what they unlock | `subscriptions`, `entitlements` | Access on the web and in the app (B5.1) | Purchases | Deleted (cascade); cancel the plan first in Plan and billing |
 | Sponsor codes used (which code, when); the sponsor sees the person's name on its codes | `sponsor_code_redemptions` | Sponsored seats (B5.1b) | Purchases | Deleted (cascade) |
 | The person's customer id at each payment gateway | `gateway_customers` | Receipts and the gateway's card and invoice portal (card details stay with the gateway, never REOS) | Purchases | Deleted (cascade); the gateway keeps its own records under its own policy |
-| Tool interests and requests | `integration_interests`, `tool_requests` | Catalogue demand | Purchases (product, state, price, sponsor discount, tax, total, gateway, payment and session ids, receipt link, date) | `orders` | Checkout on reos.com and receipts (B5.1) | Purchases | Kept for tax records (7 years), linked to no one |
-| Plans (product, gateway subscription id, status, renewal date) and what they unlock | `subscriptions`, `entitlements` | Access on the web and in the app (B5.1) | Purchases | Deleted (cascade); cancel the plan first in Plan and billing |
-| Sponsor codes used (which code, when); the sponsor sees the person's name on its codes | `sponsor_code_redemptions` | Sponsored seats (B5.1b) | Purchases | Deleted (cascade) |
-| The person's customer id at each payment gateway | `gateway_customers` | Receipts and the gateway's card and invoice portal (card details stay with the gateway, never REOS) | Purchases | Deleted (cascade); the gateway keeps its own records under its own policy |
-| Tool interests and requests | Deleted (cascade) |
+| Tool interests and requests | `integration_interests`, `tool_requests` | Catalogue demand | Tool interests | Deleted (cascade) |
 | Invitations sent to them | `invitations` (email or phone) | Joining a tenant | — (the tenant's record) | Expire after 14 days |
 | Privacy requests | `privacy_requests` | TDPSA duties | Privacy requests | Kept as a record without name, email or details |
 | What they did (audit log) | `audit_events` (actor, IP, user agent) | Security and accountability | Activity (last 1,000) | Kept for the tenant's log retention, linked to no one |

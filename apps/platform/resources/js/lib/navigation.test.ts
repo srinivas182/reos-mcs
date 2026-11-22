@@ -15,6 +15,7 @@ describe('roleNavigation (web journey, Navigation by role)', () => {
             ['states', '/admin/states'],
             ['contentAndApprovals', '/admin/content'],
             ['integrations', '/admin/integrations'],
+            ['paymentGateways', '/admin/gateways'],
             ['plansAndPricing', '/admin/plans'],
             ['complianceAndAudit', '/admin/compliance'],
         ]);

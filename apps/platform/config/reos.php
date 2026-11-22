@@ -82,4 +82,14 @@ return [
         ],
     ],
 
+    // Payments (B5.1, B5.2; screen 66). Fees and the refund window are
+    // Sprint 5 decisions; change them here, not in code.
+    'billing' => [
+        // REOS's share of school, instructor and mentor sales (Stripe Connect).
+        'platform_fee_percent' => (int) env('REOS_PLATFORM_FEE_PERCENT', 10),
+        // Full refund within this many days, if less than a quarter of a course is done.
+        'refund_days' => (int) env('REOS_REFUND_DAYS', 7),
+        'refund_max_progress_percent' => 25,
+    ],
+
 ];

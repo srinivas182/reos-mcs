@@ -36,6 +36,16 @@ final readonly class StripeGateway implements PaymentGateway
         return $this->environment;
     }
 
+    public function supportsRecurring(): bool
+    {
+        return true;
+    }
+
+    public function calculatesTax(): bool
+    {
+        return true;
+    }
+
     public function checkout(Order $order, User $buyer, string $returnUrl): CheckoutSession
     {
         $price = $order->price;

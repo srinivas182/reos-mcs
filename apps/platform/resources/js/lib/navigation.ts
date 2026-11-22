@@ -22,6 +22,7 @@ import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
 import { index as billingIndex } from '@/routes/billing';
+import { index as gateways } from '@/routes/gateways';
 import { index as plans } from '@/routes/plans';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -48,6 +49,7 @@ export type NavLabel =
     | 'contentAndApprovals'
     | 'courses'
     | 'learnAndCe'
+    | 'paymentGateways'
     | 'plansAndPricing'
     | 'planAndBilling'
     | 'connections';
@@ -187,7 +189,7 @@ export function roleNavigation(role: RoleName | null): BuiltNavItem[] {
                 '/admin/content',
             ),
             item('integrations', Plug, integrations()),
-            planned('paymentGateways'),
+            item('paymentGateways', CreditCard, gateways(), '/admin/gateways'),
             item('plansAndPricing', Tag, plans(), '/admin/plans'),
             planned('providerCategories'),
             planned('aiAndCredits'),

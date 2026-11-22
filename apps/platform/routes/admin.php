@@ -1,5 +1,6 @@
 <?php
 
+use App\Billing\Gateways\Gateways;
 use App\Http\Controllers\Admin\CatalogueController;
 use App\Http\Controllers\Admin\ComplianceController;
 use App\Http\Controllers\Admin\Content\ContentApprovalsController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Admin\Content\CourseModuleController;
 use App\Http\Controllers\Admin\Content\LessonController;
 use App\Http\Controllers\Admin\Content\LessonFileController;
 use App\Http\Controllers\Admin\DemandController;
+use App\Http\Controllers\Admin\GatewayController;
 use App\Http\Controllers\Admin\IntegrationCheckController;
 use App\Http\Controllers\Admin\IntegrationController;
 use App\Http\Controllers\Admin\IntegrationCredentialController;
@@ -181,6 +183,21 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:content.m
 
         Route::get('courses/{course}', [CourseController::class, 'show'])->whereNumber('course')->name('courses.show');
         Route::get('lessons/{lesson}', [LessonController::class, 'show'])->whereNumber('lesson')->name('lessons.show');
+    });
+
+// Payment gateways (B5.2a, web journey screen 66): which gateway serves
+// which states and products, and the kill switch. Keys stay in Integrations.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.manage'])
+    ->prefix('admin/gateways')
+    ->name('gateways.')
+    ->group(function () {
+        Route::get('/', [GatewayController::class, 'index'])->name('index');
+
+        Route::middleware('throttle:60,1,admin-gateways')->group(function () {
+            Route::put('{gateway}', [GatewayController::class, 'update'])->whereIn('gateway', Gateways::CHECKOUT)->name('update');
+            Route::post('{gateway}/pause', [GatewayController::class, 'pause'])->whereIn('gateway', Gateways::CHECKOUT)->name('pause');
+            Route::delete('{gateway}/pause', [GatewayController::class, 'resume'])->whereIn('gateway', Gateways::CHECKOUT)->name('resume');
+        });
     });
 
 // Plans and pricing (B5.1, web journey screen 67): products and prices per

@@ -29,6 +29,9 @@ use Illuminate\Support\Carbon;
  * @property string $gateway
  * @property string $environment
  * @property string|null $gateway_session_id
+ * @property string|null $gateway_reference The gateway's own order or invoice number
+ * @property string|null $postal_code For tax at gateways without built-in tax
+ * @property string|null $tax_calculation_id
  * @property string|null $gateway_payment_id
  * @property string|null $gateway_subscription_id
  * @property string|null $receipt_url
@@ -44,7 +47,7 @@ final class Order extends Model
 {
     protected $fillable = [
         'uuid', 'user_id', 'product_id', 'price_id', 'state_code', 'amount_cents', 'discount_cents', 'sponsor_organisation_id', 'tax_cents',
-        'total_cents', 'currency', 'status', 'gateway', 'environment', 'gateway_session_id', 'gateway_payment_id', 'gateway_subscription_id',
+        'total_cents', 'currency', 'status', 'gateway', 'environment', 'gateway_session_id', 'gateway_reference', 'postal_code', 'tax_calculation_id', 'gateway_payment_id', 'gateway_subscription_id',
         'receipt_url', 'paid_at',
     ];
 

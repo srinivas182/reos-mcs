@@ -13,11 +13,16 @@ use Illuminate\Support\Str;
 /**
  * The Simulator (outside production; B5.1): checkout shows a clearly marked
  * test panel instead of the gateway's card fields, and "Pay" marks the
- * session paid. Tax is worked out as Texas would (8.25%, demo only), so
- * receipts and the order summary look real. Never used in production.
+ * session paid. Standing in for Stripe, it works out tax as Texas would
+ * (8.25%, demo only), so receipts and the order summary look real; standing
+ * in for PayPal or Authorize.net it charges the tax REOS worked out, as they
+ * do (B5.2a). Never used in production.
  */
-final class SimulatedGateway implements PaymentGateway
+final readonly class SimulatedGateway implements PaymentGateway
 {
+    /** @param  string  $gateway  the gateway it stands in for */
+    public function __construct(private string $gateway = 'stripe') {}
+
     /** Demo tax rate, so the summary shows a tax line. */
     public const TAX_RATE = 0.0825;
 
@@ -25,7 +30,7 @@ final class SimulatedGateway implements PaymentGateway
 
     public function id(): string
     {
-        return 'stripe';
+        return $this->gateway;
     }
 
     public function environment(): string
@@ -33,10 +38,21 @@ final class SimulatedGateway implements PaymentGateway
         return 'simulator';
     }
 
+    public function supportsRecurring(): bool
+    {
+        return $this->gateway === 'stripe';
+    }
+
+    /** Like the gateway it stands in for: only Stripe works out tax itself. */
+    public function calculatesTax(): bool
+    {
+        return $this->gateway === 'stripe';
+    }
+
     public function checkout(Order $order, User $buyer, string $returnUrl): CheckoutSession
     {
         $id = 'sim_cs_'.Str::lower(Str::random(24));
-        Cache::put(self::key($id), ['order' => $order->uuid, 'paid' => false, 'recurring' => $order->price->interval->recurring(), 'interval' => $order->price->interval->value, 'charge' => $order->chargeCents()], now()->addHours(self::TTL_HOURS));
+        Cache::put(self::key($id), ['order' => $order->uuid, 'paid' => false, 'recurring' => $order->price->interval->recurring(), 'interval' => $order->price->interval->value, 'charge' => $order->chargeCents(), 'tax' => $this->calculatesTax() ? null : ($order->tax_cents ?? 0)], now()->addHours(self::TTL_HOURS));
 
         return new CheckoutSession($id);
     }
@@ -67,7 +83,7 @@ final class SimulatedGateway implements PaymentGateway
         }
 
         $charge = is_int($session['charge'] ?? null) ? $session['charge'] : 0;
-        $tax = (int) round($charge * self::TAX_RATE);
+        $tax = is_int($session['tax'] ?? null) ? $session['tax'] : (int) round($charge * self::TAX_RATE);
         $paid = ($session['paid'] ?? false) === true;
         $interval = $session['interval'] ?? 'once';
 

@@ -19,6 +19,12 @@ interface PaymentGateway
     /** sandbox or live (simulator outside production). */
     public function environment(): string;
 
+    /** Whether it can take monthly or yearly plans. */
+    public function supportsRecurring(): bool;
+
+    /** Whether the gateway works out tax itself (Stripe Tax); otherwise REOS asks Stripe's tax calculation first. */
+    public function calculatesTax(): bool;
+
     /** Starts a checkout for the order; tax is worked out by the gateway. */
     public function checkout(Order $order, User $buyer, string $returnUrl): CheckoutSession;
 
