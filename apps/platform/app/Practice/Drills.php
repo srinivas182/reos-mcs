@@ -130,13 +130,13 @@ final readonly class Drills
      *
      * @return array{eliminated: int}
      *
-     * @throws ValidationException outside a drill, or once answered
+     * @throws ValidationException outside a drill or a challenge, or once answered
      */
     public function hint(TestAttempt $attempt, int $question): array
     {
         $found = QuizQuestion::query()->find($question);
 
-        if ($attempt->kind !== TestAttempt::DRILL || $attempt->submitted_at !== null || $found === null || ! in_array($question, $attempt->question_ids, true) || isset(($attempt->answers ?? [])[$question])) {
+        if (! in_array($attempt->kind, [TestAttempt::DRILL, TestAttempt::CHALLENGE], true) || $attempt->submitted_at !== null || $found === null || ! in_array($question, $attempt->question_ids, true) || isset(($attempt->answers ?? [])[$question])) {
             throw ValidationException::withMessages(['question' => __('practice.errors.noHint')]);
         }
 

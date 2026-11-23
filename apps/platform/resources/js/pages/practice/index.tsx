@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { ClipboardCheck, GraduationCap, Target } from 'lucide-react';
+import { ClipboardCheck, GraduationCap, Swords, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
 import { CoachPanel } from '@/components/practice/coach';
@@ -15,6 +15,7 @@ import { isExam } from '@/components/practice/types';
 import { Button } from '@/components/ui/button';
 import {
     attempt as openAttempt,
+    challenges as challengesPage,
     readiness as readinessPage,
     results as openResults,
     start,
@@ -59,6 +60,14 @@ export default function PracticeIndex({
                 <PageHeader
                     title={t('practice.title')}
                     description={t('practice.description')}
+                    actions={
+                        <Button variant="outline" asChild>
+                            <Link href={challengesPage()}>
+                                <Swords aria-hidden />
+                                {t('practice.challenges.title')}
+                            </Link>
+                        </Button>
+                    }
                 />
 
                 {coach ? <CoachPanel coach={coach} /> : null}

@@ -32,10 +32,10 @@ use Illuminate\Validation\ValidationException;
  *
  * @phpstan-type Question array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, flagged: bool, feedback: array{correct: bool, right: int, explanation: string, source: string}|null}
  * @phpstan-type Section array{portion: string, from: int, count: int, scored: int, minutes: int, pass: int, started_at: string|null, ends_at: string|null, ended_at: string|null}
- * @phpstan-type Attempt array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, paused: bool, section: array{index: int, of: int, portion: string, minutes: int, questions: int}|null, questions: list<Question>}
+ * @phpstan-type Attempt array{id: int, kind: string, mode: string, topic: string|null, challenge: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, paused: bool, section: array{index: int, of: int, portion: string, minutes: int, questions: int}|null, questions: list<Question>}
  * @phpstan-type TopicScore array{topic: string, correct: int, total: int, percent: int, weight: int}
  * @phpstan-type PortionScore array{portion: string, correct: int, total: int, pass: int, passed: bool, percent: int, previous: int|null, seconds: int, pace: int}
- * @phpstan-type Results array{id: int, kind: string, mode: string, score: int, correct: int, total: int, pass_line: int, passed: bool|null, previous: int|null, seconds: int, portions: list<PortionScore>, timing: array{seconds_per_question: int, pace: int}|null, topics: list<TopicScore>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, portion: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, scored: bool, explanation: string, source: string, lesson: array{id: int, seconds: int|null}|null, math: string|null}>}
+ * @phpstan-type Results array{id: int, kind: string, mode: string, challenge: string|null, score: int, correct: int, total: int, pass_line: int, passed: bool|null, previous: int|null, seconds: int, portions: list<PortionScore>, timing: array{seconds_per_question: int, pace: int}|null, topics: list<TopicScore>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, portion: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, scored: bool, explanation: string, source: string, lesson: array{id: int, seconds: int|null}|null, math: string|null}>}
  */
 final readonly class Tests
 {
@@ -45,7 +45,7 @@ final readonly class Tests
     /** The share of questions to pass (the Texas exams' 70%). */
     public const PASS = 70;
 
-    public function __construct(private PersonStates $states, private StudyPlans $plans, private ExamFormats $formats, private Readiness $readiness, private Drills $drills) {}
+    public function __construct(private PersonStates $states, private StudyPlans $plans, private ExamFormats $formats, private Readiness $readiness, private Drills $drills, private Challenges $challenges) {}
 
     /**
      * Start a test, or carry on with the same kind still open.
@@ -286,6 +286,10 @@ final readonly class Tests
         $this->plans->rebuild($attempt->user, $attempt->kind === TestAttempt::DIAGNOSTIC ? 'diagnostic' : 'test');
         $this->readiness->record($attempt->user);
 
+        if ($attempt->kind === TestAttempt::CHALLENGE) {
+            $this->challenges->finished($attempt);
+        }
+
         return $attempt;
     }
 
@@ -366,7 +370,7 @@ final readonly class Tests
         $left = $attempt->ends_at === null ? null : max(0, (int) ($attempt->paused_at ?? now())->diffInSeconds($attempt->ends_at, false));
 
         return [
-            'id' => $attempt->id, 'kind' => $attempt->kind, 'mode' => $attempt->mode, 'topic' => $attempt->topic, 'total' => count($questions),
+            'id' => $attempt->id, 'kind' => $attempt->kind, 'mode' => $attempt->mode, 'topic' => $attempt->topic, 'challenge' => $attempt->challenge?->uuid, 'total' => count($questions),
             'answered' => count(array_filter($questions, static fn (array $q): bool => $q['choice'] !== null)),
             'started_at' => $attempt->started_at->toIso8601String(), 'ends_at' => $attempt->ends_at?->toIso8601String(),
             'seconds_left' => $left, 'submitted' => $attempt->submitted_at !== null, 'paused' => $attempt->paused_at !== null,
@@ -440,7 +444,7 @@ final readonly class Tests
         $passLine = $portions === [] ? self::PASS : (int) round(100 * array_sum(array_column($portions, 'pass')) / max(1, $scoredTotal));
 
         return [
-            'id' => $attempt->id, 'kind' => $attempt->kind, 'mode' => $attempt->mode, 'score' => $attempt->score ?? 0, 'correct' => $attempt->correct ?? 0, 'total' => $scoredTotal, 'pass_line' => $passLine,
+            'id' => $attempt->id, 'kind' => $attempt->kind, 'mode' => $attempt->mode, 'challenge' => $attempt->challenge?->uuid, 'score' => $attempt->score ?? 0, 'correct' => $attempt->correct ?? 0, 'total' => $scoredTotal, 'pass_line' => $passLine,
             'passed' => $portions === [] ? null : ! in_array(false, array_column($portions, 'passed'), true),
             'previous' => $earlier?->score,
             'seconds' => (int) $attempt->started_at->diffInSeconds($end),

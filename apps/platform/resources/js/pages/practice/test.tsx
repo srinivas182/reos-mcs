@@ -77,21 +77,23 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
     const title =
         attempt.kind === 'diagnostic'
             ? t('practice.diagnostic.title')
-            : drill
-              ? attempt.topic
-                  ? t('practice.drill.topicTitle', { topic: topicName })
-                  : t('practice.drill.title')
-              : attempt.kind === 'retest'
-                ? t('practice.drill.retestTitle', { topic: topicName })
-                : attempt.kind === 'topic'
-                  ? t('practice.topicQuiz', {
-                        topic: attempt.topic
-                            ? t(`practice.topics.${attempt.topic}`)
-                            : '',
-                    })
-                  : t(
-                        `practice.portions.${isExam(attempt.kind) ? attempt.kind : 'simulation'}.title`,
-                    );
+            : attempt.kind === 'challenge'
+              ? t('practice.challenges.testTitle')
+              : drill
+                ? attempt.topic
+                    ? t('practice.drill.topicTitle', { topic: topicName })
+                    : t('practice.drill.title')
+                : attempt.kind === 'retest'
+                  ? t('practice.drill.retestTitle', { topic: topicName })
+                  : attempt.kind === 'topic'
+                    ? t('practice.topicQuiz', {
+                          topic: attempt.topic
+                              ? t(`practice.topics.${attempt.topic}`)
+                              : '',
+                      })
+                    : t(
+                          `practice.portions.${isExam(attempt.kind) ? attempt.kind : 'simulation'}.title`,
+                      );
     const last =
         attempt.section === null ||
         attempt.section.index === attempt.section.of;
@@ -324,7 +326,7 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
                                 </label>
                             ))}
                         </fieldset>
-                        {drill &&
+                        {(drill || attempt.kind === 'challenge') &&
                         question.feedback === null &&
                         ruledOut === undefined ? (
                             <Button
@@ -333,7 +335,9 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
                                 onClick={() => void hint()}
                             >
                                 <Lightbulb aria-hidden />
-                                {t('practice.drill.hint')}
+                                {attempt.kind === 'challenge'
+                                    ? t('practice.challenges.hint')
+                                    : t('practice.drill.hint')}
                             </Button>
                         ) : null}
                         {ruledOut !== undefined &&

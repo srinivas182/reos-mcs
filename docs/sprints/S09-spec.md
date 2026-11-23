@@ -179,6 +179,11 @@
   - **Locked screen:** a lock-screen "now playing" session keeps it going, with play or pause to repeat and next to skip.
   - **Ways in:** the practice hub, the "Quiz me" quick action, "Hey Siri, quiz me with REOS" (App Shortcut, iOS 18+) and the Android App Action.
   - **Driving:** none of it is offered for driving.
+- **As built, A9.3b** (ADR 0036 §7–11):
+  - **Challenges** (phone screen 52 and the web Challenges page): Challenge a friend picks 10 questions and shares a 7-day link (the share sheet on the phone, copy link on the web). Accepting starts the same 10 questions in Exam mode.
+  - **Hints** cost 5 points, in challenges only.
+  - **The board** shows points with first names only, to those who took part. A notification goes to the others when someone finishes.
+  - **The link** opens for anyone, signed out included (first name and sign in).
 - **Done when:** the voice quiz works on the lock screen, and a challenge sent by link is answered by a second candidate with the same questions.
 
 ### B9.1 Lone Wolf (Team B)

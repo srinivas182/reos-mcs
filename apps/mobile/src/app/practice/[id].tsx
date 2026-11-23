@@ -139,7 +139,9 @@ export default function TestScreen() {
   const title =
     attempt.kind === 'diagnostic'
       ? t('practice.diagnostic.title')
-      : isExam(attempt.kind)
+      : attempt.kind === 'challenge'
+        ? t('practice.challenges.testTitle')
+        : isExam(attempt.kind)
         ? t(`practice.portions.${attempt.kind}.title`)
         : drill
           ? testTopic
@@ -189,7 +191,9 @@ export default function TestScreen() {
         options={question.options.map((option, i) => ({ value: String(i), label: option, ...(ruledOut === i && !question.feedback ? { description: t('practice.drill.ruledOut') } : {}) }))}
         onChange={(value) => (question.feedback || paused || (ruledOut === Number(value) && !question.feedback) ? undefined : void save({ choice: Number(value) }))}
       />
-      {drill && !question.feedback && ruledOut === undefined ? <Button variant="secondary" icon={Lightbulb} label={t('practice.drill.hint')} onPress={() => void hint()} /> : null}
+      {(drill || attempt.kind === 'challenge') && !question.feedback && ruledOut === undefined ? (
+        <Button variant="secondary" icon={Lightbulb} label={attempt.kind === 'challenge' ? t('practice.challenges.hint') : t('practice.drill.hint')} onPress={() => void hint()} />
+      ) : null}
       {ruledOut !== undefined && !question.feedback ? <Callout tone="info" title={t('practice.drill.hintGiven', { option: question.options[ruledOut] ?? '' })} live /> : null}
       {question.feedback ? (
         <Callout

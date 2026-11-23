@@ -1,5 +1,6 @@
 import type {
     Attempt,
+    ChallengeBoard,
     Coach,
     Deck,
     HubTest,
@@ -102,6 +103,7 @@ export const attempt: Attempt = {
     id: 9,
     kind: 'diagnostic',
     mode: 'exam',
+    challenge: null,
     topic: null,
     total: 3,
     answered: 1,
@@ -159,6 +161,7 @@ export const results: Results = {
     id: 9,
     kind: 'diagnostic',
     mode: 'exam',
+    challenge: null,
     score: 72,
     correct: 36,
     total: 50,
@@ -581,4 +584,46 @@ export const reportShares: ReportShares = {
     school: false,
     can_share_school: true,
     link: null,
+};
+
+/** Sofia's challenge (screen 52, A9.3b): Marco finished with a hint; first names only. */
+export const challengeBoard: ChallengeBoard = {
+    uuid: '6c1f0f3e-58a4-4a63-9a8e-2d7f1c0b9e21',
+    link: 'https://reos.com/challenges/6c1f0f3e-58a4-4a63-9a8e-2d7f1c0b9e21',
+    from: 'Sofia',
+    mine: true,
+    questions: 10,
+    expires_at: '2026-11-30T15:00:00Z',
+    expired: false,
+    attempt_id: 71,
+    submitted: true,
+    entries: [
+        {
+            first_name: 'Marco',
+            correct: 9,
+            total: 10,
+            hints: 1,
+            points: 85,
+            mine: false,
+            finished: true,
+        },
+        {
+            first_name: 'Sofia',
+            correct: 8,
+            total: 10,
+            hints: 0,
+            points: 80,
+            mine: true,
+            finished: true,
+        },
+        {
+            first_name: 'Lena',
+            correct: 0,
+            total: 10,
+            hints: 0,
+            points: 0,
+            mine: false,
+            finished: false,
+        },
+    ],
 };

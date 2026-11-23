@@ -275,6 +275,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practice/challenges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My challenges
+         * @description The ones I sent and the ones I accepted, newest first, each with its board.
+         */
+        get: operations["practice.challenges.index"];
+        put?: never;
+        /**
+         * Challenge a friend
+         * @description Picks 10 questions and starts my own attempt; share the link. It works for 7 days.
+         */
+        post: operations["practice.challenges.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/challenges/{challenge}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A challenge
+         * @description Who sent it and how many questions; the board once I've accepted (first names only).
+         */
+        get: operations["practice.challenges.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/challenges/{challenge}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept a challenge
+         * @description Starts (or carries on) my attempt at the same 10 questions.
+         */
+        post: operations["practice.challenges.accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/hub": {
         parameters: {
             query?: never;
@@ -4758,6 +4822,199 @@ export interface operations {
             };
         };
     };
+    "practice.challenges.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            link: string;
+                            from: string;
+                            mine: boolean;
+                            questions: number;
+                            expires_at: string;
+                            expired: boolean;
+                            attempt_id: number | null;
+                            submitted: boolean;
+                            entries: {
+                                first_name: string;
+                                correct: number;
+                                total: number;
+                                hints: number;
+                                points: number;
+                                mine: boolean;
+                                finished: boolean;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.challenges.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            link: string;
+                            from: string;
+                            mine: boolean;
+                            questions: number;
+                            expires_at: string;
+                            expired: boolean;
+                            attempt_id: number | null;
+                            submitted: boolean;
+                            entries: {
+                                first_name: string;
+                                correct: number;
+                                total: number;
+                                hints: number;
+                                points: number;
+                                mine: boolean;
+                                finished: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.challenges.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                challenge: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            link: string;
+                            from: string;
+                            mine: boolean;
+                            questions: number;
+                            expires_at: string;
+                            expired: boolean;
+                            attempt_id: number | null;
+                            submitted: boolean;
+                            entries: {
+                                first_name: string;
+                                correct: number;
+                                total: number;
+                                hints: number;
+                                points: number;
+                                mine: boolean;
+                                finished: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.challenges.accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                challenge: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            link: string;
+                            from: string;
+                            mine: boolean;
+                            questions: number;
+                            expires_at: string;
+                            expired: boolean;
+                            attempt_id: number | null;
+                            submitted: boolean;
+                            entries: {
+                                first_name: string;
+                                correct: number;
+                                total: number;
+                                hints: number;
+                                points: number;
+                                mine: boolean;
+                                finished: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "practice.hub": {
         parameters: {
             query?: never;
@@ -8714,6 +8971,7 @@ export interface operations {
                             kind: string;
                             mode: string;
                             topic: string | null;
+                            challenge: string | null;
                             total: number;
                             answered: number;
                             started_at: string;
@@ -8785,6 +9043,7 @@ export interface operations {
                             kind: string;
                             mode: string;
                             topic: string | null;
+                            challenge: string | null;
                             total: number;
                             answered: number;
                             started_at: string;
@@ -8901,6 +9160,7 @@ export interface operations {
                             id: number;
                             kind: string;
                             mode: string;
+                            challenge: string | null;
                             score: number;
                             correct: number;
                             total: number;
@@ -8991,6 +9251,7 @@ export interface operations {
                             id: number;
                             kind: string;
                             mode: string;
+                            challenge: string | null;
                             score: number;
                             correct: number;
                             total: number;
@@ -9091,6 +9352,7 @@ export interface operations {
                             kind: string;
                             mode: string;
                             topic: string | null;
+                            challenge: string | null;
                             total: number;
                             answered: number;
                             started_at: string;
@@ -9162,6 +9424,7 @@ export interface operations {
                             kind: string;
                             mode: string;
                             topic: string | null;
+                            challenge: string | null;
                             total: number;
                             answered: number;
                             started_at: string;

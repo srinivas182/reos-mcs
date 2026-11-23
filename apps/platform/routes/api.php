@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Notifications\TextsController as ApiTextsController
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
+use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
 use App\Http\Controllers\Api\Practice\MathLabController;
@@ -214,6 +215,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('practice/math', [MathLabController::class, 'index'])->name('api.practice.math.index');
     Route::post('practice/math/problems', [MathLabController::class, 'store'])->middleware('throttle:120,1,api-practice-math')->name('api.practice.math.store');
     Route::post('practice/math/check', [MathLabController::class, 'check'])->middleware('throttle:240,1,api-practice-math')->name('api.practice.math.check');
+    // Challenges (A9.3b).
+    Route::get('practice/challenges', [ChallengeController::class, 'index'])->name('api.practice.challenges.index');
+    Route::post('practice/challenges', [ChallengeController::class, 'store'])->middleware('throttle:20,1,api-practice-challenges')->name('api.practice.challenges.store');
+    Route::get('practice/challenges/{challenge}', [ChallengeController::class, 'show'])->whereUuid('challenge')->name('api.practice.challenges.show');
+    Route::post('practice/challenges/{challenge}/accept', [ChallengeController::class, 'accept'])->whereUuid('challenge')->middleware('throttle:30,1,api-practice-challenges')->name('api.practice.challenges.accept');
     // The weekly progress report and sharing it (A9.2e).
     Route::get('practice/reports/weekly', [ReportController::class, 'show'])->name('api.practice.reports.show');
     Route::post('practice/reports/weekly/share', [ReportController::class, 'share'])->middleware('throttle:20,1,api-practice-reports')->name('api.practice.reports.share');

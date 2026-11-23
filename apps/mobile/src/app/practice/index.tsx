@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from 'expo-router';
-import { CalendarCheck, ClipboardCheck, Gauge, GraduationCap, Headphones, Target } from 'lucide-react-native';
+import { CalendarCheck, ClipboardCheck, Gauge, GraduationCap, Headphones, Swords, Target } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -89,6 +89,7 @@ export default function PracticeHub() {
         </Card>
       ) : null}
       <ListRow icon={Gauge} tone="success" title={t('practice.readinessMap.title')} subtitle={t('practice.readinessMap.description')} onPress={() => router.push('/practice/readiness')} />
+      <ListRow icon={Swords} title={t('practice.challenges.title')} subtitle={t('practice.challenges.hub')} onPress={() => router.push('/practice/challenges')} />
       <ListRow icon={Headphones} title={t('practice.handsFree.title')} subtitle={t('practice.handsFree.hub')} onPress={() => router.push('/practice/hands-free')} />
       <ListRow icon={CalendarCheck} title={t('practice.reports.title')} subtitle={t('practice.reports.description')} onPress={() => router.push('/practice/progress')} />
       {exams.length > 0 ? <SectionTitle>{t('practice.portions.title')}</SectionTitle> : null}

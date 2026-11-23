@@ -4709,7 +4709,8 @@
       "approval_expiring": "Course approvals and seat time",
       "avatar_consent_ended": "Avatar consent ended",
       "content_review": "Lesson and question reviews",
-      "weekly_report": "Weekly progress report"
+      "weekly_report": "Weekly progress report",
+      "challenge": "Challenges"
     },
     "digest": {
       "subject": {
@@ -6521,6 +6522,43 @@
         "stopped": "Quiz stopped."
       },
       "hub": "The quiz read aloud; answer by voice. Not for driving."
+    },
+    "challenges": {
+      "errors": {
+        "expired": "This challenge has ended. Send a new one."
+      },
+      "mail": {
+        "finished": ":name finished your challenge",
+        "score": ":points points (:correct of :total right).",
+        "open": "See the board"
+      },
+      "title": "Challenges",
+      "description": "Challenge a friend with the same 10 questions. Results come at the end; a hint costs 5 points here. First names only.",
+      "create": "Challenge a friend",
+      "yours": "Your challenge",
+      "from": "{{name}} challenged you",
+      "ended": "This challenge has ended.",
+      "until_one": "{{count}} question · open until {{date}}",
+      "until_other": "{{count}} questions · open until {{date}}",
+      "accept": "Accept",
+      "answer": "Answer the questions",
+      "copy": "Copy the link",
+      "copied": "Link copied. Send it to a friend.",
+      "board": "Board",
+      "you": "{{name}} (you)",
+      "points_one": "{{count}} point · {{correct}} of {{total}} right",
+      "points_other": "{{count}} points · {{correct}} of {{total}} right",
+      "playing": "Still answering",
+      "emptyTitle": "No challenges yet",
+      "empty": "Challenge a friend: you both answer the same 10 questions, and you both see who scored more.",
+      "acceptBody_one": "{{name}} sent you {{count}} question. Answer it and see who scores more.",
+      "acceptBody_other": "{{name}} sent you {{count}} questions. Answer them and see who scores more.",
+      "signIn": "Sign in to accept",
+      "testTitle": "Challenge",
+      "hint": "Hint (costs 5 points)",
+      "share": "Share the challenge",
+      "shareMessage": "I challenge you to 10 Texas exam questions on REOS: {{link}}",
+      "hub": "Challenge a friend with the same 10 questions."
     }
   },
   "brokerageIntegrations": {

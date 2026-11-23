@@ -37,6 +37,8 @@ enum NotificationKind: string
     case ContentReview = 'content_review';
     /** The candidate's weekly progress report, Sunday evening (A9.2e). */
     case WeeklyReport = 'weekly_report';
+    /** A challenge's result, or one sent to the candidate's study group (A9.3). */
+    case Challenge = 'challenge';
 
     public const INBOX = 'inbox';
 
@@ -90,7 +92,7 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport => 'learning',
+            self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
         };

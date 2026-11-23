@@ -86,6 +86,7 @@ describe('Ask why (screen 45, A9.2e)', () => {
     id: 9,
     kind: 'topic',
     mode: 'exam',
+    challenge: null,
     passed: null,
     portions: [],
     timing: null,

@@ -4709,7 +4709,8 @@
       "approval_expiring": "Aprobaciones de cursos y tiempo de clase",
       "avatar_consent_ended": "Consentimiento de avatar terminado",
       "content_review": "Revisiones de lecciones y preguntas",
-      "weekly_report": "Informe de progreso semanal"
+      "weekly_report": "Informe de progreso semanal",
+      "challenge": "Desafíos"
     },
     "digest": {
       "subject": {
@@ -6521,6 +6522,43 @@
         "stopped": "Cuestionario detenido."
       },
       "hub": "El cuestionario en voz alta; responda con la voz. No es para manejar."
+    },
+    "challenges": {
+      "errors": {
+        "expired": "Este desafío terminó. Envíe uno nuevo."
+      },
+      "mail": {
+        "finished": ":name terminó el desafío",
+        "score": ":points puntos (:correct de :total correctas).",
+        "open": "Ver la tabla"
+      },
+      "title": "Desafíos",
+      "description": "Desafíe a un amigo con las mismas 10 preguntas. Los resultados se ven al final; aquí una pista cuesta 5 puntos. Solo nombres de pila.",
+      "create": "Desafiar a un amigo",
+      "yours": "Su desafío",
+      "from": "{{name}} le desafió",
+      "ended": "Este desafío terminó.",
+      "until_one": "{{count}} pregunta · abierto hasta el {{date}}",
+      "until_other": "{{count}} preguntas · abierto hasta el {{date}}",
+      "accept": "Aceptar",
+      "answer": "Contestar las preguntas",
+      "copy": "Copiar el enlace",
+      "copied": "Enlace copiado. Envíelo a un amigo.",
+      "board": "Tabla",
+      "you": "{{name}} (usted)",
+      "points_one": "{{count}} punto · {{correct}} de {{total}} correctas",
+      "points_other": "{{count}} puntos · {{correct}} de {{total}} correctas",
+      "playing": "Todavía contestando",
+      "emptyTitle": "Aún no hay desafíos",
+      "empty": "Desafíe a un amigo: ambos contestan las mismas 10 preguntas y ambos ven quién sacó más puntos.",
+      "acceptBody_one": "{{name}} le envió {{count}} pregunta. Contéstela y vea quién saca más puntos.",
+      "acceptBody_other": "{{name}} le envió {{count}} preguntas. Contéstelas y vea quién saca más puntos.",
+      "signIn": "Iniciar sesión para aceptar",
+      "testTitle": "Desafío",
+      "hint": "Pista (cuesta 5 puntos)",
+      "share": "Compartir el desafío",
+      "shareMessage": "Le desafío a 10 preguntas del examen de Texas en REOS: {{link}}",
+      "hub": "Desafíe a un amigo con las mismas 10 preguntas."
     }
   },
   "brokerageIntegrations": {

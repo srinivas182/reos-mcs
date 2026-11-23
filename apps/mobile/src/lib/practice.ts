@@ -21,7 +21,7 @@ export type ReadinessMap = Got<'/practice/readiness'>['data'];
 export type ReadinessTopic = ReadinessMap['topics'][number];
 export type Topic = 'agency' | 'contracts' | 'ownership' | 'finance' | 'math' | 'state_rules';
 
-export type TestKind = 'diagnostic' | 'topic' | 'national' | 'state' | 'simulation' | 'drill' | 'retest';
+export type TestKind = 'diagnostic' | 'topic' | 'national' | 'state' | 'simulation' | 'drill' | 'retest' | 'challenge';
 export type Coach = Got<'/practice/hub'>['data'];
 export type TopicPlan = Got<'/practice/topic-plans/{plan}'>['data'];
 export type PlanStep = TopicPlan['steps'][number];
@@ -174,7 +174,7 @@ export async function loadHub(): Promise<HubTest[]> {
 }
 
 /** Start a test (or carry on with the same one still open). */
-export async function startTest(kind: Exclude<TestKind, 'retest'>, topic: Topic | null = null, mode: 'exam' | 'practice' | null = null): Promise<Attempt | null> {
+export async function startTest(kind: Exclude<TestKind, 'retest' | 'challenge'>, topic: Topic | null = null, mode: 'exam' | 'practice' | null = null): Promise<Attempt | null> {
   const { data } = await api().POST('/practice/tests', { body: { kind, topic, ...(mode === null ? {} : { mode }) } });
 
   return data?.data ?? null;
@@ -235,4 +235,32 @@ export function countdown(seconds: number): string {
   const r = String(s % 60).padStart(2, '0');
 
   return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${r}` : `${m}:${r}`;
+}
+
+/** Challenges (screen 52, A9.3b): a challenge's board, first names only. */
+export type ChallengeBoard = Got<'/practice/challenges/{challenge}'>['data'];
+
+export async function loadChallenges(): Promise<ChallengeBoard[]> {
+  const { data } = await api().GET('/practice/challenges');
+
+  return data?.data ?? [];
+}
+
+export async function loadChallenge(uuid: string): Promise<ChallengeBoard | null> {
+  const { data } = await api().GET('/practice/challenges/{challenge}', { params: { path: { challenge: uuid } } });
+
+  return data?.data ?? null;
+}
+
+/** Challenge a friend: 10 questions, my own attempt started, and the link to share. */
+export async function createChallenge(): Promise<ChallengeBoard | null> {
+  const { data } = await api().POST('/practice/challenges');
+
+  return data?.data ?? null;
+}
+
+export async function acceptChallenge(uuid: string): Promise<ChallengeBoard | null> {
+  const { data } = await api().POST('/practice/challenges/{challenge}/accept', { params: { path: { challenge: uuid } } });
+
+  return data?.data ?? null;
 }
