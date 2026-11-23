@@ -37655,6 +37655,759 @@
                 }
             }
         },
+        "/agent/today": {
+            "get": {
+                "operationId": "agent.today",
+                "description": "One ranked list from every tool (overdue, deadlines within 72 hours, today's appointments, follow-ups, plan tasks), each with its source; the mode's stats; and, until 20 contacts or a connected tool, the day-one steps.",
+                "summary": "Today",
+                "tags": [
+                    "Today"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": "string"
+                                                },
+                                                "stats": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "integer"
+                                                            },
+                                                            "target": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "value",
+                                                            "target"
+                                                        ]
+                                                    }
+                                                },
+                                                "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "todo",
+                                                                    "deadline",
+                                                                    "event",
+                                                                    "plan"
+                                                                ]
+                                                            },
+                                                            "reason": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "overdue",
+                                                                    "deadline",
+                                                                    "appointment",
+                                                                    "follow_up",
+                                                                    "plan"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "all_day": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "todo_id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "deal": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "plan": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "code": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "week": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "code",
+                                                                    "week"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "kind",
+                                                            "reason",
+                                                            "title",
+                                                            "detail",
+                                                            "source",
+                                                            "at",
+                                                            "all_day",
+                                                            "todo_id",
+                                                            "deal",
+                                                            "plan"
+                                                        ]
+                                                    }
+                                                },
+                                                "more": {
+                                                    "type": "integer"
+                                                },
+                                                "day_one": {
+                                                    "type": [
+                                                        "array",
+                                                        "null"
+                                                    ],
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "link": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "minutes",
+                                                            "done",
+                                                            "link"
+                                                        ]
+                                                    }
+                                                },
+                                                "plan_week": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "stats",
+                                                "items",
+                                                "more",
+                                                "day_one",
+                                                "plan_week"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agent/plan": {
+            "get": {
+                "operationId": "agent.plan",
+                "description": "Thirteen weeks in phases for my goal, this week's tasks, and weekly targets (halved for part-time).",
+                "summary": "My 90-day plan",
+                "tags": [
+                    "Today"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": "string"
+                                                },
+                                                "starts_on": {
+                                                    "type": "string"
+                                                },
+                                                "ends_on": {
+                                                    "type": "string"
+                                                },
+                                                "week": {
+                                                    "type": "integer"
+                                                },
+                                                "weeks": {
+                                                    "type": "integer"
+                                                },
+                                                "phases": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "from": {
+                                                                "type": "integer"
+                                                            },
+                                                            "to": {
+                                                                "type": "integer"
+                                                            },
+                                                            "current": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "from",
+                                                            "to",
+                                                            "current"
+                                                        ]
+                                                    }
+                                                },
+                                                "targets": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "tasks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "week": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "repeats": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "link": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "week",
+                                                            "done",
+                                                            "auto",
+                                                            "repeats",
+                                                            "link"
+                                                        ]
+                                                    }
+                                                },
+                                                "done": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "promised": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "starts_on",
+                                                "ends_on",
+                                                "week",
+                                                "weeks",
+                                                "phases",
+                                                "targets",
+                                                "tasks",
+                                                "done",
+                                                "total",
+                                                "promised"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agent/plan/tasks/{code}": {
+            "put": {
+                "operationId": "agent.plan.tick",
+                "summary": "Tick a plan task",
+                "tags": [
+                    "Today"
+                ],
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PlanTaskRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": "string"
+                                                },
+                                                "starts_on": {
+                                                    "type": "string"
+                                                },
+                                                "ends_on": {
+                                                    "type": "string"
+                                                },
+                                                "week": {
+                                                    "type": "integer"
+                                                },
+                                                "weeks": {
+                                                    "type": "integer"
+                                                },
+                                                "phases": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "from": {
+                                                                "type": "integer"
+                                                            },
+                                                            "to": {
+                                                                "type": "integer"
+                                                            },
+                                                            "current": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "from",
+                                                            "to",
+                                                            "current"
+                                                        ]
+                                                    }
+                                                },
+                                                "targets": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "tasks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "week": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "repeats": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "link": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "week",
+                                                            "done",
+                                                            "auto",
+                                                            "repeats",
+                                                            "link"
+                                                        ]
+                                                    }
+                                                },
+                                                "done": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "promised": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "starts_on",
+                                                "ends_on",
+                                                "week",
+                                                "weeks",
+                                                "phases",
+                                                "targets",
+                                                "tasks",
+                                                "done",
+                                                "total",
+                                                "promised"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/agent/plan/promise": {
+            "post": {
+                "operationId": "agent.plan.promise",
+                "summary": "Make the First-Closing Promise",
+                "tags": [
+                    "Today"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": "string"
+                                                },
+                                                "starts_on": {
+                                                    "type": "string"
+                                                },
+                                                "ends_on": {
+                                                    "type": "string"
+                                                },
+                                                "week": {
+                                                    "type": "integer"
+                                                },
+                                                "weeks": {
+                                                    "type": "integer"
+                                                },
+                                                "phases": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "from": {
+                                                                "type": "integer"
+                                                            },
+                                                            "to": {
+                                                                "type": "integer"
+                                                            },
+                                                            "current": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "from",
+                                                            "to",
+                                                            "current"
+                                                        ]
+                                                    }
+                                                },
+                                                "targets": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "tasks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "week": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "repeats": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "link": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "week",
+                                                            "done",
+                                                            "auto",
+                                                            "repeats",
+                                                            "link"
+                                                        ]
+                                                    }
+                                                },
+                                                "done": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "promised": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "starts_on",
+                                                "ends_on",
+                                                "week",
+                                                "weeks",
+                                                "phases",
+                                                "targets",
+                                                "tasks",
+                                                "done",
+                                                "total",
+                                                "promised"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agent/scorecard": {
+            "get": {
+                "operationId": "agent.scorecard",
+                "description": "Conversations, appointments, clients and CE this week against the plan's targets, and the one to fix.",
+                "summary": "My weekly scorecard",
+                "tags": [
+                    "Today"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "week_of": {
+                                                    "type": "string"
+                                                },
+                                                "metrics": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "done": {
+                                                                "type": "number"
+                                                            },
+                                                            "target": {
+                                                                "type": "number"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "done",
+                                                            "target"
+                                                        ]
+                                                    }
+                                                },
+                                                "fix": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "week_of",
+                                                "metrics",
+                                                "fix"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/todos": {
             "get": {
                 "operationId": "todos.index",
@@ -41941,6 +42694,25 @@
                     "device"
                 ],
                 "title": "PhoneVerifyRequest"
+            },
+            "PlanTaskRequest": {
+                "type": "object",
+                "description": "A plan task ticked or unticked, for its week (A11.1b).",
+                "properties": {
+                    "week": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 13
+                    },
+                    "done": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "week",
+                    "done"
+                ],
+                "title": "PlanTaskRequest"
             },
             "ProviderLicenceRequest": {
                 "type": "object",

@@ -76,7 +76,8 @@
     "licenceJourney": "Licence journey",
     "recruiting": "Recruiting",
     "mentors": "Mentors",
-    "goal": "My goal"
+    "goal": "My goal",
+    "plan": "My plan"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2784,6 +2785,135 @@
         "ownLocked": "Own unlocks after the years licensed TREC requires for a broker, or with a broker license."
       },
       "save": "Save"
+    },
+    "plan": {
+      "title": "My 90-day plan",
+      "description": "Thirteen weeks toward your goal. Tick tasks off as you go; REOS ticks some for you.",
+      "week": "Week {{week}} of {{weeks}}",
+      "progress": "{{done}} of {{total}} tasks done",
+      "phase": "Phase: {{phase}}",
+      "phasesLabel": "Plan phases",
+      "phaseWeeks": "Weeks {{from}}–{{to}}",
+      "thisWeek": "This week",
+      "targets": "Weekly targets",
+      "auto": "REOS ticks this when it happens",
+      "repeats": "Every week",
+      "open": "Open",
+      "done": "Done",
+      "undo": "Undo",
+      "ticked": "Marked done",
+      "unticked": "Marked not done",
+      "emptyTitle": "Nothing left this week",
+      "emptyBody": "Every task for this week is done. Next week’s tasks appear on Monday.",
+      "promise": {
+        "title": "The First-Closing Promise",
+        "body": "Follow the plan for 90 days and REOS stays with you until your first closing.",
+        "action": "I’m in",
+        "made": "Promise made. We’re with you until your first closing."
+      },
+      "tasks": {
+        "connect_tools": "Connect your tools",
+        "import_contacts": "Import your contacts (20 or more)",
+        "announce_licence": "Announce your new license",
+        "first_ce_lesson": "Take your first CE lesson",
+        "call_sphere": "Call 10 people you know",
+        "ask_referrals": "Ask 3 people for referrals",
+        "mentor_checkin": "Check in with your mentor",
+        "book_consultation": "Book a buyer or seller consultation",
+        "listing_presentation": "Prepare a listing presentation",
+        "review_contract": "Review a contract with your broker",
+        "plan_closing": "Plan your first closing",
+        "pipeline_review": "Review your pipeline",
+        "past_client_touch": "Reach out to 5 past clients",
+        "anniversary_touch": "Send home anniversary notes",
+        "map_your_hours": "Map where your hours go",
+        "write_role": "Write your first role description",
+        "interview_candidates": "Interview candidates",
+        "team_huddle": "Hold the weekly team huddle",
+        "choose_model": "Choose your brokerage model",
+        "broker_course": "Start your broker license courses",
+        "business_plan": "Write your business plan",
+        "comp_plan": "Design your commission plan",
+        "broker_licence": "Apply for your broker license",
+        "go_live_checklist": "Work through the go-live checklist"
+      },
+      "phases": {
+        "setup": "Set up",
+        "conversations": "Conversations",
+        "appointments": "Appointments",
+        "contract": "First contract",
+        "pipeline": "Pipeline",
+        "referrals": "Referrals",
+        "repeat": "Repeat business",
+        "capacity": "Capacity",
+        "first_hire": "First hire",
+        "team": "Team rhythm",
+        "model": "Model",
+        "business_plan": "Business plan",
+        "launch": "Launch"
+      },
+      "errors": {
+        "task": "That task isn’t in this week’s plan."
+      }
+    },
+    "today": {
+      "title": "Today",
+      "more_one": "{{count}} more",
+      "more_other": "{{count}} more",
+      "emptyTitle": "You’re clear for today",
+      "emptyBody": "Nothing due, no appointments and no plan tasks left. Good time to call someone you know.",
+      "busy": "Busy",
+      "planSource": "90-day plan",
+      "from": "From {{source}}",
+      "allDay": "Today",
+      "markDone": "Mark done",
+      "done": "Done",
+      "reasons": {
+        "overdue": "Overdue",
+        "deadline": "Deadline",
+        "appointment": "Appointment",
+        "follow_up": "Follow-up",
+        "plan": "Plan"
+      },
+      "stats": {
+        "week": "Plan week",
+        "conversations": "Conversations this week",
+        "appointments": "Appointments this week",
+        "pipeline": "Pipeline",
+        "under_contract": "Under contract",
+        "hot_today": "Need you today",
+        "closings_12m": "Closings in 12 months"
+      },
+      "statOf": "{{value}} of {{target}}",
+      "dayOne": {
+        "title": "Your first day",
+        "body": "Three quick steps and Today fills with your work.",
+        "minutes": "{{minutes}} min",
+        "steps": {
+          "import_contacts": "Import your contacts",
+          "announce_licence": "Announce your license",
+          "connect_tools": "Connect your CRM, calendar and email"
+        }
+      }
+    },
+    "scorecard": {
+      "title": "This week’s scorecard",
+      "weekOf": "Week of {{date}}",
+      "metrics": {
+        "conversations": "Conversations",
+        "appointments": "Appointments",
+        "clients": "Active clients",
+        "ce_hours": "CE hours"
+      },
+      "value": "{{done}} of {{target}}",
+      "fixTitle": "One thing to fix",
+      "onTrack": "You’re on track on every number this week.",
+      "fix": {
+        "conversations": "Conversations are behind. Block an hour to call people you know.",
+        "appointments": "Appointments are behind. Ask each conversation for a time to meet.",
+        "clients": "Few active clients. Follow up with everyone you met this month.",
+        "ce_hours": "No CE this week yet. A short lesson keeps you on pace."
+      }
     }
   },
   "invitePage": {

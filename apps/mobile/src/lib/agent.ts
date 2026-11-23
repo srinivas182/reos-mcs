@@ -3,7 +3,7 @@
  * that sets Today, work-style flags and suggested switches.
  */
 import type { paths } from '@reos/api-client';
-import { useFocusEffect } from 'expo-router';
+import { type Href, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
 import { api } from '@/lib/api';
@@ -43,3 +43,106 @@ export function useMode(enabled = true) {
 
   return { mode, setMode };
 }
+
+/** Today, the 90-day plan and the scorecard (A11.1b; agent screens 10, 14, 15, 110). */
+export type AgentToday = Got<'/agent/today'>['data'];
+export type TodayItem = AgentToday['items'][number];
+export type AgentPlan = Got<'/agent/plan'>['data'];
+export type PlanTask = AgentPlan['tasks'][number];
+export type Scorecard = Got<'/agent/scorecard'>['data'];
+
+const takePlan = ({ data, error }: { data?: { data: AgentPlan }; error?: unknown }): AgentPlan => (data ? data.data : fail(error));
+
+export const tickTask = async (code: string, week: number, done: boolean) => takePlan(await api().PUT('/agent/plan/tasks/{code}', { params: { path: { code } }, body: { week, done } }));
+export const makePromise = async () => takePlan(await api().POST('/agent/plan/promise'));
+
+/** Where a plan task or day-one step is done on the phone; null when it's done anywhere. */
+export function planRoute(link: string | null): Href | null {
+  switch (link) {
+    case 'connections':
+      return '/connections';
+    case 'contacts':
+      return '/contacts';
+    case 'deals':
+      return '/deals';
+    case 'listings':
+    case 'announce':
+      return '/deals/listings';
+    case 'learn':
+      return '/learn';
+    case 'mentors':
+      return '/mentors';
+    default:
+      return null;
+  }
+}
+
+/** Today for agents, loaded when the screen comes into view. */
+export function useAgentToday(enabled = true) {
+  const [today, setToday] = useState<AgentToday | null>(null);
+  const reload = useCallback(async () => {
+    if (!enabled) return;
+    const { data } = await api().GET('/agent/today');
+    setToday(data?.data ?? null);
+  }, [enabled]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void reload().catch(() => undefined);
+    }, [reload]),
+  );
+
+  return { today, reload };
+}
+
+/** The plan and this week's scorecard. */
+export function usePlan() {
+  const [plan, setPlan] = useState<AgentPlan | null>(null);
+  const [scorecard, setScorecard] = useState<Scorecard | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      void api()
+        .GET('/agent/plan')
+        .then(({ data }) => setPlan(data?.data ?? null))
+        .catch(() => undefined);
+      void api()
+        .GET('/agent/scorecard')
+        .then(({ data }) => setScorecard(data?.data ?? null))
+        .catch(() => undefined);
+    }, []),
+  );
+
+  return { plan, setPlan, scorecard };
+}
+
+/** Codes the server sends, for typed translation keys. */
+export type PlanTaskCode =
+  | 'connect_tools'
+  | 'import_contacts'
+  | 'announce_licence'
+  | 'first_ce_lesson'
+  | 'call_sphere'
+  | 'ask_referrals'
+  | 'mentor_checkin'
+  | 'book_consultation'
+  | 'listing_presentation'
+  | 'review_contract'
+  | 'plan_closing'
+  | 'pipeline_review'
+  | 'past_client_touch'
+  | 'anniversary_touch'
+  | 'map_your_hours'
+  | 'write_role'
+  | 'interview_candidates'
+  | 'team_huddle'
+  | 'choose_model'
+  | 'broker_course'
+  | 'business_plan'
+  | 'comp_plan'
+  | 'broker_licence'
+  | 'go_live_checklist';
+export type PlanPhase = 'setup' | 'conversations' | 'appointments' | 'contract' | 'pipeline' | 'referrals' | 'repeat' | 'capacity' | 'first_hire' | 'team' | 'model' | 'business_plan' | 'launch';
+export type ScoreMetric = 'conversations' | 'appointments' | 'clients' | 'ce_hours';
+export type TodayStatKey = 'week' | 'conversations' | 'appointments' | 'pipeline' | 'under_contract' | 'hot_today' | 'closings_12m';
+export type DayOneCode = 'import_contacts' | 'announce_licence' | 'connect_tools';

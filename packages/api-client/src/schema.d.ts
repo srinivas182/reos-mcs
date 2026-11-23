@@ -4238,6 +4238,100 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/agent/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Today
+         * @description One ranked list from every tool (overdue, deadlines within 72 hours, today's appointments, follow-ups, plan tasks), each with its source; the mode's stats; and, until 20 contacts or a connected tool, the day-one steps.
+         */
+        get: operations["agent.today"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agent/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My 90-day plan
+         * @description Thirteen weeks in phases for my goal, this week's tasks, and weekly targets (halved for part-time).
+         */
+        get: operations["agent.plan"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agent/plan/tasks/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Tick a plan task */
+        put: operations["agent.plan.tick"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agent/plan/promise": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Make the First-Closing Promise */
+        post: operations["agent.plan.promise"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agent/scorecard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My weekly scorecard
+         * @description Conversations, appointments, clients and CE this week against the plan's targets, and the one to fix.
+         */
+        get: operations["agent.scorecard"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/todos": {
         parameters: {
             query?: never;
@@ -5437,6 +5531,14 @@ export interface components {
             };
         };
         /**
+         * PlanTaskRequest
+         * @description A plan task ticked or unticked, for its week (A11.1b).
+         */
+        PlanTaskRequest: {
+            week: number;
+            done: boolean;
+        };
+        /**
          * ProviderLicenceRequest
          * @description A provider's professional licence: its kind and number (B10.3).
          */
@@ -6023,6 +6125,7 @@ export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest']
 export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaPlanTaskRequest = components['schemas']['PlanTaskRequest'];
 export type SchemaProviderLicenceRequest = components['schemas']['ProviderLicenceRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
@@ -19072,6 +19175,266 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "agent.today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string;
+                            stats: {
+                                key: string;
+                                value: number;
+                                target: number | null;
+                            }[];
+                            items: {
+                                key: string;
+                                /** @enum {string} */
+                                kind: "todo" | "deadline" | "event" | "plan";
+                                /** @enum {string} */
+                                reason: "overdue" | "deadline" | "appointment" | "follow_up" | "plan";
+                                title: string;
+                                detail: string | null;
+                                source: string;
+                                at: string | null;
+                                all_day: boolean;
+                                todo_id: number | null;
+                                deal: string | null;
+                                plan: {
+                                    code: string;
+                                    week: number;
+                                } | null;
+                            }[];
+                            more: number;
+                            day_one: {
+                                code: string;
+                                minutes: number;
+                                done: boolean;
+                                link: string;
+                            }[] | null;
+                            plan_week: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "agent.plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string;
+                            starts_on: string;
+                            ends_on: string;
+                            week: number;
+                            weeks: number;
+                            phases: {
+                                code: string;
+                                from: number;
+                                to: number;
+                                current: boolean;
+                            }[];
+                            targets: {
+                                [key: string]: number;
+                            };
+                            tasks: {
+                                code: string;
+                                week: number;
+                                done: boolean;
+                                auto: boolean;
+                                repeats: boolean;
+                                link: string | null;
+                            }[];
+                            done: number;
+                            total: number;
+                            promised: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "agent.plan.tick": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanTaskRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string;
+                            starts_on: string;
+                            ends_on: string;
+                            week: number;
+                            weeks: number;
+                            phases: {
+                                code: string;
+                                from: number;
+                                to: number;
+                                current: boolean;
+                            }[];
+                            targets: {
+                                [key: string]: number;
+                            };
+                            tasks: {
+                                code: string;
+                                week: number;
+                                done: boolean;
+                                auto: boolean;
+                                repeats: boolean;
+                                link: string | null;
+                            }[];
+                            done: number;
+                            total: number;
+                            promised: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "agent.plan.promise": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string;
+                            starts_on: string;
+                            ends_on: string;
+                            week: number;
+                            weeks: number;
+                            phases: {
+                                code: string;
+                                from: number;
+                                to: number;
+                                current: boolean;
+                            }[];
+                            targets: {
+                                [key: string]: number;
+                            };
+                            tasks: {
+                                code: string;
+                                week: number;
+                                done: boolean;
+                                auto: boolean;
+                                repeats: boolean;
+                                link: string | null;
+                            }[];
+                            done: number;
+                            total: number;
+                            promised: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "agent.scorecard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            week_of: string;
+                            metrics: {
+                                key: string;
+                                done: number;
+                                target: number;
+                            }[];
+                            fix: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "todos.index": {

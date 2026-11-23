@@ -3,6 +3,7 @@
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Agents\AgentSetupPageController;
 use App\Http\Controllers\Api\Agents\ModeController;
+use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Classes\ClassesController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeControlle
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
+use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Ask\AskPageController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
@@ -114,7 +116,7 @@ Route::get('groups/{group}', [ChallengePageController::class, 'group'])->whereUu
 // A challenge's share link (A9.3b): open to anyone; sign in to accept.
 Route::get('challenges/{challenge}', [ChallengePageController::class, 'show'])->whereUuid('challenge')->middleware('throttle:60,1,challenges')->name('challenges.show');
 // An agent's public page (B10.2b): their MLS listings with each MLS's rules applied.
-Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '(?!(?:setup|mode)$)[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
+Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '(?!(?:setup|mode|plan)$)[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
 Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
 Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
@@ -175,6 +177,13 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::put('agent/mode', [ModeController::class, 'goal'])->middleware('throttle:30,1,agent-mode')->name('agent.mode.goal');
     Route::put('agent/mode/flags', [ModeController::class, 'flags'])->middleware('throttle:30,1,agent-mode')->name('agent.mode.flags');
     Route::post('agent/mode/snooze', [ModeController::class, 'snooze'])->middleware('throttle:10,1,agent-mode')->name('agent.mode.snooze');
+    // The 90-day plan and weekly scorecard (A11.1b, screens 10 and 110).
+    Route::get('agent/plan', [AgentSetupPageController::class, 'plan'])->name('agent.plan');
+    Route::put('agent/plan/tasks/{code}', [TodayController::class, 'tick'])->where('code', '[a-z_]+')->middleware('throttle:60,1,agent-plan')->name('agent.plan.tick');
+    // Today's to-dos done from the dashboard, and Undo (A11.1b).
+    Route::post('today/todos/{todo}/done', [TodoController::class, 'done'])->whereNumber('todo')->middleware('throttle:60,1,today-todos')->name('today.todos.done');
+    Route::delete('today/todos/{todo}/done', [TodoController::class, 'undone'])->whereNumber('todo')->middleware('throttle:60,1,today-todos')->name('today.todos.undone');
+    Route::post('agent/plan/promise', [TodayController::class, 'promise'])->middleware('throttle:10,1,agent-plan')->name('agent.plan.promise');
     // My listings (B10.1): beside deals (under Deals in the sidebar); MLS member records confirmed by the agent.
     Route::get('deals/listings', [ListingsPageController::class, 'index'])->name('deals.listings.index');
     Route::post('deals/listings/members', [ListingsController::class, 'confirm'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.confirm');

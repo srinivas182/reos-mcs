@@ -73,6 +73,23 @@
   - **Suggested switches** from verified closings (transaction-tool deals only): the first suggests Grow, and the state's count in 12 months (Texas 12) suggests Lead. "Not yet" waits 30 days. Thresholds are state rules under a new Agent modes topic.
   - **Phone:** welcome, goal and flags (screens 4–6); My goal in Me (146); Today shows "Pick your goal", the mode badge and suggestions.
   - **Web:** `/agent/setup`; the dashboard card; Settings › My goal for agents.
+- **As built, A11.1b** (ADR 0044):
+  - **90-day plan** (`agent_plans`, `agent_plan_tasks`): thirteen weeks per goal from REOS's templates.
+    - Launch has four phases (set up, conversations, appointments, first contract); Grow, Lead and Own have three each.
+    - Weekly targets for conversations, appointments, active clients and CE hours; part-time halves them.
+    - Some tasks repeat weekly (call your sphere, pipeline review, mentor check-in, team huddle); the rest are done once per phase.
+    - REOS ticks two tasks itself: a connected tool, and 20 contacts.
+    - A new goal starts a new plan; going back resumes the old one. Launch carries the First-Closing Promise.
+  - **Today** (`AgentToday`): one ranked list: overdue, deal deadlines within 72 hours, today's appointments, follow-ups and CRM tasks due today, then this week's plan tasks.
+    - Each item names its source from the integrations register.
+    - Done is done at the source: a to-do completes its CRM task or deal date (B7.2, B9.2), with Undo.
+    - Six show at once, with a count of the rest.
+    - Stats: Launch shows the plan week, conversations and appointments against target; Grow shows the pipeline, deals under contract and what needs the agent today; Lead and Own show closings in 12 months, the pipeline and deals under contract.
+    - Day one (screen 15): three steps (import contacts, announce the license, connect tools) until 20 contacts or a connected tool.
+  - **Weekly scorecard** (110): Monday to Sunday in the agent's time zone. Conversations are CRM calls, emails and texts plus notes logged in REOS; appointments are appointments and showings; clients are active and under-contract deals; CE is completed hours. The fix is the metric furthest behind its target.
+  - **API:** `GET /api/v1/agent/today`, `GET /api/v1/agent/plan`, `PUT /api/v1/agent/plan/tasks/{code}`, `POST /api/v1/agent/plan/promise`, `GET /api/v1/agent/scorecard`.
+  - **Web:** Today on the dashboard (screen 12); `/agent/plan` with the scorecard; to-dos are marked done from the dashboard through `/today/todos/{id}/done`. The public agent pages also reserve `plan`.
+  - **Phone:** Today's ranked list and day one; `agent/plan` with the scorecard.
 - **Done when:** Today shows to-dos from CRM, deals and calendar.
 
 ### A11.2 CE wallet (Team A)
