@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Connections;
 
+use App\Connections\Drivers\FollowUpBoss\FollowUpBossDriver;
+use App\Connections\Drivers\FollowUpBoss\FollowUpBossSimulator;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarDriver;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarSimulator;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarDriver;
@@ -31,7 +33,11 @@ final readonly class ConnectorRegistry
     private const SIMULATORS = [
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarSimulator::class,
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarSimulator::class,
+        FollowUpBossDriver::INTEGRATION => FollowUpBossSimulator::class,
     ];
+
+    /** Tools people connect with their own API key (B7.2) rather than by signing in. */
+    private const API_KEYS = [FollowUpBossDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -47,12 +53,14 @@ final readonly class ConnectorRegistry
     private const CONSENT = [
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::CONSENT,
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::CONSENT,
+        FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
     private const STREAMS = [
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::STREAMS,
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::STREAMS,
+        FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::STREAMS,
     ];
 
     /**
@@ -73,6 +81,12 @@ final readonly class ConnectorRegistry
     public static function streamDirections(string $integrationId): array
     {
         return self::STREAMS[$integrationId] ?? [];
+    }
+
+    /** Connected with the person's own API key (B7.2). */
+    public static function usesApiKey(string $integrationId): bool
+    {
+        return in_array($integrationId, self::API_KEYS, true);
     }
 
     /** A calendar tool: REOS writes events to it (B4.1). */
@@ -141,6 +155,7 @@ final readonly class ConnectorRegistry
         return match ($integrationId) {
             GoogleCalendarDriver::INTEGRATION => new GoogleCalendarDriver($value('client_id'), $value('client_secret')),
             OutlookCalendarDriver::INTEGRATION => new OutlookCalendarDriver($value('client_id'), $value('client_secret')),
+            FollowUpBossDriver::INTEGRATION => new FollowUpBossDriver($value('system_name'), $value('system_key')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
     }

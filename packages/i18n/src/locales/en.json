@@ -1332,7 +1332,9 @@
       "cancelled": "You didn't allow access, so nothing was connected.",
       "refused": "The tool didn't accept the sign-in. Please connect again.",
       "vendorUnavailable": "We couldn't reach the tool. Please try again in a few minutes.",
-      "modeChanged": "REOS changed how it connects to this tool. Please connect again."
+      "modeChanged": "REOS changed how it connects to this tool. Please connect again.",
+      "keyNeeded": "Enter your API key.",
+      "keyRefused": "The tool didn't accept that API key. Check it and try again."
     },
     "outcome": {
       "connected": "{{tool}} is connected. Your data is syncing now.",
@@ -1434,15 +1436,25 @@
       "can": {
         "read_events": "See the events on your calendar",
         "write_events": "Add the appointments, showings and deadlines you make in REOS to the calendar you choose, and save your changes there",
-        "change_alerts": "Get notified when something changes"
+        "change_alerts": "Get notified when something changes",
+        "read_people": "See your contacts, notes and tasks",
+        "write_notes": "Add the notes you write in REOS",
+        "write_tasks": "Mark tasks done when you finish them in REOS",
+        "write_stage": "Update a contact's stage when you change it in REOS"
       },
       "never": {
         "delete_yours": "Never delete events you made in your calendar",
-        "email": "Never email your guests unless you ask"
+        "email": "Never email your guests unless you ask",
+        "delete_people": "Never delete your contacts",
+        "send_messages": "Never text or email your contacts"
       },
       "footer": "Disconnect any time from Connections. Your data stays yours.",
       "continue": "Continue to {{tool}}",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "keyBody": "Connect with your own {{tool}} API key. REOS keeps it encrypted and never shows it again.",
+      "keyLabel": "{{tool}} API key",
+      "keyHint": "In {{tool}}: Admin › API.",
+      "connectKey": "Connect {{tool}}"
     },
     "connected": {
       "title": "{{tool}} is connected",
@@ -5293,6 +5305,19 @@
     "errors": {
       "merge": "These two contacts can't be merged.",
       "split": "This contact wasn't merged, so it can't be split."
+    },
+    "contact": {
+      "notes": "Notes",
+      "addNote": "Add a note",
+      "noteLabel": "Note",
+      "save": "Save note",
+      "saved": "Note saved. It's sent to your connected CRMs.",
+      "noNotes": "No notes yet",
+      "noNotesBody": "Notes you write here, and those from your CRMs, show up here.",
+      "from": "From {{source}}",
+      "sentTo": "Sent to {{tools}}",
+      "sources": "Sources",
+      "stage": "Stage"
     }
   }
 }

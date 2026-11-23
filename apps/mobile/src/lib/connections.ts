@@ -88,14 +88,25 @@ export function useConnections() {
  * page, which opens in a secure browser sheet. After signing in, the tool
  * returns to REOS, which sends the sheet back to `reos://connections`.
  */
-export async function connectTool(integration: string): Promise<ConnectOutcome> {
+export async function connectTool(integration: string, apiKey?: string): Promise<ConnectOutcome> {
   // The id comes from the server's own connection list.
-  const { data, error } = await api().POST('/connections', { body: { integration: integration as ConnectableTool } });
+  const { data, error } = await api().POST('/connections', {
+    body: { integration: integration as ConnectableTool, ...(apiKey !== undefined ? { api_key: apiKey } : {}) },
+  });
 
   if (!data) {
     const message = error && typeof error === 'object' && 'message' in error && typeof error.message === 'string' ? error.message : null;
 
     return { outcome: 'failed', reason: message, connectionId: null };
+  }
+
+  // Tools connected with an API key (B7.2) are connected already: no sign-in page.
+  if (data.connection_id) {
+    return { outcome: 'connected', reason: null, connectionId: data.connection_id };
+  }
+
+  if (!data.authorization_url) {
+    return { outcome: 'failed', reason: null, connectionId: null };
   }
 
   const result = await WebBrowser.openAuthSessionAsync(data.authorization_url, 'reos://connections');

@@ -49,7 +49,11 @@ final readonly class ContactStore implements StreamStore
 
     public function remove(Connection $connection, array $externalIds): int
     {
-        return $this->contacts->removed($connection->owner_type, $connection->owner_id, $connection->integration_id, $externalIds);
+        $removed = $this->contacts->removed($connection->owner_type, $connection->owner_id, $connection->integration_id, $externalIds);
+        // People a webhook said were deleted (B7.2) are done with.
+        $connection->forceFill(['meta' => array_diff_key($connection->meta, ['deleted_people' => true])])->save();
+
+        return $removed;
     }
 
     public function forget(Connection $connection): void

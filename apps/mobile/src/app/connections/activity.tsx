@@ -99,7 +99,16 @@ export default function SyncActivity() {
       ) : null}
 
       {(activity ?? []).map((item) => (
-        <Card key={item.id}>
+        <Card
+          key={item.id}
+          accessibilityLabel={item.text}
+          onPress={() =>
+            router.push({
+              pathname: "/contacts/[id]",
+              params: { id: item.contact.id },
+            })
+          }
+        >
           <Text>{item.text}</Text>
           <Text tone="muted" variant="caption">
             {`${item.source_name} · ${timeAgo(item.occurred_at, i18n.language)}`}

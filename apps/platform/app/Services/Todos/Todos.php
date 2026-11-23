@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Todos;
 
+use App\Crm\CrmWriteBack;
 use App\Models\CalendarEvent;
 use App\Models\Todo;
 use App\Models\User;
@@ -100,7 +101,13 @@ final readonly class Todos
 
     public function complete(Todo $todo, bool $done = true): Todo
     {
+        $was = $todo->done_at !== null;
         $todo->forceFill(['done_at' => $done ? ($todo->done_at ?? Carbon::now()) : null])->save();
+
+        // Done in REOS is done in the CRM the task came from (B7.2).
+        if ($was !== $done) {
+            app(CrmWriteBack::class)->taskChanged($todo);
+        }
 
         return $todo;
     }

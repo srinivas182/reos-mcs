@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Crm;
 
 use App\Crm\Contacts;
+use App\Crm\CrmWriteBack;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Crm\PhoneContactsRequest;
 use App\Http\Resources\Crm\ContactActivityResource;
+use App\Http\Resources\Crm\ContactNoteResource;
 use App\Http\Resources\Crm\ContactResource;
 use App\Models\Connection;
 use App\Models\Contact;
@@ -86,6 +88,41 @@ final class ContactController extends Controller
         $merged = $contacts->merge($this->find($user, $contact), $this->find($user, $other), $user);
 
         return new ContactResource($merged->load(['links', 'tags']));
+    }
+
+    /**
+     * One contact: every source that knows them, and their notes, newest first.
+     *
+     * @response array{data: array<string, mixed>, notes: list<array{id: int, body: string, source: string, source_name: string, sent_to: list<string>, at: string|null}>}
+     */
+    public function show(string $contact, #[CurrentUser] User $user, Request $request): JsonResponse
+    {
+        $found = $this->find($user, $contact)->load(['links', 'tags']);
+        $notes = $found->notes()->orderByDesc('created_at')->orderByDesc('id')->limit(100)->get();
+
+        return response()->json(['data' => (new ContactResource($found))->toArray($request), 'notes' => ContactNoteResource::collection($notes)->toArray($request)]);
+    }
+
+    /**
+     * Add a note.
+     *
+     * Saved at once and sent to every connected CRM that knows this person.
+     *
+     * @status 201
+     */
+    public function note(Request $request, string $contact, #[CurrentUser] User $user, CrmWriteBack $writeBack): ContactNoteResource
+    {
+        $body = (string) $request->validate(['body' => ['required', 'string', 'min:1', 'max:20000']])['body'];
+
+        return new ContactNoteResource($writeBack->note($this->find($user, $contact), $body, $user));
+    }
+
+    /** Change the stage; sent to the person's connected CRMs. */
+    public function update(Request $request, string $contact, #[CurrentUser] User $user, CrmWriteBack $writeBack): ContactResource
+    {
+        $stage = (string) $request->validate(['stage' => ['required', 'string', 'min:1', 'max:60']])['stage'];
+
+        return new ContactResource($writeBack->stage($this->find($user, $contact), $stage, $user)->load(['links', 'tags']));
     }
 
     /** Undo a merge: the contact that was merged in comes back on its own. */

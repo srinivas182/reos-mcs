@@ -6,12 +6,22 @@ import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
 
 import { connectTool, toolInitials, useCatalogue } from "@/lib/connections";
-import { Button, Callout, Card, Eyebrow, Icon, Screen, Text } from "@/ui";
+import {
+  Button,
+  Callout,
+  Card,
+  Eyebrow,
+  Icon,
+  Screen,
+  Text,
+  TextField,
+} from "@/ui";
 
 /**
  * Sign in on the vendor's page (Connections and Sync journey, screen 5):
  * exactly what REOS will be able to do and what it never does, then the
- * tool's own sign-in in a secure browser sheet.
+ * tool's own sign-in in a secure browser sheet. Tools connected with the
+ * person's own API key (Follow Up Boss, B7.2) take the key here instead.
  */
 export default function ConsentScreen() {
   const { t } = useTranslation();
@@ -20,6 +30,7 @@ export default function ConsentScreen() {
   const item = items?.find((i) => i.id === tool);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
+  const [apiKey, setApiKey] = useState("");
 
   if (!item) {
     return <Screen>{null}</Screen>;
@@ -28,7 +39,8 @@ export default function ConsentScreen() {
   const go = async () => {
     setBusy(true);
     setProblem(null);
-    const result = await connectTool(item.id);
+    const withKey = item.connects_with === "api_key";
+    const result = await connectTool(item.id, withKey ? apiKey.trim() : undefined);
     setBusy(false);
 
     if (result.outcome === "connected" && result.connectionId !== null) {
@@ -51,8 +63,13 @@ export default function ConsentScreen() {
         <View style={styles.footer}>
           {problem ? <Callout tone="danger" title={problem} live /> : null}
           <Button
-            label={t("connections.consent.continue", { tool: item.name })}
+            label={
+              item.connects_with === "api_key"
+                ? t("connections.consent.connectKey", { tool: item.name })
+                : t("connections.consent.continue", { tool: item.name })
+            }
             loading={busy}
+            disabled={item.connects_with === "api_key" && apiKey.trim().length < 4}
             fullWidth
             onPress={() => void go()}
           />
@@ -85,8 +102,21 @@ export default function ConsentScreen() {
         {t("connections.consent.title", { tool: item.name })}
       </Text>
       <Text tone="muted" style={styles.center}>
-        {t("connections.consent.body", { tool: item.name })}
+        {item.connects_with === "api_key"
+          ? t("connections.consent.keyBody", { tool: item.name })
+          : t("connections.consent.body", { tool: item.name })}
       </Text>
+      {item.connects_with === "api_key" ? (
+        <TextField
+          label={t("connections.consent.keyLabel", { tool: item.name })}
+          hint={t("connections.consent.keyHint", { tool: item.name })}
+          value={apiKey}
+          onChangeText={setApiKey}
+          secureTextEntry
+          autoCapitalize="none"
+          autoCorrect={false}
+        />
+      ) : null}
 
       {item.consent ? (
         <Card>

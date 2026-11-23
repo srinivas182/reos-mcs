@@ -183,6 +183,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('contacts/activity', [ContactController::class, 'activity'])->name('api.contacts.activity');
     Route::post('contacts/phone', [ContactController::class, 'phone'])->middleware('throttle:20,1,api-contacts-phone')->name('api.contacts.phone');
     Route::delete('contacts/phone', [ContactController::class, 'forgetPhone'])->middleware('throttle:10,1,api-contacts-phone-forget')->name('api.contacts.phone.forget');
+    Route::get('contacts/{contact}', [ContactController::class, 'show'])->whereUuid('contact')->name('api.contacts.show');
+    Route::patch('contacts/{contact}', [ContactController::class, 'update'])->whereUuid('contact')->middleware('throttle:60,1,api-contacts-update')->name('api.contacts.update');
+    Route::post('contacts/{contact}/notes', [ContactController::class, 'note'])->whereUuid('contact')->middleware('throttle:60,1,api-contacts-notes')->name('api.contacts.notes.store');
     Route::post('contacts/{contact}/merge', [ContactController::class, 'merge'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.merge');
     Route::post('contacts/{contact}/split', [ContactController::class, 'split'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.split');
     Route::post('contacts/suggestions/{suggestion}/dismiss', [ContactController::class, 'dismiss'])->whereNumber('suggestion')->middleware('throttle:60,1,api-contacts-dismiss')->name('api.contacts.suggestions.dismiss');

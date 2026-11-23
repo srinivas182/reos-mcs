@@ -657,6 +657,7 @@ Two-way contacts, notes and tasks; newest change wins.
 - **Sandbox:** Free trial account; register a system key.
 - **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Free API; agents use their own Follow Up Boss plan.
+- **Notes:** B7.2 (ADR 0028): agents connect with their own API key (Admin › API); every request also sends REOS's registered X-System and X-System-Key. REOS reads /me, /people, /notes and /tasks (sort=updated, updatedAfter, paged with next) and writes POST /notes, PUT /tasks/{id} (isCompleted) and PUT /people/{id} (stage). Webhooks (POST /webhooks per event, peopleCreated/Updated/Deleted, notesCreated/Updated, tasksCreated/Updated) are checked with FUB-Signature (HMAC-SHA256 of the base64 body with the system key) and only queue a sync; the 15-minute schedule is the backstop. Confirm list filters and webhook fields against the trial account before Live.
 - **Fallback:** CSV import; email forwarding.
 
 ### kvCORE / BoldTrail

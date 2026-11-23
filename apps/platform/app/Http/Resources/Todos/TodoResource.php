@@ -39,7 +39,7 @@ final class TodoResource extends JsonResource
              */
             'related' => $todo->related_type === null ? null : ['type' => $todo->related_type, 'id' => $todo->related_id, 'label' => $todo->related_label],
             /**
-             * @var 'typed'|'voice'
+             * @var 'typed'|'voice'|'crm'
              */
             'source' => $todo->source,
             'done' => $todo->done(),

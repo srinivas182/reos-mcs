@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\Audit\AuditLogger;
 use App\Support\PhoneNumber;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -83,6 +84,17 @@ final readonly class Contacts
 
             if ($link !== null) {
                 $contact = $this->current($link->contact);
+
+                // A placeholder made for a note or task before its person arrived joins a matching contact.
+                if (self::placeholder($contact) && ($match = $this->match($ownerType, $ownerId, $clean, $contact->id)) !== null) {
+                    ContactLink::query()->where('contact_id', $contact->id)->update(['contact_id' => $match->id]);
+                    $contact->notes()->update(['contact_id' => $match->id]);
+                    DB::table('contact_tasks')->where('contact_id', $contact->id)->update(['contact_id' => $match->id]);
+                    $contact->forceDelete();
+                    $contact = $match;
+                    $this->log($contact, 'linked', $source, [], $at);
+                }
+
                 $link->forceFill(['synced_at' => now(), 'remote_updated_at' => $at, 'echo_hash' => null, 'connection_id' => $connection === null ? $link->connection_id : $connection->id])->save();
                 $this->apply($contact, $clean, $source, $at, false);
 
@@ -276,6 +288,29 @@ final readonly class Contacts
             ->update(['dismissed_at' => now(), 'updated_at' => now()]);
     }
 
+    /**
+     * The contact a CRM person id belongs to. A note or task can arrive
+     * before its person: a placeholder holds it until the person syncs.
+     */
+    public function forPerson(Connection $connection, string $personId): Contact
+    {
+        $link = ContactLink::query()->where('owner_key', self::ownerKey($connection->owner_type, $connection->owner_id))
+            ->where('source', $connection->integration_id)->where('external_id', $personId)->first();
+
+        return $link !== null ? $this->current($link->contact) : $this->receive($connection->owner_type, $connection->owner_id, $connection->integration_id, $connection, ['external_id' => $personId]);
+    }
+
+    /** @return Builder<Contact> ids of a connection owner's contacts, for subqueries */
+    public function idsFor(Connection $connection): Builder
+    {
+        return Contact::withTrashed()->where('owner_type', $connection->owner_type)->where('owner_id', $connection->owner_id)->select('id');
+    }
+
+    private static function placeholder(Contact $contact): bool
+    {
+        return $contact->first_name === null && $contact->last_name === null && $contact->emails === [] && $contact->phones === [];
+    }
+
     /** Follows merges to the contact that's shown. */
     private function current(Contact $contact): Contact
     {
@@ -295,13 +330,13 @@ final readonly class Contacts
     }
 
     /** @param  array{external_id: string, first_name: string|null, last_name: string|null, emails: list<string>, phones: list<string>, stage: string|null, birthday: string|null, tags: list<string>}  $clean */
-    private function match(string $ownerType, int $ownerId, array $clean): ?Contact
+    private function match(string $ownerType, int $ownerId, array $clean, ?int $except = null): ?Contact
     {
         if ($clean['emails'] === [] && $clean['phones'] === []) {
             return null;
         }
 
-        $candidates = Contact::query()->where('owner_type', $ownerType)->where('owner_id', $ownerId)->get();
+        $candidates = Contact::query()->where('owner_type', $ownerType)->where('owner_id', $ownerId)->when($except !== null, static fn ($q) => $q->where('id', '!=', $except))->get();
 
         return $candidates->first(static fn (Contact $c): bool => array_intersect(array_column($c->emails, 'value'), $clean['emails']) !== []
             || array_intersect(array_column($c->phones, 'value'), $clean['phones']) !== []);
