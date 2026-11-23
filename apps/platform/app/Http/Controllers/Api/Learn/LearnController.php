@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Learn;
 
 use App\Content\Learning\Learning;
+use App\Content\Player\SeatTime;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Learn\SearchRequest;
 use App\Http\Resources\Learn\KnowledgeHitResource;
@@ -57,9 +58,9 @@ final class LearnController extends Controller
      * (`membership_required`) when it needs a plan I don't have yet (each
      * course's first lesson is free).
      *
-     * @response array{data: array{id: int, title: string, language: 'en'|'es', minutes: int|null, course: array{id: int, title: string}, sections: list<array{heading: string|null, text: string}>, documents: list<array{id: int, kind: 'slides'|'document', name: string, url: string, pages: list<array{page: int, text: string}>}>, video: array{type: 'hls'|'file', url: string, duration: int|null, poster: string|null}|null, transcript: list<array{seconds: int, text: string}>, previous: int|null, next: int|null}}
+     * @response array{data: array{id: int, title: string, language: 'en'|'es', minutes: int|null, course: array{id: int, title: string}, sections: list<array{heading: string|null, text: string}>, documents: list<array{id: int, kind: 'slides'|'document', name: string, url: string, pages: list<array{page: int, text: string}>}>, video: array{type: 'hls'|'file', url: string, duration: int|null, poster: string|null}|null, transcript: list<array{seconds: int, text: string}>, previous: int|null, next: int|null, player: array{counted: int, required: int, percent: int, reason: string|null, checkin: array{key: string, at: int, kind: 'question'|'presence', question: array{id: int, prompt: string, options: list<string>}|null}|null, completed: bool, today_left: int|null}}}
      */
-    public function lesson(int $lesson, #[CurrentUser] User $user, Learning $learning): JsonResponse
+    public function lesson(int $lesson, #[CurrentUser] User $user, Learning $learning, SeatTime $seatTime): JsonResponse
     {
         $found = $learning->find($user, $lesson);
         abort_if($found === null, 404);
@@ -68,6 +69,6 @@ final class LearnController extends Controller
             return response()->json(['message' => __('billing.membershipRequired'), 'membership_required' => true], 402);
         }
 
-        return response()->json(['data' => $learning->lesson($found, $user->locale->value)]);
+        return response()->json(['data' => [...$learning->lesson($found, $user->locale->value), 'player' => $seatTime->current($user, $found)]]);
     }
 }

@@ -1391,6 +1391,49 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/learn/lessons/{lesson}/heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send a heartbeat
+         * @description Every 15 seconds while the lesson is open: where the video is, whether
+         *     it plays and whether the page or app is in front. Returns what has
+         *     counted, why the last stretch didn't (if it didn't), and any check-in
+         *     now waiting.
+         */
+        post: operations["learn.heartbeat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/lessons/{lesson}/checkins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Answer a check-in
+         * @description A wrong answer still counts as present and returns why, with its source.
+         */
+        post: operations["learn.checkin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/push-devices": {
         parameters: {
             query?: never;
@@ -4864,6 +4907,25 @@ export interface operations {
                             }[];
                             previous: number | null;
                             next: number | null;
+                            player: {
+                                counted: number;
+                                required: number;
+                                percent: number;
+                                reason: string | null;
+                                checkin: {
+                                    key: string;
+                                    at: number;
+                                    /** @enum {string} */
+                                    kind: "question" | "presence";
+                                    question: {
+                                        id: number;
+                                        prompt: string;
+                                        options: string[];
+                                    } | null;
+                                } | null;
+                                completed: boolean;
+                                today_left: number | null;
+                            };
                         };
                     };
                 };
@@ -6316,6 +6378,120 @@ export interface operations {
                     "application/json": components["schemas"]["SignInResource"];
                 };
             };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.heartbeat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    position: number;
+                    playing: boolean;
+                    visible: boolean;
+                    session: string;
+                    timezone?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            counted: number;
+                            required: number;
+                            percent: number;
+                            reason: string | null;
+                            checkin: {
+                                key: string;
+                                at: number;
+                                /** @enum {string} */
+                                kind: "question" | "presence";
+                                question: {
+                                    id: number;
+                                    prompt: string;
+                                    options: string[];
+                                } | null;
+                            } | null;
+                            completed: boolean;
+                            today_left: number | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.checkin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    key: string;
+                    choice?: number | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        correct: boolean | null;
+                        explanation: string | null;
+                        source: string | null;
+                        state: {
+                            [key: string]: unknown;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

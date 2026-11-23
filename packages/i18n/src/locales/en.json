@@ -5495,5 +5495,49 @@
       "emptyTitle": "No reports",
       "empty": "When a learner reports a question, it shows up here."
     }
+  },
+  "player": {
+    "speed": "Speed",
+    "captions": "Captions",
+    "languages": {
+      "en": "English",
+      "es": "Spanish"
+    },
+    "meter": {
+      "label": "Seat time",
+      "progress": "Lesson time counted",
+      "done": "Lesson complete. Your time has counted.",
+      "counted": "{{counted}} of {{required}} counted",
+      "todayLeft": "{{time}} left today. Your state limits how long a course can count each day."
+    },
+    "reasons": {
+      "gap": "You were away for a while, so that stretch didn't count. Time counts again now.",
+      "paused": "Paused. Time counts only while the video plays.",
+      "hidden": "This tab isn't in front, so time isn't counting. Come back to keep going.",
+      "checkin_due": "Answer the check-in to keep counting time.",
+      "daily_max": "You've reached today's limit for this course. Time counts again tomorrow."
+    },
+    "errors": {
+      "heartbeat": "We couldn't reach REOS, so time isn't counting. Check your connection.",
+      "checkin": "We couldn't send your answer. Please try again."
+    },
+    "checkin": {
+      "title": "Check-in",
+      "presenceTitle": "Are you still here?",
+      "presenceBody": "Your state asks us to check that you are watching. Choose the button to keep going.",
+      "here": "I'm here",
+      "answer": "Answer",
+      "right": "That's right.",
+      "wrong": "Not quite. You're still counted as present.",
+      "source": "Source: {{source}}",
+      "continue": "Continue"
+    },
+    "back10": "Back 10 seconds",
+    "course": {
+      "label": "Progress in {{title}}",
+      "percent": "{{percent}}% done",
+      "done": "Course complete",
+      "lessonDone": "Done"
+    }
   }
 }

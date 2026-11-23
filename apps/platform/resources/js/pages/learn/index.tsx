@@ -1,5 +1,5 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
-import { BookOpen, Search } from 'lucide-react';
+import { BookOpen, CheckCircle2, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { KnowledgeResults } from '@/components/knowledge-results';
@@ -22,7 +22,10 @@ type Course = {
         title: string;
         minutes: number | null;
         language: Language;
+        /** Seat time complete (A8.2). */
+        done?: boolean;
     }[];
+    progress?: { percent: number; completed: boolean };
 };
 
 /** Where a search result opens: the lesson at its page, moment or heading. */
@@ -157,6 +160,44 @@ export default function Learn({
                                                 .join(' · ')}
                                         </p>
                                     </div>
+                                    {course.progress &&
+                                    course.progress.percent > 0 ? (
+                                        <div className="space-y-1">
+                                            <p className="text-sm text-muted-foreground">
+                                                {course.progress.completed
+                                                    ? t('player.course.done')
+                                                    : t(
+                                                          'player.course.percent',
+                                                          {
+                                                              percent:
+                                                                  course
+                                                                      .progress
+                                                                      .percent,
+                                                          },
+                                                      )}
+                                            </p>
+                                            <div
+                                                role="progressbar"
+                                                aria-label={t(
+                                                    'player.course.label',
+                                                    { title: course.title },
+                                                )}
+                                                aria-valuemin={0}
+                                                aria-valuemax={100}
+                                                aria-valuenow={
+                                                    course.progress.percent
+                                                }
+                                                className="h-2 overflow-hidden rounded-full bg-muted"
+                                            >
+                                                <div
+                                                    className="h-full rounded-full bg-primary"
+                                                    style={{
+                                                        width: `${course.progress.percent}%`,
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                    ) : null}
                                     <ul className="divide-y divide-border">
                                         {course.lessons.map((item) => (
                                             <li key={item.id}>
@@ -164,7 +205,17 @@ export default function Learn({
                                                     href={openLesson(item.id)}
                                                     className="flex min-h-12 items-center justify-between gap-3 py-2 font-medium text-primary underline-offset-4 hover:underline"
                                                 >
-                                                    {item.title}
+                                                    <span className="flex items-center gap-2">
+                                                        {item.done ? (
+                                                            <CheckCircle2
+                                                                aria-label={t(
+                                                                    'player.course.lessonDone',
+                                                                )}
+                                                                className="size-5 text-reos-success"
+                                                            />
+                                                        ) : null}
+                                                        {item.title}
+                                                    </span>
                                                     <span className="text-sm font-normal text-muted-foreground">
                                                         {[
                                                             item.minutes !==

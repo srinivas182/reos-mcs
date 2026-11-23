@@ -3411,6 +3411,96 @@
                                                         "integer",
                                                         "null"
                                                     ]
+                                                },
+                                                "player": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "counted": {
+                                                            "type": "integer"
+                                                        },
+                                                        "required": {
+                                                            "type": "integer"
+                                                        },
+                                                        "percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "reason": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "checkin": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "key": {
+                                                                    "type": "string"
+                                                                },
+                                                                "at": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "question",
+                                                                        "presence"
+                                                                    ]
+                                                                },
+                                                                "question": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "prompt": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "options": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "prompt",
+                                                                        "options"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "key",
+                                                                "at",
+                                                                "kind",
+                                                                "question"
+                                                            ]
+                                                        },
+                                                        "completed": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "today_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "counted",
+                                                        "required",
+                                                        "percent",
+                                                        "reason",
+                                                        "checkin",
+                                                        "completed",
+                                                        "today_left"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -3424,7 +3514,8 @@
                                                 "video",
                                                 "transcript",
                                                 "previous",
-                                                "next"
+                                                "next",
+                                                "player"
                                             ]
                                         }
                                     },
@@ -6832,6 +6923,312 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/learn/lessons/{lesson}/heartbeat": {
+            "post": {
+                "operationId": "learn.heartbeat",
+                "description": "Every 15 seconds while the lesson is open: where the video is, whether\nit plays and whether the page or app is in front. Returns what has\ncounted, why the last stretch didn't (if it didn't), and any check-in\nnow waiting.",
+                "summary": "Send a heartbeat",
+                "tags": [
+                    "Player"
+                ],
+                "parameters": [
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "position": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 86400
+                                    },
+                                    "playing": {
+                                        "type": "boolean"
+                                    },
+                                    "visible": {
+                                        "type": "boolean"
+                                    },
+                                    "session": {
+                                        "type": "string",
+                                        "maxLength": 40
+                                    },
+                                    "timezone": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 60
+                                    }
+                                },
+                                "required": [
+                                    "position",
+                                    "playing",
+                                    "visible",
+                                    "session"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "counted": {
+                                                    "type": "integer"
+                                                },
+                                                "required": {
+                                                    "type": "integer"
+                                                },
+                                                "percent": {
+                                                    "type": "integer"
+                                                },
+                                                "reason": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "checkin": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "at": {
+                                                            "type": "integer"
+                                                        },
+                                                        "kind": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "question",
+                                                                "presence"
+                                                            ]
+                                                        },
+                                                        "question": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "prompt": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "prompt",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "key",
+                                                        "at",
+                                                        "kind",
+                                                        "question"
+                                                    ]
+                                                },
+                                                "completed": {
+                                                    "type": "boolean"
+                                                },
+                                                "today_left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "counted",
+                                                "required",
+                                                "percent",
+                                                "reason",
+                                                "checkin",
+                                                "completed",
+                                                "today_left"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/learn/lessons/{lesson}/checkins": {
+            "post": {
+                "operationId": "learn.checkin",
+                "description": "A wrong answer still counts as present and returns why, with its source.",
+                "summary": "Answer a check-in",
+                "tags": [
+                    "Player"
+                ],
+                "parameters": [
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "key": {
+                                        "type": "string",
+                                        "maxLength": 40
+                                    },
+                                    "choice": {
+                                        "type": [
+                                            "integer",
+                                            "null"
+                                        ],
+                                        "minimum": 0,
+                                        "maximum": 5
+                                    }
+                                },
+                                "required": [
+                                    "key"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "correct": {
+                                            "type": [
+                                                "boolean",
+                                                "null"
+                                            ]
+                                        },
+                                        "explanation": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "source": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "state": {
+                                            "type": "object",
+                                            "additionalProperties": {}
+                                        }
+                                    },
+                                    "required": [
+                                        "correct",
+                                        "explanation",
+                                        "source",
+                                        "state"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
             }
         },
         "/me/push-devices": {

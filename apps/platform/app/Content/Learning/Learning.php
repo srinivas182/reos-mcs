@@ -13,8 +13,10 @@ use App\Content\MediaKind;
 use App\Content\MediaStatus;
 use App\Content\Video\VideoHosts;
 use App\Models\Course;
+use App\Models\CourseProgress;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
+use App\Models\LessonProgress;
 use App\Models\User;
 use App\Services\Content\LessonFiles;
 use App\Services\States\PersonStates;
@@ -45,12 +47,16 @@ final readonly class Learning
      * CE and qualifying courses carry their label (`credit`) only with an
      * approval in force in the state for the way they're delivered (A7.1).
      *
-     * @return list<array{id: int, title: string, type: string, hours: float|null, credit: array{number: string, hours: float|null}|null, unlocked: bool, lessons: list<array{id: int, title: string, minutes: int|null, language: string, locked: bool}>}>
+     * Each course has the person's progress (A8.2): the share done and whether it's complete; each lesson whether it's done.
+     *
+     * @return list<array{id: int, title: string, type: string, hours: float|null, credit: array{number: string, hours: float|null}|null, unlocked: bool, progress: array{percent: int, completed: bool}, lessons: list<array{id: int, title: string, minutes: int|null, language: string, locked: bool, done: bool}>}>
      */
     public function courses(User $user): array
     {
         $state = $this->state($user);
         $features = $this->entitlements->features($user, $state);
+        $courseProgress = CourseProgress::query()->where('user_id', $user->id)->get()->keyBy('course_id');
+        $done = LessonProgress::query()->where('user_id', $user->id)->whereNotNull('completed_at')->pluck('lesson_id')->all();
 
         return array_values(Course::query()
             ->where('status', CourseStatus::Live)
@@ -58,7 +64,7 @@ final readonly class Learning
             ->with(['approvals', 'lessons' => static fn ($q) => $q->learnable()->select(['id', 'course_id', 'title', 'minutes', 'language', 'position'])])
             ->orderBy('title')
             ->get()
-            ->map(static function (Course $course) use ($features, $state): array {
+            ->map(static function (Course $course) use ($features, $state, $courseProgress, $done): array {
                 $unlocked = in_array(Entitlements::courseFeature($course->type), $features, true);
                 $approval = $course->type->needsApproval() ? $course->approvalIn($state) : null;
 
@@ -69,12 +75,14 @@ final readonly class Learning
                     'hours' => $course->hours === null ? null : (float) $course->hours,
                     'credit' => $approval === null ? null : ['number' => (string) $approval->number, 'hours' => $approval->hours === null ? null : (float) $approval->hours],
                     'unlocked' => $unlocked,
+                    'progress' => ['percent' => (int) ($courseProgress->get($course->id)->percent ?? 0), 'completed' => $courseProgress->get($course->id)?->completed_at !== null],
                     'lessons' => array_values($course->lessons->values()->map(static fn (Lesson $lesson, int $index): array => [
                         'id' => $lesson->id,
                         'title' => $lesson->title,
                         'minutes' => $lesson->minutes,
                         'language' => $lesson->language,
                         'locked' => ! $unlocked && $index > 0,
+                        'done' => in_array($lesson->id, $done, true),
                     ])->all()),
                 ];
             })
@@ -141,6 +149,8 @@ final readonly class Learning
                 ])->all()),
             'video' => $video === null ? null : $this->video($video),
             'transcript' => $vtt === null ? [] : Captions::cues($vtt),
+            // An AI lesson's captions in both languages (A8.2), to switch between.
+            'captions' => $video?->captions === null ? null : array_map(static fn (string $v): array => Captions::cues($v), $video->captions),
             'previous' => $at === false || $at === 0 ? null : $siblings[$at - 1],
             'next' => $at === false ? null : ($siblings[$at + 1] ?? null),
         ];

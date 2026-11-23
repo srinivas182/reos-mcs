@@ -9,12 +9,14 @@ use App\Billing\Ledger\Points;
 use App\Billing\Ledger\Reconciliation;
 use App\Billing\OrderStatus;
 use App\Billing\Payouts\PayoutRun;
+use App\Billing\Refunds;
 use App\Enums\OrganisationType;
 use App\Integrations\CredentialEnvironment;
 use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\IntegrationMode;
 use App\Models\AuditEvent;
 use App\Models\ConnectedAccount;
+use App\Models\CourseProgress;
 use App\Models\Entitlement;
 use App\Models\IntegrationSetting;
 use App\Models\LedgerAccount;
@@ -27,6 +29,7 @@ use App\Models\Refund;
 use App\Models\SponsorCode;
 use App\Models\User;
 use App\Services\Ai\AiCredits;
+use App\Services\Content\Courses;
 use Carbon\CarbonImmutable;
 use Database\Seeders\Demo\DemoBilling;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -209,6 +212,18 @@ describe('refunds from REOS (screen 66)', function () {
             ->and(Entitlement::query()->active()->where('user_id', $this->sofia->id)->count())->toBeGreaterThan(0)
             ->and(balanceOf('platform:refunds'))->toBe(5000)
             ->and(Refund::query()->sole()->within_policy)->toBeFalse();
+    });
+
+    it('marks a refund outside the policy once more of a course is done than allowed (A8.2)', function () {
+        $order = buy($this, $this->sofia, $this->complete);
+        $course = app(Courses::class)->create(['title' => 'Principles of Real Estate I', 'type' => 'qualifying', 'states' => ['TX']], $this->ops);
+        $refunds = app(Refunds::class);
+
+        CourseProgress::query()->create(['user_id' => $this->sofia->id, 'course_id' => $course->id, 'percent' => 10, 'lessons_total' => 8]);
+        expect($refunds->policy($order))->toMatchArray(['within_policy' => true, 'progress_percent' => 10, 'max_progress_percent' => 25]);
+
+        CourseProgress::query()->where('course_id', $course->id)->update(['percent' => 40]);
+        expect($refunds->policy($order))->toMatchArray(['within_policy' => false, 'progress_percent' => 40]);
     });
 
     it('marks a refund after the window as outside the policy', function () {

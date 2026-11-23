@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Learn;
 
 use App\Content\Knowledge\SearchHit;
 use App\Content\Learning\Learning;
+use App\Content\Player\SeatTime;
 use App\Http\Controllers\Controller;
 use App\Models\Lesson;
 use App\Models\User;
@@ -42,7 +43,7 @@ final class LearnController extends Controller
         ]);
     }
 
-    public function lesson(Request $request, int $lesson, #[CurrentUser] User $user, Learning $learning): Response
+    public function lesson(Request $request, int $lesson, #[CurrentUser] User $user, Learning $learning, SeatTime $seatTime): Response
     {
         $found = $learning->find($user, $lesson);
         abort_if($found === null, 404);
@@ -59,6 +60,8 @@ final class LearnController extends Controller
 
         return Inertia::render('learn/lesson', [
             'lesson' => $learning->lesson($found, $user->locale->value),
+            // Seat time and check-ins (A8.2).
+            'player' => $seatTime->current($user, $found),
             'at' => [
                 'page' => isset($at['page']) && is_numeric($at['page']) ? (int) $at['page'] : null,
                 'seconds' => isset($at['t']) && is_numeric($at['t']) ? (int) $at['t'] : null,

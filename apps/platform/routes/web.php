@@ -1,6 +1,8 @@
 <?php
 
 use App\Connections\ConnectorRegistry;
+use App\Http\Controllers\Api\Learn\PlayerController;
+use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
@@ -125,6 +127,13 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::get('/', 'index')->middleware('throttle:60,1,learn')->name('index');
         Route::get('lessons/{lesson}', 'lesson')->whereNumber('lesson')->name('lesson');
     });
+    // The player's seat time and check-ins (A8.2).
+    // Learners' own progress, not admin actions: the controller checks learning.study.
+    Route::controller(PlayerController::class)->prefix('learn')->name('learn.')->group(function () {
+        Route::post('lessons/{lesson}/heartbeat', 'heartbeat')->whereNumber('lesson')->middleware('throttle:12,1,learn-heartbeat')->name('heartbeat');
+        Route::post('lessons/{lesson}/checkins', 'checkin')->whereNumber('lesson')->middleware('throttle:30,1,learn-checkin')->name('checkin');
+    });
+    Route::post('learn/questions/{question}/report', [QuestionReportController::class, 'store'])->whereNumber('question')->middleware('throttle:20,1,learn-question-report')->name('learn.questions.report');
 });
 
 // Support sign-in (A4.1c): the tenant owner answers; support ends its session.
