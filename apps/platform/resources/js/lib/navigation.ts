@@ -4,6 +4,7 @@ import {
     BookOpen,
     Building2,
     CreditCard,
+    FileBadge,
     Flag,
     GraduationCap,
     House,
@@ -45,6 +46,7 @@ import { index as people } from '@/routes/people';
 import { edit as profile } from '@/routes/profile';
 import { index as states } from '@/routes/states';
 import { index as tenantsIndex } from '@/routes/tenants';
+import { index as schoolApprovals } from '@/routes/school/approvals';
 import type { RoleName } from '@/types/auth';
 
 /** Sidebar labels that exist in the translations (pages that are built). */
@@ -75,7 +77,8 @@ export type NavLabel =
     | 'plansAndPricing'
     | 'planAndBilling'
     | 'connections'
-    | 'liveClasses';
+    | 'liveClasses'
+    | 'stateApprovals';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -215,7 +218,13 @@ export function roleNavigation(
             messages,
             announcements,
             planned('courseCatalogue'),
-            planned('stateApprovals'),
+            // Course catalogue and state approvals (A7.1, screen 50).
+            item(
+                'stateApprovals',
+                FileBadge,
+                schoolApprovals(),
+                '/school/approvals',
+            ),
             planned('ceReporting'),
             planned('instructors'),
             planned('students'),

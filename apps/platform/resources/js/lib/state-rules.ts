@@ -21,7 +21,8 @@ export type RuleTopic =
     | 'ce'
     | 'advertising'
     | 'brokerage'
-    | 'forms';
+    | 'forms'
+    | 'courses';
 
 export type RuleType =
     | 'number'
@@ -29,7 +30,8 @@ export type RuleType =
     | 'role_course'
     | 'first_renewal'
     | 'fee_days'
-    | 'text';
+    | 'text'
+    | 'seat_time';
 
 export type Course = { code: string; title: string; hours: number };
 
@@ -44,6 +46,10 @@ export type RuleValue = {
     fee_usd?: number;
     days?: number;
     text?: string;
+    max_hours_per_day?: number;
+    presence_percent?: number;
+    makeup_min_percent?: number;
+    makeup_days?: number;
 };
 
 export type RuleRow = {
@@ -109,6 +115,13 @@ export function ruleText(
             });
         case 'text':
             return value.text ?? '';
+        case 'seat_time':
+            return t('stateRules.values.seatTime', {
+                max: value.max_hours_per_day ?? 0,
+                presence: value.presence_percent ?? 0,
+                makeup: value.makeup_min_percent ?? 0,
+                days: value.makeup_days ?? 0,
+            });
     }
 }
 

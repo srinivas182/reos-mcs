@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Authorization\Role;
+use App\Content\Approvals\CourseApprovals;
+use App\Enums\OrganisationType;
 use App\Models\Licence;
 use App\Models\User;
 use App\Monitoring\PlatformOverview;
@@ -21,11 +23,12 @@ use Inertia\Response;
 /**
  * Each role's dashboard (web journey screens 4, 12, 24, 30, 42, 49, 54, 58).
  * Agents (screen 12) see today's calendar (B4.1) and their CE hours (A5.2);
- * the other cards arrive in their roles' sprints.
+ * school admins (screen 49) their course approvals (A7.1); the other cards
+ * arrive in their roles' sprints.
  */
 final class DashboardController extends Controller
 {
-    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CalendarView $calendar, PersonStates $states, CeRequirements $requirements, PlatformOverview $overview): Response
+    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CalendarView $calendar, PersonStates $states, CeRequirements $requirements, PlatformOverview $overview, CourseApprovals $approvals): Response
     {
         // The REOS super admin's home is the platform overview (screen 58, A6.1).
         if ($roles->for($user)?->role === Role::SuperAdmin) {
@@ -34,7 +37,9 @@ final class DashboardController extends Controller
             return Inertia::render('admin/overview', ['overview' => $overview->summary(is_string($range) ? $range : '24h')]);
         }
 
-        $agent = $roles->for($user)?->role === Role::Agent;
+        $membership = $roles->for($user);
+        $agent = $membership?->role === Role::Agent;
+        $school = $membership?->role === Role::SchoolAdmin && $membership->organisation->type === OrganisationType::School ? $membership->organisation : null;
         [$from, $to] = PersonTimezone::today($request);
 
         return Inertia::render('dashboard', [
@@ -42,6 +47,8 @@ final class DashboardController extends Controller
             'today' => $agent ? [...$calendar->window($user, $from, $to), 'date' => $from->toDateString(), 'timezone' => $from->tzName] : null,
             /** CE hours for the licence in the state in use (A5.2, the dashboard's CE tile). */
             'ce' => $agent ? $this->ce($user, $states, $requirements) : null,
+            /** Course approvals in force and what needs attention (school admins, screen 49, A7.1). */
+            'approvals' => $school === null ? null : $approvals->summary($school),
         ]);
     }
 

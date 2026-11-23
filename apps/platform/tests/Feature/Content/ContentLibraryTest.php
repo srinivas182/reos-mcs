@@ -15,6 +15,7 @@ use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\IntegrationMode;
 use App\Models\AuditEvent;
 use App\Models\Course;
+use App\Models\CourseApproval;
 use App\Models\IntegrationSetting;
 use App\Models\KbPassage;
 use App\Models\Lesson;
@@ -130,7 +131,7 @@ describe('courses (A5.3)', function () {
         $this->put("/admin/content/courses/{$course->id}/status", ['status' => 'live'])->assertSessionHasNoErrors();
 
         expect($course->refresh()->status)->toBe(CourseStatus::Live)
-            ->and($course->approvals)->toBe(['TX' => ['number' => 'TREC 40123', 'expires_on' => '2028-08-31']])
+            ->and($course->approvalNumbers())->toBe(['TX' => ['number' => 'TREC 40123', 'expires_on' => '2028-08-31']])
             ->and($course->published_at)->not->toBeNull();
 
         $audit = AuditEvent::query()->where('action', 'course.status_changed')->sole();
@@ -458,7 +459,8 @@ describe('demo content (screen 63)', function () {
         app(DemoContent::class)->seed();
 
         expect(KbPassage::query()->count())->toBe($passages)
-            ->and(Course::query()->where('slug', 'contracts-for-new-agents')->sole()->missingApprovals())->toBe(['TX']);
+            ->and(Course::query()->where('slug', 'contracts-for-new-agents')->sole()->missingApprovals())->toBe([])
+            ->and(CourseApproval::query()->count())->toBe(3);
 
         $hits = app(KnowledgeSearch::class)->search('IABS', ['TX'], 'en');
         expect(collect($hits)->pluck('seconds')->filter()->all())->toContain(245)

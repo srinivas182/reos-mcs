@@ -15,6 +15,8 @@ type Course = {
     title: string;
     type: CourseType;
     hours: number | null;
+    /** The approval in force in the state (CE and qualifying only, A7.1). */
+    credit: { number: string; hours: number | null } | null;
     lessons: {
         id: number;
         title: string;
@@ -123,9 +125,24 @@ export default function Learn({
                                         </h3>
                                         <p className="text-sm text-muted-foreground">
                                             {[
-                                                t(
-                                                    `content.types.${course.type}`,
-                                                ),
+                                                // No CE or qualifying label without an approval in force (A7.1).
+                                                course.credit
+                                                    ? t('learn.credit', {
+                                                          type: t(
+                                                              `content.types.${course.type}`,
+                                                          ),
+                                                          number: course.credit
+                                                              .number,
+                                                      })
+                                                    : course.type === 'ce' ||
+                                                        course.type ===
+                                                            'qualifying'
+                                                      ? t('learn.noCredit', {
+                                                            state,
+                                                        })
+                                                      : t(
+                                                            `content.types.${course.type}`,
+                                                        ),
                                                 course.hours !== null
                                                     ? t('learn.hours', {
                                                           count: course.hours,

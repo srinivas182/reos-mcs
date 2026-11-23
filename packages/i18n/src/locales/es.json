@@ -55,7 +55,8 @@
     "messages": "Mensajes",
     "announcements": "Anuncios",
     "notifications": "Notificaciones",
-    "liveClasses": "Clases en vivo"
+    "liveClasses": "Clases en vivo",
+    "stateApprovals": "Aprobaciones estatales"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1999,7 +2000,12 @@
         "email.suppressed": "Correo detenido por rebote o queja",
         "email.resumed": "Correo reanudado",
         "session.recording_started": "Grabación de sesión iniciada",
-        "session.recording_deleted": "Grabación de sesión eliminada"
+        "session.recording_deleted": "Grabación de sesión eliminada",
+        "course.approval_added": "Aprobación de curso agregada",
+        "course.approval_changed": "Aprobación de curso modificada",
+        "course.approval_renewed": "Aprobación de curso renovada",
+        "course.approval_withdrawn": "Aprobación de curso retirada",
+        "course.approval_expired": "Aprobación de curso vencida"
       }
     }
   },
@@ -2879,7 +2885,8 @@
       "ce": "CE y renovación",
       "advertising": "Publicidad",
       "brokerage": "Agencia inmobiliaria",
-      "forms": "Formularios"
+      "forms": "Formularios",
+      "courses": "Impartición de cursos"
     },
     "emptyTitle": "Aún no hay reglas de {{topic}}",
     "emptyDescription": "Agregue las reglas del regulador con su fuente y la fecha en que entran en vigor. Los cursos, el seguimiento de la CE y la revisión de publicaciones las usan.",
@@ -2915,7 +2922,8 @@
     "values": {
       "roleCourse": "{{hours}} horas para: {{roles}}",
       "firstRenewal": "{{hours}} horas de cursos de calificación (SAE), más {{count}} cursos obligatorios",
-      "feeDays": "Cargo de ${{fee}} por {{days}} días más"
+      "feeDays": "Cargo de ${{fee}} por {{days}} días más",
+      "seatTime": "Hasta {{max}} horas al día · presente el {{presence}} % de las horas acreditadas · recuperación tras asistir al {{makeup}} %, dentro de {{days}} días"
     },
     "edit": {
       "button": "Editar",
@@ -2939,7 +2947,11 @@
       "effectiveHint": "Hasta entonces, la versión actual sigue vigente.",
       "note": "Nota (por qué cambió)",
       "discard": "Descartar borrador",
-      "save": "Guardar borrador"
+      "save": "Guardar borrador",
+      "maxHoursPerDay": "Máximo de horas en un día",
+      "presencePercent": "Presente (% de las horas acreditadas)",
+      "makeupMinPercent": "Recuperación permitida tras asistir (%)",
+      "makeupDays": "Recuperación dentro de (días)"
     },
     "errors": {
       "unknown": "Esa no es una regla que REOS conozca.",
@@ -2954,7 +2966,10 @@
       "broker_compliance": "Cumplimiento de CE del bróker",
       "reminders": "Recordatorios",
       "post_checks": "Revisión de publicaciones",
-      "brokerage_matching": "Búsqueda de agencias inmobiliarias"
+      "brokerage_matching": "Búsqueda de agencias inmobiliarias",
+      "course_approvals": "Aprobaciones de cursos",
+      "course_player": "Reproductor de cursos",
+      "live_classes": "Clases en vivo"
     },
     "keys": {
       "licensing": {
@@ -2983,6 +2998,9 @@
       },
       "brokerage": {
         "sponsorship": "Patrocinio"
+      },
+      "courses": {
+        "seat_time": "Tiempo de clase y asistencia"
       }
     },
     "short": {
@@ -3327,7 +3345,9 @@
       "here": "Según su búsqueda",
       "empty": "Esta lección todavía no tiene texto ni archivos.",
       "noVideo": "Aún no se ha agregado el video. Esto es solo la transcripción."
-    }
+    },
+    "noCredit": "Aún no aprobado para créditos en {{state}}",
+    "credit": "{{type}} · aprobación {{number}}"
   },
   "billing": {
     "errors": {
@@ -4514,7 +4534,8 @@
       "message": "Mensajes",
       "announcement": "Anuncios",
       "session_starting": "Sesión por comenzar",
-      "session_booked": "Sesiones programadas o canceladas"
+      "session_booked": "Sesiones programadas o canceladas",
+      "approval_expiring": "Aprobaciones de cursos por vencer"
     },
     "digest": {
       "subject": {
@@ -4775,5 +4796,101 @@
     "label": "Versión de prueba",
     "title": "Versión de prueba.",
     "text": "Nada de lo que ve aquí es real, y no se envían mensajes de texto ni correos. Cualquier código que REOS le pida es {{code}}."
+  },
+  "approvals": {
+    "title": "Catálogo de cursos y aprobaciones estatales",
+    "description": "Asegúrese de que cada curso tenga una aprobación vigente. Ninguna etiqueta de educación continua o de calificación sin ella.",
+    "add": "Agregar aprobación",
+    "addState": "Agregar estado",
+    "renew": "Renovar",
+    "edit": "Editar",
+    "withdraw": "Retirar",
+    "withdrawn": "Aprobación retirada. {{course}} pierde su etiqueta en {{state}}.",
+    "added": "Aprobación agregada.",
+    "saved": "Aprobación guardada.",
+    "emptyTitle": "Aún no hay aprobaciones",
+    "empty": "Agregue el número de aprobación del regulador de cada curso de educación continua y de calificación, por estado y modalidad. Hasta entonces el curso no se puede vender con créditos.",
+    "noCoursesTitle": "Aún no hay cursos",
+    "noCourses": "Los cursos de su escuela aparecen aquí cuando se crean en el Creador de cursos.",
+    "columns": {
+      "course": "Curso",
+      "type": "Tipo",
+      "state": "Estado",
+      "number": "Número de aprobación",
+      "hours": "Horas",
+      "expiry": "Vencimiento",
+      "delivery": "Modalidad",
+      "status": "Estado de la aprobación",
+      "actions": "Acciones"
+    },
+    "deliveries": {
+      "classroom": "Presencial",
+      "live_online": "En vivo en línea",
+      "self_paced": "En línea a su propio ritmo",
+      "ai_avatar": "Avatar de IA"
+    },
+    "statuses": {
+      "pending": "En espera de aprobación",
+      "approved": "Aprobada",
+      "withdrawn": "Retirada",
+      "expired": "Vencida"
+    },
+    "expiresIn_one": "Vence en {{count}} día",
+    "expiresIn_other": "Vence en {{count}} días",
+    "noExpiry": "Sin vencimiento",
+    "labels": "Da la etiqueta al curso",
+    "otherDelivery": "El curso se imparte en modalidad {{delivery}}, así que esta aprobación no le da la etiqueta.",
+    "form": {
+      "addTitle": "Agregar aprobación",
+      "editTitle": "{{course}} · {{state}}",
+      "renewTitle": "Renovar {{course}} en {{state}}",
+      "intro": "Registre la aprobación tal como la emitió el regulador. Las reglas de tiempo de clase y asistencia parten de las reglas del estado.",
+      "course": "Curso",
+      "state": "Estado",
+      "delivery": "Modalidad",
+      "number": "Número de aprobación",
+      "hours": "Horas aprobadas",
+      "approvedOn": "Aprobada el",
+      "expiresOn": "Vence el",
+      "status": "Estado de la aprobación",
+      "seatTime": "Tiempo de clase y asistencia",
+      "seatTimeHint": "De las reglas del estado en la fecha de aprobación. Cámbielas solo si la aprobación indica otra cosa.",
+      "maxHoursPerDay": "Máximo de horas en un día",
+      "checkinMinutes": "Verificación cada (minutos)",
+      "presencePercent": "Presente (% de las horas)",
+      "makeupMinPercent": "Recuperación tras asistir (%)",
+      "makeupDays": "Recuperación dentro de (días)",
+      "note": "Nota (opcional)",
+      "save": "Guardar aprobación",
+      "cancel": "Cancelar"
+    },
+    "dashboard": {
+      "title": "Aprobaciones de cursos",
+      "inForce_one": "{{count}} aprobación vigente",
+      "inForce_other": "{{count}} aprobaciones vigentes",
+      "courses_one": "{{count}} curso",
+      "courses_other": "{{count}} cursos",
+      "attention": "Requiere atención",
+      "allGood": "Nada requiere atención: cada aprobación está vigente por al menos 60 días más.",
+      "open": "Aprobaciones estatales",
+      "pending": "{{course}} · {{state}}: en espera de aprobación",
+      "expiring": "{{course}} · {{state}}: vence el {{date}}",
+      "expired": "{{course}} · {{state}}: venció el {{date}}, sin etiqueta"
+    },
+    "errors": {
+      "state": "Elija un estado que REOS conozca.",
+      "duplicate": "Este curso ya tiene una aprobación en ese estado para esa modalidad. Renuévela o edítela.",
+      "number": "Una aprobación aprobada necesita el número del regulador.",
+      "expiry": "La fecha de vencimiento debe ser posterior a la fecha de aprobación.",
+      "status": "Ese no es un estado de aprobación."
+    },
+    "mail": {
+      "subject": "{{course}}: la aprobación de {{state}} vence en {{days}} días",
+      "body": "La aprobación {{number}} de {{course}} en {{state}} vence el {{date}}. Renuévela con el regulador y registre la nueva fecha en REOS, o el curso perderá su etiqueta allí.",
+      "expiredSubject": "{{course}}: la aprobación de {{state}} venció",
+      "expiredBody": "La aprobación {{number}} de {{course}} en {{state}} venció el {{date}}. El curso sigue visible, pero no puede llamarse de educación continua o de calificación, ni venderse con créditos, en {{state}} hasta que se renueve.",
+      "action": "Abrir aprobaciones estatales",
+      "next": "Recibirá estos recordatorios 60 y 30 días antes de que venza cada aprobación."
+    }
   }
 }

@@ -8,11 +8,13 @@ use App\Content\CourseStatus;
 use App\Content\CourseType;
 use App\Content\Review\ContentChecks;
 use App\Models\Course;
+use App\Models\CourseApproval;
 use App\Models\CourseModule;
 use App\Models\KbPassage;
 use App\Models\Lesson;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -63,11 +65,13 @@ final readonly class Courses
             $course->states = self::states(is_array($data['states']) ? array_values(array_filter($data['states'], 'is_string')) : null);
         }
 
-        if (array_key_exists('approvals', $data)) {
-            $course->approvals = self::approvals($data['approvals'], $course->states ?? []);
-        }
+        $numbers = array_key_exists('approvals', $data) ? self::approvals($data['approvals'], $course->states ?? []) : null;
 
         $course->fill(array_intersect_key($data, array_flip(['title', 'description', 'hours'])));
+
+        if ($numbers !== null) {
+            $course->setRelation('approvals', $this->withNumbers($course, $numbers));
+        }
 
         if ($course->status === CourseStatus::Live && $course->missingApprovals() !== []) {
             throw ValidationException::withMessages(['approvals' => __('content.errors.noApproval', ['states' => implode(', ', $course->missingApprovals())])]);
@@ -80,8 +84,12 @@ final readonly class Courses
             return $course;
         }
 
-        DB::transaction(function () use ($course, $changed, $before, $after, $actor): void {
+        DB::transaction(function () use ($course, $changed, $before, $after, $actor, $numbers): void {
             $course->save();
+
+            if ($numbers !== null && in_array('approvals', $changed, true)) {
+                $this->saveNumbers($course, $numbers, $actor);
+            }
 
             // Passages carry the course's states, so search filters fast.
             if (in_array('states', $changed, true)) {
@@ -227,7 +235,7 @@ final readonly class Courses
             'description' => $course->description,
             'states' => $course->states,
             'hours' => $course->hours === null ? null : (string) (float) $course->hours,
-            'approvals' => $course->approvals,
+            'approvals' => $course->approvalNumbers(),
         ];
 
         return array_intersect_key($values, array_flip(self::AUDITED));
@@ -250,15 +258,76 @@ final readonly class Courses
     }
 
     /**
+     * The course's approvals as they'd be with these numbers (unsaved), so
+     * the Live check sees the change before anything is written.
+     *
+     * @param  array<string, array{number: string, expires_on: string|null}>  $numbers
+     * @return Collection<int, CourseApproval>
+     */
+    private function withNumbers(Course $course, array $numbers): Collection
+    {
+        $approvals = $course->approvals->map(static fn (CourseApproval $a): CourseApproval => clone $a);
+
+        foreach ($approvals as $approval) {
+            if ($approval->delivery === $course->delivery && $approval->status === CourseApproval::APPROVED && ! isset($numbers[$approval->state_code])) {
+                $approval->status = CourseApproval::WITHDRAWN;
+            }
+        }
+
+        foreach ($numbers as $state => $entry) {
+            $existing = $approvals->first(static fn (CourseApproval $a): bool => $a->state_code === $state && $a->delivery === $course->delivery);
+            $approval = $existing ?? new CourseApproval(['course_id' => $course->id, 'state_code' => $state, 'delivery' => $course->delivery]);
+            $approval->fill(['number' => $entry['number'], 'expires_on' => $entry['expires_on'], 'status' => CourseApproval::APPROVED]);
+
+            if ($existing === null) {
+                $approvals->push($approval);
+            }
+        }
+
+        return $approvals;
+    }
+
+    /**
+     * Saves the content library's approval numbers (A5.3 quick edit) as
+     * course approvals for the course's delivery; a cleared number withdraws it.
+     *
+     * @param  array<string, array{number: string, expires_on: string|null}>  $numbers
+     */
+    private function saveNumbers(Course $course, array $numbers, User $actor): void
+    {
+        foreach ($course->approvals()->where('delivery', $course->delivery->value)->where('status', CourseApproval::APPROVED)->get() as $approval) {
+            if (! isset($numbers[$approval->state_code])) {
+                $approval->forceFill(['status' => CourseApproval::WITHDRAWN])->save();
+            }
+        }
+
+        foreach ($numbers as $state => $entry) {
+            $approval = $course->approvals()->firstOrNew(['state_code' => $state, 'delivery' => $course->delivery->value]);
+            $changedExpiry = $approval->exists && $approval->expires_on?->toDateString() !== $entry['expires_on'];
+            $approval->fill(['number' => $entry['number'], 'expires_on' => $entry['expires_on'], 'status' => CourseApproval::APPROVED]);
+            $approval->hours ??= $course->hours;
+            $approval->created_by ??= $actor->id;
+
+            if ($changedExpiry) {
+                $approval->forceFill(['reminded_days' => null, 'expired_at' => null]);
+            }
+
+            $approval->save();
+        }
+
+        $course->unsetRelation('approvals');
+    }
+
+    /**
      * Approvals for the course's states only, numbers trimmed; empty ones dropped.
      *
      * @param  list<string>  $states
-     * @return array<string, array{number: string, expires_on: string|null}>|null
+     * @return array<string, array{number: string, expires_on: string|null}>
      */
-    private static function approvals(mixed $input, array $states): ?array
+    private static function approvals(mixed $input, array $states): array
     {
         if (! is_array($input)) {
-            return null;
+            return [];
         }
 
         $approvals = [];
@@ -280,6 +349,6 @@ final readonly class Courses
 
         ksort($approvals);
 
-        return $approvals === [] ? null : $approvals;
+        return $approvals;
     }
 }

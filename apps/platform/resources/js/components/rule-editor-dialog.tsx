@@ -380,6 +380,36 @@ export function RuleEditorDialog({ state, rule, courses, onClose }: Props) {
                         </div>
                     ) : null}
 
+                    {rule.type === 'seat_time' ? (
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            {(
+                                [
+                                    ['max_hours_per_day', 'maxHoursPerDay'],
+                                    ['presence_percent', 'presencePercent'],
+                                    ['makeup_min_percent', 'makeupMinPercent'],
+                                    ['makeup_days', 'makeupDays'],
+                                ] as const
+                            ).map(([key, label]) => (
+                                <div key={key} className="grid gap-2">
+                                    <Label htmlFor={`rule-${key}`}>
+                                        {t(`stateRules.edit.${label}`)}
+                                    </Label>
+                                    <Input
+                                        id={`rule-${key}`}
+                                        type="number"
+                                        min={0}
+                                        value={value[key] ?? ''}
+                                        onChange={(e) =>
+                                            set({
+                                                [key]: Number(e.target.value),
+                                            })
+                                        }
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
+
                     {rule.type === 'text' ? (
                         <div className="grid gap-2">
                             <Label htmlFor="rule-text">

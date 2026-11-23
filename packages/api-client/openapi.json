@@ -2272,7 +2272,7 @@
         "/learn/courses": {
             "get": {
                 "operationId": "learn.courses",
-                "description": "Live courses for my current state, with their lessons.",
+                "description": "Live courses for my current state, with their lessons.\n\nCE and qualifying courses carry `credit` (the approval number and hours)\nonly with an approval in force in my state; otherwise it's null and the\ncourse isn't labelled CE or qualifying.",
                 "summary": "Courses I can learn",
                 "tags": [
                     "Learn"
@@ -2313,6 +2313,27 @@
                                                         "type": [
                                                             "number",
                                                             "null"
+                                                        ]
+                                                    },
+                                                    "credit": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "number": {
+                                                                "type": "string"
+                                                            },
+                                                            "hours": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "number",
+                                                            "hours"
                                                         ]
                                                     },
                                                     "unlocked": {
@@ -2361,6 +2382,7 @@
                                                     "title",
                                                     "type",
                                                     "hours",
+                                                    "credit",
                                                     "unlocked",
                                                     "lessons"
                                                 ]

@@ -13,4 +13,6 @@ enum RuleTopic: string
     case Advertising = 'advertising';
     case Brokerage = 'brokerage';
     case Forms = 'forms';
+    /** How approved courses are delivered: seat time and attendance (A7.1). */
+    case Courses = 'courses';
 }

@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import { router } from 'expo-router';
 import { BookOpen, FileText, Lock, Presentation, Search, Video } from 'lucide-react-native';
 import { useState } from 'react';
@@ -91,7 +92,7 @@ export default function Learn() {
             {course.title}
           </Text>
           <Text variant="caption" tone="muted">
-            {[t(`content.types.${course.type}`), course.hours !== null ? t('learn.hours', { count: course.hours }) : null, t('learn.lessons', { count: course.lessons.length })].filter(Boolean).join(' · ')}
+            {[courseLabel(t, course, state ?? ""), course.hours !== null ? t('learn.hours', { count: course.hours }) : null, t('learn.lessons', { count: course.lessons.length })].filter(Boolean).join(' · ')}
           </Text>
           {course.lessons.map((lesson) => (
             <ListRow
@@ -114,3 +115,12 @@ const styles = StyleSheet.create((theme) => ({
   hitHead: { flexDirection: 'row', alignItems: 'center', gap: theme.space.xs },
   flex: { flex: 1 },
 }));
+
+/** No CE or qualifying label without an approval in force in the state (A7.1). */
+function courseLabel(t: TFunction, course: { type: string; credit: { number: string } | null }, state: string): string {
+  const type = t(`content.types.${course.type as 'ce'}`);
+
+  if (course.credit) return t('learn.credit', { type, number: course.credit.number });
+
+  return course.type === 'ce' || course.type === 'qualifying' ? t('learn.noCredit', { state }) : type;
+}

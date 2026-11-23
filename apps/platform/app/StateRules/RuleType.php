@@ -22,6 +22,8 @@ enum RuleType: string
     case FeeDays = 'fee_days';
     /** `{"text": "…"}`: a rule people read (advertising, brokerage). */
     case Text = 'text';
+    /** `{"max_hours_per_day": 12, "presence_percent": 100, "makeup_min_percent": 67, "makeup_days": 90}` (A7.1) */
+    case SeatTime = 'seat_time';
 
     /**
      * Validation rules for the value.
@@ -55,6 +57,12 @@ enum RuleType: string
                 'value.days' => ['required', 'integer', 'min:0', 'max:3650'],
             ],
             self::Text => ['value.text' => ['required', 'string', 'max:2000']],
+            self::SeatTime => [
+                'value.max_hours_per_day' => ['required', 'numeric', 'min:1', 'max:24'],
+                'value.presence_percent' => ['required', 'integer', 'min:0', 'max:100'],
+                'value.makeup_min_percent' => ['required', 'integer', 'min:0', 'max:100'],
+                'value.makeup_days' => ['required', 'integer', 'min:0', 'max:365'],
+            ],
         };
     }
 }

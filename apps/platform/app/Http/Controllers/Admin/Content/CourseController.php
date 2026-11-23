@@ -51,7 +51,7 @@ final class CourseController extends Controller
                 'description' => $course->description,
                 'states' => $course->states,
                 'hours' => $course->hours === null ? null : (float) $course->hours,
-                'approvals' => $course->approvals ?? (object) [],
+                'approvals' => $course->approvalNumbers() ?: (object) [],
                 'status' => $course->status->value,
                 'status_note' => $course->status_note,
                 'needs_approval' => $course->type->needsApproval(),

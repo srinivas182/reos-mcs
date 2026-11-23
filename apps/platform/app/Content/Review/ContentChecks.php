@@ -26,7 +26,7 @@ final class ContentChecks
     public function for(Course $course): array
     {
         $cleared = array_column($course->cleared_flags ?? [], 'key');
-        $approved = $course->missingApprovals() === [] && ($course->approvals ?? []) !== [];
+        $approved = $course->missingApprovals() === [] && $course->approvalNumbers() !== [];
         $flags = [];
 
         $passages = KbPassage::query()

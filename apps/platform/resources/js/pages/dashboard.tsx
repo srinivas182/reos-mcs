@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { CeHoursTile } from '@/components/ce-requirement';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
+import { ApprovalsCard } from '@/components/approvals/approvals-card';
+import type { ApprovalSummary } from '@/components/approvals/types';
 import { SessionCard } from '@/components/sessions/session-card';
 import { TodayCard } from '@/components/today-card';
 import { activeMembership, roleName } from '@/lib/roles';
@@ -21,9 +23,11 @@ import type { CalendarDay } from '@/types/calendar';
 export default function Dashboard({
     today = null,
     ce = null,
+    approvals = null,
 }: {
     today?: CalendarDay | null;
     ce?: CeRequirement | null;
+    approvals?: ApprovalSummary | null;
 }) {
     const { t } = useTranslation();
     const { auth, sessions } = usePage().props;
@@ -52,6 +56,7 @@ export default function Dashboard({
                         <CeHoursTile ce={ce} />
                     </div>
                 ) : null}
+                {approvals ? <ApprovalsCard summary={approvals} /> : null}
                 {today ? <TodayCard today={today} /> : null}
                 {sessions ? (
                     <section className="space-y-3">

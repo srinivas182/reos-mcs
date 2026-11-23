@@ -85,6 +85,23 @@ final readonly class Memberships
             ->get();
     }
 
+    /**
+     * People who hold a role in one organisation (its school admins, say).
+     *
+     * @return \Illuminate\Database\Eloquent\Collection<int, User>
+     */
+    public function holdersIn(Role $role, Organisation $organisation): \Illuminate\Database\Eloquent\Collection
+    {
+        $ids = DB::table('model_has_roles')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->where('roles.name', $role->value)
+            ->where('model_has_roles.model_type', (new User)->getMorphClass())
+            ->where('model_has_roles.organisation_id', $organisation->id)
+            ->pluck('model_has_roles.model_id');
+
+        return User::query()->whereIn('id', $ids)->get();
+    }
+
     /** Give someone a role, audited (the People screen and invitations). */
     public function grant(User $user, Role $role, Organisation $organisation, ?User $actor = null): Membership
     {

@@ -42,7 +42,10 @@ final readonly class Learning
     /**
      * Live courses in the person's state, with their lessons.
      *
-     * @return list<array{id: int, title: string, type: string, hours: float|null, unlocked: bool, lessons: list<array{id: int, title: string, minutes: int|null, language: string, locked: bool}>}>
+     * CE and qualifying courses carry their label (`credit`) only with an
+     * approval in force in the state for the way they're delivered (A7.1).
+     *
+     * @return list<array{id: int, title: string, type: string, hours: float|null, credit: array{number: string, hours: float|null}|null, unlocked: bool, lessons: list<array{id: int, title: string, minutes: int|null, language: string, locked: bool}>}>
      */
     public function courses(User $user): array
     {
@@ -52,17 +55,19 @@ final readonly class Learning
         return array_values(Course::query()
             ->where('status', CourseStatus::Live)
             ->forStates([$this->state($user)])
-            ->with(['lessons' => static fn ($q) => $q->select(['id', 'course_id', 'title', 'minutes', 'language', 'position'])])
+            ->with(['approvals', 'lessons' => static fn ($q) => $q->select(['id', 'course_id', 'title', 'minutes', 'language', 'position'])])
             ->orderBy('title')
             ->get()
-            ->map(static function (Course $course) use ($features): array {
+            ->map(static function (Course $course) use ($features, $state): array {
                 $unlocked = in_array(Entitlements::courseFeature($course->type), $features, true);
+                $approval = $course->type->needsApproval() ? $course->approvalIn($state) : null;
 
                 return [
                     'id' => $course->id,
                     'title' => $course->title,
                     'type' => $course->type->value,
                     'hours' => $course->hours === null ? null : (float) $course->hours,
+                    'credit' => $approval === null ? null : ['number' => (string) $approval->number, 'hours' => $approval->hours === null ? null : (float) $approval->hours],
                     'unlocked' => $unlocked,
                     'lessons' => array_values($course->lessons->values()->map(static fn (Lesson $lesson, int $index): array => [
                         'id' => $lesson->id,

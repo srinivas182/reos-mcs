@@ -33,6 +33,7 @@ final class RuleCatalogue
             'advertising.broker_name_size' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
             'advertising.social_media' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
             'advertising.misleading_titles' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
+            'courses.seat_time' => ['topic' => RuleTopic::Courses, 'type' => RuleType::SeatTime, 'used_by' => ['course_approvals', 'course_player', 'live_classes']],
             'brokerage.sponsorship' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['brokerage_matching', 'licence_journey']],
         ];
     }
@@ -44,5 +45,5 @@ final class RuleCatalogue
     }
 
     /** Features that read rules today (the rest arrive in their sprints). */
-    public const LIVE_FEATURES = ['ce_card'];
+    public const LIVE_FEATURES = ['ce_card', 'course_approvals'];
 }

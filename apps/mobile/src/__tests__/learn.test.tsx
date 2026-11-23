@@ -78,7 +78,13 @@ describe('Learn (screen 8)', () => {
     mockApi.GET.mockImplementation((path: string) =>
       Promise.resolve(
         path === '/learn/courses'
-          ? ok({ state: 'TX', data: [{ id: 3, title: 'Principles of Real Estate II', type: 'qualifying', hours: 30, lessons: [{ id: 7, title: '6.2 Agency disclosure', minutes: 25, language: 'en' }] }] })
+          ? ok({
+              state: 'TX',
+              data: [
+                { id: 3, title: 'Principles of Real Estate II', type: 'qualifying', hours: 30, credit: { number: 'TREC 0451', hours: 30 }, lessons: [{ id: 7, title: '6.2 Agency disclosure', minutes: 25, language: 'en' }] },
+                { id: 4, title: 'Contracts for new agents', type: 'ce', hours: 4, credit: null, lessons: [] },
+              ],
+            })
           : ok({ data: [hit] }),
       ),
     );
@@ -86,6 +92,9 @@ describe('Learn (screen 8)', () => {
     await render(wrap(<Learn />));
 
     expect(await screen.findByText('Principles of Real Estate II')).toBeTruthy();
+    // No CE or qualifying label without an approval in force (A7.1).
+    expect(screen.getByText(/Qualifying · approval TREC 0451/)).toBeTruthy();
+    expect(screen.getByText(/Not approved for credit in TX yet/)).toBeTruthy();
     await fireEvent.changeText(screen.getByLabelText('Search your lessons'), 'IABS');
     await fireEvent.press(screen.getByRole('button', { name: 'Search' }));
 

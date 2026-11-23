@@ -53,3 +53,5 @@ Schedule::command('reos:notifications:prune')->dailyAt('04:45')->onOneServer();
 Schedule::command('reos:sessions:tick')->everyMinute()->withoutOverlapping()->onOneServer();
 // Recordings are deleted 90 days after the session (B6.3c).
 Schedule::command('reos:recordings:prune')->dailyAt('04:15')->onOneServer();
+// Course approvals (A7.1): reminders before expiry, and expiries.
+Schedule::command('reos:approvals:check')->dailyAt('07:05')->timezone('America/Chicago')->onOneServer();
