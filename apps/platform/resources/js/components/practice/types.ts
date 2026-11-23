@@ -30,7 +30,9 @@ export type TestKind =
     | 'topic'
     | 'national'
     | 'state'
-    | 'simulation';
+    | 'simulation'
+    | 'drill'
+    | 'retest';
 
 export type Portion = 'national' | 'state';
 
@@ -214,3 +216,55 @@ export type ExamKind = 'national' | 'state' | 'simulation';
 export function isExam(kind: TestKind): kind is ExamKind {
     return kind === 'national' || kind === 'state' || kind === 'simulation';
 }
+
+/** The practice hub's ranking (screen 38, A9.2b). */
+export type Coach = {
+    drill: {
+        topics: Topic[];
+        questions: number;
+        misses: number;
+        open: number | null;
+    };
+    plans: { id: number; topic: Topic; done: number; steps: number }[];
+    ranked: {
+        mode:
+            | 'diagnostic'
+            | 'plan'
+            | 'drill'
+            | 'fix'
+            | 'simulation'
+            | 'readiness';
+        why: string;
+        topic: Topic | null;
+        plan_id: number | null;
+    }[];
+};
+
+/** Fix a weak topic (screen 46, A9.2b). */
+export type TopicPlan = {
+    id: number;
+    topic: Topic;
+    now: number | null;
+    start: number | null;
+    goal: number;
+    weak: boolean;
+    minutes: number;
+    completed: boolean;
+    steps: {
+        n: number;
+        kind: 'lesson' | 'review' | 'practice' | 'flashcards' | 'retest';
+        minutes: number;
+        status: 'done' | 'current' | 'todo';
+        lesson: { id: number; title: string; seconds: number | null } | null;
+        attempt_id: number | null;
+        results_id: number | null;
+    }[];
+    misses: {
+        id: number;
+        prompt: string;
+        options: string[];
+        right: number;
+        explanation: string;
+        source: string;
+    }[];
+};

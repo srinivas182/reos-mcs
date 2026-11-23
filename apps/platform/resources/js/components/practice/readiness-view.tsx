@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { start } from '@/routes/practice';
+import { store as storePlan } from '@/routes/practice/plans';
 
 type Filter = 'all' | Portion;
 
@@ -31,8 +32,10 @@ type Filter = 'all' | Portion;
 export function ReadinessView({ map }: { map: ReadinessMap }) {
     const { t, i18n } = useTranslation();
     const [filter, setFilter] = useState<Filter>('all');
+    // A topic: a 10-question drill on it (screen 54); a weak one: its fix plan (screen 44).
     const practise = (topic: string) =>
-        router.post(start().url, { kind: 'topic', topic });
+        router.post(start().url, { kind: 'drill', topic });
+    const fix = (topic: string) => router.post(storePlan().url, { topic });
     const known = map.portions.national !== null || map.portions.state !== null;
     const topics = map.topics.filter(
         (x) => filter === 'all' || x.portion === filter,
@@ -110,9 +113,7 @@ export function ReadinessView({ map }: { map: ReadinessMap }) {
                                 ),
                             })}
                         </p>
-                        <Button
-                            onClick={() => map.gain && practise(map.gain.topic)}
-                        >
+                        <Button onClick={() => map.gain && fix(map.gain.topic)}>
                             {t('practice.readinessMap.fixWeakest')}
                         </Button>
                     </div>
@@ -172,19 +173,36 @@ export function ReadinessView({ map }: { map: ReadinessMap }) {
                                     </div>
                                 ) : null}
                             </div>
-                            <Button
-                                variant="outline"
-                                aria-label={t(
-                                    'practice.readinessMap.goodAt.practiceTopic',
-                                    {
-                                        topic: t(`practice.topics.${x.topic}`),
-                                    },
-                                )}
-                                onClick={() => practise(x.topic)}
-                            >
-                                {t('practice.readinessMap.goodAt.practice')}
-                                <ArrowRight aria-hidden />
-                            </Button>
+                            <div className="flex flex-wrap gap-2">
+                                {x.weak ? (
+                                    <Button
+                                        variant="outline"
+                                        aria-label={t('practice.fix.start', {
+                                            topic: t(
+                                                `practice.topics.${x.topic}`,
+                                            ),
+                                        })}
+                                        onClick={() => fix(x.topic)}
+                                    >
+                                        {t('practice.readinessMap.goodAt.fix')}
+                                    </Button>
+                                ) : null}
+                                <Button
+                                    variant="outline"
+                                    aria-label={t(
+                                        'practice.readinessMap.goodAt.practiceTopic',
+                                        {
+                                            topic: t(
+                                                `practice.topics.${x.topic}`,
+                                            ),
+                                        },
+                                    )}
+                                    onClick={() => practise(x.topic)}
+                                >
+                                    {t('practice.readinessMap.goodAt.practice')}
+                                    <ArrowRight aria-hidden />
+                                </Button>
+                            </div>
                         </li>
                     ))}
                 </ul>

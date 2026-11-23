@@ -1,12 +1,12 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, ArrowRight, Calculator as CalculatorIcon, Flag, Pause, Play } from 'lucide-react-native';
+import { ArrowLeft, ArrowRight, Calculator as CalculatorIcon, Flag, Flame, Lightbulb, Pause, Play } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { Calculator } from '@/features/practice/Calculator';
-import { type Attempt, asTopic, countdown, finishPortion, isExam, loadAttempt, pauseTest, saveAnswer, submitTest, type TestQuestion } from '@/lib/practice';
+import { type Attempt, asTopic, countdown, finishPortion, isExam, loadAttempt, pauseTest, saveAnswer, submitTest, takeHint, type TestQuestion } from '@/lib/practice';
 import { Button, Callout, Chip, OptionGroup, Screen, Sheet, Text, TitleBar } from '@/ui';
 
 /**
@@ -15,7 +15,8 @@ import { Button, Callout, Chip, OptionGroup, Screen, Sheet, Text, TitleBar } fro
  * navigator shows answered, flagged and blank, and Review before submit
  * warns once about blanks. Every tap is saved; when time runs out the test
  * submits itself. The diagnostic gives results at the end; a topic quiz
- * shows why after each answer.
+ * shows why after each answer. A9.2b: the smart drill (screen 47) with its
+ * streak and Hint, which strikes out one wrong option; a fix plan's retest.
  */
 export default function TestScreen() {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ export default function TestScreen() {
   const submitted = useRef(false);
   const [paused, setPaused] = useState(false);
   const [calculator, setCalculator] = useState(false);
+  const [eliminated, setEliminated] = useState<Record<number, number>>({});
 
   const show = (found: Attempt) => {
     setAttempt(found);
@@ -131,7 +133,30 @@ export default function TestScreen() {
     setFailed(saved === null);
     if (saved) setQuestions((list) => list.map((q) => (q.id === saved.id ? saved : q)));
   };
-  const title = attempt.kind === 'diagnostic' ? t('practice.diagnostic.title') : isExam(attempt.kind) ? t(`practice.portions.${attempt.kind}.title`) : t('practice.topicQuiz', { topic: topic ? t(`practice.topics.${topic}`) : '' });
+  const testTopic = asTopic(attempt.topic);
+  const topicName = testTopic ? t(`practice.topics.${testTopic}`) : '';
+  const drill = attempt.kind === 'drill';
+  const title =
+    attempt.kind === 'diagnostic'
+      ? t('practice.diagnostic.title')
+      : isExam(attempt.kind)
+        ? t(`practice.portions.${attempt.kind}.title`)
+        : drill
+          ? testTopic
+            ? t('practice.drill.topicTitle', { topic: topicName })
+            : t('practice.drill.title')
+          : attempt.kind === 'retest'
+            ? t('practice.drill.retestTitle', { topic: topicName })
+            : t('practice.topicQuiz', { topic: topicName });
+  // The run of right answers, counting back from the last one answered.
+  const answered = questions.filter((q) => q.feedback !== null);
+  const streak = answered.length - 1 - answered.findLastIndex((q) => q.feedback?.correct !== true);
+  const ruledOut = eliminated[question.id];
+  const hint = async () => {
+    const found = await takeHint(attempt.id, question.id).catch(() => null);
+    if (found === null) setFailed(true);
+    else setEliminated((all) => ({ ...all, [question.id]: found }));
+  };
   const section = attempt.section;
   const lastPortion = section === null || section.index === section.of;
 
@@ -149,6 +174,7 @@ export default function TestScreen() {
           ) : null}
         </View>
       ) : null}
+      {drill ? <Chip tone="warning" icon={Flame} label={String(streak)} accessibilityLabel={t('practice.drill.streak', { count: streak })} /> : null}
       <Calculator open={calculator} onClose={() => setCalculator(false)} />
       {paused ? <Callout tone="info" title={t('practice.test.pausedNote')} live /> : null}
       <Pressable accessibilityRole="button" accessibilityLabel={t('practice.test.openMap', { n: question.n, total: attempt.total })} onPress={() => setReviewing(true)}>
@@ -160,9 +186,11 @@ export default function TestScreen() {
       <OptionGroup
         label={question.prompt}
         value={question.choice === null ? null : String(question.choice)}
-        options={question.options.map((option, i) => ({ value: String(i), label: option }))}
-        onChange={(value) => (question.feedback || paused ? undefined : void save({ choice: Number(value) }))}
+        options={question.options.map((option, i) => ({ value: String(i), label: option, ...(ruledOut === i && !question.feedback ? { description: t('practice.drill.ruledOut') } : {}) }))}
+        onChange={(value) => (question.feedback || paused || (ruledOut === Number(value) && !question.feedback) ? undefined : void save({ choice: Number(value) }))}
       />
+      {drill && !question.feedback && ruledOut === undefined ? <Button variant="secondary" icon={Lightbulb} label={t('practice.drill.hint')} onPress={() => void hint()} /> : null}
+      {ruledOut !== undefined && !question.feedback ? <Callout tone="info" title={t('practice.drill.hintGiven', { option: question.options[ruledOut] ?? '' })} live /> : null}
       {question.feedback ? (
         <Callout
           tone={question.feedback.correct ? 'success' : 'warning'}

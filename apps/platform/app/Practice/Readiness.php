@@ -131,10 +131,15 @@ final readonly class Readiness
     {
         $now = $this->of($user);
 
-        return ReadinessSnapshot::query()->updateOrCreate(['user_id' => $user->id, 'day' => StudyPlans::today()->toDateString()], [
+        $day = StudyPlans::today()->toDateString();
+        // By date, not by the stored value: SQLite keeps a date cast with its time.
+        $snapshot = ReadinessSnapshot::query()->where('user_id', $user->id)->whereDate('day', $day)->first() ?? new ReadinessSnapshot(['user_id' => $user->id, 'day' => $day]);
+        $snapshot->fill([
             'national' => $now['portions']['national'], 'state' => $now['portions']['state'], 'percent' => $now['percent'],
             'topics' => $now['topics'], 'weakest' => $now['weakest'], 'ready_to_book' => $now['ready_to_book'],
-        ]);
+        ])->save();
+
+        return $snapshot;
     }
 
     /** Days until the exam: the middle of the exam month the person chose (null without one). */

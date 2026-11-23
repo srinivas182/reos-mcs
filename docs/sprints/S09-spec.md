@@ -108,6 +108,11 @@
   - a 4–6 step plan built from the candidate's actual misses: micro-lessons (the lesson at the right second), practice questions, flashcards, then a retest with new questions;
   - the topic leaves the weak list at 70%.
 - **Smart drill (screen 47):** 15 questions from the weakest topics and recent misses, with a streak, a **Hint** (a nudge, not the answer) and Check with why.
+- **As built, A9.2b** (ADR 0035 §14–16):
+  - **Smart drill:** 15 questions from the three weakest topics with up to five recent misses, plus **Hint** (strikes out a wrong option), the streak, and why after each answer. Tapping a topic on the Readiness map starts a 10-question drill on it.
+  - **Fix a weak topic:** reached from Fix my weakest, a topic in What you're good at, or the hub. It has 4–6 steps (micro-lessons at the right second, the misses with why, practice, a retest on new questions) with minutes and now against the goal. Continue opens the next step, and a done step can be reviewed.
+  - **Hub ranking:** the smart drill card and every mode ranked with why, on the web hub and the phone.
+  - **Flashcards:** join the plan's steps in A9.2d.
 - **Math lab (screen 48):**
   - step-by-step problems for prorations, commissions, loan-to-value, area, capitalization, the net-to-seller sheet, and points and interest;
   - each problem is a generator with **new numbers every time**, and the server checks every step;

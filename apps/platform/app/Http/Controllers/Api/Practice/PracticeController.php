@@ -63,8 +63,10 @@ final class PracticeController extends Controller
      * topic quiz (10 questions, why after each answer), or (A9.1) the
      * National or state portion test or the full simulation in the state's
      * real format, in `exam` mode (feedback at the end, no pause) or
-     * `practice` mode. An attempt of the same kind still open is returned
-     * instead.
+     * `practice` mode; or (A9.2b) the smart drill: 15 questions from the
+     * three weakest topics and recent misses, with Hint and why after each
+     * answer (a `topic` makes it a 10-question topic drill). An attempt of
+     * the same kind still open is returned instead.
      *
      * @status 201
      *
@@ -74,11 +76,11 @@ final class PracticeController extends Controller
     {
         $access->allow($user);
         $data = $request->validate([
-            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC, ...TestAttempt::PORTION_KINDS])],
+            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC, TestAttempt::DRILL, ...TestAttempt::PORTION_KINDS])],
             'topic' => ['required_if:kind,topic', 'nullable', Rule::in(array_keys(DiagnosticBank::WEIGHTS))],
             'mode' => ['nullable', Rule::in(['exam', 'practice'])],
         ]);
-        $attempt = $tests->start($user, (string) $data['kind'], $data['kind'] === TestAttempt::TOPIC && is_string($data['topic'] ?? null) ? $data['topic'] : null, is_string($data['mode'] ?? null) ? $data['mode'] : null);
+        $attempt = $tests->start($user, (string) $data['kind'], in_array($data['kind'], [TestAttempt::TOPIC, TestAttempt::DRILL], true) && is_string($data['topic'] ?? null) ? $data['topic'] : null, is_string($data['mode'] ?? null) ? $data['mode'] : null);
 
         return response()->json(['data' => $tests->show($attempt, $user->locale->value)], $attempt->wasRecentlyCreated ? 201 : 200);
     }

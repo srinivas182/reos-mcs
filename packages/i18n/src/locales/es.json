@@ -6073,7 +6073,9 @@
       "stillOpen": "Esta prueba sigue abierta.",
       "save": "Su respuesta no se guardó. Revise su conexión y elíjala de nuevo.",
       "noPause": "Solo se puede pausar un examen en modo práctica.",
-      "paused": "Este examen está en pausa. Reanúdelo para responder."
+      "paused": "Este examen está en pausa. Reanúdelo para responder.",
+      "noHint": "Las pistas solo están disponibles para una pregunta sin responder en una práctica inteligente.",
+      "planDone": "Este plan está terminado. Empiece uno nuevo cuando el tema lo necesite."
     },
     "portions": {
       "title": "Simulacros de examen",
@@ -6155,7 +6157,8 @@
         "practiceTopic": "Practicar {{topic}}",
         "answers_one": "{{count}} respuesta",
         "answers_other": "{{count}} respuestas",
-        "open": "Ver todos los temas"
+        "open": "Ver todos los temas",
+        "fix": "Mejorar"
       },
       "gain": "Mejorar {{topic}} podría sumar {{points}} puntos a su probabilidad de aprobar la {{portion}}.",
       "fixWeakest": "Mejorar mi tema más débil",
@@ -6163,6 +6166,77 @@
       "empty": "Haga el diagnóstico o una prueba de práctica para ver su preparación.",
       "emptyTitle": "Aún no hay datos de preparación",
       "open": "Abre su mapa de preparación"
+    },
+    "drill": {
+      "title": "Práctica inteligente",
+      "topicTitle": "Práctica de {{topic}}",
+      "retestTitle": "Nueva prueba de {{topic}}",
+      "description": "{{count}} preguntas de sus tres temas más débiles y de errores recientes, con una pista cuando la necesite y la explicación después de cada respuesta.",
+      "topics": "Hoy: {{topics}}",
+      "misses_one": "Repite {{count}} pregunta que falló",
+      "misses_other": "Repite {{count}} preguntas que falló",
+      "start": "Empezar la práctica",
+      "carryOn": "Seguir con la práctica",
+      "streak_one": "Racha: {{count}} correcta seguida",
+      "streak_other": "Racha: {{count}} correctas seguidas",
+      "hint": "Pista",
+      "hintGiven": "Esta no es: {{option}}",
+      "ruledOut": "descartada por la pista"
+    },
+    "fix": {
+      "title": "Mejorar {{topic}}",
+      "description": "Un plan corto basado en las preguntas que falló. Termínelo y luego haga una nueva prueba con preguntas nuevas.",
+      "now": "Ahora: {{percent}}%",
+      "notYet": "Ahora: aún no hay suficientes respuestas",
+      "goal": "Meta: {{percent}}%",
+      "started": "Empezó en {{percent}}%",
+      "left_one": "Queda {{count}} minuto",
+      "left_other": "Quedan {{count}} minutos",
+      "steps": {
+        "lesson": "Vea: {{title}}",
+        "review": "Sus errores, con la explicación",
+        "practice": "Practique preguntas, primero las que falló",
+        "flashcards": "Tarjetas de estudio",
+        "retest": "Nueva prueba con preguntas nuevas"
+      },
+      "minutes_one": "{{count}} min",
+      "minutes_other": "{{count}} min",
+      "status": {
+        "done": "Listo",
+        "current": "Siguiente",
+        "todo": "Pendiente"
+      },
+      "continue": "Continuar",
+      "review": "Revisar",
+      "seeResults": "Ver resultados",
+      "completedTitle": "Plan terminado",
+      "completedWeak": "Aún está por debajo del {{goal}}%. Empiece otro plan o practíquelo en el centro de práctica.",
+      "completedStrong": "{{topic}} ya no está en su lista de temas débiles. Buen trabajo.",
+      "missesTitle": "Las preguntas que falló",
+      "answer": "Respuesta correcta: {{answer}}",
+      "start": "Mejorar {{topic}}",
+      "carryOn": "Continuar: {{topic}} ({{done}} de {{steps}} listos)"
+    },
+    "coach": {
+      "title": "Recomendado para usted",
+      "description": "Lo que más le ayudará ahora, primero.",
+      "why": {
+        "baseline": "Primero averigüe en qué nivel está.",
+        "carry_on": "Continúe donde se quedó.",
+        "weakest": "Sus temas más débiles, con sus errores recientes.",
+        "rehearse": "Está cerca de la línea de reserva: practique el examen real.",
+        "exam_soon": "Su examen se acerca: practique con el formato real.",
+        "check": "Vea cómo le iría en el examen real.",
+        "map": "Su probabilidad de aprobar cada parte."
+      },
+      "modes": {
+        "diagnostic": "Diagnóstico",
+        "plan": "Plan de mejora",
+        "drill": "Práctica inteligente",
+        "fix": "Mejorar mi tema más débil",
+        "simulation": "Simulacro completo",
+        "readiness": "Preparación"
+      }
     }
   },
   "brokerageIntegrations": {

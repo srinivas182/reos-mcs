@@ -987,6 +987,222 @@
                 }
             }
         },
+        "/practice/hub": {
+            "get": {
+                "operationId": "practice.hub",
+                "description": "The smart drill (the three weakest topics, how many recent misses it\nwill bring back, and any drill still open), fix plans under way, and\nevery practice mode ranked by what helps most, each with why.",
+                "summary": "What to practise next",
+                "tags": [
+                    "Coach"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "drill": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "topics": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "misses": {
+                                                            "type": "integer"
+                                                        },
+                                                        "open": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "topics",
+                                                        "questions",
+                                                        "misses",
+                                                        "open"
+                                                    ]
+                                                },
+                                                "plans": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "topic": {
+                                                                "type": "string"
+                                                            },
+                                                            "done": {
+                                                                "type": "integer"
+                                                            },
+                                                            "steps": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "topic",
+                                                            "done",
+                                                            "steps"
+                                                        ]
+                                                    }
+                                                },
+                                                "ranked": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mode": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "diagnostic",
+                                                                    "plan",
+                                                                    "drill",
+                                                                    "fix",
+                                                                    "simulation",
+                                                                    "readiness"
+                                                                ]
+                                                            },
+                                                            "why": {
+                                                                "type": "string"
+                                                            },
+                                                            "topic": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "plan_id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mode",
+                                                            "why",
+                                                            "topic",
+                                                            "plan_id"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "drill",
+                                                "plans",
+                                                "ranked"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/attempts/{attempt}/questions/{question}/hint": {
+            "post": {
+                "operationId": "practice.hint",
+                "description": "In a smart drill, before answering: one wrong option to strike out, a\nnudge that never gives the answer. Hints are kept, and cost points only\nin challenges.",
+                "summary": "Hint",
+                "tags": [
+                    "Coach"
+                ],
+                "parameters": [
+                    {
+                        "name": "attempt",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "question",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "eliminated": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "eliminated"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/connections": {
             "get": {
                 "operationId": "connections.index",
@@ -9641,7 +9857,7 @@
             },
             "post": {
                 "operationId": "practice.store",
-                "description": "The diagnostic (50 questions, 45 minutes, results at the end), a\ntopic quiz (10 questions, why after each answer), or (A9.1) the\nNational or state portion test or the full simulation in the state's\nreal format, in `exam` mode (feedback at the end, no pause) or\n`practice` mode. An attempt of the same kind still open is returned\ninstead.",
+                "description": "The diagnostic (50 questions, 45 minutes, results at the end), a\ntopic quiz (10 questions, why after each answer), or (A9.1) the\nNational or state portion test or the full simulation in the state's\nreal format, in `exam` mode (feedback at the end, no pause) or\n`practice` mode; or (A9.2b) the smart drill: 15 questions from the\nthree weakest topics and recent misses, with Hint and why after each\nanswer (a `topic` makes it a 10-question topic drill). An attempt of\nthe same kind still open is returned instead.",
                 "summary": "Start a test",
                 "tags": [
                     "Practice"
@@ -9658,6 +9874,7 @@
                                         "enum": [
                                             "diagnostic",
                                             "topic",
+                                            "drill",
                                             "national",
                                             "state",
                                             "simulation"
@@ -15990,6 +16207,533 @@
                     },
                     "404": {
                         "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/topic-plans": {
+            "post": {
+                "operationId": "practice.plans.store",
+                "description": "The candidate's plan for the topic still under way, or a new one\nbuilt from their own misses: micro-lessons at the right second, the\nmisses with why, practice, and a retest with new questions.",
+                "summary": "Fix a weak topic",
+                "tags": [
+                    "TopicPlan"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "topic": {
+                                        "type": "string",
+                                        "enum": [
+                                            "agency",
+                                            "contracts",
+                                            "ownership",
+                                            "finance",
+                                            "math",
+                                            "state_rules"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "topic"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "now": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "start": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "goal": {
+                                                    "type": "integer"
+                                                },
+                                                "weak": {
+                                                    "type": "boolean"
+                                                },
+                                                "minutes": {
+                                                    "type": "integer"
+                                                },
+                                                "completed": {
+                                                    "type": "boolean"
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "n": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "done",
+                                                                    "current",
+                                                                    "todo"
+                                                                ]
+                                                            },
+                                                            "lesson": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "seconds": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "title",
+                                                                    "seconds"
+                                                                ]
+                                                            },
+                                                            "attempt_id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "results_id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "n",
+                                                            "kind",
+                                                            "minutes",
+                                                            "status",
+                                                            "lesson",
+                                                            "attempt_id",
+                                                            "results_id"
+                                                        ]
+                                                    }
+                                                },
+                                                "misses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "prompt": {
+                                                                "type": "string"
+                                                            },
+                                                            "options": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "right": {
+                                                                "type": "integer"
+                                                            },
+                                                            "explanation": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "prompt",
+                                                            "options",
+                                                            "right",
+                                                            "explanation",
+                                                            "source"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "topic",
+                                                "now",
+                                                "start",
+                                                "goal",
+                                                "weak",
+                                                "minutes",
+                                                "completed",
+                                                "steps",
+                                                "misses"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/topic-plans/{plan}": {
+            "get": {
+                "operationId": "practice.plans.show",
+                "description": "Now against the 70% goal, each step with its minutes and whether it's\ndone, and the misses with why.",
+                "summary": "A fix plan",
+                "tags": [
+                    "TopicPlan"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "now": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "start": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "goal": {
+                                                    "type": "integer"
+                                                },
+                                                "weak": {
+                                                    "type": "boolean"
+                                                },
+                                                "minutes": {
+                                                    "type": "integer"
+                                                },
+                                                "completed": {
+                                                    "type": "boolean"
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "n": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "done",
+                                                                    "current",
+                                                                    "todo"
+                                                                ]
+                                                            },
+                                                            "lesson": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "seconds": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "title",
+                                                                    "seconds"
+                                                                ]
+                                                            },
+                                                            "attempt_id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "results_id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "n",
+                                                            "kind",
+                                                            "minutes",
+                                                            "status",
+                                                            "lesson",
+                                                            "attempt_id",
+                                                            "results_id"
+                                                        ]
+                                                    }
+                                                },
+                                                "misses": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "prompt": {
+                                                                "type": "string"
+                                                            },
+                                                            "options": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "right": {
+                                                                "type": "integer"
+                                                            },
+                                                            "explanation": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "prompt",
+                                                            "options",
+                                                            "right",
+                                                            "explanation",
+                                                            "source"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "topic",
+                                                "now",
+                                                "start",
+                                                "goal",
+                                                "weak",
+                                                "minutes",
+                                                "completed",
+                                                "steps",
+                                                "misses"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/topic-plans/{plan}/continue": {
+            "post": {
+                "operationId": "practice.plans.continue",
+                "description": "Starts the next step and says where to go: a lesson at its second,\nthe misses (shown on the plan), or the step's test (started, or the\none still open).",
+                "summary": "Continue a fix plan",
+                "tags": [
+                    "TopicPlan"
+                ],
+                "parameters": [
+                    {
+                        "name": "plan",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "kind": {
+                                                    "type": "string"
+                                                },
+                                                "lesson": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "seconds": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "seconds"
+                                                    ]
+                                                },
+                                                "attempt_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "kind",
+                                                "lesson",
+                                                "attempt_id"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"

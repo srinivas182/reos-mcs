@@ -9,6 +9,7 @@ use App\Models\TestAttempt;
 use App\Models\User;
 use App\Practice\DiagnosticBank;
 use App\Practice\PracticeAccess;
+use App\Practice\PracticeCoach;
 use App\Practice\Readiness;
 use App\Practice\Tests;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -25,22 +26,22 @@ use Inertia\Response;
  */
 final class PracticePageController extends Controller
 {
-    public function index(#[CurrentUser] User $user, PracticeAccess $access, Readiness $readiness): Response
+    public function index(#[CurrentUser] User $user, PracticeAccess $access, Readiness $readiness, PracticeCoach $coach): Response
     {
         $access->allow($user);
 
-        return Inertia::render('practice/index', ['tests' => $access->hub($user), 'readiness' => $readiness->of($user), 'weights' => DiagnosticBank::WEIGHTS]);
+        return Inertia::render('practice/index', ['tests' => $access->hub($user), 'readiness' => $readiness->of($user), 'weights' => DiagnosticBank::WEIGHTS, 'coach' => $coach->hub($user)]);
     }
 
     public function start(Request $request, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): RedirectResponse
     {
         $access->allow($user);
         $data = $request->validate([
-            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC, ...TestAttempt::PORTION_KINDS])],
+            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC, TestAttempt::DRILL, ...TestAttempt::PORTION_KINDS])],
             'topic' => ['required_if:kind,topic', 'nullable', Rule::in(array_keys(DiagnosticBank::WEIGHTS))],
             'mode' => ['nullable', Rule::in(['exam', 'practice'])],
         ]);
-        $attempt = $tests->start($user, (string) $data['kind'], $data['kind'] === TestAttempt::TOPIC && is_string($data['topic'] ?? null) ? $data['topic'] : null, is_string($data['mode'] ?? null) ? $data['mode'] : null);
+        $attempt = $tests->start($user, (string) $data['kind'], in_array($data['kind'], [TestAttempt::TOPIC, TestAttempt::DRILL], true) && is_string($data['topic'] ?? null) ? $data['topic'] : null, is_string($data['mode'] ?? null) ? $data['mode'] : null);
 
         return to_route('practice.attempt', $attempt->id);
     }

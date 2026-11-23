@@ -2,9 +2,11 @@ import { Head, Link, router } from '@inertiajs/react';
 import { ClipboardCheck, GraduationCap, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
+import { CoachPanel } from '@/components/practice/coach';
 import { ReadinessRing, TopicBars } from '@/components/practice/readiness-ring';
 import { TestIntroDialog } from '@/components/practice/test-intro-dialog';
 import type {
+    Coach,
     HubTest,
     ReadinessSummary,
     Topic,
@@ -29,10 +31,12 @@ export default function PracticeIndex({
     tests,
     readiness,
     weights,
+    coach,
 }: {
     tests: HubTest[];
     readiness: ReadinessSummary;
     weights: Record<Topic, number>;
+    coach?: Coach;
 }) {
     const { t } = useTranslation();
     const diagnostic = tests.find((x) => x.kind === 'diagnostic');
@@ -56,6 +60,8 @@ export default function PracticeIndex({
                     title={t('practice.title')}
                     description={t('practice.description')}
                 />
+
+                {coach ? <CoachPanel coach={coach} /> : null}
 
                 {diagnostic ? (
                     <section className="grid gap-4 rounded-reos-lg border border-border bg-card p-5 md:grid-cols-[1fr_auto] md:items-center">
@@ -107,6 +113,7 @@ export default function PracticeIndex({
 
                 {exams.length > 0 ? (
                     <section
+                        id="simulations"
                         aria-labelledby="exams-title"
                         className="space-y-3"
                     >

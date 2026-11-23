@@ -4,15 +4,20 @@ import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CandidateToday } from '@/components/practice/candidate-today';
+import { CoachPanel } from '@/components/practice/coach';
 import {
     attempt,
+    coach,
+    drillAttempt,
     hub,
     readinessMap,
     results,
     studyToday,
+    topicPlan,
 } from '@/components/practice/fixtures';
 import { i18n } from '@/lib/i18n';
 import PracticeIndex from '@/pages/practice/index';
+import FixPage from '@/pages/practice/fix';
 import ReadinessPage from '@/pages/practice/readiness';
 import ResultsPage from '@/pages/practice/results';
 import TestPage from '@/pages/practice/test';
@@ -286,9 +291,85 @@ describe('Readiness (screens 54 and 44, A9.2)', () => {
         await user.click(
             screen.getByRole('button', { name: 'Fix my weakest' }),
         );
-        expect(router.post).toHaveBeenCalledWith('/practice/tests', {
-            kind: 'topic',
+        expect(router.post).toHaveBeenCalledWith('/practice/topic-plans', {
             topic: 'finance',
         });
+    });
+});
+
+describe('drills and fix plans (screens 38, 46 and 47, A9.2b)', () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+        router.post.mockReset();
+        router.visit.mockReset();
+    });
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('starts the smart drill and follows the ranking', async () => {
+        const user = userEvent.setup();
+        render(<CoachPanel coach={coach} />);
+
+        expect(
+            screen.getByText('Brings back 4 questions you missed'),
+        ).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Start drill' }));
+        expect(router.post).toHaveBeenCalledWith('/practice/tests', {
+            kind: 'drill',
+        });
+
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Carry on: Finance (2 of 5 done)',
+            }),
+        );
+        expect(router.visit).toHaveBeenCalledWith('/practice/fix/31');
+    });
+
+    it('shows the fix plan against its goal and continues to the next step', async () => {
+        const user = userEvent.setup();
+        render(<FixPage plan={topicPlan} />);
+
+        expect(screen.getByText('Now: 58%')).toBeInTheDocument();
+        expect(
+            screen.getByText('Watch: Mortgage insurance'),
+        ).toBeInTheDocument();
+        expect(screen.getByText('28 minutes left')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Review' })).toHaveAttribute(
+            'href',
+            '/learn/lessons/7?t=185',
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Continue' }));
+        expect(router.post).toHaveBeenCalledWith('/practice/fix/31/continue');
+    });
+
+    it('keeps the drill streak and strikes out an option with Hint', async () => {
+        const user = userEvent.setup();
+        fetchMock.mockResolvedValue(
+            new Response(JSON.stringify({ data: { eliminated: 3 } }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            }),
+        );
+        render(<TestPage attempt={drillAttempt} />);
+
+        expect(
+            screen.getByRole('heading', { level: 1, name: 'Smart drill' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByLabelText('Streak: 2 right in a row'),
+        ).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Hint' }));
+        expect(fetchMock).toHaveBeenCalledWith(
+            '/practice/attempts/14/questions/103/hint',
+            expect.objectContaining({ method: 'POST' }),
+        );
+        expect(await screen.findByText(/Not this one:/)).toBeInTheDocument();
+        expect(screen.getAllByRole('radio')[3]).toBeDisabled();
     });
 });

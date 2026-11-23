@@ -3,7 +3,7 @@
  * Today's plan, the practice hub, and timed tests saved after every tap.
  */
 import type { paths } from '@reos/api-client';
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
 import { api } from '@/lib/api';
@@ -21,7 +21,11 @@ export type ReadinessMap = Got<'/practice/readiness'>['data'];
 export type ReadinessTopic = ReadinessMap['topics'][number];
 export type Topic = 'agency' | 'contracts' | 'ownership' | 'finance' | 'math' | 'state_rules';
 
-export type TestKind = 'diagnostic' | 'topic' | 'national' | 'state' | 'simulation';
+export type TestKind = 'diagnostic' | 'topic' | 'national' | 'state' | 'simulation' | 'drill' | 'retest';
+export type Coach = Got<'/practice/hub'>['data'];
+export type TopicPlan = Got<'/practice/topic-plans/{plan}'>['data'];
+export type PlanStep = TopicPlan['steps'][number];
+export type PlanNext = Posted<'/practice/topic-plans/{plan}/continue'>['data'];
 export type ExamKind = 'national' | 'state' | 'simulation';
 export const isExam = (kind: string): kind is ExamKind => kind === 'national' || kind === 'state' || kind === 'simulation';
 
@@ -50,6 +54,50 @@ export function useCandidateToday(enabled: boolean) {
   return { today, reload: load };
 }
 
+/** The practice hub's ranking and the smart drill (screen 38, A9.2b). */
+export async function loadCoach(): Promise<Coach | null> {
+  const { data } = await api().GET('/practice/hub');
+
+  return data?.data ?? null;
+}
+
+/** Hint in a smart drill: the wrong option to strike out. */
+export async function takeHint(attempt: number, question: number): Promise<number | null> {
+  const { data } = await api().POST('/practice/attempts/{attempt}/questions/{question}/hint', { params: { path: { attempt, question } } });
+
+  return data?.data.eliminated ?? null;
+}
+
+/** Fix a weak topic (screen 46): the plan under way for the topic, or a new one. */
+export async function startPlan(topic: Topic): Promise<TopicPlan | null> {
+  const { data } = await api().POST('/practice/topic-plans', { body: { topic } });
+
+  return data?.data ?? null;
+}
+
+export async function loadPlan(plan: number): Promise<TopicPlan | null> {
+  const { data } = await api().GET('/practice/topic-plans/{plan}', { params: { path: { plan } } });
+
+  return data?.data ?? null;
+}
+
+export async function continuePlan(plan: number): Promise<PlanNext | null> {
+  const { data } = await api().POST('/practice/topic-plans/{plan}/continue', { params: { path: { plan } } });
+
+  return data?.data ?? null;
+}
+
+/** Where a fix plan's next step goes: the lesson at its second, the step's test, or the plan's misses. */
+export function openStep(plan: number, next: PlanNext) {
+  if (next.lesson) {
+    router.push({ pathname: '/learn/[id]', params: { id: String(next.lesson.id), ...(next.lesson.seconds !== null ? { t: String(next.lesson.seconds) } : {}) } });
+  } else if (next.attempt_id !== null) {
+    router.push({ pathname: '/practice/[id]', params: { id: String(next.attempt_id) } });
+  } else {
+    router.push({ pathname: '/practice/fix/[id]', params: { id: String(plan), misses: '1' } });
+  }
+}
+
 /** The Readiness map and What you're good at (screens 54 and 44, A9.2). */
 export async function loadReadiness(): Promise<ReadinessMap | null> {
   const { data } = await api().GET('/practice/readiness');
@@ -64,7 +112,7 @@ export async function loadHub(): Promise<HubTest[]> {
 }
 
 /** Start a test (or carry on with the same one still open). */
-export async function startTest(kind: TestKind, topic: Topic | null = null, mode: 'exam' | 'practice' | null = null): Promise<Attempt | null> {
+export async function startTest(kind: Exclude<TestKind, 'retest'>, topic: Topic | null = null, mode: 'exam' | 'practice' | null = null): Promise<Attempt | null> {
   const { data } = await api().POST('/practice/tests', { body: { kind, topic, ...(mode === null ? {} : { mode }) } });
 
   return data?.data ?? null;

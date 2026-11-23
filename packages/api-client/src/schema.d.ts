@@ -275,6 +275,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practice/hub": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * What to practise next
+         * @description The smart drill (the three weakest topics, how many recent misses it
+         *     will bring back, and any drill still open), fix plans under way, and
+         *     every practice mode ranked by what helps most, each with why.
+         */
+        get: operations["practice.hub"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}/questions/{question}/hint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hint
+         * @description In a smart drill, before answering: one wrong option to strike out, a
+         *     nudge that never gives the answer. Hints are kept, and cost points only
+         *     in challenges.
+         */
+        post: operations["practice.hint"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/connections": {
         parameters: {
             query?: never;
@@ -1749,8 +1793,10 @@ export interface paths {
          *     topic quiz (10 questions, why after each answer), or (A9.1) the
          *     National or state portion test or the full simulation in the state's
          *     real format, in `exam` mode (feedback at the end, no pause) or
-         *     `practice` mode. An attempt of the same kind still open is returned
-         *     instead.
+         *     `practice` mode; or (A9.2b) the smart drill: 15 questions from the
+         *     three weakest topics and recent misses, with Hint and why after each
+         *     answer (a `topic` makes it a 10-question topic drill). An attempt of
+         *     the same kind still open is returned instead.
          */
         post: operations["practice.store"];
         delete?: never;
@@ -2418,6 +2464,71 @@ export interface paths {
         put?: never;
         /** Restore a deleted to-do */
         post: operations["todos.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/topic-plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Fix a weak topic
+         * @description The candidate's plan for the topic still under way, or a new one
+         *     built from their own misses: micro-lessons at the right second, the
+         *     misses with why, practice, and a retest with new questions.
+         */
+        post: operations["practice.plans.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/topic-plans/{plan}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A fix plan
+         * @description Now against the 70% goal, each step with its minutes and whether it's
+         *     done, and the misses with why.
+         */
+        get: operations["practice.plans.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/topic-plans/{plan}/continue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Continue a fix plan
+         * @description Starts the next step and says where to go: a lesson at its second,
+         *     the misses (shown on the plan), or the step's test (started, or the
+         *     one still open).
+         */
+        post: operations["practice.plans.continue"];
         delete?: never;
         options?: never;
         head?: never;
@@ -4355,6 +4466,88 @@ export interface operations {
                 };
                 content: {
                     "application/json": 201;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.hub": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            drill: {
+                                topics: string[];
+                                questions: number;
+                                misses: number;
+                                open: number | null;
+                            };
+                            plans: {
+                                id: number;
+                                topic: string;
+                                done: number;
+                                steps: number;
+                            }[];
+                            ranked: {
+                                /** @enum {string} */
+                                mode: "diagnostic" | "plan" | "drill" | "fix" | "simulation" | "readiness";
+                                why: string;
+                                topic: string | null;
+                                plan_id: number | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.hint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+                question: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            eliminated: number;
+                        };
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];
@@ -7956,7 +8149,7 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    kind: "diagnostic" | "topic" | "national" | "state" | "simulation";
+                    kind: "diagnostic" | "topic" | "drill" | "national" | "state" | "simulation";
                     /** @enum {string|null} */
                     topic?: "agency" | "contracts" | "ownership" | "finance" | "math" | "state_rules" | null;
                     /** @enum {string|null} */
@@ -10132,6 +10325,177 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.plans.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    topic: "agency" | "contracts" | "ownership" | "finance" | "math" | "state_rules";
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            topic: string;
+                            now: number | null;
+                            start: number | null;
+                            goal: number;
+                            weak: boolean;
+                            minutes: number;
+                            completed: boolean;
+                            steps: {
+                                n: number;
+                                kind: string;
+                                minutes: number;
+                                /** @enum {string} */
+                                status: "done" | "current" | "todo";
+                                lesson: {
+                                    id: number;
+                                    title: string;
+                                    seconds: number | null;
+                                } | null;
+                                attempt_id: number | null;
+                                results_id: number | null;
+                            }[];
+                            misses: {
+                                id: number;
+                                prompt: string;
+                                options: string[];
+                                right: number;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.plans.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            topic: string;
+                            now: number | null;
+                            start: number | null;
+                            goal: number;
+                            weak: boolean;
+                            minutes: number;
+                            completed: boolean;
+                            steps: {
+                                n: number;
+                                kind: string;
+                                minutes: number;
+                                /** @enum {string} */
+                                status: "done" | "current" | "todo";
+                                lesson: {
+                                    id: number;
+                                    title: string;
+                                    seconds: number | null;
+                                } | null;
+                                attempt_id: number | null;
+                                results_id: number | null;
+                            }[];
+                            misses: {
+                                id: number;
+                                prompt: string;
+                                options: string[];
+                                right: number;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.plans.continue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            kind: string;
+                            lesson: {
+                                id: number;
+                                seconds: number | null;
+                            } | null;
+                            attempt_id: number | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

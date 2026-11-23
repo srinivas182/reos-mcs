@@ -54,6 +54,25 @@ A candidate who passes one portion retakes only the other. Sprint 9 decision 1 s
     - The nightly job runs at 00:10 Texas time, the candidates' time zone (`StudyPlans::TIMEZONE`). It records the day and rebuilds the study plan (reason `readiness`) when the weak topics have changed, so tomorrow's plan follows readiness.
     - The snapshots feed trends and the weekly report.
 
+## Drills, fix plans and the hub (A9.2b)
+
+14. **The smart drill** (screen 47) is a practice-mode test of 15 questions, samples included:
+    - up to five recent misses (wrong in the last 30 days and not right since);
+    - the rest from the three weakest topics, least-seen first.
+
+    A topic drill is 10 questions on one topic. **Hint** strikes out one wrong option, the same one each time for that question in that drill. Hints are stored on the attempt (`hints`) so challenges (A9.3) can cost points for them. The streak is the run of right answers, counted back from the last one answered.
+15. **Fix a weak topic** (screen 46) is a `topic_plans` row of 4 to 6 steps, built from the candidate's own misses on the topic:
+    - **micro-lessons**, up to two: the lesson a missed question came from (its review item). Otherwise, the passage that course search finds for the question's key words, opened at its second. Only lessons the candidate can open are used.
+    - **the misses, with why**;
+    - **practice**: a 10-question topic drill, repeated when the plan would otherwise be short;
+    - **a retest**: 10 questions not seen yet, in exam mode.
+
+    Lessons and the misses are done once opened. Practice and the retest are done once submitted, and the retest completes the plan. The topic leaves the weak list when readiness reaches 70%. Flashcards join as a step in A9.2d.
+16. **The hub's ranking** (screen 38) is ordered: the diagnostic if not done, plans under way, the smart drill, then fixing the weakest topic (when it has no plan).
+    - A full simulation comes first at readiness 80%+. Otherwise it follows practice at 60%+, or within 45 days of the exam.
+    - The readiness map is last.
+    - Every item says why. Later modes join the ranking as they arrive.
+
 ## Consequences
 
 - Readiness (A9.2) reads `by_topic` with portions mapped from topics (state rules to the state portion), and `by_portion` from simulations for the booking line.
