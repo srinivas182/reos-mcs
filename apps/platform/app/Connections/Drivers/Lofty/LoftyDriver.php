@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\Lofty;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesPeople;
 use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Drivers\FollowUpBoss\WebhookTarget;
@@ -45,7 +46,7 @@ use LogicException;
  * 15-minute schedule is the backstop. Every request asks for real HTTP error
  * statuses (`X-Error-Status: true`).
  */
-final readonly class LoftyDriver implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver, SubscribesToChanges
+final readonly class LoftyDriver implements ConnectorDriver, ConnectsWithApiKey, CreatesPeople, CreatesTasks, CrmDriver, SubscribesToChanges
 {
     public const INTEGRATION = 'lofty';
 
@@ -175,6 +176,21 @@ final readonly class LoftyDriver implements ConnectorDriver, ConnectsWithApiKey,
         $id = $note['noteId'] ?? null;
 
         return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Lofty returned no note id.');
+    }
+
+    /** `POST /v1.0/leads`: names cut to Lofty's 30 characters, phones to 20, stage to 19. */
+    public function createPerson(Connection $connection, string $token, array $person): string
+    {
+        $lead = $this->json($this->http($token)->post(self::BASE.'/v1.0/leads', array_filter([
+            'firstName' => mb_substr($person['first_name'] ?? $person['emails'][0] ?? $person['phones'][0] ?? '', 0, 30),
+            'lastName' => $person['last_name'] === null ? null : mb_substr($person['last_name'], 0, 30),
+            'emails' => $person['emails'],
+            'phones' => array_map(static fn (string $p): string => mb_substr($p, 0, 20), $person['phones']),
+            'stage' => $person['stage'] === null ? null : mb_substr($person['stage'], 0, 19),
+        ], static fn (mixed $value): bool => $value !== null && $value !== [])));
+        $id = $lead['leadId'] ?? null;
+
+        return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Lofty returned no lead id.');
     }
 
     /**

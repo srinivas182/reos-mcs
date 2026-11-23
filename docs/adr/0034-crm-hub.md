@@ -1,6 +1,6 @@
 # ADR 0034: The CRM hub, AI next step and tasks to the CRM
 
-- Status: Accepted (B8.3a; the default CRM and CSV import follow in B8.3b)
+- Status: Accepted (B8.3a, B8.3b)
 - Date: 2026-11-23 (Sprint 8; spec in docs/sprints/S08-spec.md)
 
 ## Context
@@ -42,9 +42,24 @@ Agents have people in Follow Up Boss, kvCORE (BoldTrail), Lofty, a brokerage's S
    - The `contact_tasks` row is written first with no id; the queued push fills the id in. The next sync then reads the task back as the same to-do. A to-do finished before the push is marked done in the CRM too.
    - BoldTrail's public API doesn't document creating tasks, so for BoldTrail-only people the task stays in REOS (`sent_to` null).
 
+7. **Where new contacts go (B8.3b, Connections and Sync screen 24).**
+   - The default CRM is a flag on one of the agent's own CRM connections (`settings.default_for_new`). With exactly one CRM that can create people (`CreatesPeople`), that CRM is the default.
+   - "Add contact" saves the person in REOS at once, as source `reos`, matched on email or phone like any source. It then creates them in the default CRM unless that CRM already knows them:
+     - Follow Up Boss: `POST /v1/people?deduplicate=true`. These are people the agent adds, not portal leads, which arrive as Follow Up Boss events.
+     - Lofty: `POST /v1.0/leads`, with names cut to 30 characters, phones to 20 and the stage to 19.
+   - The new link is fingerprinted, so the next sync reads it as the same person.
+   - A new task goes to the default CRM when that CRM knows the person.
+8. **CSV import, the last resort (B8.3b).**
+   - The agent uploads up to 5,000 rows and 5 MB, UTF-8, with commas or semicolons. The file stays on the private disk until it's imported.
+   - REOS guesses the mapping from the headers (English and Spanish); the agent can change it.
+   - The preview shows who is new, who joins someone already there (same email or phone, including two rows for the same person), and which rows are skipped.
+   - The import runs in a job. The rows become source `csv-{id}`, named "CSV import, date".
+   - Undo forgets that source: people only the file had are removed, and everyone else just loses the CSV link. The file is deleted once imported.
+
 ## Consequences
 
-- One task in one CRM keeps "done in one is done in the other" simple (`contact_tasks` is unique per to-do). An agent whose person is in two task-taking CRMs sees the task in the most recently synced one. B8.3b's default CRM will take precedence when it knows the person.
+- BoldTrail can't take new people or tasks through its documented API, so it's never offered as the default; it still syncs both ways.
+- One task in one CRM keeps "done in one is done in the other" simple (`contact_tasks` is unique per to-do). An agent whose person is in two task-taking CRMs sees the task in the most recently synced one. The default CRM (B8.3b) takes precedence when it knows the person.
 - Fingerprints are computed per page with three grouped queries, so the list stays at a fixed number of queries.
 - Stage words are English. A CRM that uses other words shows those people under All until the list grows; the words live in one constant.
 

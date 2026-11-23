@@ -5343,7 +5343,8 @@
   },
   "crm": {
     "sources": {
-      "phone": "Contactos del teléfono"
+      "phone": "Contactos del teléfono",
+      "csv": "Importación CSV, :date"
     },
     "fields": {
       "first_name": "el nombre",
@@ -5466,7 +5467,10 @@
         "title": "Todavía no tiene contactos",
         "body": "Conecte un CRM o agregue los contactos de su teléfono en Conexiones."
       },
-      "taskSentTo": "Tarea guardada y enviada a {{tool}}."
+      "taskSentTo": "Tarea guardada y enviada a {{tool}}.",
+      "added": "Contacto guardado en REOS.",
+      "addedTo": "Contacto guardado y agregado a {{tool}}.",
+      "addFailed": "Revise el correo y el teléfono, e inténtelo de nuevo."
     },
     "insight": {
       "limit": "Ha usado mucho la IA en esta hora. Inténtelo de nuevo en unos minutos.",
@@ -5485,6 +5489,98 @@
     "touch": {
       "called": "Llamé desde mi teléfono.",
       "texted": "Mensaje enviado desde mi teléfono: :body"
+    },
+    "add": {
+      "action": "Agregar contacto",
+      "title": "Agregar un contacto",
+      "description": "Se guarda en REOS de inmediato. Si ya lo tiene por correo o teléfono, se une al existente en lugar de duplicarse.",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "stage": "Etapa (opcional)",
+      "save": "Guardar contacto",
+      "goesTo": "Los contactos nuevos van a",
+      "stayInReos": "Solo REOS",
+      "noCrm": "Conecte un CRM para enviarle los contactos nuevos.",
+      "rule": "La misma persona en dos CRM se muestra una sola vez, y gana el cambio más reciente.",
+      "saved": "Contacto guardado en REOS.",
+      "sent": "Contacto guardado y agregado a :tool.",
+      "defaultSaved": "Guardado. Desde ahora, los contactos nuevos van ahí.",
+      "cannotDefault": "Ese CRM no puede recibir contactos nuevos desde REOS."
+    },
+    "import": {
+      "action": "Importar CSV",
+      "title": "Importar contactos desde un CSV",
+      "description": "El último recurso para una herramienta que REOS no puede conectar: suba el archivo, indique qué contiene cada columna, revise e importe. Puede deshacerlo.",
+      "upload": {
+        "label": "Archivo CSV",
+        "hint": "Hasta {{max}} filas y 5 MB. La primera fila nombra las columnas.",
+        "submit": "Subir"
+      },
+      "map": {
+        "title": "Indique qué contiene cada columna",
+        "intro": "{{file}}: {{rows}} filas. Indique a REOS qué contiene cada columna.",
+        "column": "Columna",
+        "field": "Contiene",
+        "preview": "Revisar coincidencias"
+      },
+      "fields": {
+        "ignore": "Omitir esta columna",
+        "full_name": "Nombre completo",
+        "first_name": "Nombre",
+        "last_name": "Apellido",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "stage": "Etapa",
+        "tags": "Etiquetas",
+        "birthday": "Cumpleaños"
+      },
+      "preview": {
+        "title": "Lo que va a pasar",
+        "new": "Contactos nuevos",
+        "merged": "Unidos a personas que ya tiene",
+        "skipped": "Omitidos (sin nombre, correo ni teléfono)",
+        "row": "Fila",
+        "outcome": "Resultado",
+        "joins": "Se une a {{name}}",
+        "import": "Importar {{count}} filas",
+        "outcomes": {
+          "new": "Nuevo",
+          "merged": "Unido",
+          "skipped": "Omitido"
+        }
+      },
+      "past": {
+        "title": "Importaciones anteriores",
+        "empty": "Todavía no hay importaciones",
+        "emptyBody": "Los contactos que importe aparecen aquí, con una forma de deshacer cada importación.",
+        "undo": "Deshacer importación",
+        "undoLabel": "Deshacer {{name}}",
+        "imported": "{{new}} nuevos, {{merged}} unidos, {{skipped}} omitidos",
+        "undone": "Deshecha"
+      },
+      "started": "Importando. Sus contactos aparecerán en un momento.",
+      "undone": "Importación deshecha. Se quitaron las personas que solo estaban en ese archivo.",
+      "errors": {
+        "unreadable": "No pudimos leer ese archivo. Guárdelo como CSV (UTF-8) e inténtelo de nuevo.",
+        "empty": "Ese archivo no tiene filas debajo del encabezado.",
+        "tooMany": "Ese archivo tiene más de :max filas. Divídalo e importe cada parte.",
+        "noName": "Indique al menos una columna de nombre, correo o teléfono.",
+        "state": "Esa importación ya se hizo."
+      }
+    },
+    "crms": {
+      "title": "Si usa dos CRM",
+      "description": "Elija adónde van los contactos nuevos. La misma persona en ambos se une en un solo contacto.",
+      "rule": "Una regla sencilla para los conflictos: gana el cambio más reciente, y la Actividad de sincronización muestra el valor que reemplazó.",
+      "default": "Predeterminado",
+      "cantTake": "No puede recibir contactos nuevos desde REOS",
+      "none": "Todavía no hay un CRM conectado",
+      "noneBody": "Conecte un CRM en Conexiones y los contactos nuevos podrán ir ahí.",
+      "stayInReos": "Guardar los contactos nuevos solo en REOS",
+      "saved": "Guardado. Desde ahora, los contactos nuevos van ahí.",
+      "row": "Los contactos nuevos van a {{tool}}"
     }
   },
   "review": {

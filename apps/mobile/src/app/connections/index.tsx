@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { History, Plug, Plus, Smartphone } from "lucide-react-native";
+import { Database, History, Plug, Plus, Smartphone } from "lucide-react-native";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
@@ -153,6 +153,11 @@ export default function ConnectionsHub() {
             icon={History}
             title={t("connections.contacts.activity")}
             onPress={() => router.push("/connections/activity")}
+          />
+          <MenuRow
+            icon={Database}
+            title={t("crm.crms.title")}
+            onPress={() => router.push("/connections/crms")}
           />
         </MenuGroup>
       </View>

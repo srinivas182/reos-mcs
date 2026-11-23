@@ -33,6 +33,24 @@ const props: Props = {
     tags: ['katy-buyer'],
     total: 2,
     selected: null,
+    crms: [
+        {
+            connection: 1,
+            integration: 'follow-up-boss',
+            name: 'Follow Up Boss',
+            account: 'james@lonestar.example',
+            takes_new_people: true,
+            is_default: true,
+        },
+        {
+            connection: 2,
+            integration: 'boldtrail',
+            name: 'BoldTrail (kvCORE)',
+            account: null,
+            takes_new_people: false,
+            is_default: false,
+        },
+    ],
 };
 
 describe('Contacts, the CRM hub (screen 13)', () => {

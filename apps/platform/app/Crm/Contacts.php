@@ -125,6 +125,17 @@ final readonly class Contacts
     }
 
     /**
+     * The contact a record would join, without saving anything (CSV import
+     * preview, B8.3b): same email or phone, as when it arrives for real.
+     *
+     * @param  Incoming  $record
+     */
+    public function wouldJoin(string $ownerType, int $ownerId, array $record): ?Contact
+    {
+        return $this->match($ownerType, $ownerId, self::clean($record));
+    }
+
+    /**
      * The source deleted these records: the links go, the contacts stay ("removed in Follow Up Boss").
      *
      * @param  list<string>  $externalIds

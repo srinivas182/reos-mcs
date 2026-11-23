@@ -5343,7 +5343,8 @@
   },
   "crm": {
     "sources": {
-      "phone": "Phone contacts"
+      "phone": "Phone contacts",
+      "csv": "CSV import, :date"
     },
     "fields": {
       "first_name": "first name",
@@ -5466,7 +5467,10 @@
         "title": "No contacts yet",
         "body": "Connect a CRM or add your phone's contacts in Connections."
       },
-      "taskSentTo": "Task saved and sent to {{tool}}."
+      "taskSentTo": "Task saved and sent to {{tool}}.",
+      "added": "Contact saved in REOS.",
+      "addedTo": "Contact saved and added to {{tool}}.",
+      "addFailed": "Check the email and phone, then try again."
     },
     "insight": {
       "limit": "You've used AI a lot this hour. Please try again in a few minutes.",
@@ -5485,6 +5489,98 @@
     "touch": {
       "called": "Called from my phone.",
       "texted": "Texted from my phone: :body"
+    },
+    "add": {
+      "action": "Add contact",
+      "title": "Add a contact",
+      "description": "Saved in REOS at once. If you already have them by email or phone, they're joined, not duplicated.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "stage": "Stage (optional)",
+      "save": "Save contact",
+      "goesTo": "New contacts go to",
+      "stayInReos": "Only REOS",
+      "noCrm": "Connect a CRM to send new contacts to it.",
+      "rule": "The same person in two CRMs is shown once, and the newest change wins.",
+      "saved": "Contact saved in REOS.",
+      "sent": "Contact saved and added to :tool.",
+      "defaultSaved": "Saved. New contacts go there from now on.",
+      "cannotDefault": "That CRM can't take new contacts from REOS."
+    },
+    "import": {
+      "action": "Import CSV",
+      "title": "Import contacts from a CSV",
+      "description": "The last resort for a tool REOS can't connect to: upload, match the columns, check, then import. You can undo it.",
+      "upload": {
+        "label": "CSV file",
+        "hint": "Up to {{max}} rows and 5 MB. The first row names the columns.",
+        "submit": "Upload"
+      },
+      "map": {
+        "title": "Match the columns",
+        "intro": "{{file}}: {{rows}} rows. Tell REOS what each column holds.",
+        "column": "Column",
+        "field": "Holds",
+        "preview": "Check the matches"
+      },
+      "fields": {
+        "ignore": "Skip this column",
+        "full_name": "Full name",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "email": "Email",
+        "phone": "Phone",
+        "stage": "Stage",
+        "tags": "Tags",
+        "birthday": "Birthday"
+      },
+      "preview": {
+        "title": "What will happen",
+        "new": "New contacts",
+        "merged": "Joined to people you have",
+        "skipped": "Skipped (no name, email or phone)",
+        "row": "Row",
+        "outcome": "Result",
+        "joins": "Joins {{name}}",
+        "import": "Import {{count}} rows",
+        "outcomes": {
+          "new": "New",
+          "merged": "Joined",
+          "skipped": "Skipped"
+        }
+      },
+      "past": {
+        "title": "Past imports",
+        "empty": "No imports yet",
+        "emptyBody": "Contacts you import show up here, with a way to undo each import.",
+        "undo": "Undo import",
+        "undoLabel": "Undo {{name}}",
+        "imported": "{{new}} new, {{merged}} joined, {{skipped}} skipped",
+        "undone": "Undone"
+      },
+      "started": "Importing. Your contacts appear in a moment.",
+      "undone": "Import undone. People only that file had are removed.",
+      "errors": {
+        "unreadable": "We couldn't read that file. Save it as CSV (UTF-8) and try again.",
+        "empty": "That file has no rows under the header.",
+        "tooMany": "That file has more than :max rows. Split it and import each part.",
+        "noName": "Match at least a name, an email or a phone column.",
+        "state": "That import has already run."
+      }
+    },
+    "crms": {
+      "title": "Using two CRMs",
+      "description": "Pick where new contacts go. The same person in both is merged into one.",
+      "rule": "One simple rule for conflicts: the newest change wins, and Sync activity shows the value it replaced.",
+      "default": "Default",
+      "cantTake": "Can't take new contacts from REOS",
+      "none": "No CRM connected yet",
+      "noneBody": "Connect a CRM in Connections, and new contacts can go there.",
+      "stayInReos": "Keep new contacts only in REOS",
+      "saved": "Saved. New contacts go there from now on.",
+      "row": "New contacts go to {{tool}}"
     }
   },
   "review": {
