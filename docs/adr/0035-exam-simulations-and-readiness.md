@@ -31,6 +31,10 @@ A candidate who passes one portion retakes only the other. Sprint 9 decision 1 s
    - **Similar question** gives one more on the same topic, not from the test.
 8. **The calculator** works like the test centre's: four operations, percent completing the sum ("a × b %" is b% of a), memory, and clear. It's the same on web and phone.
 
+9. **The starter bank** (decision 2) is reference data loaded by a migration, like the diagnostic.
+   - **Review:** each deployment reviews it once, by its school admin, on the Starter bank tab. Approving or retiring a question changes `is_sample` or `retired_at` on REOS's own row; edits change its content in place.
+   - **Loading:** never overwrites a row already loaded, so a school's decisions and edits survive later releases. A corrected question ships as a new key, and the old one is retired.
+
 ## Consequences
 
 - Readiness (A9.2) reads `by_portion` as well as `by_topic` to predict the pass chance per portion.

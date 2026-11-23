@@ -2135,7 +2135,11 @@
         "lesson.line_rerecord": "Marcó una línea para grabarla de nuevo",
         "organisation.integration_allowed": "Permitió una integración a los agentes",
         "organisation.integration_hidden": "Ocultó una integración a los agentes",
-        "organisation.crm_mapping_updated": "Cambió la asignación de etapas del CRM"
+        "organisation.crm_mapping_updated": "Cambió la asignación de etapas del CRM",
+        "starter_question.approve": "Aprobó una pregunta del banco inicial",
+        "starter_question.retire": "Retiró una pregunta del banco inicial",
+        "starter_question.restore": "Deshizo una decisión del banco inicial",
+        "starter_question.edited": "Editó una pregunta del banco inicial"
       }
     }
   },
@@ -5716,7 +5720,8 @@
       "to_review": "Por revisar ({{count}})",
       "approved": "Aprobadas ({{count}})",
       "rejected": "Rechazadas ({{count}})",
-      "disputed": "En disputa ({{count}})"
+      "disputed": "En disputa ({{count}})",
+      "starter": "Banco inicial ({{count}})"
     },
     "columns": {
       "question": "Pregunta",
@@ -5763,6 +5768,24 @@
       "correctHint": "Primero edite la pregunta en Aprobadas y luego márquela como corregida.",
       "emptyTitle": "No hay reportes",
       "empty": "Cuando un estudiante reporte una pregunta, aparecerá aquí."
+    },
+    "starter": {
+      "title": "Banco inicial de REOS",
+      "description": "300 preguntas de Texas que REOS escribió para que cada prueba de práctica tenga preguntas nuevas: 200 nacionales y 100 de Texas, en inglés y español. Hasta que usted apruebe una pregunta, cuenta en las pruebas y simulaciones como muestra. Apruebe las que le den confianza, edite las que lo necesiten y retire las demás.",
+      "progress": "{{toReview}} por revisar · {{approved}} aprobadas · {{retired}} retiradas",
+      "filter": "Tema",
+      "all": "Todos los temas ({{count}})",
+      "topic": "{{topic}} ({{count}})",
+      "answer": "Respuesta correcta: {{answer}}",
+      "why": "Por qué: {{why}}",
+      "spanish": "Ver en español",
+      "approveAll": "Aprobar las {{count}} que se muestran",
+      "retire": "Retirar",
+      "approved": "Pregunta aprobada.",
+      "approvedAll": "{{count}} preguntas aprobadas.",
+      "retired": "Pregunta retirada. Ya no aparece en las pruebas.",
+      "emptyTitle": "Todo revisado",
+      "empty": "Todas las preguntas iniciales de este tema se aprobaron o se retiraron."
     }
   },
   "player": {

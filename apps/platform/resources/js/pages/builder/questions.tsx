@@ -5,6 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
 import { QuestionDialog } from '@/components/review/question-dialog';
+import {
+    StarterBank,
+    type StarterBankData,
+} from '@/components/review/starter-bank';
 import type { DisputeRow, QuestionRow } from '@/components/review/types';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -12,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { decide, index, resolve } from '@/routes/builder/questions';
 
-type Tab = 'to_review' | 'approved' | 'rejected' | 'disputed';
+type Tab = 'to_review' | 'approved' | 'rejected' | 'disputed' | 'starter';
 
 const th = 'px-3 py-2 text-left';
 const td = 'px-3 py-3 align-top';
@@ -20,21 +24,24 @@ const td = 'px-3 py-3 align-top';
 /**
  * Question bank (instructor web screen 45, A8.1): to review, approved,
  * rejected and disputed; approve, edit, reject; resolve learner disputes.
- * Every question needs a source and an exam-outline mapping.
+ * Every question needs a source and an exam-outline mapping. School admins
+ * also get the Starter bank tab (A9.1): REOS's Texas starter questions.
  */
 export default function QuestionBankPage({
     tab,
     counts,
     questions,
     disputes,
+    starter,
     topics,
     portions,
     difficulties,
 }: {
     tab: Tab;
-    counts: Record<Tab, number>;
+    counts: Record<Exclude<Tab, 'starter'>, number> & { starter?: number };
     questions: QuestionRow[];
     disputes: DisputeRow[];
+    starter?: StarterBankData | null;
     topics: string[];
     portions: string[];
     difficulties: string[];
@@ -66,6 +73,9 @@ export default function QuestionBankPage({
                             'approved',
                             'rejected',
                             'disputed',
+                            ...(counts.starter !== undefined
+                                ? (['starter'] as const)
+                                : []),
                         ] as const
                     ).map((key) => (
                         <Link
@@ -79,12 +89,21 @@ export default function QuestionBankPage({
                                     : 'border-border bg-card hover:bg-muted',
                             )}
                         >
-                            {t(`questions.tabs.${key}`, { count: counts[key] })}
+                            {t(`questions.tabs.${key}`, {
+                                count: counts[key] ?? 0,
+                            })}
                         </Link>
                     ))}
                 </nav>
 
-                {tab === 'disputed' ? (
+                {tab === 'starter' && starter ? (
+                    <StarterBank
+                        data={starter}
+                        topics={topics}
+                        difficulties={difficulties}
+                        portions={portions}
+                    />
+                ) : tab === 'disputed' ? (
                     disputes.length === 0 ? (
                         <EmptyState
                             icon={ListChecks}

@@ -22,18 +22,24 @@ const blank = (n: number): QuestionLanguage => ({
     explanation: '',
 });
 
-/** Edit a question on screen 45 (A8.1): both languages, the right answer, topic, difficulty and exam portion. */
+/**
+ * Edit a question on screen 45 (A8.1): both languages, the right answer,
+ * topic, difficulty and exam portion. `url` saves somewhere else: the
+ * starter bank's own questions (A9.1).
+ */
 export function QuestionDialog({
     question,
     topics,
     difficulties,
     portions,
+    url,
     onClose,
 }: {
     question: QuestionRow | null;
     topics: string[];
     difficulties: string[];
     portions: string[];
+    url?: (id: number) => string;
     onClose: () => void;
 }) {
     const { t } = useTranslation();
@@ -54,6 +60,7 @@ export function QuestionDialog({
                         topics={topics}
                         difficulties={difficulties}
                         portions={portions}
+                        url={url}
                         onDone={onClose}
                     />
                 ) : null}
@@ -67,12 +74,14 @@ function Form({
     topics,
     difficulties,
     portions,
+    url,
     onDone,
 }: {
     question: QuestionRow;
     topics: string[];
     difficulties: string[];
     portions: string[];
+    url?: (id: number) => string;
     onDone: () => void;
 }) {
     const { t } = useTranslation();
@@ -148,7 +157,7 @@ function Form({
             onSubmit={(e) => {
                 e.preventDefault();
                 router.put(
-                    update(question.id).url,
+                    url ? url(question.id) : update(question.id).url,
                     { en, es, correct, topic, difficulty, portion },
                     { preserveScroll: true, onSuccess: onDone },
                 );

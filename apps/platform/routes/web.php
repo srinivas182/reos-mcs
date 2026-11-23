@@ -15,6 +15,7 @@ use App\Http\Controllers\BrandLogoController;
 use App\Http\Controllers\Builder\CourseBuilderController;
 use App\Http\Controllers\Builder\LessonReviewController;
 use App\Http\Controllers\Builder\QuestionBankController;
+use App\Http\Controllers\Builder\StarterBankController;
 use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
@@ -301,6 +302,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:learning.
         Route::put('question-bank/{item}', [QuestionBankController::class, 'update'])->whereNumber('item')->name('questions.update');
         Route::post('question-bank/{item}/decision', [QuestionBankController::class, 'decide'])->whereNumber('item')->name('questions.decide');
         Route::post('question-bank/disputes/{dispute}', [QuestionBankController::class, 'resolve'])->whereNumber('dispute')->name('questions.resolve');
+        // The starter bank tab (A9.1): school admins approve, retire, restore or edit REOS's Texas starter questions.
+        Route::post('question-bank/starter', [StarterBankController::class, 'decide'])->name('starter.decide');
+        Route::put('question-bank/starter/{question}', [StarterBankController::class, 'update'])->whereNumber('question')->name('starter.update');
         // AI lessons (A7.3): generate a module, generate a lesson again.
         Route::post('course-builder/modules/{module}/generate', [CourseBuilderController::class, 'generate'])->whereNumber('module')->middleware('throttle:6,1,ai-lessons')->name('modules.generate');
         Route::post('course-builder/lessons/{lesson}/regenerate', [CourseBuilderController::class, 'regenerate'])->whereNumber('lesson')->middleware('throttle:6,1,ai-lessons')->name('lessons.regenerate');

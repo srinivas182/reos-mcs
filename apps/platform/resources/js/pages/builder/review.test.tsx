@@ -2,6 +2,7 @@ import { render as baseRender, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
+import { toast } from 'sonner';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     aiLessons,
@@ -12,6 +13,7 @@ import {
     reviewLines,
     reviewVersion,
     reviewVideos,
+    starterBank,
 } from '@/components/review/fixtures';
 import { i18n } from '@/lib/i18n';
 import AiLessons from '@/pages/builder/ai-lessons';
@@ -22,6 +24,10 @@ const router = vi.hoisted(() => ({
     post: vi.fn(),
     put: vi.fn(),
     on: vi.fn(() => () => {}),
+}));
+
+vi.mock('sonner', () => ({
+    toast: Object.assign(vi.fn(), { success: vi.fn() }),
 }));
 
 vi.mock('@inertiajs/react', async (original) => ({
@@ -232,6 +238,110 @@ describe('Question bank (screen 45, A8.1)', () => {
                 resolution:
                     'It is the first substantive contact (22 TAC §531.20).',
             },
+            expect.anything(),
+        );
+    });
+});
+
+describe('Starter bank tab (screen 45, A9.1)', () => {
+    beforeEach(() => {
+        router.post.mockImplementation(
+            (
+                _url: string,
+                _data: unknown,
+                options?: { onFinish?: () => void },
+            ) => options?.onFinish?.(),
+        );
+    });
+
+    it('lets a school admin approve, retire and undo REOS starter questions', async () => {
+        const user = userEvent.setup();
+        render(
+            <QuestionBankPage
+                tab="starter"
+                counts={{
+                    to_review: 1,
+                    approved: 4,
+                    rejected: 0,
+                    disputed: 1,
+                    starter: 287,
+                }}
+                questions={[]}
+                disputes={[]}
+                starter={starterBank}
+                topics={['agency', 'state_rules']}
+                portions={['national', 'state']}
+                difficulties={['easy', 'medium', 'hard']}
+            />,
+        );
+
+        expect(
+            screen.getByRole('link', { name: 'Starter bank (287)' }),
+        ).toHaveAttribute('aria-current', 'page');
+        expect(screen.getByText('Right answer: 10 acres')).toBeInTheDocument();
+
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Retire: A Texas urban homestead is protected up to',
+            }),
+        );
+        expect(router.post).toHaveBeenLastCalledWith(
+            '/question-bank/starter',
+            { ids: [9102], decision: 'retire' },
+            expect.anything(),
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: 'Approve all 2 shown' }),
+        );
+        expect(router.post).toHaveBeenLastCalledWith(
+            '/question-bank/starter',
+            { ids: [9101, 9102], decision: 'approve' },
+            expect.anything(),
+        );
+        const call = vi.mocked(toast).mock.lastCall;
+        expect(call?.[0]).toBe('2 questions approved.');
+        const undo = call?.[1]?.action;
+        if (undo && typeof undo === 'object' && 'onClick' in undo) {
+            undo.onClick({} as never);
+        }
+        expect(router.post).toHaveBeenLastCalledWith(
+            '/question-bank/starter',
+            { ids: [9101, 9102], decision: 'restore' },
+            expect.anything(),
+        );
+    });
+
+    it('saves an edit to the starter question itself', async () => {
+        const user = userEvent.setup();
+        render(
+            <QuestionBankPage
+                tab="starter"
+                counts={{
+                    to_review: 1,
+                    approved: 4,
+                    rejected: 0,
+                    disputed: 1,
+                    starter: 287,
+                }}
+                questions={[]}
+                disputes={[]}
+                starter={starterBank}
+                topics={['agency', 'state_rules']}
+                portions={['national', 'state']}
+                difficulties={['easy', 'medium', 'hard']}
+            />,
+        );
+
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Edit: A Texas urban homestead is protected up to',
+            }),
+        );
+        await user.click(screen.getByRole('button', { name: 'Save question' }));
+        expect(router.put).toHaveBeenCalledWith(
+            '/question-bank/starter/9102',
+            expect.objectContaining({ correct: 1, portion: 'state' }),
             expect.anything(),
         );
     });

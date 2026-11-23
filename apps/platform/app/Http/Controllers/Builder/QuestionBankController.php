@@ -7,9 +7,12 @@ namespace App\Http\Controllers\Builder;
 use App\Authorization\Role;
 use App\Content\Builder\CourseBuilder;
 use App\Content\Review\QuestionBank;
+use App\Content\Review\StarterReview;
 use App\Enums\QuizTopic;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Builder\QuestionEditRequest;
 use App\Models\QuestionDispute;
+use App\Models\QuizQuestion;
 use App\Models\ReviewItem;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
@@ -24,20 +27,30 @@ use Inertia\Response;
  * Question bank (instructor web screen 45, A8.1, ADR 0031): to review,
  * approved, rejected and disputed; approve, edit, reject; resolve learner
  * disputes. School admins see every course of the school; instructors the
- * courses they teach.
+ * courses they teach. School admins also get the Starter bank tab (A9.1):
+ * REOS's Texas starter questions to approve, edit or retire, by topic.
  */
 final class QuestionBankController extends Controller
 {
-    public function index(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, QuestionBank $bank): Response
+    public function index(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, QuestionBank $bank, StarterReview $starter): Response
     {
         $courses = $this->courses($user, $roles, $builder);
+        $admin = $roles->for($user)?->role === Role::SchoolAdmin;
         $asked = $request->query('tab');
-        $tab = is_string($asked) && in_array($asked, ['to_review', 'approved', 'rejected', 'disputed'], true) ? $asked : 'to_review';
-        $rows = $bank->tab($courses, $tab);
+        $tabs = ['to_review', 'approved', 'rejected', 'disputed', ...($admin ? ['starter'] : [])];
+        $tab = is_string($asked) && in_array($asked, $tabs, true) ? $asked : 'to_review';
+        $rows = $tab === 'starter' ? collect() : $bank->tab($courses, $tab);
+        $topic = QuizTopic::tryFrom(is_string($request->query('topic')) ? $request->query('topic') : '');
+        $starterCounts = $admin ? $starter->counts() : null;
 
         return Inertia::render('builder/questions', [
             'tab' => $tab,
-            'counts' => $bank->counts($courses),
+            'counts' => [...$bank->counts($courses), ...($starterCounts !== null ? ['starter' => $starterCounts['to_review']] : [])],
+            'starter' => $tab !== 'starter' || $starterCounts === null ? null : [
+                'topic' => $topic?->value,
+                'counts' => $starterCounts,
+                'questions' => $starter->toReview($topic)->map(static fn (QuizQuestion $q): array => self::starterRow($q))->values()->all(),
+            ],
             'questions' => $tab === 'disputed' ? [] : $rows->map(static fn ($item): array => $item instanceof ReviewItem ? [
                 'id' => $item->id, 'course' => $item->lesson->course->title, 'lesson' => $item->lesson->title, 'topic' => $item->topic,
                 'difficulty' => $item->difficulty, 'portion' => $item->portion, 'status' => $item->status,
@@ -54,18 +67,10 @@ final class QuestionBankController extends Controller
         ]);
     }
 
-    public function update(Request $request, ReviewItem $item, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, QuestionBank $bank): RedirectResponse
+    public function update(QuestionEditRequest $request, ReviewItem $item, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, QuestionBank $bank): RedirectResponse
     {
         $this->owns($item, $user, $roles, $builder);
-        $data = $request->validate([
-            'en.prompt' => ['required', 'string', 'min:5', 'max:400'], 'en.options' => ['required', 'array', 'min:2', 'max:5'], 'en.options.*' => ['required', 'string', 'max:200'], 'en.explanation' => ['nullable', 'string', 'max:400'],
-            'es.prompt' => ['required', 'string', 'min:5', 'max:400'], 'es.options' => ['required', 'array', 'min:2', 'max:5'], 'es.options.*' => ['required', 'string', 'max:200'], 'es.explanation' => ['nullable', 'string', 'max:400'],
-            'correct' => ['required', 'integer', 'min:0', 'max:4'],
-            'topic' => ['required', Rule::enum(QuizTopic::class)],
-            'difficulty' => ['required', Rule::in(QuestionBank::DIFFICULTIES)],
-            'portion' => ['required', Rule::in(QuestionBank::PORTIONS)],
-        ]);
-        $bank->edit($item, self::edit($data), $user);
+        $bank->edit($item, $request->edit(), $user);
 
         return back()->with('success', __('review.questionSaved'));
     }
@@ -89,21 +94,17 @@ final class QuestionBankController extends Controller
     }
 
     /**
-     * @param  array<string, mixed>  $data
-     * @return array{en: array{prompt: string, options: list<string>, explanation: string}, es: array{prompt: string, options: list<string>, explanation: string}, correct: int, topic: string, difficulty: string, portion: string}
+     * A starter question as a row like the bank's own (screen 45).
+     *
+     * @return array<string, mixed>
      */
-    private static function edit(array $data): array
+    private static function starterRow(QuizQuestion $q): array
     {
-        $language = static function (mixed $v): array {
-            $v = is_array($v) ? $v : [];
-
-            return ['prompt' => is_string($v['prompt'] ?? null) ? $v['prompt'] : '', 'options' => array_values(array_filter((array) ($v['options'] ?? []), is_string(...))), 'explanation' => is_string($v['explanation'] ?? null) ? $v['explanation'] : ''];
-        };
+        $language = static fn (string $l): array => ['prompt' => $q->in($l)['question'], 'options' => $q->in($l)['options'], 'explanation' => $q->in($l)['explanation']];
 
         return [
-            'en' => $language($data['en'] ?? null), 'es' => $language($data['es'] ?? null),
-            'correct' => is_numeric($data['correct'] ?? null) ? (int) $data['correct'] : 0,
-            'topic' => is_string($data['topic'] ?? null) ? $data['topic'] : '', 'difficulty' => is_string($data['difficulty'] ?? null) ? $data['difficulty'] : '', 'portion' => is_string($data['portion'] ?? null) ? $data['portion'] : '',
+            'id' => $q->id, 'course' => '', 'lesson' => '', 'topic' => $q->topic->value, 'difficulty' => $q->difficulty, 'portion' => $q->portion,
+            'status' => 'to_review', 'source' => $q->source, 'en' => $language('en'), 'es' => $language('es'), 'correct' => $q->correct_option,
         ];
     }
 

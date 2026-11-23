@@ -33,6 +33,7 @@ use App\Models\Organisation;
 use App\Models\PrivacyRequest;
 use App\Models\Product;
 use App\Models\ProviderCategory;
+use App\Models\QuizQuestion;
 use App\Models\ReviewItem;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
@@ -764,6 +765,19 @@ function adminActions(): array
             $item = ReviewItem::query()->where('lesson_id', $lesson->id)->where('kind', 'question')->firstOrFail();
 
             return auditCase($rachel, 'POST', "/question-bank/{$item->id}/decision", ['decision' => 'reject'], tenant: $school->id);
+        },
+        'builder.starter.decide' => function () {
+            [$school, $paul] = auditSchoolCourse();
+            $id = QuizQuestion::query()->where('key', 'like', 'starter-tx:%')->orderBy('id')->value('id');
+
+            return auditCase($paul, 'POST', '/question-bank/starter', ['ids' => [$id], 'decision' => 'retire'], tenant: $school->id);
+        },
+        'builder.starter.update' => function () {
+            [$school, $paul] = auditSchoolCourse();
+            $question = QuizQuestion::query()->where('key', 'like', 'starter-tx:%')->orderBy('id')->firstOrFail();
+            $language = fn (string $l): array => ['prompt' => $question->in($l)['question'], 'options' => $question->in($l)['options'], 'explanation' => $question->in($l)['explanation']];
+
+            return auditCase($paul, 'PUT', "/question-bank/starter/{$question->id}", ['en' => $language('en'), 'es' => $language('es'), 'correct' => $question->correct_option, 'topic' => $question->topic->value, 'difficulty' => 'hard', 'portion' => $question->portion], tenant: $school->id);
         },
         'builder.questions.resolve' => function () {
             [$school, , , $rachel, $lesson] = auditReviewLesson();
