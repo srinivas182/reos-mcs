@@ -30,9 +30,12 @@ export default function CheckoutPage({
     quote,
     gateway,
     signup = null,
+    booking = null,
 }: {
     /** Paying for a new brokerage or school (A6.1b). */
     signup?: { uuid: string; name: string } | null;
+    /** Paying for a booked 1-on-1 session (A10.2a). */
+    booking?: { uuid: string; instructor: string; starts_at: string } | null;
     price: PriceView;
     quote: {
         amount: number;
@@ -61,10 +64,11 @@ export default function CheckoutPage({
     const fetchClientSecret = useCallback(async () => {
         const started = await postJson<StartedCheckout>(start(price.id).url, {
             signup: signup?.uuid ?? null,
+            booking: booking?.uuid ?? null,
         });
 
         return started.client_secret ?? '';
-    }, [price.id, signup?.uuid]);
+    }, [price.id, signup?.uuid, booking?.uuid]);
 
     const paySimulated = async () => {
         setBusy(true);
@@ -73,7 +77,10 @@ export default function CheckoutPage({
         try {
             const started = await postJson<StartedCheckout>(
                 start(price.id).url,
-                { signup: signup?.uuid ?? null },
+                {
+                    signup: signup?.uuid ?? null,
+                    booking: booking?.uuid ?? null,
+                },
             );
             router.post(simulate(started.order).url);
         } catch (e) {
@@ -90,6 +97,7 @@ export default function CheckoutPage({
         const started = await postJson<StartedCheckout>(start(price.id).url, {
             postal_code: postalCode,
             signup: signup?.uuid ?? null,
+            booking: booking?.uuid ?? null,
         });
         setTax(started.tax);
 

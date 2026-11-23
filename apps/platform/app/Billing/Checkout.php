@@ -22,6 +22,7 @@ use App\Services\Ai\AiCredits;
 use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
 use App\Services\Tenancy\TenantSignups;
+use App\Sessions\SessionBookings;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -221,6 +222,11 @@ final readonly class Checkout
 
             // A brokerage or school that signed up on the web (A6.1b).
             $this->signups->complete($order);
+
+            // A booked 1-on-1 session (A10.2a): confirmed once paid.
+            if ($order->product->kind === ProductKind::Session) {
+                app(SessionBookings::class)->paid($order);
+            }
 
             if ($order->product->kind === ProductKind::CreditPack && $order->user !== null) {
                 $this->credits->topUp($order->user, $order->product->credits ?? 0, $order->uuid);

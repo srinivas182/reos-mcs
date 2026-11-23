@@ -9,6 +9,7 @@ use App\Billing\Checkout;
 use App\Billing\Gateways\Gateways;
 use App\Billing\Gateways\SimulatedGateway;
 use App\Billing\OrderStatus;
+use App\Billing\ProductKind;
 use App\Billing\ProductStatus;
 use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,8 @@ use App\Http\Requests\Billing\StartCheckoutRequest;
 use App\Models\Entitlement;
 use App\Models\Order;
 use App\Models\Price;
+use App\Models\SessionBooking;
+use App\Models\SessionOffer;
 use App\Models\State;
 use App\Models\TenantSignup;
 use App\Models\User;
@@ -40,6 +43,7 @@ final class CheckoutController extends Controller
     {
         abort_unless($price->isCurrent() && $price->product->status === ProductStatus::Live, 404);
         $signup = self::signup($request->query('signup'), $user, $price);
+        $booking = self::booking($request->query('booking'), $user, $price);
         $quote = $checkout->quote($user, $price);
         $gateway = $gateways->route($price);
 
@@ -47,6 +51,8 @@ final class CheckoutController extends Controller
             'price' => self::price($price),
             // Paying for a new brokerage or school (A6.1b).
             'signup' => $signup === null ? null : ['uuid' => $signup->uuid, 'name' => $signup->name],
+            // Paying for a held 1-on-1 session (A10.2a).
+            'booking' => $booking === null ? null : ['uuid' => $booking->uuid, 'instructor' => (string) $booking->instructor->name, 'starts_at' => $booking->starts_at->toIso8601ZuluString()],
             'quote' => ['amount' => $quote['amount'], 'discount' => $quote['discount'], 'sponsor' => $quote['sponsor']?->name, 'charge' => $quote['charge']],
             'gateway' => $gateway === null ? null : [
                 'id' => $gateway->id(),
@@ -66,12 +72,16 @@ final class CheckoutController extends Controller
     public function start(StartCheckoutRequest $request, Price $price, #[CurrentUser] User $user, Checkout $checkout, TenantSignups $signups): JsonResponse
     {
         $signup = self::signup($request->signup(), $user, $price);
+        $booking = self::booking($request->booking(), $user, $price);
+        abort_if($price->product->kind === ProductKind::Session && $booking === null, 422);
         $started = $checkout->start($user, $price, static fn (Order $order): string => route('checkout.complete', $order).'?session_id={CHECKOUT_SESSION_ID}', $request->postalCode());
         $order = $started['order'];
 
         if ($signup !== null) {
             $signups->attach($signup, $order);
         }
+
+        $booking?->forceFill(['order_id' => $order->id])->save();
 
         return response()->json([
             'order' => $order->uuid,
@@ -154,5 +164,20 @@ final class CheckoutController extends Controller
             'interval' => $price->interval->value,
             'amount' => $price->amount_cents,
         ];
+    }
+
+    /** The student's own held booking for this session product, still within its hold (A10.2a). */
+    private static function booking(mixed $uuid, User $user, Price $price): ?SessionBooking
+    {
+        if (! is_string($uuid) || $price->product->kind !== ProductKind::Session) {
+            return null;
+        }
+
+        $booking = SessionBooking::query()->where('uuid', $uuid)->where('student_id', $user->id)->where('status', 'held')->first();
+        $offer = $booking === null ? null : SessionOffer::query()->where('user_id', $booking->instructor_id)->first();
+
+        abort_unless($booking !== null && $offer !== null && $offer->productId($booking->minutes) === $price->product_id && ($booking->held_until?->isFuture() ?? false), 404);
+
+        return $booking;
     }
 }

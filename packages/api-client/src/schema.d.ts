@@ -185,6 +185,155 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/bookings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My bookings
+         * @description As a student and as an instructor, the last 30 days and upcoming.
+         */
+        get: operations["bookings.index"];
+        put?: never;
+        /**
+         * Book a session
+         * @description Included sessions are confirmed at once. Paid ones are held for 30 minutes: pay at `checkout_url`.
+         */
+        post: operations["bookings.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/instructors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Instructors and mentors to book
+         * @description Each with rating, languages, topics, prices (cents; 0 is included) and next free hour.
+         */
+        get: operations["bookings.instructors"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/instructors/{user}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One instructor and their free slots
+         * @description Slots for the next 14 days, 30 and 60 minutes (UTC).
+         */
+        get: operations["bookings.instructor"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My hours and prices
+         * @description The instructor's or mentor's offer, or null before they set one.
+         */
+        get: operations["bookings.offer"];
+        /** Save my hours and prices */
+        put: operations["bookings.offer.save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/{booking}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Cancel a booking
+         * @description The student until 24 hours before (refunded) or later (not refunded); the instructor any time (refunded).
+         */
+        post: operations["bookings.cancel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/{booking}/rating": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Rate a session
+         * @description Once, after it ends; shown on the instructor's profile after 24 hours.
+         */
+        post: operations["bookings.rating"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/{booking}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Suggested follow-up tasks
+         * @description Lines in the session's shared notes that read like actions, for the instructor to send.
+         */
+        get: operations["bookings.tasks"];
+        put?: never;
+        /**
+         * Send follow-up tasks
+         * @description Each becomes a to-do for the student, on its date.
+         */
+        post: operations["bookings.tasks.send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/broadcasting/auth": {
         parameters: {
             query?: never;
@@ -3480,6 +3629,23 @@ export interface components {
             thread?: string | null;
         };
         /**
+         * BookSessionRequest
+         * @description Book a 1-on-1 session (A10.2a, candidate screen 18).
+         */
+        BookSessionRequest: {
+            /** @description The instructor's or mentor's user id. */
+            instructor: number;
+            /**
+             * Format: date-time
+             * @description A start from the instructor's free slots (ISO 8601).
+             */
+            starts_at: string;
+            /** @description 30 or 60. */
+            minutes: number;
+            /** @description What the student wants help with. */
+            topic: string;
+        };
+        /**
          * BrokerRole
          * @description Supervising duties that change a licence's CE (A5.2): in Texas, Broker Responsibility is required for brokers who sponsor agents, designated brokers of sponsoring entities and delegated supervisors (22 TAC §535.92(a)(4)).
          * @enum {string}
@@ -4503,6 +4669,24 @@ export interface components {
             notes: string | null;
         };
         /**
+         * SessionOfferRequest
+         * @description An instructor's or mentor's hours, prices and topics for 1-on-1 sessions (A10.2a, screen i14 Hours).
+         */
+        SessionOfferRequest: {
+            bio?: string | null;
+            languages: ("en" | "es")[];
+            topics: string[];
+            /** @description Weekly hours in `timezone`: each day (`mon`…`sun`) a list of [from, to] in 24-hour "HH:MM", on the half hour. */
+            hours: {
+                [key: string]: string[][];
+            };
+            timezone: string;
+            /** @description Cents; 0 means included (free to book). */
+            price_30_cents: number;
+            price_60_cents: number;
+            active: boolean;
+        };
+        /**
          * ShareRequest
          * @description A quick action in the room (B6.3b): share a lesson, or send practice questions on a topic.
          */
@@ -4735,6 +4919,7 @@ export type SchemaAnswerQuestionRequest = components['schemas']['AnswerQuestionR
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaAskRequest = components['schemas']['AskRequest'];
+export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
@@ -4795,6 +4980,7 @@ export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessio
 export type SchemaSendForSignatureRequest = components['schemas']['SendForSignatureRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
+export type SchemaSessionOfferRequest = components['schemas']['SessionOfferRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
@@ -5206,6 +5392,497 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "bookings.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            /** @enum {string} */
+                            as: "student" | "instructor";
+                            instructor: string;
+                            student: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            topic: string;
+                            /** @enum {string} */
+                            status: "held" | "confirmed" | "cancelled" | "refunded" | "completed" | "no_show";
+                            price: number;
+                            session: string | null;
+                            can_cancel: boolean;
+                            refund_on_cancel: boolean;
+                            can_rate: boolean;
+                            rating: number | null;
+                            tasks_sent: boolean;
+                            checkout_url: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "bookings.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BookSessionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            /** @enum {string} */
+                            as: "student" | "instructor";
+                            instructor: string;
+                            student: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            topic: string;
+                            /** @enum {string} */
+                            status: "held" | "confirmed" | "cancelled" | "refunded" | "completed" | "no_show";
+                            price: number;
+                            session: string | null;
+                            can_cancel: boolean;
+                            refund_on_cancel: boolean;
+                            can_rate: boolean;
+                            rating: number | null;
+                            tasks_sent: boolean;
+                            checkout_url: string | null;
+                        };
+                        checkout_url: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "bookings.instructors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            user_id: number;
+                            name: string;
+                            school: string | null;
+                            bio: string | null;
+                            languages: string[];
+                            topics: string[];
+                            price_30: number;
+                            price_60: number;
+                            rating: number | null;
+                            ratings: number;
+                            next_slot: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "bookings.instructor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                user: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            user_id: number;
+                            name: string;
+                            school: string | null;
+                            bio: string | null;
+                            languages: string[];
+                            topics: string[];
+                            price_30: number;
+                            price_60: number;
+                            rating: number | null;
+                            ratings: number;
+                            next_slot: string | null;
+                        };
+                        slots_30: string[];
+                        slots_60: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "bookings.offer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            bio: string | null;
+                            languages: ("en" | "es")[];
+                            topics: string[];
+                            hours: {
+                                [key: string]: string[][];
+                            };
+                            timezone: string;
+                            price_30_cents: number;
+                            price_60_cents: number;
+                            active: boolean;
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "bookings.offer.save": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionOfferRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            bio: string | null;
+                            languages: ("en" | "es")[];
+                            topics: string[];
+                            hours: {
+                                [key: string]: string[][];
+                            };
+                            timezone: string;
+                            price_30_cents: number;
+                            price_60_cents: number;
+                            active: boolean;
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "bookings.cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking UUID */
+                booking: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            /** @enum {string} */
+                            as: "student" | "instructor";
+                            instructor: string;
+                            student: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            topic: string;
+                            /** @enum {string} */
+                            status: "held" | "confirmed" | "cancelled" | "refunded" | "completed" | "no_show";
+                            price: number;
+                            session: string | null;
+                            can_cancel: boolean;
+                            refund_on_cancel: boolean;
+                            can_rate: boolean;
+                            rating: number | null;
+                            tasks_sent: boolean;
+                            checkout_url: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "bookings.rating": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking UUID */
+                booking: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    stars: number;
+                    tags?: ("clear" | "patient" | "knowledgeable" | "on_time" | "helpful_examples")[];
+                    comment?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            /** @enum {string} */
+                            as: "student" | "instructor";
+                            instructor: string;
+                            student: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            topic: string;
+                            /** @enum {string} */
+                            status: "held" | "confirmed" | "cancelled" | "refunded" | "completed" | "no_show";
+                            price: number;
+                            session: string | null;
+                            can_cancel: boolean;
+                            refund_on_cancel: boolean;
+                            can_rate: boolean;
+                            rating: number | null;
+                            tasks_sent: boolean;
+                            checkout_url: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "bookings.tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking UUID */
+                booking: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "bookings.tasks.send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking UUID */
+                booking: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    tasks: {
+                        title: string;
+                        /** Format: date */
+                        due_date?: string | null;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            sent: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

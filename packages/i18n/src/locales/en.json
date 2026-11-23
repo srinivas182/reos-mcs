@@ -421,7 +421,8 @@
       "askedBy": "{{student}} · {{course}}",
       "addedToKnowledge": "Added to course knowledge",
       "select": "Choose a question to answer it."
-    }
+    },
+    "bookInstructor": "Book an instructor"
   },
   "options": {
     "correct": "Correct answer",
@@ -3953,7 +3954,8 @@
       "course": "Course",
       "package": "Package",
       "credit_pack": "Credit pack",
-      "seat_pack": "Seat pack"
+      "seat_pack": "Seat pack",
+      "session": "1-on-1 session"
     },
     "buyers": {
       "candidate": "Candidates",
@@ -5094,6 +5096,24 @@
         "agreeFirst": "This session is being recorded. Agree to be recorded to join."
       },
       "agreeAndJoin": "Agree and join"
+    },
+    "booking": {
+      "productName": ":name · :minutes-minute session",
+      "title": "Session with :name",
+      "errors": {
+        "unavailable": "This instructor isn't taking that booking.",
+        "taken": "That time was just taken. Choose another.",
+        "cannotCancel": "This booking can't be cancelled now.",
+        "cannotRate": "You can rate a session once, after it ends.",
+        "cannotSendTasks": "Send tasks after the session has started.",
+        "hours": "Each day needs times like 09:00 to 12:00, on the half hour."
+      },
+      "mail": {
+        "noShow": ":name didn't join your session",
+        "refunded": "We've refunded you in full. You can book another time whenever you like.",
+        "rebook": "You can book another time whenever you like.",
+        "open": "Book another time"
+      }
     }
   },
   "preview": {
@@ -6963,6 +6983,85 @@
         "pending": "Checking for viruses…",
         "infected": "Removed: a virus was found"
       }
+    }
+  },
+  "bookings": {
+    "title": "Book an instructor",
+    "purpose": "A live 1-on-1 session in REOS when AI isn't enough. It ends at the booked time.",
+    "mine": "Your sessions",
+    "instructors": "Instructors",
+    "emptyTitle": "No instructors taking bookings yet",
+    "empty": "When your school's instructors open their hours, they appear here.",
+    "included": "Included",
+    "from": "From {{price}}",
+    "new": "New",
+    "rating": "{{rating}} ({{count}})",
+    "next": "Next: {{time}}",
+    "languages": {
+      "en": "English",
+      "es": "Spanish"
+    },
+    "with": "With {{name}}",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "statuses": {
+      "held": "Waiting for payment",
+      "confirmed": "Booked",
+      "cancelled": "Cancelled",
+      "refunded": "Cancelled and refunded",
+      "completed": "Done",
+      "no_show": "Instructor didn't join · refunded"
+    },
+    "join": "Join",
+    "pay": "Pay {{price}}",
+    "cancel": "Cancel",
+    "cancelNoRefund": "Cancel (no refund within 24 hours)",
+    "rate": "Rate this session",
+    "stars_one": "{{count}} star",
+    "stars_other": "{{count}} stars",
+    "rules": "Free cancellation until 24 hours before. If the instructor doesn't join within 10 minutes, you're refunded automatically.",
+    "length": "Length",
+    "pickTime": "Choose a time",
+    "noTimes": "No free times in the next two weeks.",
+    "topic": "What would you like help with?",
+    "topicPlaceholder": "For example: proration math",
+    "book": "Book",
+    "bookAndPay": "Book and pay {{price}}",
+    "hours": {
+      "title": "Hours and prices",
+      "purpose": "When students can book you, for how long and at what price. Sessions end at the booked time.",
+      "active": "Taking bookings",
+      "price_one": "{{count}}-minute session (US dollars)",
+      "price_other": "{{count}}-minute session (US dollars)",
+      "priceHint": "0 means included: free to book. Paid sessions are paid out to you after REOS's platform fee, like courses.",
+      "week": "Weekly hours ({{zone}})",
+      "from": "{{day}} from",
+      "to": "{{day}} to",
+      "remove": "Remove these hours",
+      "add": "Add hours on {{day}}",
+      "languages": "Languages you teach in",
+      "topics": "What you help with (separated by commas)",
+      "bio": "About you",
+      "save": "Save",
+      "saved": "Saved."
+    },
+    "days": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday"
+    },
+    "tasks": {
+      "title": "Send tasks to {{name}}",
+      "intro": "From your shared notes. Each becomes a to-do for the student.",
+      "send": "Send tasks",
+      "sent": "Sent to {{name}}.",
+      "add": "Add a task",
+      "label": "Task {{n}}",
+      "due": "Due date for task {{n}}"
     }
   }
 }

@@ -421,7 +421,8 @@
       "askedBy": "{{student}} · {{course}}",
       "addedToKnowledge": "Agregada al conocimiento del curso",
       "select": "Elija una pregunta para responderla."
-    }
+    },
+    "bookInstructor": "Reservar un instructor"
   },
   "options": {
     "correct": "Respuesta correcta",
@@ -3953,7 +3954,8 @@
       "course": "Curso",
       "package": "Paquete",
       "credit_pack": "Paquete de créditos",
-      "seat_pack": "Paquete de puestos"
+      "seat_pack": "Paquete de puestos",
+      "session": "Sesión individual"
     },
     "buyers": {
       "candidate": "Candidatos",
@@ -5094,6 +5096,24 @@
         "agreeFirst": "Esta sesión se está grabando. Acepte ser grabado para unirse."
       },
       "agreeAndJoin": "Aceptar y unirse"
+    },
+    "booking": {
+      "productName": ":name · sesión de :minutes minutos",
+      "title": "Sesión con :name",
+      "errors": {
+        "unavailable": "Este instructor no acepta esa reserva.",
+        "taken": "Ese horario acaba de ocuparse. Elija otro.",
+        "cannotCancel": "Esta reserva ya no se puede cancelar.",
+        "cannotRate": "Puede calificar una sesión una vez, después de que termine.",
+        "cannotSendTasks": "Envíe tareas después de que la sesión haya comenzado.",
+        "hours": "Cada día necesita horarios como 09:00 a 12:00, en la media hora."
+      },
+      "mail": {
+        "noShow": ":name no se unió a su sesión",
+        "refunded": "Le reembolsamos el total. Puede reservar otro horario cuando quiera.",
+        "rebook": "Puede reservar otro horario cuando quiera.",
+        "open": "Reservar otro horario"
+      }
     }
   },
   "preview": {
@@ -6963,6 +6983,85 @@
         "pending": "Buscando virus…",
         "infected": "Eliminado: se encontró un virus"
       }
+    }
+  },
+  "bookings": {
+    "title": "Reservar un instructor",
+    "purpose": "Una sesión individual en vivo en REOS cuando la IA no basta. Termina a la hora reservada.",
+    "mine": "Sus sesiones",
+    "instructors": "Instructores",
+    "emptyTitle": "Aún no hay instructores que acepten reservas",
+    "empty": "Cuando los instructores de su escuela abran sus horarios, aparecerán aquí.",
+    "included": "Incluida",
+    "from": "Desde {{price}}",
+    "new": "Nuevo",
+    "rating": "{{rating}} ({{count}})",
+    "next": "Próxima: {{time}}",
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    },
+    "with": "Con {{name}}",
+    "minutes_one": "{{count}} minuto",
+    "minutes_other": "{{count}} minutos",
+    "statuses": {
+      "held": "Esperando el pago",
+      "confirmed": "Reservada",
+      "cancelled": "Cancelada",
+      "refunded": "Cancelada y reembolsada",
+      "completed": "Terminada",
+      "no_show": "El instructor no se unió · reembolsada"
+    },
+    "join": "Unirse",
+    "pay": "Pagar {{price}}",
+    "cancel": "Cancelar",
+    "cancelNoRefund": "Cancelar (sin reembolso dentro de 24 horas)",
+    "rate": "Califique esta sesión",
+    "stars_one": "{{count}} estrella",
+    "stars_other": "{{count}} estrellas",
+    "rules": "Cancelación gratis hasta 24 horas antes. Si el instructor no se une dentro de 10 minutos, se le reembolsa automáticamente.",
+    "length": "Duración",
+    "pickTime": "Elija un horario",
+    "noTimes": "No hay horarios libres en las próximas dos semanas.",
+    "topic": "¿Con qué le gustaría ayuda?",
+    "topicPlaceholder": "Por ejemplo: matemáticas de prorrateo",
+    "book": "Reservar",
+    "bookAndPay": "Reservar y pagar {{price}}",
+    "hours": {
+      "title": "Horarios y precios",
+      "purpose": "Cuándo pueden reservarle los estudiantes, por cuánto tiempo y a qué precio. Las sesiones terminan a la hora reservada.",
+      "active": "Acepto reservas",
+      "price_one": "Sesión de {{count}} minutos (dólares)",
+      "price_other": "Sesión de {{count}} minutos (dólares)",
+      "priceHint": "0 significa incluida: gratis para reservar. Las sesiones pagadas se le pagan después de la comisión de la plataforma REOS, como los cursos.",
+      "week": "Horario semanal ({{zone}})",
+      "from": "{{day}} desde",
+      "to": "{{day}} hasta",
+      "remove": "Quitar este horario",
+      "add": "Agregar horario el {{day}}",
+      "languages": "Idiomas en que enseña",
+      "topics": "Con qué ayuda (separado por comas)",
+      "bio": "Sobre usted",
+      "save": "Guardar",
+      "saved": "Guardado."
+    },
+    "days": {
+      "mon": "Lunes",
+      "tue": "Martes",
+      "wed": "Miércoles",
+      "thu": "Jueves",
+      "fri": "Viernes",
+      "sat": "Sábado",
+      "sun": "Domingo"
+    },
+    "tasks": {
+      "title": "Enviar tareas a {{name}}",
+      "intro": "De sus notas compartidas. Cada una se vuelve un pendiente para el estudiante.",
+      "send": "Enviar tareas",
+      "sent": "Enviadas a {{name}}.",
+      "add": "Agregar una tarea",
+      "label": "Tarea {{n}}",
+      "due": "Fecha de la tarea {{n}}"
     }
   }
 }

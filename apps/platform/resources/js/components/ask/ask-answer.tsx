@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 import {
     BookOpen,
     Calculator,
+    CalendarPlus,
     Info,
     Languages,
     Lightbulb,
@@ -13,6 +14,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SaveFlashcard } from '@/components/practice/save-flashcard';
 import { Button } from '@/components/ui/button';
+import { index as bookingsIndex } from '@/routes/bookings';
 import { lesson as lessonRoute } from '@/routes/learn';
 import { math } from '@/routes/practice';
 import { clockOf, type AskMessage, type AskMode } from './types';
@@ -164,6 +166,14 @@ export function AskAnswer({
                         front={question}
                         back={answer.body}
                     />
+                ) : null}
+                {answer.tier === 'limited' ? (
+                    <Button variant="outline" asChild>
+                        <Link href={bookingsIndex().url}>
+                            <CalendarPlus aria-hidden />
+                            {t('ask.bookInstructor')}
+                        </Link>
+                    </Button>
                 ) : null}
                 {answer.math_kind ? (
                     <Button variant="outline" asChild>
