@@ -1,7 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
+import { AnswerQuestion } from './answer-question';
 import { AskAnswer } from './ask-answer';
-import { iabsThread, limitedAnswer, sponsoredAnswer } from './fixtures';
+import {
+    iabsThread,
+    limitedAnswer,
+    sponsoredAnswer,
+    waitingQuestion,
+} from './fixtures';
 
 const meta = {
     title: 'Candidate/Ask',
@@ -38,3 +44,15 @@ export const Sponsored: Story = { args: { answer: sponsoredAnswer } };
 
 /** Screen k11: not covered and no sponsor; never a price. */
 export const NotCovered: Story = { args: { answer: limitedAnswer } };
+
+/** Instructor screen i10: Nelle answers Ana, and adds it to the course's knowledge. */
+export const AnswerAStudent: Story = {
+    render: () => (
+        <AnswerQuestion
+            question={waitingQuestion}
+            busy={false}
+            error={null}
+            onSend={() => undefined}
+        />
+    ),
+};

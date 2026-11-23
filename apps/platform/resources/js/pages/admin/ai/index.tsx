@@ -16,6 +16,8 @@ type Settings = {
     model: string;
     costs: Record<string, number>;
     default_monthly_credits: number;
+    /** Candidates' free credits each month for Ask beyond their course (A10.1). */
+    candidate_monthly_credits: number;
     hourly_limit: number;
 };
 
@@ -306,6 +308,29 @@ export default function AiAndCredits({
                                         setDraft({
                                             ...draft,
                                             default_monthly_credits: Number(
+                                                e.target.value,
+                                            ),
+                                        })
+                                    }
+                                />
+                            </div>
+                            <div className="flex items-center justify-between gap-4 py-2">
+                                <Label
+                                    htmlFor="ai-candidate-monthly"
+                                    className="font-normal"
+                                >
+                                    {t('aiSettings.candidateMonthly')}
+                                </Label>
+                                <Input
+                                    id="ai-candidate-monthly"
+                                    type="number"
+                                    min={0}
+                                    className="w-28 text-right"
+                                    value={draft.candidate_monthly_credits}
+                                    onChange={(e) =>
+                                        setDraft({
+                                            ...draft,
+                                            candidate_monthly_credits: Number(
                                                 e.target.value,
                                             ),
                                         })

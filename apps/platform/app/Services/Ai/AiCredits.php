@@ -43,6 +43,11 @@ final readonly class AiCredits
                     ->where('sponsor_code_redemptions.user_id', $user->id)->select('sponsor_codes.product_id')))
             ->max('credits');
 
+        if ($this->isCandidate($user)) {
+            // Candidates (A10.1): the monthly free credits for Ask beyond their course, or more if a product gives more.
+            return max(is_numeric($products) ? (int) $products : 0, max(0, $this->settings->current()['candidate_monthly_credits']));
+        }
+
         return is_numeric($products) ? (int) $products : $this->allowance();
     }
 
@@ -243,6 +248,39 @@ final readonly class AiCredits
         }
 
         return null;
+    }
+
+    /**
+     * Who pays for a candidate's answer beyond their course (A10.1, decided
+     * 23 November 2026): this month's free credits first, then their
+     * sponsor's pool, then credits they bought. Null when none can.
+     *
+     * @return 'monthly'|'sponsor'|'topup'|null
+     */
+    public function candidatePayer(User $user, int $credits): ?string
+    {
+        $this->ensureMonth($user);
+
+        return match (true) {
+            $this->ledger->balance($this->ledger->person($user, 'monthly')) >= $credits => 'monthly',
+            $this->sponsorFor($user, $credits) !== null => 'sponsor',
+            $this->ledger->balance($this->ledger->person($user, 'topup')) >= $credits => 'topup',
+            default => null,
+        };
+    }
+
+    /** Charge a candidate's answer beyond their course to whoever `candidatePayer` names. */
+    public function chargeCandidate(User $user, string $payer, string $feature, string $engine, int $credits): void
+    {
+        DB::transaction(function () use ($user, $payer, $feature, $engine, $credits): void {
+            $from = match ($payer) {
+                'sponsor' => $this->sponsorPool($user, $credits) ?? $this->ledger->person($user, 'monthly'),
+                'topup' => $this->ledger->person($user, 'topup'),
+                default => $this->ledger->person($user, 'monthly'),
+            };
+            $this->ledger->post('ai_use', [[$from, -$credits], [$this->ledger->platform('ai_used'), $credits]], 'user', (string) $user->id, $feature);
+            DB::table('ai_credit_uses')->insert(['user_id' => $user->id, 'feature' => $feature, 'engine' => $engine, 'credits' => $credits, 'created_at' => CarbonImmutable::now()]);
+        });
     }
 
     /** Whether the person is a candidate (their AI is never charged to them). */

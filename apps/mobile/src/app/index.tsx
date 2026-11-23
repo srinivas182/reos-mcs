@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bell, BookOpen, Handshake, MessageSquare, Palette, Users, Video } from 'lucide-react-native';
+import { Bell, BookOpen, Handshake, MessageCircleQuestion, MessageSquare, Palette, Users, Video } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -186,6 +186,8 @@ export default function HomeScreen() {
       {learner ? <ListRow icon={BookOpen} tone="info" title={t('learn.title')} subtitle={t('learn.searchLabel')} onPress={() => router.push('/learn')} /> : null}
       {/* Do this now (Agent App Journey screen 6, B8.3), and every contact. */}
       {agent && insight ? <TodayInsight contact={insight.contact} insight={insight.insight} onDone={() => void reloadInsight()} /> : null}
+      {/* Student questions (instructor screen i09, A10.1b). */}
+      {role === 'instructor' ? <ListRow icon={MessageCircleQuestion} tone="info" title={t('ask.instructor.title')} subtitle={t('ask.instructor.purpose')} onPress={() => router.push('/instructor/questions')} /> : null}
       {agent ? <ListRow icon={Users} tone="info" title={t('crm.hub.title')} subtitle={t('crm.hub.description')} onPress={() => router.push('/contacts')} /> : null}
       {agent ? <ListRow icon={Handshake} tone="info" title={t('deals.pipeline.title')} subtitle={t('deals.pipeline.description')} onPress={() => router.push('/deals')} /> : null}
       {agent ? <TodayAgenda /> : null}

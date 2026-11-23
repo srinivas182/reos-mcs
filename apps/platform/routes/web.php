@@ -4,6 +4,7 @@ use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
+use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
@@ -38,6 +39,7 @@ use App\Http\Controllers\Crm\ContactsPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Deals\DealsPageController;
 use App\Http\Controllers\Deals\SignaturePageController;
+use App\Http\Controllers\Instructor\QuestionsPageController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
@@ -238,6 +240,10 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // Ask, the study mate (A10.1): the page, and questions as JSON.
     Route::get('ask', [AskPageController::class, 'index'])->name('ask.index');
     Route::post('ask', [AskController::class, 'store'])->middleware('throttle:20,1,ask')->name('ask.store');
+    Route::post('ask/threads/{thread}/instructor', [AskController::class, 'instructor'])->whereUuid('thread')->middleware('throttle:10,1,ask-instructor')->name('ask.instructor');
+    // Student questions (A10.1b): the instructor's queue and answers.
+    Route::get('instructor/questions', [QuestionsPageController::class, 'index'])->name('instructor.questions.index');
+    Route::post('instructor/questions/{question}/answer', [InstructorQuestionController::class, 'answer'])->whereUuid('question')->middleware('throttle:60,1,instructor-answer')->name('instructor.questions.answer');
     Route::controller(StudyPlanController::class)->prefix('study-plan')->name('study-plan.')->group(function () {
         Route::get('/', 'show')->name('show');
         Route::put('tasks/{task}', 'move')->whereNumber('task')->middleware('throttle:60,1,study-plan-move')->name('move');

@@ -41,6 +41,10 @@ enum NotificationKind: string
     case Challenge = 'challenge';
     /** A deal's key date is 72 or 24 hours away (B9.1). */
     case DealDeadline = 'deal_deadline';
+    /** A student's question for a course's instructors (A10.1b). */
+    case StudentQuestion = 'student_question';
+    /** The instructor answered the student's question (A10.1b). */
+    case InstructorAnswer = 'instructor_answer';
     /** Everyone signed an envelope sent from a deal (B9.3). */
     case SignatureCompleted = 'signature_completed';
 
@@ -96,7 +100,7 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge => 'learning',
+            self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
             self::DealDeadline, self::SignatureCompleted => 'deals',

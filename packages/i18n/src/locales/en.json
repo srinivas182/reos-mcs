@@ -71,7 +71,8 @@
     "students": "Students",
     "progress": "Weekly progress",
     "deals": "Deals",
-    "ask": "Ask"
+    "ask": "Ask",
+    "studentQuestions": "Student questions"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -357,8 +358,7 @@
     },
     "title": "Ask",
     "purpose": "Your study mate: answers from your courses first, with the lesson to watch.",
-    "purposeCandidate": "Your study mate: answers from your courses, with the lesson to watch. Always free.",
-    "purposeSponsored": "Your study mate: answers from your courses first. Help beyond them is sponsored by {{sponsor}}. Always free for you.",
+    "purposeCandidate": "Your study mate: answers from your courses are always free, with the lesson to watch.",
     "new": "New question",
     "threads": "Your questions",
     "noThreads": "Questions you ask appear here.",
@@ -385,7 +385,43 @@
       "math": "Solve a math problem",
       "mathQ": "How do I prorate $3,650 in property taxes at a June 15 closing?"
     },
-    "fromCourseShort": "From your course content"
+    "fromCourseShort": "From your course content",
+    "limitedNoCredits": "That isn't covered in your :state course, and this month's credits for questions beyond it are used up. Ask your instructor, book a short session, or add credits on reos.com.",
+    "beyondLeft": "{{left}} of {{monthly}} free credits left this month for questions beyond your course.",
+    "sponsorNext": "After that, {{sponsor}} sponsors more.",
+    "ownLeft": "Credits you added: {{credits}}.",
+    "instructor": {
+      "mail": {
+        "asked": ":name asked a question in :course",
+        "answer": "Answer",
+        "answered": ":name answered your question",
+        "read": "Read the answer"
+      },
+      "errors": {
+        "noCourse": "Start a course first, so we know which instructor to ask.",
+        "noInstructor": "Your course has no instructor to answer yet. Try asking in other words.",
+        "answered": "This question has already been answered."
+      },
+      "ask": "Ask my instructor",
+      "sent": "Sent to your instructor. You'll be notified when they answer.",
+      "from": "Your instructor, {{name}}",
+      "title": "Student questions",
+      "purpose": "What the course content couldn't answer. Answer once, and help every future student.",
+      "waiting": "Waiting",
+      "answeredTab": "Answered",
+      "fromContent": "{{count}} questions answered from your course content in the last 30 days.",
+      "emptyTitle": "No questions waiting",
+      "empty": "Questions your students send from Ask appear here.",
+      "contentSaid": "What the course content said",
+      "yourAnswer": "Your answer",
+      "addToKnowledge": "Add to course knowledge, so Ask can use it for the next student",
+      "flashcard": "Make a flashcard for the student",
+      "send": "Send answer",
+      "sentToStudent": "Answer sent to {{name}}.",
+      "askedBy": "{{student}} · {{course}}",
+      "addedToKnowledge": "Added to course knowledge",
+      "select": "Choose a question to answer it."
+    }
   },
   "options": {
     "correct": "Correct answer",
@@ -4346,7 +4382,8 @@
     "creditPack": "Credit pack",
     "creditPackValue": "{{credits}} for {{amount}} · reos.com",
     "abuseLimit": "Abuse limit (actions per hour per person)",
-    "candidates": "Candidates are never charged credits: their AI help draws on their sponsor, else REOS."
+    "candidates": "Candidates are never charged credits: their AI help draws on their sponsor, else REOS.",
+    "candidateMonthly": "Candidates: free credits each month for Ask beyond the course"
   },
   "signup": {
     "brokerage": {
@@ -4800,7 +4837,9 @@
       "weekly_report": "Weekly progress report",
       "challenge": "Challenges",
       "deal_deadline": "Deal deadlines",
-      "signature_completed": "Signed documents"
+      "signature_completed": "Signed documents",
+      "student_question": "Student questions",
+      "instructor_answer": "Answers from your instructor"
     },
     "digest": {
       "subject": {

@@ -1,5 +1,10 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { MessageCircleQuestion, Plus, SendHorizontal } from 'lucide-react';
+import {
+    GraduationCap,
+    MessageCircleQuestion,
+    Plus,
+    SendHorizontal,
+} from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AskAnswer } from '@/components/ask/ask-answer';
@@ -16,7 +21,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { postJson } from '@/lib/content';
-import { index, store } from '@/routes/ask';
+import { index, instructor, store } from '@/routes/ask';
 
 /**
  * Ask on the web (candidate screen 13, A10.1): conversations on the left,
@@ -62,6 +67,21 @@ export default function AskPage({
             setBusy(false);
         }
     };
+    const askInstructor = async () => {
+        if (!thread) {
+            return;
+        }
+        setBusy(true);
+        setError(null);
+        try {
+            await postJson(instructor(thread.uuid).url);
+            setThread({ ...thread, instructor: 'waiting' });
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        } finally {
+            setBusy(false);
+        }
+    };
     const messages = thread?.messages ?? [];
     const lastAnswer = [...messages].reverse().find((m) => m.role === 'answer');
 
@@ -73,11 +93,7 @@ export default function AskPage({
                     title={t('ask.title')}
                     description={
                         pack.candidate
-                            ? pack.sponsor
-                                ? t('ask.purposeSponsored', {
-                                      sponsor: pack.sponsor,
-                                  })
-                                : t('ask.purposeCandidate')
+                            ? t('ask.purposeCandidate')
                             : t('ask.purpose')
                     }
                     actions={
@@ -96,6 +112,28 @@ export default function AskPage({
                         </Button>
                     }
                 />
+                {pack.candidate && pack.free_monthly !== null ? (
+                    <p className="text-sm text-muted-foreground">
+                        {[
+                            t('ask.beyondLeft', {
+                                left: pack.free_left ?? 0,
+                                monthly: pack.free_monthly,
+                            }),
+                            pack.sponsor
+                                ? t('ask.sponsorNext', {
+                                      sponsor: pack.sponsor,
+                                  })
+                                : null,
+                            pack.credits_left > 0
+                                ? t('ask.ownLeft', {
+                                      credits: pack.credits_left,
+                                  })
+                                : null,
+                        ]
+                            .filter(Boolean)
+                            .join(' ')}
+                    </p>
+                ) : null}
                 <div className="grid gap-6 lg:grid-cols-[18rem_1fr]">
                     <nav aria-label={t('ask.threads')} className="space-y-2">
                         <h2 className="font-semibold">{t('ask.threads')}</h2>
@@ -149,7 +187,25 @@ export default function AskPage({
                             />
                         ) : (
                             messages.map((m, i) =>
-                                m.role === 'answer' ? (
+                                m.role === 'instructor' ? (
+                                    <article
+                                        key={m.id}
+                                        className="space-y-2 rounded-reos-lg border border-primary/40 bg-card p-4"
+                                    >
+                                        <p className="flex items-center gap-2 text-sm font-semibold text-primary">
+                                            <GraduationCap
+                                                aria-hidden
+                                                className="size-4"
+                                            />
+                                            {t('ask.instructor.from', {
+                                                name: m.sponsor ?? '',
+                                            })}
+                                        </p>
+                                        <p className="text-body whitespace-pre-line">
+                                            {m.body}
+                                        </p>
+                                    </article>
+                                ) : m.role === 'answer' ? (
                                     <AskAnswer
                                         key={m.id}
                                         answer={m}
@@ -177,6 +233,24 @@ export default function AskPage({
                                 ),
                             )
                         )}
+
+                        {thread && lastAnswer && thread.instructor === null ? (
+                            <Button
+                                variant="outline"
+                                disabled={busy}
+                                onClick={() => void askInstructor()}
+                            >
+                                <GraduationCap aria-hidden />
+                                {t('ask.instructor.ask')}
+                            </Button>
+                        ) : thread?.instructor === 'waiting' ? (
+                            <p
+                                className="text-sm text-muted-foreground"
+                                aria-live="polite"
+                            >
+                                {t('ask.instructor.sent')}
+                            </p>
+                        ) : null}
 
                         <form
                             className="space-y-2"
