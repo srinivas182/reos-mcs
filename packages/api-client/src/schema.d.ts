@@ -88,6 +88,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ask/threads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My conversations
+         * @description The 30 most recent, newest first.
+         */
+        get: operations["ask.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ask/threads/{thread}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One conversation */
+        get: operations["ask.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask a question
+         * @description Answered from the person's courses first (free). Beyond them, a general answer only when a sponsor pays (candidates) or from the agent's credits; otherwise it says so and offers their instructor. Follow-ups (`simpler`, `spanish`, `quiz`) work on the thread's last answer.
+         */
+        post: operations["ask.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ask/package": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My package and AI help
+         * @description Screen k10: whether answers beyond the course are available, and who pays for them. Candidates never see credits.
+         */
+        get: operations["ask.package"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/broadcasting/auth": {
         parameters: {
             query?: never;
@@ -3297,6 +3374,24 @@ export interface components {
             at?: number | null;
         };
         /**
+         * AskRequest
+         * @description A question in Ask (A10.1), or a follow-up on the last answer.
+         */
+        AskRequest: {
+            /** @description The question; needed for `ask`, ignored for follow-ups. */
+            question?: string | null;
+            /**
+             * @description `ask` (a new question), or a follow-up on the thread's last answer: `simpler`, `spanish` or `quiz`.
+             * @enum {string}
+             */
+            mode?: "ask" | "simpler" | "spanish" | "quiz";
+            /**
+             * Format: uuid
+             * @description The conversation to continue; a new one when empty.
+             */
+            thread?: string | null;
+        };
+        /**
          * BrokerRole
          * @description Supervising duties that change a licence's CE (A5.2): in Texas, Broker Responsibility is required for brokers who sponsor agents, designated brokers of sponsoring entities and delegated supervisors (22 TAC §535.92(a)(4)).
          * @enum {string}
@@ -4550,6 +4645,7 @@ export type SchemaAddContactRequest = components['schemas']['AddContactRequest']
 export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
+export type SchemaAskRequest = components['schemas']['AskRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
@@ -4760,6 +4856,227 @@ export interface operations {
                 content: {
                     "application/json": {
                         /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "ask.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            title: string;
+                            updated_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "ask.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                thread: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            title: string;
+                            updated_at: string | null;
+                            messages: {
+                                id: number;
+                                /** @enum {string} */
+                                role: "question" | "answer" | "instructor";
+                                body: string;
+                                /** @enum {string|null} */
+                                tier: "content" | "sponsored" | "limited" | null;
+                                mode: string | null;
+                                sources: {
+                                    lesson_id: number;
+                                    lesson: string;
+                                    seconds: number | null;
+                                    page: number | null;
+                                    heading: string | null;
+                                    text: string;
+                                }[];
+                                quiz: {
+                                    prompt: string;
+                                    options: string[];
+                                    correct: number;
+                                    explanation: string;
+                                } | null;
+                                math_kind: string | null;
+                                sponsor: string | null;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "ask.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AskRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            title: string;
+                            updated_at: string | null;
+                            messages: {
+                                id: number;
+                                /** @enum {string} */
+                                role: "question" | "answer" | "instructor";
+                                body: string;
+                                /** @enum {string|null} */
+                                tier: "content" | "sponsored" | "limited" | null;
+                                mode: string | null;
+                                sources: {
+                                    lesson_id: number;
+                                    lesson: string;
+                                    seconds: number | null;
+                                    page: number | null;
+                                    heading: string | null;
+                                    text: string;
+                                }[];
+                                quiz: {
+                                    prompt: string;
+                                    options: string[];
+                                    correct: number;
+                                    explanation: string;
+                                } | null;
+                                math_kind: string | null;
+                                sponsor: string | null;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "ask.package": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            candidate: boolean;
+                            beyond_course: boolean;
+                            sponsor: string | null;
+                            credits_left: number | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
                         message: string;
                     };
                 };

@@ -112,7 +112,17 @@ final readonly class MathLab
             return null;
         }
 
-        $text = mb_strtolower($question->in('en')['question']);
+        return self::kindForText($question->in('en')['question']);
+    }
+
+    /** The math lab kind for a question in words (Ask, A10.1: "Try a similar one"); null if it isn't real estate math. */
+    public static function kindForText(string $question): ?string
+    {
+        $text = mb_strtolower($question);
+
+        if (preg_match('/\d/', $text) !== 1) {
+            return null;
+        }
 
         return match (true) {
             str_contains($text, 'prorat') || str_contains($text, 'taxes are paid') => 'proration',

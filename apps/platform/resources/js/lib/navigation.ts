@@ -14,6 +14,7 @@ import {
     LayoutGrid,
     Map as MapIcon,
     Megaphone,
+    MessageCircleQuestion,
     MessageSquare,
     Palette,
     Plug,
@@ -52,6 +53,7 @@ import { index as providerCategories } from '@/routes/provider-categories';
 import { index as sales } from '@/routes/sales';
 import { index as earnings } from '@/routes/earnings';
 import { index as featuresIndex } from '@/routes/features';
+import { index as askIndex } from '@/routes/ask';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -68,6 +70,7 @@ import type { RoleName } from '@/types/auth';
 
 /** Sidebar labels that exist in the translations (pages that are built). */
 export type NavLabel =
+    | 'ask'
     | 'deals'
     | 'dashboard'
     | 'overview'
@@ -175,7 +178,8 @@ export function roleNavigation(
             item('readiness', Gauge, readiness(), '/readiness'),
             // Weekly progress report (A9.2e).
             item('progress', CalendarCheck, progress(), '/practice/progress'),
-            planned('ask'),
+            // Ask, the study mate (A10.1).
+            item('ask', MessageCircleQuestion, askIndex(), '/ask'),
             planned('instructors'),
             planned('licenceJourney'),
             item('account', Settings, profile(), '/settings'),

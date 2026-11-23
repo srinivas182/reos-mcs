@@ -70,7 +70,8 @@
     "readiness": "Readiness",
     "students": "Students",
     "progress": "Weekly progress",
-    "deals": "Deals"
+    "deals": "Deals",
+    "ask": "Ask"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -346,7 +347,45 @@
   },
   "ask": {
     "voice": "Ask by voice",
-    "placeholder": "Ask anything"
+    "placeholder": "Ask anything",
+    "limited": "That isn't covered in your :state course content, so I can't answer it from there. Your instructor can: ask them, or book a short session.",
+    "sim": {
+      "general": "(Demo) A general answer beyond your :state course appears here, paid for by your sponsor. Check anything about current law with the state's real estate commission."
+    },
+    "errors": {
+      "nothingYet": "Ask a question first."
+    },
+    "title": "Ask",
+    "purpose": "Your study mate: answers from your courses first, with the lesson to watch.",
+    "purposeCandidate": "Your study mate: answers from your courses, with the lesson to watch. Always free.",
+    "purposeSponsored": "Your study mate: answers from your courses first. Help beyond them is sponsored by {{sponsor}}. Always free for you.",
+    "new": "New question",
+    "threads": "Your questions",
+    "noThreads": "Questions you ask appear here.",
+    "conversation": "Conversation",
+    "emptyTitle": "Ask anything about the exam",
+    "empty": "Terms, rules, math step by step. Answers come from your course, with the lesson and the moment to watch.",
+    "label": "Your question",
+    "submit": "Ask",
+    "asking": "Thinking…",
+    "fromCourse": "From your course content · {{state}}",
+    "beyond": "Beyond your course",
+    "beyondSponsored": "Beyond your course · sponsored by {{sponsor}}",
+    "notCovered": "Not covered in your course",
+    "source": "Source: {{lesson}}",
+    "watchAt": "Watch at {{time}}",
+    "openLesson": "Open the lesson",
+    "similar": "Try a similar one",
+    "stop": "Stop listening",
+    "micDenied": "Allow the microphone in Settings to ask by voice.",
+    "suggestions": "Try asking",
+    "suggest": {
+      "term": "Explain a term",
+      "termQ": "What is the IABS form?",
+      "math": "Solve a math problem",
+      "mathQ": "How do I prorate $3,650 in property taxes at a June 15 closing?"
+    },
+    "fromCourseShort": "From your course content"
   },
   "options": {
     "correct": "Correct answer",

@@ -221,15 +221,33 @@ final readonly class AiCredits
     /** A sponsor of this person (their school, brokerage or association) with enough credits in its pool. */
     private function sponsorPool(User $user, int $credits): ?LedgerAccount
     {
+        $sponsor = $this->sponsorFor($user, $credits);
+
+        return $sponsor === null ? null : $this->ledger->find("organisation:{$sponsor->id}:credits");
+    }
+
+    /**
+     * The organisation paying for a candidate's AI beyond their course (A10.1,
+     * screen k11): their school, brokerage or association with credits in its
+     * pool. Null when nobody sponsors them.
+     */
+    public function sponsorFor(User $user, int $credits = 1): ?Organisation
+    {
         foreach ($this->memberships->of($user) as $membership) {
             $organisation = $membership->organisation;
             $pool = $this->ledger->find("organisation:{$organisation->id}:credits");
 
             if ($pool !== null && $this->ledger->balance($pool) >= $credits) {
-                return $pool;
+                return $organisation;
             }
         }
 
         return null;
+    }
+
+    /** Whether the person is a candidate (their AI is never charged to them). */
+    public function forCandidate(User $user): bool
+    {
+        return $this->isCandidate($user);
     }
 }

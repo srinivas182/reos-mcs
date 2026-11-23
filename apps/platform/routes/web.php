@@ -1,6 +1,7 @@
 <?php
 
 use App\Connections\ConnectorRegistry;
+use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Learn\PlayerController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeControlle
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
+use App\Http\Controllers\Ask\AskPageController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
@@ -233,6 +235,9 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::post('practice/attempts/{attempt}/finish', [ApiPracticeController::class, 'finish'])->whereNumber('attempt')->middleware('throttle:30,1,practice-finish')->name('practice.finish');
     Route::get('practice/attempts/{attempt}/similar/{question}', [ApiPracticeController::class, 'similar'])->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,practice-similar')->name('practice.similar');
     Route::get('practice/attempts/{attempt}/why/{question}', [ApiPracticeController::class, 'why'])->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,practice-why')->name('practice.why');
+    // Ask, the study mate (A10.1): the page, and questions as JSON.
+    Route::get('ask', [AskPageController::class, 'index'])->name('ask.index');
+    Route::post('ask', [AskController::class, 'store'])->middleware('throttle:20,1,ask')->name('ask.store');
     Route::controller(StudyPlanController::class)->prefix('study-plan')->name('study-plan.')->group(function () {
         Route::get('/', 'show')->name('show');
         Route::put('tasks/{task}', 'move')->whereNumber('task')->middleware('throttle:60,1,study-plan-move')->name('move');
