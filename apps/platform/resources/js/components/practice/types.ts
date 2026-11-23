@@ -112,6 +112,8 @@ export type Results = {
         explanation: string;
         source: string;
         lesson: { id: number; seconds: number | null } | null;
+        /** A math question's kind in the math lab (A9.2c). */
+        math?: MathKind | null;
     }[];
 };
 
@@ -232,6 +234,7 @@ export type Coach = {
             | 'plan'
             | 'drill'
             | 'fix'
+            | 'math'
             | 'simulation'
             | 'readiness';
         why: string;
@@ -267,4 +270,28 @@ export type TopicPlan = {
         explanation: string;
         source: string;
     }[];
+};
+
+export type MathKind =
+    | 'proration'
+    | 'commission'
+    | 'ltv'
+    | 'area'
+    | 'cap'
+    | 'net'
+    | 'points';
+
+/** A math lab problem (screen 48, A9.2c): the answers stay on the server. */
+export type MathProblem = {
+    kind: MathKind;
+    seed: number;
+    prompt: string;
+    steps: { n: number; label: string; unit: string }[];
+};
+
+export type MathCheck = {
+    correct: boolean;
+    hint: string | null;
+    answer: string | null;
+    solved: boolean;
 };

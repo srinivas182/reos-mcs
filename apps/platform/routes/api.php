@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
 use App\Http\Controllers\Api\Practice\CoachController;
+use App\Http\Controllers\Api\Practice\MathLabController;
 use App\Http\Controllers\Api\Practice\PracticeController;
 use App\Http\Controllers\Api\Practice\ReadinessController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
@@ -205,6 +206,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('practice/topic-plans', [TopicPlanController::class, 'store'])->middleware('throttle:30,1,api-practice-plans')->name('api.practice.plans.store');
     Route::get('practice/topic-plans/{plan}', [TopicPlanController::class, 'show'])->whereNumber('plan')->name('api.practice.plans.show');
     Route::post('practice/topic-plans/{plan}/continue', [TopicPlanController::class, 'continue'])->whereNumber('plan')->middleware('throttle:60,1,api-practice-plans')->name('api.practice.plans.continue');
+    // Math lab (A9.2c).
+    Route::get('practice/math', [MathLabController::class, 'index'])->name('api.practice.math.index');
+    Route::post('practice/math/problems', [MathLabController::class, 'store'])->middleware('throttle:120,1,api-practice-math')->name('api.practice.math.store');
+    Route::post('practice/math/check', [MathLabController::class, 'check'])->middleware('throttle:240,1,api-practice-math')->name('api.practice.math.check');
     // Lessons saved on the phone (A8.2b): the learner's own downloads, not admin actions.
     Route::prefix('learn')->name('api.learn.downloads.')->controller(OfflineController::class)->group(function () {
         Route::get('downloads', 'index')->name('index');

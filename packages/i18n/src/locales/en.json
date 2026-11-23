@@ -6227,7 +6227,9 @@
         "rehearse": "You're close to the booking line: rehearse the real exam.",
         "exam_soon": "Your exam is coming up: practise the real format.",
         "check": "See how you'd do on the real exam.",
-        "map": "Your pass chance for each portion."
+        "map": "Your pass chance for each portion.",
+        "math_weak": "Math is one of your weakest topics: work it step by step.",
+        "math": "Real estate math, step by step, with new numbers."
       },
       "modes": {
         "diagnostic": "Diagnostic",
@@ -6235,7 +6237,121 @@
         "drill": "Smart drill",
         "fix": "Fix my weakest",
         "simulation": "Full simulation",
-        "readiness": "Readiness"
+        "readiness": "Readiness",
+        "math": "Math lab"
+      }
+    },
+    "math": {
+      "title": "Math lab",
+      "description": "Real estate math, one step at a time. Every problem has new numbers, and a new one of the same kind follows each solve.",
+      "kinds": {
+        "proration": "Prorations",
+        "commission": "Commissions",
+        "ltv": "Loan-to-value",
+        "area": "Area and acres",
+        "cap": "Capitalization",
+        "net": "Net to seller",
+        "points": "Points and interest"
+      },
+      "kindHints": {
+        "proration": "Property taxes split at closing",
+        "commission": "From the sale price to the agent's share",
+        "ltv": "The most a lender will lend, and the down payment",
+        "area": "Square feet, acres and price",
+        "cap": "Value from income",
+        "net": "What the seller walks away with",
+        "points": "What the points cost and the first month's interest"
+      },
+      "solved_one": "{{count}} solved",
+      "solved_other": "{{count}} solved",
+      "start": "Start",
+      "step": "Step {{n}} of {{of}}",
+      "value": "Your answer",
+      "check": "Check step",
+      "show": "Show the answer",
+      "right": "Right: {{answer}}",
+      "shown": "The answer: {{answer}}",
+      "wrong": "Not quite.",
+      "next": "Next step",
+      "variant": "New numbers, same kind",
+      "choose": "Choose another kind",
+      "solvedTitle": "Solved",
+      "solvedBody": "Every step done. Try the same kind with new numbers to make it stick.",
+      "calculator": "Calculator",
+      "practise": "Practise this in Math lab",
+      "units": {
+        "dollars": "dollars",
+        "percent": "percent",
+        "days": "days",
+        "sqft": "sq ft",
+        "acres": "acres"
+      },
+      "errors": {
+        "step": "Finish the steps in order.",
+        "number": "Enter a number, like 1250 or 12.50."
+      },
+      "proration": {
+        "prompt": "Annual property taxes are :tax and have not been paid yet (Texas taxes are paid at the end of the year). The sale closes on :date, and the seller pays through the closing date. Using a 365-day year, how much does the seller credit the buyer?",
+        "daily": "The tax for one day",
+        "dailyHint": "Divide the annual tax by 365.",
+        "days": "Days the seller owned the home this year",
+        "daysHint": "Count from January 1 through the closing date, including both.",
+        "share": "The seller's share, credited to the buyer",
+        "shareHint": "Multiply the daily tax by the seller's days."
+      },
+      "commission": {
+        "prompt": "A home sells for :price with a :rate commission. The listing brokerage pays the buyer's brokerage, keeping :side of the commission. The listing agent's split with the broker is :split. How much does the listing agent earn?",
+        "total": "The total commission",
+        "totalHint": "Multiply the sale price by the commission rate.",
+        "side": "The listing brokerage's side",
+        "sideHint": "Multiply the total commission by the brokerage's share.",
+        "agent": "The listing agent's share",
+        "agentHint": "Multiply the brokerage's side by the agent's split."
+      },
+      "ltv": {
+        "prompt": "A buyer agrees to pay :price. The home appraises at :appraisal. The lender will lend :ltv of the value. What are the loan and the down payment?",
+        "value": "The value the lender uses",
+        "valueHint": "Lenders use the lower of the price and the appraisal.",
+        "loan": "The most the lender will lend",
+        "loanHint": "Multiply that value by the loan-to-value ratio.",
+        "down": "The buyer's down payment",
+        "downHint": "Subtract the loan from the price the buyer pays."
+      },
+      "area": {
+        "prompt": "A rectangular lot is :front feet wide and :depth feet deep. Land nearby sells for :per_acre an acre. What is the lot worth?",
+        "sqft": "The lot's area in square feet",
+        "sqftHint": "Multiply the width by the depth.",
+        "acres": "The lot's area in acres (two decimals)",
+        "acresHint": "Divide the square feet by 43,560.",
+        "price": "The lot's price",
+        "priceHint": "Multiply the acres by the price per acre."
+      },
+      "cap": {
+        "prompt": "A small apartment building has potential gross income of :gross a year, with :vacancy vacancy and credit loss and :expenses in operating expenses. Similar buildings sell at a :cap capitalization rate. What is it worth?",
+        "effective": "Effective gross income",
+        "effectiveHint": "Take the vacancy and credit loss off the potential gross income.",
+        "noi": "Net operating income",
+        "noiHint": "Subtract the operating expenses from the effective gross income.",
+        "value": "The building's value",
+        "valueHint": "Divide the net operating income by the cap rate."
+      },
+      "net": {
+        "prompt": "A seller accepts :price. The commission is :rate, other selling costs are :costs, and the mortgage payoff is :payoff. How much does the seller net?",
+        "commission": "The commission",
+        "commissionHint": "Multiply the price by the commission rate.",
+        "selling": "Total selling costs",
+        "sellingHint": "Add the commission and the other selling costs.",
+        "net": "The seller's net",
+        "netHint": "Subtract the selling costs and the payoff from the price."
+      },
+      "points": {
+        "prompt": "A buyer pays :price with :down down. The lender charges :points discount points on a loan at :rate a year. What do the points cost, and how much is the first month's interest?",
+        "loan": "The loan amount",
+        "loanHint": "Take the down payment off the price.",
+        "cost": "What the points cost",
+        "costHint": "Each point is 1% of the loan.",
+        "interest": "The first month's interest",
+        "interestHint": "Multiply the loan by the yearly rate, then divide by 12."
       }
     }
   },

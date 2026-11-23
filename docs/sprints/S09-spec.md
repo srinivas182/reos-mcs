@@ -117,6 +117,12 @@
   - step-by-step problems for prorations, commissions, loan-to-value, area, capitalization, the net-to-seller sheet, and points and interest;
   - each problem is a generator with **new numbers every time**, and the server checks every step;
   - a variant follows each solve, and a missed math question opens its matching problem.
+- **As built, A9.2c** (ADR 0035 §17):
+  - **Math lab:** on the phone (screen 48) and a web page. It has seven problem kinds, each with new numbers every time.
+  - **Checking:** the server checks every step. A wrong value brings the hint, and **Show the answer** is there when needed. The calculator is always to hand.
+  - **After a solve:** a variant of the same kind follows.
+  - **From the results:** a missed math question offers **Practise this in Math lab**, which opens its kind.
+  - **Practice hub:** Math lab joins the ranking, right after the drill and fix plan when math is among the weakest topics.
 - **Flashcards (screen 31):**
   - Again, Hard, Got it, scheduled by **spaced repetition (FSRS)**, in two-minute bursts with a counter;
   - **fully offline on the phone**, synced when back online;
