@@ -2585,6 +2585,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/agent/mode": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My goal
+         * @description The goal (null until set), flags, whether Own is unlocked (and when), a suggested switch, the history, and what the welcome shows.
+         */
+        get: operations["agent.mode.show"];
+        /**
+         * Set my goal
+         * @description `goal`: launch, grow, lead or own (Own only when unlocked). `reason`: setup, manual or suggested.
+         */
+        put: operations["agent.mode.goal"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agent/mode/flags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set my work-style flags
+         * @description Any of part_time, bilingual, specialist, referral_only, returning.
+         */
+        put: operations["agent.mode.flags"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agent/mode/snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Not yet
+         * @description The suggested switch waits 30 days.
+         */
+        post: operations["agent.mode.snooze"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/notifications": {
         parameters: {
             query?: never;
@@ -4960,6 +5024,13 @@ export interface components {
             }[];
         };
         /**
+         * FlagsRequest
+         * @description An agent's work-style flags (A11.1a).
+         */
+        FlagsRequest: {
+            flags: ("part_time" | "bilingual" | "specialist" | "referral_only" | "returning")[];
+        };
+        /**
          * FlashcardReviewsRequest
          * @description Flashcard reviews to apply (A9.2d): one from the web, or the phone's offline queue.
          */
@@ -4972,6 +5043,16 @@ export interface components {
                 /** Format: uuid */
                 client_id: string;
             }[];
+        };
+        /**
+         * GoalRequest
+         * @description An agent's goal (mode), and how it was chosen (A11.1a).
+         */
+        GoalRequest: {
+            /** @enum {string} */
+            goal: "launch" | "grow" | "lead" | "own";
+            /** @enum {string|null} */
+            reason?: "setup" | "manual" | "suggested" | null;
         };
         /** HealthResource */
         HealthResource: {
@@ -5915,7 +5996,9 @@ export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest']
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaFinishSpeedRoundRequest = components['schemas']['FinishSpeedRoundRequest'];
+export type SchemaFlagsRequest = components['schemas']['FlagsRequest'];
 export type SchemaFlashcardReviewsRequest = components['schemas']['FlashcardReviewsRequest'];
+export type SchemaGoalRequest = components['schemas']['GoalRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
@@ -14189,6 +14272,248 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "agent.mode.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string | null;
+                            flags: string[];
+                            needs_setup: boolean;
+                            suggested_default: string;
+                            own: {
+                                unlocked: boolean;
+                                unlocks_on: string | null;
+                                years: number;
+                            };
+                            suggestion: {
+                                goal: string;
+                                closings: number;
+                            } | null;
+                            history: {
+                                from: string | null;
+                                to: string;
+                                reason: string;
+                                at: string;
+                            }[];
+                            welcome: {
+                                name: string;
+                                licence: string | null;
+                                state: string | null;
+                                brokerage: string | null;
+                                verified: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "agent.mode.goal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoalRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string | null;
+                            flags: string[];
+                            needs_setup: boolean;
+                            suggested_default: string;
+                            own: {
+                                unlocked: boolean;
+                                unlocks_on: string | null;
+                                years: number;
+                            };
+                            suggestion: {
+                                goal: string;
+                                closings: number;
+                            } | null;
+                            history: {
+                                from: string | null;
+                                to: string;
+                                reason: string;
+                                at: string;
+                            }[];
+                            welcome: {
+                                name: string;
+                                licence: string | null;
+                                state: string | null;
+                                brokerage: string | null;
+                                verified: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "agent.mode.flags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FlagsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string | null;
+                            flags: string[];
+                            needs_setup: boolean;
+                            suggested_default: string;
+                            own: {
+                                unlocked: boolean;
+                                unlocks_on: string | null;
+                                years: number;
+                            };
+                            suggestion: {
+                                goal: string;
+                                closings: number;
+                            } | null;
+                            history: {
+                                from: string | null;
+                                to: string;
+                                reason: string;
+                                at: string;
+                            }[];
+                            welcome: {
+                                name: string;
+                                licence: string | null;
+                                state: string | null;
+                                brokerage: string | null;
+                                verified: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "agent.mode.snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            goal: string | null;
+                            flags: string[];
+                            needs_setup: boolean;
+                            suggested_default: string;
+                            own: {
+                                unlocked: boolean;
+                                unlocks_on: string | null;
+                                years: number;
+                            };
+                            suggestion: {
+                                goal: string;
+                                closings: number;
+                            } | null;
+                            history: {
+                                from: string | null;
+                                to: string;
+                                reason: string;
+                                at: string;
+                            }[];
+                            welcome: {
+                                name: string;
+                                licence: string | null;
+                                state: string | null;
+                                brokerage: string | null;
+                                verified: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

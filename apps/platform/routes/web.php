@@ -1,6 +1,8 @@
 <?php
 
 use App\Connections\ConnectorRegistry;
+use App\Http\Controllers\Agents\AgentSetupPageController;
+use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Classes\ClassesController;
@@ -112,7 +114,7 @@ Route::get('groups/{group}', [ChallengePageController::class, 'group'])->whereUu
 // A challenge's share link (A9.3b): open to anyone; sign in to accept.
 Route::get('challenges/{challenge}', [ChallengePageController::class, 'show'])->whereUuid('challenge')->middleware('throttle:60,1,challenges')->name('challenges.show');
 // An agent's public page (B10.2b): their MLS listings with each MLS's rules applied.
-Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
+Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '(?!(?:setup|mode)$)[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
 Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
 Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
@@ -168,6 +170,11 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // Deals board (B9.1, agent web screen 14): the agent's own deals.
     Route::get('deals', [DealsPageController::class, 'index'])->name('deals.index');
     Route::get('connections/transactions', [DealsPageController::class, 'transactions'])->name('connections.transactions');
+    // The agent's welcome, goal and flags (A11.1a, screens 4–6); the mode calls are the API's.
+    Route::get('agent/setup', [AgentSetupPageController::class, 'setup'])->name('agent.setup');
+    Route::put('agent/mode', [ModeController::class, 'goal'])->middleware('throttle:30,1,agent-mode')->name('agent.mode.goal');
+    Route::put('agent/mode/flags', [ModeController::class, 'flags'])->middleware('throttle:30,1,agent-mode')->name('agent.mode.flags');
+    Route::post('agent/mode/snooze', [ModeController::class, 'snooze'])->middleware('throttle:10,1,agent-mode')->name('agent.mode.snooze');
     // My listings (B10.1): beside deals (under Deals in the sidebar); MLS member records confirmed by the agent.
     Route::get('deals/listings', [ListingsPageController::class, 'index'])->name('deals.listings.index');
     Route::post('deals/listings/members', [ListingsController::class, 'confirm'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.confirm');

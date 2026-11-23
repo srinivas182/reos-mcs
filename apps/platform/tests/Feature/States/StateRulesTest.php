@@ -176,8 +176,8 @@ describe('State rules screen (web journey screen 62)', function () {
         $this->actingAs($this->ops)->get('/admin/states/TX/rules')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('admin/states/rules')
             ->where('state.name', 'Texas')
-            ->where('topics', ['licensing', 'exam', 'ce', 'advertising', 'brokerage', 'forms', 'courses'])
-            ->where('liveFeatures', ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes'])
+            ->where('topics', ['licensing', 'exam', 'ce', 'advertising', 'brokerage', 'forms', 'courses', 'agents'])
+            ->where('liveFeatures', ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes', 'agent_modes'])
             ->where('rules', fn ($rules) => ($hours = collect($rules)->firstWhere('key', 'ce.hours'))
                 && $hours['current']['value'] === ['number' => 18]
                 && $hours['current']['citation'] === '22 TAC §535.92(a)'

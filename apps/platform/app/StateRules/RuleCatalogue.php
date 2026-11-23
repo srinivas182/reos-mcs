@@ -48,6 +48,9 @@ final class RuleCatalogue
             'advertising.broker_name_size' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
             'advertising.social_media' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
             'advertising.misleading_titles' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
+            'agents.grow_closings' => ['topic' => RuleTopic::Agents, 'type' => RuleType::Number, 'unit' => 'closings', 'used_by' => ['agent_modes']],
+            'agents.lead_closings' => ['topic' => RuleTopic::Agents, 'type' => RuleType::Number, 'unit' => 'closings', 'used_by' => ['agent_modes']],
+            'agents.own_years' => ['topic' => RuleTopic::Agents, 'type' => RuleType::Number, 'unit' => 'years', 'used_by' => ['agent_modes']],
             'courses.seat_time' => ['topic' => RuleTopic::Courses, 'type' => RuleType::SeatTime, 'used_by' => ['course_approvals', 'course_player', 'live_classes']],
             'brokerage.sponsorship' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['brokerage_matching', 'licence_journey']],
         ];
@@ -60,5 +63,5 @@ final class RuleCatalogue
     }
 
     /** Features that read rules today (the rest arrive in their sprints). */
-    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes'];
+    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes', 'agent_modes'];
 }

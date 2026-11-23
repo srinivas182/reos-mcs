@@ -9,7 +9,7 @@ namespace App\StateRules;
  * and when that text took effect; values were checked against the source on
  * 22 November 2026. Super admins change them on screen 62 as new versions.
  *
- * @phpstan-type Seed array{key: string, value: array<string, mixed>, citation: string, source_url: string, effective_from: string}
+ * @phpstan-type Seed array{key: string, value: array<string, mixed>, citation: string, source_url: string|null, effective_from: string}
  */
 final class TexasRules
 {
@@ -20,6 +20,8 @@ final class TexasRules
     private const RENEWAL = 'https://trec.texas.gov/i-am-renewing-my-license-how-do-i-know-how-many-classes-i-need-take-renewal';
 
     private const SALES_AGENT = 'https://www.trec.texas.gov/become-licensed/sales-agent';
+
+    private const BROKER = 'https://www.trec.texas.gov/become-licensed/individual-real-estate-broker';
 
     private const PEARSON_VUE = 'https://www.pearsonvue.com/us/en/tx/realestate.html';
 
@@ -53,6 +55,10 @@ final class TexasRules
             ['key' => 'exam.attempts', 'value' => ['number' => 3], 'citation' => 'Pearson VUE Texas candidate handbook: three attempts to pass both portions before the application expires; then 30 more hours of qualifying education (60 if both portions failed)', 'source_url' => self::HANDBOOK, 'effective_from' => '2023-08-29'],
             ['key' => 'exam.day_rules', 'value' => ['text' => 'Bring two current IDs with your signature; the first must be government-issued with your photo, and the names must match your registration exactly. Arrive 30 minutes early. No phones, watches, wallets or bags in the testing room. A hand-held financial calculator without letters is allowed; the centre doesn\'t provide one.'], 'citation' => 'Pearson VUE Texas candidate handbook: identification, arrival and personal items', 'source_url' => self::HANDBOOK, 'effective_from' => '2023-08-29'],
             ...self::exam(),
+            // Agent modes (A11.1a): REOS's defaults from the Agent Modes Journey; Own follows TREC's broker experience rule.
+            ['key' => 'agents.grow_closings', 'value' => ['number' => 1], 'citation' => 'REOS default (Agent Modes Journey): suggest Grow after the first verified closing', 'source_url' => null, 'effective_from' => '2026-11-24'],
+            ['key' => 'agents.lead_closings', 'value' => ['number' => 12], 'citation' => 'REOS default (Agent Modes Journey): suggest Lead at about 12 closings in 12 months', 'source_url' => null, 'effective_from' => '2026-11-24'],
+            ['key' => 'agents.own_years', 'value' => ['number' => 4], 'citation' => "TREC: a broker applicant needs four years' active experience as a sales agent or broker in the 60 months before applying", 'source_url' => self::BROKER, 'effective_from' => '2026-11-24'],
             $ce('ce.period_months', ['number' => 24], '22 TAC §535.92(a); TREC renewal requirements', self::RENEWAL),
             $ce('ce.hours', ['number' => 18], '22 TAC §535.92(a)'),
             $ce('ce.mandatory_courses', ['courses' => [

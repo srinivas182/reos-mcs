@@ -75,7 +75,8 @@
     "studentQuestions": "Preguntas de estudiantes",
     "licenceJourney": "Camino a la licencia",
     "recruiting": "Reclutamiento",
-    "mentors": "Mentores"
+    "mentors": "Mentores",
+    "goal": "Mi objetivo"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2688,7 +2689,102 @@
     },
     "privacy": "Usted ve la actividad de trabajo, los negocios, la educación continua (CE) y el avance del plan. Los contactos del CRM, los datos de clientes, los mensajes y las notas privadas de los agentes nunca se muestran a la agencia.",
     "seats": "Puestos: {{used}} de {{limit}} en uso · {{pending}} invitados · {{payer}}",
-    "seatsNoLimit": "Puestos: sin límite · {{used}} en uso · {{payer}}"
+    "seatsNoLimit": "Puestos: sin límite · {{used}} en uso · {{payer}}",
+    "modes": {
+      "title": "Mi objetivo",
+      "description": "Su objetivo decide qué muestra Hoy primero. Todas las funciones siguen disponibles en cualquier modo.",
+      "badge": "Modo {{goal}}",
+      "goals": {
+        "launch": {
+          "name": "Arranque",
+          "goal": "Lograr mi primer cierre",
+          "body": "Un plan de 90 días, seguimientos, práctica y un mentor, para su primer cierre."
+        },
+        "grow": {
+          "name": "Crecer",
+          "goal": "Cerrar más operaciones",
+          "body": "Oportunidades de su CRM, rapidez con los clientes potenciales y referidos."
+        },
+        "lead": {
+          "name": "Liderar",
+          "goal": "Formar un equipo",
+          "body": "Su negocio y su equipo en una vista, y ayuda con su primera contratación."
+        },
+        "own": {
+          "name": "Propietario",
+          "goal": "Abrir una correduría",
+          "body": "El constructor de correduría y los simuladores de modelos."
+        }
+      },
+      "ownLocked": "Se desbloquea el {{date}} ({{years}} años con licencia, como para una licencia de bróker) o con una licencia de bróker.",
+      "ownLockedNoDate": "Se desbloquea después de {{years}} años con licencia, o con una licencia de bróker.",
+      "suggestedDefault": "Sugerido para usted",
+      "current": "Objetivo actual",
+      "choose": "Elegir",
+      "continue": "Continuar",
+      "flagsTitle": "Cómo trabaja",
+      "flagsBody": "Opcional. Las opciones ajustan cualquier modo y puede cambiarlas después.",
+      "flags": {
+        "part_time": "Medio tiempo",
+        "bilingual": "Bilingüe",
+        "specialist": "Especialista",
+        "referral_only": "Solo referidos",
+        "returning": "De regreso a bienes raíces"
+      },
+      "flagsHints": {
+        "part_time": "Las metas se reducen a la mitad.",
+        "bilingual": "Guiones y materiales en español primero.",
+        "specialist": "Un nicho como lujo, terrenos o comercial.",
+        "referral_only": "Usted refiere clientes en lugar de atenderlos.",
+        "returning": "Una lista para reactivar una licencia inactiva."
+      },
+      "saveFlags": "Crear mi pantalla de inicio",
+      "skip": "Omitir",
+      "saved": "Guardado",
+      "history": "Historial",
+      "historyEntry": "{{from}} → {{to}}",
+      "historyFirst": "Comenzó en {{to}}",
+      "reasons": {
+        "setup": "Al configurar",
+        "manual": "Cambiado por usted",
+        "suggested": "Cambio sugerido"
+      },
+      "welcome": {
+        "title": "Bienvenido, {{name}}",
+        "verified": "Licencia verificada",
+        "licence": "Licencia de {{state}} n.º {{number}}",
+        "brokerage": "Patrocinado por {{brokerage}}",
+        "steps": {
+          "tools": "Conecte sus herramientas",
+          "plan": "Reciba un plan de 90 días",
+          "ce": "Educación continua registrada automáticamente"
+        },
+        "start": "Comenzar"
+      },
+      "setupPrompt": {
+        "title": "Elija su objetivo",
+        "body": "Una pregunta decide qué muestra Hoy primero.",
+        "action": "Elegir mi objetivo"
+      },
+      "suggestion": {
+        "grow": {
+          "title": "¿Listo para Crecer?",
+          "body": "Tiene {{count}} cierres verificados. Crecer pone primero las oportunidades de su CRM y los referidos."
+        },
+        "lead": {
+          "title": "¿Listo para formar un equipo?",
+          "body": "{{count}} cierres verificados en 12 meses. Liderar agrega una vista de equipo y ayuda con su primera contratación."
+        },
+        "note": "No pierde nada, no tiene costo adicional y puede volver en cualquier momento.",
+        "switch": "Cambiar a {{goal}}",
+        "notYet": "Todavía no"
+      },
+      "errors": {
+        "goal": "Elija uno de los cuatro objetivos.",
+        "ownLocked": "Propietario se desbloquea después de los años con licencia que TREC exige para un bróker, o con una licencia de bróker."
+      },
+      "save": "Guardar"
+    }
   },
   "invitePage": {
     "title": "Unirse a {{tenant}}",
@@ -3163,7 +3259,8 @@
       "advertising": "Publicidad",
       "brokerage": "Agencia inmobiliaria",
       "forms": "Formularios",
-      "courses": "Impartición de cursos"
+      "courses": "Impartición de cursos",
+      "agents": "Modos del agente"
     },
     "emptyTitle": "Aún no hay reglas de {{topic}}",
     "emptyDescription": "Agregue las reglas del regulador con su fuente y la fecha en que entran en vigor. Los cursos, el seguimiento de la CE y la revisión de publicaciones las usan.",
@@ -3197,7 +3294,9 @@
       "correct_one": "{{count}} correcta",
       "correct_other": "{{count}} correctas",
       "attempts_one": "{{count}} intento",
-      "attempts_other": "{{count}} intentos"
+      "attempts_other": "{{count}} intentos",
+      "closings_one": "{{count}} cierre",
+      "closings_other": "{{count}} cierres"
     },
     "unitNames": {
       "hours": "horas",
@@ -3206,7 +3305,8 @@
       "questions": "preguntas",
       "minutes": "minutos",
       "correct": "correctas",
-      "attempts": "intentos"
+      "attempts": "intentos",
+      "closings": "cierres"
     },
     "values": {
       "roleCourse": "{{hours}} horas para: {{roles}}",
@@ -3266,7 +3366,8 @@
       "brokerage_matching": "Búsqueda de agencias inmobiliarias",
       "course_approvals": "Aprobaciones de cursos",
       "course_player": "Reproductor de cursos",
-      "live_classes": "Clases en vivo"
+      "live_classes": "Clases en vivo",
+      "agent_modes": "Modos del agente"
     },
     "keys": {
       "licensing": {
@@ -3314,6 +3415,11 @@
       },
       "courses": {
         "seat_time": "Tiempo de clase y asistencia"
+      },
+      "agents": {
+        "grow_closings": "Sugerir Crecer después de",
+        "lead_closings": "Sugerir Liderar con (12 meses)",
+        "own_years": "Propietario se desbloquea después de"
       }
     },
     "short": {
@@ -3359,6 +3465,11 @@
       },
       "brokerage": {
         "sponsorship": "patrocinio"
+      },
+      "agents": {
+        "grow_closings": "sugerencia de Crecer",
+        "lead_closings": "sugerencia de Liderar",
+        "own_years": "desbloqueo de Propietario"
       }
     },
     "ce": {

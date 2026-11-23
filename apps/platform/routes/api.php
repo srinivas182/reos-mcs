@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActiveRoleController;
+use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
@@ -264,6 +265,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // A post about one of my listings (B10.2), within the MLS's licence terms.
     Route::get('listings/{listing}/post', [ListingPostController::class, 'show'])->whereUuid('listing')->name('api.listings.post.show');
     Route::put('listings/{listing}/post', [ListingPostController::class, 'update'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-post')->name('api.listings.post.update');
+    // My goal (A11.1a): Launch, Grow, Lead or Own; flags; suggested switches.
+    Route::prefix('agent/mode')->name('api.agent.mode.')->controller(ModeController::class)->group(function () {
+        Route::get('/', 'show')->name('show');
+        Route::put('/', 'goal')->middleware('throttle:30,1,api-agent-mode')->name('goal');
+        Route::put('flags', 'flags')->middleware('throttle:30,1,api-agent-mode')->name('flags');
+        Route::post('snooze', 'snooze')->middleware('throttle:10,1,api-agent-mode')->name('snooze');
+    });
     // Certificates for CE taken elsewhere (B10.3b): read by OCR, checked, saved.
     Route::post('me/certificates/read', [CertificateController::class, 'read'])->middleware('throttle:10,1,api-certificates-read')->name('api.me.certificates.read');
     Route::post('me/certificates', [CertificateController::class, 'store'])->middleware('throttle:20,1,api-certificates-store')->name('api.me.certificates.store');

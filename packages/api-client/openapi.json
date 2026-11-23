@@ -23807,6 +23807,759 @@
                 }
             }
         },
+        "/agent/mode": {
+            "get": {
+                "operationId": "agent.mode.show",
+                "description": "The goal (null until set), flags, whether Own is unlocked (and when), a suggested switch, the history, and what the welcome shows.",
+                "summary": "My goal",
+                "tags": [
+                    "Mode"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "flags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "needs_setup": {
+                                                    "type": "boolean"
+                                                },
+                                                "suggested_default": {
+                                                    "type": "string"
+                                                },
+                                                "own": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "unlocked": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "unlocks_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "years": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "unlocked",
+                                                        "unlocks_on",
+                                                        "years"
+                                                    ]
+                                                },
+                                                "suggestion": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "closings": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "goal",
+                                                        "closings"
+                                                    ]
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "from": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "to": {
+                                                                "type": "string"
+                                                            },
+                                                            "reason": {
+                                                                "type": "string"
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "from",
+                                                            "to",
+                                                            "reason",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                },
+                                                "welcome": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "licence": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "brokerage": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "verified": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "licence",
+                                                        "state",
+                                                        "brokerage",
+                                                        "verified"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "flags",
+                                                "needs_setup",
+                                                "suggested_default",
+                                                "own",
+                                                "suggestion",
+                                                "history",
+                                                "welcome"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "agent.mode.goal",
+                "description": "`goal`: launch, grow, lead or own (Own only when unlocked). `reason`: setup, manual or suggested.",
+                "summary": "Set my goal",
+                "tags": [
+                    "Mode"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GoalRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "flags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "needs_setup": {
+                                                    "type": "boolean"
+                                                },
+                                                "suggested_default": {
+                                                    "type": "string"
+                                                },
+                                                "own": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "unlocked": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "unlocks_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "years": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "unlocked",
+                                                        "unlocks_on",
+                                                        "years"
+                                                    ]
+                                                },
+                                                "suggestion": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "closings": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "goal",
+                                                        "closings"
+                                                    ]
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "from": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "to": {
+                                                                "type": "string"
+                                                            },
+                                                            "reason": {
+                                                                "type": "string"
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "from",
+                                                            "to",
+                                                            "reason",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                },
+                                                "welcome": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "licence": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "brokerage": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "verified": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "licence",
+                                                        "state",
+                                                        "brokerage",
+                                                        "verified"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "flags",
+                                                "needs_setup",
+                                                "suggested_default",
+                                                "own",
+                                                "suggestion",
+                                                "history",
+                                                "welcome"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/agent/mode/flags": {
+            "put": {
+                "operationId": "agent.mode.flags",
+                "description": "Any of part_time, bilingual, specialist, referral_only, returning.",
+                "summary": "Set my work-style flags",
+                "tags": [
+                    "Mode"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FlagsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "flags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "needs_setup": {
+                                                    "type": "boolean"
+                                                },
+                                                "suggested_default": {
+                                                    "type": "string"
+                                                },
+                                                "own": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "unlocked": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "unlocks_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "years": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "unlocked",
+                                                        "unlocks_on",
+                                                        "years"
+                                                    ]
+                                                },
+                                                "suggestion": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "closings": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "goal",
+                                                        "closings"
+                                                    ]
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "from": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "to": {
+                                                                "type": "string"
+                                                            },
+                                                            "reason": {
+                                                                "type": "string"
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "from",
+                                                            "to",
+                                                            "reason",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                },
+                                                "welcome": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "licence": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "brokerage": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "verified": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "licence",
+                                                        "state",
+                                                        "brokerage",
+                                                        "verified"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "flags",
+                                                "needs_setup",
+                                                "suggested_default",
+                                                "own",
+                                                "suggestion",
+                                                "history",
+                                                "welcome"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/agent/mode/snooze": {
+            "post": {
+                "operationId": "agent.mode.snooze",
+                "description": "The suggested switch waits 30 days.",
+                "summary": "Not yet",
+                "tags": [
+                    "Mode"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "goal": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "flags": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "needs_setup": {
+                                                    "type": "boolean"
+                                                },
+                                                "suggested_default": {
+                                                    "type": "string"
+                                                },
+                                                "own": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "unlocked": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "unlocks_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "years": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "unlocked",
+                                                        "unlocks_on",
+                                                        "years"
+                                                    ]
+                                                },
+                                                "suggestion": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "closings": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "goal",
+                                                        "closings"
+                                                    ]
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "from": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "to": {
+                                                                "type": "string"
+                                                            },
+                                                            "reason": {
+                                                                "type": "string"
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "from",
+                                                            "to",
+                                                            "reason",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                },
+                                                "welcome": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "licence": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "brokerage": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "verified": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "licence",
+                                                        "state",
+                                                        "brokerage",
+                                                        "verified"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "goal",
+                                                "flags",
+                                                "needs_setup",
+                                                "suggested_default",
+                                                "own",
+                                                "suggestion",
+                                                "history",
+                                                "welcome"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/notifications": {
             "get": {
                 "operationId": "notifications.index",
@@ -39878,6 +40631,29 @@
                 ],
                 "title": "FinishSpeedRoundRequest"
             },
+            "FlagsRequest": {
+                "type": "object",
+                "description": "An agent's work-style flags (A11.1a).",
+                "properties": {
+                    "flags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "part_time",
+                                "bilingual",
+                                "specialist",
+                                "referral_only",
+                                "returning"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "flags"
+                ],
+                "title": "FlagsRequest"
+            },
             "FlashcardReviewsRequest": {
                 "type": "object",
                 "description": "Flashcard reviews to apply (A9.2d): one from the web, or the phone's offline queue.",
@@ -39920,6 +40696,37 @@
                     "reviews"
                 ],
                 "title": "FlashcardReviewsRequest"
+            },
+            "GoalRequest": {
+                "type": "object",
+                "description": "An agent's goal (mode), and how it was chosen (A11.1a).",
+                "properties": {
+                    "goal": {
+                        "type": "string",
+                        "enum": [
+                            "launch",
+                            "grow",
+                            "lead",
+                            "own"
+                        ]
+                    },
+                    "reason": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "setup",
+                            "manual",
+                            "suggested",
+                            null
+                        ]
+                    }
+                },
+                "required": [
+                    "goal"
+                ],
+                "title": "GoalRequest"
             },
             "HealthResource": {
                 "type": "object",

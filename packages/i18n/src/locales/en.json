@@ -75,7 +75,8 @@
     "studentQuestions": "Student questions",
     "licenceJourney": "Licence journey",
     "recruiting": "Recruiting",
-    "mentors": "Mentors"
+    "mentors": "Mentors",
+    "goal": "My goal"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2688,7 +2689,102 @@
     },
     "privacy": "You see work activity, deals, CE and plan progress. Agents' CRM contacts, client details, messages and private notes are never shown to the brokerage.",
     "seats": "Seats: {{used}} of {{limit}} in use · {{pending}} invited · {{payer}}",
-    "seatsNoLimit": "Seats: no limit · {{used}} in use · {{payer}}"
+    "seatsNoLimit": "Seats: no limit · {{used}} in use · {{payer}}",
+    "modes": {
+      "title": "My goal",
+      "description": "Your goal decides what Today shows first. Every feature stays reachable in every mode.",
+      "badge": "{{goal}} mode",
+      "goals": {
+        "launch": {
+          "name": "Launch",
+          "goal": "Get my first closing",
+          "body": "A 90-day plan, follow-ups, practice and a mentor, aimed at your first closing."
+        },
+        "grow": {
+          "name": "Grow",
+          "goal": "Close more deals",
+          "body": "Opportunities from your CRM, speed to lead and referrals."
+        },
+        "lead": {
+          "name": "Lead",
+          "goal": "Build a team",
+          "body": "Your business and your team in one view, and help with your first hire."
+        },
+        "own": {
+          "name": "Own",
+          "goal": "Open a brokerage",
+          "body": "The brokerage builder and model simulators."
+        }
+      },
+      "ownLocked": "Unlocks {{date}} ({{years}} years licensed, as for a broker license) or with a broker license.",
+      "ownLockedNoDate": "Unlocks after {{years}} years licensed, or with a broker license.",
+      "suggestedDefault": "Suggested for you",
+      "current": "Current goal",
+      "choose": "Choose",
+      "continue": "Continue",
+      "flagsTitle": "How you work",
+      "flagsBody": "Optional. Flags tune any mode, and you can change them later.",
+      "flags": {
+        "part_time": "Part-time",
+        "bilingual": "Bilingual",
+        "specialist": "Specialist",
+        "referral_only": "Referral-only",
+        "returning": "Returning to real estate"
+      },
+      "flagsHints": {
+        "part_time": "Targets are halved.",
+        "bilingual": "Spanish scripts and materials first.",
+        "specialist": "A niche such as luxury, land or commercial.",
+        "referral_only": "You refer clients rather than serve them.",
+        "returning": "A reactivation checklist for an inactive license."
+      },
+      "saveFlags": "Build my home screen",
+      "skip": "Skip",
+      "saved": "Saved",
+      "history": "History",
+      "historyEntry": "{{from}} → {{to}}",
+      "historyFirst": "Started as {{to}}",
+      "reasons": {
+        "setup": "At setup",
+        "manual": "Changed by you",
+        "suggested": "Suggested switch"
+      },
+      "welcome": {
+        "title": "Welcome, {{name}}",
+        "verified": "License verified",
+        "licence": "{{state}} license #{{number}}",
+        "brokerage": "Sponsored by {{brokerage}}",
+        "steps": {
+          "tools": "Connect your tools",
+          "plan": "Get a 90-day plan",
+          "ce": "CE tracked automatically"
+        },
+        "start": "Get started"
+      },
+      "setupPrompt": {
+        "title": "Pick your goal",
+        "body": "One question sets what Today shows first.",
+        "action": "Pick my goal"
+      },
+      "suggestion": {
+        "grow": {
+          "title": "Ready for Grow?",
+          "body": "You have {{count}} verified closings. Grow puts your CRM opportunities and referrals first."
+        },
+        "lead": {
+          "title": "Ready to build a team?",
+          "body": "{{count}} verified closings in 12 months. Lead adds a team view and help with your first hire."
+        },
+        "note": "Nothing is lost, there's no extra cost, and you can switch back any time.",
+        "switch": "Switch to {{goal}}",
+        "notYet": "Not yet"
+      },
+      "errors": {
+        "goal": "Choose one of the four goals.",
+        "ownLocked": "Own unlocks after the years licensed TREC requires for a broker, or with a broker license."
+      },
+      "save": "Save"
+    }
   },
   "invitePage": {
     "title": "Join {{tenant}}",
@@ -3163,7 +3259,8 @@
       "advertising": "Advertising",
       "brokerage": "Brokerage",
       "forms": "Forms",
-      "courses": "Course delivery"
+      "courses": "Course delivery",
+      "agents": "Agent modes"
     },
     "emptyTitle": "No {{topic}} rules yet",
     "emptyDescription": "Add the regulator's rules with their source and the date they take effect. Courses, CE tracking and post checks read them.",
@@ -3197,7 +3294,9 @@
       "correct_one": "{{count}} correct",
       "correct_other": "{{count}} correct",
       "attempts_one": "{{count}} attempt",
-      "attempts_other": "{{count}} attempts"
+      "attempts_other": "{{count}} attempts",
+      "closings_one": "{{count}} closing",
+      "closings_other": "{{count}} closings"
     },
     "unitNames": {
       "hours": "hours",
@@ -3206,7 +3305,8 @@
       "questions": "questions",
       "minutes": "minutes",
       "correct": "correct",
-      "attempts": "attempts"
+      "attempts": "attempts",
+      "closings": "closings"
     },
     "values": {
       "roleCourse": "{{hours}} hours for: {{roles}}",
@@ -3266,14 +3366,15 @@
       "brokerage_matching": "Brokerage matching",
       "course_approvals": "Course approvals",
       "course_player": "Course player",
-      "live_classes": "Live classes"
+      "live_classes": "Live classes",
+      "agent_modes": "Agent modes"
     },
     "keys": {
       "licensing": {
         "qualifying_hours": "Qualifying education",
         "qualifying_courses": "Qualifying courses",
         "minimum_age": "Minimum age",
-        "steps": "Licence steps",
+        "steps": "License steps",
         "application_months": "Application window"
       },
       "exam": {
@@ -3314,6 +3415,11 @@
       },
       "courses": {
         "seat_time": "Seat time and attendance"
+      },
+      "agents": {
+        "grow_closings": "Suggest Grow after",
+        "lead_closings": "Suggest Lead at (12 months)",
+        "own_years": "Own unlocks after"
       }
     },
     "short": {
@@ -3321,7 +3427,7 @@
         "qualifying_hours": "Qualifying hours",
         "qualifying_courses": "qualifying courses",
         "minimum_age": "minimum age",
-        "steps": "licence steps",
+        "steps": "license steps",
         "application_months": "application window"
       },
       "exam": {
@@ -3359,6 +3465,11 @@
       },
       "brokerage": {
         "sponsorship": "sponsorship"
+      },
+      "agents": {
+        "grow_closings": "Grow suggestion",
+        "lead_closings": "Lead suggestion",
+        "own_years": "Own unlock"
       }
     },
     "ce": {
