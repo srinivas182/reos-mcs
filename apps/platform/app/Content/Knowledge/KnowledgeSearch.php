@@ -189,10 +189,15 @@ final readonly class KnowledgeSearch
         }
 
         $scope = $this->scope($states, $language, $liveOnly, $courseId);
+        // "a or b" means either, as websearch_to_tsquery reads it on PostgreSQL.
+        $any = in_array('or', $words, true);
+        $words = $any ? array_values(array_diff($words, ['or'])) : $words;
 
-        foreach ($words as $word) {
-            $scope->where('kb_passages.content', 'like', '%'.addcslashes($word, '%_\\').'%');
-        }
+        $scope->where(static function (Builder $q) use ($words, $any): void {
+            foreach ($words as $word) {
+                $q->where('kb_passages.content', 'like', '%'.addcslashes($word, '%_\\').'%', $any ? 'or' : 'and');
+            }
+        });
 
         return self::ids($scope->orderBy('kb_passages.id')->limit(self::CANDIDATES)->pluck('kb_passages.id')->all());
     }
