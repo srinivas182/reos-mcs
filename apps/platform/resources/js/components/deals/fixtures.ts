@@ -49,6 +49,72 @@ export const elmStreet: DealFull = {
             done: false,
         },
     ],
+    kept_files: [
+        {
+            uuid: '0b8e6d1c-4f2a-4e5b-9c3d-7a1f2e3d4c5b',
+            kind: 'signed',
+            name: "Seller's Disclosure (signed).pdf",
+            size: 182_400,
+            added_at: '2026-11-22T16:05:00Z',
+            scan: 'clean',
+            url: '/deals/files/0b8e6d1c-4f2a-4e5b-9c3d-7a1f2e3d4c5b',
+        },
+        {
+            uuid: '1c9f7e2d-5a3b-4f6c-8d4e-8b2a3f4e5d6c',
+            kind: 'upload',
+            name: 'Amendment to contract.pdf',
+            size: 96_210,
+            added_at: '2026-11-23T09:12:00Z',
+            scan: 'clean',
+            url: '/deals/files/1c9f7e2d-5a3b-4f6c-8d4e-8b2a3f4e5d6c',
+        },
+    ],
+    signatures: [
+        {
+            uuid: '7d3e1f2a-6b4c-4d5e-9f0a-1b2c3d4e5f6a',
+            subject: 'Amendment to contract, 1418 Elm St',
+            status: 'sent',
+            documents: ['Amendment to contract.pdf'],
+            signers: [
+                {
+                    name: 'Ana Ruiz',
+                    email: 'ana@example.com',
+                    routing_order: 1,
+                    status: 'delivered',
+                    at: '2026-11-23T10:02:00Z',
+                },
+                {
+                    name: 'Luis Ruiz',
+                    email: 'luis@example.com',
+                    routing_order: 2,
+                    status: 'waiting',
+                    at: null,
+                },
+            ],
+            sent_at: '2026-11-23T09:30:00Z',
+            completed_at: null,
+            filed_in: null,
+        },
+        {
+            uuid: '2a4b6c8d-0e1f-4a2b-8c3d-4e5f6a7b8c9d',
+            subject: "Seller's Disclosure",
+            status: 'completed',
+            documents: ["Seller's Disclosure.pdf"],
+            signers: [
+                {
+                    name: 'Ana Ruiz',
+                    email: 'ana@example.com',
+                    routing_order: 1,
+                    status: 'signed',
+                    at: '2026-11-22T16:00:00Z',
+                },
+            ],
+            sent_at: '2026-11-22T14:00:00Z',
+            completed_at: '2026-11-22T16:00:00Z',
+            filed_in: null,
+        },
+    ],
+    can_sign: true,
 };
 
 export const oakCourt: DealFull = {
@@ -94,6 +160,9 @@ export const oakCourt: DealFull = {
             done: false,
         },
     ],
+    kept_files: [],
+    signatures: [],
+    can_sign: false,
 };
 
 export const dealBoard: DealBoard = {

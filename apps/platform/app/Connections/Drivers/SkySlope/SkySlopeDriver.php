@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Connections\Drivers\SkySlope;
 
+use App\Connections\AcceptsDocuments;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
@@ -15,6 +16,7 @@ use App\Connections\SyncPage;
 use App\Connections\TokenSet;
 use App\Connections\WebhookDelivery;
 use App\Models\Connection;
+use App\Models\Deal;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\PendingRequest;
@@ -35,9 +37,10 @@ use LogicException;
  *   sync, 10 a page, with their key dates (escrow closing, listing
  *   expiry). Each file goes to the brokerage agent whose email it carries.
  * - SkySlope's published API has no document list or checklist read and no
- *   webhooks; the signed document from B9.3 is added to the sale.
+ *   webhooks; the signed document from B9.3 is added to the sale or
+ *   listing (to confirm in the partner sandbox).
  */
-final readonly class SkySlopeDriver implements ConnectorDriver, ConnectsWithApiKey
+final readonly class SkySlopeDriver implements AcceptsDocuments, ConnectorDriver, ConnectsWithApiKey
 {
     public const INTEGRATION = 'skyslope';
 
@@ -136,6 +139,22 @@ final readonly class SkySlopeDriver implements ConnectorDriver, ConnectsWithApiK
     public function verifyWebhook(Request $request): ?WebhookDelivery
     {
         return null;
+    }
+
+    /** The signed copy onto the sale or listing (B9.3). */
+    public function uploadDocument(Connection $connection, string $accessToken, Deal $deal, string $name, string $contents): bool
+    {
+        [$kind, $guid] = array_pad(explode(':', (string) $deal->external_id, 2), 2, '');
+
+        if (! in_array($kind, ['sale', 'listing'], true) || $guid === '') {
+            return false;
+        }
+
+        $this->json($this->http($accessToken)->timeout(120)->post($this->base().'/api/files/'.($kind === 'sale' ? 'sales' : 'listings').'/'.rawurlencode($guid).'/documents', [
+            'fileName' => $name, 'document' => base64_encode($contents),
+        ]));
+
+        return true;
     }
 
     /** A two-hour session for this brokerage's key, logged in with HMAC-SHA256. */

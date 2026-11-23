@@ -1,6 +1,6 @@
 # ADR 0037: Deals from transaction tools
 
-- Status: Accepted (the deals model, REOS deals, deadlines and screens, B9.1a; Lone Wolf Transact, B9.1b)
+- Status: Accepted (the deals model, REOS deals, deadlines and screens, B9.1a; Lone Wolf Transact, B9.1b; dotloop and SkySlope, B9.2)
 - Date: 2026-11-23 (Sprint 9; spec in docs/sprints/S09-spec.md)
 
 ## Context

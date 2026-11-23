@@ -2663,6 +2663,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/{deal}/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a PDF to a deal
+         * @description Kept in REOS (never sent to the transaction tool), to send for signature. It's virus-scanned first: `scan` is `pending` until then, and `url` is null.
+         */
+        post: operations["deals.files.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{deal}/signatures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Prepare an envelope
+         * @description A draft in the agent's DocuSign with the chosen files and signers, and the link to DocuSign's sender view, where the agent places the fields and presses Send. Nothing is sent until then.
+         */
+        post: operations["deals.signatures.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/signatures/{signature}/sender": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Continue a draft in DocuSign
+         * @description A new link to DocuSign's sender view for an envelope not sent yet.
+         */
+        post: operations["deals.signatures.sender"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/speed": {
         parameters: {
             query?: never;
@@ -3353,8 +3413,8 @@ export interface components {
             accounts: string;
             /** @description For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet). */
             consent: {
-                can: ("read_events" | "write_events" | "change_alerts" | "read_people" | "write_notes" | "write_tasks" | "write_stage" | "read_campaigns" | "read_deals" | "read_documents")[];
-                never: ("delete_yours" | "email" | "delete_people" | "send_messages" | "change_campaigns" | "change_deals" | "delete_documents")[];
+                can: ("read_events" | "write_events" | "change_alerts" | "read_people" | "write_notes" | "write_tasks" | "write_stage" | "read_campaigns" | "read_deals" | "read_documents" | "prepare_envelopes" | "read_envelopes" | "file_signed")[];
+                never: ("delete_yours" | "email" | "delete_people" | "send_messages" | "change_campaigns" | "change_deals" | "delete_documents" | "send_without_you")[];
             } | null;
             /**
              * @description How it's connected: the tool's own sign-in page, or the person's API key (B7.2).
@@ -3431,7 +3491,7 @@ export interface components {
             /** @description What syncs: each stream, which way, and how many records came over. */
             streams: {
                 /** @enum {string} */
-                key: "events" | "people" | "notes" | "tasks" | "deals";
+                key: "events" | "people" | "notes" | "tasks" | "deals" | "envelopes";
                 /** @enum {string} */
                 direction: "read" | "write" | "both";
                 records: number;
@@ -3563,6 +3623,17 @@ export interface components {
             channel: "call" | "text";
             /** @description What was texted. */
             body?: string | null;
+        };
+        /**
+         * DealFileRequest
+         * @description A PDF added to a deal to send for signature (B9.3), up to 25 MB.
+         */
+        DealFileRequest: {
+            /**
+             * Format: binary
+             * @description A PDF, up to 25 MB.
+             */
+            file: string;
         };
         /**
          * DealRequest
@@ -4214,6 +4285,23 @@ export interface components {
             guests: number[];
         };
         /**
+         * SendForSignatureRequest
+         * @description Send for signature from a deal (B9.3): the subject, the deal's files in order, and the signers.
+         */
+        SendForSignatureRequest: {
+            /** @description The email subject signers see. */
+            subject: string;
+            /** @description The deal's files to send, in order (uploads or signed copies). */
+            files: string[];
+            /** @description Who signs, and in what order (1 signs first; the same number signs at the same time). */
+            signers: {
+                name: string;
+                /** Format: email */
+                email: string;
+                routing_order: number;
+            }[];
+        };
+        /**
          * SendMessageRequest
          * @description Send or edit a message (B6.1), optionally as a reply.
          */
@@ -4262,7 +4350,7 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce" | "lone-wolf" | "dotloop" | "skyslope";
+            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce" | "lone-wolf" | "dotloop" | "skyslope" | "docusign";
             history?: components["schemas"]["HistoryRange"] | null;
             /** @description Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API. */
             api_key?: string | null;
@@ -4478,6 +4566,7 @@ export type SchemaContactResource = components['schemas']['ContactResource'];
 export type SchemaContactRowResource = components['schemas']['ContactRowResource'];
 export type SchemaContactTaskRequest = components['schemas']['ContactTaskRequest'];
 export type SchemaContactTouchRequest = components['schemas']['ContactTouchRequest'];
+export type SchemaDealFileRequest = components['schemas']['DealFileRequest'];
 export type SchemaDealRequest = components['schemas']['DealRequest'];
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
@@ -4518,6 +4607,7 @@ export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendar
 export type SchemaSaveFlashcardRequest = components['schemas']['SaveFlashcardRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
 export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessionRequest'];
+export type SchemaSendForSignatureRequest = components['schemas']['SendForSignatureRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
 export type SchemaSessionNotesRequest = components['schemas']['SessionNotesRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
@@ -6621,6 +6711,36 @@ export interface operations {
                                 days: number;
                                 done: boolean;
                             }[];
+                            kept_files: {
+                                uuid: string;
+                                /** @enum {string} */
+                                kind: "upload" | "signed" | "certificate";
+                                name: string;
+                                size: number;
+                                added_at: string | null;
+                                /** @enum {string} */
+                                scan: "pending" | "clean" | "infected";
+                                url: string | null;
+                            }[];
+                            signatures: {
+                                uuid: string;
+                                subject: string;
+                                /** @enum {string} */
+                                status: "draft" | "sent" | "delivered" | "completed" | "declined" | "voided";
+                                documents: string[];
+                                signers: {
+                                    name: string;
+                                    email: string;
+                                    routing_order: number;
+                                    /** @enum {string} */
+                                    status: "waiting" | "sent" | "delivered" | "signed" | "declined";
+                                    at: string | null;
+                                }[];
+                                sent_at: string | null;
+                                completed_at: string | null;
+                                filed_in: string | null;
+                            }[];
+                            can_sign: boolean;
                         };
                     };
                 };
@@ -6890,6 +7010,36 @@ export interface operations {
                                 days: number;
                                 done: boolean;
                             }[];
+                            kept_files: {
+                                uuid: string;
+                                /** @enum {string} */
+                                kind: "upload" | "signed" | "certificate";
+                                name: string;
+                                size: number;
+                                added_at: string | null;
+                                /** @enum {string} */
+                                scan: "pending" | "clean" | "infected";
+                                url: string | null;
+                            }[];
+                            signatures: {
+                                uuid: string;
+                                subject: string;
+                                /** @enum {string} */
+                                status: "draft" | "sent" | "delivered" | "completed" | "declined" | "voided";
+                                documents: string[];
+                                signers: {
+                                    name: string;
+                                    email: string;
+                                    routing_order: number;
+                                    /** @enum {string} */
+                                    status: "waiting" | "sent" | "delivered" | "signed" | "declined";
+                                    at: string | null;
+                                }[];
+                                sent_at: string | null;
+                                completed_at: string | null;
+                                filed_in: string | null;
+                            }[];
+                            can_sign: boolean;
                         };
                     };
                 };
@@ -6962,6 +7112,36 @@ export interface operations {
                                 days: number;
                                 done: boolean;
                             }[];
+                            kept_files: {
+                                uuid: string;
+                                /** @enum {string} */
+                                kind: "upload" | "signed" | "certificate";
+                                name: string;
+                                size: number;
+                                added_at: string | null;
+                                /** @enum {string} */
+                                scan: "pending" | "clean" | "infected";
+                                url: string | null;
+                            }[];
+                            signatures: {
+                                uuid: string;
+                                subject: string;
+                                /** @enum {string} */
+                                status: "draft" | "sent" | "delivered" | "completed" | "declined" | "voided";
+                                documents: string[];
+                                signers: {
+                                    name: string;
+                                    email: string;
+                                    routing_order: number;
+                                    /** @enum {string} */
+                                    status: "waiting" | "sent" | "delivered" | "signed" | "declined";
+                                    at: string | null;
+                                }[];
+                                sent_at: string | null;
+                                completed_at: string | null;
+                                filed_in: string | null;
+                            }[];
+                            can_sign: boolean;
                         };
                     };
                 };
@@ -11753,6 +11933,152 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.files.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["DealFileRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            /** @enum {string} */
+                            kind: "upload" | "signed" | "certificate";
+                            name: string;
+                            size: number;
+                            added_at: string | null;
+                            /** @enum {string} */
+                            scan: "pending" | "clean" | "infected";
+                            url: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.signatures.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendForSignatureRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            subject: string;
+                            status: string;
+                            documents: string[];
+                            signers: {
+                                name: string;
+                                email: string;
+                                routing_order: number;
+                                status: string;
+                                at: string | null;
+                            }[];
+                            sent_at: string | null;
+                            completed_at: string | null;
+                            filed_in: string | null;
+                        };
+                        sender_url: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.signatures.sender": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The signature UUID */
+                signature: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        sender_url: string;
+                    };
+                };
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];

@@ -1372,6 +1372,13 @@
             "required": false,
             "kind": "multiline",
             "default": null
+          },
+          {
+            "key": "webhook_secret",
+            "secret": true,
+            "required": false,
+            "kind": "text",
+            "default": null
           }
         ]
       }

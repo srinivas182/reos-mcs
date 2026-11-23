@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { CalendarClock, CheckCircle2, CircleAlert, Clock, ExternalLink, Lock } from 'lucide-react-native';
+import { CalendarClock, CheckCircle2, Circle, CircleAlert, CircleX, Clock, ExternalLink, FileText, Lock, Mail, MailOpen } from 'lucide-react-native';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -8,10 +8,14 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { loadDeal, money, TOOL_NAMES, useLoaded } from '@/lib/deals';
 import { Button, Callout, Card, Icon, Screen, SectionTitle, Text, TitleBar } from '@/ui';
 
+const SIGNER_ICONS = { waiting: Circle, sent: Mail, delivered: MailOpen, signed: CheckCircle2, declined: CircleX } as const;
+
 /**
  * One deal on the phone (B9.1): stage, price and commission, key dates,
  * parties and documents. A deal from a tool opens there; changes are made
- * in the tool (decision 3).
+ * in the tool (decision 3). B9.3: each envelope sent from the deal with
+ * its signers' progress, and the signed copies filed in REOS (sending
+ * happens on the website, where DocuSign's sender view has room).
  */
 export default function DealScreen() {
   const { t, i18n } = useTranslation();
@@ -68,6 +72,32 @@ export default function DealScreen() {
               <Text style={styles.flex}>{f.name}</Text>
               <Text tone="muted">{t(`deals.fileStatus.${f.status as 'complete'}`)}</Text>
             </View>
+          ))}
+          {deal.signatures.length > 0 ? <SectionTitle>{t('deals.signatures.title')}</SectionTitle> : null}
+          {deal.signatures.map((envelope) => (
+            <Card key={envelope.uuid}>
+              <Text weight="semibold">{envelope.subject}</Text>
+              <Text tone={envelope.status === 'completed' ? 'success' : envelope.status === 'declined' || envelope.status === 'voided' ? 'danger' : 'muted'}>{t(`deals.signatures.statuses.${envelope.status}`)}</Text>
+              {envelope.signers.map((s) => (
+                <View key={`${s.email}-${s.routing_order}`} style={styles.row}>
+                  <Icon icon={SIGNER_ICONS[s.status]} color={s.status === 'signed' ? 'success' : s.status === 'declined' ? 'danger' : 'textMuted'} size={18} />
+                  <Text style={styles.flex}>{`${s.name} · ${t(`deals.signatures.signerStatuses.${s.status}`)}`}</Text>
+                </View>
+              ))}
+              {envelope.filed_in ? <Text tone="muted">{t('deals.signatures.filedIn', { tool: TOOL_NAMES[envelope.filed_in] ?? envelope.filed_in })}</Text> : null}
+            </Card>
+          ))}
+          {deal.kept_files.length > 0 ? <SectionTitle>{t('deals.signatures.kept')}</SectionTitle> : null}
+          {deal.kept_files.map((file) => (
+            <Button
+              key={file.uuid}
+              variant="secondary"
+              icon={FileText}
+              label={file.name}
+              accessibilityHint={file.scan === 'clean' ? t(`deals.signatures.kinds.${file.kind}`) : t(`deals.signatures.scan.${file.scan}`)}
+              disabled={file.url === null}
+              onPress={() => (file.url ? void WebBrowser.openBrowserAsync(file.url) : undefined)}
+            />
           ))}
         </>
       )}

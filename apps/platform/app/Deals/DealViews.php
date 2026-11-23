@@ -16,10 +16,16 @@ use Carbon\CarbonImmutable;
  *
  * @phpstan-type DateRow array{id: int, kind: string, name: string, due_on: string, days: int, done: bool}
  * @phpstan-type Card array{id: int, uuid: string, property: string, city: string|null, side: string, stage: string, price: int|null, commission: string|null, source: string, read_only: bool, external_url: string|null, next: DateRow|null, documents: array{complete: int, total: int, missing: int}}
- * @phpstan-type Full array{id: int, uuid: string, property: string, city: string|null, side: string, stage: string, price: int|null, commission: string|null, source: string, read_only: bool, external_url: string|null, next: DateRow|null, documents: array{complete: int, total: int, missing: int}, parties: list<array{name: string, role: string, email: string|null, phone: string|null}>, files: list<array{name: string, status: string, url: string|null}>, dates: list<DateRow>}
+ *
+ * @phpstan-import-type FileRow from DealFiles
+ * @phpstan-import-type RequestRow from Signatures
+ *
+ * @phpstan-type Full array{id: int, uuid: string, property: string, city: string|null, side: string, stage: string, price: int|null, commission: string|null, source: string, read_only: bool, external_url: string|null, next: DateRow|null, documents: array{complete: int, total: int, missing: int}, parties: list<array{name: string, role: string, email: string|null, phone: string|null}>, files: list<array{name: string, status: string, url: string|null}>, dates: list<DateRow>, kept_files: list<FileRow>, signatures: list<RequestRow>, can_sign: bool}
  */
 final readonly class DealViews
 {
+    public function __construct(private Signatures $signatures) {}
+
     /** Alerts look this many days ahead. */
     public const ALERT_DAYS = 14;
 
@@ -124,6 +130,10 @@ final readonly class DealViews
             'parties' => $deal->parties ?? [],
             'files' => $deal->documents ?? [],
             'dates' => array_values($deal->dates->map(static fn (DealDate $d): array => self::date($d, $today, $user))->all()),
+            // B9.3: the files kept in REOS (uploads, signed copies, certificates) and the envelopes sent from the deal.
+            'kept_files' => array_values($deal->files()->get()->map(DealFiles::row(...))->all()),
+            'signatures' => array_values($deal->signatureRequests()->get()->map(Signatures::row(...))->all()),
+            'can_sign' => $this->signatures->connection($user) !== null,
         ];
     }
 

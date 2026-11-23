@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 import { DealBoardView } from './deal-board';
 import { DealPanel } from './deal-panel';
-import { dealBoard, oakCourt } from './fixtures';
+import { DealSignatures, SendForSignatureDialog } from './deal-signatures';
+import { dealBoard, elmStreet, oakCourt } from './fixtures';
 
 const meta = {
     title: 'Agent/Deals',
@@ -37,6 +38,37 @@ export const ToolDeal: Story = {
             onMove={() => undefined}
             onEdit={() => undefined}
             onDelete={() => undefined}
+        />
+    ),
+};
+
+/** B9.3: Maria's Elm St deal: an amendment out for signature and a disclosure signed and filed. */
+export const Signatures: Story = {
+    render: () => (
+        <DealSignatures deal={elmStreet} onChanged={() => undefined} />
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(
+            canvas.getByText('Signed by everyone'),
+        ).toBeInTheDocument();
+    },
+};
+
+/** B9.3: no DocuSign yet, so the deal offers to connect it. */
+export const SignaturesNotConnected: Story = {
+    render: () => (
+        <DealSignatures deal={oakCourt} onChanged={() => undefined} />
+    ),
+};
+
+/** B9.3: Send for signature: subject, the deal's PDFs and the signers from its parties. */
+export const SendForSignature: Story = {
+    render: () => (
+        <SendForSignatureDialog
+            deal={elmStreet}
+            onClose={() => undefined}
+            onUploaded={() => undefined}
         />
     ),
 };

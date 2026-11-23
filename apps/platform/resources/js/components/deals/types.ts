@@ -49,6 +49,52 @@ export type DealFull = DealCard & {
         url: string | null;
     }[];
     dates: DealDate[];
+    /** B9.3: PDFs kept in REOS (uploads, signed copies, certificates). */
+    kept_files: KeptFile[];
+    signatures: SignatureEnvelope[];
+    /** The agent's DocuSign is connected. */
+    can_sign: boolean;
+};
+
+export type KeptFile = {
+    uuid: string;
+    kind: 'upload' | 'signed' | 'certificate';
+    name: string;
+    size: number;
+    added_at: string | null;
+    /** Virus scan: only clean files open or are sent. */
+    scan: 'pending' | 'clean' | 'infected';
+    url: string | null;
+};
+
+export type SignerStatus =
+    | 'waiting'
+    | 'sent'
+    | 'delivered'
+    | 'signed'
+    | 'declined';
+
+export type SignatureEnvelope = {
+    uuid: string;
+    subject: string;
+    status:
+        | 'draft'
+        | 'sent'
+        | 'delivered'
+        | 'completed'
+        | 'declined'
+        | 'voided';
+    documents: string[];
+    signers: {
+        name: string;
+        email: string;
+        routing_order: number;
+        status: SignerStatus;
+        at: string | null;
+    }[];
+    sent_at: string | null;
+    completed_at: string | null;
+    filed_in: string | null;
 };
 
 export type DealBoard = Record<

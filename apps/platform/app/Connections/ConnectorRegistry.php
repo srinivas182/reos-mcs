@@ -6,6 +6,8 @@ namespace App\Connections;
 
 use App\Connections\Drivers\BoldTrail\BoldTrailDriver;
 use App\Connections\Drivers\BoldTrail\BoldTrailSimulator;
+use App\Connections\Drivers\DocuSign\DocuSignDriver;
+use App\Connections\Drivers\DocuSign\DocuSignSimulator;
 use App\Connections\Drivers\Dotloop\DotloopDriver;
 use App\Connections\Drivers\Dotloop\DotloopSimulator;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossDriver;
@@ -52,6 +54,7 @@ final readonly class ConnectorRegistry
         LoneWolfDriver::INTEGRATION => LoneWolfSimulator::class,
         DotloopDriver::INTEGRATION => DotloopSimulator::class,
         SkySlopeDriver::INTEGRATION => SkySlopeSimulator::class,
+        DocuSignDriver::INTEGRATION => DocuSignSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
@@ -84,6 +87,7 @@ final readonly class ConnectorRegistry
         LoneWolfDriver::INTEGRATION => LoneWolfDriver::CONSENT,
         DotloopDriver::INTEGRATION => DotloopDriver::CONSENT,
         SkySlopeDriver::INTEGRATION => SkySlopeDriver::CONSENT,
+        DocuSignDriver::INTEGRATION => DocuSignDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -97,6 +101,7 @@ final readonly class ConnectorRegistry
         LoneWolfDriver::INTEGRATION => LoneWolfDriver::STREAMS,
         DotloopDriver::INTEGRATION => DotloopDriver::STREAMS,
         SkySlopeDriver::INTEGRATION => SkySlopeDriver::STREAMS,
+        DocuSignDriver::INTEGRATION => DocuSignDriver::STREAMS,
     ];
 
     /**
@@ -206,6 +211,7 @@ final readonly class ConnectorRegistry
             BoldTrailDriver::INTEGRATION => new BoldTrailDriver($value('server_url')),
             LoftyDriver::INTEGRATION => new LoftyDriver,
             SalesforceDriver::INTEGRATION => new SalesforceDriver($value('client_id'), $value('client_secret'), $value('server_url')),
+            DocuSignDriver::INTEGRATION => new DocuSignDriver($value('integration_key'), $value('secret_key'), $environment === CredentialEnvironment::Live ? DocuSignDriver::LIVE_AUTH : DocuSignDriver::DEMO_AUTH, $value('webhook_secret')),
             DotloopDriver::INTEGRATION => new DotloopDriver($value('client_id'), $value('client_secret')),
             SkySlopeDriver::INTEGRATION => new SkySlopeDriver($value('client_id'), $value('client_secret'), $value('server_url')),
             LoneWolfDriver::INTEGRATION => new LoneWolfDriver($value('client_id'), $value('client_secret'), $value('api_key'), $value('server_url')),

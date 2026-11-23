@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\Crm\ContactWorkController;
 use App\Http\Controllers\Api\Deals\DealController;
+use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Learn\OfflineController;
@@ -268,6 +269,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,api-deals')->name('api.deals.update');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,api-deals')->name('api.deals.stage');
     Route::delete('deals/{deal}', [DealController::class, 'destroy'])->whereUuid('deal')->middleware('throttle:30,1,api-deals')->name('api.deals.destroy');
+    Route::post('deals/{deal}/files', [SignatureController::class, 'upload'])->whereUuid('deal')->middleware('throttle:30,1,api-deal-files')->name('api.deals.files.store');
+    Route::post('deals/{deal}/signatures', [SignatureController::class, 'store'])->whereUuid('deal')->middleware('throttle:20,1,api-deal-signatures')->name('api.deals.signatures.store');
+    Route::post('deals/signatures/{signature}/sender', [SignatureController::class, 'sender'])->whereUuid('signature')->middleware('throttle:20,1,api-deal-signatures')->name('api.deals.signatures.sender');
     // Contacts (B7.1, ADR 0027): one person, all sources.
     Route::get('contacts', [ContactController::class, 'index'])->name('api.contacts.index');
     Route::get('contacts/activity', [ContactController::class, 'activity'])->name('api.contacts.activity');

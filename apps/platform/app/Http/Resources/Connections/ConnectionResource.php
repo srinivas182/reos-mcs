@@ -99,7 +99,7 @@ final class ConnectionResource extends JsonResource
             /**
              * What syncs: each stream, which way, and how many records came over.
              *
-             * @var list<array{key: 'events'|'people'|'notes'|'tasks'|'deals', direction: 'read'|'write'|'both', records: int}>
+             * @var list<array{key: 'events'|'people'|'notes'|'tasks'|'deals'|'envelopes', direction: 'read'|'write'|'both', records: int}>
              */
             'streams' => self::streams($connection),
             /**

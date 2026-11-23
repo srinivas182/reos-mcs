@@ -1476,7 +1476,10 @@
         "write_stage": "Update a contact's stage when you change it in REOS",
         "read_campaigns": "See each contact's smart campaign and its status",
         "read_deals": "See your transactions: property, parties, stage and key dates",
-        "read_documents": "See which documents each transaction has"
+        "read_documents": "See which documents each transaction has",
+        "prepare_envelopes": "Prepare envelopes from your deals for you to check and send",
+        "read_envelopes": "See each signer's progress on the envelopes sent from REOS",
+        "file_signed": "File the signed copy and certificate on the deal"
       },
       "never": {
         "delete_yours": "Never delete events you made in your calendar",
@@ -1485,7 +1488,8 @@
         "send_messages": "Never text or email your contacts",
         "change_campaigns": "Never start, stop or change your smart campaigns",
         "change_deals": "Change a transaction or its dates",
-        "delete_documents": "Delete or replace documents"
+        "delete_documents": "Delete or replace documents",
+        "send_without_you": "Send anything without you pressing Send"
       },
       "footer": "Disconnect any time from Connections. Your data stays yours.",
       "continue": "Continue to {{tool}}",
@@ -1509,7 +1513,8 @@
         "people": "Contacts",
         "notes": "Notes",
         "tasks": "Tasks",
-        "deals": "Deals and key dates"
+        "deals": "Deals and key dates",
+        "envelopes": "Envelopes and signers"
       },
       "directions": {
         "read": "REOS reads",
@@ -1664,6 +1669,17 @@
       "intro": "Choose whose loops come into REOS: your own, a team's, or both.",
       "atLeastOne": "Choose at least one profile.",
       "saved": "Profiles saved. Your loops are syncing again."
+    },
+    "docusignSim": {
+      "eyebrow": "Demo data",
+      "title": "DocuSign sender view (demo)",
+      "body": "In DocuSign you'd place the signature fields here. On demo data, press Send to send the envelope to its signers.",
+      "account": "Sending from {{account}}",
+      "documents": "Documents",
+      "signers": "Signers",
+      "order": "Order {{order}}",
+      "send": "Send",
+      "cancel": "Back to REOS without sending"
     }
   },
   "catalogue": {
@@ -4744,7 +4760,8 @@
       "content_review": "Lesson and question reviews",
       "weekly_report": "Weekly progress report",
       "challenge": "Challenges",
-      "deal_deadline": "Deal deadlines"
+      "deal_deadline": "Deal deadlines",
+      "signature_completed": "Signed documents"
     },
     "digest": {
       "subject": {
@@ -6805,6 +6822,69 @@
       "summary_one": "{{count}} under contract · next: {{next}}",
       "summary_other": "{{count}} under contract · next: {{next}}",
       "nothing": "{{count}} under contract"
+    },
+    "signatures": {
+      "title": "Signatures",
+      "intro": "Send documents from this deal through your own DocuSign. You place the signature fields and press Send in DocuSign; REOS follows each signer and files the signed copy here.",
+      "send": "Send for signature",
+      "connect": "Connect DocuSign",
+      "connectHint": "Connect your DocuSign account to send documents from your deals.",
+      "subject": "Email subject",
+      "subjectDefault": "Please sign: {{property}}",
+      "files": "Documents",
+      "filesHint": "Choose the PDFs to send, in order, or add one.",
+      "upload": "Add a PDF",
+      "uploading": "Adding…",
+      "noFiles": "No PDFs on this deal yet. Add one to send it.",
+      "signers": "Signers",
+      "signersHint": "From the deal's parties. Order 1 signs first; signers with the same number sign at the same time.",
+      "order": "Signing order for {{name}}",
+      "signerOn": "{{name}} signs",
+      "noEmail": "Add an email for {{name}} on the deal to ask them to sign.",
+      "prepare": "Continue in DocuSign",
+      "continue": "Continue in DocuSign",
+      "cancel": "Cancel",
+      "sent": "Sent. You'll see each signer's progress here.",
+      "saved": "Not sent yet. You can continue in DocuSign from the deal.",
+      "empty": "Nothing sent for signature from this deal yet.",
+      "filedIn": "Also filed in {{tool}}",
+      "statuses": {
+        "draft": "Not sent yet",
+        "sent": "Sent",
+        "delivered": "Opened",
+        "completed": "Signed by everyone",
+        "declined": "Declined",
+        "voided": "Voided"
+      },
+      "signerStatuses": {
+        "waiting": "Waiting for their turn",
+        "sent": "Sent",
+        "delivered": "Opened",
+        "signed": "Signed",
+        "declined": "Declined"
+      },
+      "kept": "Files in REOS",
+      "kinds": {
+        "upload": "Added",
+        "signed": "Signed copy",
+        "certificate": "Certificate of completion"
+      },
+      "open": "Open {{name}}",
+      "errors": {
+        "connect": "Connect your DocuSign account first.",
+        "files": "Choose documents from this deal. A PDF you just added can take a minute to be checked for viruses.",
+        "notDraft": "This envelope has already been sent."
+      },
+      "mail": {
+        "title": "Signed: :subject, :property",
+        "body": "Everyone has signed. The signed copy and the certificate of completion are on the deal."
+      },
+      "signedName": ":subject (signed)",
+      "certificateName": "Certificate of completion · :subject",
+      "scan": {
+        "pending": "Checking for viruses…",
+        "infected": "Removed: a virus was found"
+      }
     }
   }
 }

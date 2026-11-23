@@ -12,25 +12,29 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { nativeSelect } from '@/lib/tenants';
 import { money, useDateText } from './deal-card';
+import { DealSignatures } from './deal-signatures';
 import { TOOL_NAMES, type DealFull, type DealStage } from './types';
 
 const STAGES: DealStage[] = ['active', 'under_contract', 'closed', 'cancelled'];
 
 /**
  * One deal (screen 14, opened from the board): price and commission,
- * parties, key dates, documents. A deal from a tool says so and opens there;
- * a REOS deal can be moved, edited or deleted.
+ * parties, key dates, documents, and signatures (B9.3). A deal from a tool
+ * says so and opens there; a REOS deal can be moved, edited or deleted.
  */
 export function DealPanel({
     deal,
     onMove,
     onEdit,
     onDelete,
+    onChanged = () => undefined,
 }: {
     deal: DealFull;
     onMove: (stage: DealStage) => void;
     onEdit: () => void;
     onDelete: () => void;
+    /** Something changed on the deal (a PDF added): reload it. */
+    onChanged?: () => void;
 }) {
     const { t, i18n } = useTranslation();
     const dateText = useDateText();
@@ -208,6 +212,8 @@ export function DealPanel({
                     </ul>
                 </section>
             ) : null}
+
+            <DealSignatures deal={deal} onChanged={onChanged} />
         </div>
     );
 }

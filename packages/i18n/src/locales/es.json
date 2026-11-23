@@ -1476,7 +1476,10 @@
         "write_stage": "Actualizar la etapa de un contacto cuando usted la cambie en REOS",
         "read_campaigns": "Ver la campaña inteligente de cada contacto y su estado",
         "read_deals": "Ver sus transacciones: propiedad, partes, etapa y fechas clave",
-        "read_documents": "Ver qué documentos tiene cada transacción"
+        "read_documents": "Ver qué documentos tiene cada transacción",
+        "prepare_envelopes": "Preparar sobres desde sus operaciones para que usted los revise y envíe",
+        "read_envelopes": "Ver el avance de cada firmante en los sobres enviados desde REOS",
+        "file_signed": "Archivar la copia firmada y el certificado en la operación"
       },
       "never": {
         "delete_yours": "Nunca eliminará los eventos que usted creó en su calendario",
@@ -1485,7 +1488,8 @@
         "send_messages": "Nunca enviar mensajes de texto ni correos electrónicos a sus contactos",
         "change_campaigns": "Nunca iniciar, detener ni cambiar sus campañas inteligentes",
         "change_deals": "Cambiar una transacción o sus fechas",
-        "delete_documents": "Eliminar o reemplazar documentos"
+        "delete_documents": "Eliminar o reemplazar documentos",
+        "send_without_you": "Enviar algo sin que usted presione Enviar"
       },
       "footer": "Puede desconectarla en cualquier momento desde Conexiones. Sus datos siguen siendo suyos.",
       "continue": "Continuar a {{tool}}",
@@ -1509,7 +1513,8 @@
         "people": "Contactos",
         "notes": "Notas",
         "tasks": "Tareas",
-        "deals": "Operaciones y fechas clave"
+        "deals": "Operaciones y fechas clave",
+        "envelopes": "Sobres y firmantes"
       },
       "directions": {
         "read": "REOS lee",
@@ -1664,6 +1669,17 @@
       "intro": "Elija de quién son los loops que llegan a REOS: los suyos, los de un equipo o ambos.",
       "atLeastOne": "Elija al menos un perfil.",
       "saved": "Perfiles guardados. Sus loops se están sincronizando de nuevo."
+    },
+    "docusignSim": {
+      "eyebrow": "Datos de demostración",
+      "title": "Vista de envío de DocuSign (demostración)",
+      "body": "En DocuSign aquí colocaría los campos de firma. Con datos de demostración, presione Enviar para mandar el sobre a sus firmantes.",
+      "account": "Enviando desde {{account}}",
+      "documents": "Documentos",
+      "signers": "Firmantes",
+      "order": "Orden {{order}}",
+      "send": "Enviar",
+      "cancel": "Volver a REOS sin enviar"
     }
   },
   "catalogue": {
@@ -4744,7 +4760,8 @@
       "content_review": "Revisiones de lecciones y preguntas",
       "weekly_report": "Informe de progreso semanal",
       "challenge": "Desafíos",
-      "deal_deadline": "Fechas límite de operaciones"
+      "deal_deadline": "Fechas límite de operaciones",
+      "signature_completed": "Documentos firmados"
     },
     "digest": {
       "subject": {
@@ -6805,6 +6822,69 @@
       "summary_one": "{{count}} bajo contrato · siguiente: {{next}}",
       "summary_other": "{{count}} bajo contrato · siguiente: {{next}}",
       "nothing": "{{count}} bajo contrato"
+    },
+    "signatures": {
+      "title": "Firmas",
+      "intro": "Envíe documentos de esta operación con su propia cuenta de DocuSign. Usted coloca los campos de firma y presiona Enviar en DocuSign; REOS sigue a cada firmante y archiva aquí la copia firmada.",
+      "send": "Enviar para firma",
+      "connect": "Conectar DocuSign",
+      "connectHint": "Conecte su cuenta de DocuSign para enviar documentos desde sus operaciones.",
+      "subject": "Asunto del correo",
+      "subjectDefault": "Por favor, firme: {{property}}",
+      "files": "Documentos",
+      "filesHint": "Elija los PDF que va a enviar, en orden, o agregue uno.",
+      "upload": "Agregar un PDF",
+      "uploading": "Agregando…",
+      "noFiles": "Aún no hay PDF en esta operación. Agregue uno para enviarlo.",
+      "signers": "Firmantes",
+      "signersHint": "De las partes de la operación. El orden 1 firma primero; los firmantes con el mismo número firman al mismo tiempo.",
+      "order": "Orden de firma de {{name}}",
+      "signerOn": "{{name}} firma",
+      "noEmail": "Agregue un correo de {{name}} en la operación para pedirle que firme.",
+      "prepare": "Continuar en DocuSign",
+      "continue": "Continuar en DocuSign",
+      "cancel": "Cancelar",
+      "sent": "Enviado. Aquí verá el avance de cada firmante.",
+      "saved": "Aún no se envió. Puede continuar en DocuSign desde la operación.",
+      "empty": "Aún no se ha enviado nada para firma desde esta operación.",
+      "filedIn": "También archivado en {{tool}}",
+      "statuses": {
+        "draft": "Aún no enviado",
+        "sent": "Enviado",
+        "delivered": "Abierto",
+        "completed": "Firmado por todos",
+        "declined": "Rechazado",
+        "voided": "Anulado"
+      },
+      "signerStatuses": {
+        "waiting": "Esperando su turno",
+        "sent": "Enviado",
+        "delivered": "Abierto",
+        "signed": "Firmado",
+        "declined": "Rechazado"
+      },
+      "kept": "Archivos en REOS",
+      "kinds": {
+        "upload": "Agregado",
+        "signed": "Copia firmada",
+        "certificate": "Certificado de finalización"
+      },
+      "open": "Abrir {{name}}",
+      "errors": {
+        "connect": "Primero conecte su cuenta de DocuSign.",
+        "files": "Elija documentos de esta operación. Un PDF que acaba de agregar puede tardar un minuto en revisarse en busca de virus.",
+        "notDraft": "Este sobre ya se envió."
+      },
+      "mail": {
+        "title": "Firmado: :subject, :property",
+        "body": "Todos firmaron. La copia firmada y el certificado de finalización están en la operación."
+      },
+      "signedName": ":subject (firmado)",
+      "certificateName": "Certificado de finalización · :subject",
+      "scan": {
+        "pending": "Buscando virus…",
+        "infected": "Eliminado: se encontró un virus"
+      }
     }
   }
 }
