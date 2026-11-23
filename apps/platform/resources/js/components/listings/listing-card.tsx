@@ -1,4 +1,5 @@
-import { BedDouble, CalendarDays, Home } from 'lucide-react';
+import { BedDouble, CalendarDays, Home, Share2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { money } from '@/lib/billing';
 import type { ListingRow } from './types';
@@ -16,7 +17,14 @@ const TONES: Record<string, string> = {
  * beds, baths and size, the agent's role, the MLS number and the next open
  * house. Sold listings show the closing price.
  */
-export function ListingCard({ listing }: { listing: ListingRow }) {
+export function ListingCard({
+    listing,
+    onPost,
+}: {
+    listing: ListingRow;
+    /** Opens the listing post (shown when the MLS allows a post). */
+    onPost?: () => void;
+}) {
     const { t, i18n } = useTranslation();
     const dollars = (value: number) => money(value * 100, i18n.language);
     const when = (iso: string) =>
@@ -96,6 +104,9 @@ export function ListingCard({ listing }: { listing: ListingRow }) {
                         ? ` · ${t('listings.daysOnMarket', { count: listing.days_on_market })}`
                         : ''}
                 </p>
+                <p className="text-sm text-muted-foreground">
+                    {listing.attribution}
+                </p>
                 {listing.open_house ? (
                     <p className="flex items-center gap-2 text-base font-medium">
                         <CalendarDays aria-hidden className="size-4" />
@@ -106,6 +117,18 @@ export function ListingCard({ listing }: { listing: ListingRow }) {
                             { time: when(listing.open_house.starts_at) },
                         )}
                     </p>
+                ) : null}
+                {onPost && listing.can_post ? (
+                    <Button
+                        variant="outline"
+                        onClick={onPost}
+                        aria-label={t('listings.post.createFor', {
+                            address: listing.address,
+                        })}
+                    >
+                        <Share2 aria-hidden />
+                        {t('listings.post.create')}
+                    </Button>
                 ) : null}
             </div>
         </article>

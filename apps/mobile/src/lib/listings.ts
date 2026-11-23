@@ -12,6 +12,7 @@ type Got<P extends keyof paths> = paths[P] extends { get: { responses: { 200: { 
 export type ListingsOverview = Got<'/listings'>['data'];
 export type Listing = ListingsOverview['listings'][number];
 export type Member = ListingsOverview['candidates'][number];
+export type PostDraft = Got<'/listings/{listing}/post'>['data'];
 
 const fail = (error: unknown): never => {
   const e = (error as { errors?: Record<string, string[]>; message?: string } | undefined) ?? {};
@@ -53,4 +54,17 @@ export function priceText(listing: Listing, language: string, sold: (price: stri
   if (listing.status === 'closed' && listing.close_price !== null) return sold(dollars(listing.close_price));
 
   return listing.price === null ? '—' : dollars(listing.price);
+}
+
+/** The listing post: photos the MLS allows, the caption so far, the attribution. */
+export async function loadPost(listing: string): Promise<PostDraft> {
+  const { data, error } = await api().GET('/listings/{listing}/post', { params: { path: { listing } } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function savePost(listing: string, caption: string, photos: string[]): Promise<PostDraft> {
+  const { data, error } = await api().PUT('/listings/{listing}/post', { params: { path: { listing } }, body: { caption, photos } });
+
+  return data ? data.data : fail(error);
 }

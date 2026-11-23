@@ -18908,6 +18908,250 @@
                 }
             }
         },
+        "/listings/{listing}/post": {
+            "get": {
+                "operationId": "listings.post.show",
+                "description": "The photos the MLS lets a post use (at most its limit, and 10), the caption so far (or a suggestion), the chosen photos, and the attribution added to every post.",
+                "summary": "My post for a listing",
+                "tags": [
+                    "ListingPost"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "listing": {
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "type": "string"
+                                                },
+                                                "photos": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "caption": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "caption"
+                                                        ]
+                                                    }
+                                                },
+                                                "max_photos": {
+                                                    "type": "integer"
+                                                },
+                                                "caption": {
+                                                    "type": "string"
+                                                },
+                                                "chosen": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "saved_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "listing",
+                                                "address",
+                                                "photos",
+                                                "max_photos",
+                                                "caption",
+                                                "chosen",
+                                                "attribution",
+                                                "saved_at",
+                                                "sample"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "listings.post.update",
+                "description": "The caption and the chosen photos, in order; photos must be among those the MLS allows.",
+                "summary": "Save my post for a listing",
+                "tags": [
+                    "ListingPost"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ListingPostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "listing": {
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "type": "string"
+                                                },
+                                                "photos": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "caption": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "caption"
+                                                        ]
+                                                    }
+                                                },
+                                                "max_photos": {
+                                                    "type": "integer"
+                                                },
+                                                "caption": {
+                                                    "type": "string"
+                                                },
+                                                "chosen": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "saved_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "listing",
+                                                "address",
+                                                "photos",
+                                                "max_photos",
+                                                "caption",
+                                                "chosen",
+                                                "attribution",
+                                                "saved_at",
+                                                "sample"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/listings": {
             "get": {
                 "operationId": "listings.index",
@@ -19033,17 +19277,16 @@
                                                             "status": {
                                                                 "type": "string"
                                                             },
-                                                            "role": {
-                                                                "type": "string",
-                                                                "enum": [
-                                                                    "list",
-                                                                    "co_list"
-                                                                ]
-                                                            },
                                                             "address": {
                                                                 "type": "string"
                                                             },
                                                             "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "postal_code": {
                                                                 "type": [
                                                                     "string",
                                                                     "null"
@@ -19061,6 +19304,12 @@
                                                                     "null"
                                                                 ]
                                                             },
+                                                            "close_date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "beds": {
                                                                 "type": [
                                                                     "integer",
@@ -19074,6 +19323,12 @@
                                                                 ]
                                                             },
                                                             "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price_per_sqft": {
                                                                 "type": [
                                                                     "integer",
                                                                     "null"
@@ -19101,7 +19356,25 @@
                                                                 ]
                                                             },
                                                             "photos": {
-                                                                "type": "integer"
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "caption": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "url",
+                                                                        "caption"
+                                                                    ]
+                                                                }
                                                             },
                                                             "listed_on": {
                                                                 "type": [
@@ -19120,6 +19393,40 @@
                                                                     "string",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "latitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "longitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "attribution": {
+                                                                "type": "string"
+                                                            },
+                                                            "logo_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sample": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "can_post": {
+                                                                "type": "boolean"
                                                             },
                                                             "open_house": {
                                                                 "type": [
@@ -19150,19 +19457,28 @@
                                                             "short_name",
                                                             "listing_id",
                                                             "status",
-                                                            "role",
                                                             "address",
                                                             "city",
+                                                            "postal_code",
                                                             "price",
                                                             "close_price",
+                                                            "close_date",
                                                             "beds",
                                                             "baths",
                                                             "area",
+                                                            "price_per_sqft",
                                                             "photo",
                                                             "photos",
                                                             "listed_on",
                                                             "days_on_market",
                                                             "office",
+                                                            "latitude",
+                                                            "longitude",
+                                                            "attribution",
+                                                            "logo_url",
+                                                            "sample",
+                                                            "role",
+                                                            "can_post",
                                                             "open_house"
                                                         ]
                                                     }
@@ -19335,17 +19651,16 @@
                                                             "status": {
                                                                 "type": "string"
                                                             },
-                                                            "role": {
-                                                                "type": "string",
-                                                                "enum": [
-                                                                    "list",
-                                                                    "co_list"
-                                                                ]
-                                                            },
                                                             "address": {
                                                                 "type": "string"
                                                             },
                                                             "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "postal_code": {
                                                                 "type": [
                                                                     "string",
                                                                     "null"
@@ -19363,6 +19678,12 @@
                                                                     "null"
                                                                 ]
                                                             },
+                                                            "close_date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "beds": {
                                                                 "type": [
                                                                     "integer",
@@ -19376,6 +19697,12 @@
                                                                 ]
                                                             },
                                                             "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price_per_sqft": {
                                                                 "type": [
                                                                     "integer",
                                                                     "null"
@@ -19403,7 +19730,25 @@
                                                                 ]
                                                             },
                                                             "photos": {
-                                                                "type": "integer"
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "caption": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "url",
+                                                                        "caption"
+                                                                    ]
+                                                                }
                                                             },
                                                             "listed_on": {
                                                                 "type": [
@@ -19422,6 +19767,40 @@
                                                                     "string",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "latitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "longitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "attribution": {
+                                                                "type": "string"
+                                                            },
+                                                            "logo_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sample": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "can_post": {
+                                                                "type": "boolean"
                                                             },
                                                             "open_house": {
                                                                 "type": [
@@ -19452,19 +19831,28 @@
                                                             "short_name",
                                                             "listing_id",
                                                             "status",
-                                                            "role",
                                                             "address",
                                                             "city",
+                                                            "postal_code",
                                                             "price",
                                                             "close_price",
+                                                            "close_date",
                                                             "beds",
                                                             "baths",
                                                             "area",
+                                                            "price_per_sqft",
                                                             "photo",
                                                             "photos",
                                                             "listed_on",
                                                             "days_on_market",
                                                             "office",
+                                                            "latitude",
+                                                            "longitude",
+                                                            "attribution",
+                                                            "logo_url",
+                                                            "sample",
+                                                            "role",
+                                                            "can_post",
                                                             "open_house"
                                                         ]
                                                     }
@@ -19659,17 +20047,16 @@
                                                             "status": {
                                                                 "type": "string"
                                                             },
-                                                            "role": {
-                                                                "type": "string",
-                                                                "enum": [
-                                                                    "list",
-                                                                    "co_list"
-                                                                ]
-                                                            },
                                                             "address": {
                                                                 "type": "string"
                                                             },
                                                             "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "postal_code": {
                                                                 "type": [
                                                                     "string",
                                                                     "null"
@@ -19687,6 +20074,12 @@
                                                                     "null"
                                                                 ]
                                                             },
+                                                            "close_date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "beds": {
                                                                 "type": [
                                                                     "integer",
@@ -19700,6 +20093,12 @@
                                                                 ]
                                                             },
                                                             "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price_per_sqft": {
                                                                 "type": [
                                                                     "integer",
                                                                     "null"
@@ -19727,7 +20126,25 @@
                                                                 ]
                                                             },
                                                             "photos": {
-                                                                "type": "integer"
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "caption": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "url",
+                                                                        "caption"
+                                                                    ]
+                                                                }
                                                             },
                                                             "listed_on": {
                                                                 "type": [
@@ -19746,6 +20163,40 @@
                                                                     "string",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "latitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "longitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "attribution": {
+                                                                "type": "string"
+                                                            },
+                                                            "logo_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sample": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "can_post": {
+                                                                "type": "boolean"
                                                             },
                                                             "open_house": {
                                                                 "type": [
@@ -19776,19 +20227,28 @@
                                                             "short_name",
                                                             "listing_id",
                                                             "status",
-                                                            "role",
                                                             "address",
                                                             "city",
+                                                            "postal_code",
                                                             "price",
                                                             "close_price",
+                                                            "close_date",
                                                             "beds",
                                                             "baths",
                                                             "area",
+                                                            "price_per_sqft",
                                                             "photo",
                                                             "photos",
                                                             "listed_on",
                                                             "days_on_market",
                                                             "office",
+                                                            "latitude",
+                                                            "longitude",
+                                                            "attribution",
+                                                            "logo_url",
+                                                            "sample",
+                                                            "role",
+                                                            "can_post",
                                                             "open_house"
                                                         ]
                                                     }
@@ -19983,17 +20443,16 @@
                                                             "status": {
                                                                 "type": "string"
                                                             },
-                                                            "role": {
-                                                                "type": "string",
-                                                                "enum": [
-                                                                    "list",
-                                                                    "co_list"
-                                                                ]
-                                                            },
                                                             "address": {
                                                                 "type": "string"
                                                             },
                                                             "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "postal_code": {
                                                                 "type": [
                                                                     "string",
                                                                     "null"
@@ -20011,6 +20470,12 @@
                                                                     "null"
                                                                 ]
                                                             },
+                                                            "close_date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "beds": {
                                                                 "type": [
                                                                     "integer",
@@ -20024,6 +20489,12 @@
                                                                 ]
                                                             },
                                                             "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price_per_sqft": {
                                                                 "type": [
                                                                     "integer",
                                                                     "null"
@@ -20051,7 +20522,25 @@
                                                                 ]
                                                             },
                                                             "photos": {
-                                                                "type": "integer"
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "caption": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "url",
+                                                                        "caption"
+                                                                    ]
+                                                                }
                                                             },
                                                             "listed_on": {
                                                                 "type": [
@@ -20070,6 +20559,40 @@
                                                                     "string",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "latitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "longitude": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "attribution": {
+                                                                "type": "string"
+                                                            },
+                                                            "logo_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sample": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "can_post": {
+                                                                "type": "boolean"
                                                             },
                                                             "open_house": {
                                                                 "type": [
@@ -20100,19 +20623,28 @@
                                                             "short_name",
                                                             "listing_id",
                                                             "status",
-                                                            "role",
                                                             "address",
                                                             "city",
+                                                            "postal_code",
                                                             "price",
                                                             "close_price",
+                                                            "close_date",
                                                             "beds",
                                                             "baths",
                                                             "area",
+                                                            "price_per_sqft",
                                                             "photo",
                                                             "photos",
                                                             "listed_on",
                                                             "days_on_market",
                                                             "office",
+                                                            "latitude",
+                                                            "longitude",
+                                                            "attribution",
+                                                            "logo_url",
+                                                            "sample",
+                                                            "role",
+                                                            "can_post",
                                                             "open_house"
                                                         ]
                                                     }
@@ -38755,6 +39287,29 @@
                     "broker"
                 ],
                 "title": "LicenceType"
+            },
+            "ListingPostRequest": {
+                "type": "object",
+                "description": "A listing post: the caption and the chosen MLS photos, in order (B10.2).",
+                "properties": {
+                    "caption": {
+                        "type": "string",
+                        "maxLength": 1800
+                    },
+                    "photos": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 2048
+                        },
+                        "maxItems": 50
+                    }
+                },
+                "required": [
+                    "caption",
+                    "photos"
+                ],
+                "title": "ListingPostRequest"
             },
             "Locale": {
                 "type": "string",

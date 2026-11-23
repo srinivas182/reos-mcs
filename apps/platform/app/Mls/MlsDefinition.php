@@ -13,5 +13,6 @@ final readonly class MlsDefinition
         public string $dataset,
         /** The MLS's name beside its listings ("HAR"). */
         public string $shortName,
+        public MlsDisplayRules $display,
     ) {}
 }

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licence\PassesAndOffersController;
 use App\Http\Controllers\Api\Licence\SwitchController;
+use App\Http\Controllers\Api\Listings\ListingPostController;
 use App\Http\Controllers\Api\Listings\ListingsController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
@@ -168,6 +169,8 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::post('deals/listings/members', [ListingsController::class, 'confirm'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.confirm');
     Route::post('deals/listings/members/decline', [ListingsController::class, 'decline'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.decline');
     Route::post('deals/listings/members/unlink', [ListingsController::class, 'unlink'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.unlink');
+    Route::get('deals/listings/{listing}/post', [ListingPostController::class, 'show'])->whereUuid('listing')->name('deals.listings.post.show');
+    Route::put('deals/listings/{listing}/post', [ListingPostController::class, 'update'])->whereUuid('listing')->middleware('throttle:30,1,listing-post')->name('deals.listings.post.update');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,deals')->name('deals.store');
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.update');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.stage');

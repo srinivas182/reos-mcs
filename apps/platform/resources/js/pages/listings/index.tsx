@@ -5,13 +5,24 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { ListingCard } from '@/components/listings/listing-card';
 import { MemberCard } from '@/components/listings/member-card';
-import type { ListingsOverview, MemberRow } from '@/components/listings/types';
+import { PostDialog } from '@/components/listings/post-dialog';
+import type {
+    ListingRow,
+    ListingsOverview,
+    MemberRow,
+    PostDraft,
+} from '@/components/listings/types';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
-import { postJson } from '@/lib/content';
+import { toast } from 'sonner';
+import { getJson, postJson, putJson } from '@/lib/content';
 import { undoToast } from '@/lib/undo-toast';
 import { index as deals } from '@/routes/deals';
 import { confirm, decline, unlink } from '@/routes/deals/listings/members';
+import {
+    show as postShow,
+    update as postUpdate,
+} from '@/routes/deals/listings/post';
 import { edit as profile } from '@/routes/profile';
 
 /**
@@ -28,6 +39,34 @@ export default function ListingsPage({
     const { t, i18n } = useTranslation();
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [post, setPost] = useState<{
+        open: boolean;
+        draft: PostDraft | null;
+    }>({
+        open: false,
+        draft: null,
+    });
+    const openPost = async (row: ListingRow) => {
+        setPost({ open: true, draft: null });
+        try {
+            const { data } = await getJson<{ data: PostDraft }>(
+                postShow(row.uuid).url,
+            );
+            setPost({ open: true, draft: data });
+        } catch (e) {
+            setPost({ open: false, draft: null });
+            setError(e instanceof Error ? e.message : String(e));
+        }
+    };
+    const savePost = async (caption: string, photos: string[]) => {
+        if (!post.draft) return;
+        const { data } = await putJson<{ data: PostDraft }>(
+            postUpdate(post.draft.listing).url,
+            { caption, photos },
+        );
+        setPost({ open: true, draft: data });
+        toast.success(t('listings.post.saved'));
+    };
     const body = (member: MemberRow) => ({
         mls: member.mls,
         member_key: member.member_key,
@@ -184,12 +223,21 @@ export default function ListingsPage({
                     <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                         {listings.listings.map((row) => (
                             <li key={row.uuid}>
-                                <ListingCard listing={row} />
+                                <ListingCard
+                                    listing={row}
+                                    onPost={() => void openPost(row)}
+                                />
                             </li>
                         ))}
                     </ul>
                 ) : null}
             </div>
+            <PostDialog
+                draft={post.draft}
+                open={post.open}
+                onOpenChange={(open) => setPost((p) => ({ ...p, open }))}
+                onSave={savePost}
+            />
         </>
     );
 }

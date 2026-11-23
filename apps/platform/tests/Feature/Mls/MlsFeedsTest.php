@@ -5,8 +5,6 @@ declare(strict_types=1);
 use App\Authorization\Role;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\Exceptions\VendorUnavailable;
-use App\Enums\LicenceStatus;
-use App\Enums\LicenceType;
 use App\Integrations\Catalogue;
 use App\Integrations\Checks\TesterRegistry;
 use App\Integrations\Checks\Testers\MlsFeedTester;
@@ -38,18 +36,6 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->travelTo(CarbonImmutable::parse('2026-11-23 09:00', 'America/Chicago'));
 });
-
-/** An agent with a Texas licence, as A5.1 records it. */
-function mlsAgent(string $name, string $number): User
-{
-    $user = User::factory()->withRole(Role::Agent)->create(['name' => $name]);
-    Licence::query()->create([
-        'user_id' => $user->id, 'state_code' => 'TX', 'type' => LicenceType::SalesAgent, 'number' => $number, 'status' => LicenceStatus::Active,
-        'holder_name' => $name, 'verified_by' => 'simulator', 'verified_at' => now(),
-    ]);
-
-    return $user;
-}
 
 function mlsSync(string $integration): array
 {
@@ -289,7 +275,9 @@ describe('My listings (B10.1)', function () {
             ->and($data['synced_at'])->not->toBeNull()
             ->and(array_column($data['listings'], 'status'))->toBe(['coming_soon', 'active', 'pending', 'closed'])
             ->and(array_column($data['listings'], 'role'))->toBe(['list', 'list', 'co_list', 'list'])
-            ->and($data['listings'][1])->toMatchArray(['address' => '2418 Willow Bend Dr, Katy, TX 77494', 'price' => 489000, 'beds' => 4, 'baths' => 3.0, 'photos' => 4, 'days_on_market' => 12, 'short_name' => 'HAR'])
+            ->and($data['listings'][1])->toMatchArray(['address' => '2418 Willow Bend Dr, Katy, TX 77494', 'price' => 489000, 'beds' => 4, 'baths' => 3.0, 'days_on_market' => 12, 'short_name' => 'HAR', 'can_post' => true])
+            ->and($data['listings'][1]['photos'])->toHaveCount(4)
+            ->and($data['listings'][1]['attribution'])->toBe('Listing courtesy of Lone Star Realty. Source: HAR MLS.')
             ->and($data['listings'][1]['open_house'])->toMatchArray(['kind' => 'public'])
             ->and($data['listings'][3])->toMatchArray(['close_price' => 331000]);
     });

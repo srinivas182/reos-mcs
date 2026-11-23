@@ -1514,7 +1514,19 @@
       "mls": {
         "vendor": "bridge",
         "dataset": "har",
-        "short_name": "HAR"
+        "short_name": "HAR",
+        "display": {
+          "max_photos": 25,
+          "refresh_hours": 12,
+          "sold_public": false,
+          "sold_in_cma": true,
+          "own_listings_only": true,
+          "attribution": {
+            "brokerage": true,
+            "mls_name": true,
+            "logo": false
+          }
+        }
       }
     },
     {
@@ -1559,7 +1571,19 @@
       "mls": {
         "vendor": "trestle",
         "dataset": "ntreis",
-        "short_name": "NTREIS"
+        "short_name": "NTREIS",
+        "display": {
+          "max_photos": 25,
+          "refresh_hours": 12,
+          "sold_public": false,
+          "sold_in_cma": true,
+          "own_listings_only": true,
+          "attribution": {
+            "brokerage": true,
+            "mls_name": true,
+            "logo": false
+          }
+        }
       }
     },
     {
@@ -1597,7 +1621,19 @@
       "mls": {
         "vendor": "mls_grid",
         "dataset": "actris",
-        "short_name": "Unlock MLS"
+        "short_name": "Unlock MLS",
+        "display": {
+          "max_photos": 25,
+          "refresh_hours": 12,
+          "sold_public": false,
+          "sold_in_cma": true,
+          "own_listings_only": true,
+          "attribution": {
+            "brokerage": true,
+            "mls_name": true,
+            "logo": false
+          }
+        }
       }
     },
     {
@@ -1642,7 +1678,19 @@
       "mls": {
         "vendor": "to_confirm",
         "dataset": "sabor",
-        "short_name": "SABOR"
+        "short_name": "SABOR",
+        "display": {
+          "max_photos": 25,
+          "refresh_hours": 12,
+          "sold_public": false,
+          "sold_in_cma": true,
+          "own_listings_only": true,
+          "attribution": {
+            "brokerage": true,
+            "mls_name": true,
+            "logo": false
+          }
+        }
       }
     },
     {

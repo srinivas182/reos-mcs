@@ -1,6 +1,6 @@
 # ADR 0042: MLS feeds and listing rules
 
-- Status: Accepted (MLS feeds and My listings, B10.1)
+- Status: Accepted (MLS feeds and My listings, B10.1; listing rules, posts and open houses, B10.2a)
 - Date: 2026-11-24 (Sprint 10; spec in docs/sprints/S10-spec.md)
 
 ## Context
@@ -45,6 +45,31 @@ Agents want their listings in REOS, so posts, CMAs, their public page and open h
    - Phone: My listings opens from the Deals pipeline.
    - Both show status, price (or the price it sold for), beds, baths, size, the agent's role, the MLS number, days on market and the next open house.
 9. **Connection test:** each MLS's keys are tested by signing in the vendor's way and reading one office record.
+
+## Decision: listing rules, posts and open houses (B10.2a)
+
+10. **Display rules live in the register** (decision 7), in each MLS's `mls.display`:
+    - `max_photos`;
+    - `refresh_hours`;
+    - `sold_public` (Texas is a non-disclosure state);
+    - `sold_in_cma`;
+    - `own_listings_only` (for posts);
+    - attribution: listing brokerage, MLS name, logo.
+
+    They are conservative until each signed licence says otherwise; changing one is a register edit.
+11. **One listing service** (`ListingService`) is how every feature reads a listing. It takes a purpose (`agent`, `post`, `public`, `cma`) and enforces the rules there, so no screen can break them:
+    - Photos are capped at the MLS's limit, and posts at 10 within it.
+    - The MLS's attribution ("Listing courtesy of …. Source: … MLS.") travels with every listing.
+    - Public pages and posts show nothing from a feed older than its refresh age.
+    - They also show only listings the MLS lets consumers see, and withhold the address (and map position) when the MLS asks.
+    - Sold prices show only to the agent and in CMAs unless the MLS allows public display.
+    - Posts feature the agent's own listings only, where the MLS says so.
+12. **Listing posts** (done when a listing post uses MLS photos within the licence terms):
+    - The agent picks photos from those the service allows and writes a caption. The attribution is stored with the post and can't be edited.
+    - There is one post per listing, changed until the content studio (B11) publishes it. Until then the agent can copy it (web) or share it from the phone's share sheet.
+13. **Open houses on the calendar:** each upcoming open house of a linked agent's listing becomes a REOS calendar event (a showing, source = the MLS's register id).
+    - The event is read-only in REOS and follows the MLS after each sync.
+    - It is removed when the MLS cancels the open house or the agent unlinks.
 
 ## Consequences
 
