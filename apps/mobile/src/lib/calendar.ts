@@ -9,7 +9,7 @@ import { useAuth } from '@/lib/auth';
 /** One event on the person's REOS calendar (`CalendarEventResource`). */
 export type CalendarEvent = Schemas['CalendarEventResource'];
 export type CalendarKind = CalendarEvent['kind'];
-export type AppointmentKind = Exclude<CalendarKind, 'event' | 'todo'>;
+export type AppointmentKind = Exclude<CalendarKind, 'event' | 'todo' | 'study'>;
 
 export type CalendarDay = {
   data: CalendarEvent[];
@@ -149,7 +149,7 @@ export function formFromEvent(event: CalendarEvent): AppointmentForm {
 
   return {
     title: event.title ?? '',
-    kind: event.kind === 'event' || event.kind === 'todo' ? 'appointment' : event.kind,
+    kind: event.kind === 'event' || event.kind === 'todo' || event.kind === 'study' ? 'appointment' : event.kind,
     allDay: event.all_day,
     start,
     minutes: event.all_day ? 60 : Math.max(15, Math.round(span)),

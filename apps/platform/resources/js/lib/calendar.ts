@@ -2,7 +2,7 @@ import type { TFunction } from 'i18next';
 import type { CalendarEvent, CalendarKind } from '@/types/calendar';
 
 /** Kinds people choose when making an appointment (`event` is a tool's own). */
-export const KINDS: Exclude<CalendarKind, 'event' | 'todo'>[] = [
+export const KINDS: Exclude<CalendarKind, 'event' | 'todo' | 'study'>[] = [
     'appointment',
     'showing',
     'deadline',
@@ -13,7 +13,7 @@ export const KINDS: Exclude<CalendarKind, 'event' | 'todo'>[] = [
 /** What an appointment form holds, as the person sees it (wall time in their zone). */
 export type AppointmentForm = {
     title: string;
-    kind: Exclude<CalendarKind, 'event' | 'todo'>;
+    kind: Exclude<CalendarKind, 'event' | 'todo' | 'study'>;
     allDay: boolean;
     /** `YYYY-MM-DD` */
     date: string;
@@ -196,7 +196,9 @@ export function formFromEvent(
     return {
         title: event.title ?? '',
         kind:
-            event.kind === 'event' || event.kind === 'todo'
+            event.kind === 'event' ||
+            event.kind === 'todo' ||
+            event.kind === 'study'
                 ? 'appointment'
                 : event.kind,
         allDay: event.all_day,

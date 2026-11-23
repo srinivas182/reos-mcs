@@ -1541,6 +1541,139 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/study": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Today for a candidate
+         * @description Readiness and days to the exam, the streak, Continue, and today's tasks
+         *     (never more than the minutes chosen, the diagnostic day aside), each
+         *     with why. Rebuilds the plan first if a day was missed.
+         */
+        get: operations["practice.today"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/tests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The practice hub
+         * @description The diagnostic and a quiz per topic, each with the best and last score
+         *     and any attempt still open.
+         */
+        get: operations["practice.index"];
+        put?: never;
+        /**
+         * Start a test
+         * @description The diagnostic (50 questions, 45 minutes, results at the end) or a
+         *     topic quiz (10 questions, why after each answer). An attempt of the
+         *     same kind still open is returned instead.
+         */
+        post: operations["practice.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A test in progress
+         * @description Its questions with my answers and flags, and the time left on the
+         *     server's clock. A timed test whose time ran out is scored as it stood.
+         */
+        get: operations["practice.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}/answers/{question}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Save an answer
+         * @description Saved the moment it's tapped, so closing the app loses nothing. In a
+         *     topic quiz the answer comes back with why. 422 once the test has ended.
+         */
+        put: operations["practice.answer"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit a test
+         * @description Scored by topic; readiness and the study plan update at once.
+         */
+        post: operations["practice.submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A test's results
+         * @description Score and pass line, the change since last time, topics weakest first
+         *     with their exam weight, and every answer with why and its source. 409
+         *     while the test is still open.
+         */
+        get: operations["practice.results"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/push-devices": {
         parameters: {
             query?: never;
@@ -2185,7 +2318,7 @@ export interface components {
             /** @description Null for an event from a calendar shared as busy only. */
             title: string | null;
             /** @enum {string} */
-            kind: "appointment" | "showing" | "deadline" | "session" | "ce" | "todo" | "event";
+            kind: "appointment" | "showing" | "deadline" | "session" | "ce" | "todo" | "event" | "study";
             starts_at: string;
             ends_at: string;
             all_day: boolean;
@@ -6954,6 +7087,414 @@ export interface operations {
                 content: {
                     "application/json": {
                         /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            readiness: number | null;
+                            topics: {
+                                [key: string]: number | null;
+                            };
+                            weakest: string[];
+                            exam_on: string;
+                            days_to_exam: number;
+                            streak: number;
+                            minutes_per_day: number;
+                            reminder_time: string | null;
+                            diagnostic_done: boolean;
+                            continue: {
+                                lesson_id: number;
+                                title: string;
+                                course: string;
+                                position: number;
+                            } | null;
+                            tasks: {
+                                id: number;
+                                /** @enum {string} */
+                                kind: "diagnostic" | "lesson" | "practice" | "review";
+                                /** @enum {string} */
+                                why: "next" | "weak" | "review" | "catch_up" | "baseline";
+                                minutes: number;
+                                done: boolean;
+                                day: string;
+                                lesson: {
+                                    id: number;
+                                    title: string;
+                                    course: string;
+                                } | null;
+                                topic: string | null;
+                            }[];
+                            behind_minutes: number;
+                            plan: {
+                                id: number;
+                                reason: string;
+                                built_at: string | null;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            kind: "diagnostic" | "topic";
+                            topic: string | null;
+                            questions: number;
+                            minutes: number | null;
+                            best: number | null;
+                            last: number | null;
+                            open: number | null;
+                            last_attempt: number | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "diagnostic" | "topic";
+                    /** @enum {string|null} */
+                    topic?: "agency" | "contracts" | "ownership" | "finance" | "math" | "state_rules" | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            mode: string;
+                            topic: string | null;
+                            total: number;
+                            answered: number;
+                            started_at: string;
+                            ends_at: string | null;
+                            seconds_left: number | null;
+                            submitted: boolean;
+                            questions: {
+                                id: number;
+                                n: number;
+                                topic: string;
+                                prompt: string;
+                                options: string[];
+                                choice: number | null;
+                                flagged: boolean;
+                                feedback: {
+                                    correct: boolean;
+                                    right: number;
+                                    explanation: string;
+                                    source: string;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            mode: string;
+                            topic: string | null;
+                            total: number;
+                            answered: number;
+                            started_at: string;
+                            ends_at: string | null;
+                            seconds_left: number | null;
+                            submitted: boolean;
+                            questions: {
+                                id: number;
+                                n: number;
+                                topic: string;
+                                prompt: string;
+                                options: string[];
+                                choice: number | null;
+                                flagged: boolean;
+                                feedback: {
+                                    correct: boolean;
+                                    right: number;
+                                    explanation: string;
+                                    source: string;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+                question: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    choice?: number | null;
+                    flagged?: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            n: number;
+                            topic: string;
+                            prompt: string;
+                            options: string[];
+                            choice: number | null;
+                            flagged: boolean;
+                            feedback: {
+                                correct: boolean;
+                                right: number;
+                                explanation: string;
+                                source: string;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            score: number;
+                            correct: number;
+                            total: number;
+                            pass_line: number;
+                            previous: number | null;
+                            seconds: number;
+                            topics: {
+                                topic: string;
+                                correct: number;
+                                total: number;
+                                percent: number;
+                                weight: number;
+                            }[];
+                            weakest: string[];
+                            strongest: string[];
+                            review: {
+                                id: number;
+                                n: number;
+                                topic: string;
+                                prompt: string;
+                                options: string[];
+                                choice: number | null;
+                                right: number;
+                                correct: boolean;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            score: number;
+                            correct: number;
+                            total: number;
+                            pass_line: number;
+                            previous: number | null;
+                            seconds: number;
+                            topics: {
+                                topic: string;
+                                correct: number;
+                                total: number;
+                                percent: number;
+                                weight: number;
+                            }[];
+                            weakest: string[];
+                            strongest: string[];
+                            review: {
+                                id: number;
+                                n: number;
+                                topic: string;
+                                prompt: string;
+                                options: string[];
+                                choice: number | null;
+                                right: number;
+                                correct: boolean;
+                                explanation: string;
+                                source: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example This test is still open.
+                         */
                         message: string;
                     };
                 };

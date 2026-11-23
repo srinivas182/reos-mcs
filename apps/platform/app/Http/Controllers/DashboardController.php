@@ -11,6 +11,7 @@ use App\Enums\OrganisationType;
 use App\Models\Licence;
 use App\Models\User;
 use App\Monitoring\PlatformOverview;
+use App\Practice\CandidateToday;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Calendar\CalendarView;
 use App\Services\StateRules\CeRequirements;
@@ -30,7 +31,7 @@ use Inertia\Response;
  */
 final class DashboardController extends Controller
 {
-    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CalendarView $calendar, PersonStates $states, CeRequirements $requirements, PlatformOverview $overview, CourseApprovals $approvals, InstructorDashboard $teaching): Response
+    public function __invoke(Request $request, #[CurrentUser] User $user, ActiveRole $roles, CalendarView $calendar, PersonStates $states, CeRequirements $requirements, PlatformOverview $overview, CourseApprovals $approvals, InstructorDashboard $teaching, CandidateToday $study): Response
     {
         // The REOS super admin's home is the platform overview (screen 58, A6.1).
         if ($roles->for($user)?->role === Role::SuperAdmin) {
@@ -53,6 +54,8 @@ final class DashboardController extends Controller
             'ce' => $agent ? $this->ce($user, $states, $requirements) : null,
             /** Course approvals in force and what needs attention (school admins, screen 49, A7.1). */
             'approvals' => $school === null ? null : $approvals->summary($school),
+            /** Readiness, streak, exam date, Continue and today's plan (candidates, screen 4, A8.3). */
+            'study' => $membership?->role === Role::Candidate ? $study->for($user) : null,
             /** Reviews, sessions, pass rate, today and the most-missed topics (instructors, screen 42, A7.2). */
             'teaching' => $teaches === null ? null : $teaching->for($user, $teaches),
         ]);
