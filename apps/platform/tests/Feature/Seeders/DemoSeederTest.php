@@ -105,3 +105,11 @@ it('gives each persona their roles in their organisation, and can run again', fu
         expect($roles($persona->email))->not->toBeEmpty();
     }
 });
+
+it('shows James Miller his sample HAR listings, as in the agent journey (B10.1)', function () {
+    $this->seed(DemoSeeder::class);
+    $james = User::query()->where('email', 'james.miller@'.Personas::DOMAIN)->sole();
+
+    $this->actingAs($james)->getJson('/api/v1/listings')->assertOk()
+        ->assertJsonPath('data.linked.0.name', 'James Miller')->assertJsonPath('data.sample', true)->assertJsonCount(4, 'data.listings');
+});

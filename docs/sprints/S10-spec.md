@@ -184,7 +184,19 @@
 - **Sync:** every 15 minutes per MLS, platform-wide (one feed serves every agent); deleted or off-market listings removed.
 - **Agent link:** the agent's **MLS member** record is found by their TREC licence (`MemberStateLicense`) and confirmed by the agent; listings where they're the list or co-list agent become **My listings**.
 - **Screens:** web My listings and phone listings in Deals; listings beside deals; demo data on the Simulator says "sample data".
-- **Done when:** an agent's active listings appear within 15 minutes.
+- **As built, B10.1** (ADR 0042):
+  - **Register:** each MLS entry has an `mls` block with its vendor, dataset and short name: HAR (Bridge, `har`), NTREIS (Trestle), Unlock MLS (MLS Grid, `actris`) and SABOR (vendor to confirm, so Simulator only). The keys follow each vendor: Bridge and MLS Grid use a token, Trestle uses client credentials. Each MLS gets a connection test that reads one office.
+  - **One RESO Web API driver:** OData paging on the vendor's host, Trestle's token, `$expand=Media`, MLS Grid's `OriginatingSystemName` and `MlgCanView`, and refused keys, rate limits and outages handled.
+  - **Sync every 15 minutes** (`reos:mls:sync`, one job per MLS):
+    - Offices, members, listings with photos, and open houses, replicated by `ModificationTimestamp`.
+    - Off-market and withdrawn listings are removed, and deleted ones are found by a daily key check.
+    - Switching between the Simulator and the vendor purges the other source's records.
+  - **Simulator:** demo RESO feeds for all four MLSs. HAR has James Miller's listings: one coming soon, one active with an open house, one pending as co-lister, and one sold.
+  - **My listings** (web, beside Deals; phone, from the Deals pipeline):
+    - "Is this you?" shows the member record found by the agent's licence: Yes / Not me. A record links to one account. Unlink offers Undo.
+    - The listings show status, price or sold price, beds, baths and size, the agent's role, the MLS number, days on market and the next open house. Simulator listings say "Sample data".
+  - **Demo:** James Miller and Dana Brooks are linked to their HAR records.
+- **Done when:** an agent's active listings appear within 15 minutes. ✅ Met: the sync runs every 15 minutes, and `MlsFeedsTest` shows an agent's listings once their member record is confirmed.
 
 ### B10.2 Listing services (Team B)
 

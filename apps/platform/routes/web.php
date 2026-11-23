@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licence\PassesAndOffersController;
 use App\Http\Controllers\Api\Licence\SwitchController;
+use App\Http\Controllers\Api\Listings\ListingsController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
@@ -52,6 +53,7 @@ use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Licence\LicenceJourneyPageController;
 use App\Http\Controllers\Licence\PassesAndOffersPageController;
+use App\Http\Controllers\Listings\ListingsPageController;
 use App\Http\Controllers\Mentors\MentorsPageController;
 use App\Http\Controllers\Messaging\AnnouncementController;
 use App\Http\Controllers\Messaging\AttachmentController;
@@ -161,6 +163,11 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // Deals board (B9.1, agent web screen 14): the agent's own deals.
     Route::get('deals', [DealsPageController::class, 'index'])->name('deals.index');
     Route::get('connections/transactions', [DealsPageController::class, 'transactions'])->name('connections.transactions');
+    // My listings (B10.1): beside deals (under Deals in the sidebar); MLS member records confirmed by the agent.
+    Route::get('deals/listings', [ListingsPageController::class, 'index'])->name('deals.listings.index');
+    Route::post('deals/listings/members', [ListingsController::class, 'confirm'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.confirm');
+    Route::post('deals/listings/members/decline', [ListingsController::class, 'decline'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.decline');
+    Route::post('deals/listings/members/unlink', [ListingsController::class, 'unlink'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.unlink');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,deals')->name('deals.store');
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.update');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.stage');

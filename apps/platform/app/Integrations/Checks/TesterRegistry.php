@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Integrations\Checks;
 
+use App\Integrations\Catalogue;
 use App\Integrations\Checks\Testers\GrafanaOtlpTester;
 use App\Integrations\Checks\Testers\KeysPresentTester;
+use App\Integrations\Checks\Testers\MlsFeedTester;
 use App\Integrations\Checks\Testers\OAuthClientTester;
 use App\Integrations\Checks\Testers\PostHogTester;
 use App\Integrations\Checks\Testers\SentryTester;
@@ -60,8 +62,11 @@ final class TesterRegistry
 
         $factory = self::testers()[$integrationId] ?? null;
 
-        return $this->resolved[$integrationId] = $factory !== null
-            ? $factory($this->container)
-            : $this->container->make(KeysPresentTester::class);
+        return $this->resolved[$integrationId] = match (true) {
+            $factory !== null => $factory($this->container),
+            // MLS feeds (B10.1): every register entry with an `mls` block.
+            $this->container->make(Catalogue::class)->find($integrationId)?->mls !== null => $this->container->make(MlsFeedTester::class),
+            default => $this->container->make(KeysPresentTester::class),
+        };
     }
 }

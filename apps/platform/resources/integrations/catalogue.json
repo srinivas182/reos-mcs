@@ -1492,7 +1492,7 @@
       "personal_data": false,
       "sandbox": "Bridge test dataset.",
       "connection": {
-        "auth": "oauth2",
+        "auth": "api_key",
         "accounts": "platform",
         "fields": [
           {
@@ -1500,23 +1500,21 @@
             "secret": false,
             "required": true,
             "kind": "url",
-            "default": null
+            "default": "https://api.bridgedataoutput.com/api/v2/OData/har"
           },
           {
-            "key": "client_id",
-            "secret": false,
-            "required": true,
-            "kind": "text",
-            "default": null
-          },
-          {
-            "key": "client_secret",
+            "key": "access_token",
             "secret": true,
             "required": true,
             "kind": "text",
             "default": null
           }
         ]
+      },
+      "mls": {
+        "vendor": "bridge",
+        "dataset": "har",
+        "short_name": "HAR"
       }
     },
     {
@@ -1540,7 +1538,7 @@
             "secret": false,
             "required": true,
             "kind": "url",
-            "default": null
+            "default": "https://api-trestle.corelogic.com/trestle/odata"
           },
           {
             "key": "client_id",
@@ -1557,6 +1555,11 @@
             "default": null
           }
         ]
+      },
+      "mls": {
+        "vendor": "trestle",
+        "dataset": "ntreis",
+        "short_name": "NTREIS"
       }
     },
     {
@@ -1572,7 +1575,7 @@
       "personal_data": false,
       "sandbox": "On approval.",
       "connection": {
-        "auth": "oauth2",
+        "auth": "api_key",
         "accounts": "platform",
         "fields": [
           {
@@ -1580,23 +1583,21 @@
             "secret": false,
             "required": true,
             "kind": "url",
-            "default": null
+            "default": "https://api.mlsgrid.com/v2"
           },
           {
-            "key": "client_id",
-            "secret": false,
-            "required": true,
-            "kind": "text",
-            "default": null
-          },
-          {
-            "key": "client_secret",
+            "key": "access_token",
             "secret": true,
             "required": true,
             "kind": "text",
             "default": null
           }
         ]
+      },
+      "mls": {
+        "vendor": "mls_grid",
+        "dataset": "actris",
+        "short_name": "Unlock MLS"
       }
     },
     {
@@ -1637,6 +1638,11 @@
             "default": null
           }
         ]
+      },
+      "mls": {
+        "vendor": "to_confirm",
+        "dataset": "sabor",
+        "short_name": "SABOR"
       }
     },
     {

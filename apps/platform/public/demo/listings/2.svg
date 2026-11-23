@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Sample listing photo 2">
+<rect width="800" height="600" fill="#e8ede3"/>
+<rect y="470" width="800" height="130" fill="#cfd8c4"/>
+<polygon points="140,300 400,150 660,300" fill="#3d5a40"/>
+<rect x="170" y="300" width="460" height="200" fill="#faf7f0"/>
+<rect x="370" y="390" width="60" height="110" fill="#b5654a"/>
+<rect x="210" y="340" width="80" height="60" fill="#e8ede3" stroke="#3d5a40" stroke-width="6"/>
+<rect x="510" y="340" width="80" height="60" fill="#e8ede3" stroke="#3d5a40" stroke-width="6"/>
+<text x="400" y="560" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#3d5a40">Sample photo</text>
+</svg>

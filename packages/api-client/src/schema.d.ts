@@ -2018,6 +2018,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/listings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My listings
+         * @description Listings from my confirmed MLS member records, on the market first; member records found by my licence that I haven't answered; and whether the MLS data is sample data (Simulator).
+         */
+        get: operations["listings.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/listings/members": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm my MLS member record
+         * @description "This is me": one found by my licence number. Its listings become mine.
+         */
+        post: operations["listings.members.confirm"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/listings/members/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Not my MLS member record
+         * @description "Not me": REOS stops suggesting it.
+         */
+        post: operations["listings.members.decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/listings/members/unlink": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Unlink my MLS member record
+         * @description Its listings leave My listings; confirming it again brings them back.
+         */
+        post: operations["listings.members.unlink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/math": {
         parameters: {
             query?: never;
@@ -4992,6 +5072,14 @@ export interface components {
             admin: boolean;
         };
         /**
+         * MlsMemberRequest
+         * @description An MLS member record, by its MLS (register id) and member key (B10.1).
+         */
+        MlsMemberRequest: {
+            mls: string;
+            member_key: string;
+        };
+        /**
          * NotificationSettingsRequest
          * @description Notification settings (B6.2): channels per kind, digests, quiet hours and time zone.
          */
@@ -5661,6 +5749,7 @@ export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMathCheckRequest = components['schemas']['MathCheckRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
+export type SchemaMlsMemberRequest = components['schemas']['MlsMemberRequest'];
 export type SchemaNotificationSettingsRequest = components['schemas']['NotificationSettingsRequest'];
 export type SchemaOnboardingPath = components['schemas']['OnboardingPath'];
 export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest'];
@@ -12235,6 +12324,341 @@ export interface operations {
                                 city: string | null;
                                 open: number;
                             };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "listings.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            licensed: boolean;
+                            linked: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            candidates: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            listings: {
+                                uuid: string;
+                                mls: string;
+                                short_name: string;
+                                listing_id: string | null;
+                                status: string;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                address: string;
+                                city: string | null;
+                                price: number | null;
+                                close_price: number | null;
+                                beds: number | null;
+                                baths: number | null;
+                                area: number | null;
+                                photo: {
+                                    url: string;
+                                    caption: string | null;
+                                } | null;
+                                photos: number;
+                                listed_on: string | null;
+                                days_on_market: number | null;
+                                office: string | null;
+                                open_house: {
+                                    starts_at: string;
+                                    ends_at: string;
+                                    kind: string;
+                                } | null;
+                            }[];
+                            sample: boolean;
+                            synced_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "listings.members.confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MlsMemberRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            licensed: boolean;
+                            linked: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            candidates: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            listings: {
+                                uuid: string;
+                                mls: string;
+                                short_name: string;
+                                listing_id: string | null;
+                                status: string;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                address: string;
+                                city: string | null;
+                                price: number | null;
+                                close_price: number | null;
+                                beds: number | null;
+                                baths: number | null;
+                                area: number | null;
+                                photo: {
+                                    url: string;
+                                    caption: string | null;
+                                } | null;
+                                photos: number;
+                                listed_on: string | null;
+                                days_on_market: number | null;
+                                office: string | null;
+                                open_house: {
+                                    starts_at: string;
+                                    ends_at: string;
+                                    kind: string;
+                                } | null;
+                            }[];
+                            sample: boolean;
+                            synced_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "listings.members.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MlsMemberRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            licensed: boolean;
+                            linked: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            candidates: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            listings: {
+                                uuid: string;
+                                mls: string;
+                                short_name: string;
+                                listing_id: string | null;
+                                status: string;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                address: string;
+                                city: string | null;
+                                price: number | null;
+                                close_price: number | null;
+                                beds: number | null;
+                                baths: number | null;
+                                area: number | null;
+                                photo: {
+                                    url: string;
+                                    caption: string | null;
+                                } | null;
+                                photos: number;
+                                listed_on: string | null;
+                                days_on_market: number | null;
+                                office: string | null;
+                                open_house: {
+                                    starts_at: string;
+                                    ends_at: string;
+                                    kind: string;
+                                } | null;
+                            }[];
+                            sample: boolean;
+                            synced_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "listings.members.unlink": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MlsMemberRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            licensed: boolean;
+                            linked: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            candidates: {
+                                mls: string;
+                                short_name: string;
+                                member_key: string;
+                                name: string;
+                                office: string | null;
+                                office_city: string | null;
+                            }[];
+                            listings: {
+                                uuid: string;
+                                mls: string;
+                                short_name: string;
+                                listing_id: string | null;
+                                status: string;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                address: string;
+                                city: string | null;
+                                price: number | null;
+                                close_price: number | null;
+                                beds: number | null;
+                                baths: number | null;
+                                area: number | null;
+                                photo: {
+                                    url: string;
+                                    caption: string | null;
+                                } | null;
+                                photos: number;
+                                listed_on: string | null;
+                                days_on_market: number | null;
+                                office: string | null;
+                                open_house: {
+                                    starts_at: string;
+                                    ends_at: string;
+                                    kind: string;
+                                } | null;
+                            }[];
+                            sample: boolean;
+                            synced_at: string | null;
                         };
                     };
                 };

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Integrations;
 
+use App\Mls\MlsDefinition;
+use App\Mls\MlsVendor;
 use JsonException;
 use RuntimeException;
 
@@ -90,6 +92,11 @@ final class Catalogue
                 fn (mixed $field): ConnectionField => $this->field(is_array($field) ? $field : []),
                 $fields,
             )),
+            mls: is_array($entry['mls'] ?? null) ? new MlsDefinition(
+                vendor: MlsVendor::from($this->string($entry['mls'], 'vendor')),
+                dataset: $this->string($entry['mls'], 'dataset'),
+                shortName: $this->string($entry['mls'], 'short_name'),
+            ) : null,
         );
     }
 

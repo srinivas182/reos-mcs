@@ -18,6 +18,7 @@ use Database\Seeders\Demo\DemoContacts;
 use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
+use Database\Seeders\Demo\DemoListings;
 use Database\Seeders\Demo\DemoMessages;
 use Database\Seeders\Demo\DemoPayouts;
 use Database\Seeders\Demo\DemoReleases;
@@ -98,6 +99,8 @@ final class DemoSeeder extends Seeder
         app(DemoSessions::class)->seed();
         // James Miller's contacts from his CRM and phone, each person once (B7.1).
         app(DemoContacts::class)->seed();
+        // Sample MLS listings, James and Dana linked to their HAR records (B10.1).
+        app(DemoListings::class)->seed();
     }
 
     private function organisation(string $name): Organisation
