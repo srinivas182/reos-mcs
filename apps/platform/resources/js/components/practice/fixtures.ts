@@ -8,6 +8,7 @@ import type {
     MathProblem,
     ReadinessMap,
     ReportShares,
+    StudyGroup,
     Results,
     StudyToday,
     TopicPlan,
@@ -626,4 +627,22 @@ export const challengeBoard: ChallengeBoard = {
             finished: false,
         },
     ],
+};
+
+/** Sofia's study group this week (screen 52, A9.3c): first names only. */
+export const studyGroup: StudyGroup = {
+    id: 3,
+    uuid: '0b6d5b8e-7f43-4c1e-a2f1-5d3e9c8b7a61',
+    name: 'Night owls',
+    link: 'https://reos.com/groups/0b6d5b8e-7f43-4c1e-a2f1-5d3e9c8b7a61',
+    school: null,
+    members: 3,
+    max: 20,
+    mine: true,
+    leaderboard: [
+        { first_name: 'Marco', questions: 64, accuracy: 81, mine: false },
+        { first_name: 'Sofia', questions: 42, accuracy: 74, mine: true },
+        { first_name: 'Lena', questions: 0, accuracy: null, mine: false },
+    ],
+    week_start: '2026-11-23',
 };

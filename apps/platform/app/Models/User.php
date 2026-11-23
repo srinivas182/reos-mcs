@@ -35,6 +35,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $current_state The state they work in now (the state switcher, A5.1)
  * @property Carbon|null $exam_month
  * @property int|null $minutes_per_day
+ * @property bool $study_groups_opt_in Opted in to study groups from Profile (A9.3c)
  * @property string|null $reminder_time
  * @property Carbon|null $onboarded_at
  * @property string|null $password
@@ -116,6 +117,7 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
             'deletion_requested_at' => 'datetime',
             'exam_month' => 'date',
             'minutes_per_day' => 'integer',
+            'study_groups_opt_in' => 'boolean',
             'onboarded_at' => 'datetime',
             'password' => 'hashed',
             'appearance' => Appearance::class,

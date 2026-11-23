@@ -11,6 +11,7 @@ import {
     attempt,
     challengeBoard,
     coach,
+    studyGroup,
     deck,
     drillAttempt,
     hub,
@@ -855,7 +856,13 @@ describe('challenges (screen 52, A9.3b)', () => {
                 201,
             ),
         );
-        render(<ChallengesPage challenges={[challengeBoard]} />);
+        render(
+            <ChallengesPage
+                challenges={[challengeBoard]}
+                opt_in={false}
+                groups={[]}
+            />,
+        );
 
         const board = screen.getByRole('list', { name: 'Board' });
         expect(
@@ -908,5 +915,72 @@ describe('challenges (screen 52, A9.3b)', () => {
             `/practice/challenges/${challengeBoard.uuid}/accept`,
         );
         expect(router.visit).toHaveBeenCalledWith('/practice/attempts/73');
+    });
+});
+
+describe('study groups (screen 52, A9.3c)', () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+    const reply = (data: unknown, status = 200) =>
+        new Response(JSON.stringify({ data }), {
+            status,
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+        router.visit.mockClear();
+        router.reload.mockClear();
+    });
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('turns study groups on, starts a group, and challenges it', async () => {
+        const user = userEvent.setup();
+        fetchMock.mockImplementation(() =>
+            Promise.resolve(reply({ ...challengeBoard, attempt_id: 80 }, 201)),
+        );
+        const { rerender } = render(
+            <ChallengesPage challenges={[]} opt_in={false} groups={[]} />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: 'Turn on study groups' }),
+        );
+        expect(fetchMock.mock.calls[0]?.[0]).toBe('/practice/groups/opt-in');
+        expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+            opt_in: true,
+        });
+        expect(router.reload).toHaveBeenCalled();
+
+        rerender(
+            <I18nextProvider i18n={i18n}>
+                <ChallengesPage challenges={[]} opt_in groups={[studyGroup]} />
+            </I18nextProvider>,
+        );
+        await user.type(screen.getByLabelText('Group name'), 'Weekend crew');
+        await user.click(screen.getByRole('button', { name: 'Start a group' }));
+        expect(fetchMock.mock.calls[1]?.[0]).toBe('/practice/groups');
+        expect(JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body))).toEqual({
+            name: 'Weekend crew',
+        });
+
+        const board = screen.getByRole('list', { name: 'This week' });
+        expect(
+            within(board)
+                .getAllByRole('listitem')
+                .map((li) => li.textContent),
+        ).toEqual([
+            '1. Marco64 questions · 81% right',
+            '2. Sofia (you)42 questions · 74% right',
+            '3. LenaNo answers yet',
+        ]);
+        await user.click(
+            screen.getByRole('button', { name: 'Challenge the group' }),
+        );
+        expect(fetchMock.mock.calls[2]?.[0]).toBe(
+            `/practice/groups/${studyGroup.uuid}/challenge`,
+        );
+        expect(router.visit).toHaveBeenCalledWith('/practice/attempts/80');
     });
 });

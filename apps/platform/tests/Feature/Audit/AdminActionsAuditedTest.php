@@ -596,6 +596,12 @@ function adminActions(): array
 
             return auditCase($paul, 'PUT', "/school/approvals/{$approval->id}/status", ['status' => 'withdrawn'], tenant: $school->id);
         },
+        // School: class study groups (A9.3c).
+        'school.groups.store' => function () {
+            [$school, $paul] = auditSchoolCourse();
+
+            return auditCase($paul, 'POST', '/school/groups', ['name' => 'January evening class'], tenant: $school->id);
+        },
         // School: instructors (A7.1b, screen 52).
         'school.instructors.courses' => function () {
             [$school, $paul, $course] = auditSchoolCourse();

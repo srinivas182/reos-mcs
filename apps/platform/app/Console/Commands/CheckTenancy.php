@@ -32,6 +32,7 @@ final class CheckTenancy extends Command
         'conversations' => 'Messages (B6.1, ADR 0023): a conversation spans tenants (a team agent and the brokerage\'s broker); only its participants can open it, checked in Conversations and on the live channel. organisation_id is only where it started.',
         'quiz_questions' => 'Question bank (A8.1, ADR 0031): a school\'s approved questions are practised by its learners in any tenant, like its courses; reviewing and editing is checked against the owner school in QuestionBank. organisation_id is the owner, empty for REOS\'s bank.',
         'courses' => 'Courses (A7.1, ADR 0025): a school\'s courses are sold to learners in any tenant (an agent at a brokerage takes a school\'s CE course); editing is checked against the owner school in CourseApprovals and the course builder. organisation_id is the owner, empty for REOS courses.',
+        'study_groups' => 'Study groups (A9.3c, ADR 0036): a group spans tenants (a school\'s class group joined by candidates studying through REOS or the school), found by its unguessable invite link; membership is checked in StudyGroups, and a school sees only its own groups\' member counts. organisation_id is the school that made it, empty for a candidate\'s own group.',
         'video_sessions' => 'Video sessions (B6.3, ADR 0024): a session spans tenants (a school\'s instructor and a brokerage\'s agent); only its participants can open it, checked in VideoSessions and when minting the room token. organisation_id is only the host\'s organisation.',
     ];
 

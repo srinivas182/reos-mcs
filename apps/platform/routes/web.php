@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Practice\MathLabController;
 use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeController;
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
+use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
@@ -81,6 +82,8 @@ Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind',
 // The public status page (A6.1).
 // The terms and the privacy notice people agree to (A6.3).
 // A weekly progress report shared with a study buddy (A9.2e): first name only, for 14 days.
+// A study group's invite link (A9.3c): open to anyone; sign in to join.
+Route::get('groups/{group}', [ChallengePageController::class, 'group'])->whereUuid('group')->middleware('throttle:60,1,groups')->name('groups.show');
 // A challenge's share link (A9.3b): open to anyone; sign in to accept.
 Route::get('challenges/{challenge}', [ChallengePageController::class, 'show'])->whereUuid('challenge')->middleware('throttle:60,1,challenges')->name('challenges.show');
 Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
@@ -188,6 +191,11 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::get('practice/progress', [PracticePageController::class, 'progress'])->name('practice.progress');
     Route::get('practice/challenges', [ChallengePageController::class, 'index'])->name('practice.challenges');
     Route::post('practice/challenges', [ChallengeController::class, 'store'])->middleware('throttle:20,1,practice-challenges')->name('practice.challenges.store');
+    Route::put('practice/groups/opt-in', [StudyGroupController::class, 'optIn'])->middleware('throttle:20,1,practice-groups')->name('practice.groups.opt-in');
+    Route::post('practice/groups', [StudyGroupController::class, 'store'])->middleware('throttle:10,1,practice-groups')->name('practice.groups.store');
+    Route::post('practice/groups/{group}/join', [StudyGroupController::class, 'join'])->whereUuid('group')->middleware('throttle:20,1,practice-groups')->name('practice.groups.join');
+    Route::post('practice/groups/{group}/leave', [StudyGroupController::class, 'leave'])->whereUuid('group')->middleware('throttle:20,1,practice-groups')->name('practice.groups.leave');
+    Route::post('practice/groups/{group}/challenge', [StudyGroupController::class, 'challenge'])->whereUuid('group')->middleware('throttle:20,1,practice-challenges')->name('practice.groups.challenge');
     Route::post('practice/challenges/{challenge}/accept', [ChallengeController::class, 'accept'])->whereUuid('challenge')->middleware('throttle:30,1,practice-challenges')->name('practice.challenges.accept');
     Route::post('practice/reports/weekly/share', [ReportController::class, 'share'])->middleware('throttle:20,1,practice-reports')->name('practice.reports.share');
     // Flashcards and the speed round (A9.2d): the pages, and their JSON.
@@ -286,6 +294,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
 });
 // Students (A9.2e): weekly reports candidates shared with the school.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->get('school/students', [SchoolStudentsController::class, 'index'])->name('school.students.index');
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage', 'throttle:20,1,school-groups'])->post('school/groups', [SchoolStudentsController::class, 'storeGroup'])->name('school.groups.store');
 // Course catalogue and state approvals (A7.1, school admin screen 50).
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->prefix('school/approvals')->name('school.approvals.')->group(function () {
     Route::get('/', [SchoolApprovalsController::class, 'index'])->name('index');

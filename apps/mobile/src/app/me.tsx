@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Download, IdCard, Languages, Map, ShieldCheck, Plug, Wallet } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Download, IdCard, Languages, Map, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -89,6 +89,7 @@ export default function MeScreen() {
         {licensed ? <MenuRow icon={IdCard} title={t('mobile.me.licences')} onPress={() => router.push('/licences')} /> : null}
         {current?.role === 'instructor' || current?.role === 'mentor' ? <MenuRow icon={Wallet} title={t('mobile.me.earnings')} onPress={() => router.push('/earnings')} /> : null}
         {states && states.options.length > 1 ? <MenuRow icon={Map} title={t('mobile.me.state')} value={states.current.name} onPress={() => setSheet('states')} /> : null}
+        {current?.role === 'candidate' ? <MenuRow icon={Users} title={t('practice.groups.profileTitle')} onPress={() => router.push('/practice/groups')} /> : null}
         <MenuRow icon={Plug} title={t('mobile.me.connections')} onPress={() => router.push('/connections')} />
         <MenuRow icon={Download} title={t('player.downloads.title')} onPress={() => router.push('/downloads')} />
         <MenuRow icon={Bell} title={t('notifications.settingsTitle')} onPress={() => router.push('/notification-settings')} />

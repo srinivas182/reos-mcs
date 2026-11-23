@@ -6,9 +6,11 @@ namespace App\Http\Controllers\Practice;
 
 use App\Http\Controllers\Controller;
 use App\Models\Challenge;
+use App\Models\StudyGroup;
 use App\Models\User;
 use App\Practice\Challenges;
 use App\Practice\PracticeAccess;
+use App\Practice\StudyGroups;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,7 +29,12 @@ final class ChallengePageController extends Controller
         abort_unless($user instanceof User, 403);
         $access->allow($user);
 
-        return Inertia::render('practice/challenges', ['challenges' => $challenges->mine($user)]);
+        return Inertia::render('practice/challenges', [
+            'challenges' => $challenges->mine($user),
+            // Study groups (A9.3c): on from Profile.
+            'opt_in' => $user->study_groups_opt_in,
+            'groups' => app(StudyGroups::class)->mine($user),
+        ]);
     }
 
     public function show(string $challenge, Request $request, PracticeAccess $access, Challenges $challenges): Response
@@ -47,5 +54,22 @@ final class ChallengePageController extends Controller
         $board = $challenges->board($found, $user);
 
         return Inertia::render('practice/challenge', ['challenge' => $challenges->takesPart($user, $found) ? $board : ['entries' => []] + $board]);
+    }
+
+    /** A study group's invite link (A9.3c): signed out, its name and sign in; signed in, Join. */
+    public function group(string $group, Request $request, PracticeAccess $access, StudyGroups $groups): Response
+    {
+        $found = StudyGroup::query()->where('uuid', $group)->firstOrFail();
+        $user = $request->user();
+
+        if (! $user instanceof User) {
+            $request->session()->put('url.intended', $request->fullUrl());
+
+            return Inertia::render('public/group', ['name' => $found->name, 'members' => $found->members()->count()]);
+        }
+
+        $access->allow($user);
+
+        return Inertia::render('practice/group', ['group' => $groups->show($found, $user, $groups->isMember($user, $found)), 'opt_in' => $user->study_groups_opt_in]);
     }
 }
