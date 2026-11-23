@@ -12,6 +12,7 @@ use App\Notifications\ChallengeFinished;
 use App\Services\States\PersonStates;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\UniqueConstraintViolationException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -140,15 +141,17 @@ final readonly class Challenges
     }
 
     /**
-     * The candidate's challenges, newest first: the ones they sent and the
-     * ones they accepted.
+     * The candidate's challenges, newest first: the ones they sent, the ones
+     * they accepted, and open ones sent to their study groups.
      *
      * @return list<Board>
      */
     public function mine(User $user): array
     {
         return array_values(Challenge::query()
-            ->where(static fn ($q) => $q->where('user_id', $user->id)->orWhereHas('attempts', static fn ($a) => $a->where('user_id', $user->id)))
+            ->where(static fn ($q) => $q->where('user_id', $user->id)->orWhereHas('attempts', static fn ($a) => $a->where('user_id', $user->id))
+                // Sent to a study group the candidate is in (A9.3c), while it's open.
+                ->orWhere(static fn ($g) => $g->where('expires_at', '>', now())->whereIn('study_group_id', DB::table('study_group_members')->where('user_id', $user->id)->select('study_group_id'))))
             ->with('user')->latest('id')->limit(20)->get()
             ->map(fn (Challenge $c): array => $this->board($c, $user))->all());
     }

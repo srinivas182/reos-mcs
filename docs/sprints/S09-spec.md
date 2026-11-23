@@ -184,6 +184,11 @@
   - **Hints** cost 5 points, in challenges only.
   - **The board** shows points with first names only, to those who took part. A notification goes to the others when someone finishes.
   - **The link** opens for anyone, signed out included (first name and sign in).
+- **As built, A9.3c** (ADR 0036 §12–17):
+  - **Study groups** (phone screen 52 from Practice and Me; the web Challenges page): opt in from Profile; off leaves every group.
+  - **Groups:** private, up to 20, joined by invite link (the share sheet or copy link). Members see this week's leaderboard of questions answered and accuracy, first names only.
+  - **Group challenges:** Challenge the group sends the same 10 questions to every member, with a notification.
+  - **Schools** make class groups from Students and see member counts only.
 - **Done when:** the voice quiz works on the lock screen, and a challenge sent by link is answered by a second candidate with the same questions.
 
 ### B9.1 Lone Wolf (Team B)

@@ -264,3 +264,48 @@ export async function acceptChallenge(uuid: string): Promise<ChallengeBoard | nu
 
   return data?.data ?? null;
 }
+
+/** Study groups (screen 52, A9.3c): opt-in from Profile, a weekly leaderboard, first names only. */
+export type StudyGroups = Got<'/practice/groups'>['data'];
+export type StudyGroup = StudyGroups['groups'][number];
+
+export async function loadGroups(): Promise<StudyGroups | null> {
+  const { data } = await api().GET('/practice/groups');
+
+  return data?.data ?? null;
+}
+
+export async function setGroupsOptIn(on: boolean): Promise<StudyGroups | null> {
+  const { data } = await api().PUT('/practice/groups/opt-in', { body: { opt_in: on } });
+
+  return data?.data ?? null;
+}
+
+export async function createGroup(name: string): Promise<StudyGroup | null> {
+  const { data } = await api().POST('/practice/groups', { body: { name } });
+
+  return data?.data ?? null;
+}
+
+export async function loadGroup(uuid: string): Promise<StudyGroup | null> {
+  const { data } = await api().GET('/practice/groups/{group}', { params: { path: { group: uuid } } });
+
+  return data?.data ?? null;
+}
+
+/** Join by invite link; the error's message when it can't (not opted in, or full). */
+export async function joinGroup(uuid: string): Promise<{ group: StudyGroup | null; error: string | null }> {
+  const { data, error } = await api().POST('/practice/groups/{group}/join', { params: { path: { group: uuid } } });
+
+  return { group: data?.data ?? null, error: data ? null : ((error as { message?: string } | undefined)?.message ?? null) };
+}
+
+export async function leaveGroup(uuid: string): Promise<void> {
+  await api().POST('/practice/groups/{group}/leave', { params: { path: { group: uuid } } });
+}
+
+export async function challengeGroup(uuid: string): Promise<ChallengeBoard | null> {
+  const { data } = await api().POST('/practice/groups/{group}/challenge', { params: { path: { group: uuid } } });
+
+  return data?.data ?? null;
+}

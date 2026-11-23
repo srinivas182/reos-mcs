@@ -1,6 +1,6 @@
 # ADR 0036: Hands-free mode, challenges and study groups
 
-- Status: Accepted (hands-free mode, A9.3a; challenges, A9.3b)
+- Status: Accepted (hands-free mode, A9.3a; challenges, A9.3b; study groups, A9.3c)
 - Date: 2026-11-23 (Sprint 9; spec in docs/sprints/S09-spec.md)
 
 ## Context
@@ -56,6 +56,20 @@ Sprint 9 decision 4 settled the approach:
 **Consequences:**
 - The share link opens on the web. The app opens it from notifications and from `reos://challenges/{uuid}`.
 - Universal links (`https://reos.com/challenges/…` opening the app) come with the store builds and associated domains.
+
+## Decision (study groups, A9.3c; screen 52)
+
+12. **Opt-in first.** `users.study_groups_opt_in` is off by default and is turned on from Profile: the web settings profile, or Me → Study groups on the phone.
+    - Only opted-in candidates can start or join a group.
+    - Turning it off leaves every group at once.
+13. **Private groups of up to 20,** joined by an unguessable invite link (`/groups/{uuid}`). The limit is checked under a row lock.
+    - A signed-out visitor sees the group's name and size and a sign-in button.
+    - A member can leave at any time.
+14. **The weekly leaderboard** covers Monday to Sunday in Texas time: questions answered and the share right, from submitted tests (`by_topic`), with first names only and most questions first.
+    - It's visible to members only. The invite page shows the name and size, never the board.
+15. **A member can challenge the whole group** (§7). Every other member gets a `challenge` notification, and the challenge waits in their Challenges until it closes.
+16. **A school can make a class group** from its Students page. The school isn't a member: it sees each group's invite link and how many joined, never scores.
+17. **Tenancy:** `study_groups.organisation_id` is the school that made a class group, or empty. The table is on `CheckTenancy::EXEMPT` because one group spans tenants: a candidate may study through REOS while their class group is the school's. Access is checked by membership in `StudyGroups`, and the school's page reads only its own groups.
 
 ## Consequences
 

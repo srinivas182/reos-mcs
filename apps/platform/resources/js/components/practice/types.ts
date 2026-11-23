@@ -398,3 +398,22 @@ export type ChallengeBoard = {
         finished: boolean;
     }[];
 };
+
+/** A study group with this week's leaderboard (screen 52, A9.3c): first names only. */
+export type StudyGroup = {
+    id: number;
+    uuid: string;
+    name: string;
+    link: string;
+    school: string | null;
+    members: number;
+    max: number;
+    mine: boolean;
+    leaderboard: {
+        first_name: string;
+        questions: number;
+        accuracy: number | null;
+        mine: boolean;
+    }[];
+    week_start: string;
+};

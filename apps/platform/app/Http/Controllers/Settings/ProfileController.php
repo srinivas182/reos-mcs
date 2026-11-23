@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Settings;
 
+use App\Authorization\Role;
 use App\Enums\StateStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
@@ -10,6 +11,7 @@ use App\Http\Resources\Licences\LicenceResource;
 use App\Models\PrivacyRequest;
 use App\Models\State;
 use App\Models\User;
+use App\Services\Authorization\Memberships;
 use App\Services\Identity\AccountDeletion;
 use App\Services\Licences\Licences;
 use App\Services\Privacy\PrivacyRequests;
@@ -32,6 +34,9 @@ class ProfileController extends Controller
 
         return Inertia::render('settings/profile', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
+            // Study groups (A9.3c): candidates opt in here.
+            'studyGroups' => $user instanceof User && collect(app(Memberships::class)->of($user))->contains(static fn ($m): bool => $m->role === Role::Candidate)
+                ? ['opt_in' => $user->study_groups_opt_in] : null,
             'status' => $request->session()->get('status'),
             // Licences in every state (A5.1, web journey screen 23).
             'licences' => $user instanceof User ? LicenceResource::collection(app(Licences::class)->of($user))->resolve($request) : [],

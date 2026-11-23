@@ -2143,7 +2143,8 @@
         "starter_question.retire": "Retiró una pregunta del banco inicial",
         "starter_question.restore": "Deshizo una decisión del banco inicial",
         "starter_question.edited": "Editó una pregunta del banco inicial",
-        "course.exam_success_installed": "Instaló el curso Éxito en el examen para revisión"
+        "course.exam_success_installed": "Instaló el curso Éxito en el examen para revisión",
+        "study_group.created": "Creó un grupo de estudio de clase"
       }
     }
   },
@@ -6559,6 +6560,52 @@
       "share": "Compartir el desafío",
       "shareMessage": "Le desafío a 10 preguntas del examen de Texas en REOS: {{link}}",
       "hub": "Desafíe a un amigo con las mismas 10 preguntas."
+    },
+    "groups": {
+      "errors": {
+        "full": "Este grupo está lleno (:max miembros).",
+        "optIn": "Primero active los grupos de estudio en su Perfil.",
+        "notMember": "Solo los miembros pueden desafiar a este grupo."
+      },
+      "mail": {
+        "title": ":name desafió a :group",
+        "body": "Las mismas 10 preguntas para todos en el grupo. Acepte y vea quién saca más puntos."
+      },
+      "title": "Grupos de estudio",
+      "description": "Grupos privados de hasta 20, con una tabla semanal de preguntas contestadas y aciertos. Solo nombres de pila.",
+      "optInLabel": "Unirme a grupos de estudio",
+      "optInBody": "Permitir que me una a grupos de estudio privados y aparezca en su tabla semanal con mi nombre de pila. Si lo desactiva, sale de todos los grupos.",
+      "off": "Los grupos de estudio están desactivados. Actívelos para crear uno o unirse a uno.",
+      "turnOn": "Activar los grupos de estudio",
+      "name": "Nombre del grupo",
+      "create": "Crear un grupo",
+      "members": "{{count}} de {{max}} miembros",
+      "school": "Grupo de clase · {{school}}",
+      "leaderboard": "Esta semana",
+      "questions_one": "{{count}} pregunta",
+      "questions_other": "{{count}} preguntas",
+      "accuracy": "{{percent}}% correctas",
+      "noAnswers": "Aún sin respuestas",
+      "you": "{{name}} (usted)",
+      "copy": "Copiar el enlace de invitación",
+      "copied": "Enlace de invitación copiado.",
+      "share": "Compartir la invitación",
+      "shareMessage": "Únase a mi grupo de estudio de REOS “{{name}}”: {{link}}",
+      "challenge": "Desafiar al grupo",
+      "leave": "Salir del grupo",
+      "left": "Salió del grupo.",
+      "join": "Unirme al grupo",
+      "joinBody_one": "{{name}} tiene {{count}} miembro. Únase para ver la tabla semanal.",
+      "joinBody_other": "{{name}} tiene {{count}} miembros. Únase para ver la tabla semanal.",
+      "signIn": "Iniciar sesión para unirse",
+      "emptyTitle": "Aún no hay grupos de estudio",
+      "empty": "Cree un grupo y comparta el enlace de invitación, o únase con un enlace que le envió un amigo o su escuela.",
+      "profileTitle": "Grupos de estudio",
+      "schoolTitle": "Grupos de estudio de clase",
+      "schoolDescription": "Cree un grupo de estudio para una clase y comparta su enlace de invitación. Usted ve cuántos se unieron, nunca sus resultados.",
+      "schoolCreate": "Crear un grupo de clase",
+      "schoolEmpty": "Aún no hay grupos de clase.",
+      "hub": "Grupos privados con una tabla semanal."
     }
   },
   "brokerageIntegrations": {

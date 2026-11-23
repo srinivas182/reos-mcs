@@ -2617,6 +2617,127 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practice/groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My study groups
+         * @description Whether study groups are on, and each group with this week's leaderboard.
+         */
+        get: operations["practice.groups.index"];
+        put?: never;
+        /**
+         * Start a study group
+         * @description I'm its first member; share its invite link.
+         */
+        post: operations["practice.groups.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/groups/opt-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Turn study groups on or off
+         * @description Off leaves every group.
+         */
+        put: operations["practice.groups.opt-in"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/groups/{group}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A study group from its invite link
+         * @description Its name and size; the leaderboard once I'm a member.
+         */
+        get: operations["practice.groups.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/groups/{group}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join a study group
+         * @description Needs study groups on in Profile; up to 20 members.
+         */
+        post: operations["practice.groups.join"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/groups/{group}/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Leave a study group */
+        post: operations["practice.groups.leave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/groups/{group}/challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Challenge the group
+         * @description The same 10 questions for every member; they're told.
+         */
+        post: operations["practice.groups.challenge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/phone": {
         parameters: {
             query?: never;
@@ -10994,6 +11115,345 @@ export interface operations {
             };
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.groups.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            opt_in: boolean;
+                            groups: {
+                                id: number;
+                                uuid: string;
+                                name: string;
+                                link: string;
+                                school: string | null;
+                                members: number;
+                                max: number;
+                                mine: boolean;
+                                leaderboard: {
+                                    first_name: string;
+                                    questions: number;
+                                    accuracy: number | null;
+                                    mine: boolean;
+                                }[];
+                                week_start: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.groups.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    name: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            name: string;
+                            link: string;
+                            school: string | null;
+                            members: number;
+                            max: number;
+                            mine: boolean;
+                            leaderboard: {
+                                first_name: string;
+                                questions: number;
+                                accuracy: number | null;
+                                mine: boolean;
+                            }[];
+                            week_start: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.groups.opt-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    opt_in: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            opt_in: boolean;
+                            groups: {
+                                id: number;
+                                uuid: string;
+                                name: string;
+                                link: string;
+                                school: string | null;
+                                members: number;
+                                max: number;
+                                mine: boolean;
+                                leaderboard: {
+                                    first_name: string;
+                                    questions: number;
+                                    accuracy: number | null;
+                                    mine: boolean;
+                                }[];
+                                week_start: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.groups.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                group: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            name: string;
+                            link: string;
+                            school: string | null;
+                            members: number;
+                            max: number;
+                            mine: boolean;
+                            leaderboard: {
+                                first_name: string;
+                                questions: number;
+                                accuracy: number | null;
+                                mine: boolean;
+                            }[];
+                            week_start: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.groups.join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                group: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            name: string;
+                            link: string;
+                            school: string | null;
+                            members: number;
+                            max: number;
+                            mine: boolean;
+                            leaderboard: {
+                                first_name: string;
+                                questions: number;
+                                accuracy: number | null;
+                                mine: boolean;
+                            }[];
+                            week_start: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.groups.leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                group: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.groups.challenge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                group: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            link: string;
+                            from: string;
+                            mine: boolean;
+                            questions: number;
+                            expires_at: string;
+                            expired: boolean;
+                            attempt_id: number | null;
+                            submitted: boolean;
+                            entries: {
+                                first_name: string;
+                                correct: number;
+                                total: number;
+                                hints: number;
+                                points: number;
+                                mine: boolean;
+                                finished: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

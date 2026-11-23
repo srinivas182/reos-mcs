@@ -36,6 +36,7 @@ use App\Http\Controllers\Api\Practice\PracticeController;
 use App\Http\Controllers\Api\Practice\ReadinessController;
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
+use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
@@ -220,6 +221,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('practice/challenges', [ChallengeController::class, 'store'])->middleware('throttle:20,1,api-practice-challenges')->name('api.practice.challenges.store');
     Route::get('practice/challenges/{challenge}', [ChallengeController::class, 'show'])->whereUuid('challenge')->name('api.practice.challenges.show');
     Route::post('practice/challenges/{challenge}/accept', [ChallengeController::class, 'accept'])->whereUuid('challenge')->middleware('throttle:30,1,api-practice-challenges')->name('api.practice.challenges.accept');
+    // Study groups (A9.3c).
+    Route::get('practice/groups', [StudyGroupController::class, 'index'])->name('api.practice.groups.index');
+    Route::put('practice/groups/opt-in', [StudyGroupController::class, 'optIn'])->middleware('throttle:20,1,api-practice-groups')->name('api.practice.groups.opt-in');
+    Route::post('practice/groups', [StudyGroupController::class, 'store'])->middleware('throttle:10,1,api-practice-groups')->name('api.practice.groups.store');
+    Route::get('practice/groups/{group}', [StudyGroupController::class, 'show'])->whereUuid('group')->name('api.practice.groups.show');
+    Route::post('practice/groups/{group}/join', [StudyGroupController::class, 'join'])->whereUuid('group')->middleware('throttle:20,1,api-practice-groups')->name('api.practice.groups.join');
+    Route::post('practice/groups/{group}/leave', [StudyGroupController::class, 'leave'])->whereUuid('group')->middleware('throttle:20,1,api-practice-groups')->name('api.practice.groups.leave');
+    Route::post('practice/groups/{group}/challenge', [StudyGroupController::class, 'challenge'])->whereUuid('group')->middleware('throttle:20,1,api-practice-challenges')->name('api.practice.groups.challenge');
     // The weekly progress report and sharing it (A9.2e).
     Route::get('practice/reports/weekly', [ReportController::class, 'show'])->name('api.practice.reports.show');
     Route::post('practice/reports/weekly/share', [ReportController::class, 'share'])->middleware('throttle:20,1,api-practice-reports')->name('api.practice.reports.share');

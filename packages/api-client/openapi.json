@@ -17408,6 +17408,878 @@
                 "security": []
             }
         },
+        "/practice/groups": {
+            "get": {
+                "operationId": "practice.groups.index",
+                "description": "Whether study groups are on, and each group with this week's leaderboard.",
+                "summary": "My study groups",
+                "tags": [
+                    "StudyGroup"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "opt_in": {
+                                                    "type": "boolean"
+                                                },
+                                                "groups": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "link": {
+                                                                "type": "string"
+                                                            },
+                                                            "school": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "members": {
+                                                                "type": "integer"
+                                                            },
+                                                            "max": {
+                                                                "type": "integer"
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "leaderboard": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "first_name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "questions": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "accuracy": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "mine": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "first_name",
+                                                                        "questions",
+                                                                        "accuracy",
+                                                                        "mine"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "week_start": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "uuid",
+                                                            "name",
+                                                            "link",
+                                                            "school",
+                                                            "members",
+                                                            "max",
+                                                            "mine",
+                                                            "leaderboard",
+                                                            "week_start"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "opt_in",
+                                                "groups"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "practice.groups.store",
+                "description": "I'm its first member; share its invite link.",
+                "summary": "Start a study group",
+                "tags": [
+                    "StudyGroup"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "minLength": 2,
+                                        "maxLength": 80
+                                    }
+                                },
+                                "required": [
+                                    "name"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "link": {
+                                                    "type": "string"
+                                                },
+                                                "school": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "max": {
+                                                    "type": "integer"
+                                                },
+                                                "mine": {
+                                                    "type": "boolean"
+                                                },
+                                                "leaderboard": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "first_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "questions": {
+                                                                "type": "integer"
+                                                            },
+                                                            "accuracy": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "first_name",
+                                                            "questions",
+                                                            "accuracy",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                },
+                                                "week_start": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "uuid",
+                                                "name",
+                                                "link",
+                                                "school",
+                                                "members",
+                                                "max",
+                                                "mine",
+                                                "leaderboard",
+                                                "week_start"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/groups/opt-in": {
+            "put": {
+                "operationId": "practice.groups.opt-in",
+                "description": "Off leaves every group.",
+                "summary": "Turn study groups on or off",
+                "tags": [
+                    "StudyGroup"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "opt_in": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "opt_in"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "opt_in": {
+                                                    "type": "boolean"
+                                                },
+                                                "groups": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "link": {
+                                                                "type": "string"
+                                                            },
+                                                            "school": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "members": {
+                                                                "type": "integer"
+                                                            },
+                                                            "max": {
+                                                                "type": "integer"
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "leaderboard": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "first_name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "questions": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "accuracy": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "mine": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "first_name",
+                                                                        "questions",
+                                                                        "accuracy",
+                                                                        "mine"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "week_start": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "uuid",
+                                                            "name",
+                                                            "link",
+                                                            "school",
+                                                            "members",
+                                                            "max",
+                                                            "mine",
+                                                            "leaderboard",
+                                                            "week_start"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "opt_in",
+                                                "groups"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/groups/{group}": {
+            "get": {
+                "operationId": "practice.groups.show",
+                "description": "Its name and size; the leaderboard once I'm a member.",
+                "summary": "A study group from its invite link",
+                "tags": [
+                    "StudyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "link": {
+                                                    "type": "string"
+                                                },
+                                                "school": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "max": {
+                                                    "type": "integer"
+                                                },
+                                                "mine": {
+                                                    "type": "boolean"
+                                                },
+                                                "leaderboard": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "first_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "questions": {
+                                                                "type": "integer"
+                                                            },
+                                                            "accuracy": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "first_name",
+                                                            "questions",
+                                                            "accuracy",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                },
+                                                "week_start": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "uuid",
+                                                "name",
+                                                "link",
+                                                "school",
+                                                "members",
+                                                "max",
+                                                "mine",
+                                                "leaderboard",
+                                                "week_start"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/groups/{group}/join": {
+            "post": {
+                "operationId": "practice.groups.join",
+                "description": "Needs study groups on in Profile; up to 20 members.",
+                "summary": "Join a study group",
+                "tags": [
+                    "StudyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "link": {
+                                                    "type": "string"
+                                                },
+                                                "school": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "members": {
+                                                    "type": "integer"
+                                                },
+                                                "max": {
+                                                    "type": "integer"
+                                                },
+                                                "mine": {
+                                                    "type": "boolean"
+                                                },
+                                                "leaderboard": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "first_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "questions": {
+                                                                "type": "integer"
+                                                            },
+                                                            "accuracy": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "first_name",
+                                                            "questions",
+                                                            "accuracy",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                },
+                                                "week_start": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "uuid",
+                                                "name",
+                                                "link",
+                                                "school",
+                                                "members",
+                                                "max",
+                                                "mine",
+                                                "leaderboard",
+                                                "week_start"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/groups/{group}/leave": {
+            "post": {
+                "operationId": "practice.groups.leave",
+                "summary": "Leave a study group",
+                "tags": [
+                    "StudyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/groups/{group}/challenge": {
+            "post": {
+                "operationId": "practice.groups.challenge",
+                "description": "The same 10 questions for every member; they're told.",
+                "summary": "Challenge the group",
+                "tags": [
+                    "StudyGroup"
+                ],
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "link": {
+                                                    "type": "string"
+                                                },
+                                                "from": {
+                                                    "type": "string"
+                                                },
+                                                "mine": {
+                                                    "type": "boolean"
+                                                },
+                                                "questions": {
+                                                    "type": "integer"
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                },
+                                                "expired": {
+                                                    "type": "boolean"
+                                                },
+                                                "attempt_id": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "submitted": {
+                                                    "type": "boolean"
+                                                },
+                                                "entries": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "first_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "correct": {
+                                                                "type": "integer"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer"
+                                                            },
+                                                            "hints": {
+                                                                "type": "integer"
+                                                            },
+                                                            "points": {
+                                                                "type": "integer"
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "finished": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "first_name",
+                                                            "correct",
+                                                            "total",
+                                                            "hints",
+                                                            "points",
+                                                            "mine",
+                                                            "finished"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "link",
+                                                "from",
+                                                "mine",
+                                                "questions",
+                                                "expires_at",
+                                                "expired",
+                                                "attempt_id",
+                                                "submitted",
+                                                "entries"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/phone": {
             "post": {
                 "operationId": "me.texts.phone",

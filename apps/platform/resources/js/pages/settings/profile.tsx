@@ -1,4 +1,5 @@
 import { Form, Head, usePage } from '@inertiajs/react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 /* @chisel-email-verification */
 import { Link } from '@inertiajs/react';
@@ -14,6 +15,9 @@ import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { putJson } from '@/lib/content';
+import { optIn as optInRoute } from '@/routes/practice/groups';
 import type { Auth, Licence, LicenceState } from '@/types';
 /* @chisel-email-verification */
 import { send } from '@/routes/verification';
@@ -31,8 +35,10 @@ export default function Profile(
         privacyRequests = [],
         licences = [],
         licenceStates = [],
+        studyGroups = null,
     }: {
         mustVerifyEmail: boolean;
+        studyGroups?: { opt_in: boolean } | null;
         status?: string;
         privacyRequests?: MyPrivacyRequest[];
         licences?: Licence[];
@@ -66,6 +72,10 @@ export default function Profile(
                 />
                 <LicenceList licences={licences} states={licenceStates} />
             </div>
+
+            {studyGroups ? (
+                <StudyGroupsSetting initial={studyGroups.opt_in} />
+            ) : null}
 
             <div className="space-y-6">
                 <Heading
@@ -170,5 +180,52 @@ export default function Profile(
 
             <DeleteUser />
         </>
+    );
+}
+
+/** Study groups (A9.3c): opt in to private groups and their weekly leaderboard; off leaves every group. */
+function StudyGroupsSetting({ initial }: { initial: boolean }) {
+    const { t } = useTranslation();
+    const [on, setOn] = useState(initial);
+    const [error, setError] = useState<string | null>(null);
+
+    return (
+        <div className="space-y-4">
+            <Heading
+                variant="small"
+                title={t('practice.groups.profileTitle')}
+                description={t('practice.groups.description')}
+            />
+            <div className="flex items-start justify-between gap-4">
+                <div className="space-y-1">
+                    <Label htmlFor="study-groups">
+                        {t('practice.groups.optInLabel')}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                        {t('practice.groups.optInBody')}
+                    </p>
+                </div>
+                <Switch
+                    id="study-groups"
+                    checked={on}
+                    onCheckedChange={(next) => {
+                        setOn(next);
+                        void putJson(optInRoute().url, { opt_in: next })
+                            .then(() => setError(null))
+                            .catch((e: unknown) => {
+                                setOn(!next);
+                                setError(
+                                    e instanceof Error ? e.message : String(e),
+                                );
+                            });
+                    }}
+                />
+            </div>
+            {error ? (
+                <p role="alert" className="text-body text-destructive">
+                    {error}
+                </p>
+            ) : null}
+        </div>
     );
 }

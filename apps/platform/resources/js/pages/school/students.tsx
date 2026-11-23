@@ -1,9 +1,14 @@
-import { Head } from '@inertiajs/react';
+import { Form, Head } from '@inertiajs/react';
 import { Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
+import InputError from '@/components/input-error';
 import { PageHeader } from '@/components/page-header';
 import type { WeeklyReport } from '@/components/practice/types';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { store as storeGroup } from '@/routes/school/groups';
 
 type Row = {
     id: number;
@@ -16,8 +21,26 @@ type Row = {
 const th = 'px-3 py-2 text-left';
 const td = 'px-3 py-3';
 
-/** Students (school admin web, A9.2e): the weekly reports candidates have shared with the school. */
-export default function StudentsPage({ reports }: { reports: Row[] }) {
+type ClassGroup = {
+    id: number;
+    name: string;
+    members: number;
+    max: number;
+    link: string;
+};
+
+/**
+ * Students (school admin web, A9.2e): the weekly reports candidates have
+ * shared with the school; and (A9.3c) class study groups with their invite
+ * links: how many joined, never their scores.
+ */
+export default function StudentsPage({
+    reports,
+    groups = [],
+}: {
+    reports: Row[];
+    groups?: ClassGroup[];
+}) {
     const { t, i18n } = useTranslation();
 
     return (
@@ -102,6 +125,67 @@ export default function StudentsPage({ reports }: { reports: Row[] }) {
                         </table>
                     </section>
                 )}
+                <section
+                    aria-labelledby="class-groups"
+                    className="space-y-4 rounded-reos-lg border border-border bg-card p-5"
+                >
+                    <div className="space-y-1">
+                        <h2 id="class-groups" className="text-lg font-semibold">
+                            {t('practice.groups.schoolTitle')}
+                        </h2>
+                        <p className="text-body text-muted-foreground">
+                            {t('practice.groups.schoolDescription')}
+                        </p>
+                    </div>
+                    <Form
+                        {...storeGroup.form()}
+                        resetOnSuccess
+                        options={{ preserveScroll: true }}
+                        className="flex flex-wrap items-end gap-3"
+                    >
+                        {({ processing, errors }) => (
+                            <>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="class-group-name">
+                                        {t('practice.groups.name')}
+                                    </Label>
+                                    <Input
+                                        id="class-group-name"
+                                        name="name"
+                                        required
+                                        maxLength={80}
+                                    />
+                                    <InputError message={errors.name} />
+                                </div>
+                                <Button type="submit" disabled={processing}>
+                                    {t('practice.groups.schoolCreate')}
+                                </Button>
+                            </>
+                        )}
+                    </Form>
+                    {groups.length === 0 ? (
+                        <p className="text-body text-muted-foreground">
+                            {t('practice.groups.schoolEmpty')}
+                        </p>
+                    ) : (
+                        <ul className="divide-y divide-border">
+                            {groups.map((g) => (
+                                <li key={g.id} className="space-y-1 py-3">
+                                    <p className="font-semibold">{g.name}</p>
+                                    <p className="text-body text-muted-foreground">
+                                        {t('practice.groups.members', {
+                                            count: g.members,
+                                            max: g.max,
+                                        })}
+                                    </p>
+                                    <p className="text-sm break-all text-muted-foreground">
+                                        {g.link}
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </section>
             </div>
         </>
     );

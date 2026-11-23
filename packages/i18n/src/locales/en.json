@@ -2143,7 +2143,8 @@
         "starter_question.retire": "Retired a starter bank question",
         "starter_question.restore": "Undid a starter bank decision",
         "starter_question.edited": "Edited a starter bank question",
-        "course.exam_success_installed": "Installed the Exam success course for review"
+        "course.exam_success_installed": "Installed the Exam success course for review",
+        "study_group.created": "Made a class study group"
       }
     }
   },
@@ -6559,6 +6560,52 @@
       "share": "Share the challenge",
       "shareMessage": "I challenge you to 10 Texas exam questions on REOS: {{link}}",
       "hub": "Challenge a friend with the same 10 questions."
+    },
+    "groups": {
+      "errors": {
+        "full": "This group is full (:max members).",
+        "optIn": "Turn on study groups in your Profile first.",
+        "notMember": "Only members can challenge this group."
+      },
+      "mail": {
+        "title": ":name challenged :group",
+        "body": "The same 10 questions for everyone in the group. Accept and see who scores more."
+      },
+      "title": "Study groups",
+      "description": "Private groups of up to 20, with a weekly leaderboard of questions answered and accuracy. First names only.",
+      "optInLabel": "Join study groups",
+      "optInBody": "Let me join private study groups and appear on their weekly leaderboard by first name. Turning this off leaves every group.",
+      "off": "Study groups are off. Turn them on to start or join one.",
+      "turnOn": "Turn on study groups",
+      "name": "Group name",
+      "create": "Start a group",
+      "members": "{{count}} of {{max}} members",
+      "school": "Class group · {{school}}",
+      "leaderboard": "This week",
+      "questions_one": "{{count}} question",
+      "questions_other": "{{count}} questions",
+      "accuracy": "{{percent}}% right",
+      "noAnswers": "No answers yet",
+      "you": "{{name}} (you)",
+      "copy": "Copy the invite link",
+      "copied": "Invite link copied.",
+      "share": "Share the invite",
+      "shareMessage": "Join my REOS study group “{{name}}”: {{link}}",
+      "challenge": "Challenge the group",
+      "leave": "Leave the group",
+      "left": "You left the group.",
+      "join": "Join the group",
+      "joinBody_one": "{{name}} has {{count}} member. Join to see the weekly leaderboard.",
+      "joinBody_other": "{{name}} has {{count}} members. Join to see the weekly leaderboard.",
+      "signIn": "Sign in to join",
+      "emptyTitle": "No study groups yet",
+      "empty": "Start a group and share the invite link, or join one from a link a friend or your school sent.",
+      "profileTitle": "Study groups",
+      "schoolTitle": "Class study groups",
+      "schoolDescription": "Make a study group for a class and share its invite link. You see how many joined, never their scores.",
+      "schoolCreate": "Make a class group",
+      "schoolEmpty": "No class groups yet.",
+      "hub": "Private groups with a weekly leaderboard."
     }
   },
   "brokerageIntegrations": {
