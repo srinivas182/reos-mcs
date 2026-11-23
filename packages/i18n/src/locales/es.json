@@ -73,7 +73,8 @@
     "deals": "Operaciones",
     "ask": "Preguntar",
     "studentQuestions": "Preguntas de estudiantes",
-    "licenceJourney": "Camino a la licencia"
+    "licenceJourney": "Camino a la licencia",
+    "recruiting": "Reclutamiento"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2271,7 +2272,10 @@
         "study_group.created": "Creó un grupo de estudio de clase",
         "class_report.decided": "Decisión en el informe de clase",
         "class_report.sent": "Informe de clase enviado a la escuela",
-        "school.session_limits_changed": "Límites de precios de sesiones cambiados"
+        "school.session_limits_changed": "Límites de precios de sesiones cambiados",
+        "recruiting.offer_made": "Oferta de correduría hecha",
+        "recruiting.offer_changed": "Oferta de correduría cambiada",
+        "recruiting.offer_withdrawn": "Oferta de correduría retirada"
       }
     }
   },
@@ -4901,7 +4905,9 @@
       "instructor_answer": "Respuestas de su instructor",
       "class_check": "Verificaciones de asistencia",
       "class_report": "Informes de CE de clases",
-      "exam_reminder": "Recordatorios del examen"
+      "exam_reminder": "Recordatorios del examen",
+      "pass_news": "Noticias de aprobación",
+      "broker_offer": "Ofertas de corredores"
     },
     "digest": {
       "subject": {
@@ -7432,6 +7438,129 @@
       },
       "open": "Abrir su camino a la licencia"
     },
-    "today": "Sus pasos hacia la licencia, y su examen."
+    "today": "Sus pasos hacia la licencia, y su examen.",
+    "news": {
+      "title": "Comparta su noticia",
+      "body": "Cuénteselo a quien usted elija. Solo se muestran su nombre y su ciudad, nunca sus calificaciones.",
+      "group": "Mi grupo de estudio",
+      "groupHint": "Reciben una notificación ahora.",
+      "school": "Mi escuela",
+      "schoolHint": "Sus instructores y su escuela se enteran ahora.",
+      "state": "Candidatos de {{state}} en REOS",
+      "stateHint": "Aparece en Aprobados con su nombre y su ciudad.",
+      "city": "Ciudad (opcional)",
+      "tip": "Un consejo para otros (opcional)",
+      "tipPlaceholder": "¿Qué le ayudó más?",
+      "share": "Compartir",
+      "notNow": "Ahora no",
+      "shared": "Compartido. ¡Felicidades!",
+      "skipped": "No se compartió nada.",
+      "passes": {
+        "title": "Aprobados",
+        "purpose": "Logros reales de candidatos de {{state}} que eligieron compartirlos.",
+        "week_one": "{{count}} persona aprobó en {{state}} esta semana",
+        "week_other": "{{count}} personas aprobaron en {{state}} esta semana",
+        "line": "¡{{name}} aprobó el examen de {{state}}!",
+        "lineCity": "¡{{name}} de {{city}} aprobó el examen de {{state}}!",
+        "you": "Usted",
+        "congrats_one": "{{count}} felicitación",
+        "congrats_other": "{{count}} felicitaciones",
+        "send": "Felicitar",
+        "sent": "Felicitación enviada",
+        "messageLabel": "Su mensaje para {{name}}",
+        "defaultMessage": "¡Felicidades, {{name}}!",
+        "simulation": "Hacer una simulación",
+        "readiness": "Su preparación: {{percent}} %",
+        "empty": "Aún nadie ha compartido su aprobación",
+        "emptyBody": "Cuando candidatos de su estado o de su grupo de estudio compartan que aprobaron, aparecerá aquí. Puede silenciar estos avisos en la configuración de notificaciones.",
+        "see": "Ver quién aprobó"
+      },
+      "errors": {
+        "nobody": "Elija quién se entera, o elija Ahora no.",
+        "notPassed": "Comparta su noticia cuando haya aprobado las dos partes.",
+        "sent": "Ya envió su felicitación."
+      },
+      "mail": {
+        "passed": "¡:name aprobó el examen de :state!",
+        "passedCity": "¡:name de :city aprobó el examen de :state!",
+        "congrats": ":name le envió una felicitación",
+        "open": "Abrir REOS"
+      }
+    },
+    "offers": {
+      "title": "Ofertas de corredores",
+      "purpose": "Ofertas de corredurías en {{state}}, primero las que mejor encajan: una oficina en su ciudad, la calificación de sus mentores y luego las condiciones.",
+      "optIn": "Recibir ofertas de corredurías",
+      "optInHint": "Las corredurías de {{state}} ven su nombre, su ciudad y su avance. Sus datos de contacto solo se comparten con la correduría cuya oferta usted acepte.",
+      "city": "Ciudad donde quiere trabajar",
+      "save": "Guardar",
+      "open_one": "{{count}} oferta en espera",
+      "open_other": "{{count}} ofertas en espera",
+      "see": "Ver ofertas",
+      "split": "{{percent}} % para usted",
+      "fee": "{{fee}} al mes",
+      "noFee": "Sin cuota mensual",
+      "office": "Oficina en {{city}}",
+      "fit": "En su ciudad",
+      "mentoring": "Mentoría",
+      "training": "Capacitación",
+      "rating": "Mentores calificados con {{rating}} ({{count}})",
+      "noRating": "Aún sin calificaciones",
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "acceptedNote": "Aceptada. {{brokerage}} tiene sus datos de contacto y se comunicará con usted.",
+      "declined": "Oferta rechazada",
+      "empty": "Aún no hay ofertas",
+      "emptyBody": "Las corredurías de su estado ya pueden ver que usted está buscando. Las ofertas llegan aquí y a sus notificaciones.",
+      "off": "No está recibiendo ofertas",
+      "offBody": "Active las ofertas para que las corredurías de su estado puedan contactarle.",
+      "statuses": {
+        "open": "Abierta",
+        "accepted": "Aceptada",
+        "declined": "Rechazada",
+        "withdrawn": "Retirada"
+      },
+      "errors": {
+        "city": "Indique la ciudad donde quiere trabajar.",
+        "answered": "Esta oferta ya tiene respuesta."
+      },
+      "mail": {
+        "offer": ":brokerage le hizo una oferta",
+        "offerBody": ":split % para usted, oficina en :city.",
+        "accepted": ":name aceptó su oferta",
+        "acceptedBody": "Correo: :email. Teléfono: :phone.",
+        "declined": ":name rechazó su oferta",
+        "open": "Abrir REOS"
+      },
+      "purposeShort": "Ofertas de corredurías de su estado, primero las que mejor encajan: una oficina en su ciudad, la calificación de sus mentores y luego las condiciones."
+    }
+  },
+  "recruiting": {
+    "title": "Reclutamiento",
+    "purpose": "Candidatos en {{states}} que pidieron ofertas. Ve su nombre, su ciudad y su avance; los datos de contacto llegan cuando aceptan su oferta.",
+    "empty": "Aún no hay candidatos buscando",
+    "emptyBody": "Los candidatos que activen las ofertas de corredores en sus estados aparecerán aquí.",
+    "stages": {
+      "studying": "Estudiando",
+      "exam_booked": "Examen reservado",
+      "passed": "Aprobó el examen"
+    },
+    "makeOffer": "Hacer una oferta",
+    "changeOffer": "Cambiar oferta",
+    "withdraw": "Retirar",
+    "withdrawn": "Oferta retirada",
+    "form": {
+      "title": "Oferta para {{name}}",
+      "office": "Ciudad de la oficina",
+      "split": "Porcentaje para el agente (%)",
+      "fee": "Cuota mensual ($)",
+      "fees": "Otras cuotas",
+      "training": "Capacitación",
+      "mentoring": "Mentoría para agentes nuevos",
+      "message": "Mensaje",
+      "send": "Enviar oferta"
+    },
+    "contact": "{{email}} · {{phone}}",
+    "sent": "Oferta enviada."
   }
 }

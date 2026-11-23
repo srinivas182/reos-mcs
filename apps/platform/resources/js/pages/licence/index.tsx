@@ -3,15 +3,19 @@ import { ClipboardCheck, Hourglass } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
+import { OffersOptIn } from '@/components/licence/offers-opt-in';
 import { ReadyToBook } from '@/components/licence/ready-to-book';
 import { RetakePlan } from '@/components/licence/retake-plan';
+import { ShareNews } from '@/components/licence/share-news';
 import { StepsList } from '@/components/licence/steps-list';
 import { dayText, type Journey } from '@/components/licence/types';
 import { PageHeader } from '@/components/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { putJson } from '@/lib/content';
-import { exam, result, step } from '@/routes/licence';
+import { postJson, putJson } from '@/lib/content';
+import { exam, news, passes, result, step } from '@/routes/licence';
+import { skip } from '@/routes/licence/news';
+import { optIn } from '@/routes/licence/offers';
 import { store as storePlan } from '@/routes/practice/plans';
 
 /**
@@ -41,6 +45,16 @@ export default function LicenceJourneyPage({ journey }: { journey: Journey }) {
                           ),
                   ),
               );
+
+    const post = async (url: string, body: unknown) => {
+        try {
+            await postJson(url, body);
+            setError(null);
+            router.reload({ only: ['journey'] });
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e));
+        }
+    };
 
     const run = async (url: string, body: unknown) => {
         try {
@@ -135,6 +149,16 @@ export default function LicenceJourneyPage({ journey }: { journey: Journey }) {
                     />
                 ) : null}
 
+                {/* After passing: share the news (f05, A10.3b). */}
+                {journey.news === 'prompt' ? (
+                    <ShareNews
+                        state={journey.state.name}
+                        city={journey.offers.city}
+                        onShare={(choice) => void post(news().url, choice)}
+                        onSkip={() => void post(skip().url, {})}
+                    />
+                ) : null}
+
                 {journey.results.passed_both ? (
                     <Alert>
                         <AlertTitle>{t('licence.passed.title')}</AlertTitle>
@@ -154,6 +178,20 @@ export default function LicenceJourneyPage({ journey }: { journey: Journey }) {
                         }
                     />
                 )}
+
+                {/* Broker offers (screen 17) and passes (f06), A10.3b. */}
+                <OffersOptIn
+                    state={journey.state.name}
+                    offers={journey.offers}
+                    onSave={(on, city) => void run(optIn().url, { on, city })}
+                />
+                <p>
+                    <Button asChild variant="outline">
+                        <Link href={passes().url}>
+                            {t('licence.news.passes.see')}
+                        </Link>
+                    </Button>
+                </p>
 
                 <section aria-labelledby="licence-steps" className="space-y-3">
                     <h2 id="licence-steps" className="text-lg font-semibold">

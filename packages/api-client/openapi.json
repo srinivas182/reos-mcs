@@ -16896,6 +16896,40 @@
                                                         "more_education",
                                                         "attempts_left"
                                                     ]
+                                                },
+                                                "news": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "prompt",
+                                                        "shared",
+                                                        "skipped",
+                                                        null
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "opted_in": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "open": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "opted_in",
+                                                        "city",
+                                                        "open"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -16906,7 +16940,9 @@
                                                 "exam",
                                                 "kit",
                                                 "results",
-                                                "retake"
+                                                "retake",
+                                                "news",
+                                                "offers"
                                             ]
                                         }
                                     },
@@ -17326,6 +17362,40 @@
                                                         "more_education",
                                                         "attempts_left"
                                                     ]
+                                                },
+                                                "news": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "prompt",
+                                                        "shared",
+                                                        "skipped",
+                                                        null
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "opted_in": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "open": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "opted_in",
+                                                        "city",
+                                                        "open"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -17336,7 +17406,9 @@
                                                 "exam",
                                                 "kit",
                                                 "results",
-                                                "retake"
+                                                "retake",
+                                                "news",
+                                                "offers"
                                             ]
                                         }
                                     },
@@ -17774,6 +17846,40 @@
                                                         "more_education",
                                                         "attempts_left"
                                                     ]
+                                                },
+                                                "news": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "prompt",
+                                                        "shared",
+                                                        "skipped",
+                                                        null
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "opted_in": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "open": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "opted_in",
+                                                        "city",
+                                                        "open"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -17784,7 +17890,9 @@
                                                 "exam",
                                                 "kit",
                                                 "results",
-                                                "retake"
+                                                "retake",
+                                                "news",
+                                                "offers"
                                             ]
                                         }
                                     },
@@ -18218,6 +18326,40 @@
                                                         "more_education",
                                                         "attempts_left"
                                                     ]
+                                                },
+                                                "news": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "prompt",
+                                                        "shared",
+                                                        "skipped",
+                                                        null
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "opted_in": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "open": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "opted_in",
+                                                        "city",
+                                                        "open"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -18228,7 +18370,9 @@
                                                 "exam",
                                                 "kit",
                                                 "results",
-                                                "retake"
+                                                "retake",
+                                                "news",
+                                                "offers"
                                             ]
                                         }
                                     },
@@ -18679,6 +18823,40 @@
                                                         "more_education",
                                                         "attempts_left"
                                                     ]
+                                                },
+                                                "news": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "prompt",
+                                                        "shared",
+                                                        "skipped",
+                                                        null
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "opted_in": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "open": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "opted_in",
+                                                        "city",
+                                                        "open"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -18689,7 +18867,9 @@
                                                 "exam",
                                                 "kit",
                                                 "results",
-                                                "retake"
+                                                "retake",
+                                                "news",
+                                                "offers"
                                             ]
                                         }
                                     },
@@ -22627,6 +22807,1168 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/news": {
+            "post": {
+                "operationId": "licence.news",
+                "description": "Who hears: my study group and school (told now) and candidates in my state (in Passes). First name, city and an optional tip; never scores.",
+                "summary": "Share my news",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "to_group": {
+                                        "type": "boolean"
+                                    },
+                                    "to_school": {
+                                        "type": "boolean"
+                                    },
+                                    "to_state": {
+                                        "type": "boolean"
+                                    },
+                                    "city": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 120
+                                    },
+                                    "tip": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 280
+                                    }
+                                },
+                                "required": [
+                                    "to_group",
+                                    "to_school",
+                                    "to_state"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "shared": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "shared"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/news/skip": {
+            "post": {
+                "operationId": "licence.news.skip",
+                "description": "Nothing is shared.",
+                "summary": "Not now",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "shared": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "shared"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/passes": {
+            "get": {
+                "operationId": "licence.passes",
+                "description": "Candidates in my state and my study group who shared their pass, this week's count of passes in my state, and my readiness.",
+                "summary": "Passes",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "week": {
+                                                    "type": "integer"
+                                                },
+                                                "state": {
+                                                    "type": "string"
+                                                },
+                                                "readiness": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "passes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "first_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "state": {
+                                                                "type": "string"
+                                                            },
+                                                            "tip": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "on": {
+                                                                "type": "string"
+                                                            },
+                                                            "congrats": {
+                                                                "type": "integer"
+                                                            },
+                                                            "sent": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "first_name",
+                                                            "city",
+                                                            "state",
+                                                            "tip",
+                                                            "on",
+                                                            "congrats",
+                                                            "sent",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "week",
+                                                "state",
+                                                "readiness",
+                                                "passes"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/passes/{pass}/congrats": {
+            "post": {
+                "operationId": "licence.passes.congrats",
+                "description": "Once per pass; the person is told.",
+                "summary": "Send congrats",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "parameters": [
+                    {
+                        "name": "pass",
+                        "in": "path",
+                        "required": true,
+                        "description": "The pass ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "minLength": 2,
+                                        "maxLength": 140
+                                    }
+                                },
+                                "required": [
+                                    "message"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "week": {
+                                                    "type": "integer"
+                                                },
+                                                "state": {
+                                                    "type": "string"
+                                                },
+                                                "readiness": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "passes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "first_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "state": {
+                                                                "type": "string"
+                                                            },
+                                                            "tip": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "on": {
+                                                                "type": "string"
+                                                            },
+                                                            "congrats": {
+                                                                "type": "integer"
+                                                            },
+                                                            "sent": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "mine": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "first_name",
+                                                            "city",
+                                                            "state",
+                                                            "tip",
+                                                            "on",
+                                                            "congrats",
+                                                            "sent",
+                                                            "mine"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "week",
+                                                "state",
+                                                "readiness",
+                                                "passes"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/offers": {
+            "get": {
+                "operationId": "licence.offers",
+                "description": "Best first: an office in my city, the brokerage's mentors' rating, then the terms.",
+                "summary": "My broker offers",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "opted_in": {
+                                                    "type": "boolean"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "brokerage": {
+                                                                "type": "string"
+                                                            },
+                                                            "office_city": {
+                                                                "type": "string"
+                                                            },
+                                                            "split_percent": {
+                                                                "type": "integer"
+                                                            },
+                                                            "monthly_fee_cents": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fees": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "training": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "mentoring": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "message": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "open",
+                                                                    "accepted",
+                                                                    "declined",
+                                                                    "withdrawn"
+                                                                ]
+                                                            },
+                                                            "rating": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "ratings": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fit": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "phone": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "phone"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "brokerage",
+                                                            "office_city",
+                                                            "split_percent",
+                                                            "monthly_fee_cents",
+                                                            "fees",
+                                                            "training",
+                                                            "mentoring",
+                                                            "message",
+                                                            "status",
+                                                            "rating",
+                                                            "ratings",
+                                                            "fit",
+                                                            "contact"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "opted_in",
+                                                "city",
+                                                "offers"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/offers/opt-in": {
+            "put": {
+                "operationId": "licence.offers.opt-in",
+                "description": "Brokerages in my state see my first name, city and stage, never contact details or scores.",
+                "summary": "Get broker offers, or stop",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "on": {
+                                        "type": "boolean"
+                                    },
+                                    "city": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 120
+                                    }
+                                },
+                                "required": [
+                                    "on"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "opted_in": {
+                                                    "type": "boolean"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "brokerage": {
+                                                                "type": "string"
+                                                            },
+                                                            "office_city": {
+                                                                "type": "string"
+                                                            },
+                                                            "split_percent": {
+                                                                "type": "integer"
+                                                            },
+                                                            "monthly_fee_cents": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fees": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "training": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "mentoring": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "message": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "open",
+                                                                    "accepted",
+                                                                    "declined",
+                                                                    "withdrawn"
+                                                                ]
+                                                            },
+                                                            "rating": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "ratings": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fit": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "phone": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "phone"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "brokerage",
+                                                            "office_city",
+                                                            "split_percent",
+                                                            "monthly_fee_cents",
+                                                            "fees",
+                                                            "training",
+                                                            "mentoring",
+                                                            "message",
+                                                            "status",
+                                                            "rating",
+                                                            "ratings",
+                                                            "fit",
+                                                            "contact"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "opted_in",
+                                                "city",
+                                                "offers"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/offers/{offer}/accept": {
+            "post": {
+                "operationId": "licence.offers.accept",
+                "description": "The brokerage gets my name, email and phone.",
+                "summary": "Accept an offer",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "parameters": [
+                    {
+                        "name": "offer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The offer UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "opted_in": {
+                                                    "type": "boolean"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "brokerage": {
+                                                                "type": "string"
+                                                            },
+                                                            "office_city": {
+                                                                "type": "string"
+                                                            },
+                                                            "split_percent": {
+                                                                "type": "integer"
+                                                            },
+                                                            "monthly_fee_cents": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fees": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "training": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "mentoring": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "message": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "open",
+                                                                    "accepted",
+                                                                    "declined",
+                                                                    "withdrawn"
+                                                                ]
+                                                            },
+                                                            "rating": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "ratings": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fit": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "phone": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "phone"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "brokerage",
+                                                            "office_city",
+                                                            "split_percent",
+                                                            "monthly_fee_cents",
+                                                            "fees",
+                                                            "training",
+                                                            "mentoring",
+                                                            "message",
+                                                            "status",
+                                                            "rating",
+                                                            "ratings",
+                                                            "fit",
+                                                            "contact"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "opted_in",
+                                                "city",
+                                                "offers"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/offers/{offer}/decline": {
+            "post": {
+                "operationId": "licence.offers.decline",
+                "description": "It's hidden.",
+                "summary": "Decline an offer",
+                "tags": [
+                    "PassesAndOffers"
+                ],
+                "parameters": [
+                    {
+                        "name": "offer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The offer UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "opted_in": {
+                                                    "type": "boolean"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "offers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "brokerage": {
+                                                                "type": "string"
+                                                            },
+                                                            "office_city": {
+                                                                "type": "string"
+                                                            },
+                                                            "split_percent": {
+                                                                "type": "integer"
+                                                            },
+                                                            "monthly_fee_cents": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fees": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "training": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "mentoring": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "message": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "open",
+                                                                    "accepted",
+                                                                    "declined",
+                                                                    "withdrawn"
+                                                                ]
+                                                            },
+                                                            "rating": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "ratings": {
+                                                                "type": "integer"
+                                                            },
+                                                            "fit": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "phone": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "name",
+                                                                    "email",
+                                                                    "phone"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "brokerage",
+                                                            "office_city",
+                                                            "split_percent",
+                                                            "monthly_fee_cents",
+                                                            "fees",
+                                                            "training",
+                                                            "mentoring",
+                                                            "message",
+                                                            "status",
+                                                            "rating",
+                                                            "ratings",
+                                                            "fit",
+                                                            "contact"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "opted_in",
+                                                "city",
+                                                "offers"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }

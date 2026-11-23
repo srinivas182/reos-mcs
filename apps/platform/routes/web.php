@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestion
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
+use App\Http\Controllers\Api\Licence\PassesAndOffersController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Licence\LicenceJourneyPageController;
+use App\Http\Controllers\Licence\PassesAndOffersPageController;
 use App\Http\Controllers\Messaging\AnnouncementController;
 use App\Http\Controllers\Messaging\AttachmentController;
 use App\Http\Controllers\Messaging\MessagesController;
@@ -72,6 +74,7 @@ use App\Http\Controllers\Practice\PracticePageController;
 use App\Http\Controllers\Practice\SharedReportController;
 use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
+use App\Http\Controllers\Recruiting\RecruitingController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
 use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
 use App\Http\Controllers\School\StudentsController as SchoolStudentsController;
@@ -208,6 +211,17 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
             Route::put('kit/{item}', 'kit')->where('item', '[a-z_]+')->middleware('throttle:60,1,licence-kit')->name('kit');
             Route::post('results', 'result')->middleware('throttle:10,1,licence-result')->name('results');
         });
+        // After the exam (A10.3b): passes (f06) and broker offers (17), and the same JSON actions as the API.
+        Route::get('passes', [PassesAndOffersPageController::class, 'passes'])->name('passes');
+        Route::get('offers', [PassesAndOffersPageController::class, 'offers'])->name('offers');
+        Route::controller(PassesAndOffersController::class)->group(function () {
+            Route::post('news', 'share')->middleware('throttle:5,1,licence-news')->name('news');
+            Route::post('news/skip', 'skip')->middleware('throttle:10,1,licence-news')->name('news.skip');
+            Route::post('passes/{pass}/congrats', 'congrats')->whereNumber('pass')->middleware('throttle:20,1,licence-congrats')->name('passes.congrats');
+            Route::put('offers/opt-in', 'optIn')->middleware('throttle:20,1,licence-offers')->name('offers.opt-in');
+            Route::post('offers/{offer}/accept', 'accept')->whereUuid('offer')->middleware('throttle:20,1,licence-offers')->name('offers.accept');
+            Route::post('offers/{offer}/decline', 'decline')->whereUuid('offer')->middleware('throttle:20,1,licence-offers')->name('offers.decline');
+        });
     });
 
     // Learn (A5.3b): courses for my state, search inside them, a lesson opened at its place.
@@ -320,6 +334,12 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('/', [DomainController::class, 'store'])->middleware('throttle:10,1,store')->name('store');
     Route::post('verify', [DomainController::class, 'verify'])->middleware('throttle:20,1,verify')->name('verify');
     Route::delete('/', [DomainController::class, 'destroy'])->middleware('throttle:10,1,destroy')->name('destroy');
+});
+// Recruiting (A10.3b): candidates who opted in to broker offers; offers are audited.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('recruiting')->name('recruiting.')->controller(RecruitingController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::put('candidates/{candidate}/offer', 'offer')->whereNumber('candidate')->middleware('throttle:30,1,recruiting-offer')->name('offer');
+    Route::post('offers/{offer}/withdraw', 'withdraw')->whereUuid('offer')->middleware('throttle:30,1,recruiting-withdraw')->name('withdraw');
 });
 // Brokerage integrations (B8.2, broker screen 40): which tools agents may use, the brokerage's own CRM, its mapping.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/integrations')->name('brokerage-integrations.')

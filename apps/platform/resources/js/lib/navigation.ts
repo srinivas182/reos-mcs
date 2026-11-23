@@ -30,6 +30,7 @@ import {
     Handshake,
     CalendarCheck,
     Milestone,
+    UserPlus,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -57,6 +58,7 @@ import { index as askIndex } from '@/routes/ask';
 import { index as bookingsIndex } from '@/routes/bookings';
 import { index as classesIndex } from '@/routes/classes';
 import { show as licenceJourney } from '@/routes/licence';
+import { index as recruitingIndex } from '@/routes/recruiting';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -78,6 +80,7 @@ export type NavLabel =
     | 'instructors'
     | 'studentQuestions'
     | 'licenceJourney'
+    | 'recruiting'
     | 'deals'
     | 'dashboard'
     | 'overview'
@@ -238,7 +241,8 @@ export function roleNavigation(
             planned('virtualBroker'),
             planned('policies'),
             planned('mentorProgram'),
-            planned('recruiting'),
+            // Recruiting: candidates who asked for broker offers (A10.3b).
+            item('recruiting', UserPlus, recruitingIndex(), '/recruiting'),
             planned('teamsAndRouting'),
             planned('reports'),
             item('brokerageIntegrations', Plug, brokerageIntegrationsIndex()),

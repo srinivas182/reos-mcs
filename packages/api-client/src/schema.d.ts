@@ -2628,6 +2628,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/licence-journey/news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Share my news
+         * @description Who hears: my study group and school (told now) and candidates in my state (in Passes). First name, city and an optional tip; never scores.
+         */
+        post: operations["licence.news"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/news/skip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Not now
+         * @description Nothing is shared.
+         */
+        post: operations["licence.news.skip"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/passes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Passes
+         * @description Candidates in my state and my study group who shared their pass, this week's count of passes in my state, and my readiness.
+         */
+        get: operations["licence.passes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/passes/{pass}/congrats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send congrats
+         * @description Once per pass; the person is told.
+         */
+        post: operations["licence.passes.congrats"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My broker offers
+         * @description Best first: an office in my city, the brokerage's mentors' rating, then the terms.
+         */
+        get: operations["licence.offers"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/offers/opt-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Get broker offers, or stop
+         * @description Brokerages in my state see my first name, city and stage, never contact details or scores.
+         */
+        put: operations["licence.offers.opt-in"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/offers/{offer}/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept an offer
+         * @description The brokerage gets my name, email and phone.
+         */
+        post: operations["licence.offers.accept"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/offers/{offer}/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decline an offer
+         * @description It's hidden.
+         */
+        post: operations["licence.offers.decline"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/phone/start": {
         parameters: {
             query?: never;
@@ -11514,6 +11674,13 @@ export interface operations {
                                     state?: number;
                                 };
                             } | null;
+                            /** @enum {string|null} */
+                            news: "prompt" | "shared" | "skipped" | null;
+                            offers: {
+                                opted_in: boolean;
+                                city: string | null;
+                                open: number;
+                            };
                         };
                     };
                 };
@@ -11617,6 +11784,13 @@ export interface operations {
                                     state?: number;
                                 };
                             } | null;
+                            /** @enum {string|null} */
+                            news: "prompt" | "shared" | "skipped" | null;
+                            offers: {
+                                opted_in: boolean;
+                                city: string | null;
+                                open: number;
+                            };
                         };
                     };
                 };
@@ -11732,6 +11906,13 @@ export interface operations {
                                     state?: number;
                                 };
                             } | null;
+                            /** @enum {string|null} */
+                            news: "prompt" | "shared" | "skipped" | null;
+                            offers: {
+                                opted_in: boolean;
+                                city: string | null;
+                                open: number;
+                            };
                         };
                     };
                 };
@@ -11846,6 +12027,13 @@ export interface operations {
                                     state?: number;
                                 };
                             } | null;
+                            /** @enum {string|null} */
+                            news: "prompt" | "shared" | "skipped" | null;
+                            offers: {
+                                opted_in: boolean;
+                                city: string | null;
+                                open: number;
+                            };
                         };
                     };
                 };
@@ -11960,6 +12148,13 @@ export interface operations {
                                     state?: number;
                                 };
                             } | null;
+                            /** @enum {string|null} */
+                            news: "prompt" | "shared" | "skipped" | null;
+                            offers: {
+                                opted_in: boolean;
+                                city: string | null;
+                                open: number;
+                            };
                         };
                     };
                 };
@@ -13514,6 +13709,422 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.news": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    to_group: boolean;
+                    to_school: boolean;
+                    to_state: boolean;
+                    city?: string | null;
+                    tip?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            shared: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.news.skip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            shared: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.passes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            week: number;
+                            state: string;
+                            readiness: number | null;
+                            passes: {
+                                id: number;
+                                first_name: string;
+                                city: string | null;
+                                state: string;
+                                tip: string | null;
+                                on: string;
+                                congrats: number;
+                                sent: boolean;
+                                mine: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "licence.passes.congrats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The pass ID */
+                pass: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    message: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            week: number;
+                            state: string;
+                            readiness: number | null;
+                            passes: {
+                                id: number;
+                                first_name: string;
+                                city: string | null;
+                                state: string;
+                                tip: string | null;
+                                on: string;
+                                congrats: number;
+                                sent: boolean;
+                                mine: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            opted_in: boolean;
+                            city: string | null;
+                            offers: {
+                                id: string;
+                                brokerage: string;
+                                office_city: string;
+                                split_percent: number;
+                                monthly_fee_cents: number;
+                                fees: string | null;
+                                training: string | null;
+                                mentoring: boolean;
+                                message: string | null;
+                                /** @enum {string} */
+                                status: "open" | "accepted" | "declined" | "withdrawn";
+                                rating: number | null;
+                                ratings: number;
+                                fit: boolean;
+                                contact: {
+                                    name: string;
+                                    email: string;
+                                    phone: string | null;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "licence.offers.opt-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    on: boolean;
+                    city?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            opted_in: boolean;
+                            city: string | null;
+                            offers: {
+                                id: string;
+                                brokerage: string;
+                                office_city: string;
+                                split_percent: number;
+                                monthly_fee_cents: number;
+                                fees: string | null;
+                                training: string | null;
+                                mentoring: boolean;
+                                message: string | null;
+                                /** @enum {string} */
+                                status: "open" | "accepted" | "declined" | "withdrawn";
+                                rating: number | null;
+                                ratings: number;
+                                fit: boolean;
+                                contact: {
+                                    name: string;
+                                    email: string;
+                                    phone: string | null;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.offers.accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The offer UUID */
+                offer: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            opted_in: boolean;
+                            city: string | null;
+                            offers: {
+                                id: string;
+                                brokerage: string;
+                                office_city: string;
+                                split_percent: number;
+                                monthly_fee_cents: number;
+                                fees: string | null;
+                                training: string | null;
+                                mentoring: boolean;
+                                message: string | null;
+                                /** @enum {string} */
+                                status: "open" | "accepted" | "declined" | "withdrawn";
+                                rating: number | null;
+                                ratings: number;
+                                fit: boolean;
+                                contact: {
+                                    name: string;
+                                    email: string;
+                                    phone: string | null;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.offers.decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The offer UUID */
+                offer: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            opted_in: boolean;
+                            city: string | null;
+                            offers: {
+                                id: string;
+                                brokerage: string;
+                                office_city: string;
+                                split_percent: number;
+                                monthly_fee_cents: number;
+                                fees: string | null;
+                                training: string | null;
+                                mentoring: boolean;
+                                message: string | null;
+                                /** @enum {string} */
+                                status: "open" | "accepted" | "declined" | "withdrawn";
+                                rating: number | null;
+                                ratings: number;
+                                fit: boolean;
+                                contact: {
+                                    name: string;
+                                    email: string;
+                                    phone: string | null;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {

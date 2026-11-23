@@ -12,6 +12,9 @@ import { api } from '@/lib/api';
 type Got<P extends keyof paths> = paths[P] extends { get: { responses: { 200: { content: { 'application/json': infer B } } } } } ? B : never;
 
 export type Journey = Got<'/licence-journey'>['data'];
+export type PassFeed = Got<'/licence-journey/passes'>['data'];
+export type CandidateOffers = Got<'/licence-journey/offers'>['data'];
+export type Offer = CandidateOffers['offers'][number];
 export type Portion = 'national' | 'state';
 export const TOPICS = ['agency', 'contracts', 'ownership', 'finance', 'math', 'state_rules'] as const;
 export type Topic = (typeof TOPICS)[number];
@@ -20,6 +23,13 @@ const fail = (error: unknown): never => {
   const e = (error as { errors?: Record<string, string[]>; message?: string } | undefined) ?? {};
   throw new Error(Object.values(e.errors ?? {})[0]?.[0] ?? e.message ?? 'error');
 };
+
+/** The journey again, after a change that returns something else. */
+export async function reloadJourney(): Promise<Journey> {
+  const { data, error } = await api().GET('/licence-journey');
+
+  return data ? data.data : fail(error);
+}
 
 const take = ({ data, error }: { data?: { data: Journey }; error?: unknown }): Journey => (data ? data.data : fail(error));
 
@@ -75,3 +85,46 @@ export const todayIso = (): string => {
 
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 };
+
+/** Share the news after passing (f05, A10.3b): who hears; first name and city only. */
+export async function shareNews(choice: { to_group: boolean; to_school: boolean; to_state: boolean; city: string | null; tip: string | null }): Promise<void> {
+  const { error, response } = await api().POST('/licence-journey/news', { body: choice });
+  if (!response.ok) fail(error);
+}
+
+export async function skipNews(): Promise<void> {
+  const { error, response } = await api().POST('/licence-journey/news/skip');
+  if (!response.ok) fail(error);
+}
+
+export async function loadPasses(): Promise<PassFeed | null> {
+  const { data } = await api().GET('/licence-journey/passes');
+
+  return data?.data ?? null;
+}
+
+export async function sendCongrats(pass: number, message: string): Promise<PassFeed> {
+  const { data, error } = await api().POST('/licence-journey/passes/{pass}/congrats', { params: { path: { pass } }, body: { message } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function loadOffers(): Promise<CandidateOffers | null> {
+  const { data } = await api().GET('/licence-journey/offers');
+
+  return data?.data ?? null;
+}
+
+export async function optInOffers(on: boolean, city: string | null): Promise<CandidateOffers> {
+  const { data, error } = await api().PUT('/licence-journey/offers/opt-in', { body: { on, city } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function answerOffer(offer: string, accept: boolean): Promise<CandidateOffers> {
+  const { data, error } = accept
+    ? await api().POST('/licence-journey/offers/{offer}/accept', { params: { path: { offer } } })
+    : await api().POST('/licence-journey/offers/{offer}/decline', { params: { path: { offer } } });
+
+  return data ? data.data : fail(error);
+}

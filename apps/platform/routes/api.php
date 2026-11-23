@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Learn\OfflineController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
+use App\Http\Controllers\Api\Licence\PassesAndOffersController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
@@ -239,6 +240,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('exam', 'exam')->middleware('throttle:20,1,api-licence-exam')->name('exam');
         Route::put('kit/{item}', 'kit')->where('item', '[a-z_]+')->middleware('throttle:60,1,api-licence-kit')->name('kit');
         Route::post('results', 'result')->middleware('throttle:10,1,api-licence-result')->name('result');
+    });
+    // After the exam (A10.3b): share the news, passes and congrats, and broker offers.
+    Route::prefix('licence-journey')->name('api.licence.')->controller(PassesAndOffersController::class)->group(function () {
+        Route::post('news', 'share')->middleware('throttle:5,1,api-licence-news')->name('news');
+        Route::post('news/skip', 'skip')->middleware('throttle:10,1,api-licence-news')->name('news.skip');
+        Route::get('passes', 'passes')->name('passes');
+        Route::post('passes/{pass}/congrats', 'congrats')->whereNumber('pass')->middleware('throttle:20,1,api-licence-congrats')->name('passes.congrats');
+        Route::get('offers', 'offers')->name('offers');
+        Route::put('offers/opt-in', 'optIn')->middleware('throttle:20,1,api-licence-offers')->name('offers.opt-in');
+        Route::post('offers/{offer}/accept', 'accept')->whereUuid('offer')->middleware('throttle:20,1,api-licence-offers')->name('offers.accept');
+        Route::post('offers/{offer}/decline', 'decline')->whereUuid('offer')->middleware('throttle:20,1,api-licence-offers')->name('offers.decline');
     });
     // Candidate practice and the study plan (A8.3): the learner's own, not admin actions.
     Route::controller(PracticeController::class)->name('api.practice.')->group(function () {

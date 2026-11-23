@@ -25,19 +25,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property list<array{portion: string, passed: bool, on: string}> $attempts
  * @property list<string> $weak_topics
  * @property list<string> $reminded
+ * @property CarbonImmutable|null $passed_on The day both portions were passed (A10.3b)
+ * @property string|null $news shared or skipped, after passing (A10.3b)
+ * @property bool $offers_opt_in Brokerages in the state may make offers (A10.3b)
+ * @property string|null $offers_city Where the candidate wants to work
+ * @property CarbonImmutable|null $offers_opted_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  */
 final class LicenceJourney extends Model
 {
-    protected $fillable = ['user_id', 'state_code', 'steps', 'application_filed_on', 'exam_on', 'exam_time', 'test_centre', 'kit', 'attempts', 'weak_topics', 'reminded'];
+    protected $fillable = ['user_id', 'state_code', 'steps', 'application_filed_on', 'exam_on', 'exam_time', 'test_centre', 'kit', 'attempts', 'weak_topics', 'reminded', 'passed_on', 'news', 'offers_opt_in', 'offers_city', 'offers_opted_at'];
 
     protected function casts(): array
     {
         return [
             'steps' => 'array', 'kit' => 'array', 'attempts' => 'array', 'weak_topics' => 'array', 'reminded' => 'array',
-            'application_filed_on' => 'immutable_date', 'exam_on' => 'immutable_date',
+            'application_filed_on' => 'immutable_date', 'exam_on' => 'immutable_date', 'passed_on' => 'immutable_date', 'offers_opt_in' => 'boolean', 'offers_opted_at' => 'datetime',
         ];
     }
 
