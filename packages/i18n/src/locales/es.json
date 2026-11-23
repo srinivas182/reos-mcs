@@ -70,7 +70,8 @@
     "readiness": "Preparación",
     "students": "Estudiantes",
     "progress": "Progreso semanal",
-    "deals": "Operaciones"
+    "deals": "Operaciones",
+    "ask": "Preguntar"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -346,7 +347,45 @@
   },
   "ask": {
     "voice": "Preguntar por voz",
-    "placeholder": "Pregunta lo que quieras"
+    "placeholder": "Pregunta lo que quieras",
+    "limited": "Eso no está en el contenido de su curso de :state, así que no puedo responderlo desde ahí. Su instructor sí puede: pregúntele o reserve una sesión corta.",
+    "sim": {
+      "general": "(Demostración) Aquí aparece una respuesta general más allá de su curso de :state, pagada por su patrocinador. Confirme cualquier punto de la ley vigente con la comisión de bienes raíces del estado."
+    },
+    "errors": {
+      "nothingYet": "Primero haga una pregunta."
+    },
+    "title": "Preguntar",
+    "purpose": "Su compañero de estudio: respuestas primero de sus cursos, con la lección para ver.",
+    "purposeCandidate": "Su compañero de estudio: respuestas de sus cursos, con la lección para ver. Siempre gratis.",
+    "purposeSponsored": "Su compañero de estudio: respuestas primero de sus cursos. La ayuda más allá de ellos la patrocina {{sponsor}}. Siempre gratis para usted.",
+    "new": "Nueva pregunta",
+    "threads": "Sus preguntas",
+    "noThreads": "Aquí aparecen las preguntas que haga.",
+    "conversation": "Conversación",
+    "emptyTitle": "Pregunte lo que sea sobre el examen",
+    "empty": "Términos, reglas y matemáticas paso a paso. Las respuestas vienen de su curso, con la lección y el momento para ver.",
+    "label": "Su pregunta",
+    "submit": "Preguntar",
+    "asking": "Pensando…",
+    "fromCourse": "Del contenido de su curso · {{state}}",
+    "beyond": "Más allá de su curso",
+    "beyondSponsored": "Más allá de su curso · patrocinado por {{sponsor}}",
+    "notCovered": "No está en su curso",
+    "source": "Fuente: {{lesson}}",
+    "watchAt": "Ver en {{time}}",
+    "openLesson": "Abrir la lección",
+    "similar": "Probar uno parecido",
+    "stop": "Dejar de escuchar",
+    "micDenied": "Permita el micrófono en Configuración para preguntar por voz.",
+    "suggestions": "Pruebe preguntar",
+    "suggest": {
+      "term": "Explicar un término",
+      "termQ": "¿Qué es el formulario IABS?",
+      "math": "Resolver un problema de matemáticas",
+      "mathQ": "¿Cómo prorrateo $3,650 de impuestos a la propiedad en un cierre el 15 de junio?"
+    },
+    "fromCourseShort": "Del contenido de su curso"
   },
   "options": {
     "correct": "Respuesta correcta",

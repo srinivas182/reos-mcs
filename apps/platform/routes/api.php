@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ActiveRoleController;
 use App\Http\Controllers\Api\AppConfigController;
+use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
@@ -234,6 +235,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // The weekly progress report and sharing it (A9.2e).
     Route::get('practice/reports/weekly', [ReportController::class, 'show'])->name('api.practice.reports.show');
     Route::post('practice/reports/weekly/share', [ReportController::class, 'share'])->middleware('throttle:20,1,api-practice-reports')->name('api.practice.reports.share');
+    // Ask, the study mate (A10.1): conversations, answers from the person's courses first.
+    Route::get('ask/threads', [AskController::class, 'index'])->name('api.ask.index');
+    Route::get('ask/threads/{thread}', [AskController::class, 'show'])->whereUuid('thread')->name('api.ask.show');
+    Route::post('ask', [AskController::class, 'store'])->middleware('throttle:20,1,api-ask')->name('api.ask.store');
+    Route::get('ask/package', [AskController::class, 'package'])->name('api.ask.package');
     // Flashcards and the speed round (A9.2d).
     Route::get('practice/flashcards', [FlashcardController::class, 'index'])->name('api.practice.flashcards.index');
     Route::post('practice/flashcards', [FlashcardController::class, 'store'])->middleware('throttle:60,1,api-practice-flashcards')->name('api.practice.flashcards.store');

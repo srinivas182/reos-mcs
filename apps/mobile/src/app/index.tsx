@@ -100,8 +100,8 @@ export default function HomeScreen() {
         agent ? (
           <AskBar placeholder={t('voice.askPlaceholder')} voiceLabel={t('voice.start')} onPress={() => setCapturing('type')} onVoice={() => setCapturing('voice')} />
         ) : candidate ? (
-          // Ask about your courses: answers from your lessons, with where they come from (A5.3b).
-          <AskBar placeholder={t('practice.today.ask')} onPress={() => router.push('/learn')} onVoice={() => router.push('/learn')} />
+          // Ask, the study mate (screen 13, A10.1): answers from your courses, with the lesson to watch.
+          <AskBar placeholder={t('practice.today.ask')} onPress={() => router.push('/ask')} onVoice={() => router.push('/ask')} />
         ) : undefined
       }
     >
