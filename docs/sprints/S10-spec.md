@@ -168,7 +168,14 @@
     - **Recruiting** (broker web sidebar) lists them by first name, city and stage. A brokerage makes, changes or withdraws an offer: office, split, fees, training, mentoring, message (audited).
     - Offers are ranked by fit (office in their city), mentors' rating and terms.
     - **Accept** shares the candidate's name, email and phone with that brokerage only; **Decline** hides the offer.
-- **Done when:** a candidate becomes an agent on the same account.
+- **As built, A10.3c** (ADR 0041 §10–11):
+  - **Switch to agent** (web and phone, from the tracker's **I'm licensed**):
+    - The candidate enters their TREC number. The regulator's record is shown (name, type, status, sponsor), and the name must match the account.
+    - If the licence isn't active yet, REOS checks every morning and notifies when it is.
+    - The candidate picks one of three ways in: the accepted broker offer, an association code, or continuing alone.
+    - The same account gains the agent role and the licence. Progress and certificates are kept, and the switch is audited.
+  - **Your mentors** (agent web sidebar; phone from Today): the brokerage's mentors with ratings, booked through the 1-on-1 session flow.
+- **Done when:** a candidate becomes an agent on the same account. ✅ Met: `SwitchToAgentTest` makes a candidate an agent on the same account (on their own, through a broker offer or with an association code).
 
 ### B10.1 MLS feeds (Team B)
 

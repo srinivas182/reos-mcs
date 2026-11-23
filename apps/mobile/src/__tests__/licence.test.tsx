@@ -3,6 +3,8 @@ import { router } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
 
 import ExamDayScreen from '@/app/licence-journey/exam-day';
+import LicenceScreen from '@/app/licence-journey/licence';
+import MentorsScreen from '@/app/mentors';
 import OffersScreen from '@/app/licence-journey/offers';
 import PassesScreen from '@/app/licence-journey/passes';
 import LicenceJourneyScreen from '@/app/licence-journey/index';
@@ -147,5 +149,45 @@ describe('After the exam on the phone (A10.3b: f05, f06, 17)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Accept' }));
     expect(mockApi.POST).toHaveBeenCalledWith('/licence-journey/offers/{offer}/accept', { params: { path: { offer: 'o-1' } } });
     expect(await screen.findByText(/Gulf Coast Homes has your contact details/)).toBeTruthy();
+  });
+});
+
+describe('Switching to agent on the phone (A10.3c: f03, 20, f04)', () => {
+  const state = { number: null, check: null, checked_at: null, watching: false, record: null, can_switch: false, broker: null, switched: false };
+
+  it('checks the number, then switches on your own', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: state }));
+    mockApi.POST.mockResolvedValueOnce(
+      ok({ data: { ...state, number: '0798765', check: 'verified', can_switch: true, record: { name: 'Ana Ruiz', type: 'sales_agent', status: 'active', licensed_on: '2023-04-01', sponsor: 'Lone Star Realty' }, broker: { id: 'o-1', name: 'Lone Star Realty' } } }),
+    );
+    await render(wrap(<LicenceScreen />));
+
+    await fireEvent.changeText(await screen.findByLabelText('TREC licence number'), '0798765');
+    await fireEvent.press(screen.getByRole('button', { name: 'Check' }));
+    expect(mockApi.POST).toHaveBeenCalledWith('/licence-journey/licence/check', { body: { number: '0798765' } });
+    expect(await screen.findByText('Active licence found')).toBeTruthy();
+
+    mockApi.POST.mockResolvedValueOnce(ok({ data: { ...state, switched: true }, organisation: 'Lone Star Realty' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Join Lone Star Realty' }));
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/licence-journey/licence/switch', { body: { path: 'broker', code: null } });
+    expect(router.replace).toHaveBeenCalledWith('/mentors');
+  });
+
+  it('says REOS keeps checking an inactive licence', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: { ...state, number: '0797777', check: 'inactive', watching: true } }));
+    await render(wrap(<LicenceScreen />));
+
+    expect(await screen.findByText("Your licence isn't active yet")).toBeTruthy();
+    expect(screen.getByText(/checks every morning/)).toBeTruthy();
+  });
+
+  it('lists the brokerage\'s mentors to book', async () => {
+    mockApi.GET.mockResolvedValue(
+      ok({ data: { brokerage: 'Lone Star Realty', mentors: [{ id: 3, user_id: 12, name: 'Maya Chen', school: 'Lone Star Realty', bio: null, languages: ['en', 'es'], topics: [], price_30: 0, price_60: 0, rating: 4.9, ratings: 31, next_slot: null }] } }),
+    );
+    await render(wrap(<MentorsScreen />));
+
+    await fireEvent.press(await screen.findByText('Maya Chen'));
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/bookings/[id]', params: { id: '12' } });
   });
 });

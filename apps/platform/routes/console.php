@@ -68,3 +68,5 @@ Schedule::command('reos:deals:deadlines')->hourlyAt(5)->withoutOverlapping()->on
 Schedule::command('reos:sessions:bookings')->everyMinute()->withoutOverlapping()->onOneServer();
 // The licence exam's reminders (A10.3a): 8:15 in Texas, before the candidate's day starts.
 Schedule::command('reos:licence:remind')->dailyAt('08:15')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
+// Licence numbers not active yet (A10.3c): checked each morning, after the regulator's nightly file.
+Schedule::command('reos:licence:watch')->dailyAt('07:40')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();

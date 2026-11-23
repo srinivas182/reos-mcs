@@ -415,13 +415,18 @@ final readonly class SessionBookings
      * Active instructors and mentors who take bookings, with their rating
      * (from ratings at least 24 hours old) and next free slot.
      *
+     * @param  list<int>|null  $among
      * @return list<OfferRow>
      */
-    public function offers(?int $only = null): array
+    public function offers(?int $only = null, ?array $among = null): array
     {
         $rows = [];
+        $query = SessionOffer::query()->with('user')->where('active', true)
+            ->when($only !== null, static fn ($q) => $q->where('user_id', $only))
+            // Only these people (a brokerage's mentors, A10.3c).
+            ->when($among !== null, static fn ($q) => $q->whereIn('user_id', $among ?? []));
 
-        foreach (SessionOffer::query()->with('user')->where('active', true)->when($only !== null, static fn ($q) => $q->where('user_id', $only))->get() as $offer) {
+        foreach ($query->get() as $offer) {
             $rated = SessionBooking::query()->where('instructor_id', $offer->user_id)->whereNotNull('rating')->where('rated_at', '<=', now()->subHours(self::RATING_DELAY_HOURS));
             $count = (clone $rated)->count();
             $average = (clone $rated)->avg('rating');

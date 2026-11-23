@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licence\PassesAndOffersController;
+use App\Http\Controllers\Api\Licence\SwitchController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
@@ -241,6 +242,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('kit/{item}', 'kit')->where('item', '[a-z_]+')->middleware('throttle:60,1,api-licence-kit')->name('kit');
         Route::post('results', 'result')->middleware('throttle:10,1,api-licence-result')->name('result');
     });
+    // Switching to agent (A10.3c): the licence check, the switch, and a new agent's mentors.
+    Route::prefix('licence-journey/licence')->name('api.licence.licence.')->controller(SwitchController::class)->group(function () {
+        Route::get('/', 'show')->name('show');
+        Route::post('check', 'check')->middleware('throttle:10,1,api-licence-check')->name('check');
+        Route::post('switch', 'switch')->middleware('throttle:5,1,api-licence-switch')->name('switch');
+    });
+    Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
     // After the exam (A10.3b): share the news, passes and congrats, and broker offers.
     Route::prefix('licence-journey')->name('api.licence.')->controller(PassesAndOffersController::class)->group(function () {
         Route::post('news', 'share')->middleware('throttle:5,1,api-licence-news')->name('news');

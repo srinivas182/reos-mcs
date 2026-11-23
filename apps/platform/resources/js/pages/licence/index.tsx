@@ -13,7 +13,7 @@ import { PageHeader } from '@/components/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { postJson, putJson } from '@/lib/content';
-import { exam, news, passes, result, step } from '@/routes/licence';
+import { exam, licence, news, passes, result, step } from '@/routes/licence';
 import { skip } from '@/routes/licence/news';
 import { optIn } from '@/routes/licence/offers';
 import { store as storePlan } from '@/routes/practice/plans';
@@ -185,10 +185,21 @@ export default function LicenceJourneyPage({ journey }: { journey: Journey }) {
                     offers={journey.offers}
                     onSave={(on, city) => void run(optIn().url, { on, city })}
                 />
-                <p>
+                <p className="flex flex-wrap gap-3">
                     <Button asChild variant="outline">
                         <Link href={passes().url}>
                             {t('licence.news.passes.see')}
+                        </Link>
+                    </Button>
+                    {/* Licensed: enter the number and switch to agent (A10.3c, f03). */}
+                    <Button
+                        asChild
+                        variant={
+                            journey.results.passed_both ? 'default' : 'outline'
+                        }
+                    >
+                        <Link href={licence().url}>
+                            {t('licence.switch.cta')}
                         </Link>
                     </Button>
                 </p>

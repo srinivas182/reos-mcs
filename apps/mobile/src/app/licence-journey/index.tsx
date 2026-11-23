@@ -144,6 +144,8 @@ export default function LicenceJourneyScreen() {
         onSee={() => router.push('/licence-journey/offers')}
       />
       <Button variant="secondary" label={t('licence.news.passes.see')} onPress={() => router.push('/licence-journey/passes')} />
+      {/* Licensed: enter the number and switch to agent (A10.3c, f03). */}
+      <Button variant={journey.results.passed_both ? 'primary' : 'secondary'} label={t('licence.switch.cta')} onPress={() => router.push('/licence-journey/licence')} />
 
       <SectionTitle>{t('licence.steps', { state: journey.state.name })}</SectionTitle>
       {journey.steps.map((step, i) => {

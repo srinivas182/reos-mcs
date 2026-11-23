@@ -67,6 +67,19 @@ The journeys add the licence journey (16), Ready to book (15), the exam-day kit 
    - **Answering:** **Accept** shares the candidate's name, email and phone with that brokerage alone, and tells its brokers. **Decline** hides the offer.
    - **Tenancy:** an offer spans the brokerage and a candidate in another tenant, so `broker_offers` has a `brokerage_id` rather than a tenant `organisation_id`, and access is checked in `BrokerOffers`.
 
+## Decision: switching to agent and mentors (A10.3c)
+
+10. **Switch to agent** (f03, 20):
+    - The candidate taps **I'm licensed** and enters their TREC licence number. REOS checks it with the regulator lookup (A5.1; TREC's own record once B10.3 lands), and the name on the record must match the account.
+    - **Not active yet** (or not found): REOS checks again every morning (`reos:licence:watch`, 07:40 Central) and sends **Your licence is active** (`licence_found`) when it is.
+    - **Same account:** the switch adds the agent role and the licence to the account the candidate already has. Their progress, certificates and readiness stay.
+    - **Three ways in:**
+      - the brokerage whose offer they accepted (broker seat; the sponsor step is ticked);
+      - an association's sponsor code (its benefits, B5.1);
+      - continuing on their own.
+    - The switch can happen once. It ticks the "active" step and is audited (`licence.switched_to_agent`).
+11. **Your mentors** (f04): agents see the mentors of their own brokerage who take 1-on-1 sessions (A10.2a), with their rating and next slot, and book through the same flow. An agent with no brokerage is asked to join one.
+
 ## Consequences
 
 - Adding a state means adding its steps and rules on screen 62; no code changes.

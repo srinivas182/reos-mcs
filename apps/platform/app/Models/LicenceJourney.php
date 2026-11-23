@@ -30,19 +30,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $offers_opt_in Brokerages in the state may make offers (A10.3b)
  * @property string|null $offers_city Where the candidate wants to work
  * @property CarbonImmutable|null $offers_opted_at
+ * @property string|null $licence_number Entered to switch to agent (A10.3c)
+ * @property string|null $licence_check verified, inactive, name_mismatch, not_found or no_lookup
+ * @property CarbonImmutable|null $licence_checked_at
+ * @property bool $licence_watch Checked daily until active
+ * @property CarbonImmutable|null $licence_found_at
+ * @property CarbonImmutable|null $switched_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
  */
 final class LicenceJourney extends Model
 {
-    protected $fillable = ['user_id', 'state_code', 'steps', 'application_filed_on', 'exam_on', 'exam_time', 'test_centre', 'kit', 'attempts', 'weak_topics', 'reminded', 'passed_on', 'news', 'offers_opt_in', 'offers_city', 'offers_opted_at'];
+    protected $fillable = ['user_id', 'state_code', 'steps', 'application_filed_on', 'exam_on', 'exam_time', 'test_centre', 'kit', 'attempts', 'weak_topics', 'reminded', 'passed_on', 'news', 'offers_opt_in', 'offers_city', 'offers_opted_at', 'licence_number', 'licence_check', 'licence_checked_at', 'licence_watch', 'licence_found_at', 'switched_at'];
 
     protected function casts(): array
     {
         return [
             'steps' => 'array', 'kit' => 'array', 'attempts' => 'array', 'weak_topics' => 'array', 'reminded' => 'array',
-            'application_filed_on' => 'immutable_date', 'exam_on' => 'immutable_date', 'passed_on' => 'immutable_date', 'offers_opt_in' => 'boolean', 'offers_opted_at' => 'datetime',
+            'application_filed_on' => 'immutable_date', 'exam_on' => 'immutable_date', 'passed_on' => 'immutable_date', 'offers_opt_in' => 'boolean', 'offers_opted_at' => 'datetime', 'licence_checked_at' => 'datetime', 'licence_watch' => 'boolean', 'licence_found_at' => 'datetime', 'switched_at' => 'datetime',
         ];
     }
 
