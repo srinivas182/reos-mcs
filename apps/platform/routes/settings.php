@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Certificates\CertificateController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Notifications\NotificationsController;
 use App\Http\Controllers\Notifications\TextsController;
@@ -77,6 +78,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('settings/licences/{licence}', [LicenceController::class, 'update'])->whereNumber('licence')->middleware('throttle:30,1,licences-update')->name('licences.update');
     Route::delete('settings/licences/{licence}', [LicenceController::class, 'destroy'])->whereNumber('licence')->middleware('throttle:30,1,licences-destroy')->name('licences.destroy');
     Route::post('settings/licences/{licence}/restore', [LicenceController::class, 'restore'])->whereNumber('licence')->middleware('throttle:30,1,licences-restore')->name('licences.restore');
+    // Certificates for CE taken elsewhere (B10.3b): read by OCR, checked, saved.
+    Route::post('settings/certificates/read', [CertificateController::class, 'read'])->middleware('throttle:10,1,certificates-read')->name('certificates.read');
+    Route::post('settings/certificates', [CertificateController::class, 'store'])->middleware('throttle:20,1,certificates-store')->name('certificates.store');
     // A provider's professional licence (B10.3).
     Route::post('settings/provider-licences', [ProviderLicenceController::class, 'store'])->middleware('throttle:10,1,provider-licences')->name('provider-licences.store');
     Route::put('settings/current-state', [CurrentStateController::class, 'update'])->middleware('throttle:30,1,current-state-update')->name('current-state.update');

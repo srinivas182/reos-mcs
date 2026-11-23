@@ -3078,6 +3078,200 @@
                 }
             }
         },
+        "/me/certificates/read": {
+            "post": {
+                "operationId": "me.certificates.read",
+                "description": "An image or a one-page PDF (`file`, up to 10 MB). Returns what was read (name, course, hours, date, provider, each with its confidence) for me to check; nothing is saved as a completion yet. `reader` is null when no reader is connected: type the details.",
+                "summary": "Read a certificate",
+                "tags": [
+                    "Certificate"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ReadCertificateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "upload": {
+                                                    "type": "string"
+                                                },
+                                                "reader": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "name": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "course": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "hours": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "completed_on": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "provider": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "confidence": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                "name_matches": {
+                                                    "type": [
+                                                        "boolean",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "states": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "upload",
+                                                "reader",
+                                                "name",
+                                                "course",
+                                                "hours",
+                                                "completed_on",
+                                                "provider",
+                                                "confidence",
+                                                "name_matches",
+                                                "states"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/certificates": {
+            "post": {
+                "operationId": "me.certificates.store",
+                "description": "Records the completion for one of my licence states, with its certificate.",
+                "summary": "Save a checked certificate",
+                "tags": [
+                    "Certificate"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveCertificateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "const": 201
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/practice/challenges": {
             "get": {
                 "operationId": "practice.challenges.index",
@@ -41142,6 +41336,22 @@
                 ],
                 "title": "QuizTopic"
             },
+            "ReadCertificateRequest": {
+                "type": "object",
+                "description": "A certificate to read: an image or a one-page PDF, up to 10 MB (B10.3b).",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "description": "Maximum file size: 10240 kilobytes."
+                    }
+                },
+                "required": [
+                    "file"
+                ],
+                "title": "ReadCertificateRequest"
+            },
             "RecordingAnswerRequest": {
                 "type": "object",
                 "description": "Agree or not to recording the session (B6.3c).",
@@ -41281,6 +41491,49 @@
                     "title"
                 ],
                 "title": "SaveCalendarEventRequest"
+            },
+            "SaveCertificateRequest": {
+                "type": "object",
+                "description": "A read certificate, as the person checked it (B10.3b).",
+                "properties": {
+                    "upload": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "state": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 2
+                    },
+                    "title": {
+                        "type": "string",
+                        "maxLength": 200
+                    },
+                    "hours": {
+                        "type": "number",
+                        "minimum": 0.5,
+                        "maximum": 60
+                    },
+                    "completed_on": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "provider": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "upload",
+                    "state",
+                    "title",
+                    "hours",
+                    "completed_on"
+                ],
+                "title": "SaveCertificateRequest"
             },
             "SaveFlashcardRequest": {
                 "type": "object",

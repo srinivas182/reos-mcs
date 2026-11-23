@@ -1,6 +1,6 @@
 # ADR 0043: Licence lookups and certificate OCR
 
-- Status: Accepted (regulator data, TREC lookup and provider licences, B10.3a)
+- Status: Accepted (regulator data, TREC lookup and provider licences, B10.3a; certificate OCR, B10.3b)
 - Date: 2026-11-24 (Sprint 10; spec in docs/sprints/S10-spec.md)
 
 ## Context
@@ -31,11 +31,28 @@ Licence checks have run on the Simulator since A5.1. Before agents, candidates s
    - **NMLS IDs** always go to a reviewer. The People screen links each to its NMLS Consumer Access page. Approvals and rejections are audited.
 5. **Simulator:** demo files in both formats (TREC's tab layout for agents, CSVs for inspectors and TDI) run through the same import, so parsing is tested exactly as it runs live.
 
+## Decision: certificate OCR (B10.3b)
+
+6. **Read, then review.**
+   - An uploaded CE or course certificate is read into name, course, hours, completion date and provider, each with its confidence. The upload is an image or a one-page PDF, up to 10 MB, and the person must hold a licence.
+   - Nothing counts until the person checks the fields and saves. The completion is then recorded for one of their licence states (`source` `other_provider`, with `certificate_path` and `read_by`).
+   - A name on the certificate that doesn't match the account is pointed out before saving.
+7. **AWS Textract** (`aws-textract`, REOS's keys in Settings › Integrations) reads the certificate:
+   - `AnalyzeDocument` with one query per field, on the bytes, so AWS stores nothing.
+   - Answers under 50% confidence are left empty for the person to fill in.
+   - If Textract fails, the person types the details. The Simulator reads demo certificates outside production.
+8. **Files:**
+   - Certificates are kept privately on the content disk and virus-scanned (`ScanCertificate`). An infected file is deleted and can't be saved.
+   - Reads not saved within a day are deleted with their files (`reos:certificates:prune`).
+9. **Screens:**
+   - Web: *Add a certificate* under the licences in Settings › Profile.
+   - Phone: from My licences, picking a photo or PDF. The CE wallet (Sprint 11) builds on these completions.
+
 ## Consequences
 
 - Done when a licence number is verified in seconds: met once `trec-licence` is live; it needs no keys (public data).
 - TDI's column names are matched by name and should be confirmed on the first live import.
-- The certificate OCR (B10.3b) is recorded here when it lands.
+- Textract charges per page; one page per certificate keeps a read to a cent or two.
 
 ## Alternatives considered
 

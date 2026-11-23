@@ -1,4 +1,5 @@
 import { Form, Head, usePage } from '@inertiajs/react';
+import { FileUp } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 /* @chisel-email-verification */
@@ -9,6 +10,7 @@ import DeleteUser from '@/components/delete-user';
 import { YourData } from '@/components/your-data';
 import type { MyPrivacyRequest } from '@/components/your-data';
 import Heading from '@/components/heading';
+import { CertificateDialog } from '@/components/certificate-dialog';
 import { LicenceList } from '@/components/licence-list';
 import {
     ProviderLicences,
@@ -54,6 +56,7 @@ export default function Profile(
 ) {
     const { t } = useTranslation();
     const { auth } = usePage<PageProps>().props;
+    const [certificate, setCertificate] = useState(false);
 
     return (
         <>
@@ -77,6 +80,22 @@ export default function Profile(
                     description={t('licences.description')}
                 />
                 <LicenceList licences={licences} states={licenceStates} />
+                {licences.length > 0 ? (
+                    <>
+                        {/* CE taken elsewhere: read by OCR, checked, saved (B10.3b). */}
+                        <Button
+                            variant="outline"
+                            onClick={() => setCertificate(true)}
+                        >
+                            <FileUp aria-hidden />
+                            {t('certificates.add')}
+                        </Button>
+                        <CertificateDialog
+                            open={certificate}
+                            onOpenChange={setCertificate}
+                        />
+                    </>
+                ) : null}
             </div>
 
             {providerLicences ? (

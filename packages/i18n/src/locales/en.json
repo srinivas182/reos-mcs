@@ -7832,5 +7832,31 @@
         "why": "Why it's not approved"
       }
     }
+  },
+  "certificates": {
+    "add": "Add a certificate",
+    "title": "Add a CE certificate",
+    "description": "Upload a certificate from a course you took elsewhere. REOS reads it; you check the details before saving.",
+    "file": "Certificate (photo or one-page PDF, up to 10 MB)",
+    "read": "Read certificate",
+    "reading": "Reading…",
+    "review": "Check what we read",
+    "reviewHint": "Correct anything that's wrong. Fields we couldn't read are empty.",
+    "unread": "We couldn't read this certificate. Type the details from it.",
+    "nameOnCertificate": "Name on the certificate: {{name}}",
+    "nameMismatch": "This name doesn't match your account. Only add certificates that are yours.",
+    "state": "License state",
+    "course": "Course title",
+    "hours": "Hours",
+    "completedOn": "Completed on",
+    "provider": "Provider",
+    "save": "Save certificate",
+    "saved": "Certificate saved",
+    "confidence": "{{percent}}% sure",
+    "errors": {
+      "noLicence": "Add a license first: certificates count toward a license's CE.",
+      "infected": "This file didn't pass the virus check. Upload a different copy.",
+      "state": "Choose the state of one of your licenses."
+    }
   }
 }
