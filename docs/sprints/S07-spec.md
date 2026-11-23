@@ -89,6 +89,14 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
   - Withdrawal flags every lesson that uses the avatar; within 30 days the lessons are unpublished or re-rendered with another presenter.
   - In "Download my data" and the data map.
 - **Done when:** no CE or qualifying label appears without a recorded, unexpired approval for that state and delivery (Pest, plus a browser check on Learn).
+- **As built, A7.1a** (ADR 0025):
+  - **Approval records:** `course_approvals`, one per course, state and delivery, holding the number, hours, dates, status, and the seat-time and attendance rules. The A5.3 numbers moved in.
+  - **Texas defaults:** the new state rule `courses.seat_time` comes from 22 TAC §535.65(g): 12 hours a day, present for the hours credited, makeup after two-thirds within 90 days. Check-ins every 15 minutes are REOS's own default.
+  - **Labels:** shown on Learn (web and phone) and in `credit` only with an approval in force for the course's delivery.
+  - **Expiry:** `reos:approvals:check` reminds at 60 and 30 days, and on expiry removes the label and audits it.
+  - **Owners:** courses have an owner school and a delivery. Texas Realty School owns the demo's Principles of Real Estate II and Contracts for new agents.
+  - **Screen 50** offers Add approval, Renew, Edit, Add state, and Withdraw with Undo. **Screen 49** has the approvals card.
+  - Instructors and avatar consent follow in A7.1b.
 
 ### A7.2 Course builder (Team A)
 

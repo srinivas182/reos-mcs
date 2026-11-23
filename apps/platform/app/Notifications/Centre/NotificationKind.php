@@ -32,6 +32,7 @@ enum NotificationKind: string
     case Announcement = 'announcement';
     case SessionBooked = 'session_booked';
     case SessionStarting = 'session_starting';
+    case ApprovalExpiring = 'approval_expiring';
 
     public const INBOX = 'inbox';
 
@@ -86,7 +87,7 @@ enum NotificationKind: string
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
             self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive => 'learning',
-            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess => 'organisation',
+            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
         };
     }

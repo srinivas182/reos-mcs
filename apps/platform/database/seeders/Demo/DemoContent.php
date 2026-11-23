@@ -6,11 +6,14 @@ namespace Database\Seeders\Demo;
 
 use App\Content\CourseStatus;
 use App\Content\CourseType;
+use App\Content\Delivery;
 use App\Content\Knowledge\Ingestion;
 use App\Content\MediaKind;
 use App\Content\MediaStatus;
 use App\Models\Course;
+use App\Models\CourseApproval;
 use App\Models\Lesson;
+use App\Models\Organisation;
 use App\Services\Content\LessonFiles;
 
 /**
@@ -32,7 +35,12 @@ final readonly class DemoContent
 
     public function seed(): void
     {
-        $principles = $this->course('principles-of-real-estate-ii', 'Principles of Real Estate II', CourseType::Qualifying, 30, CourseStatus::Live, ['TX' => ['number' => 'TREC 0451', 'expires_on' => '2028-08-31']]);
+        // Texas Realty School's own courses and their approvals (A7.1, screen 50).
+        $school = Organisation::query()->where('name', 'Texas Realty School')->value('id');
+        $principles = $this->course('principles-of-real-estate-ii', 'Principles of Real Estate II', CourseType::Qualifying, 30, CourseStatus::Live, is_int($school) ? $school : null);
+        $this->approval($principles, Delivery::SelfPaced, 'TREC 0451', CourseApproval::APPROVED, '2024-09-01', '2028-08-31');
+        // Filed with TREC for AI avatar delivery, waiting.
+        $this->approval($principles, Delivery::AiAvatar, null, CourseApproval::PENDING, null, null);
         $agency = $this->lesson($principles, '6.2 Agency disclosure', 'en', 25,
             "# First contact\nGive the Information About Brokerage Services (IABS) form at the first substantive contact with a party. "
             ."A substantive contact is any talk about a specific property, price or terms.\n\n"
@@ -44,32 +52,41 @@ final readonly class DemoContent
             "# Appointments\nWith written consent, the broker may appoint a different license holder to each party. "
             .'Appointed license holders may give opinions and advice to the party they were appointed to.');
 
-        $this->course('contracts-for-new-agents', 'Contracts for new agents', CourseType::Ce, 4, CourseStatus::Draft, null);
+        $contracts = $this->course('contracts-for-new-agents', 'Contracts for new agents', CourseType::Ce, 4, CourseStatus::Draft, is_int($school) ? $school : null);
+        // Expires in 25 days: on the school dashboard's "Needs attention".
+        $this->approval($contracts, Delivery::SelfPaced, 'TREC CE 30117', CourseApproval::APPROVED, '2024-12-15', now()->addDays(25)->toDateString());
 
         // Waiting for review with one legal flag (screen 63).
-        $strategies = $this->course('exam-day-strategies', 'Exam day strategies', CourseType::TestPrep, 2, CourseStatus::InReview, null);
+        $strategies = $this->course('exam-day-strategies', 'Exam day strategies', CourseType::TestPrep, 2, CourseStatus::InReview);
         $this->lesson($strategies, 'Pacing the national portion', 'en', 12,
             "# Pacing\nAllow about one minute per question and flag anything that takes longer. "
             .'Candidates who follow this plan are guaranteed to pass on the first try.');
 
-        $exam = $this->course('exito-en-el-examen-texas', 'Éxito en el examen: Texas', CourseType::TestPrep, null, CourseStatus::Live, null);
+        $exam = $this->course('exito-en-el-examen-texas', 'Éxito en el examen: Texas', CourseType::TestPrep, null, CourseStatus::Live);
         $this->lesson($exam, 'Representación y divulgación', 'es', 15,
             "# Primer contacto\nEntregue el formulario de Información sobre Servicios de Corretaje (IABS) en el primer contacto sustancial. "
             .'Explique a quién representa antes de hablar de precio o condiciones.');
     }
 
-    /** @param  array<string, array{number: string, expires_on: string|null}>|null  $approvals */
-    private function course(string $slug, string $title, CourseType $type, ?int $hours, CourseStatus $status, ?array $approvals): Course
+    private function course(string $slug, string $title, CourseType $type, ?int $hours, CourseStatus $status, ?int $owner = null): Course
     {
         return Course::withTrashed()->updateOrCreate(['slug' => $slug], [
+            'organisation_id' => $owner,
             'title' => $title,
             'type' => $type,
             'states' => ['TX'],
             'hours' => $hours,
-            'approvals' => $approvals,
             'status' => $status,
             'published_at' => $status === CourseStatus::Live ? now() : null,
             'deleted_at' => null,
+        ]);
+    }
+
+    private function approval(Course $course, Delivery $delivery, ?string $number, string $status, ?string $approvedOn, ?string $expiresOn): void
+    {
+        $course->approvals()->updateOrCreate(['state_code' => 'TX', 'delivery' => $delivery->value], [
+            'number' => $number, 'hours' => $course->hours, 'status' => $status, 'approved_on' => $approvedOn, 'expires_on' => $expiresOn,
+            'max_hours_per_day' => 12, 'checkin_minutes' => 15, 'presence_percent' => 100, 'makeup_min_percent' => 67, 'makeup_days' => 90,
         ]);
     }
 

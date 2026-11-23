@@ -55,7 +55,8 @@
     "messages": "Messages",
     "announcements": "Announcements",
     "notifications": "Notifications",
-    "liveClasses": "Live classes"
+    "liveClasses": "Live classes",
+    "stateApprovals": "State approvals"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1999,7 +2000,12 @@
         "email.suppressed": "Email stopped after a bounce or complaint",
         "email.resumed": "Email resumed",
         "session.recording_started": "Session recording started",
-        "session.recording_deleted": "Session recording deleted"
+        "session.recording_deleted": "Session recording deleted",
+        "course.approval_added": "Course approval added",
+        "course.approval_changed": "Course approval changed",
+        "course.approval_renewed": "Course approval renewed",
+        "course.approval_withdrawn": "Course approval withdrawn",
+        "course.approval_expired": "Course approval expired"
       }
     }
   },
@@ -2879,7 +2885,8 @@
       "ce": "CE and renewal",
       "advertising": "Advertising",
       "brokerage": "Brokerage",
-      "forms": "Forms"
+      "forms": "Forms",
+      "courses": "Course delivery"
     },
     "emptyTitle": "No {{topic}} rules yet",
     "emptyDescription": "Add the regulator's rules with their source and the date they take effect. Courses, CE tracking and post checks read them.",
@@ -2915,7 +2922,8 @@
     "values": {
       "roleCourse": "{{hours}} hours for: {{roles}}",
       "firstRenewal": "{{hours}} qualifying (SAE) hours, plus {{count}} required courses",
-      "feeDays": "${{fee}} fee for {{days}} more days"
+      "feeDays": "${{fee}} fee for {{days}} more days",
+      "seatTime": "Up to {{max}} hours a day · present for {{presence}}% of credited hours · makeup after {{makeup}}% attended, within {{days}} days"
     },
     "edit": {
       "button": "Edit",
@@ -2939,7 +2947,11 @@
       "effectiveHint": "Until then, the current version stays in force.",
       "note": "Note (why it changed)",
       "discard": "Discard draft",
-      "save": "Save draft"
+      "save": "Save draft",
+      "maxHoursPerDay": "Most hours in one day",
+      "presencePercent": "Present for (% of credited hours)",
+      "makeupMinPercent": "Makeup allowed after attending (%)",
+      "makeupDays": "Makeup within (days)"
     },
     "errors": {
       "unknown": "That isn't a rule REOS knows.",
@@ -2954,7 +2966,10 @@
       "broker_compliance": "Broker CE compliance",
       "reminders": "Reminders",
       "post_checks": "Post checks",
-      "brokerage_matching": "Brokerage matching"
+      "brokerage_matching": "Brokerage matching",
+      "course_approvals": "Course approvals",
+      "course_player": "Course player",
+      "live_classes": "Live classes"
     },
     "keys": {
       "licensing": {
@@ -2983,6 +2998,9 @@
       },
       "brokerage": {
         "sponsorship": "Sponsorship"
+      },
+      "courses": {
+        "seat_time": "Seat time and attendance"
       }
     },
     "short": {
@@ -3327,7 +3345,9 @@
       "here": "From your search",
       "empty": "This lesson has no text or files yet.",
       "noVideo": "Video not added yet. This is the transcript only."
-    }
+    },
+    "noCredit": "Not approved for credit in {{state}} yet",
+    "credit": "{{type}} · approval {{number}}"
   },
   "billing": {
     "errors": {
@@ -4514,7 +4534,8 @@
       "message": "Messages",
       "announcement": "Announcements",
       "session_starting": "Session starting",
-      "session_booked": "Sessions booked or cancelled"
+      "session_booked": "Sessions booked or cancelled",
+      "approval_expiring": "Course approvals expiring"
     },
     "digest": {
       "subject": {
@@ -4775,5 +4796,101 @@
     "label": "Preview",
     "title": "Preview for testing.",
     "text": "Nothing here is real, and no texts or emails go out. Any code REOS asks for is {{code}}."
+  },
+  "approvals": {
+    "title": "Course catalog and state approvals",
+    "description": "Make sure every course carries a valid approval. No CE or qualifying label without one.",
+    "add": "Add approval",
+    "addState": "Add state",
+    "renew": "Renew",
+    "edit": "Edit",
+    "withdraw": "Withdraw",
+    "withdrawn": "Approval withdrawn. {{course}} loses its label in {{state}}.",
+    "added": "Approval added.",
+    "saved": "Approval saved.",
+    "emptyTitle": "No approvals yet",
+    "empty": "Add each CE and qualifying course's approval number from the regulator, per state and delivery. Until then the course can't be sold for credit.",
+    "noCoursesTitle": "No courses yet",
+    "noCourses": "Your school's courses appear here once they're built in the Course builder.",
+    "columns": {
+      "course": "Course",
+      "type": "Type",
+      "state": "State",
+      "number": "Approval number",
+      "hours": "Hours",
+      "expiry": "Expiry",
+      "delivery": "Delivery",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "deliveries": {
+      "classroom": "Classroom",
+      "live_online": "Live online",
+      "self_paced": "Self-paced online",
+      "ai_avatar": "AI avatar"
+    },
+    "statuses": {
+      "pending": "Waiting for approval",
+      "approved": "Approved",
+      "withdrawn": "Withdrawn",
+      "expired": "Expired"
+    },
+    "expiresIn_one": "Expires in {{count}} day",
+    "expiresIn_other": "Expires in {{count}} days",
+    "noExpiry": "No expiry",
+    "labels": "Labels the course",
+    "otherDelivery": "The course is delivered {{delivery}}, so this approval doesn't label it.",
+    "form": {
+      "addTitle": "Add approval",
+      "editTitle": "{{course}} · {{state}}",
+      "renewTitle": "Renew {{course}} in {{state}}",
+      "intro": "Record the approval exactly as the regulator issued it. Seat-time and attendance rules start from the state's rules.",
+      "course": "Course",
+      "state": "State",
+      "delivery": "Delivery",
+      "number": "Approval number",
+      "hours": "Approved hours",
+      "approvedOn": "Approved on",
+      "expiresOn": "Expires on",
+      "status": "Status",
+      "seatTime": "Seat time and attendance",
+      "seatTimeHint": "From the state's rules on the date approved. Change them only if the approval says otherwise.",
+      "maxHoursPerDay": "Most hours in one day",
+      "checkinMinutes": "Check-in every (minutes)",
+      "presencePercent": "Present for (% of hours)",
+      "makeupMinPercent": "Makeup after attending (%)",
+      "makeupDays": "Makeup within (days)",
+      "note": "Note (optional)",
+      "save": "Save approval",
+      "cancel": "Cancel"
+    },
+    "dashboard": {
+      "title": "Course approvals",
+      "inForce_one": "{{count}} approval in force",
+      "inForce_other": "{{count}} approvals in force",
+      "courses_one": "{{count}} course",
+      "courses_other": "{{count}} courses",
+      "attention": "Needs attention",
+      "allGood": "Nothing needs attention: every approval is in force for at least 60 more days.",
+      "open": "State approvals",
+      "pending": "{{course}} · {{state}}: waiting for approval",
+      "expiring": "{{course}} · {{state}}: expires {{date}}",
+      "expired": "{{course}} · {{state}}: expired {{date}}, no label"
+    },
+    "errors": {
+      "state": "Pick a state REOS knows.",
+      "duplicate": "This course already has an approval in that state for that delivery. Renew or edit it instead.",
+      "number": "An approved approval needs the regulator's number.",
+      "expiry": "The expiry date must be after the approval date.",
+      "status": "That isn't an approval status."
+    },
+    "mail": {
+      "subject": "{{course}}: the {{state}} approval expires in {{days}} days",
+      "body": "Approval {{number}} for {{course}} in {{state}} expires on {{date}}. Renew it with the regulator and record the new date in REOS, or the course loses its label there.",
+      "expiredSubject": "{{course}}: the {{state}} approval has expired",
+      "expiredBody": "Approval {{number}} for {{course}} in {{state}} expired on {{date}}. The course stays visible but can't be called CE or qualifying, or sold for credit, in {{state}} until it's renewed.",
+      "action": "Open state approvals",
+      "next": "You'll get these reminders 60 and 30 days before each approval expires."
+    }
   }
 }

@@ -35,6 +35,7 @@ use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\Payouts\EarningsController;
 use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
+use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
 use App\Http\Controllers\Sessions\SessionsController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SupportConsentController;
@@ -175,6 +176,16 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('connect', [SalesController::class, 'connect'])->middleware('throttle:10,1,sales-connect')->name('connect');
     Route::post('own-account', [SalesController::class, 'connectOwn'])->middleware('throttle:10,1,sales-own')->name('connect-own');
     Route::get('own-account', [SalesController::class, 'ownAccount'])->middleware('throttle:10,1,sales-own-back')->name('own-account');
+});
+// Course catalogue and state approvals (A7.1, school admin screen 50).
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->prefix('school/approvals')->name('school.approvals.')->group(function () {
+    Route::get('/', [SchoolApprovalsController::class, 'index'])->name('index');
+    Route::get('defaults', [SchoolApprovalsController::class, 'defaults'])->middleware('throttle:60,1,approval-defaults')->name('defaults');
+    Route::middleware('throttle:60,1,approvals')->group(function () {
+        Route::post('/', [SchoolApprovalsController::class, 'store'])->name('store');
+        Route::patch('{approval}', [SchoolApprovalsController::class, 'update'])->whereNumber('approval')->name('update');
+        Route::put('{approval}/status', [SchoolApprovalsController::class, 'status'])->whereNumber('approval')->name('status');
+    });
 });
 // Earnings (B5.2b): instructors and mentors.
 // Messages (B6.1): behind the `messages` flag (screen 70) while it rolls out.

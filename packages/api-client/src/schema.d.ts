@@ -592,6 +592,10 @@ export interface paths {
         /**
          * Courses I can learn
          * @description Live courses for my current state, with their lessons.
+         *
+         *     CE and qualifying courses carry `credit` (the approval number and hours)
+         *     only with an approval in force in my state; otherwise it's null and the
+         *     course isn't labelled CE or qualifying.
          */
         get: operations["learn.courses"];
         put?: never;
@@ -4137,6 +4141,10 @@ export interface operations {
                             /** @enum {string} */
                             type: "qualifying" | "ce" | "post_licence" | "test_prep" | "elective";
                             hours: number | null;
+                            credit: {
+                                number: string;
+                                hours: number | null;
+                            } | null;
                             unlocked: boolean;
                             lessons: {
                                 id: number;

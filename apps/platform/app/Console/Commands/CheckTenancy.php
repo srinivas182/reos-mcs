@@ -30,6 +30,7 @@ final class CheckTenancy extends Command
         'model_has_roles' => 'Who holds which role where; the role switcher lists all of a person\'s organisations.',
         'model_has_permissions' => 'Direct permissions per organisation; same as model_has_roles.',
         'conversations' => 'Messages (B6.1, ADR 0023): a conversation spans tenants (a team agent and the brokerage\'s broker); only its participants can open it, checked in Conversations and on the live channel. organisation_id is only where it started.',
+        'courses' => 'Courses (A7.1, ADR 0025): a school\'s courses are sold to learners in any tenant (an agent at a brokerage takes a school\'s CE course); editing is checked against the owner school in CourseApprovals and the course builder. organisation_id is the owner, empty for REOS courses.',
         'video_sessions' => 'Video sessions (B6.3, ADR 0024): a session spans tenants (a school\'s instructor and a brokerage\'s agent); only its participants can open it, checked in VideoSessions and when minting the room token. organisation_id is only the host\'s organisation.',
     ];
 

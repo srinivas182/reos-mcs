@@ -77,6 +77,16 @@ function auditBrokerage(): array
     return [$lone, User::factory()->withRole(Role::Broker, $lone)->withTwoFactor()->create(['name' => 'Linda Park'])];
 }
 
+/** @return array{0: Organisation, 1: User, 2: Course} */
+function auditSchoolCourse(): array
+{
+    $school = Organisation::factory()->ofType(OrganisationType::School)->create(['name' => 'Texas Realty School']);
+    $paul = User::factory()->withTwoFactor()->withRole(Role::SchoolAdmin, $school)->create(['name' => 'Paul Diaz']);
+    $course = Course::query()->create(['organisation_id' => $school->id, 'title' => 'Principles of Real Estate II', 'slug' => 'principles-ii', 'type' => 'qualifying', 'states' => ['TX'], 'hours' => 30]);
+
+    return [$school, $paul, $course];
+}
+
 /** @return array{0: Organisation, 1: User} */
 function auditAssociation(): array
 {
@@ -500,6 +510,24 @@ function adminActions(): array
             GatewaySetting::query()->create(['gateway' => 'stripe', 'is_default' => true, 'tenant_accounts' => true]);
 
             return auditCase($paul, 'POST', '/organisation/sales/own-account', tenant: $school->id);
+        },
+        // School: course approvals (A7.1, screen 50).
+        'school.approvals.store' => function () {
+            [$school, $paul, $course] = auditSchoolCourse();
+
+            return auditCase($paul, 'POST', '/school/approvals', ['course_id' => $course->id, 'state_code' => 'TX', 'delivery' => 'self_paced', 'number' => 'TREC 0451'], tenant: $school->id);
+        },
+        'school.approvals.update' => function () {
+            [$school, $paul, $course] = auditSchoolCourse();
+            $approval = $course->approvals()->create(['state_code' => 'TX', 'delivery' => 'self_paced', 'number' => 'TREC 0451', 'status' => 'approved']);
+
+            return auditCase($paul, 'PATCH', "/school/approvals/{$approval->id}", ['expires_on' => '2029-08-31'], tenant: $school->id);
+        },
+        'school.approvals.status' => function () {
+            [$school, $paul, $course] = auditSchoolCourse();
+            $approval = $course->approvals()->create(['state_code' => 'TX', 'delivery' => 'self_paced', 'number' => 'TREC 0451', 'status' => 'approved']);
+
+            return auditCase($paul, 'PUT', "/school/approvals/{$approval->id}/status", ['status' => 'withdrawn'], tenant: $school->id);
         },
         'plans.splits' => function () {
             $ops = auditOps();

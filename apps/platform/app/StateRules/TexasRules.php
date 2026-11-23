@@ -21,6 +21,8 @@ final class TexasRules
 
     private const SALES_AGENT = 'https://www.trec.texas.gov/become-licensed/sales-agent';
 
+    private const TAC_535_65 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-535-65';
+
     public const CHECKED_ON = '2026-11-22';
 
     /** @return list<Seed> */
@@ -61,6 +63,8 @@ final class TexasRules
             ['key' => 'advertising.broker_name_size', 'value' => ['text' => "The broker's name is at least half the size of the largest contact information for any sales agent, associated broker or team name in the advertisement."], 'citation' => '22 TAC §535.155(a)(2)', 'source_url' => self::TAC_535_155, 'effective_from' => '2018-09-04'],
             ['key' => 'advertising.social_media', 'value' => ['text' => 'Social media, websites, email and texts are advertisements. The required information can be on the profile or a page linked directly from the post, if readily noticeable there.'], 'citation' => '22 TAC §535.155(b)(1), (c)', 'source_url' => self::TAC_535_155, 'effective_from' => '2018-09-04'],
             ['key' => 'advertising.misleading_titles', 'value' => ['text' => 'A sales agent may not be presented as a broker, owner, president or similar, and a team name may not suggest a separate brokerage ("brokerage", "company", "associates").'], 'citation' => '22 TAC §535.155(d)(3)–(5)', 'source_url' => self::TAC_535_155, 'effective_from' => '2018-09-04'],
+            // Classroom delivery: present for the hours credited, no daily segment over 12 hours, a makeup only after two-thirds attended, within 90 days.
+            ['key' => 'courses.seat_time', 'value' => ['max_hours_per_day' => 12, 'presence_percent' => 100, 'makeup_min_percent' => 67, 'makeup_days' => 90], 'citation' => '22 TAC §535.65(g)(1)(B)(ii), (iv) and (g)(1)(D)', 'source_url' => self::TAC_535_65, 'effective_from' => '2023-06-11'],
             ['key' => 'brokerage.sponsorship', 'value' => ['text' => 'A sales agent must be sponsored by a licensed broker to perform any act of real estate services.'], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
         ];
     }

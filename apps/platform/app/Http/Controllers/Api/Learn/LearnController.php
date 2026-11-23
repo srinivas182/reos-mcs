@@ -25,7 +25,11 @@ final class LearnController extends Controller
      *
      * Live courses for my current state, with their lessons.
      *
-     * @response array{state: string, data: list<array{id: int, title: string, type: 'qualifying'|'ce'|'post_licence'|'test_prep'|'elective', hours: float|null, unlocked: bool, lessons: list<array{id: int, title: string, minutes: int|null, language: 'en'|'es', locked: bool}>}>}
+     * CE and qualifying courses carry `credit` (the approval number and hours)
+     * only with an approval in force in my state; otherwise it's null and the
+     * course isn't labelled CE or qualifying.
+     *
+     * @response array{state: string, data: list<array{id: int, title: string, type: 'qualifying'|'ce'|'post_licence'|'test_prep'|'elective', hours: float|null, credit: array{number: string, hours: float|null}|null, unlocked: bool, lessons: list<array{id: int, title: string, minutes: int|null, language: 'en'|'es', locked: bool}>}>}
      */
     public function courses(#[CurrentUser] User $user, Learning $learning): JsonResponse
     {
