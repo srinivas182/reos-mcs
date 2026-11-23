@@ -11,6 +11,8 @@ use App\Billing\SponsorCodes;
 use App\Content\Ai\LessonPipeline;
 use App\Content\Avatars\AvatarConsents;
 use App\Content\MediaKind;
+use App\Content\Review\LessonReviews;
+use App\Content\Review\QuestionBank;
 use App\Enums\OrganisationType;
 use App\Features\Flags;
 use App\Features\Rollouts;
@@ -22,12 +24,14 @@ use App\Models\GatewaySetting;
 use App\Models\Invitation;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
+use App\Models\LessonVersion;
 use App\Models\MessageReport;
 use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\PrivacyRequest;
 use App\Models\Product;
 use App\Models\ProviderCategory;
+use App\Models\ReviewItem;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
@@ -118,6 +122,17 @@ function auditAiModule(): array
     $ledger->post('pool_funded', [[$ledger->platform('credits_sold'), -500], [$ledger->organisation($school, 'credits'), 500]], 'organisation', (string) $school->id);
 
     return [$school, $paul, $course, $rachel, $module, $lesson];
+}
+
+/** An AI lesson made end to end (simulators), waiting for review (A8.1). */
+function auditReviewLesson(string $text = 'Agents disclose who they represent at the first contact. The IABS form explains it.'): array
+{
+    [$school, $paul, $course, $rachel, $module] = auditAiModule();
+    $module->sources()->update(['sections' => [['page' => 1, 'text' => $text]], 'words' => str_word_count($text)]);
+    app(LessonPipeline::class)->generate($course, $module, 15, $rachel);
+    app(LessonPipeline::class)->checkRenders();
+
+    return [$school, $paul, $course, $rachel, $module->lessons()->whereHas('versions')->sole()];
 }
 
 /** @return array{0: Organisation, 1: User} */
@@ -674,6 +689,71 @@ function adminActions(): array
             app(LessonPipeline::class)->checkRenders();
 
             return auditCase($rachel, 'POST', '/course-builder/lessons/'.$module->lessons()->whereHas('versions')->sole()->id.'/regenerate', tenant: $school->id);
+        },
+        // AI lesson review (screen 44) and question bank (screen 45), A8.1.
+        'builder.review.line' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/review/lines/0", ['action' => 'approve'], tenant: $school->id);
+        },
+        'builder.review.suggest' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson('Every student is guaranteed to pass with this course.');
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/review/lines/0/suggest", tenant: $school->id);
+        },
+        'builder.review.comment' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/review/lines/0/comments", ['body' => 'Cite the rule.'], tenant: $school->id);
+        },
+        'builder.review.item' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+            $item = ReviewItem::query()->where('lesson_id', $lesson->id)->where('kind', 'flashcard')->firstOrFail();
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/review/items/{$item->id}", ['decision' => 'approve'], tenant: $school->id);
+        },
+        'builder.review.render' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+            app(LessonReviews::class)->rerecord(LessonVersion::query()->where('lesson_id', $lesson->id)->firstOrFail(), 0, $rachel);
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/review/render", tenant: $school->id);
+        },
+        'builder.review.publish' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+            $version = LessonVersion::query()->where('lesson_id', $lesson->id)->firstOrFail();
+            $reviews = app(LessonReviews::class);
+            foreach (array_keys($version->lines ?? []) as $n) {
+                $reviews->approveLine($version->refresh(), $n, $rachel);
+            }
+            ReviewItem::query()->where('lesson_id', $lesson->id)->whereIn('kind', ['checkin', 'flashcard'])->update(['status' => 'approved']);
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/review/publish", tenant: $school->id);
+        },
+        'builder.review.send-back' => function () {
+            [$school, $paul, , , $lesson] = auditReviewLesson();
+
+            return auditCase($paul, 'POST', "/course-builder/lessons/{$lesson->id}/review/send-back", ['note' => 'Please rework it.'], tenant: $school->id);
+        },
+        'builder.questions.update' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+            $item = ReviewItem::query()->where('lesson_id', $lesson->id)->where('kind', 'question')->firstOrFail();
+            $language = ['prompt' => 'When is the form given?', 'options' => ['At first contact', 'At closing'], 'explanation' => 'First contact.'];
+
+            return auditCase($rachel, 'PUT', "/question-bank/{$item->id}", ['en' => $language, 'es' => $language, 'correct' => 0, 'topic' => 'agency', 'difficulty' => 'easy', 'portion' => 'state'], tenant: $school->id);
+        },
+        'builder.questions.decide' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+            $item = ReviewItem::query()->where('lesson_id', $lesson->id)->where('kind', 'question')->firstOrFail();
+
+            return auditCase($rachel, 'POST', "/question-bank/{$item->id}/decision", ['decision' => 'reject'], tenant: $school->id);
+        },
+        'builder.questions.resolve' => function () {
+            [$school, , , $rachel, $lesson] = auditReviewLesson();
+            $item = ReviewItem::query()->where('lesson_id', $lesson->id)->where('kind', 'question')->firstOrFail();
+            $question = app(QuestionBank::class)->approve($item, $rachel);
+            $dispute = app(QuestionBank::class)->dispute($question, User::factory()->withRole(Role::Candidate)->create(), 'unclear', null);
+
+            return auditCase($rachel, 'POST', "/question-bank/disputes/{$dispute->id}", ['outcome' => 'keep', 'resolution' => 'It matches the rule.'], tenant: $school->id);
         },
         'builder.lessons.approve' => function () {
             [$school, , , $rachel, , $lesson] = auditBuilder();

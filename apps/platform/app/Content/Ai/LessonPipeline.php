@@ -246,7 +246,7 @@ final readonly class LessonPipeline
                 $options[] = $es();
             }
             $translated = ['prompt' => $prompt, 'options' => $options, 'explanation' => $es()];
-            $items[] = ['kind' => 'question', 'after_line' => null, 'topic' => $question['topic'], 'content' => ['en' => $en, 'es' => $translated, 'correct' => $question['correct'], 'source' => $passage['source'], 'page' => $passage['page']]];
+            $items[] = ['kind' => 'question', 'after_line' => null, 'topic' => $question['topic'], 'difficulty' => 'medium', 'portion' => $question['topic'] === 'state_rules' ? 'state' : 'national', 'content' => ['en' => $en, 'es' => $translated, 'correct' => $question['correct'], 'source' => $passage['source'], 'page' => $passage['page']]];
         }
 
         foreach ($draft['flashcards'] as $card) {
@@ -258,7 +258,7 @@ final readonly class LessonPipeline
         $flagged = $flags !== [];
 
         DB::transaction(function () use ($version, $lesson, $lines, $flags, $items, $title, $credits, $flagged): void {
-            $version->forceFill(['lines' => $lines, 'flags' => $flags, 'credits' => $credits, 'status' => $flagged ? LessonVersion::FLAGGED : LessonVersion::RENDERING])->save();
+            $version->forceFill(['lines' => $lines, 'flags' => $flags, 'credits' => $credits, 'review_state' => 'in_review', 'status' => $flagged ? LessonVersion::FLAGGED : LessonVersion::RENDERING])->save();
             $lesson->forceFill(['title' => Str::limit($title['en'], 200, ''), 'review_status' => $flagged ? LessonReview::InReview : LessonReview::Generating])->save();
 
             foreach ($items as $item) {
@@ -273,6 +273,38 @@ final readonly class LessonPipeline
         if (! $flagged) {
             $this->startRenders($version);
         }
+    }
+
+    /**
+     * Renders an edited script again (A8.1, "Re-record line"): a new version
+     * with the reviewed lines and their review carried over, straight to the
+     * vendor (no new draft). The earlier version is kept.
+     */
+    public function rerender(LessonVersion $from, User $actor): LessonVersion
+    {
+        $lesson = $from->lesson;
+        $course = $lesson->course;
+        $school = $course->owner ?? throw ValidationException::withMessages(['lesson' => __('builder.errors.noSchool')]);
+        $credits = $this->cost($course, $from->sources);
+
+        if ($this->credits->schoolLeft($school) < $credits) {
+            throw ValidationException::withMessages(['lesson' => __('builder.errors.credits', ['credits' => $credits, 'left' => $this->credits->schoolLeft($school)])]);
+        }
+
+        $settings = $this->builder->settings($course);
+        $version = $this->newVersion($lesson, $from->sources, $settings['presenter'], $settings['vendor'], $actor);
+        $reviews = [];
+        foreach ($from->reviews ?? [] as $n => $review) {
+            $reviews[$n] = [...$review, 'rerecord' => false];
+        }
+        $version->forceFill(['lines' => $from->lines, 'flags' => $from->flags, 'reviews' => $reviews, 'review_state' => 'in_review', 'credits' => $credits, 'status' => LessonVersion::RENDERING])->save();
+        DB::table('review_items')->where('lesson_version_id', $from->id)->update(['lesson_version_id' => $version->id]);
+        $lesson->forceFill(['review_status' => LessonReview::Generating])->save();
+        $this->credits->chargeSchool($school, $actor, self::FEATURE, 'render', $credits, (string) $version->id);
+        $this->audit->record('lesson.rerendered', Lessons::AUDIT_SUBJECT, (string) $lesson->id, ['version' => $version->version], $actor, $school->id);
+        $this->startRenders($version);
+
+        return $version;
     }
 
     /** Step 3: one video per language, at the course's vendor. */

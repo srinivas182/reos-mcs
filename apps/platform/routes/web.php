@@ -10,6 +10,8 @@ use App\Http\Controllers\Billing\BillingController;
 use App\Http\Controllers\Billing\CheckoutController;
 use App\Http\Controllers\BrandLogoController;
 use App\Http\Controllers\Builder\CourseBuilderController;
+use App\Http\Controllers\Builder\LessonReviewController;
+use App\Http\Controllers\Builder\QuestionBankController;
 use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
@@ -205,6 +207,10 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:learning.
     Route::get('course-builder', [CourseBuilderController::class, 'index'])->name('index');
     Route::get('course-builder/{course}', [CourseBuilderController::class, 'show'])->whereNumber('course')->name('show');
     Route::get('course-builder/lessons/{lesson}/draft', [CourseBuilderController::class, 'draft'])->whereNumber('lesson')->name('lessons.draft');
+    // AI lesson review (screen 44) and question bank (screen 45), A8.1.
+    Route::get('course-builder/lessons/{lesson}/review', [LessonReviewController::class, 'show'])->whereNumber('lesson')->name('review.show');
+    Route::get('question-bank', [QuestionBankController::class, 'index'])->name('questions.index');
+    Route::get('ai-lessons', [LessonReviewController::class, 'index'])->name('review.index');
     Route::middleware('throttle:120,1,builder')->group(function () {
         Route::post('course-builder', [CourseBuilderController::class, 'store'])->name('store');
         Route::put('course-builder/{course}/status', [CourseBuilderController::class, 'status'])->whereNumber('course')->name('status');
@@ -222,6 +228,16 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:learning.
         Route::post('course-builder/lessons/{lesson}/approve', [CourseBuilderController::class, 'approveLesson'])->whereNumber('lesson')->name('lessons.approve');
         Route::delete('course-builder/lessons/{lesson}', [CourseBuilderController::class, 'removeLesson'])->whereNumber('lesson')->name('lessons.destroy');
         Route::post('course-builder/lessons/{lesson}/restore', [CourseBuilderController::class, 'restoreLesson'])->whereNumber('lesson')->name('lessons.restore');
+        Route::post('course-builder/lessons/{lesson}/review/lines/{line}', [LessonReviewController::class, 'line'])->whereNumber(['lesson', 'line'])->name('review.line');
+        Route::post('course-builder/lessons/{lesson}/review/lines/{line}/suggest', [LessonReviewController::class, 'suggest'])->whereNumber(['lesson', 'line'])->middleware('throttle:30,1,ai-suggest')->name('review.suggest');
+        Route::post('course-builder/lessons/{lesson}/review/lines/{line}/comments', [LessonReviewController::class, 'comment'])->whereNumber(['lesson', 'line'])->name('review.comment');
+        Route::post('course-builder/lessons/{lesson}/review/items/{item}', [LessonReviewController::class, 'item'])->whereNumber(['lesson', 'item'])->name('review.item');
+        Route::post('course-builder/lessons/{lesson}/review/render', [LessonReviewController::class, 'render'])->whereNumber('lesson')->middleware('throttle:6,1,ai-lessons')->name('review.render');
+        Route::post('course-builder/lessons/{lesson}/review/publish', [LessonReviewController::class, 'publish'])->whereNumber('lesson')->name('review.publish');
+        Route::post('course-builder/lessons/{lesson}/review/send-back', [LessonReviewController::class, 'sendBack'])->whereNumber('lesson')->name('review.send-back');
+        Route::put('question-bank/{item}', [QuestionBankController::class, 'update'])->whereNumber('item')->name('questions.update');
+        Route::post('question-bank/{item}/decision', [QuestionBankController::class, 'decide'])->whereNumber('item')->name('questions.decide');
+        Route::post('question-bank/disputes/{dispute}', [QuestionBankController::class, 'resolve'])->whereNumber('dispute')->name('questions.resolve');
         // AI lessons (A7.3): generate a module, generate a lesson again.
         Route::post('course-builder/modules/{module}/generate', [CourseBuilderController::class, 'generate'])->whereNumber('module')->middleware('throttle:6,1,ai-lessons')->name('modules.generate');
         Route::post('course-builder/lessons/{lesson}/regenerate', [CourseBuilderController::class, 'regenerate'])->whereNumber('lesson')->middleware('throttle:6,1,ai-lessons')->name('lessons.regenerate');

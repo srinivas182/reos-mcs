@@ -60,7 +60,9 @@
     "instructors": "Instructors",
     "avatar": "AI avatar",
     "courseBuilder": "Course builder",
-    "courseCatalogue": "Course catalog"
+    "courseCatalogue": "Course catalog",
+    "aiLessons": "AI lessons",
+    "questionBank": "Question bank"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2082,7 +2084,23 @@
         "lesson.regenerated": "Generated a lesson again",
         "avatar.twins_recorded": "Recorded avatar ids",
         "contact.merged": "Merged two contacts",
-        "contact.split": "Split a merged contact"
+        "contact.split": "Split a merged contact",
+        "lesson.line_approved": "Approved a lesson line",
+        "lesson.line_edited": "Edited a lesson line",
+        "lesson.suggestion_used": "Used a suggested rewrite",
+        "lesson.item_approved": "Approved a check-in or flashcard",
+        "lesson.item_rejected": "Rejected a check-in or flashcard",
+        "lesson.published": "Approved and published an AI lesson",
+        "lesson.sent_back": "Sent back an AI lesson",
+        "lesson.rerendered": "Recorded an AI lesson again",
+        "question.edited": "Edited a question",
+        "question.approved": "Approved a question",
+        "question.rejected": "Rejected a question",
+        "question.corrected": "Corrected a reported question",
+        "question.kept": "Kept a reported question",
+        "lesson.suggestion_made": "Asked for a suggested rewrite",
+        "lesson.line_commented": "Commented on a lesson line",
+        "lesson.line_rerecord": "Marked a lesson line to record again"
       }
     }
   },
@@ -4163,7 +4181,8 @@
       "content_post": "Content studio post",
       "short_video": "Short video",
       "ai_lesson_minute": "AI lesson minute (schools)",
-      "voice_todo": "Voice to-do"
+      "voice_todo": "Voice to-do",
+      "ai_suggestion": "AI rewrite of a flagged lesson line (schools)"
     },
     "monthly": "Default per seat, each month",
     "creditPack": "Credit pack",
@@ -4617,7 +4636,8 @@
       "session_starting": "Session starting",
       "session_booked": "Sessions booked or cancelled",
       "approval_expiring": "Course approvals and seat time",
-      "avatar_consent_ended": "Avatar consent ended"
+      "avatar_consent_ended": "Avatar consent ended",
+      "content_review": "Lesson and question reviews"
     },
     "digest": {
       "subject": {
@@ -5321,6 +5341,159 @@
       "sources": "Sources",
       "stage": "Stage",
       "campaign": "Smart campaign in {{source}}: {{name}} ({{status}})"
+    }
+  },
+  "review": {
+    "errors": {
+      "flagged": "Fix the flagged words before approving this line.",
+      "notFlagged": "This line has no flag to fix.",
+      "noSuggestion": "Get a suggestion first.",
+      "nothingToRecord": "No line is waiting to be recorded again.",
+      "questionsInBank": "Questions are reviewed in the question bank.",
+      "notReady": "This lesson isn't ready to publish yet.",
+      "published": "This version is already published.",
+      "noLine": "That line isn't in this version.",
+      "correct": "Pick the right answer from the options.",
+      "mapping": "A question needs a source, a topic and an exam portion before it's approved.",
+      "reason": "Pick a reason."
+    },
+    "blockers": {
+      "video": "{1} The videos aren't ready yet|[2,*] The videos aren't ready yet",
+      "flags": "{1} :count line has a legal flag|[2,*] :count lines have legal flags",
+      "lines": "{1} :count line still to approve|[2,*] :count lines still to approve",
+      "rerecord": "{1} :count line to record again|[2,*] :count lines to record again",
+      "items": "{1} :count check-in or flashcard to review|[2,*] :count check-ins or flashcards to review"
+    },
+    "mail": {
+      "sentBack": ":name sent back :lesson",
+      "open": "Open the lesson",
+      "corrected": "The question you reported was corrected",
+      "kept": "The question you reported was checked and kept"
+    },
+    "rendering": "Recording the lesson again. The earlier version is kept.",
+    "published": "Lesson approved and published.",
+    "sentBack": "Lesson sent back with your note.",
+    "questionSaved": "Question saved.",
+    "disputeResolved": "Report resolved. The learner is told.",
+    "list": {
+      "title": "AI lessons",
+      "description": "Review AI lessons before learners see them.",
+      "emptyTitle": "No AI lessons yet",
+      "empty": "Generate a module in the course builder and its lessons show up here.",
+      "lesson": "Lesson",
+      "course": "Course",
+      "status": "Status",
+      "version": "Version",
+      "needs": "Still to do",
+      "ready": "Nothing",
+      "review": "Review"
+    },
+    "page": {
+      "description": "Approve AI lessons line by line.",
+      "back": "Course builder",
+      "publish": "Approve and publish",
+      "sendBack": "Send back",
+      "renderAgain": "Record again ({{count}})",
+      "blocked": "Before publishing",
+      "published": "This version is approved and published.",
+      "sentBackNote": "Sent back: {{note}}",
+      "video": "Video",
+      "noVideo": "The video isn't ready yet.",
+      "versions": "Versions",
+      "versionRow": "Version {{version}}",
+      "script": "Script",
+      "line": "Line {{n}}",
+      "lineStatus": {
+        "to_review": "To review",
+        "approved": "Approved",
+        "changed": "Edited"
+      },
+      "flag": "{{rule}} ({{language}}). {{source}}",
+      "rerecord": "Re-record line",
+      "willRerecord": "Will be recorded again",
+      "approve": "Approve",
+      "edit": "Edit",
+      "suggest": "Suggest a rewrite",
+      "suggestion": "Suggestion",
+      "useSuggestion": "Use suggestion",
+      "comment": "Comment",
+      "commentLabel": "Comment on line {{n}}",
+      "post": "Post comment",
+      "editTitle": "Edit line {{n}}",
+      "editIntro": "The line is checked again and recorded again before publishing.",
+      "english": "English",
+      "spanish": "Spanish",
+      "save": "Save line",
+      "cancel": "Cancel",
+      "items": "Check-ins and flashcards",
+      "checkin": "Check-in after line {{n}}",
+      "flashcard": "Flashcard",
+      "reject": "Reject",
+      "itemStatus": {
+        "to_review": "To review",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      },
+      "sendBackTitle": "Send back to the author",
+      "sendBackLabel": "What needs to change",
+      "sendBackGo": "Send back",
+      "source": "{{source}}, page {{page}}"
+    }
+  },
+  "questions": {
+    "title": "Question bank",
+    "description": "Keep quiz and exam questions accurate.",
+    "tabs": {
+      "to_review": "To review ({{count}})",
+      "approved": "Approved ({{count}})",
+      "rejected": "Rejected ({{count}})",
+      "disputed": "Disputed ({{count}})"
+    },
+    "columns": {
+      "question": "Question",
+      "topic": "Topic",
+      "difficulty": "Difficulty",
+      "source": "Source",
+      "outline": "Exam outline",
+      "actions": "Actions"
+    },
+    "portions": {
+      "national": "National portion",
+      "state": "Texas portion",
+      "none": "Not mapped"
+    },
+    "difficulties": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "approve": "Approve",
+    "edit": "Edit",
+    "reject": "Reject",
+    "emptyTitle": "Nothing here",
+    "empty": "Questions drafted with your AI lessons show up here for review.",
+    "editTitle": "Edit question",
+    "prompt": "Question",
+    "option": "Option {{n}}",
+    "explanation": "Why (explanation)",
+    "correct": "Right answer",
+    "save": "Save question",
+    "cancel": "Cancel",
+    "disputes": {
+      "reason": {
+        "wrong_answer": "Says the answer is wrong",
+        "unclear": "Says it's unclear",
+        "out_of_date": "Says it's out of date",
+        "other": "Other"
+      },
+      "by": "Reported by {{name}}",
+      "answer": "Right answer: {{answer}}",
+      "resolution": "What to tell the learner",
+      "keep": "Keep as is",
+      "correct": "Corrected",
+      "correctHint": "Edit the question under Approved first, then mark it corrected.",
+      "emptyTitle": "No reports",
+      "empty": "When a learner reports a question, it shows up here."
     }
   }
 }

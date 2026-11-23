@@ -1079,17 +1079,24 @@
       "owner": "client_with_mayura",
       "access_status": "not_started",
       "personal_data": true,
-      "sandbox": "A test account's API token (Lead Engine › Lead Dropbox) and Developer Portal access.",
+      "sandbox": "Partner sandbox on approval.",
       "connection": {
-        "auth": "api_key",
+        "auth": "oauth2",
         "accounts": "user",
         "fields": [
           {
-            "key": "server_url",
+            "key": "client_id",
             "secret": false,
             "required": true,
             "kind": "text",
-            "default": "https://api.kvcore.com/v2/public"
+            "default": null
+          },
+          {
+            "key": "client_secret",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
           }
         ]
       }
