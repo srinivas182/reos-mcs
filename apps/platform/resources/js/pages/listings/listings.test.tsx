@@ -23,6 +23,12 @@ vi.mock('@inertiajs/react', async (original) => ({
 vi.mock('@/lib/undo-toast', () => ({ undoToast: toast }));
 vi.mock('sonner', () => ({ toast: { success: vi.fn() } }));
 
+const page = {
+    handle: 'james-miller',
+    published: false,
+    bio: null,
+    url: 'https://reos.com/agent/james-miller',
+};
 const render = (ui: ReactElement) =>
     baseRender(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
 
@@ -45,7 +51,7 @@ describe('My listings (B10.1)', () => {
     afterEach(() => vi.unstubAllGlobals());
 
     it('shows the listings, on the market first, marked as sample data', () => {
-        render(<ListingsPage listings={overview()} />);
+        render(<ListingsPage page={page} listings={overview()} />);
 
         expect(screen.getByText('Sample data')).toBeInTheDocument();
         expect(screen.getByText('$489,000')).toBeInTheDocument();
@@ -58,6 +64,7 @@ describe('My listings (B10.1)', () => {
         const user = userEvent.setup();
         render(
             <ListingsPage
+                page={page}
                 listings={overview({
                     linked: [],
                     listings: [],
@@ -82,7 +89,7 @@ describe('My listings (B10.1)', () => {
 
     it('unlinks with Undo instead of asking first', async () => {
         const user = userEvent.setup();
-        render(<ListingsPage listings={overview()} />);
+        render(<ListingsPage page={page} listings={overview()} />);
 
         await user.click(screen.getByRole('button', { name: 'Unlink HAR' }));
         await waitFor(() =>
@@ -98,6 +105,7 @@ describe('My listings (B10.1)', () => {
     it('says what to do with no license, or no membership found', () => {
         const { rerender } = render(
             <ListingsPage
+                page={page}
                 listings={overview({
                     licensed: false,
                     linked: [],
@@ -116,6 +124,7 @@ describe('My listings (B10.1)', () => {
         rerender(
             <I18nextProvider i18n={i18n}>
                 <ListingsPage
+                    page={page}
                     listings={overview({
                         linked: [],
                         listings: [],
@@ -138,7 +147,7 @@ describe('My listings (B10.1)', () => {
                     headers: { 'Content-Type': 'application/json' },
                 }),
         );
-        render(<ListingsPage listings={overview()} />);
+        render(<ListingsPage page={page} listings={overview()} />);
 
         await user.click(
             screen.getByRole('button', {

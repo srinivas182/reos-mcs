@@ -293,7 +293,7 @@ describe('health checks', function () {
         expect($setting->paused_at)->toBeNull()
             ->and($setting->consecutive_failures)->toBe(0)
             ->and($setting->mode)->toBe(IntegrationMode::Live)
-            ->and(AuditEvent::query()->pluck('action')->all())->toBe(['integration.checked', 'integration.resumed']);
+            ->and(AuditEvent::query()->orderBy('id')->pluck('action')->all())->toBe(['integration.checked', 'integration.resumed']);
     });
 
     it('stays paused when the test still fails', function () {

@@ -13,6 +13,8 @@ export type ListingsOverview = Got<'/listings'>['data'];
 export type Listing = ListingsOverview['listings'][number];
 export type Member = ListingsOverview['candidates'][number];
 export type PostDraft = Got<'/listings/{listing}/post'>['data'];
+export type Cma = Got<'/listings/{listing}/cma'>['data'];
+export type PageSettings = Got<'/listings/page'>['data'];
 
 const fail = (error: unknown): never => {
   const e = (error as { errors?: Record<string, string[]>; message?: string } | undefined) ?? {};
@@ -68,3 +70,30 @@ export async function savePost(listing: string, caption: string, photos: string[
 
   return data ? data.data : fail(error);
 }
+
+/** A CMA for one of my listings: radius in miles, sold within the last `months`. */
+export const RADII = ['0.5', '1', '2', '5'] as const;
+export const RANGES = ['3', '6', '12'] as const;
+export type Radius = (typeof RADII)[number];
+export type Range = (typeof RANGES)[number];
+
+export async function loadCma(listing: string, radius: Radius, months: Range): Promise<Cma> {
+  const { data, error } = await api().GET('/listings/{listing}/cma', { params: { path: { listing }, query: { radius, months } } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function loadPage(): Promise<PageSettings | null> {
+  const { data } = await api().GET('/listings/page');
+
+  return data?.data ?? null;
+}
+
+export async function savePage(published: boolean, bio: string | null): Promise<PageSettings> {
+  const { data, error } = await api().PUT('/listings/page', { body: { published, bio } });
+
+  return data ? data.data : fail(error);
+}
+
+export const dollarsOf = (value: number | null, language: string): string =>
+  value === null ? '—' : new Intl.NumberFormat(language, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);

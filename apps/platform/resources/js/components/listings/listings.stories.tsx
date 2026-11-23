@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
-import { draft, james, listing } from './fixtures';
+import { CmaView } from './cma-view';
+import { cma, draft, james, listing, pageSettings } from './fixtures';
 import { ListingCard } from './listing-card';
 import { MemberCard } from './member-card';
+import { PageCard } from './page-card';
 import { PostDialog } from './post-dialog';
 
 const meta = {
@@ -112,6 +114,39 @@ export const ListingPost: Story = {
             body.getByText(
                 'Listing courtesy of Lone Star Realty. Source: HAR MLS.',
             ),
+        ).toBeInTheDocument();
+    },
+};
+
+/** A CMA: the suggested range from four Katy sales, and the comparables nearest first. */
+export const MarketAnalysis: Story = {
+    render: () => <CmaView cma={cma()} />,
+    decorators: [
+        (Story) => (
+            <div className="max-w-5xl">
+                <Story />
+            </div>
+        ),
+    ],
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(
+            canvas.getByText('$468,000 – $488,000'),
+        ).toBeInTheDocument();
+        await expect(canvas.getByText('$476,000')).toBeInTheDocument();
+    },
+};
+
+/** The public page, published, with its link to copy. */
+export const PublicPageSettings: Story = {
+    render: () => (
+        <PageCard page={pageSettings()} onSave={fn(async () => {})} />
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('switch')).toBeChecked();
+        await expect(
+            canvas.getByDisplayValue('https://reos.com/agent/james-miller'),
         ).toBeInTheDocument();
     },
 };

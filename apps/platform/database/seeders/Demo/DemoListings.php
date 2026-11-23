@@ -6,6 +6,7 @@ namespace Database\Seeders\Demo;
 
 use App\Mls\MlsFeeds;
 use App\Mls\MlsSync;
+use App\Models\AgentPage;
 use App\Models\MlsMember;
 use App\Models\MlsMemberLink;
 use App\Models\User;
@@ -13,7 +14,8 @@ use App\Models\User;
 /**
  * My listings (B10.1): the MLS Simulator's sample listings, with James
  * Miller and Dana Brooks linked to their HAR member records (found by their
- * TREC licences), as in the agent journey. Safe to run again.
+ * TREC licences), as in the agent journey, and James's public page
+ * (B10.2b). Safe to run again.
  */
 final readonly class DemoListings
 {
@@ -35,6 +37,13 @@ final readonly class DemoListings
                     ['status' => MlsMemberLink::CONFIRMED],
                 );
             }
+        }
+
+        // James's public page, published (B10.2b): reos.com/agent/james-miller.
+        $james = User::query()->where('email', 'james.miller@'.Personas::DOMAIN)->first();
+
+        if ($james !== null) {
+            AgentPage::query()->firstOrCreate(['user_id' => $james->id], ['handle' => 'james-miller', 'published' => true, 'bio' => 'Helping Katy families buy and sell homes for twelve years.']);
         }
     }
 }

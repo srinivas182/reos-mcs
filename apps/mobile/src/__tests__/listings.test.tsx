@@ -2,10 +2,11 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
 
+import CmaScreen from '@/app/deals/listings/[uuid]/cma';
 import ListingPostScreen from '@/app/deals/listings/[uuid]/post';
 import ListingsScreen from '@/app/deals/listings/index';
 import { i18n } from '@/lib/i18n';
-import type { Listing, ListingsOverview, Member, PostDraft } from '@/lib/listings';
+import type { Cma, Listing, ListingsOverview, Member, PostDraft } from '@/lib/listings';
 import { ToastProvider } from '@/ui';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
@@ -69,11 +70,15 @@ const overview = (over: Partial<ListingsOverview> = {}): ListingsOverview => ({
   ...over,
 });
 
+const page = { handle: 'james-miller', published: true, bio: null, url: 'https://reos.com/agent/james-miller' };
+/** GET answers by path: the public page's settings, or `data` for everything else. */
+const answer = (data: unknown) => (path: string) => Promise.resolve(ok({ data: path === '/listings/page' ? page : data }));
+
 beforeEach(() => jest.clearAllMocks());
 
 describe('My listings on the phone (B10.1)', () => {
   it('shows the listings with their status and role, marked as sample data', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: overview() }));
+    mockApi.GET.mockImplementation(answer(overview()));
     await render(wrap(<ListingsScreen />));
 
     expect(await screen.findByText('$489,000')).toBeTruthy();
@@ -85,7 +90,7 @@ describe('My listings on the phone (B10.1)', () => {
   });
 
   it('confirms the member record found by license', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: overview({ linked: [], listings: [], candidates: [james] }) }));
+    mockApi.GET.mockImplementation(answer(overview({ linked: [], listings: [], candidates: [james] })));
     mockApi.POST.mockResolvedValue(ok({ data: overview() }));
     await render(wrap(<ListingsScreen />));
 
@@ -95,7 +100,7 @@ describe('My listings on the phone (B10.1)', () => {
   });
 
   it('unlinks with Undo', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: overview() }));
+    mockApi.GET.mockImplementation(answer(overview()));
     mockApi.POST.mockResolvedValue(ok({ data: overview({ linked: [], listings: [], candidates: [james] }) }));
     await render(wrap(<ListingsScreen />));
 
@@ -105,7 +110,7 @@ describe('My listings on the phone (B10.1)', () => {
   });
 
   it('asks for a license first', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: overview({ licensed: false, linked: [], listings: [], sample: false }) }));
+    mockApi.GET.mockImplementation(answer(overview({ licensed: false, linked: [], listings: [], sample: false })));
     await render(wrap(<ListingsScreen />));
 
     fireEvent.press(await screen.findByText('Add a license'));
@@ -128,7 +133,7 @@ describe('A listing post on the phone (B10.2)', () => {
   };
 
   it('opens from the listing', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: overview() }));
+    mockApi.GET.mockImplementation(answer(overview()));
     await render(wrap(<ListingsScreen />));
     fireEvent.press(await screen.findByLabelText('Create a post for 2418 Willow Bend Dr, Katy, TX 77494'));
     expect(router.push).toHaveBeenCalledWith({ pathname: '/deals/listings/[uuid]/post', params: { uuid: 'l1' } });
@@ -147,5 +152,41 @@ describe('A listing post on the phone (B10.2)', () => {
     fireEvent.press(screen.getByText('Save post'));
     expect(await screen.findByText('Post saved')).toBeTruthy();
     expect(mockApi.PUT).toHaveBeenCalledWith('/listings/{listing}/post', { params: { path: { listing: 'l1' } }, body: { caption: 'Just listed: 2418 Willow Bend Dr', photos: [photos[0]!.url, photos[1]!.url] } });
+  });
+});
+
+describe('CMA and the public page on the phone (B10.2b)', () => {
+  it('shows the public page link to share, and opens a CMA', async () => {
+    mockApi.GET.mockImplementation(answer(overview()));
+    await render(wrap(<ListingsScreen />));
+
+    expect(await screen.findByText('https://reos.com/agent/james-miller')).toBeTruthy();
+    fireEvent.press(screen.getAllByLabelText('CMA for 2418 Willow Bend Dr, Katy, TX 77494')[0]!);
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/deals/listings/[uuid]/cma', params: { uuid: 'l1' } });
+  });
+
+  it('shows the range and comparables, and changes the radius', async () => {
+    const { role: _r, can_post: _c, open_house: _o, ...subject } = listing();
+    const cma: Cma = {
+      subject,
+      radius: 1,
+      months: 6,
+      comparables: [{ listing: { ...subject, uuid: 'c1', address: '2502 Willow Bend Dr, Katy, TX 77494', status: 'closed', close_price: 463000, attribution: 'Listing courtesy of Bayou City Homes. Source: HAR MLS.' }, distance: 0.1, adjusted: 476000 }],
+      sold: 4,
+      active: 2,
+      median_per_sqft: 168,
+      low: 468000,
+      high: 488000,
+      suggested: 478000,
+      sample: true,
+    };
+    mockApi.GET.mockResolvedValue(ok({ data: cma }));
+    await render(wrap(<CmaScreen />));
+
+    expect(await screen.findByText('$468,000 – $488,000')).toBeTruthy();
+    expect(screen.getByText('Listing courtesy of Bayou City Homes. Source: HAR MLS.')).toBeTruthy();
+    fireEvent.press(screen.getByLabelText('2 mi'));
+    expect(await screen.findByText('$468,000 – $488,000')).toBeTruthy();
+    expect(mockApi.GET).toHaveBeenLastCalledWith('/listings/{listing}/cma', { params: { path: { listing: 'l1' }, query: { radius: '2', months: '6' } } });
   });
 });

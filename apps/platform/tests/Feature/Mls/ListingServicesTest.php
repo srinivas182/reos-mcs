@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Authorization\Role;
 use App\Mls\ListingPurpose;
 use App\Mls\ListingService;
 use App\Mls\MlsFeeds;
@@ -11,8 +12,11 @@ use App\Models\ListingPost;
 use App\Models\MlsFeed;
 use App\Models\MlsListing;
 use App\Models\MlsOpenHouse;
+use App\Models\Organisation;
+use App\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia;
 
 uses(RefreshDatabase::class);
 
@@ -119,5 +123,69 @@ describe('open houses on the agent\'s calendar (B10.2)', function () {
 
         $this->postJson('/api/v1/listings/members/unlink', ['mls' => 'mls-har', 'member_key' => 'HAR-M1'])->assertOk();
         expect(CalendarEvent::query()->where('user_id', $this->james->id)->count())->toBe(0);
+    });
+});
+
+describe('CMAs (B10.2b)', function () {
+    it('compare the agent\'s listing with sold and active homes nearby, adjusted to its size', function () {
+        $uuid = ($this->listing)('HAR-L1')->uuid;
+        $cma = $this->getJson("/api/v1/listings/{$uuid}/cma?radius=1&months=6")->assertOk()->json('data');
+
+        $addresses = array_map(static fn (array $c) => $c['listing']['address'], $cma['comparables']);
+        expect($cma['subject']['address'])->toBe('2418 Willow Bend Dr, Katy, TX 77494')
+            // Within a mile: the sold neighbours from the last 6 months, the active and pending ones; not Fulshear or Houston.
+            ->and($addresses)->toContain('2502 Willow Bend Dr, Katy, TX 77494', '2215 Lakeview Bend Dr, Katy, TX 77494', '2738 Prairie Grove Ln, Katy, TX 77494')
+            ->and($addresses)->not->toContain('31 Sable Oak Ct, Fulshear, TX 77441', '5520 Heron Lake Ln, Houston, TX 77041')
+            ->and($cma['sold'])->toBeGreaterThanOrEqual(3)
+            ->and($cma['comparables'][0]['distance'])->toBeLessThanOrEqual($cma['comparables'][1]['distance'])
+            ->and($cma['low'])->toBeLessThanOrEqual($cma['suggested'])->and($cma['suggested'])->toBeLessThanOrEqual($cma['high'])
+            ->and($cma['sample'])->toBeTrue();
+
+        $nearest = collect($cma['comparables'])->firstWhere('listing.address', '2502 Willow Bend Dr, Katy, TX 77494');
+        // Sold for $463,000 (98% of $472,000) over 2,780 sq ft = $167/sq ft; × 2,850 sq ft ≈ $476,000.
+        expect($nearest['listing']['close_price'])->toBe(463000)->and($nearest['listing']['price_per_sqft'])->toBe(167)->and($nearest['adjusted'])->toBe(476000);
+
+        // A shorter date range leaves older sales out.
+        $short = $this->getJson("/api/v1/listings/{$uuid}/cma?radius=1&months=3")->assertOk()->json('data');
+        expect($short['sold'])->toBeLessThan($cma['sold']);
+    });
+
+    it('are for the agent\'s own listings, with a radius and range from the list', function () {
+        $this->getJson('/api/v1/listings/'.($this->listing)('HAR-L5')->uuid.'/cma')->assertUnprocessable();
+        $this->getJson('/api/v1/listings/'.($this->listing)('HAR-L1')->uuid.'/cma?radius=50')->assertUnprocessable()->assertJsonValidationErrors('radius');
+
+        $this->get('/deals/listings/'.($this->listing)('HAR-L1')->uuid.'/cma?radius=2&months=12')->assertOk()
+            ->assertInertia(fn (AssertableInertia $page) => $page->component('listings/cma')->where('cma.radius', 2)->where('cma.months', 12)->has('radii', 4));
+    });
+});
+
+describe('the agent\'s public page (B10.2b)', function () {
+    it('is off until published, then shows the listings the MLS lets the public see', function () {
+        $this->getJson('/api/v1/listings/page')->assertOk()->assertJsonPath('data.handle', 'james-miller')->assertJsonPath('data.published', false);
+        auth()->forgetGuards();
+        $this->get('/agent/james-miller')->assertNotFound();
+
+        $this->actingAs($this->james)->putJson('/api/v1/listings/page', ['published' => true, 'bio' => 'Katy homes, twelve years.'])->assertOk()
+            ->assertJsonPath('data.url', url('/agent/james-miller'));
+        auth()->forgetGuards();
+
+        $this->get('/agent/james-miller')->assertOk()->assertInertia(fn (AssertableInertia $page) => $page->component('public/agent')
+            ->where('page.name', 'James Miller')->where('page.brokerage', 'Lone Star Realty')->where('page.bio', 'Katy homes, twelve years.')
+            ->where('page.licences.0.number', '0798765')->where('page.sample', true)
+            // Coming soon, active and pending; the sold one stays off (Texas: no public sold prices).
+            ->has('page.listings', 3)->where('page.listings.1.attribution', 'Listing courtesy of Lone Star Realty. Source: HAR MLS.'));
+
+        // A stale feed shows no listings to the public.
+        MlsFeed::query()->where('integration', 'mls-har')->update(['synced_at' => now()->subHours(13)]);
+        $this->get('/agent/james-miller')->assertInertia(fn (AssertableInertia $page) => $page->has('page.listings', 0));
+    });
+
+    it('gets its own address when the name is taken, and is for agents only', function () {
+        $this->getJson('/api/v1/listings/page')->assertJsonPath('data.handle', 'james-miller');
+        $other = mlsAgent('James Miller', '0700001');
+        $this->actingAs($other)->getJson('/api/v1/listings/page')->assertJsonPath('data.handle', 'james-miller-2');
+
+        $this->actingAs(User::factory()->withRole(Role::Candidate, Organisation::platform())->create())
+            ->putJson('/api/v1/listings/page', ['published' => true])->assertNotFound();
     });
 });

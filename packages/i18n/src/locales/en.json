@@ -7725,6 +7725,68 @@
         "notYours": "You can post about your own listings only."
       },
       "share": "Share"
+    },
+    "cma": {
+      "open": "CMA",
+      "openFor": "CMA for {{address}}",
+      "title": "Comparative market analysis",
+      "description": "Sold and active homes near {{address}}, with each one's price per square foot applied to its size.",
+      "back": "My listings",
+      "print": "Print or save as PDF",
+      "radius": "Within",
+      "radiusOption": "{{miles}} mi",
+      "months": "Sold in the last",
+      "monthsOption": "{{count}} months",
+      "suggested": "Suggested range",
+      "suggestedBody": "From {{sold}} sales: the middle half of their prices adjusted to this home's size.",
+      "suggestedAll": "From all {{count}} comparables (fewer than 3 sales).",
+      "median": "Median price per sq ft",
+      "comparables": "Comparables",
+      "soldActive": "{{sold}} sold, {{active}} on the market",
+      "columns": {
+        "address": "Address",
+        "status": "Status",
+        "price": "Price",
+        "area": "Sq ft",
+        "perSqft": "$/sq ft",
+        "adjusted": "Adjusted to this home",
+        "distance": "Distance",
+        "days": "Days on market"
+      },
+      "distance": "{{miles}} mi",
+      "subject": "This home",
+      "empty": {
+        "title": "No comparables in this area",
+        "description": "Widen the distance or the date range."
+      },
+      "attributions": "Listing data from the MLS. Each listing's brokerage is shown in its row.",
+      "errors": {
+        "noLocation": "This listing has no map position from the MLS, so there's nothing to compare it with."
+      }
+    },
+    "page": {
+      "title": "Your public page",
+      "description": "Your name, brokerage, license numbers and MLS listings, as each MLS allows.",
+      "publish": "Publish my page",
+      "published": "Published",
+      "hidden": "Not published",
+      "bio": "About you",
+      "bioHint": "A sentence or two for buyers and sellers. Up to 600 characters.",
+      "save": "Save",
+      "saved": "Page saved",
+      "view": "View page",
+      "copy": "Copy link",
+      "link": "Your page's address"
+    },
+    "public": {
+      "title": "{{name}}, real estate agent",
+      "listingsTitle": "Listings",
+      "noListings": "No listings to show right now.",
+      "license": "{{state}} license #{{number}}",
+      "sampleNote": "Sample data: these listings are made up for the REOS demo.",
+      "cpn": "TREC Consumer Protection Notice",
+      "iabs": "Texas Real Estate Commission Information About Brokerage Services",
+      "metaDescription": "{{name}}'s listings{{brokerage}}. Listing data from the MLS."
     }
   }
 }

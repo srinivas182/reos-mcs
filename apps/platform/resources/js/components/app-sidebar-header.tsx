@@ -36,7 +36,7 @@ export function AppSidebarHeader() {
     const name = auth.user.name ?? auth.user.email ?? auth.user.phone ?? '';
 
     return (
-        <header className="flex min-h-16 shrink-0 items-center gap-3 border-b border-border bg-card px-4 md:px-6">
+        <header className="flex min-h-16 shrink-0 items-center gap-3 border-b border-border bg-card px-4 md:px-6 print:hidden">
             <SidebarTrigger
                 className="size-12 md:hidden"
                 aria-label={t('nav.openMenu')}

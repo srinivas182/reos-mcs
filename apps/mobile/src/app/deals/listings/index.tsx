@@ -1,13 +1,25 @@
 import { Image } from 'expo-image';
 import { router, useFocusEffect } from 'expo-router';
-import { BadgeCheck, CalendarDays, House, IdCard, SearchX, Share2 } from 'lucide-react-native';
-import { useCallback, useState } from 'react';
+import { BadgeCheck, CalendarDays, ChartColumn, House, IdCard, SearchX, Share2 } from 'lucide-react-native';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, Share, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { confirmMember, declineMember, loadListings, priceText, unlinkMember, type Listing, type ListingsOverview, type Member } from '@/lib/listings';
-import { Button, Callout, Card, Chip, EmptyState, Icon, ListRow, Screen, SectionTitle, Text, TitleBar, useUndoToast } from '@/ui';
+import {
+  confirmMember,
+  declineMember,
+  loadListings,
+  loadPage,
+  priceText,
+  savePage,
+  unlinkMember,
+  type Listing,
+  type ListingsOverview,
+  type Member,
+  type PageSettings,
+} from '@/lib/listings';
+import { Button, Callout, Card, Chip, EmptyState, Icon, ListRow, Screen, SectionTitle, SwitchRow, Text, TitleBar, useUndoToast } from '@/ui';
 import type { Tone } from '@/ui';
 
 const TONES: Record<string, Tone> = { coming_soon: 'info', active: 'success', under_contract: 'warning', pending: 'warning', closed: 'neutral' };
@@ -118,9 +130,36 @@ export default function ListingsScreen() {
           {overview.listings.map((listing) => (
             <ListingCard key={listing.uuid} listing={listing} language={i18n.language} />
           ))}
+          {overview.linked.length > 0 ? <PageCard /> : null}
         </>
       )}
     </Screen>
+  );
+}
+
+/** Your public page (B10.2b): publish it and share its link. */
+function PageCard() {
+  const { t } = useTranslation();
+  const [page, setPage] = useState<PageSettings | null>(null);
+
+  useEffect(() => {
+    void loadPage().then(setPage);
+  }, []);
+
+  if (page === null) return null;
+
+  return (
+    <Card style={styles.gap}>
+      <Text variant="title">{t('listings.page.title')}</Text>
+      <Text tone="muted">{t('listings.page.description')}</Text>
+      <SwitchRow label={t('listings.page.publish')} value={page.published} onValueChange={(on) => void savePage(on, page.bio).then(setPage)} />
+      {page.published ? (
+        <>
+          <Text tone="muted">{page.url}</Text>
+          <Button variant="secondary" icon={Share2} label={t('listings.post.share')} onPress={() => void Share.share({ message: page.url })} />
+        </>
+      ) : null}
+    </Card>
   );
 }
 
@@ -179,6 +218,13 @@ function ListingCard({ listing, language }: { listing: Listing; language: string
           onPress={() => router.push({ pathname: '/deals/listings/[uuid]/post', params: { uuid: listing.uuid } })}
         />
       ) : null}
+      <Button
+        variant="secondary"
+        icon={ChartColumn}
+        label={t('listings.cma.open')}
+        accessibilityLabel={t('listings.cma.openFor', { address: listing.address })}
+        onPress={() => router.push({ pathname: '/deals/listings/[uuid]/cma', params: { uuid: listing.uuid } })}
+      />
     </Card>
   );
 }

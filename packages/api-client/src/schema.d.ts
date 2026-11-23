@@ -924,6 +924,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/listings/{listing}/cma": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A CMA for one of my listings
+         * @description Sold (within `months`) and active comparables from the same MLS within `radius` miles, nearest first; each one's price per square foot applied to my listing's size, and the range (25th to 75th percentile) from what sold.
+         */
+        get: operations["listings.cma"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/listings/page": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My public page
+         * @description Whether it's published, its address, and my short bio.
+         */
+        get: operations["listings.page"];
+        /**
+         * Publish or hide my public page
+         * @description It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows.
+         */
+        put: operations["listings.page.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/hub": {
         parameters: {
             query?: never;
@@ -4315,6 +4359,14 @@ export interface components {
             review?: boolean;
         };
         /**
+         * AgentPageRequest
+         * @description The agent's public page: on or off, and a short bio (B10.2b).
+         */
+        AgentPageRequest: {
+            published: boolean;
+            bio?: string | null;
+        };
+        /**
          * AnswerQuestionRequest
          * @description An instructor's answer to a student's question (A10.1b, screen i10).
          */
@@ -5739,6 +5791,7 @@ export interface components {
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
 export type SchemaAddContactRequest = components['schemas']['AddContactRequest'];
 export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
+export type SchemaAgentPageRequest = components['schemas']['AgentPageRequest'];
 export type SchemaAnswerQuestionRequest = components['schemas']['AnswerQuestionRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
@@ -9027,6 +9080,197 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "listings.cma": {
+        parameters: {
+            query?: {
+                radius?: "0.5" | "1" | "2" | "5" | null;
+                months?: "3" | "6" | "12" | null;
+            };
+            header?: never;
+            path: {
+                listing: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            subject: {
+                                uuid: string;
+                                mls: string;
+                                short_name: string;
+                                listing_id: string | null;
+                                status: string;
+                                address: string;
+                                city: string | null;
+                                postal_code: string | null;
+                                price: number | null;
+                                close_price: number | null;
+                                close_date: string | null;
+                                beds: number | null;
+                                baths: number | null;
+                                area: number | null;
+                                price_per_sqft: number | null;
+                                photo: {
+                                    url: string;
+                                    caption: string | null;
+                                } | null;
+                                photos: {
+                                    url: string;
+                                    caption: string | null;
+                                }[];
+                                listed_on: string | null;
+                                days_on_market: number | null;
+                                office: string | null;
+                                latitude: number | null;
+                                longitude: number | null;
+                                attribution: string;
+                                logo_url: string | null;
+                                sample: boolean;
+                            };
+                            radius: number;
+                            months: number;
+                            comparables: {
+                                listing: {
+                                    uuid: string;
+                                    mls: string;
+                                    short_name: string;
+                                    listing_id: string | null;
+                                    status: string;
+                                    address: string;
+                                    city: string | null;
+                                    postal_code: string | null;
+                                    price: number | null;
+                                    close_price: number | null;
+                                    close_date: string | null;
+                                    beds: number | null;
+                                    baths: number | null;
+                                    area: number | null;
+                                    price_per_sqft: number | null;
+                                    photo: {
+                                        url: string;
+                                        caption: string | null;
+                                    } | null;
+                                    photos: {
+                                        url: string;
+                                        caption: string | null;
+                                    }[];
+                                    listed_on: string | null;
+                                    days_on_market: number | null;
+                                    office: string | null;
+                                    latitude: number | null;
+                                    longitude: number | null;
+                                    attribution: string;
+                                    logo_url: string | null;
+                                    sample: boolean;
+                                };
+                                distance: number;
+                                adjusted: number | null;
+                            }[];
+                            sold: number;
+                            active: number;
+                            median_per_sqft: number | null;
+                            low: number | null;
+                            high: number | null;
+                            suggested: number | null;
+                            sample: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "listings.page": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            handle: string;
+                            published: boolean;
+                            bio: string | null;
+                            url: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "listings.page.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AgentPageRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            handle: string;
+                            published: boolean;
+                            bio: string | null;
+                            url: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {
