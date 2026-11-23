@@ -1,12 +1,12 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { BookOpen, Calculator, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, Sparkles, Square } from 'lucide-react-native';
+import { BookOpen, Calculator, GraduationCap, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, Sparkles, Square } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { SaveFlashcard } from '@/features/practice/SaveFlashcard';
-import { ask, type AskMessage, type AskMode, type AskPackage, type AskThread, type AskThreadRow, clock, loadPackage, loadThread, loadThreads } from '@/lib/ask';
+import { ask, askInstructor, type AskMessage, type AskMode, type AskPackage, type AskThread, type AskThreadRow, clock, loadPackage, loadThread, loadThreads } from '@/lib/ask';
 import { speechLanguage, useSpeech } from '@/lib/voice';
 import { Button, Callout, Chip, ChatBubble, EmptyState, Icon, IconButton, ListRow, Screen, SectionTitle, SuggestionPills, Text, TextField, TitleBar } from '@/ui';
 
@@ -65,7 +65,14 @@ export default function AskScreen() {
 
   const messages = thread?.messages ?? [];
   const lastAnswer = [...messages].reverse().find((m) => m.role === 'answer');
-  const purpose = pack?.candidate ? (pack.sponsor ? t('ask.purposeSponsored', { sponsor: pack.sponsor }) : t('ask.purposeCandidate')) : t('ask.purpose');
+  const purpose = pack?.candidate ? t('ask.purposeCandidate') : t('ask.purpose');
+  // Screen k10: free monthly credits for questions beyond the course, then the sponsor, then credits bought on reos.com.
+  const credits =
+    pack?.candidate && pack.free_monthly !== null
+      ? [t('ask.beyondLeft', { left: pack.free_left ?? 0, monthly: pack.free_monthly }), pack.sponsor ? t('ask.sponsorNext', { sponsor: pack.sponsor }) : null, pack.credits_left > 0 ? t('ask.ownLeft', { credits: pack.credits_left }) : null]
+          .filter(Boolean)
+          .join(' ')
+      : null;
 
   return (
     <Screen
@@ -81,6 +88,7 @@ export default function AskScreen() {
     >
       <TitleBar title={t('ask.title')} onBack={() => router.back()} />
       <Text tone="muted">{purpose}</Text>
+      {credits ? <Text variant="caption" tone="muted">{credits}</Text> : null}
       {speech.state === 'denied' ? <Callout tone="warning" title={t('ask.micDenied')} /> : null}
 
       {messages.length === 0 ? (
@@ -96,7 +104,19 @@ export default function AskScreen() {
         </>
       ) : (
         messages.map((m, i) =>
-          m.role === 'question' ? (
+          m.role === 'instructor' ? (
+            <View key={m.id} style={styles.answer}>
+              <View style={styles.row}>
+                <Icon icon={GraduationCap} color="action" size={18} />
+                <Text variant="caption" weight="semibold" tone="muted">
+                  {t('ask.instructor.from', { name: m.sponsor ?? '' })}
+                </Text>
+              </View>
+              <ChatBubble from="person" senderName={m.sponsor ?? undefined}>
+                {m.body}
+              </ChatBubble>
+            </View>
+          ) : m.role === 'question' ? (
             <ChatBubble key={m.id} from="me">
               {m.body}
             </ChatBubble>
@@ -105,6 +125,21 @@ export default function AskScreen() {
           ),
         )
       )}
+      {thread && lastAnswer && thread.instructor === null ? (
+        <Button
+          variant="secondary"
+          icon={GraduationCap}
+          label={t('ask.instructor.ask')}
+          disabled={busy}
+          onPress={() =>
+            void askInstructor(thread.uuid)
+              .then(() => setThread({ ...thread, instructor: 'waiting' }))
+              .catch((e: unknown) => setProblem(e instanceof Error ? e.message : String(e)))
+          }
+        />
+      ) : thread?.instructor === 'waiting' ? (
+        <Callout tone="info" title={t('ask.instructor.sent')} />
+      ) : null}
       {busy ? <Text tone="muted">{t('ask.asking')}</Text> : null}
       {problem ? <Callout tone="danger" title={problem} live /> : null}
 

@@ -46,3 +46,39 @@ export async function ask(mode: AskMode, question: string | null, thread: string
 
 /** "3:20" for a lesson second. */
 export const clock = (seconds: number): string => `${Math.floor(seconds / 60)}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+
+/** Ask my instructor (A10.1b): the last question goes to the course's instructors. */
+export async function askInstructor(thread: string): Promise<void> {
+  const { data, error } = await api().POST('/ask/threads/{thread}/instructor', { params: { path: { thread } } });
+
+  if (!data) {
+    const errors = (error as { errors?: Record<string, string[]>; message?: string } | undefined) ?? {};
+    throw new Error(Object.values(errors.errors ?? {})[0]?.[0] ?? errors.message ?? 'error');
+  }
+}
+
+export type StudentQuestions = Got<'/instructor/questions'>;
+export type StudentQuestion = StudentQuestions['data'][number];
+
+export async function loadStudentQuestions(status: 'waiting' | 'answered'): Promise<StudentQuestions | null> {
+  const { data } = await api().GET('/instructor/questions', { params: { query: { status } } });
+
+  return data ?? null;
+}
+
+export async function loadStudentQuestion(uuid: string): Promise<StudentQuestion | null> {
+  const { data } = await api().GET('/instructor/questions/{question}', { params: { path: { question: uuid } } });
+
+  return data?.data ?? null;
+}
+
+export async function answerStudent(uuid: string, body: { answer: string; add_to_knowledge: boolean; flashcard: boolean }): Promise<StudentQuestion> {
+  const { data, error } = await api().POST('/instructor/questions/{question}/answer', { params: { path: { question: uuid } }, body });
+
+  if (!data) {
+    const errors = (error as { errors?: Record<string, string[]>; message?: string } | undefined) ?? {};
+    throw new Error(Object.values(errors.errors ?? {})[0]?.[0] ?? errors.message ?? 'error');
+  }
+
+  return data.data;
+}

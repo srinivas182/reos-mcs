@@ -22,7 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $lesson_media_id
  * @property list<string>|null $states
  * @property string $language
- * @property string $kind text, slide or transcript
+ * @property string $kind text, slide, transcript or instructor
  * @property string|null $heading
  * @property int|null $page
  * @property int|null $seconds
@@ -37,6 +37,9 @@ use Illuminate\Support\Carbon;
  */
 final class KbPassage extends Model
 {
+    /** An instructor's answer added to the course's knowledge (A10.1b). */
+    public const INSTRUCTOR = 'instructor';
+
     use StateTagged;
 
     public const TEXT = 'text';

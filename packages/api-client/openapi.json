@@ -364,208 +364,15 @@
                                                         "null"
                                                     ]
                                                 },
-                                                "messages": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object",
-                                                        "properties": {
-                                                            "id": {
-                                                                "type": "integer"
-                                                            },
-                                                            "role": {
-                                                                "type": "string",
-                                                                "enum": [
-                                                                    "question",
-                                                                    "answer",
-                                                                    "instructor"
-                                                                ]
-                                                            },
-                                                            "body": {
-                                                                "type": "string"
-                                                            },
-                                                            "tier": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ],
-                                                                "enum": [
-                                                                    "content",
-                                                                    "sponsored",
-                                                                    "limited",
-                                                                    null
-                                                                ]
-                                                            },
-                                                            "mode": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "sources": {
-                                                                "type": "array",
-                                                                "items": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "lesson_id": {
-                                                                            "type": "integer"
-                                                                        },
-                                                                        "lesson": {
-                                                                            "type": "string"
-                                                                        },
-                                                                        "seconds": {
-                                                                            "type": [
-                                                                                "integer",
-                                                                                "null"
-                                                                            ]
-                                                                        },
-                                                                        "page": {
-                                                                            "type": [
-                                                                                "integer",
-                                                                                "null"
-                                                                            ]
-                                                                        },
-                                                                        "heading": {
-                                                                            "type": [
-                                                                                "string",
-                                                                                "null"
-                                                                            ]
-                                                                        },
-                                                                        "text": {
-                                                                            "type": "string"
-                                                                        }
-                                                                    },
-                                                                    "required": [
-                                                                        "lesson_id",
-                                                                        "lesson",
-                                                                        "seconds",
-                                                                        "page",
-                                                                        "heading",
-                                                                        "text"
-                                                                    ]
-                                                                }
-                                                            },
-                                                            "quiz": {
-                                                                "type": [
-                                                                    "object",
-                                                                    "null"
-                                                                ],
-                                                                "properties": {
-                                                                    "prompt": {
-                                                                        "type": "string"
-                                                                    },
-                                                                    "options": {
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "type": "string"
-                                                                        }
-                                                                    },
-                                                                    "correct": {
-                                                                        "type": "integer"
-                                                                    },
-                                                                    "explanation": {
-                                                                        "type": "string"
-                                                                    }
-                                                                },
-                                                                "required": [
-                                                                    "prompt",
-                                                                    "options",
-                                                                    "correct",
-                                                                    "explanation"
-                                                                ]
-                                                            },
-                                                            "math_kind": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "sponsor": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            },
-                                                            "created_at": {
-                                                                "type": [
-                                                                    "string",
-                                                                    "null"
-                                                                ]
-                                                            }
-                                                        },
-                                                        "required": [
-                                                            "id",
-                                                            "role",
-                                                            "body",
-                                                            "tier",
-                                                            "mode",
-                                                            "sources",
-                                                            "quiz",
-                                                            "math_kind",
-                                                            "sponsor",
-                                                            "created_at"
-                                                        ]
-                                                    }
-                                                }
-                                            },
-                                            "required": [
-                                                "uuid",
-                                                "title",
-                                                "updated_at",
-                                                "messages"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/ask": {
-            "post": {
-                "operationId": "ask.store",
-                "description": "Answered from the person's courses first (free). Beyond them, a general answer only when a sponsor pays (candidates) or from the agent's credits; otherwise it says so and offers their instructor. Follow-ups (`simpler`, `spanish`, `quiz`) work on the thread's last answer.",
-                "summary": "Ask a question",
-                "tags": [
-                    "Ask"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/AskRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "uuid": {
-                                                    "type": "string"
-                                                },
-                                                "title": {
-                                                    "type": "string"
-                                                },
-                                                "updated_at": {
+                                                "instructor": {
                                                     "type": [
                                                         "string",
                                                         "null"
+                                                    ],
+                                                    "enum": [
+                                                        "waiting",
+                                                        "answered",
+                                                        null
                                                     ]
                                                 },
                                                 "messages": {
@@ -715,6 +522,223 @@
                                                 "uuid",
                                                 "title",
                                                 "updated_at",
+                                                "instructor",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/ask": {
+            "post": {
+                "operationId": "ask.store",
+                "description": "Answered from the person's courses first (free). Beyond them, a general answer only when a sponsor pays (candidates) or from the agent's credits; otherwise it says so and offers their instructor. Follow-ups (`simpler`, `spanish`, `quiz`) work on the thread's last answer.",
+                "summary": "Ask a question",
+                "tags": [
+                    "Ask"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AskRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "instructor": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "waiting",
+                                                        "answered",
+                                                        null
+                                                    ]
+                                                },
+                                                "messages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "question",
+                                                                    "answer",
+                                                                    "instructor"
+                                                                ]
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "tier": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "content",
+                                                                    "sponsored",
+                                                                    "limited",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "mode": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sources": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "lesson_id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "lesson": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "seconds": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "page": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "heading": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "text": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "lesson_id",
+                                                                        "lesson",
+                                                                        "seconds",
+                                                                        "page",
+                                                                        "heading",
+                                                                        "text"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "quiz": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "prompt": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "options": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "correct": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "explanation": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "prompt",
+                                                                    "options",
+                                                                    "correct",
+                                                                    "explanation"
+                                                                ]
+                                                            },
+                                                            "math_kind": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sponsor": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "role",
+                                                            "body",
+                                                            "tier",
+                                                            "mode",
+                                                            "sources",
+                                                            "quiz",
+                                                            "math_kind",
+                                                            "sponsor",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "title",
+                                                "updated_at",
+                                                "instructor",
                                                 "messages"
                                             ]
                                         }
@@ -779,7 +803,7 @@
         "/ask/package": {
             "get": {
                 "operationId": "ask.package",
-                "description": "Screen k10: whether answers beyond the course are available, and who pays for them. Candidates never see credits.",
+                "description": "Screen k10: answers from the course are free; answers beyond it use this month's free credits, then the sponsor's pool, then credits bought on reos.com.",
                 "summary": "My package and AI help",
                 "tags": [
                     "Ask"
@@ -801,6 +825,18 @@
                                                 "beyond_course": {
                                                     "type": "boolean"
                                                 },
+                                                "free_left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "free_monthly": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
                                                 "sponsor": {
                                                     "type": [
                                                         "string",
@@ -808,17 +844,20 @@
                                                     ]
                                                 },
                                                 "credits_left": {
-                                                    "type": [
-                                                        "integer",
-                                                        "null"
-                                                    ]
+                                                    "type": "integer"
+                                                },
+                                                "cost": {
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
                                                 "candidate",
                                                 "beyond_course",
+                                                "free_left",
+                                                "free_monthly",
                                                 "sponsor",
-                                                "credits_left"
+                                                "credits_left",
+                                                "cost"
                                             ]
                                         }
                                     },
@@ -850,6 +889,91 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/ask/threads/{thread}/instructor": {
+            "post": {
+                "operationId": "ask.instructor",
+                "description": "Sends the conversation's last question, with what the course content said, to the instructors of the course. Their answer joins the conversation.",
+                "summary": "Ask my instructor",
+                "tags": [
+                    "Ask"
+                ],
+                "parameters": [
+                    {
+                        "name": "thread",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "waiting",
+                                                        "answered"
+                                                    ]
+                                                },
+                                                "course": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "status",
+                                                "course"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -16417,6 +16541,428 @@
                 }
             }
         },
+        "/instructor/questions": {
+            "get": {
+                "operationId": "instructor.questions.index",
+                "description": "Waiting or answered, for the courses the instructor teaches, newest first; and how many questions Ask answered from their courses' content in the last 30 days.",
+                "summary": "Student questions",
+                "tags": [
+                    "Question"
+                ],
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "waiting",
+                                "answered"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "uuid": {
+                                                        "type": "string"
+                                                    },
+                                                    "student": {
+                                                        "type": "string"
+                                                    },
+                                                    "course": {
+                                                        "type": "string"
+                                                    },
+                                                    "question": {
+                                                        "type": "string"
+                                                    },
+                                                    "content_answer": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "language": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "waiting",
+                                                            "answered"
+                                                        ]
+                                                    },
+                                                    "answer": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "answered_by": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "answered_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "added_to_knowledge": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "flashcard": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "asked_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "uuid",
+                                                    "student",
+                                                    "course",
+                                                    "question",
+                                                    "content_answer",
+                                                    "language",
+                                                    "status",
+                                                    "answer",
+                                                    "answered_by",
+                                                    "answered_at",
+                                                    "added_to_knowledge",
+                                                    "flashcard",
+                                                    "asked_at"
+                                                ]
+                                            }
+                                        },
+                                        "counts": {
+                                            "type": "object",
+                                            "properties": {
+                                                "waiting": {
+                                                    "type": "integer"
+                                                },
+                                                "answered": {
+                                                    "type": "integer"
+                                                },
+                                                "from_content": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "waiting",
+                                                "answered",
+                                                "from_content"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "counts"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/instructor/questions/{question}": {
+            "get": {
+                "operationId": "instructor.questions.show",
+                "summary": "One student question",
+                "tags": [
+                    "Question"
+                ],
+                "parameters": [
+                    {
+                        "name": "question",
+                        "in": "path",
+                        "required": true,
+                        "description": "The question UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "student": {
+                                                    "type": "string"
+                                                },
+                                                "course": {
+                                                    "type": "string"
+                                                },
+                                                "question": {
+                                                    "type": "string"
+                                                },
+                                                "content_answer": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "language": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "waiting",
+                                                        "answered"
+                                                    ]
+                                                },
+                                                "answer": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "answered_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "added_to_knowledge": {
+                                                    "type": "boolean"
+                                                },
+                                                "flashcard": {
+                                                    "type": "boolean"
+                                                },
+                                                "asked_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "student",
+                                                "course",
+                                                "question",
+                                                "content_answer",
+                                                "language",
+                                                "status",
+                                                "answer",
+                                                "answered_by",
+                                                "answered_at",
+                                                "added_to_knowledge",
+                                                "flashcard",
+                                                "asked_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/instructor/questions/{question}/answer": {
+            "post": {
+                "operationId": "instructor.questions.answer",
+                "description": "The student is notified and the answer joins their Ask conversation. With `add_to_knowledge`, Ask uses it for the next student who asks.",
+                "summary": "Answer a student",
+                "tags": [
+                    "Question"
+                ],
+                "parameters": [
+                    {
+                        "name": "question",
+                        "in": "path",
+                        "required": true,
+                        "description": "The question UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AnswerQuestionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "student": {
+                                                    "type": "string"
+                                                },
+                                                "course": {
+                                                    "type": "string"
+                                                },
+                                                "question": {
+                                                    "type": "string"
+                                                },
+                                                "content_answer": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "language": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "waiting",
+                                                        "answered"
+                                                    ]
+                                                },
+                                                "answer": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "answered_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "added_to_knowledge": {
+                                                    "type": "boolean"
+                                                },
+                                                "flashcard": {
+                                                    "type": "boolean"
+                                                },
+                                                "asked_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "student",
+                                                "course",
+                                                "question",
+                                                "content_answer",
+                                                "language",
+                                                "status",
+                                                "answer",
+                                                "answered_by",
+                                                "answered_at",
+                                                "added_to_knowledge",
+                                                "flashcard",
+                                                "asked_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/questions/{question}/report": {
             "post": {
                 "operationId": "questions.report",
@@ -23393,6 +23939,29 @@
                     "number"
                 ],
                 "title": "AddLicenceRequest"
+            },
+            "AnswerQuestionRequest": {
+                "type": "object",
+                "description": "An instructor's answer to a student's question (A10.1b, screen i10).",
+                "properties": {
+                    "answer": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 4000
+                    },
+                    "add_to_knowledge": {
+                        "type": "boolean",
+                        "description": "File the answer with the course so Ask can use it for the next student."
+                    },
+                    "flashcard": {
+                        "type": "boolean",
+                        "description": "Add it to the student's flashcards."
+                    }
+                },
+                "required": [
+                    "answer"
+                ],
+                "title": "AnswerQuestionRequest"
             },
             "AppConfigResource": {
                 "type": "object",

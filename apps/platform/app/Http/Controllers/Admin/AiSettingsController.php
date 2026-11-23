@@ -42,6 +42,7 @@ final class AiSettingsController extends Controller
             'model' => ['required', Rule::in(AiSettings::MODELS)],
             'costs' => ['required', 'array'],
             'default_monthly_credits' => ['required', 'integer', 'min:0', 'max:100000'],
+            'candidate_monthly_credits' => ['sometimes', 'integer', 'min:0', 'max:100000'],
             'hourly_limit' => ['required', 'integer', 'min:1', 'max:10000'],
         ];
 
@@ -73,6 +74,7 @@ final class AiSettingsController extends Controller
             'model' => is_string($data['model']) ? $data['model'] : 'claude-sonnet',
             'costs' => $costs,
             'default_monthly_credits' => is_numeric($data['default_monthly_credits']) ? (int) $data['default_monthly_credits'] : 0,
+            'candidate_monthly_credits' => is_numeric($data['candidate_monthly_credits'] ?? null) ? (int) $data['candidate_monthly_credits'] : $settings->current()['candidate_monthly_credits'],
             'hourly_limit' => is_numeric($data['hourly_limit']) ? (int) $data['hourly_limit'] : 200,
         ], $actor);
         Inertia::flash('toast', ['type' => 'success', 'message' => __('aiSettings.saved')]);

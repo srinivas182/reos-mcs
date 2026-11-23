@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\Crm\ContactWorkController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Learn\OfflineController;
 use App\Http\Controllers\Api\Learn\PlayerController;
@@ -240,6 +241,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('ask/threads/{thread}', [AskController::class, 'show'])->whereUuid('thread')->name('api.ask.show');
     Route::post('ask', [AskController::class, 'store'])->middleware('throttle:20,1,api-ask')->name('api.ask.store');
     Route::get('ask/package', [AskController::class, 'package'])->name('api.ask.package');
+    Route::post('ask/threads/{thread}/instructor', [AskController::class, 'instructor'])->whereUuid('thread')->middleware('throttle:10,1,api-ask-instructor')->name('api.ask.instructor');
+    // Student questions for a course's instructors (A10.1b): scoped to the courses they teach.
+    Route::get('instructor/questions', [InstructorQuestionController::class, 'index'])->name('api.instructor.questions.index');
+    Route::get('instructor/questions/{question}', [InstructorQuestionController::class, 'show'])->whereUuid('question')->name('api.instructor.questions.show');
+    Route::post('instructor/questions/{question}/answer', [InstructorQuestionController::class, 'answer'])->whereUuid('question')->middleware('throttle:60,1,api-instructor-answer')->name('api.instructor.questions.answer');
     // Flashcards and the speed round (A9.2d).
     Route::get('practice/flashcards', [FlashcardController::class, 'index'])->name('api.practice.flashcards.index');
     Route::post('practice/flashcards', [FlashcardController::class, 'store'])->middleware('throttle:60,1,api-practice-flashcards')->name('api.practice.flashcards.store');

@@ -71,7 +71,8 @@
     "students": "Estudiantes",
     "progress": "Progreso semanal",
     "deals": "Operaciones",
-    "ask": "Preguntar"
+    "ask": "Preguntar",
+    "studentQuestions": "Preguntas de estudiantes"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -357,8 +358,7 @@
     },
     "title": "Preguntar",
     "purpose": "Su compañero de estudio: respuestas primero de sus cursos, con la lección para ver.",
-    "purposeCandidate": "Su compañero de estudio: respuestas de sus cursos, con la lección para ver. Siempre gratis.",
-    "purposeSponsored": "Su compañero de estudio: respuestas primero de sus cursos. La ayuda más allá de ellos la patrocina {{sponsor}}. Siempre gratis para usted.",
+    "purposeCandidate": "Su compañero de estudio: las respuestas de sus cursos son siempre gratis, con la lección para ver.",
     "new": "Nueva pregunta",
     "threads": "Sus preguntas",
     "noThreads": "Aquí aparecen las preguntas que haga.",
@@ -385,7 +385,43 @@
       "math": "Resolver un problema de matemáticas",
       "mathQ": "¿Cómo prorrateo $3,650 de impuestos a la propiedad en un cierre el 15 de junio?"
     },
-    "fromCourseShort": "Del contenido de su curso"
+    "fromCourseShort": "Del contenido de su curso",
+    "limitedNoCredits": "Eso no está en su curso de :state, y ya usó los créditos de este mes para preguntas más allá de él. Pregúntele a su instructor, reserve una sesión corta o agregue créditos en reos.com.",
+    "beyondLeft": "Le quedan {{left}} de {{monthly}} créditos gratis este mes para preguntas más allá de su curso.",
+    "sponsorNext": "Después, {{sponsor}} patrocina más.",
+    "ownLeft": "Créditos que agregó: {{credits}}.",
+    "instructor": {
+      "mail": {
+        "asked": ":name hizo una pregunta en :course",
+        "answer": "Responder",
+        "answered": ":name respondió su pregunta",
+        "read": "Leer la respuesta"
+      },
+      "errors": {
+        "noCourse": "Primero comience un curso, así sabremos a qué instructor preguntarle.",
+        "noInstructor": "Su curso aún no tiene un instructor que responda. Intente preguntar con otras palabras.",
+        "answered": "Esta pregunta ya fue respondida."
+      },
+      "ask": "Preguntarle a mi instructor",
+      "sent": "Enviada a su instructor. Le avisaremos cuando responda.",
+      "from": "Su instructor, {{name}}",
+      "title": "Preguntas de estudiantes",
+      "purpose": "Lo que el contenido del curso no pudo responder. Responda una vez y ayude a cada estudiante futuro.",
+      "waiting": "En espera",
+      "answeredTab": "Respondidas",
+      "fromContent": "{{count}} preguntas respondidas con el contenido de su curso en los últimos 30 días.",
+      "emptyTitle": "No hay preguntas en espera",
+      "empty": "Aquí aparecen las preguntas que sus estudiantes envían desde Preguntar.",
+      "contentSaid": "Lo que dijo el contenido del curso",
+      "yourAnswer": "Su respuesta",
+      "addToKnowledge": "Agregar al conocimiento del curso, para que Preguntar lo use con el próximo estudiante",
+      "flashcard": "Crear una tarjeta de estudio para el estudiante",
+      "send": "Enviar respuesta",
+      "sentToStudent": "Respuesta enviada a {{name}}.",
+      "askedBy": "{{student}} · {{course}}",
+      "addedToKnowledge": "Agregada al conocimiento del curso",
+      "select": "Elija una pregunta para responderla."
+    }
   },
   "options": {
     "correct": "Respuesta correcta",
@@ -4346,7 +4382,8 @@
     "creditPack": "Paquete de créditos",
     "creditPackValue": "{{credits}} por {{amount}} · reos.com",
     "abuseLimit": "Límite de abuso (acciones por hora por persona)",
-    "candidates": "A los candidatos nunca se les cobran créditos: su ayuda de IA la cubre su patrocinador o REOS."
+    "candidates": "A los candidatos nunca se les cobran créditos: su ayuda de IA la cubre su patrocinador o REOS.",
+    "candidateMonthly": "Candidatos: créditos gratis al mes para Preguntar más allá del curso"
   },
   "signup": {
     "brokerage": {
@@ -4800,7 +4837,9 @@
       "weekly_report": "Informe de progreso semanal",
       "challenge": "Desafíos",
       "deal_deadline": "Fechas límite de operaciones",
-      "signature_completed": "Documentos firmados"
+      "signature_completed": "Documentos firmados",
+      "student_question": "Preguntas de estudiantes",
+      "instructor_answer": "Respuestas de su instructor"
     },
     "digest": {
       "subject": {

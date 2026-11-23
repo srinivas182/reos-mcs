@@ -112,7 +112,8 @@ final readonly class Ingestion
             /** @var array<string, list<KbPassage>> $existing */
             $existing = [];
 
-            foreach ($lesson->passages()->get() as $passage) {
+            // Instructors' answers added to knowledge (A10.1b) aren't part of the lesson's own text: kept as they are.
+            foreach ($lesson->passages()->where('kind', '!=', KbPassage::INSTRUCTOR)->get() as $passage) {
                 $existing[$passage->content_hash][] = $passage;
             }
 

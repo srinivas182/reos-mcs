@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\DB;
 /**
  * How AI behaves and what it costs (screen 69, A6.1): the answer order per
  * role (what is tried first, second, third), the answer model, the credit
- * cost of each AI action, the default monthly credits per seat and the
- * abuse limit. Every save is a new version (`ai_settings`); the newest is in
+ * cost of each AI action, the default monthly credits per seat, candidates'
+ * free monthly credits for Ask beyond their course (A10.1) and the abuse limit. Every save is a new version (`ai_settings`); the newest is in
  * force. Customer data is never used for training: that rule is fixed, not
  * a setting.
  */
@@ -40,7 +40,7 @@ final readonly class AiSettings
 
     public function __construct(private AuditLogger $audit) {}
 
-    /** @return array{answer_order: array<string, list<string>>, model: string, costs: array<string, int>, default_monthly_credits: int, hourly_limit: int} */
+    /** @return array{answer_order: array<string, list<string>>, model: string, costs: array<string, int>, default_monthly_credits: int, candidate_monthly_credits: int, hourly_limit: int} */
     public function defaults(): array
     {
         return [
@@ -53,11 +53,13 @@ final readonly class AiSettings
             'model' => 'claude-sonnet',
             'costs' => self::COSTS,
             'default_monthly_credits' => max(0, config()->integer('reos.ai.monthly_credits', 500)),
+            // Candidates' free credits each month for Ask beyond their course (A10.1, 23 November 2026); then their sponsor's pool, then their own.
+            'candidate_monthly_credits' => 1000,
             'hourly_limit' => 200,
         ];
     }
 
-    /** @return array{answer_order: array<string, list<string>>, model: string, costs: array<string, int>, default_monthly_credits: int, hourly_limit: int} */
+    /** @return array{answer_order: array<string, list<string>>, model: string, costs: array<string, int>, default_monthly_credits: int, candidate_monthly_credits: int, hourly_limit: int} */
     public function current(): array
     {
         $saved = DB::table('ai_settings')->latest('id')->value('settings');
@@ -93,12 +95,14 @@ final readonly class AiSettings
         $model = $decoded['model'] ?? null;
         $monthly = $decoded['default_monthly_credits'] ?? null;
         $hourly = $decoded['hourly_limit'] ?? null;
+        $candidate = $decoded['candidate_monthly_credits'] ?? null;
 
         return [
             'answer_order' => $order,
             'model' => is_string($model) && in_array($model, self::MODELS, true) ? $model : $defaults['model'],
             'costs' => $costs,
             'default_monthly_credits' => is_int($monthly) ? $monthly : $defaults['default_monthly_credits'],
+            'candidate_monthly_credits' => is_int($candidate) ? $candidate : $defaults['candidate_monthly_credits'],
             'hourly_limit' => is_int($hourly) ? $hourly : $defaults['hourly_limit'],
         ];
     }
@@ -108,7 +112,7 @@ final readonly class AiSettings
         return $this->current()['costs'][$action] ?? 1;
     }
 
-    /** @param  array{answer_order: array<string, list<string>>, model: string, costs: array<string, int>, default_monthly_credits: int, hourly_limit: int}  $settings */
+    /** @param  array{answer_order: array<string, list<string>>, model: string, costs: array<string, int>, default_monthly_credits: int, candidate_monthly_credits: int, hourly_limit: int}  $settings */
     public function save(array $settings, User $actor): void
     {
         $before = $this->current();

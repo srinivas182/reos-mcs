@@ -10,10 +10,12 @@ use App\Content\Learning\Learning;
 use App\Content\Player\SimulatedInstructor;
 use App\Models\AskMessage;
 use App\Models\AskThread;
+use App\Models\InstructorQuestion;
 use App\Models\KbPassage;
 use App\Models\User;
 use App\Practice\MathLab\MathLab;
 use App\Services\Ai\AiCredits;
+use App\Services\Ai\AiSettings;
 use App\Services\Ai\Bedrock;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -28,17 +30,19 @@ use Throwable;
  * The answer order (decision 1):
  * 1. **Course content:** the knowledge base across every live course in the
  *    person's state, with the lesson and second to watch. Free.
- * 2. **Beyond the course:** a general answer from Claude only when someone
- *    pays for it: a candidate's sponsor (school, brokerage or association)
- *    from its own credit pool, or an agent's own credits.
+ * 2. **Beyond the course:** a general answer from Claude, paid for (decided
+ *    23 November 2026): a candidate's free monthly credits first (1,000 by
+ *    default, set on screen 69), then their sponsor's pool (school,
+ *    brokerage or association), then credits they bought; an agent's own
+ *    credits.
  * 3. **Otherwise:** say so plainly and offer their instructor (A10.1b) or a
- *    session (A10.2). A candidate never sees a credit balance or a price.
+ *    session (A10.2).
  *
  * @phpstan-type Source array{lesson_id: int, lesson: string, seconds: int|null, page: int|null, heading: string|null, text: string}
  * @phpstan-type Quiz array{prompt: string, options: list<string>, correct: int, explanation: string}
  * @phpstan-type Reply array{answer: string, sources: list<Source>, quiz: Quiz|null, covered: bool}
  * @phpstan-type MessageRow array{id: int, role: string, body: string, tier: string|null, mode: string|null, sources: list<Source>, quiz: Quiz|null, math_kind: string|null, sponsor: string|null, created_at: string|null}
- * @phpstan-type ThreadRow array{uuid: string, title: string, updated_at: string|null, messages: list<MessageRow>}
+ * @phpstan-type ThreadRow array{uuid: string, title: string, updated_at: string|null, instructor: string|null, messages: list<MessageRow>}
  */
 final readonly class Ask
 {
@@ -51,7 +55,7 @@ final readonly class Ask
     /** Question words that say nothing about the topic. */
     private const STOP = ['what', 'when', 'where', 'which', 'who', 'why', 'how', 'does', 'the', 'and', 'for', 'can', 'are', 'you', 'que', 'qué', 'cuándo', 'cuando', 'cómo', 'como', 'por', 'para', 'una', 'los', 'las', 'del'];
 
-    public function __construct(private KnowledgeSearch $search, private Bedrock $bedrock, private AiCredits $credits, private Learning $learning) {}
+    public function __construct(private KnowledgeSearch $search, private Bedrock $bedrock, private AiCredits $credits, private Learning $learning, private AiSettings $settings) {}
 
     /**
      * A new question (mode `ask`), or a follow-up on the thread's last
@@ -127,26 +131,34 @@ final readonly class Ask
             }
         }
 
-        // Beyond the course: only when someone pays (never the candidate).
+        // Beyond the course: paid for by the candidate's free monthly credits, then their sponsor, then their own; an agent's own credits.
+        $cost = max(0, $this->settings->cost('general_answer'));
         $candidate = $this->credits->forCandidate($user);
-        $sponsor = $candidate ? $this->credits->sponsorFor($user) : null;
-        $pays = $candidate ? $sponsor !== null : $this->credits->canSpend($user);
+        $payer = $candidate ? $this->credits->candidatePayer($user, $cost) : ($this->credits->canSpend($user, $cost) ? 'own' : null);
+        $sponsor = $payer === 'sponsor' ? $this->credits->sponsorFor($user, $cost)?->name : null;
 
-        if ($pays) {
-            if ($bedrock === null) {
-                $this->credits->logFree($user, self::GENERAL_FEATURE, 'simulator');
-
-                return [['answer' => self::text('ask.sim.general', ['state' => $state], $language), 'sources' => [], 'quiz' => null, 'covered' => true], 'sponsored', $sponsor?->name];
+        if ($payer !== null) {
+            $reply = null;
+            if ($bedrock !== null) {
+                try {
+                    $reply = (new ClaudeTutor($bedrock['client'], $bedrock['model']))->answer($question, [], $mode, $previous, $language, $state);
+                } catch (Throwable $e) {
+                    Log::warning('ask.general_failed', ['error' => $e->getMessage()]);
+                }
             }
+            // The demo answer (no Bedrock keys) is charged too, so demos show the credits going down.
+            $reply ??= $bedrock === null ? ['answer' => self::text('ask.sim.general', ['state' => $state], $language), 'sources' => [], 'quiz' => null, 'covered' => true] : null;
 
-            try {
-                $reply = (new ClaudeTutor($bedrock['client'], $bedrock['model']))->answer($question, [], $mode, $previous, $language, $state);
-                $this->credits->charge($user, self::GENERAL_FEATURE, 'ai');
+            if ($reply !== null) {
+                $engine = $bedrock === null ? 'simulator' : 'ai';
+                $candidate ? $this->credits->chargeCandidate($user, $payer, self::GENERAL_FEATURE, $engine, $cost) : $this->credits->charge($user, self::GENERAL_FEATURE, $engine, $cost);
 
-                return [$reply, 'sponsored', $sponsor?->name];
-            } catch (Throwable $e) {
-                Log::warning('ask.general_failed', ['error' => $e->getMessage()]);
+                return [$reply, 'sponsored', $sponsor];
             }
+        }
+
+        if ($candidate && $payer === null) {
+            return [['answer' => self::text('ask.limitedNoCredits', ['state' => $state], $language), 'sources' => array_slice($passages, 0, 1), 'quiz' => null, 'covered' => false], 'limited', null];
         }
 
         return [['answer' => self::text('ask.limited', ['state' => $state], $language), 'sources' => array_slice($passages, 0, 1), 'quiz' => null, 'covered' => false], 'limited', null];
@@ -205,8 +217,17 @@ final readonly class Ask
     {
         return [
             'uuid' => $thread->uuid, 'title' => $thread->title, 'updated_at' => $thread->updated_at?->toIso8601String(),
+            // A10.1b: whether the last question went to the instructor, and whether they've answered.
+            'instructor' => self::instructorStatus($thread),
             'messages' => array_values($thread->messages()->get()->map(self::message(...))->all()),
         ];
+    }
+
+    private static function instructorStatus(AskThread $thread): ?string
+    {
+        $status = InstructorQuestion::query()->where('ask_thread_id', $thread->id)->latest('id')->value('status');
+
+        return is_string($status) ? $status : null;
     }
 
     /** @return MessageRow */

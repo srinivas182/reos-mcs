@@ -154,11 +154,31 @@ export interface paths {
         };
         /**
          * My package and AI help
-         * @description Screen k10: whether answers beyond the course are available, and who pays for them. Candidates never see credits.
+         * @description Screen k10: answers from the course are free; answers beyond it use this month's free credits, then the sponsor's pool, then credits bought on reos.com.
          */
         get: operations["ask.package"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ask/threads/{thread}/instructor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask my instructor
+         * @description Sends the conversation's last question, with what the course content said, to the instructors of the course. Their answer joins the conversation.
+         */
+        post: operations["ask.instructor"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2398,6 +2418,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/instructor/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Student questions
+         * @description Waiting or answered, for the courses the instructor teaches, newest first; and how many questions Ask answered from their courses' content in the last 30 days.
+         */
+        get: operations["instructor.questions.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/questions/{question}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One student question */
+        get: operations["instructor.questions.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/instructor/questions/{question}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Answer a student
+         * @description The student is notified and the answer joins their Ask conversation. With `add_to_knowledge`, Ask uses it for the next student who asks.
+         */
+        post: operations["instructor.questions.answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/questions/{question}/report": {
         parameters: {
             query?: never;
@@ -3307,6 +3384,17 @@ export interface components {
             broker_role?: components["schemas"]["BrokerRole"] | null;
             /** @description Send it to a reviewer when the regulator has no such licence. */
             review?: boolean;
+        };
+        /**
+         * AnswerQuestionRequest
+         * @description An instructor's answer to a student's question (A10.1b, screen i10).
+         */
+        AnswerQuestionRequest: {
+            answer: string;
+            /** @description File the answer with the course so Ask can use it for the next student. */
+            add_to_knowledge?: boolean;
+            /** @description Add it to the student's flashcards. */
+            flashcard?: boolean;
         };
         /** AppConfigResource */
         AppConfigResource: {
@@ -4643,6 +4731,7 @@ export interface components {
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
 export type SchemaAddContactRequest = components['schemas']['AddContactRequest'];
 export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
+export type SchemaAnswerQuestionRequest = components['schemas']['AnswerQuestionRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaAskRequest = components['schemas']['AskRequest'];
@@ -4924,6 +5013,8 @@ export interface operations {
                             uuid: string;
                             title: string;
                             updated_at: string | null;
+                            /** @enum {string|null} */
+                            instructor: "waiting" | "answered" | null;
                             messages: {
                                 id: number;
                                 /** @enum {string} */
@@ -4980,6 +5071,8 @@ export interface operations {
                             uuid: string;
                             title: string;
                             updated_at: string | null;
+                            /** @enum {string|null} */
+                            instructor: "waiting" | "answered" | null;
                             messages: {
                                 id: number;
                                 /** @enum {string} */
@@ -5059,8 +5152,11 @@ export interface operations {
                         data: {
                             candidate: boolean;
                             beyond_course: boolean;
+                            free_left: number | null;
+                            free_monthly: number | null;
                             sponsor: string | null;
-                            credits_left: number | null;
+                            credits_left: number;
+                            cost: number;
                         };
                     };
                 };
@@ -5077,6 +5173,48 @@ export interface operations {
                          * @description Error overview.
                          * @example
                          */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "ask.instructor": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                thread: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            /** @enum {string} */
+                            status: "waiting" | "answered";
+                            course: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
                         message: string;
                     };
                 };
@@ -11072,6 +11210,150 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "instructor.questions.index": {
+        parameters: {
+            query?: {
+                status?: "waiting" | "answered";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            student: string;
+                            course: string;
+                            question: string;
+                            content_answer: string | null;
+                            language: string;
+                            /** @enum {string} */
+                            status: "waiting" | "answered";
+                            answer: string | null;
+                            answered_by: string | null;
+                            answered_at: string | null;
+                            added_to_knowledge: boolean;
+                            flashcard: boolean;
+                            asked_at: string | null;
+                        }[];
+                        counts: {
+                            waiting: number;
+                            answered: number;
+                            from_content: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "instructor.questions.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The question UUID */
+                question: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            student: string;
+                            course: string;
+                            question: string;
+                            content_answer: string | null;
+                            language: string;
+                            /** @enum {string} */
+                            status: "waiting" | "answered";
+                            answer: string | null;
+                            answered_by: string | null;
+                            answered_at: string | null;
+                            added_to_knowledge: boolean;
+                            flashcard: boolean;
+                            asked_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "instructor.questions.answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The question UUID */
+                question: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnswerQuestionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            uuid: string;
+                            student: string;
+                            course: string;
+                            question: string;
+                            content_answer: string | null;
+                            language: string;
+                            /** @enum {string} */
+                            status: "waiting" | "answered";
+                            answer: string | null;
+                            answered_by: string | null;
+                            answered_at: string | null;
+                            added_to_knowledge: boolean;
+                            flashcard: boolean;
+                            asked_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

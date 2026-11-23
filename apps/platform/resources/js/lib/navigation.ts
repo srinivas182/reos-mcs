@@ -54,6 +54,7 @@ import { index as sales } from '@/routes/sales';
 import { index as earnings } from '@/routes/earnings';
 import { index as featuresIndex } from '@/routes/features';
 import { index as askIndex } from '@/routes/ask';
+import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
 import { index as people } from '@/routes/people';
@@ -71,6 +72,7 @@ import type { RoleName } from '@/types/auth';
 /** Sidebar labels that exist in the translations (pages that are built). */
 export type NavLabel =
     | 'ask'
+    | 'studentQuestions'
     | 'deals'
     | 'dashboard'
     | 'overview'
@@ -240,6 +242,13 @@ export function roleNavigation(
             messages,
             // The course builder (A7.2, screen 43).
             item('courseBuilder', Layers, builderIndex(), '/course-builder'),
+            // Student questions (A10.1b, screens i09 and i10).
+            item(
+                'studentQuestions',
+                MessageCircleQuestion,
+                instructorQuestions(),
+                '/instructor/questions',
+            ),
             // AI lesson review (screen 44) and question bank (screen 45), A8.1.
             item('aiLessons', Sparkles, reviewIndex(), '/ai-lessons'),
             item(

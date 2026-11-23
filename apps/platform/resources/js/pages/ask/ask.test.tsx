@@ -29,9 +29,12 @@ const reply = (data: unknown) =>
     });
 const pack = {
     candidate: true,
-    beyond_course: false,
+    beyond_course: true,
+    free_left: 998,
+    free_monthly: 1000,
     sponsor: null,
-    credits_left: null,
+    credits_left: 0,
+    cost: 2,
 };
 
 describe('Ask on the web (candidate screen 13, A10.1)', () => {
@@ -56,7 +59,12 @@ describe('Ask on the web (candidate screen 13, A10.1)', () => {
         ).toBeInTheDocument();
         expect(
             screen.getByText(
-                'Your study mate: answers from your courses, with the lesson to watch. Always free.',
+                'Your study mate: answers from your courses are always free, with the lesson to watch.',
+            ),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                '998 of 1000 free credits left this month for questions beyond your course.',
             ),
         ).toBeInTheDocument();
         await user.type(
@@ -91,7 +99,7 @@ describe('Ask on the web (candidate screen 13, A10.1)', () => {
         ).toEqual({ mode: 'simpler', question: null, thread: iabsThread.uuid });
     });
 
-    it('says plainly when the course does not cover a question, with no follow-ups or price', () => {
+    it('says plainly when the course does not cover a question, with no follow-ups', () => {
         render(
             <AskPage
                 threads={[iabsThread]}
@@ -108,8 +116,10 @@ describe('Ask on the web (candidate screen 13, A10.1)', () => {
             screen.getByText('Not covered in your course'),
         ).toBeInTheDocument();
         expect(
+            screen.getByRole('button', { name: 'Ask my instructor' }),
+        ).toBeInTheDocument();
+        expect(
             screen.queryByRole('button', { name: 'Quiz me' }),
         ).not.toBeInTheDocument();
-        expect(screen.queryByText(/credit/i)).not.toBeInTheDocument();
     });
 });

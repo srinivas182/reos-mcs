@@ -35,7 +35,7 @@
 
 | Leader | What they do well (we match it) | Where they fall short | REOS answer |
 | --- | --- | --- | --- |
-| **Real Estate Exam Scholar, PrepAgent (AI tutor)** | Instant AI answers to exam questions | Generic AI with no link to the student's own course; no source; candidates pay per use or by tier | **Answers from the candidate's own course first, with the lesson and second to watch**; never a credit balance for candidates; a sponsor can fund broader AI; a real instructor when AI isn't enough |
+| **Real Estate Exam Scholar, PrepAgent (AI tutor)** | Instant AI answers to exam questions | Generic AI with no link to the student's own course; no source; candidates pay per use or by tier | **Answers from the candidate's own course first, with the lesson and second to watch, always free**; 1,000 free credits a month for questions beyond the course, then a sponsor or their own credits; a real instructor when AI isn't enough |
 | **Kaplan, The CE Shop (live review)** | Scheduled live review classes | Watch-only; attendance proved by the honour system; no CE report for the instructor | **Live classes with polls, raise hand and questions**, **attendance checks timed to the course approval**, and a **class report** that confirms who earned CE |
 | **Wyzant, Varsity Tutors** | Tutor marketplace, booking, payment | Not real estate specific; sessions run in a separate tool; notes stay in the call | **Book an instructor from the answer itself**, the session runs in REOS and **ends on time**, an **automatic refund on a no-show**, and the **notes become study-plan tasks** |
 | **Brokerage recruiting (eXp, Keller Williams career nights)** | Recruit new licensees | Candidates are contacted cold after licensing, with no idea of fit | **Broker offers before the licence**, only to opted-in candidates, ranked by fit, rating and terms; contact details shared only on accept |
@@ -50,8 +50,8 @@
   - **Conversation:** typed or spoken (on-device speech, as voice to-dos); kept as threads the person can reopen; a photo of a question goes through OCR (B10.3) once available.
   - **Answer order** (decision 1):
     1. **Course content:** the knowledge base across every course the person can open, in their state, best passages first; the answer cites course, lesson and second or page, marked "From your course content · Texas"; free.
-    2. **General AI** (Claude on Bedrock) only when a **sponsor** pays: the brokerage or association that sponsors the candidate, from its own credit pool; marked "Beyond the Texas course".
-    3. **Otherwise:** the best content answer with its source, plus **Ask my instructor** (A10.1b) and **Book an instructor** (A10.2); never a credit balance or a purchase.
+    2. **General AI** (Claude on Bedrock), paid for in this order: the candidate's **free monthly credits** (1,000 by default), then their **sponsor's pool** (school, brokerage or association), then **credits they bought**; marked "Beyond your course".
+    3. **Otherwise:** the best content answer with its source, plus **Ask my instructor** (A10.1b) and **Book an instructor** (A10.2).
   - **Actions on an answer:** Watch at 3:20, Quiz me (3 questions), Explain simpler, In Spanish, Save as flashcard, Try a similar one (math), Ask my instructor, Book an instructor.
   - **Math:** questions with numbers go through the math lab's step-by-step solver (A9.2).
   - **Agents:** the same Ask, with AI credits from their seat as today.
@@ -65,9 +65,14 @@
 - **Done when:** a candidate is never charged credits, and an instructor's answer added to knowledge answers the next student's question.
 - **As built, A10.1a** (ADR 0039):
   - **Ask** on the phone (`/ask`, from the Ask bar on Today) and the web (candidate sidebar): conversations, typed or spoken, kept per person.
-  - **Order:** course content (free, cited, Watch at) → beyond the course only with a sponsor's pool or an agent's credits, labelled with the sponsor → otherwise "not covered in your course" with the closest passage.
+  - **Order:** course content (free, cited, Watch at) → beyond the course from the candidate's free monthly credits (1,000, screen 69), then the sponsor's pool (labelled with the sponsor), then credits they bought; an agent's own credits → otherwise "not covered in your course" with the closest passage and the instructor.
   - **On answers:** Quiz me, Explain simpler, In Spanish, Save as flashcard, Try a similar one (math lab).
-  - **Package** (k10): whether help beyond the course is available and who sponsors it; candidates never see credits.
+  - **Package** (k10): free credits left this month for questions beyond the course, who sponsors more, and credits bought.
+- **As built, A10.1b** (ADR 0039 §6):
+  - **Credits beyond the course** (the client's revision): 1,000 free a month per candidate by default (screen 69), then the sponsor's pool, then credits bought; 2 credits per general answer.
+  - **Ask my instructor** from a conversation; the course's instructors are notified; one waiting question per conversation.
+  - **Student questions** on the web (instructor sidebar) and the phone (from Today): waiting and answered, what the content said, the answer typed or dictated, **Add to course knowledge** (on by default) and **Make a flashcard**; how many Ask answered from their content in 30 days.
+  - The student sees the answer in the conversation, with a push.
 
 ### A10.2 Sessions and live classes (Team A)
 
@@ -129,7 +134,7 @@
 - Web and phone screens match the journeys side by side, in English and Spanish.
 - Every new endpoint is in `/api/v1` (or a web route), documented, with the api-client regenerated and Pest feature tests.
 - **Security tests:**
-  - candidates can't be charged AI credits by any path;
+  - answers from course content are never charged, and beyond the course credits are taken in order (free monthly, sponsor, bought);
   - a student sees only their own questions and sessions; instructors only their courses' students;
   - paid sessions can't be joined unpaid, and refunds can't be claimed twice;
   - broker offers never reveal a candidate's contact before Accept;
@@ -149,7 +154,7 @@
 
 ## 6. Decisions (23 November 2026, all as recommended)
 
-1. **Ask fallback:** content first and free; general AI only when a sponsor pays from its pool; otherwise the content answer plus instructor options. Candidates never see credits.
+1. **Ask fallback** (revised 23 November 2026 at the client's request): course content first and always free; beyond the course, general AI from the candidate's **free monthly credits** (1,000 by default, set by the super admin on screen 69), then the **sponsor's pool**, then **credits the candidate bought** on reos.com; with none left, the closest content answer plus their instructor.
 2. **Paying for sessions:** Stripe Checkout on the web and in the phone's browser; saved cards through Stripe.
 3. **Session prices:** the instructor sets the price; the school can set a maximum; REOS's fee comes off through payouts as today.
 4. **Live-class attendance:** checks timed to the course approval's rules; class recordings only when the approval allows.

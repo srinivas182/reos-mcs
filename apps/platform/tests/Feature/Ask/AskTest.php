@@ -9,10 +9,14 @@ use App\Enums\OrganisationType;
 use App\Integrations\CredentialEnvironment;
 use App\Integrations\Credentials\CredentialVault;
 use App\Integrations\IntegrationMode;
+use App\Models\Flashcard;
 use App\Models\IntegrationSetting;
 use App\Models\Lesson;
 use App\Models\Organisation;
 use App\Models\User;
+use App\Notifications\InstructorAnswered;
+use App\Notifications\StudentAsked;
+use App\Services\Ai\AiSettings;
 use App\Services\Content\Courses;
 use App\Services\Content\Lessons;
 use App\Voice\UnderstandingFactory;
@@ -20,6 +24,7 @@ use Aws\MockHandler;
 use Aws\Result;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
@@ -81,27 +86,11 @@ describe('Ask, the study mate (A10.1a, the done-when)', function () {
         expect(DB::table('ai_credit_uses')->sum('credits'))->toBe(0);
     });
 
-    it('never charges a candidate: beyond the course with no sponsor it says so and offers the instructor', function () {
+    it('answers beyond the course from the candidate\'s free monthly credits first', function () {
         askCourse($this->ops);
-        // The course has something on taxes, but not this: Claude says it isn't covered.
-        bedrockOn()->append(new Result(['output' => ['message' => ['content' => [['toolUse' => ['name' => 'answer_learner', 'input' => ['answer' => 'Your sources don\'t cover Louisiana.', 'sources' => [], 'covered' => false]]]]]]]));
-
-        $this->actingAs($this->candidate)->postJson('/api/v1/ask', ['question' => 'How are Louisiana property taxes assessed?'])->assertCreated()
-            ->assertJsonPath('data.messages.1.tier', 'limited')
-            ->assertJsonPath('data.messages.1.sponsor', null);
-        $this->getJson('/api/v1/ask/package')->assertOk()->assertJsonPath('data', ['candidate' => true, 'beyond_course' => false, 'sponsor' => null, 'credits_left' => null]);
-        expect(DB::table('ai_credit_uses')->sum('credits'))->toBe(0)
-            ->and(DB::table('ledger_entries')->where('reason', 'ai_use')->exists())->toBeFalse();
-    });
-
-    it('answers beyond the course when a sponsor pays, from the sponsor\'s pool and never the candidate', function () {
-        askCourse($this->ops);
-        $sponsor = sponsorWith(10);
-        // A candidate the school sponsors.
-        $this->candidate = User::factory()->withRole(Role::Candidate, $sponsor)->create(['name' => 'Luis Ruiz']);
         $mock = bedrockOn();
-        $sent = null;
         $mock->append(new Result(['output' => ['message' => ['content' => [['toolUse' => ['name' => 'answer_learner', 'input' => ['answer' => 'Not covered.', 'sources' => [], 'covered' => false]]]]]]]));
+        $sent = null;
         $mock->append(function ($command) use (&$sent) {
             $sent = $command->toArray();
 
@@ -110,11 +99,39 @@ describe('Ask, the study mate (A10.1a, the done-when)', function () {
 
         $this->actingAs($this->candidate)->postJson('/api/v1/ask', ['question' => 'How are Louisiana property taxes assessed?'])->assertCreated()
             ->assertJsonPath('data.messages.1.tier', 'sponsored')
-            ->assertJsonPath('data.messages.1.sponsor', 'Lone Star School of Real Estate');
+            ->assertJsonPath('data.messages.1.sponsor', null);
 
-        expect($sent['system'][0]['text'])->toContain('goes beyond their course')
-            ->and(app(Ledger::class)->balance(app(Ledger::class)->organisation($sponsor, 'credits')))->toBe(9);
-        $this->getJson('/api/v1/ask/package')->assertJsonPath('data.beyond_course', true)->assertJsonPath('data.sponsor', 'Lone Star School of Real Estate');
+        expect($sent['system'][0]['text'])->toContain('goes beyond their course');
+        $this->getJson('/api/v1/ask/package')->assertOk()->assertJsonPath('data', [
+            'candidate' => true, 'beyond_course' => true, 'free_left' => 998, 'free_monthly' => 1000, 'sponsor' => null, 'credits_left' => 0, 'cost' => 2,
+        ]);
+    });
+
+    it('then uses the sponsor\'s pool, then credits the candidate bought, then points to the instructor', function () {
+        askCourse($this->ops);
+        app(AiSettings::class)->save(['candidate_monthly_credits' => 0] + app(AiSettings::class)->current(), $this->ops);
+        $sponsor = sponsorWith(2);
+        // A candidate the school sponsors.
+        $this->candidate = User::factory()->withRole(Role::Candidate, $sponsor)->create(['name' => 'Luis Ruiz']);
+        $ledger = app(Ledger::class);
+
+        // Demo data (no Bedrock): the course doesn't cover it, so the sponsor pays for a general answer.
+        $this->actingAs($this->candidate)->postJson('/api/v1/ask', ['question' => 'Louisiana homestead exemption rules'])->assertCreated()
+            ->assertJsonPath('data.messages.1.tier', 'sponsored')
+            ->assertJsonPath('data.messages.1.sponsor', 'Lone Star School of Real Estate');
+        expect($ledger->balance($ledger->organisation($sponsor, 'credits')))->toBe(0);
+
+        // Credits the candidate bought come next.
+        $ledger->post('topup', [[$ledger->platform('credits_sold'), -2], [$ledger->person($this->candidate, 'topup'), 2]], 'order', 'test-order');
+        $this->postJson('/api/v1/ask', ['question' => 'Louisiana homestead exemption rules again'])->assertCreated()
+            ->assertJsonPath('data.messages.1.tier', 'sponsored')->assertJsonPath('data.messages.1.sponsor', null);
+        expect($ledger->balance($ledger->person($this->candidate, 'topup')))->toBe(0);
+
+        // Nothing left: the instructor.
+        $this->postJson('/api/v1/ask', ['question' => 'Louisiana homestead exemption one more time'])->assertCreated()
+            ->assertJsonPath('data.messages.1.tier', 'limited')
+            ->assertJsonPath('data.messages.1.body', __('ask.limitedNoCredits', ['state' => 'TX']));
+        $this->getJson('/api/v1/ask/package')->assertJsonPath('data.beyond_course', false);
     });
 
     it('keeps conversations private and only for learners', function () {
@@ -128,5 +145,52 @@ describe('Ask, the study mate (A10.1a, the done-when)', function () {
         $this->actingAs($other)->postJson('/api/v1/ask', ['mode' => 'simpler'])->assertUnprocessable();
         $this->actingAs($provider)->postJson('/api/v1/ask', ['question' => 'IABS form?'])->assertForbidden();
         $this->actingAs($this->candidate)->get('/ask?thread='.$uuid)->assertOk();
+    });
+});
+
+describe('Instructor questions (A10.1b, screens i09 and i10)', function () {
+    it('sends what the content couldn\'t answer to the course\'s instructor, whose answer joins the conversation and Ask\'s knowledge', function () {
+        Notification::fake();
+        $lesson = askCourse($this->ops);
+        $nelle = User::factory()->withRole(Role::Instructor, Organisation::factory()->ofType(OrganisationType::School)->create())->create(['name' => 'Nelle Hart']);
+        $lesson->course->instructors()->attach($nelle->id);
+
+        $uuid = $this->actingAs($this->candidate)->postJson('/api/v1/ask', ['question' => 'IABS form at an open house?'])->json('data.uuid');
+        $sent = $this->postJson("/api/v1/ask/threads/{$uuid}/instructor")->assertCreated()
+            ->assertJsonPath('data.status', 'waiting')->assertJsonPath('data.course', 'Texas Principles of Real Estate')->json('data.uuid');
+        // Sending again doesn't make a second question.
+        $this->postJson("/api/v1/ask/threads/{$uuid}/instructor")->assertCreated()->assertJsonPath('data.uuid', $sent);
+        $this->getJson("/api/v1/ask/threads/{$uuid}")->assertJsonPath('data.instructor', 'waiting');
+        Notification::assertSentTo($nelle, StudentAsked::class);
+
+        // Only the course's instructors see it.
+        $this->getJson('/api/v1/instructor/questions')->assertOk()->assertJsonPath('data', []);
+        $this->actingAs($this->candidate)->getJson("/api/v1/instructor/questions/{$sent}")->assertNotFound();
+
+        $this->actingAs($nelle)->getJson('/api/v1/instructor/questions')->assertOk()
+            ->assertJsonPath('counts.waiting', 1)->assertJsonPath('counts.from_content', 1)
+            ->assertJsonPath('data.0.student', 'Ana Ruiz')->assertJsonPath('data.0.question', 'IABS form at an open house?');
+        $this->postJson("/api/v1/instructor/questions/{$sent}/answer", ['answer' => 'At an open house, give the IABS once a conversation turns to a specific property or representation.', 'add_to_knowledge' => true, 'flashcard' => true])->assertOk()
+            ->assertJsonPath('data.status', 'answered')->assertJsonPath('data.added_to_knowledge', true);
+        $this->postJson("/api/v1/instructor/questions/{$sent}/answer", ['answer' => 'Again.'])->assertUnprocessable();
+        Notification::assertSentTo($this->candidate, InstructorAnswered::class);
+
+        $this->actingAs($this->candidate)->getJson("/api/v1/ask/threads/{$uuid}")->assertJsonPath('data.instructor', 'answered')
+            ->assertJsonPath('data.messages.2.role', 'instructor')->assertJsonPath('data.messages.2.sponsor', 'Nelle Hart');
+        expect(Flashcard::query()->where('user_id', $this->candidate->id)->count())->toBe(1);
+
+        // The next student's question is answered from it, and re-indexing the lesson keeps it.
+        app(Lessons::class)->update($lesson->refresh(), ['body' => "## The IABS form\nA license holder gives the IABS form at the first substantive contact.\n\nOpen house visitors are prospects."], $this->ops);
+        $next = User::factory()->withRole(Role::Candidate, Organisation::platform())->create();
+        $this->actingAs($next)->postJson('/api/v1/ask', ['question' => 'open house conversation representation'])->assertCreated()
+            ->assertJsonPath('data.messages.1.tier', 'content')
+            ->assertJsonPath('data.messages.1.body', fn (string $b) => str_contains($b, 'specific property'));
+    });
+
+    it('needs a course with an instructor', function () {
+        askCourse($this->ops);
+        $uuid = $this->actingAs($this->candidate)->postJson('/api/v1/ask', ['question' => 'IABS form?'])->json('data.uuid');
+
+        $this->postJson("/api/v1/ask/threads/{$uuid}/instructor")->assertUnprocessable()->assertJsonValidationErrors('thread');
     });
 });
