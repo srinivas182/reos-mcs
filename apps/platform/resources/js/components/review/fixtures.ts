@@ -7,6 +7,7 @@ import type {
     ReviewVersion,
     ReviewVideo,
 } from './types';
+import type { StarterBankData } from './starter-bank';
 
 /** Realistic review data for tests and stories (demo data only). */
 export const reviewLesson = {
@@ -179,3 +180,79 @@ export const disputes: DisputeRow[] = [
         },
     },
 ];
+
+/** Two of REOS's Texas starter questions (A9.1), as the Starter bank tab gets them. */
+export const starterBank: StarterBankData = {
+    topic: 'state_rules',
+    counts: {
+        to_review: 287,
+        approved: 11,
+        retired: 2,
+        topics: {
+            agency: 44,
+            contracts: 45,
+            ownership: 38,
+            finance: 35,
+            math: 33,
+            state_rules: 92,
+        },
+    },
+    questions: [
+        {
+            id: 9101,
+            course: '',
+            lesson: '',
+            topic: 'state_rules',
+            difficulty: 'medium',
+            portion: 'state',
+            status: 'to_review',
+            source: 'Texas Occupations Code §1101.558',
+            en: {
+                prompt: 'A Texas license holder must give the Information About Brokerage Services (IABS) notice',
+                options: [
+                    'at closing',
+                    'only to sellers',
+                    'when the listing is signed',
+                    'at the first substantive communication about specific real property',
+                ],
+                explanation:
+                    'The IABS goes out at the first substantive communication with a party about specific property.',
+            },
+            es: {
+                prompt: 'Un agente con licencia de Texas debe entregar el aviso de Información sobre Servicios de Corretaje (IABS)',
+                options: [
+                    'en el cierre',
+                    'solo a los vendedores',
+                    'cuando se firma el listado',
+                    'en la primera comunicación sustancial sobre una propiedad específica',
+                ],
+                explanation:
+                    'El IABS se entrega en la primera comunicación sustancial con una parte sobre una propiedad específica.',
+            },
+            correct: 3,
+        },
+        {
+            id: 9102,
+            course: '',
+            lesson: '',
+            topic: 'state_rules',
+            difficulty: 'medium',
+            portion: 'state',
+            status: 'to_review',
+            source: 'Texas Property Code §41.002',
+            en: {
+                prompt: 'A Texas urban homestead is protected up to',
+                options: ['1 acre', '10 acres', '100 acres', '200 acres'],
+                explanation:
+                    'An urban homestead can be up to 10 acres in one or more contiguous lots.',
+            },
+            es: {
+                prompt: 'En Texas, la vivienda familiar (homestead) urbana está protegida hasta',
+                options: ['1 acre', '10 acres', '100 acres', '200 acres'],
+                explanation:
+                    'La vivienda familiar urbana puede tener hasta 10 acres en uno o más lotes contiguos.',
+            },
+            correct: 1,
+        },
+    ],
+};

@@ -109,8 +109,9 @@ describe('the full simulation in the real Pearson VUE format (A9.1, decision 1)'
     });
 
     it('scores a short bank fairly: everything scored, the pass mark scaled', function () {
-        // Only the diagnostic's own Texas questions exist so far.
-        $available = QuizQuestion::query()->get()->filter(fn (QuizQuestion $q) => $q->topic === QuizTopic::StateRules || $q->portion === 'state')->count();
+        // A deployment that retired the starter bank: only the diagnostic's own Texas questions are left.
+        QuizQuestion::query()->where('key', 'like', 'starter-tx:%')->update(['retired_at' => now()]);
+        $available = QuizQuestion::query()->whereNull('retired_at')->get()->filter(fn (QuizQuestion $q) => $q->topic === QuizTopic::StateRules || $q->portion === 'state')->count();
         $attempt = TestAttempt::query()->findOrFail($this->actingAs($this->sofia)->postJson('/api/v1/practice/tests', ['kind' => 'state'])->assertCreated()->json('data.id'));
 
         expect($available)->toBeLessThan(50)->toBeGreaterThan(4)

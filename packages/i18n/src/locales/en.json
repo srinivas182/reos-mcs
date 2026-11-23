@@ -2135,7 +2135,11 @@
         "lesson.line_rerecord": "Marked a lesson line to record again",
         "organisation.integration_allowed": "Allowed an integration for agents",
         "organisation.integration_hidden": "Hid an integration from agents",
-        "organisation.crm_mapping_updated": "Changed the CRM stage mapping"
+        "organisation.crm_mapping_updated": "Changed the CRM stage mapping",
+        "starter_question.approve": "Approved a starter bank question",
+        "starter_question.retire": "Retired a starter bank question",
+        "starter_question.restore": "Undid a starter bank decision",
+        "starter_question.edited": "Edited a starter bank question"
       }
     }
   },
@@ -5716,7 +5720,8 @@
       "to_review": "To review ({{count}})",
       "approved": "Approved ({{count}})",
       "rejected": "Rejected ({{count}})",
-      "disputed": "Disputed ({{count}})"
+      "disputed": "Disputed ({{count}})",
+      "starter": "Starter bank ({{count}})"
     },
     "columns": {
       "question": "Question",
@@ -5763,6 +5768,24 @@
       "correctHint": "Edit the question under Approved first, then mark it corrected.",
       "emptyTitle": "No reports",
       "empty": "When a learner reports a question, it shows up here."
+    },
+    "starter": {
+      "title": "REOS starter bank",
+      "description": "300 Texas questions REOS wrote so every practice test can draw new ones: 200 national and 100 Texas, in English and Spanish. Until you approve a question it counts in tests and simulations as a sample. Approve the ones you trust, edit any that need it, and retire the rest.",
+      "progress": "{{toReview}} to review · {{approved}} approved · {{retired}} retired",
+      "filter": "Topic",
+      "all": "All topics ({{count}})",
+      "topic": "{{topic}} ({{count}})",
+      "answer": "Right answer: {{answer}}",
+      "why": "Why: {{why}}",
+      "spanish": "Show the Spanish",
+      "approveAll": "Approve all {{count}} shown",
+      "retire": "Retire",
+      "approved": "Question approved.",
+      "approvedAll": "{{count}} questions approved.",
+      "retired": "Question retired. It no longer appears in tests.",
+      "emptyTitle": "All reviewed",
+      "empty": "Every starter question on this topic has been approved or retired."
     }
   },
   "player": {

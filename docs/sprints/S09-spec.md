@@ -83,6 +83,13 @@
     - the **calculator**.
   - **Results:** each portion against its pass mark with the change since last time, the timing insight against the real exam's pace, pretest items marked, **Watch the explanation** (the lesson) and **Similar question**.
   - **Moved to A9.2:** Ask why (it needs the study mate's answer from course knowledge) and Add to flashcards (the deck arrives there).
+  - **Starter bank (#94):**
+    - **Contents:** 300 Texas questions written by REOS in `database/data/starter_tx.php`: 200 national (agency 45, contracts 45, ownership 40, finance 35, math 35) and 100 Texas, each with four options, why and a source, in English and Spanish.
+    - **Loading:** a migration loads them as samples. It only adds missing questions and never overwrites one already loaded.
+    - **In tests:** samples count in tests and simulations, so a full simulation now has its pretest items, and a second one draws new questions.
+    - **Review:** a **Starter bank** tab on the question bank (screen 45), for school admins only, lists the questions by topic with the right answer, why, source and the Spanish. Nelle can approve, edit or retire each question, or approve all shown. Each decision is audited and can be undone from its toast.
+    - **Approved:** a question also counts in topic quizzes.
+    - **Retired:** a question leaves every test.
 
 ### A9.2 Readiness and practice (Team A)
 
