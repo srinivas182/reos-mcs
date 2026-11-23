@@ -3269,6 +3269,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/provider/licences": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My professional licences */
+        get: operations["provider.licences.index"];
+        put?: never;
+        /**
+         * Add or replace my professional licence
+         * @description `trec_inspector` and `tdi` are checked against the regulator's public data at once: verified when active and in my name, otherwise a reviewer checks. `nmls` always goes to a reviewer.
+         */
+        post: operations["provider.licences.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/push-devices": {
         parameters: {
             query?: never;
@@ -5295,6 +5316,15 @@ export interface components {
             };
         };
         /**
+         * ProviderLicenceRequest
+         * @description A provider's professional licence: its kind and number (B10.3).
+         */
+        ProviderLicenceRequest: {
+            /** @enum {string} */
+            kind: "trec_inspector" | "tdi" | "nmls";
+            number: string;
+        };
+        /**
          * PushDeviceRequest
          * @description A phone turning on push notifications (B6.2b).
          */
@@ -5845,6 +5875,7 @@ export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest']
 export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
+export type SchemaProviderLicenceRequest = components['schemas']['ProviderLicenceRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
 export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
@@ -11840,15 +11871,17 @@ export interface operations {
                 content: {
                     "application/json": {
                         /** @enum {string} */
-                        check: "verified" | "name_mismatch" | "not_found" | "no_lookup";
+                        check: "no_lookup" | "not_found" | "name_mismatch" | "verified";
                         record: {
                             name: string;
                             /** @enum {string} */
-                            type: "sales_agent" | "broker";
-                            status: string;
+                            type: "broker" | "sales_agent";
+                            /** @enum {string} */
+                            status: "inactive" | "active" | "expired";
                             expires_on: string | null;
                         } | null;
-                        source: string | null;
+                        /** @enum {string|null} */
+                        source: "Checked with REOS demo license records (Simulator)." | "Checked with the Texas Real Estate Commission's public license data." | null;
                     };
                 };
             };
@@ -16054,6 +16087,89 @@ export interface operations {
                     };
                 };
             };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "provider.licences.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            number: string;
+                            status: string;
+                            name_on_record: string | null;
+                            licence_type: string | null;
+                            expires_on: string | null;
+                            checked_via: string | null;
+                            review_note: string | null;
+                            consumer_url: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "provider.licences.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProviderLicenceRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            number: string;
+                            status: string;
+                            name_on_record: string | null;
+                            licence_type: string | null;
+                            expires_on: string | null;
+                            checked_via: string | null;
+                            review_note: string | null;
+                            consumer_url: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

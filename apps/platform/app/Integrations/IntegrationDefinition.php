@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Integrations;
 
+use App\Licences\Regulators\RegulatorDefinition;
 use App\Mls\MlsDefinition;
 
 /**
@@ -33,6 +34,7 @@ final readonly class IntegrationDefinition
         public AccountScope $accounts,
         public array $fields,
         public ?MlsDefinition $mls = null,
+        public ?RegulatorDefinition $regulator = null,
     ) {}
 
     /** Whether the super admin enters any keys for this service. */

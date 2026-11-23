@@ -51,6 +51,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
+use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
 use App\Http\Controllers\Api\States\CurrentStateController;
@@ -262,6 +263,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // A post about one of my listings (B10.2), within the MLS's licence terms.
     Route::get('listings/{listing}/post', [ListingPostController::class, 'show'])->whereUuid('listing')->name('api.listings.post.show');
     Route::put('listings/{listing}/post', [ListingPostController::class, 'update'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-post')->name('api.listings.post.update');
+    // A provider's professional licences (B10.3): TREC inspector, TDI, NMLS.
+    Route::get('provider/licences', [ProviderLicenceController::class, 'index'])->name('api.provider.licences.index');
+    Route::post('provider/licences', [ProviderLicenceController::class, 'store'])->middleware('throttle:10,1,api-provider-licences')->name('api.provider.licences.store');
     // CMAs for my listings and my public page (B10.2b).
     Route::get('listings/{listing}/cma', [CmaController::class, 'show'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-cma')->name('api.listings.cma');
     Route::get('listings/page', [CmaController::class, 'page'])->name('api.listings.page');

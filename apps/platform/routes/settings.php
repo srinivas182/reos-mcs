@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Notifications\NotificationsController;
 use App\Http\Controllers\Notifications\TextsController;
 use App\Http\Controllers\Settings\ActiveRoleController;
@@ -76,6 +77,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('settings/licences/{licence}', [LicenceController::class, 'update'])->whereNumber('licence')->middleware('throttle:30,1,licences-update')->name('licences.update');
     Route::delete('settings/licences/{licence}', [LicenceController::class, 'destroy'])->whereNumber('licence')->middleware('throttle:30,1,licences-destroy')->name('licences.destroy');
     Route::post('settings/licences/{licence}/restore', [LicenceController::class, 'restore'])->whereNumber('licence')->middleware('throttle:30,1,licences-restore')->name('licences.restore');
+    // A provider's professional licence (B10.3).
+    Route::post('settings/provider-licences', [ProviderLicenceController::class, 'store'])->middleware('throttle:10,1,provider-licences')->name('provider-licences.store');
     Route::put('settings/current-state', [CurrentStateController::class, 'update'])->middleware('throttle:30,1,current-state-update')->name('current-state.update');
 
     Route::inertia('settings/appearance', 'settings/appearance')->name('appearance.edit');

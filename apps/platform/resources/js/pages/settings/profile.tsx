@@ -10,6 +10,10 @@ import { YourData } from '@/components/your-data';
 import type { MyPrivacyRequest } from '@/components/your-data';
 import Heading from '@/components/heading';
 import { LicenceList } from '@/components/licence-list';
+import {
+    ProviderLicences,
+    type ProviderLicenceRow,
+} from '@/components/provider-licences';
 import { MembershipList } from '@/components/membership-list';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -36,6 +40,7 @@ export default function Profile(
         licences = [],
         licenceStates = [],
         studyGroups = null,
+        providerLicences = null,
     }: {
         mustVerifyEmail: boolean;
         studyGroups?: { opt_in: boolean } | null;
@@ -43,6 +48,7 @@ export default function Profile(
         privacyRequests?: MyPrivacyRequest[];
         licences?: Licence[];
         licenceStates?: LicenceState[];
+        providerLicences?: ProviderLicenceRow[] | null;
     },
     /* @end-chisel-email-verification */
 ) {
@@ -72,6 +78,17 @@ export default function Profile(
                 />
                 <LicenceList licences={licences} states={licenceStates} />
             </div>
+
+            {providerLicences ? (
+                <div className="space-y-4">
+                    <Heading
+                        variant="small"
+                        title={t('providers.licences.title')}
+                        description={t('providers.licences.description')}
+                    />
+                    <ProviderLicences licences={providerLicences} />
+                </div>
+            ) : null}
 
             {studyGroups ? (
                 <StudyGroupsSetting initial={studyGroups.opt_in} />

@@ -3,6 +3,10 @@ import { ChevronRight, SearchX, ShieldCheck, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { LicenceReviewQueue } from '@/components/licence-reviews';
+import {
+    ProviderLicenceReviewQueue,
+    type ProviderLicenceReview,
+} from '@/components/provider-licences';
 import type { LicenceReviewItem } from '@/components/licence-reviews';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
@@ -21,6 +25,7 @@ type Props = {
         total: number;
     };
     licenceReviews?: LicenceReviewItem[];
+    providerLicenceReviews?: ProviderLicenceReview[];
 };
 
 /** Settings › People (super admin): find a person and open their roles. */
@@ -28,6 +33,7 @@ export default function PeopleIndex({
     search,
     people,
     licenceReviews = [],
+    providerLicenceReviews = [],
 }: Props) {
     const { t } = useTranslation();
     const page = (number: number) =>
@@ -44,6 +50,7 @@ export default function PeopleIndex({
                 />
 
                 <LicenceReviewQueue items={licenceReviews} />
+                <ProviderLicenceReviewQueue items={providerLicenceReviews} />
 
                 <Form
                     {...index.form()}

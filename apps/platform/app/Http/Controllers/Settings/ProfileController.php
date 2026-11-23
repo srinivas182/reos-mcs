@@ -8,9 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileDeleteRequest;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Resources\Licences\LicenceResource;
+use App\Licences\ProviderLicences;
 use App\Models\PrivacyRequest;
 use App\Models\State;
 use App\Models\User;
+use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
 use App\Services\Identity\AccountDeletion;
 use App\Services\Licences\Licences;
@@ -43,6 +45,8 @@ class ProfileController extends Controller
             // States to add a licence in: live ones first, then coming soon (tracked for renewal only).
             'licenceStates' => State::query()->orderByRaw("case when status = 'live' then 0 else 1 end")->orderBy('name')->get(['code', 'name', 'status'])
                 ->map(static fn (State $state): array => ['code' => $state->code, 'name' => $state->name, 'live' => $state->status === StateStatus::Live])->all(),
+            // A provider's professional licence (B10.3): TREC inspector, TDI or NMLS.
+            'providerLicences' => $user instanceof User && app(ActiveRole::class)->for($user)?->role === Role::Provider ? app(ProviderLicences::class)->of($user) : null,
             // "Your data" (A4.3b, TDPSA): the person's own requests.
             'privacyRequests' => $user instanceof User ? PrivacyRequest::query()->where('user_id', $user->id)->latest('id')->limit(10)->get()
                 ->map(static fn (PrivacyRequest $r): array => [

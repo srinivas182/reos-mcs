@@ -36,6 +36,7 @@ use App\Models\Organisation;
 use App\Models\PrivacyRequest;
 use App\Models\Product;
 use App\Models\ProviderCategory;
+use App\Models\ProviderLicence;
 use App\Models\QuizQuestion;
 use App\Models\ReviewItem;
 use App\Models\State;
@@ -405,6 +406,16 @@ function adminActions(): array
             [$licence] = app(Licences::class)->add(User::factory()->create(['name' => 'James Miller']), State::query()->findOrFail('TX'), '0798888', null, null);
 
             return auditCase(auditOps(), 'POST', "/admin/people/licences/{$licence->id}/reject", ['note' => 'Not on the TREC record.'], confirmed: true);
+        },
+        'people.provider-licences.approve' => function () {
+            $licence = ProviderLicence::query()->create(['user_id' => User::factory()->create()->id, 'kind' => 'nmls', 'number' => '123456', 'status' => 'review']);
+
+            return auditCase(auditOps(), 'POST', "/admin/people/provider-licences/{$licence->id}/approve", confirmed: true);
+        },
+        'people.provider-licences.reject' => function () {
+            $licence = ProviderLicence::query()->create(['user_id' => User::factory()->create()->id, 'kind' => 'nmls', 'number' => '123456', 'status' => 'review']);
+
+            return auditCase(auditOps(), 'POST', "/admin/people/provider-licences/{$licence->id}/reject", ['note' => 'Not on NMLS Consumer Access.'], confirmed: true);
         },
         'tenants.store' => fn () => auditCase(auditOps(), 'POST', '/admin/tenants', ['name' => 'Gulf Coast Homes', 'type' => 'brokerage', 'states' => ['TX'], 'plan' => 'brokerage', 'seats' => 40], confirmed: true),
         'tenants.update' => function () {
