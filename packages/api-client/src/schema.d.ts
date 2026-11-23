@@ -2018,6 +2018,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/listings/{listing}/post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My post for a listing
+         * @description The photos the MLS lets a post use (at most its limit, and 10), the caption so far (or a suggestion), the chosen photos, and the attribution added to every post.
+         */
+        get: operations["listings.post.show"];
+        /**
+         * Save my post for a listing
+         * @description The caption and the chosen photos, in order; photos must be among those the MLS allows.
+         */
+        put: operations["listings.post.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/listings": {
         parameters: {
             query?: never;
@@ -4991,6 +5015,14 @@ export interface components {
          */
         LicenceType: "sales_agent" | "broker";
         /**
+         * ListingPostRequest
+         * @description A listing post: the caption and the chosen MLS photos, in order (B10.2).
+         */
+        ListingPostRequest: {
+            caption: string;
+            photos: string[];
+        };
+        /**
          * Locale
          * @description Languages REOS is available in. Matches `supportedLocales` in packages/i18n.
          * @enum {string}
@@ -5745,6 +5777,7 @@ export type SchemaLibraryGroup = components['schemas']['LibraryGroup'];
 export type SchemaLicenceResource = components['schemas']['LicenceResource'];
 export type SchemaLicenceRoleRequest = components['schemas']['LicenceRoleRequest'];
 export type SchemaLicenceType = components['schemas']['LicenceType'];
+export type SchemaListingPostRequest = components['schemas']['ListingPostRequest'];
 export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMathCheckRequest = components['schemas']['MathCheckRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
@@ -12344,6 +12377,97 @@ export interface operations {
             };
         };
     };
+    "listings.post.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            listing: string;
+                            address: string;
+                            photos: {
+                                url: string;
+                                caption: string | null;
+                            }[];
+                            max_photos: number;
+                            caption: string;
+                            chosen: string[];
+                            attribution: string;
+                            saved_at: string | null;
+                            sample: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "listings.post.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                listing: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListingPostRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            listing: string;
+                            address: string;
+                            photos: {
+                                url: string;
+                                caption: string | null;
+                            }[];
+                            max_photos: number;
+                            caption: string;
+                            chosen: string[];
+                            attribution: string;
+                            saved_at: string | null;
+                            sample: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "listings.index": {
         parameters: {
             query?: never;
@@ -12383,23 +12507,35 @@ export interface operations {
                                 short_name: string;
                                 listing_id: string | null;
                                 status: string;
-                                /** @enum {string} */
-                                role: "list" | "co_list";
                                 address: string;
                                 city: string | null;
+                                postal_code: string | null;
                                 price: number | null;
                                 close_price: number | null;
+                                close_date: string | null;
                                 beds: number | null;
                                 baths: number | null;
                                 area: number | null;
+                                price_per_sqft: number | null;
                                 photo: {
                                     url: string;
                                     caption: string | null;
                                 } | null;
-                                photos: number;
+                                photos: {
+                                    url: string;
+                                    caption: string | null;
+                                }[];
                                 listed_on: string | null;
                                 days_on_market: number | null;
                                 office: string | null;
+                                latitude: number | null;
+                                longitude: number | null;
+                                attribution: string;
+                                logo_url: string | null;
+                                sample: boolean;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                can_post: boolean;
                                 open_house: {
                                     starts_at: string;
                                     ends_at: string;
@@ -12458,23 +12594,35 @@ export interface operations {
                                 short_name: string;
                                 listing_id: string | null;
                                 status: string;
-                                /** @enum {string} */
-                                role: "list" | "co_list";
                                 address: string;
                                 city: string | null;
+                                postal_code: string | null;
                                 price: number | null;
                                 close_price: number | null;
+                                close_date: string | null;
                                 beds: number | null;
                                 baths: number | null;
                                 area: number | null;
+                                price_per_sqft: number | null;
                                 photo: {
                                     url: string;
                                     caption: string | null;
                                 } | null;
-                                photos: number;
+                                photos: {
+                                    url: string;
+                                    caption: string | null;
+                                }[];
                                 listed_on: string | null;
                                 days_on_market: number | null;
                                 office: string | null;
+                                latitude: number | null;
+                                longitude: number | null;
+                                attribution: string;
+                                logo_url: string | null;
+                                sample: boolean;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                can_post: boolean;
                                 open_house: {
                                     starts_at: string;
                                     ends_at: string;
@@ -12546,23 +12694,35 @@ export interface operations {
                                 short_name: string;
                                 listing_id: string | null;
                                 status: string;
-                                /** @enum {string} */
-                                role: "list" | "co_list";
                                 address: string;
                                 city: string | null;
+                                postal_code: string | null;
                                 price: number | null;
                                 close_price: number | null;
+                                close_date: string | null;
                                 beds: number | null;
                                 baths: number | null;
                                 area: number | null;
+                                price_per_sqft: number | null;
                                 photo: {
                                     url: string;
                                     caption: string | null;
                                 } | null;
-                                photos: number;
+                                photos: {
+                                    url: string;
+                                    caption: string | null;
+                                }[];
                                 listed_on: string | null;
                                 days_on_market: number | null;
                                 office: string | null;
+                                latitude: number | null;
+                                longitude: number | null;
+                                attribution: string;
+                                logo_url: string | null;
+                                sample: boolean;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                can_post: boolean;
                                 open_house: {
                                     starts_at: string;
                                     ends_at: string;
@@ -12634,23 +12794,35 @@ export interface operations {
                                 short_name: string;
                                 listing_id: string | null;
                                 status: string;
-                                /** @enum {string} */
-                                role: "list" | "co_list";
                                 address: string;
                                 city: string | null;
+                                postal_code: string | null;
                                 price: number | null;
                                 close_price: number | null;
+                                close_date: string | null;
                                 beds: number | null;
                                 baths: number | null;
                                 area: number | null;
+                                price_per_sqft: number | null;
                                 photo: {
                                     url: string;
                                     caption: string | null;
                                 } | null;
-                                photos: number;
+                                photos: {
+                                    url: string;
+                                    caption: string | null;
+                                }[];
                                 listed_on: string | null;
                                 days_on_market: number | null;
                                 office: string | null;
+                                latitude: number | null;
+                                longitude: number | null;
+                                attribution: string;
+                                logo_url: string | null;
+                                sample: boolean;
+                                /** @enum {string} */
+                                role: "list" | "co_list";
+                                can_post: boolean;
                                 open_house: {
                                     starts_at: string;
                                     ends_at: string;

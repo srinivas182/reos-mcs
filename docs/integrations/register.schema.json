@@ -109,11 +109,35 @@
           "description": "MLS feeds (B10.1): the data vendor that delivers the RESO Web API feed and the dataset it serves. One driver reads every vendor; to_confirm runs on the Simulator only until the MLS names its vendor.",
           "type": "object",
           "additionalProperties": false,
-          "required": ["vendor", "dataset", "short_name"],
+          "required": ["vendor", "dataset", "short_name", "display"],
           "properties": {
             "vendor": { "enum": ["bridge", "trestle", "mls_grid", "to_confirm"] },
             "dataset": { "description": "Bridge dataset, Trestle feed or MLS Grid OriginatingSystemName.", "type": "string", "pattern": "^[a-z0-9_]+$" },
-            "short_name": { "description": "The MLS's name as shown beside its listings.", "type": "string", "minLength": 2 }
+            "short_name": { "description": "The MLS's name as shown beside its listings.", "type": "string", "minLength": 2 },
+            "display": {
+              "description": "Display rules from the MLS's data licence (B10.2, decision 7), enforced by the listing service so no screen can break them.",
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["max_photos", "refresh_hours", "sold_public", "sold_in_cma", "own_listings_only", "attribution"],
+              "properties": {
+                "max_photos": { "description": "Most photos any screen or post may show.", "type": "integer", "minimum": 1, "maximum": 100 },
+                "refresh_hours": { "description": "Listings older than this (since the last sync) aren't shown to the public.", "type": "integer", "minimum": 1, "maximum": 72 },
+                "sold_public": { "description": "Sold prices may appear on public pages and posts (Texas is a non-disclosure state).", "type": "boolean" },
+                "sold_in_cma": { "description": "Sold listings may be used in agents' CMAs.", "type": "boolean" },
+                "own_listings_only": { "description": "Posts may only feature the agent's own listings.", "type": "boolean" },
+                "attribution": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["brokerage", "mls_name", "logo"],
+                  "properties": {
+                    "brokerage": { "description": "Name the listing brokerage.", "type": "boolean" },
+                    "mls_name": { "description": "Name the MLS as the source.", "type": "boolean" },
+                    "logo": { "description": "Show the MLS's logo (logo_url).", "type": "boolean" }
+                  }
+                },
+                "logo_url": { "type": "string", "format": "uri" }
+              }
+            }
           }
         }
       },

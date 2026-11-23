@@ -14,7 +14,6 @@ use App\Models\MlsMemberLink;
 use App\Models\MlsOffice;
 use App\Models\MlsOpenHouse;
 use App\Models\User;
-use App\Practice\StudyPlans;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -27,12 +26,12 @@ use Illuminate\Validation\ValidationException;
  * theirs. A member record links to one REOS account.
  *
  * @phpstan-type MemberRow array{mls: string, short_name: string, member_key: string, name: string, office: string|null, office_city: string|null}
- * @phpstan-type ListingRow array{uuid: string, mls: string, short_name: string, listing_id: string|null, status: string, role: 'list'|'co_list', address: string, city: string|null, price: int|null, close_price: int|null, beds: int|null, baths: float|null, area: int|null, photo: array{url: string, caption: string|null}|null, photos: int, listed_on: string|null, days_on_market: int|null, office: string|null, open_house: array{starts_at: string, ends_at: string, kind: string}|null}
+ * @phpstan-type ListingRow array{uuid: string, mls: string, short_name: string, listing_id: string|null, status: string, address: string, city: string|null, postal_code: string|null, price: int|null, close_price: int|null, close_date: string|null, beds: int|null, baths: float|null, area: int|null, price_per_sqft: int|null, photo: array{url: string, caption: string|null}|null, photos: list<array{url: string, caption: string|null}>, listed_on: string|null, days_on_market: int|null, office: string|null, latitude: float|null, longitude: float|null, attribution: string, logo_url: string|null, sample: bool, role: 'list'|'co_list', can_post: bool, open_house: array{starts_at: string, ends_at: string, kind: string}|null}
  * @phpstan-type Overview array{licensed: bool, linked: list<MemberRow>, candidates: list<MemberRow>, listings: list<ListingRow>, sample: bool, synced_at: string|null}
  */
 final readonly class MyListings
 {
-    public function __construct(private MlsFeeds $feeds, private DealAccess $access) {}
+    public function __construct(private MlsFeeds $feeds, private DealAccess $access, private ListingService $service, private OpenHouseCalendar $calendar) {}
 
     /** @return Overview */
     public function overview(User $user): array
@@ -61,6 +60,7 @@ final readonly class MyListings
             ['user_id' => $user->id, 'integration' => $member->integration, 'member_key' => $member->member_key],
             ['status' => MlsMemberLink::CONFIRMED],
         );
+        $this->calendar->sync($user, $member->integration);
     }
 
     /** "Not me": stop suggesting this member record. */
@@ -80,6 +80,7 @@ final readonly class MyListings
         $this->access->allow($user);
         MlsMemberLink::query()->where('user_id', $user->id)->where('integration', $integration)->where('member_key', $memberKey)
             ->where('status', MlsMemberLink::CONFIRMED)->delete();
+        $this->calendar->sync($user, $integration);
     }
 
     /** @return list<MlsMember> */
@@ -187,34 +188,20 @@ final readonly class MyListings
             ->orderByDesc('modified_at')->limit(200)->get();
 
         $openHouses = $this->nextOpenHouses($listings);
-        $today = CarbonImmutable::now(StudyPlans::TIMEZONE)->startOfDay();
         $rows = [];
 
         foreach ($listings->sortBy(static fn (MlsListing $l): int => (int) array_search($l->status, MlsListing::ORDER, true)) as $l) {
-            $listed = $l->listed_on;
-            $end = $l->status === 'closed' && $l->close_date !== null ? $l->close_date : $today;
-            $house = $openHouses[$l->integration.'|'.$l->listing_key] ?? null;
-            $unit = $l->unit !== null && ! str_contains((string) $l->street, $l->unit) ? ' #'.$l->unit : '';
+            $view = $this->service->view($l, ListingPurpose::Agent, true);
 
+            if ($view === null) {
+                continue;
+            }
+
+            $house = $openHouses[$l->integration.'|'.$l->listing_key] ?? null;
             $rows[] = [
-                'uuid' => $l->uuid,
-                'mls' => $l->integration,
-                'short_name' => $this->feeds->find($l->integration)?->mls->shortName ?? $l->integration,
-                'listing_id' => $l->listing_id,
-                'status' => $l->status,
+                ...$view,
                 'role' => in_array($l->list_agent_key, $keys[$l->integration] ?? [], true) ? 'list' : 'co_list',
-                'address' => $l->street !== null ? $l->street.$unit : ($l->city ?? ''),
-                'city' => $l->city,
-                'price' => $l->list_price,
-                'close_price' => $l->close_price,
-                'beds' => $l->bedrooms,
-                'baths' => $l->bathrooms === null ? null : (float) $l->bathrooms,
-                'area' => $l->living_area,
-                'photo' => $l->photos[0] ?? null,
-                'photos' => count($l->photos),
-                'listed_on' => $listed?->toDateString(),
-                'days_on_market' => $listed === null ? null : max(0, (int) $listed->diffInDays($end)),
-                'office' => $l->list_office_name,
+                'can_post' => $this->service->allows($l, ListingPurpose::Post, true),
                 'open_house' => $house === null ? null : ['starts_at' => $house->starts_at->toIso8601String(), 'ends_at' => $house->ends_at->toIso8601String(), 'kind' => $house->kind],
             ];
         }

@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Authorization\Role;
+use App\Enums\LicenceStatus;
+use App\Enums\LicenceType;
+use App\Models\Licence;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use Inertia\Testing\AssertableInertia as Assert;
@@ -39,4 +43,17 @@ function connectOnWeb(object $test, User $user, bool $allow = true, ?callable $t
     $answer->assertRedirect();
 
     return $test->get((string) $answer->headers->get('Location'));
+}
+
+// MLS feeds (B10.1, B10.2): shared by the feed and listing-service tests.
+/** An agent with a Texas licence, as A5.1 records it. */
+function mlsAgent(string $name, string $number): User
+{
+    $user = User::factory()->withRole(Role::Agent)->create(['name' => $name]);
+    Licence::query()->create([
+        'user_id' => $user->id, 'state_code' => 'TX', 'type' => LicenceType::SalesAgent, 'number' => $number, 'status' => LicenceStatus::Active,
+        'holder_name' => $name, 'verified_by' => 'simulator', 'verified_at' => now(),
+    ]);
+
+    return $user;
 }

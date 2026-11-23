@@ -7685,6 +7685,46 @@
     "noPhoto": "No photo yet",
     "errors": {
       "notYours": "That MLS member record isn't under your license number."
+    },
+    "addressWithheld": "Address withheld, :city",
+    "attribution": {
+      "brokerage": "Listing courtesy of :office.",
+      "mls": "Source: :mls MLS."
+    },
+    "calendar": {
+      "openHouse": "Open house: :address",
+      "brokerOpen": "Broker open house: :address"
+    },
+    "post": {
+      "title": "Listing post",
+      "description": "Choose photos and write the caption. The MLS's attribution is added to every post.",
+      "create": "Create post",
+      "createFor": "Create a post for {{address}}",
+      "photos": "Photos",
+      "photosHint": "Up to {{max}} photos, as the MLS allows. {{chosen}} chosen.",
+      "photoAlt": "Photo {{n}} of {{address}}",
+      "caption": "Caption",
+      "attributionLabel": "Always added",
+      "save": "Save post",
+      "saved": "Post saved",
+      "copy": "Copy post",
+      "copied": "Post copied",
+      "channelsNext": "Publishing to your social accounts comes with Content studio.",
+      "beds": ":count bd",
+      "baths": ":count ba",
+      "area": ":area sq ft",
+      "suggestion": {
+        "comingSoon": "Coming soon: :address, :city. :price · :facts",
+        "active": "Just listed: :address, :city. :price · :facts",
+        "contract": "Under contract: :address, :city. :facts"
+      },
+      "errors": {
+        "photo": "Choose photos from this listing only.",
+        "tooMany": "The MLS allows up to :max photos in a post.",
+        "notAllowed": "The MLS doesn't allow posts about this listing right now.",
+        "notYours": "You can post about your own listings only."
+      },
+      "share": "Share"
     }
   }
 }

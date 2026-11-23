@@ -31,6 +31,7 @@ use JsonException;
  * 2. Listings off the market (withdrawn, cancelled, expired) and records the
  *    MLS no longer shares are removed.
  * 3. Once a day, listings deleted at the MLS (gone from its keys) are removed.
+ * 4. Linked agents' open houses go on their REOS calendar (B10.2).
  *
  * If the feed switches between the Simulator and the vendor, the other
  * source's records are purged first, so sample data never mixes with real.
@@ -40,7 +41,7 @@ final readonly class MlsSync
     /** Pages per resource per run, so one MLS's first load can't hold the queue. */
     public const MAX_PAGES = 100;
 
-    public function __construct(private MlsFeeds $feeds) {}
+    public function __construct(private MlsFeeds $feeds, private OpenHouseCalendar $calendar) {}
 
     /**
      * @return array{source: string|null, saved: int, removed: int}
@@ -81,6 +82,8 @@ final readonly class MlsSync
         }
 
         $feed->forceFill(['synced_at' => now(), 'last_error' => null, 'failures' => 0])->save();
+        // Open houses on linked agents' calendars (B10.2).
+        $this->calendar->syncMls($definition->id);
 
         return ['source' => $source->id(), 'saved' => $saved, 'removed' => $removed];
     }

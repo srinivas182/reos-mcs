@@ -2,12 +2,13 @@ import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
 
-import ListingsScreen from '@/app/deals/listings';
+import ListingPostScreen from '@/app/deals/listings/[uuid]/post';
+import ListingsScreen from '@/app/deals/listings/index';
 import { i18n } from '@/lib/i18n';
-import type { Listing, ListingsOverview, Member } from '@/lib/listings';
+import type { Listing, ListingsOverview, Member, PostDraft } from '@/lib/listings';
 import { ToastProvider } from '@/ui';
 
-const mockApi = { GET: jest.fn(), POST: jest.fn() };
+const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 
 jest.mock('expo-router', () => {
   const { useEffect } = jest.requireActual<typeof import('react')>('react');
@@ -15,6 +16,7 @@ jest.mock('expo-router', () => {
   return {
     router: { push: jest.fn(), back: jest.fn(), replace: jest.fn() },
     useFocusEffect: (effect: () => void) => useEffect(effect, [effect]),
+    useLocalSearchParams: () => ({ uuid: 'l1' }),
   };
 });
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -35,16 +37,25 @@ const listing = (over: Partial<Listing> = {}): Listing => ({
   role: 'list',
   address: '2418 Willow Bend Dr, Katy, TX 77494',
   city: 'Katy',
+  postal_code: '77494',
   price: 489000,
   close_price: null,
+  close_date: null,
   beds: 4,
   baths: 3,
   area: 2850,
+  price_per_sqft: 172,
   photo: { url: 'https://reos.com/demo/listings/2.svg', caption: 'Front' },
-  photos: 4,
+  photos: [{ url: 'https://reos.com/demo/listings/2.svg', caption: 'Front' }],
   listed_on: '2026-11-11',
   days_on_market: 12,
   office: 'Lone Star Realty',
+  latitude: 29.78,
+  longitude: -95.82,
+  attribution: 'Listing courtesy of Lone Star Realty. Source: HAR MLS.',
+  logo_url: null,
+  sample: true,
+  can_post: true,
   open_house: { starts_at: '2026-11-26T19:00:00+00:00', ends_at: '2026-11-26T22:00:00+00:00', kind: 'public' },
   ...over,
 });
@@ -52,7 +63,7 @@ const overview = (over: Partial<ListingsOverview> = {}): ListingsOverview => ({
   licensed: true,
   linked: [james],
   candidates: [],
-  listings: [listing(), listing({ uuid: 'l4', status: 'closed', close_price: 331000, role: 'co_list', photo: null, open_house: null, address: '803 Magnolia Trace, Katy, TX 77449' })],
+  listings: [listing(), listing({ uuid: 'l4', status: 'closed', close_price: 331000, role: 'co_list', photo: null, photos: [], can_post: false, open_house: null, address: '803 Magnolia Trace, Katy, TX 77449' })],
   sample: true,
   synced_at: '2026-11-24T15:45:00+00:00',
   ...over,
@@ -99,5 +110,42 @@ describe('My listings on the phone (B10.1)', () => {
 
     fireEvent.press(await screen.findByText('Add a license'));
     expect(router.push).toHaveBeenCalledWith('/licences');
+  });
+});
+
+describe('A listing post on the phone (B10.2)', () => {
+  const photos = [1, 2, 3].map((n) => ({ url: `https://reos.com/demo/listings/${n}.svg`, caption: null }));
+  const draft: PostDraft = {
+    listing: 'l1',
+    address: '2418 Willow Bend Dr, Katy, TX 77494',
+    photos,
+    max_photos: 3,
+    caption: 'Just listed: 2418 Willow Bend Dr',
+    chosen: [photos[0]!.url],
+    attribution: 'Listing courtesy of Lone Star Realty. Source: HAR MLS.',
+    saved_at: null,
+    sample: true,
+  };
+
+  it('opens from the listing', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: overview() }));
+    await render(wrap(<ListingsScreen />));
+    fireEvent.press(await screen.findByLabelText('Create a post for 2418 Willow Bend Dr, Katy, TX 77494'));
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/deals/listings/[uuid]/post', params: { uuid: 'l1' } });
+  });
+
+  it('saves the photos chosen within the MLS limit', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: draft }));
+    mockApi.PUT.mockResolvedValue(ok({ data: { ...draft, saved_at: '2026-11-24T10:00:00Z' } }));
+    await render(wrap(<ListingPostScreen />));
+
+    expect(await screen.findByText('Up to 3 photos, as the MLS allows. 1 chosen.')).toBeTruthy();
+    fireEvent.press(screen.getByLabelText('Photo 2 of 2418 Willow Bend Dr, Katy, TX 77494'));
+    expect(await screen.findByText('Up to 3 photos, as the MLS allows. 2 chosen.')).toBeTruthy();
+    expect(screen.getByText('Listing courtesy of Lone Star Realty. Source: HAR MLS.')).toBeTruthy();
+
+    fireEvent.press(screen.getByText('Save post'));
+    expect(await screen.findByText('Post saved')).toBeTruthy();
+    expect(mockApi.PUT).toHaveBeenCalledWith('/listings/{listing}/post', { params: { path: { listing: 'l1' } }, body: { caption: 'Just listed: 2418 Willow Bend Dr', photos: [photos[0]!.url, photos[1]!.url] } });
   });
 });

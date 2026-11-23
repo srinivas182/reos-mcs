@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { james, overview } from '@/components/listings/fixtures';
+import { draft, james, overview } from '@/components/listings/fixtures';
 import { i18n } from '@/lib/i18n';
 import ListingsPage from '@/pages/listings/index';
 
@@ -21,6 +21,7 @@ vi.mock('@inertiajs/react', async (original) => ({
     usePage: () => ({ url: '/deals/listings', props: { errors: {} } }),
 }));
 vi.mock('@/lib/undo-toast', () => ({ undoToast: toast }));
+vi.mock('sonner', () => ({ toast: { success: vi.fn() } }));
 
 const render = (ui: ReactElement) =>
     baseRender(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
@@ -126,5 +127,40 @@ describe('My listings (B10.1)', () => {
         expect(
             screen.getByText('No MLS membership found yet'),
         ).toBeInTheDocument();
+    });
+
+    it('makes a listing post with the photos the MLS allows', async () => {
+        const user = userEvent.setup();
+        fetchMock.mockImplementation(
+            async () =>
+                new Response(JSON.stringify({ data: draft() }), {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' },
+                }),
+        );
+        render(<ListingsPage listings={overview()} />);
+
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Create a post for 2418 Willow Bend Dr, Katy, TX 77494',
+            }),
+        );
+        expect(
+            await screen.findByText(
+                'Up to 4 photos, as the MLS allows. 2 chosen.',
+            ),
+        ).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Save post' }));
+
+        await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
+        const [url, init] = fetchMock.mock.calls[1] as [
+            string,
+            RequestInit | undefined,
+        ];
+        expect(url).toContain('/post');
+        expect(init?.method).toBe('PUT');
+        expect(
+            JSON.parse(typeof init?.body === 'string' ? init.body : '{}'),
+        ).toMatchObject({ photos: draft().chosen });
     });
 });

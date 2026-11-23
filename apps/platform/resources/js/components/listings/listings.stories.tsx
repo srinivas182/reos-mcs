@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
-import { james, listing } from './fixtures';
+import { draft, james, listing } from './fixtures';
 import { ListingCard } from './listing-card';
 import { MemberCard } from './member-card';
+import { PostDialog } from './post-dialog';
 
 const meta = {
     title: 'Agent/My listings',
@@ -52,7 +53,8 @@ export const Sold: Story = {
             status: 'closed',
             close_price: 331000,
             photo: null,
-            photos: 0,
+            photos: [],
+            can_post: false,
             open_house: null,
         }),
     },
@@ -78,5 +80,38 @@ export const FoundByLicense: Story = {
         await userEvent.click(
             canvas.getByRole('button', { name: 'Yes, this is me' }),
         );
+    },
+};
+
+/** A listing post: two of the four photos the MLS allows, with HAR's attribution always added. */
+export const ListingPost: Story = {
+    render: () => (
+        <PostDialog
+            draft={draft()}
+            open
+            onOpenChange={fn()}
+            onSave={fn(async () => {})}
+        />
+    ),
+    play: async () => {
+        const body = within(document.body);
+        await expect(
+            await body.findByText(
+                'Up to 4 photos, as the MLS allows. 2 chosen.',
+            ),
+        ).toBeInTheDocument();
+        await userEvent.click(
+            body.getByRole('button', {
+                name: 'Photo 3 of 2418 Willow Bend Dr, Katy, TX 77494',
+            }),
+        );
+        await expect(
+            body.getByText('Up to 4 photos, as the MLS allows. 3 chosen.'),
+        ).toBeInTheDocument();
+        await expect(
+            body.getByText(
+                'Listing courtesy of Lone Star Realty. Source: HAR MLS.',
+            ),
+        ).toBeInTheDocument();
     },
 };

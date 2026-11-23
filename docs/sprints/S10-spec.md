@@ -205,7 +205,14 @@
 - **CMA:** sold and active comps within a radius and date range, adjusted price per square foot, a range; export as a page.
 - **Open houses** from the MLS on the agent's calendar.
 - **Public agent page:** active listings with the rules applied.
-- **Done when:** a listing post uses MLS photos within the licence terms.
+- **As built, B10.2a** (ADR 0042 §10–13):
+  - **Display rules** per MLS in the register (`mls.display`): photo limit, refresh age, sold data (public and in CMAs), own listings only, and attribution (brokerage, MLS name, logo).
+  - **Listing service:** every screen asks for a listing for a purpose (agent, post, public, CMA). The rules are applied there: photo caps (posts at 10), attribution on every listing, nothing stale shown to the public, the MLS's consumer flags, and sold prices kept private.
+  - **Listing posts** (web dialog; phone screen with the share sheet):
+    - The photos the MLS allows; a suggested caption ("Just listed: …").
+    - The attribution is always added and can't be edited. One post per listing, saved for the content studio (B11).
+  - **Open houses** on the agent's REOS calendar as read-only showings that follow the MLS.
+- **Done when:** a listing post uses MLS photos within the licence terms. ✅ Met (B10.2a): `ListingServicesTest` saves a post with the agent's choice of the listing's MLS photos, refuses others, and caps a post at the MLS's limit and 10.
 
 ### B10.3 Lookups and OCR (Team B)
 

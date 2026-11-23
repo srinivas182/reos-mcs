@@ -7685,6 +7685,46 @@
     "noPhoto": "Todavía no hay foto",
     "errors": {
       "notYours": "Ese registro de miembro del MLS no corresponde a su número de licencia."
+    },
+    "addressWithheld": "Dirección reservada, :city",
+    "attribution": {
+      "brokerage": "Listado cortesía de :office.",
+      "mls": "Fuente: MLS de :mls."
+    },
+    "calendar": {
+      "openHouse": "Casa abierta: :address",
+      "brokerOpen": "Casa abierta para agentes: :address"
+    },
+    "post": {
+      "title": "Publicación del listado",
+      "description": "Elija las fotos y escriba el texto. La atribución del MLS se agrega a cada publicación.",
+      "create": "Crear publicación",
+      "createFor": "Crear una publicación para {{address}}",
+      "photos": "Fotos",
+      "photosHint": "Hasta {{max}} fotos, según lo permite el MLS. {{chosen}} elegidas.",
+      "photoAlt": "Foto {{n}} de {{address}}",
+      "caption": "Texto",
+      "attributionLabel": "Siempre se agrega",
+      "save": "Guardar publicación",
+      "saved": "Publicación guardada",
+      "copy": "Copiar publicación",
+      "copied": "Publicación copiada",
+      "channelsNext": "La publicación en sus redes sociales llega con el estudio de contenido.",
+      "beds": ":count hab.",
+      "baths": ":count baños",
+      "area": ":area pies²",
+      "suggestion": {
+        "comingSoon": "Próximamente: :address, :city. :price · :facts",
+        "active": "Recién listado: :address, :city. :price · :facts",
+        "contract": "Bajo contrato: :address, :city. :facts"
+      },
+      "errors": {
+        "photo": "Elija solo fotos de este listado.",
+        "tooMany": "El MLS permite hasta :max fotos por publicación.",
+        "notAllowed": "El MLS no permite publicaciones sobre este listado en este momento.",
+        "notYours": "Solo puede publicar sobre sus propios listados."
+      },
+      "share": "Compartir"
     }
   }
 }

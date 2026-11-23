@@ -7,6 +7,7 @@ namespace App\Services\Calendar;
 use App\Connections\Calendar\CalendarChoices;
 use App\Connections\Calendar\CalendarMode;
 use App\Connections\ConnectorRegistry;
+use App\Integrations\Catalogue;
 use App\Jobs\PushCalendarEvent;
 use App\Models\CalendarEvent;
 use App\Models\Connection;
@@ -179,7 +180,8 @@ final readonly class CalendarEvents
 
     public function editable(CalendarEvent $event): bool
     {
-        if ($event->trashed() || $event->busy || $event->status === 'cancelled') {
+        // Open houses from an MLS feed (B10.2) follow the MLS: change them there.
+        if ($event->trashed() || $event->busy || $event->status === 'cancelled' || app(Catalogue::class)->find($event->source)?->mls !== null) {
             return false;
         }
 

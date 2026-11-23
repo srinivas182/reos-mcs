@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { router, useFocusEffect } from 'expo-router';
-import { BadgeCheck, CalendarDays, House, IdCard, SearchX } from 'lucide-react-native';
+import { BadgeCheck, CalendarDays, House, IdCard, SearchX, Share2 } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
@@ -161,11 +161,23 @@ function ListingCard({ listing, language }: { listing: Listing; language: string
           .filter(Boolean)
           .join(' · ')}
       </Text>
+      <Text variant="caption" tone="muted">
+        {listing.attribution}
+      </Text>
       {listing.open_house && when ? (
         <View style={styles.row}>
           <Icon icon={CalendarDays} color="action" size={20} />
           <Text>{t(listing.open_house.kind === 'broker' ? 'listings.brokerOpen' : 'listings.openHouse', { time: when })}</Text>
         </View>
+      ) : null}
+      {listing.can_post ? (
+        <Button
+          variant="secondary"
+          icon={Share2}
+          label={t('listings.post.create')}
+          accessibilityLabel={t('listings.post.createFor', { address: listing.address })}
+          onPress={() => router.push({ pathname: '/deals/listings/[uuid]/post', params: { uuid: listing.uuid } })}
+        />
       ) : null}
     </Card>
   );

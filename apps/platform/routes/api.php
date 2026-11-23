@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licence\PassesAndOffersController;
 use App\Http\Controllers\Api\Licence\SwitchController;
 use App\Http\Controllers\Api\Licences\LicenceController;
+use App\Http\Controllers\Api\Listings\ListingPostController;
 use App\Http\Controllers\Api\Listings\ListingsController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
@@ -257,6 +258,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('members/decline', 'decline')->middleware('throttle:20,1,api-listings-members')->name('members.decline');
         Route::post('members/unlink', 'unlink')->middleware('throttle:20,1,api-listings-members')->name('members.unlink');
     });
+    // A post about one of my listings (B10.2), within the MLS's licence terms.
+    Route::get('listings/{listing}/post', [ListingPostController::class, 'show'])->whereUuid('listing')->name('api.listings.post.show');
+    Route::put('listings/{listing}/post', [ListingPostController::class, 'update'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-post')->name('api.listings.post.update');
     // After the exam (A10.3b): share the news, passes and congrats, and broker offers.
     Route::prefix('licence-journey')->name('api.licence.')->controller(PassesAndOffersController::class)->group(function () {
         Route::post('news', 'share')->middleware('throttle:5,1,api-licence-news')->name('news');

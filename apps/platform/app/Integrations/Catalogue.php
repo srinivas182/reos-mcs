@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Integrations;
 
 use App\Mls\MlsDefinition;
+use App\Mls\MlsDisplayRules;
 use App\Mls\MlsVendor;
 use JsonException;
 use RuntimeException;
@@ -96,6 +97,7 @@ final class Catalogue
                 vendor: MlsVendor::from($this->string($entry['mls'], 'vendor')),
                 dataset: $this->string($entry['mls'], 'dataset'),
                 shortName: $this->string($entry['mls'], 'short_name'),
+                display: MlsDisplayRules::from(is_array($entry['mls']['display'] ?? null) ? $entry['mls']['display'] : []),
             ) : null,
         );
     }
