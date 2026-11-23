@@ -15,13 +15,14 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int $user_id
- * @property string $kind diagnostic, topic, national, state or simulation
+ * @property string $kind diagnostic, topic, national, state, simulation, drill or retest
  * @property string $mode exam or practice
  * @property string|null $state_code
  * @property string|null $topic
  * @property list<int> $question_ids
  * @property array<int, int>|null $answers {question id: choice}
  * @property list<int>|null $flags
+ * @property list<int>|null $hints Questions a hint was taken on (smart drill, A9.2b)
  * @property Carbon $started_at
  * @property Carbon|null $ends_at
  * @property Carbon|null $submitted_at
@@ -52,12 +53,18 @@ final class TestAttempt extends Model
 
     public const PORTION_KINDS = [self::NATIONAL, self::STATE, self::SIMULATION];
 
-    protected $fillable = ['user_id', 'kind', 'mode', 'state_code', 'topic', 'question_ids', 'answers', 'flags', 'started_at', 'ends_at', 'submitted_at', 'correct', 'total', 'score', 'by_topic', 'sections', 'unscored', 'paused_at', 'by_portion'];
+    /** The smart drill (A9.2b): the weakest topics and recent misses, with hints and why; or one topic's, in a fix plan. */
+    public const DRILL = 'drill';
+
+    /** A fix plan's retest (A9.2b): new questions on one topic, why at the end. */
+    public const RETEST = 'retest';
+
+    protected $fillable = ['user_id', 'kind', 'mode', 'state_code', 'topic', 'question_ids', 'answers', 'flags', 'hints', 'started_at', 'ends_at', 'submitted_at', 'correct', 'total', 'score', 'by_topic', 'sections', 'unscored', 'paused_at', 'by_portion'];
 
     protected function casts(): array
     {
         return [
-            'question_ids' => 'array', 'answers' => 'array', 'flags' => 'array', 'by_topic' => 'array', 'sections' => 'array', 'unscored' => 'array', 'by_portion' => 'array', 'paused_at' => 'datetime',
+            'question_ids' => 'array', 'answers' => 'array', 'flags' => 'array', 'hints' => 'array', 'by_topic' => 'array', 'sections' => 'array', 'unscored' => 'array', 'by_portion' => 'array', 'paused_at' => 'datetime',
             'started_at' => 'datetime', 'ends_at' => 'datetime', 'submitted_at' => 'datetime',
             'correct' => 'integer', 'total' => 'integer', 'score' => 'integer',
         ];

@@ -28,8 +28,10 @@ use App\Http\Controllers\Api\Notifications\TextsController as ApiTextsController
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
+use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\PracticeController;
 use App\Http\Controllers\Api\Practice\ReadinessController;
+use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
@@ -197,6 +199,12 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // Readiness map and What you're good at (A9.2).
     Route::get('practice/readiness', [ReadinessController::class, 'show'])->name('api.practice.readiness');
+    // The practice hub's ranking, the smart drill's Hint, and Fix a weak topic (A9.2b).
+    Route::get('practice/hub', [CoachController::class, 'hub'])->name('api.practice.hub');
+    Route::post('practice/attempts/{attempt}/questions/{question}/hint', [CoachController::class, 'hint'])->whereNumber(['attempt', 'question'])->middleware('throttle:120,1,api-practice-hint')->name('api.practice.hint');
+    Route::post('practice/topic-plans', [TopicPlanController::class, 'store'])->middleware('throttle:30,1,api-practice-plans')->name('api.practice.plans.store');
+    Route::get('practice/topic-plans/{plan}', [TopicPlanController::class, 'show'])->whereNumber('plan')->name('api.practice.plans.show');
+    Route::post('practice/topic-plans/{plan}/continue', [TopicPlanController::class, 'continue'])->whereNumber('plan')->middleware('throttle:60,1,api-practice-plans')->name('api.practice.plans.continue');
     // Lessons saved on the phone (A8.2b): the learner's own downloads, not admin actions.
     Route::prefix('learn')->name('api.learn.downloads.')->controller(OfflineController::class)->group(function () {
         Route::get('downloads', 'index')->name('index');

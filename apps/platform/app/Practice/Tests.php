@@ -44,7 +44,7 @@ final readonly class Tests
     /** The share of questions to pass (the Texas exams' 70%). */
     public const PASS = 70;
 
-    public function __construct(private PersonStates $states, private StudyPlans $plans, private ExamFormats $formats, private Readiness $readiness) {}
+    public function __construct(private PersonStates $states, private StudyPlans $plans, private ExamFormats $formats, private Readiness $readiness, private Drills $drills) {}
 
     /**
      * Start a test, or carry on with the same kind still open.
@@ -63,6 +63,15 @@ final readonly class Tests
 
         if (in_array($kind, TestAttempt::PORTION_KINDS, true)) {
             return $this->startPortions($user, $state, $kind, $mode === 'practice' ? 'practice' : 'exam');
+        }
+
+        if (in_array($kind, [TestAttempt::DRILL, TestAttempt::RETEST], true)) {
+            $ids = $kind === TestAttempt::DRILL ? $this->drills->drill($user, $state, $topic) : $this->drills->retest($user, $state, (string) $topic);
+
+            return TestAttempt::query()->create([
+                'user_id' => $user->id, 'kind' => $kind, 'mode' => $kind === TestAttempt::DRILL ? 'practice' : 'exam', 'state_code' => $state, 'topic' => $topic,
+                'question_ids' => $ids, 'answers' => [], 'flags' => [], 'hints' => [], 'started_at' => CarbonImmutable::now(), 'ends_at' => null, 'total' => count($ids),
+            ]);
         }
 
         $ids = $kind === TestAttempt::DIAGNOSTIC ? $this->diagnosticQuestions($state) : $this->topicQuestions($state, (string) $topic);

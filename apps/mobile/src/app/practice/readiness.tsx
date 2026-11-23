@@ -12,7 +12,7 @@ import { Button, Callout, Card, EmptyState, Icon, ListRow, ProgressRing, Screen,
  * Readiness map (candidate screen 54, A9.2): the predicted pass chance for
  * each exam portion against the 90% booking line, what booking still needs
  * (Ready to book, screen 56, once both are there), and every topic weakest
- * first; tap one to practise it.
+ * first; tap one for a 10-question drill on it (A9.2b).
  */
 export default function ReadinessScreen() {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ export default function ReadinessScreen() {
   const map = useReadiness();
   const practise = async (topic: string) => {
     const known = asTopic(topic);
-    const attempt = known ? await startTest('topic', known).catch(() => null) : null;
+    const attempt = known ? await startTest('drill', known).catch(() => null) : null;
     if (attempt) router.push({ pathname: '/practice/[id]', params: { id: String(attempt.id) } });
   };
 

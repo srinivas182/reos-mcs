@@ -6,10 +6,11 @@ import TestScreen from '@/app/practice/[id]';
 import PracticeHub from '@/app/practice/index';
 import ReadinessScreen from '@/app/practice/readiness';
 import ResultsScreen from '@/app/practice/results/[id]';
+import FixScreen from '@/app/practice/fix/[id]';
 import GoodAtScreen from '@/app/practice/topics';
 import { CandidateToday } from '@/features/study/CandidateToday';
 import { i18n } from '@/lib/i18n';
-import type { Attempt, ReadinessMap, CandidateToday as Today, Results } from '@/lib/practice';
+import type { Attempt, Coach, ReadinessMap, CandidateToday as Today, Results, TopicPlan } from '@/lib/practice';
 import { countdown } from '@/lib/practice';
 import { ToastProvider } from '@/ui';
 
@@ -109,10 +110,22 @@ const results: Results = {
 
 beforeEach(() => jest.clearAllMocks());
 
+const coach: Coach = {
+  drill: { topics: ['finance', 'math', 'state_rules'], questions: 15, misses: 4, open: null },
+  plans: [{ id: 31, topic: 'finance', done: 2, steps: 5 }],
+  ranked: [
+    { mode: 'plan', why: 'carry_on', topic: 'finance', plan_id: 31 },
+    { mode: 'drill', why: 'weakest', topic: null, plan_id: null },
+    { mode: 'readiness', why: 'map', topic: null, plan_id: null },
+  ],
+};
+/** The hub loads its tests and its ranking. */
+const hubGets = (tests: unknown) => (path: string) => Promise.resolve(ok({ data: path === '/practice/hub' ? coach : tests }));
+
 describe('exam simulations (A9.1)', () => {
   it('starts a portion test from the intro sheet in the chosen mode, then runs portion by portion with the calculator', async () => {
     const sim: Attempt = { ...attempt, id: 31, kind: 'simulation', mode: 'practice', total: 2, section: { index: 1, of: 2, portion: 'national', minutes: 150, questions: 2 }, seconds_left: 9000 };
-    mockApi.GET.mockResolvedValue(ok({ data: [{ kind: 'simulation', topic: null, questions: 135, minutes: 240, best: null, last: null, open: null, last_attempt: null }] }));
+    mockApi.GET.mockImplementation(hubGets([{ kind: 'simulation', topic: null, questions: 135, minutes: 240, best: null, last: null, open: null, last_attempt: null }]));
     mockApi.POST.mockResolvedValue(ok({ data: sim }));
     await render(wrap(<PracticeHub />));
 
@@ -166,7 +179,7 @@ describe('Today for candidates (screen 12)', () => {
 
 describe('tests (screens 39–43)', () => {
   it('lists the diagnostic and topic quizzes', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: [{ kind: 'diagnostic', topic: null, questions: 50, minutes: 45, best: null, last: null, open: null, last_attempt: null }, { kind: 'topic', topic: 'math', questions: 10, minutes: null, best: 80, last: 80, open: null, last_attempt: 3 }] }));
+    mockApi.GET.mockImplementation(hubGets([{ kind: 'diagnostic', topic: null, questions: 50, minutes: 45, best: null, last: null, open: null, last_attempt: null }, { kind: 'topic', topic: 'math', questions: 10, minutes: null, best: 80, last: 80, open: null, last_attempt: 3 }]));
 
     await render(wrap(<PracticeHub />));
 
@@ -243,7 +256,7 @@ describe('readiness (screens 54 and 44, A9.2)', () => {
     expect(screen.getByText('8 of 10 answers so far')).toBeTruthy();
 
     await fireEvent.press(screen.getByText('Finance'));
-    expect(mockApi.POST).toHaveBeenCalledWith('/practice/tests', { body: { kind: 'topic', topic: 'finance' } });
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/tests', { body: { kind: 'drill', topic: 'finance' } });
     expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/[id]', params: { id: '12' } });
   });
 
@@ -267,8 +280,84 @@ describe('readiness (screens 54 and 44, A9.2)', () => {
     expect(screen.queryByText('Up 9 points this week')).toBeNull();
     expect(screen.getByText('Up 6 points this week')).toBeTruthy();
 
+    mockApi.POST.mockResolvedValue(ok({ data: { id: 31 } }));
     await fireEvent.press(screen.getByLabelText('Fix my weakest'));
-    expect(mockApi.POST).toHaveBeenCalledWith('/practice/tests', { body: { kind: 'topic', topic: 'finance' } });
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/topic-plans', { body: { topic: 'finance' } });
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/fix/[id]', params: { id: '31' } });
+  });
+});
+
+const plan: TopicPlan = {
+  id: 31,
+  topic: 'finance',
+  now: 58,
+  start: 43,
+  goal: 70,
+  weak: true,
+  minutes: 28,
+  completed: false,
+  steps: [
+    { n: 1, kind: 'lesson', minutes: 5, status: 'done', lesson: { id: 7, title: 'Mortgage insurance', seconds: 185 }, attempt_id: null, results_id: null },
+    { n: 2, kind: 'practice', minutes: 10, status: 'current', lesson: null, attempt_id: null, results_id: null },
+    { n: 3, kind: 'practice', minutes: 10, status: 'todo', lesson: null, attempt_id: null, results_id: null },
+    { n: 4, kind: 'retest', minutes: 8, status: 'todo', lesson: null, attempt_id: null, results_id: null },
+  ],
+  misses: [{ id: 205, prompt: 'When must borrower-paid PMI end automatically?', options: ['90%', '50%', '78%', '100%'], right: 2, explanation: 'At a scheduled 78 percent loan-to-value.', source: 'Licensing exam content outline' }],
+};
+
+describe('drills and fix plans (screens 38, 46 and 47, A9.2b)', () => {
+  it('ranks the hub, starts the smart drill and carries on with a plan', async () => {
+    mockApi.GET.mockImplementation(hubGets([]));
+    mockApi.POST.mockResolvedValue(ok({ data: { ...attempt, id: 14, kind: 'drill', mode: 'practice' } }));
+    await render(wrap(<PracticeHub />));
+
+    expect(await screen.findByText('Today: Finance, Real estate math, and Texas rules')).toBeTruthy();
+    expect(screen.getByText('Brings back 4 questions you missed')).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText('Start drill'));
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/tests', { body: { kind: 'drill', topic: null } });
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/[id]', params: { id: '14' } });
+
+    await fireEvent.press(screen.getByText('Carry on: Finance (2 of 5 done)'));
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/fix/[id]', params: { id: '31' } });
+  });
+
+  it('keeps the drill streak and strikes out an option with Hint', async () => {
+    const drill: Attempt = {
+      ...attempt,
+      id: 14,
+      kind: 'drill',
+      mode: 'practice',
+      ends_at: null,
+      seconds_left: null,
+      questions: [question(101, 1, { choice: 1, feedback: { correct: true, right: 1, explanation: 'Why.', source: 'Outline' } }), question(102, 2)],
+    };
+    (useLocalSearchParams as jest.Mock).mockReturnValue({ id: '14' });
+    mockApi.GET.mockResolvedValue(ok({ data: drill }));
+    mockApi.POST.mockResolvedValue(ok({ data: { eliminated: 3 } }));
+    await render(wrap(<TestScreen />));
+
+    expect(await screen.findByText('Smart drill')).toBeTruthy();
+    expect(screen.getByLabelText('Streak: 1 right in a row')).toBeTruthy();
+    await fireEvent.press(screen.getByLabelText('Hint'));
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/attempts/{attempt}/questions/{question}/hint', { params: { path: { attempt: 14, question: 102 } } });
+    expect(await screen.findByText('Not this one: Option D')).toBeTruthy();
+    expect(screen.getByLabelText('Option D. ruled out by the hint')).toBeTruthy();
+  });
+
+  it('shows the fix plan against its goal and continues to the next step\'s test', async () => {
+    (useLocalSearchParams as jest.Mock).mockReturnValue({ id: '31' });
+    mockApi.GET.mockResolvedValue(ok({ data: plan }));
+    mockApi.POST.mockResolvedValue(ok({ data: { kind: 'practice', lesson: null, attempt_id: 44 } }));
+    await render(wrap(<FixScreen />));
+
+    expect(await screen.findByText('Now: 58%')).toBeTruthy();
+    expect(screen.getByText('28 minutes left')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Watch: Mortgage insurance'));
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/learn/[id]', params: { id: '7', t: '185' } });
+
+    await fireEvent.press(screen.getByLabelText('Continue'));
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/topic-plans/{plan}/continue', { params: { path: { plan: 31 } } });
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/[id]', params: { id: '44' } });
   });
 });
 

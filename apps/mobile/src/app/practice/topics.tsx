@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { useReadiness } from '@/features/readiness/useReadiness';
-import { asTopic, type ReadinessTopic, startTest } from '@/lib/practice';
+import { asTopic, type ReadinessTopic, startPlan } from '@/lib/practice';
 import { Button, Callout, Card, Chip, Icon, PillGroup, ProgressBar, Screen, Text, TitleBar } from '@/ui';
 
 type Filter = 'all' | 'national' | 'state';
@@ -15,7 +15,7 @@ type Filter = 'all' | 'national' | 'state';
  * What you're good at (candidate screen 44, A9.2): National, Texas or All;
  * every topic weakest first with its share right and this week's trend once
  * it has 10 answers (older answers count less), and how much fixing the
- * weakest would add to the pass chance. Tap a topic to practise it.
+ * weakest would add to the pass chance. Tap a topic for its fix plan.
  */
 export default function GoodAtScreen() {
   const { t } = useTranslation();
@@ -27,10 +27,11 @@ export default function GoodAtScreen() {
 
     return known ? t(`practice.topics.${known}`) : topic;
   };
+  // A topic opens its fix plan (screen 46), under way or new.
   const practise = async (topic: string) => {
     const known = asTopic(topic);
-    const attempt = known ? await startTest('topic', known).catch(() => null) : null;
-    if (attempt) router.push({ pathname: '/practice/[id]', params: { id: String(attempt.id) } });
+    const plan = known ? await startPlan(known).catch(() => null) : null;
+    if (plan) router.push({ pathname: '/practice/fix/[id]', params: { id: String(plan.id) } });
   };
 
   return (
@@ -71,7 +72,7 @@ function TopicCard({ topic, name, onPractise }: { topic: ReadinessTopic; name: s
   const trend = topic.trend;
 
   return (
-    <Card accessibilityLabel={t('practice.readinessMap.goodAt.practiceTopic', { topic: name })} onPress={onPractise}>
+    <Card accessibilityLabel={t('practice.fix.start', { topic: name })} onPress={onPractise}>
       <View style={styles.head}>
         <Icon icon={Target} color={topic.weak ? 'toneWarningFg' : 'toneSuccessFg'} />
         <Text weight="bold" style={styles.flex}>

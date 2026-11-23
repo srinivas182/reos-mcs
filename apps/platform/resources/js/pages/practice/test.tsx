@@ -1,5 +1,13 @@
 import { Head, router } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Flag, Pause, Play } from 'lucide-react';
+import {
+    ArrowLeft,
+    ArrowRight,
+    Flag,
+    Flame,
+    Lightbulb,
+    Pause,
+    Play,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
@@ -19,6 +27,7 @@ import { postJson, putJson } from '@/lib/content';
 import { cn } from '@/lib/utils';
 import {
     answer as answerRoute,
+    hint as hintRoute,
     pause as pauseRoute,
     submit,
 } from '@/routes/practice';
@@ -33,6 +42,8 @@ import {
  * National and Texas portions and the full simulation, one timed portion
  * at a time ("National portion, 1 of 2"), the calculator, and Pause in
  * practice mode; submitting a simulation's first portion starts the next.
+ * A9.2b: the smart drill (screen 47) with its streak and Hint, which
+ * strikes out one wrong option; a fix plan's retest.
  */
 export default function TestPage({ attempt }: { attempt: Attempt }) {
     const { t } = useTranslation();
@@ -49,21 +60,38 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
     const [paused, setPaused] = useState(attempt.paused);
     const [reviewing, setReviewing] = useState(false);
     const [error, setError] = useState(false);
+    const [eliminated, setEliminated] = useState<Record<number, number>>({});
     const submitted = useRef(false);
     const question = questions[at];
     const blanks = questions.filter((q) => q.choice === null).length;
+    const topicName = attempt.topic
+        ? t(`practice.topics.${attempt.topic}`)
+        : '';
+    const drill = attempt.kind === 'drill';
+    // The run of right answers, counting back from the last one answered.
+    const answered = questions.filter((q) => q.feedback !== null);
+    const streak =
+        answered.length -
+        1 -
+        answered.findLastIndex((q) => q.feedback?.correct !== true);
     const title =
         attempt.kind === 'diagnostic'
             ? t('practice.diagnostic.title')
-            : attempt.kind === 'topic'
-              ? t('practice.topicQuiz', {
-                    topic: attempt.topic
-                        ? t(`practice.topics.${attempt.topic}`)
-                        : '',
-                })
-              : t(
-                    `practice.portions.${isExam(attempt.kind) ? attempt.kind : 'simulation'}.title`,
-                );
+            : drill
+              ? attempt.topic
+                  ? t('practice.drill.topicTitle', { topic: topicName })
+                  : t('practice.drill.title')
+              : attempt.kind === 'retest'
+                ? t('practice.drill.retestTitle', { topic: topicName })
+                : attempt.kind === 'topic'
+                  ? t('practice.topicQuiz', {
+                        topic: attempt.topic
+                            ? t(`practice.topics.${attempt.topic}`)
+                            : '',
+                    })
+                  : t(
+                        `practice.portions.${isExam(attempt.kind) ? attempt.kind : 'simulation'}.title`,
+                    );
     const last =
         attempt.section === null ||
         attempt.section.index === attempt.section.of;
@@ -125,7 +153,24 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
         }
     };
 
+    const hint = async () => {
+        if (!question) return;
+        try {
+            const got = await postJson<{ data: { eliminated: number } }>(
+                hintRoute({ attempt: attempt.id, question: question.id }).url,
+                {},
+            );
+            setEliminated((all) => ({
+                ...all,
+                [question.id]: got.data.eliminated,
+            }));
+        } catch {
+            setError(true);
+        }
+    };
+
     if (!question) return null;
+    const ruledOut = eliminated[question.id];
 
     return (
         <>
@@ -182,6 +227,17 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
                                         ? t('practice.test.resume')
                                         : t('practice.test.pause')}
                                 </Button>
+                            ) : null}
+                            {drill ? (
+                                <p
+                                    aria-label={t('practice.drill.streak', {
+                                        count: streak,
+                                    })}
+                                    className="inline-flex items-center gap-2 rounded-reos-md bg-reos-tone-warning-bg px-3 py-2 font-semibold text-reos-tone-warning-fg"
+                                >
+                                    <Flame aria-hidden className="size-5" />
+                                    {streak}
+                                </p>
                             ) : null}
                             {attempt.kind !== 'topic' ? <Calculator /> : null}
                             <Button
@@ -245,14 +301,52 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
                                         name={`q-${question.id}`}
                                         className="size-5 accent-primary"
                                         checked={question.choice === i}
+                                        disabled={
+                                            ruledOut === i &&
+                                            question.feedback === null
+                                        }
                                         onChange={() =>
                                             void save({ choice: i })
                                         }
                                     />
-                                    {option}
+                                    {ruledOut === i &&
+                                    question.feedback === null ? (
+                                        <s>
+                                            {option}
+                                            <span className="sr-only">
+                                                {' '}
+                                                ({t('practice.drill.ruledOut')})
+                                            </span>
+                                        </s>
+                                    ) : (
+                                        option
+                                    )}
                                 </label>
                             ))}
                         </fieldset>
+                        {drill &&
+                        question.feedback === null &&
+                        ruledOut === undefined ? (
+                            <Button
+                                variant="outline"
+                                disabled={paused}
+                                onClick={() => void hint()}
+                            >
+                                <Lightbulb aria-hidden />
+                                {t('practice.drill.hint')}
+                            </Button>
+                        ) : null}
+                        {ruledOut !== undefined &&
+                        question.feedback === null ? (
+                            <p
+                                role="status"
+                                className="text-body text-muted-foreground"
+                            >
+                                {t('practice.drill.hintGiven', {
+                                    option: question.options[ruledOut] ?? '',
+                                })}
+                            </p>
+                        ) : null}
                         {question.feedback ? (
                             <div
                                 role="status"

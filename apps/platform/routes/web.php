@@ -3,6 +3,7 @@
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
+use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
@@ -47,6 +48,7 @@ use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
 use App\Http\Controllers\Practice\PracticePageController;
 use App\Http\Controllers\Practice\StudyPlanController;
+use App\Http\Controllers\Practice\TopicPlanPageController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
 use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
 use App\Http\Controllers\Sessions\SessionsController;
@@ -166,6 +168,11 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::get('attempts/{attempt}/results', 'results')->whereNumber('attempt')->name('results');
     });
     Route::get('readiness', [PracticePageController::class, 'readiness'])->name('practice.readiness');
+    // Fix a weak topic and the smart drill's Hint (A9.2b).
+    Route::post('practice/topic-plans', [TopicPlanPageController::class, 'store'])->middleware('throttle:30,1,practice-plans')->name('practice.plans.store');
+    Route::get('practice/fix/{plan}', [TopicPlanPageController::class, 'show'])->whereNumber('plan')->name('practice.plans.show');
+    Route::post('practice/fix/{plan}/continue', [TopicPlanPageController::class, 'continue'])->whereNumber('plan')->middleware('throttle:60,1,practice-plans')->name('practice.plans.continue');
+    Route::post('practice/attempts/{attempt}/questions/{question}/hint', [CoachController::class, 'hint'])->whereNumber(['attempt', 'question'])->middleware('throttle:120,1,practice-hint')->name('practice.hint');
     Route::put('practice/attempts/{attempt}/answers/{question}', [ApiPracticeController::class, 'answer'])->whereNumber(['attempt', 'question'])->middleware('throttle:240,1,practice-answer')->name('practice.answer');
     Route::post('practice/attempts/{attempt}/pause', [ApiPracticeController::class, 'pause'])->whereNumber('attempt')->middleware('throttle:60,1,practice-pause')->name('practice.pause');
     Route::post('practice/attempts/{attempt}/finish', [ApiPracticeController::class, 'finish'])->whereNumber('attempt')->middleware('throttle:30,1,practice-finish')->name('practice.finish');

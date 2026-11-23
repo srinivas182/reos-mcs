@@ -6073,7 +6073,9 @@
       "stillOpen": "This test is still open.",
       "save": "Your answer wasn't saved. Check your connection and choose it again.",
       "noPause": "Only a practice-mode test can be paused.",
-      "paused": "This test is paused. Resume to answer."
+      "paused": "This test is paused. Resume to answer.",
+      "noHint": "A hint is only for an unanswered question in a smart drill.",
+      "planDone": "This plan is done. Start a new one when the topic needs it."
     },
     "portions": {
       "title": "Exam simulations",
@@ -6155,7 +6157,8 @@
         "practiceTopic": "Practice {{topic}}",
         "answers_one": "{{count}} answer",
         "answers_other": "{{count}} answers",
-        "open": "See every topic"
+        "open": "See every topic",
+        "fix": "Fix"
       },
       "gain": "Fixing {{topic}} could add {{points}} points to your pass chance on the {{portion}}.",
       "fixWeakest": "Fix my weakest",
@@ -6163,6 +6166,77 @@
       "empty": "Take the diagnostic or a practice test to see your readiness.",
       "emptyTitle": "No readiness yet",
       "open": "Opens your readiness map"
+    },
+    "drill": {
+      "title": "Smart drill",
+      "topicTitle": "{{topic}} drill",
+      "retestTitle": "{{topic}} retest",
+      "description": "{{count}} questions from your three weakest topics and recent misses, with a hint when you need it and why after each answer.",
+      "topics": "Today: {{topics}}",
+      "misses_one": "Brings back {{count}} question you missed",
+      "misses_other": "Brings back {{count}} questions you missed",
+      "start": "Start drill",
+      "carryOn": "Carry on with the drill",
+      "streak_one": "Streak: {{count}} right in a row",
+      "streak_other": "Streak: {{count}} right in a row",
+      "hint": "Hint",
+      "hintGiven": "Not this one: {{option}}",
+      "ruledOut": "ruled out by the hint"
+    },
+    "fix": {
+      "title": "Fix {{topic}}",
+      "description": "A short plan built from the questions you missed. Finish it, then retest with new questions.",
+      "now": "Now: {{percent}}%",
+      "notYet": "Now: not enough answers yet",
+      "goal": "Goal: {{percent}}%",
+      "started": "Started at {{percent}}%",
+      "left_one": "{{count}} minute left",
+      "left_other": "{{count}} minutes left",
+      "steps": {
+        "lesson": "Watch: {{title}}",
+        "review": "Your misses, with why",
+        "practice": "Practice questions, misses first",
+        "flashcards": "Flashcards",
+        "retest": "Retest with new questions"
+      },
+      "minutes_one": "{{count}} min",
+      "minutes_other": "{{count}} min",
+      "status": {
+        "done": "Done",
+        "current": "Next",
+        "todo": "To do"
+      },
+      "continue": "Continue",
+      "review": "Review",
+      "seeResults": "See results",
+      "completedTitle": "Plan finished",
+      "completedWeak": "Still below {{goal}}%. Start another plan, or drill it on the practice hub.",
+      "completedStrong": "{{topic}} is off your weak list. Nice work.",
+      "missesTitle": "The questions you missed",
+      "answer": "Right answer: {{answer}}",
+      "start": "Fix {{topic}}",
+      "carryOn": "Carry on: {{topic}} ({{done}} of {{steps}} done)"
+    },
+    "coach": {
+      "title": "Ranked for you",
+      "description": "What will help most right now, first.",
+      "why": {
+        "baseline": "Find out where you stand first.",
+        "carry_on": "Pick up where you left off.",
+        "weakest": "Your weakest topics, with your recent misses.",
+        "rehearse": "You're close to the booking line: rehearse the real exam.",
+        "exam_soon": "Your exam is coming up: practise the real format.",
+        "check": "See how you'd do on the real exam.",
+        "map": "Your pass chance for each portion."
+      },
+      "modes": {
+        "diagnostic": "Diagnostic",
+        "plan": "Fix plan",
+        "drill": "Smart drill",
+        "fix": "Fix my weakest",
+        "simulation": "Full simulation",
+        "readiness": "Readiness"
+      }
     }
   },
   "brokerageIntegrations": {

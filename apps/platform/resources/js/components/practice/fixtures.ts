@@ -1,9 +1,11 @@
 import type {
     Attempt,
+    Coach,
     HubTest,
     ReadinessMap,
     Results,
     StudyToday,
+    TopicPlan,
 } from './types';
 
 export const studyToday: StudyToday = {
@@ -302,4 +304,121 @@ export const readinessMap: ReadinessMap = {
     ],
     gain: { topic: 'finance', portion: 'national', points: 7 },
     computed_on: '2027-01-04',
+};
+
+/** The practice hub's ranking for Sofia with a fix plan under way (A9.2b). */
+export const coach: Coach = {
+    drill: {
+        topics: ['finance', 'math', 'state_rules'],
+        questions: 15,
+        misses: 4,
+        open: null,
+    },
+    plans: [{ id: 31, topic: 'finance', done: 2, steps: 5 }],
+    ranked: [
+        { mode: 'plan', why: 'carry_on', topic: 'finance', plan_id: 31 },
+        { mode: 'drill', why: 'weakest', topic: null, plan_id: null },
+        { mode: 'simulation', why: 'check', topic: null, plan_id: null },
+        { mode: 'readiness', why: 'map', topic: null, plan_id: null },
+    ],
+};
+
+/** Sofia's plan for finance, two steps in (A9.2b). */
+export const topicPlan: TopicPlan = {
+    id: 31,
+    topic: 'finance',
+    now: 58,
+    start: 43,
+    goal: 70,
+    weak: true,
+    minutes: 28,
+    completed: false,
+    steps: [
+        {
+            n: 1,
+            kind: 'lesson',
+            minutes: 5,
+            status: 'done',
+            lesson: { id: 7, title: 'Mortgage insurance', seconds: 185 },
+            attempt_id: null,
+            results_id: null,
+        },
+        {
+            n: 2,
+            kind: 'review',
+            minutes: 4,
+            status: 'done',
+            lesson: null,
+            attempt_id: null,
+            results_id: null,
+        },
+        {
+            n: 3,
+            kind: 'practice',
+            minutes: 10,
+            status: 'current',
+            lesson: null,
+            attempt_id: null,
+            results_id: null,
+        },
+        {
+            n: 4,
+            kind: 'practice',
+            minutes: 10,
+            status: 'todo',
+            lesson: null,
+            attempt_id: null,
+            results_id: null,
+        },
+        {
+            n: 5,
+            kind: 'retest',
+            minutes: 8,
+            status: 'todo',
+            lesson: null,
+            attempt_id: null,
+            results_id: null,
+        },
+    ],
+    misses: [
+        {
+            id: 205,
+            prompt: 'Under the Homeowners Protection Act, borrower-paid PMI must end automatically when the loan balance is scheduled to reach',
+            options: [
+                '90 percent of the original value',
+                '50 percent of the original value',
+                '78 percent of the original value',
+                '100 percent of the original value',
+            ],
+            right: 2,
+            explanation:
+                'PMI ends automatically at a scheduled 78 percent loan-to-value; the borrower may ask to cancel at 80 percent.',
+            source: 'Licensing exam content outline · Financing: mortgage insurance',
+        },
+    ],
+};
+
+/** A smart drill two answers in, both right (A9.2b). */
+export const drillAttempt: Attempt = {
+    ...attempt,
+    id: 14,
+    kind: 'drill',
+    mode: 'practice',
+    ends_at: null,
+    seconds_left: null,
+    questions: attempt.questions.map((q, i) =>
+        i < 2
+            ? {
+                  ...q,
+                  choice: i === 0 ? 2 : 1,
+                  flagged: false,
+                  feedback: {
+                      correct: true,
+                      right: i === 0 ? 2 : 1,
+                      explanation: 'Because the rule says so.',
+                      source: 'Licensing exam content outline',
+                  },
+              }
+            : { ...q, choice: null, flagged: false, feedback: null },
+    ),
 };

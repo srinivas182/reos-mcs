@@ -3,17 +3,20 @@ import { ClipboardCheck, Gauge, GraduationCap, Target } from 'lucide-react-nativ
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { asTopic, type ExamKind, type HubTest, isExam, loadHub, startTest } from '@/lib/practice';
+import { CoachCard } from '@/features/practice/CoachCard';
+import { asTopic, type Coach, type ExamKind, type HubTest, isExam, loadCoach, loadHub, startTest } from '@/lib/practice';
 import { Button, Card, ListRow, OptionGroup, Screen, SectionTitle, Sheet, Text, TitleBar } from '@/ui';
 
 /**
- * Practice tests (candidate screen 39, A8.3): the Texas diagnostic and a quiz
- * per topic, each with its best score. Portion tests and the full
- * simulation join in A9.1.
+ * The practice hub (candidate screens 38 and 39): the smart drill and every
+ * mode ranked by what helps most (A9.2b), the readiness map, the Texas
+ * diagnostic, the portion tests and full simulation (A9.1), and a quiz per
+ * topic, each with its best score.
  */
 export default function PracticeHub() {
   const { t } = useTranslation();
   const [tests, setTests] = useState<HubTest[] | null>(null);
+  const [coach, setCoach] = useState<Coach | null>(null);
   const [busy, setBusy] = useState(false);
 
   useFocusEffect(
@@ -21,6 +24,9 @@ export default function PracticeHub() {
       void loadHub()
         .then(setTests)
         .catch(() => setTests([]));
+      void loadCoach()
+        .then(setCoach)
+        .catch(() => setCoach(null));
     }, []),
   );
 
@@ -54,6 +60,15 @@ export default function PracticeHub() {
     <Screen>
       <TitleBar title={t('practice.title')} onBack={() => router.back()} />
       <Text tone="muted">{t('practice.description')}</Text>
+      {coach ? (
+        <CoachCard
+          coach={coach}
+          onSimulation={() => {
+            const simulation = exams.find((x) => x.kind === 'simulation');
+            if (simulation) setIntro(simulation);
+          }}
+        />
+      ) : null}
       {diagnostic ? (
         <Card>
           <Text variant="bodyLarge" weight="semibold">
