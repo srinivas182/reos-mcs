@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Connections\Drivers\Dotloop;
 
+use App\Connections\AcceptsDocuments;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\Drivers\FollowUpBoss\WebhookTarget;
@@ -16,6 +17,7 @@ use App\Connections\SyncPage;
 use App\Connections\TokenSet;
 use App\Connections\WebhookDelivery;
 use App\Models\Connection;
+use App\Models\Deal;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Promise\PromiseInterface;
 use Illuminate\Http\Client\PendingRequest;
@@ -37,7 +39,7 @@ use Illuminate\Support\Facades\Http;
  * - Read-only (decision 3); the signed document from B9.3 is uploaded into
  *   the loop's folder.
  */
-final readonly class DotloopDriver implements ConnectorDriver, SubscribesToChanges
+final readonly class DotloopDriver implements AcceptsDocuments, ConnectorDriver, SubscribesToChanges
 {
     public const INTEGRATION = 'dotloop';
 
@@ -209,6 +211,47 @@ final readonly class DotloopDriver implements ConnectorDriver, SubscribesToChang
     public function unsubscribe(Connection $connection, string $accessToken, string $channelId, ?string $resourceId): void
     {
         $this->http($accessToken)->delete(self::API.'/subscription/'.rawurlencode($channelId));
+    }
+
+    /** The folder REOS files signed copies in, made in the loop the first time. */
+    public const SIGNED_FOLDER = 'Signed (REOS)';
+
+    /**
+     * The signed copy into the loop (B9.3): the loop is found among the
+     * chosen profiles, then the file goes into REOS's folder there.
+     */
+    public function uploadDocument(Connection $connection, string $accessToken, Deal $deal, string $name, string $contents): bool
+    {
+        if ($deal->external_id === null) {
+            return false;
+        }
+
+        foreach (DotloopProfiles::chosen($connection) as $profile) {
+            $loop = self::API.'/profile/'.rawurlencode($profile).'/loop/'.rawurlencode($deal->external_id);
+            $found = $this->http($accessToken)->get($loop);
+            if ($found->status() === 404) {
+                continue;
+            }
+            $this->json($found);
+
+            $folder = null;
+            foreach (self::rows($this->json($this->http($accessToken)->get($loop.'/folder'))) as $row) {
+                if (($row['name'] ?? null) === self::SIGNED_FOLDER && is_scalar($row['id'] ?? null)) {
+                    $folder = (string) $row['id'];
+                }
+            }
+            if ($folder === null) {
+                $made = $this->json($this->http($accessToken)->post($loop.'/folder', ['name' => self::SIGNED_FOLDER]));
+                $id = (is_array($made['data'] ?? null) ? $made['data'] : $made)['id'] ?? null;
+                $folder = is_scalar($id) ? (string) $id : throw new VendorUnavailable('dotloop made no folder.');
+            }
+
+            $this->json(Http::withToken($accessToken)->acceptJson()->timeout(120)->attach('file', $contents, $name, ['Content-Type' => 'application/pdf'])->post($loop.'/folder/'.rawurlencode($folder).'/document'));
+
+            return true;
+        }
+
+        return false;
     }
 
     /** Each subscription's signing key: REOS's own, per connection, never stored. */

@@ -263,6 +263,13 @@
   - they're also uploaded to the transaction tool when it takes uploads (dotloop; Lone Wolf and SkySlope where allowed);
   - the agent gets a push: "Signed: Seller's Disclosure, 2207 Bellaire".
 - **Done when:** a signed document lands on the deal (and in dotloop).
+- **As built, B9.3** (ADR 0038):
+  - **Connection:** the agent's own DocuSign (OAuth with PKCE); REOS's integration key and secret, and the optional Connect HMAC key, in Settings › Integrations.
+  - **Send:** from the web deal panel, the agent chooses the deal's PDFs or adds one, and the signers from the deal's parties with their order. REOS makes a draft envelope and opens DocuSign's sender view, where the agent places the fields and presses Send. A draft left unsent can be continued.
+  - **Track:** DocuSign Connect queues a sync (the sealed address, and HMAC-SHA256 when the key is set), with the 15-minute poll as backstop. Each signer's status (waiting, sent, opened, signed, declined) shows on the deal, web and phone.
+  - **Store:** on completion, the signed copy and certificate are filed on the deal (opened with a 30-minute link), uploaded to dotloop or SkySlope when the deal comes from there, and the agent gets a push: "Signed: Seller's Disclosure, 2207 Bellaire". Lone Wolf's API has no upload, so its deals keep the copy in REOS.
+  - **Privacy:** envelopes and files are the agent's own, never the broker's; every PDF is virus-scanned before it opens or is sent.
+  - **Demo data:** a REOS page stands in for the sender view, and each sync moves the envelope one step.
 
 ## 4. Definition of done (whole sprint)
 

@@ -38,6 +38,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property-read User $user
  * @property-read Collection<int, DealDate> $dates
+ * @property-read Collection<int, DealFile> $files
+ * @property-read Collection<int, SignatureRequest> $signatureRequests
  */
 final class Deal extends Model
 {
@@ -66,6 +68,18 @@ final class Deal extends Model
     public function dates(): HasMany
     {
         return $this->hasMany(DealDate::class)->orderBy('due_on')->orderBy('id');
+    }
+
+    /** @return HasMany<DealFile, $this> */
+    public function files(): HasMany
+    {
+        return $this->hasMany(DealFile::class)->orderByDesc('id');
+    }
+
+    /** @return HasMany<SignatureRequest, $this> */
+    public function signatureRequests(): HasMany
+    {
+        return $this->hasMany(SignatureRequest::class)->orderByDesc('id');
     }
 
     /** @return array<string, string> */

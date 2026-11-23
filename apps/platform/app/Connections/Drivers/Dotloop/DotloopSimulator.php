@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Connections\Drivers\Dotloop;
 
+use App\Connections\AcceptsDocuments;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\Drivers\FollowUpBoss\WebhookTarget;
@@ -15,6 +16,7 @@ use App\Connections\SyncPage;
 use App\Connections\TokenSet;
 use App\Connections\WebhookDelivery;
 use App\Models\Connection;
+use App\Models\Deal;
 use App\Models\SimulatorRecord;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -26,7 +28,7 @@ use Illuminate\Support\Str;
  * participants, documents and a task list, in dotloop's own field names.
  * Webhooks are signed like dotloop's.
  */
-final class DotloopSimulator implements ConnectorDriver, SubscribesToChanges
+final class DotloopSimulator implements AcceptsDocuments, ConnectorDriver, SubscribesToChanges
 {
     private const CONTAINER = 'dl';
 
@@ -128,6 +130,27 @@ final class DotloopSimulator implements ConnectorDriver, SubscribesToChanges
     }
 
     public function unsubscribe(Connection $connection, string $accessToken, string $channelId, ?string $resourceId): void {}
+
+    /** The signed copy lands in the loop's "Signed (REOS)" folder, and shows on the deal at the next sync. */
+    public function uploadDocument(Connection $connection, string $accessToken, Deal $deal, string $name, string $contents): bool
+    {
+        $row = $deal->external_id === null ? null : SimulatorRecord::query()->where('connection_id', $connection->id)->where('container', self::CONTAINER)->where('external_id', $deal->external_id)->first();
+
+        if ($row === null || $contents === '') {
+            return false;
+        }
+
+        $folders = self::list($row->data['folders'] ?? null);
+        $at = array_find_key($folders, static fn (array $f): bool => ($f['name'] ?? null) === DotloopDriver::SIGNED_FOLDER);
+        if ($at === null) {
+            $folders[] = ['name' => DotloopDriver::SIGNED_FOLDER, 'documents' => []];
+            $at = array_key_last($folders);
+        }
+        $folders[$at]['documents'] = [...self::list($folders[$at]['documents'] ?? null), ['name' => $name]];
+        self::write($connection, $deal->external_id, ['folders' => $folders]);
+
+        return true;
+    }
 
     /**
      * Something changes in "dotloop" itself (demos and tests).

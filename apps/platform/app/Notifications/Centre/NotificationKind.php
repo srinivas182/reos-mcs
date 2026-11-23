@@ -41,6 +41,8 @@ enum NotificationKind: string
     case Challenge = 'challenge';
     /** A deal's key date is 72 or 24 hours away (B9.1). */
     case DealDeadline = 'deal_deadline';
+    /** Everyone signed an envelope sent from a deal (B9.3). */
+    case SignatureCompleted = 'signature_completed';
 
     public const INBOX = 'inbox';
 
@@ -97,7 +99,7 @@ enum NotificationKind: string
             self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline => 'deals',
+            self::DealDeadline, self::SignatureCompleted => 'deals',
         };
     }
 

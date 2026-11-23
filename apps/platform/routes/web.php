@@ -2,6 +2,7 @@
 
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Api\Deals\DealController;
+use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
@@ -27,12 +28,14 @@ use App\Http\Controllers\Builder\StarterBankController;
 use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
+use App\Http\Controllers\Connections\DocuSignSimulatorController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\Crm\ContactImportsController;
 use App\Http\Controllers\Crm\ContactsPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Deals\DealsPageController;
+use App\Http\Controllers\Deals\SignaturePageController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
@@ -147,6 +150,11 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.update');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.stage');
     Route::delete('deals/{deal}', [DealController::class, 'destroy'])->whereUuid('deal')->middleware('throttle:30,1,deals')->name('deals.destroy');
+    // Signatures from a deal (B9.3): files, envelopes, and back from DocuSign's sender view.
+    Route::post('deals/{deal}/files', [SignatureController::class, 'upload'])->whereUuid('deal')->middleware('throttle:30,1,deal-files')->name('deals.files.store');
+    Route::post('deals/{deal}/signatures', [SignatureController::class, 'store'])->whereUuid('deal')->middleware('throttle:20,1,deal-signatures')->name('deals.signatures.store');
+    Route::post('deals/signatures/{signature}/sender', [SignatureController::class, 'sender'])->whereUuid('signature')->middleware('throttle:20,1,deal-signatures')->name('deals.signatures.sender');
+    Route::get('deals/signatures/{signature}/returned', [SignaturePageController::class, 'returned'])->whereUuid('signature')->name('deals.signatures.returned');
 
     // Contacts, the CRM hub (B8.3, agent web screen 13): the agent's own contacts only.
     Route::controller(ContactsPageController::class)->prefix('contacts')->name('contacts.')->group(function () {
@@ -386,6 +394,10 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix(
     Route::delete('blocks/{person}', [MessagesController::class, 'unblock'])->whereNumber('person')->middleware('throttle:20,1,messages-block')->name('unblock');
 });
 
+// A deal's kept file (B9.3), through its short-lived signed link.
+Route::get('deals/files/{file}', [SignaturePageController::class, 'file'])->whereUuid('file')
+    ->middleware(['signed', 'throttle:120,1,deal-files-open'])->name('deals.files.show');
+
 // A file sent with a message, through its short-lived signed link (B6.1b).
 Route::get('messages/attachments/{attachment}', AttachmentController::class)->whereUuid('attachment')
     ->middleware(['signed', 'throttle:120,1,message-attachments'])->name('messages.attachments.show');
@@ -511,6 +523,12 @@ Route::match(['get', 'post'], 'integrations/{tool}/callback', OAuthCallbackContr
     ->whereIn('tool', ConnectorRegistry::ids())
     ->middleware(['throttle:sign-in', 'tenancy.platform'])->name('connections.callback');
 // The demo-data stand-in for a tool's sign-in page (Simulator mode only).
+// DocuSign's sender view on demo data (B9.3): signed, for the agent's own demo envelope.
+Route::middleware(['auth', 'signed', 'throttle:60,1,docusign-simulator'])->group(function () {
+    Route::get('connections/simulator/docusign/envelopes/{envelope}', [DocuSignSimulatorController::class, 'show'])->whereUuid('envelope')->name('connections.simulator.docusign');
+    Route::post('connections/simulator/docusign/envelopes/{envelope}', [DocuSignSimulatorController::class, 'send'])->whereUuid('envelope')->name('connections.simulator.docusign.send');
+});
+
 Route::get('connections/simulator/{tool}', [SimulatorSignInController::class, 'show'])
     ->whereIn('tool', ConnectorRegistry::ids())->middleware('throttle:sign-in')->name('connections.simulator');
 Route::post('connections/simulator/{tool}', [SimulatorSignInController::class, 'decide'])

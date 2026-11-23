@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Connections\Drivers\SkySlope;
 
+use App\Connections\AcceptsDocuments;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
@@ -13,6 +14,7 @@ use App\Connections\SyncPage;
 use App\Connections\TokenSet;
 use App\Connections\WebhookDelivery;
 use App\Models\Connection;
+use App\Models\Deal;
 use App\Models\SimulatorRecord;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -23,7 +25,7 @@ use LogicException;
  * of its agents and a sale for someone with no REOS account, in SkySlope's
  * field names. Any "key:secret" of four or more characters each connects.
  */
-final class SkySlopeSimulator implements ConnectorDriver, ConnectsWithApiKey
+final class SkySlopeSimulator implements AcceptsDocuments, ConnectorDriver, ConnectsWithApiKey
 {
     private const CONTAINER = 'ss';
 
@@ -101,6 +103,22 @@ final class SkySlopeSimulator implements ConnectorDriver, ConnectsWithApiKey
     public function verifyWebhook(Request $request): ?WebhookDelivery
     {
         return null;
+    }
+
+    /** The signed copy onto the demo sale or listing; it shows on the deal at the next sync. */
+    public function uploadDocument(Connection $connection, string $accessToken, Deal $deal, string $name, string $contents): bool
+    {
+        [$kind, $guid] = array_pad(explode(':', (string) $deal->external_id, 2), 2, '');
+        $row = SimulatorRecord::query()->where('connection_id', $connection->id)->where('container', self::CONTAINER)->where('stream', $kind)->where('external_id', $guid)->first();
+
+        if ($row === null || $contents === '') {
+            return false;
+        }
+
+        $documents = is_array($row->data['documents'] ?? null) ? $row->data['documents'] : [];
+        self::write($connection, $kind, $guid, ['documents' => [...$documents, ['fileName' => $name]]]);
+
+        return true;
     }
 
     /** @param  array<string, mixed>  $data  SkySlope's own field names */

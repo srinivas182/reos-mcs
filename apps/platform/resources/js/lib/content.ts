@@ -174,6 +174,22 @@ export async function deleteJson<T>(url: string): Promise<T> {
     return sendJson<T>('DELETE', url, {});
 }
 
+/** A multipart POST from the page (a PDF on a deal, B9.3), with the session's CSRF token. */
+export async function postForm<T>(url: string, body: FormData): Promise<T> {
+    const response = await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-XSRF-TOKEN': xsrf(),
+        },
+        body,
+    });
+
+    return answer<T>(response);
+}
+
 async function sendJson<T>(
     method: 'POST' | 'PUT' | 'DELETE',
     url: string,
@@ -190,6 +206,11 @@ async function sendJson<T>(
         },
         body: JSON.stringify(body),
     });
+
+    return answer<T>(response);
+}
+
+async function answer<T>(response: Response): Promise<T> {
     const data = (await response.json().catch(() => ({}))) as T & {
         message?: string;
         errors?: Record<string, string[]>;

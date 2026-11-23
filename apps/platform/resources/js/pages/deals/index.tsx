@@ -184,6 +184,7 @@ export default function DealsPage({
                                         setForm({ open: true, deal: selected })
                                     }
                                     onDelete={() => void remove(selected)}
+                                    onChanged={() => reload(selected.uuid)}
                                 />
                             </div>
                         </>

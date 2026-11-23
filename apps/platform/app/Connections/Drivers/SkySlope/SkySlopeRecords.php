@@ -20,7 +20,7 @@ final class SkySlopeRecords
 
     /**
      * @param  array<array-key, mixed>  $file  A sale or a listing
-     * @return array{external_id: string, external_url: null, owner_email: string|null, property: string, city: string|null, side: string, stage: string, price: int|null, commission: null, parties: list<array{name: string, role: string, email: string|null, phone: string|null}>, documents: list<array{name: string, status: string, url: string|null}>, dates: list<array{kind: string, label: string|null, due_on: string, external_id: string}>, updated_at: string|null}
+     * @return array{external_id: string, external_url: null, owner_email: string|null, property: string, city: string|null, side: string, stage: string, price: int|null, commission: null, parties: list<array{name: string, role: string, email: string|null, phone: string|null}>, documents: list<array{name: string, status: string, url: null}>, dates: list<array{kind: string, label: string|null, due_on: string, external_id: string}>, updated_at: string|null}
      */
     public static function deal(array $file, string $kind): array
     {
@@ -63,10 +63,24 @@ final class SkySlopeRecords
             'price' => is_numeric($price) ? (int) round((float) $price) : null,
             'commission' => null,
             'parties' => $parties,
-            'documents' => [],
+            'documents' => self::documents($file['documents'] ?? null),
             'dates' => $dates,
             'updated_at' => self::text($file['modifiedOn'] ?? null),
         ];
+    }
+
+    /** @return list<array{name: string, status: string, url: null}> documents REOS filed there (B9.3) */
+    private static function documents(mixed $value): array
+    {
+        $out = [];
+        foreach (is_array($value) ? $value : [] as $doc) {
+            $name = is_array($doc) ? self::text($doc['fileName'] ?? $doc['name'] ?? null) : null;
+            if ($name !== null) {
+                $out[] = ['name' => $name, 'status' => 'complete', 'url' => null];
+            }
+        }
+
+        return $out;
     }
 
     private static function day(mixed $value): ?string

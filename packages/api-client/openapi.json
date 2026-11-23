@@ -4632,6 +4632,162 @@
                                                             "done"
                                                         ]
                                                     }
+                                                },
+                                                "kept_files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "upload",
+                                                                    "signed",
+                                                                    "certificate"
+                                                                ]
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            },
+                                                            "added_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "scan": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "pending",
+                                                                    "clean",
+                                                                    "infected"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "kind",
+                                                            "name",
+                                                            "size",
+                                                            "added_at",
+                                                            "scan",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "signatures": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "subject": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "draft",
+                                                                    "sent",
+                                                                    "delivered",
+                                                                    "completed",
+                                                                    "declined",
+                                                                    "voided"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "signers": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "email": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "routing_order": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "waiting",
+                                                                                "sent",
+                                                                                "delivered",
+                                                                                "signed",
+                                                                                "declined"
+                                                                            ]
+                                                                        },
+                                                                        "at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "name",
+                                                                        "email",
+                                                                        "routing_order",
+                                                                        "status",
+                                                                        "at"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "sent_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "completed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "filed_in": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "subject",
+                                                            "status",
+                                                            "documents",
+                                                            "signers",
+                                                            "sent_at",
+                                                            "completed_at",
+                                                            "filed_in"
+                                                        ]
+                                                    }
+                                                },
+                                                "can_sign": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
@@ -4650,7 +4806,10 @@
                                                 "documents",
                                                 "parties",
                                                 "files",
-                                                "dates"
+                                                "dates",
+                                                "kept_files",
+                                                "signatures",
+                                                "can_sign"
                                             ]
                                         }
                                     },
@@ -5568,6 +5727,162 @@
                                                             "done"
                                                         ]
                                                     }
+                                                },
+                                                "kept_files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "upload",
+                                                                    "signed",
+                                                                    "certificate"
+                                                                ]
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            },
+                                                            "added_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "scan": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "pending",
+                                                                    "clean",
+                                                                    "infected"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "kind",
+                                                            "name",
+                                                            "size",
+                                                            "added_at",
+                                                            "scan",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "signatures": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "subject": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "draft",
+                                                                    "sent",
+                                                                    "delivered",
+                                                                    "completed",
+                                                                    "declined",
+                                                                    "voided"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "signers": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "email": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "routing_order": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "waiting",
+                                                                                "sent",
+                                                                                "delivered",
+                                                                                "signed",
+                                                                                "declined"
+                                                                            ]
+                                                                        },
+                                                                        "at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "name",
+                                                                        "email",
+                                                                        "routing_order",
+                                                                        "status",
+                                                                        "at"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "sent_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "completed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "filed_in": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "subject",
+                                                            "status",
+                                                            "documents",
+                                                            "signers",
+                                                            "sent_at",
+                                                            "completed_at",
+                                                            "filed_in"
+                                                        ]
+                                                    }
+                                                },
+                                                "can_sign": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
@@ -5586,7 +5901,10 @@
                                                 "documents",
                                                 "parties",
                                                 "files",
-                                                "dates"
+                                                "dates",
+                                                "kept_files",
+                                                "signatures",
+                                                "can_sign"
                                             ]
                                         }
                                     },
@@ -5828,6 +6146,162 @@
                                                             "done"
                                                         ]
                                                     }
+                                                },
+                                                "kept_files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "upload",
+                                                                    "signed",
+                                                                    "certificate"
+                                                                ]
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "size": {
+                                                                "type": "integer"
+                                                            },
+                                                            "added_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "scan": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "pending",
+                                                                    "clean",
+                                                                    "infected"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "kind",
+                                                            "name",
+                                                            "size",
+                                                            "added_at",
+                                                            "scan",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "signatures": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "subject": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "draft",
+                                                                    "sent",
+                                                                    "delivered",
+                                                                    "completed",
+                                                                    "declined",
+                                                                    "voided"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "signers": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "email": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "routing_order": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "waiting",
+                                                                                "sent",
+                                                                                "delivered",
+                                                                                "signed",
+                                                                                "declined"
+                                                                            ]
+                                                                        },
+                                                                        "at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "name",
+                                                                        "email",
+                                                                        "routing_order",
+                                                                        "status",
+                                                                        "at"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "sent_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "completed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "filed_in": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "subject",
+                                                            "status",
+                                                            "documents",
+                                                            "signers",
+                                                            "sent_at",
+                                                            "completed_at",
+                                                            "filed_in"
+                                                        ]
+                                                    }
+                                                },
+                                                "can_sign": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
@@ -5846,7 +6320,10 @@
                                                 "documents",
                                                 "parties",
                                                 "files",
-                                                "dates"
+                                                "dates",
+                                                "kept_files",
+                                                "signatures",
+                                                "can_sign"
                                             ]
                                         }
                                     },
@@ -19219,6 +19696,352 @@
                 }
             }
         },
+        "/deals/{deal}/files": {
+            "post": {
+                "operationId": "deals.files.store",
+                "description": "Kept in REOS (never sent to the transaction tool), to send for signature. It's virus-scanned first: `scan` is `pending` until then, and `url` is null.",
+                "summary": "Add a PDF to a deal",
+                "tags": [
+                    "Signature"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DealFileRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "upload",
+                                                        "signed",
+                                                        "certificate"
+                                                    ]
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "size": {
+                                                    "type": "integer"
+                                                },
+                                                "added_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "scan": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "pending",
+                                                        "clean",
+                                                        "infected"
+                                                    ]
+                                                },
+                                                "url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "kind",
+                                                "name",
+                                                "size",
+                                                "added_at",
+                                                "scan",
+                                                "url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/deals/{deal}/signatures": {
+            "post": {
+                "operationId": "deals.signatures.store",
+                "description": "A draft in the agent's DocuSign with the chosen files and signers, and the link to DocuSign's sender view, where the agent places the fields and presses Send. Nothing is sent until then.",
+                "summary": "Prepare an envelope",
+                "tags": [
+                    "Signature"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SendForSignatureRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "documents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "signers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "email": {
+                                                                "type": "string"
+                                                            },
+                                                            "routing_order": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "email",
+                                                            "routing_order",
+                                                            "status",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                },
+                                                "sent_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "completed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "filed_in": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "subject",
+                                                "status",
+                                                "documents",
+                                                "signers",
+                                                "sent_at",
+                                                "completed_at",
+                                                "filed_in"
+                                            ]
+                                        },
+                                        "sender_url": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "sender_url"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/deals/signatures/{signature}/sender": {
+            "post": {
+                "operationId": "deals.signatures.sender",
+                "description": "A new link to DocuSign's sender view for an envelope not sent yet.",
+                "summary": "Continue a draft in DocuSign",
+                "tags": [
+                    "Signature"
+                ],
+                "parameters": [
+                    {
+                        "name": "signature",
+                        "in": "path",
+                        "required": true,
+                        "description": "The signature UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sender_url": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "sender_url"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/practice/speed": {
             "post": {
                 "operationId": "practice.speed.store",
@@ -22464,7 +23287,10 @@
                                         "write_stage",
                                         "read_campaigns",
                                         "read_deals",
-                                        "read_documents"
+                                        "read_documents",
+                                        "prepare_envelopes",
+                                        "read_envelopes",
+                                        "file_signed"
                                     ]
                                 }
                             },
@@ -22479,7 +23305,8 @@
                                         "send_messages",
                                         "change_campaigns",
                                         "change_deals",
-                                        "delete_documents"
+                                        "delete_documents",
+                                        "send_without_you"
                                     ]
                                 }
                             }
@@ -22660,7 +23487,8 @@
                                         "people",
                                         "notes",
                                         "tasks",
-                                        "deals"
+                                        "deals",
+                                        "envelopes"
                                     ]
                                 },
                                 "direction": {
@@ -23180,6 +24008,22 @@
                     "channel"
                 ],
                 "title": "ContactTouchRequest"
+            },
+            "DealFileRequest": {
+                "type": "object",
+                "description": "A PDF added to a deal to send for signature (B9.3), up to 25 MB.",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "description": "A PDF, up to 25 MB."
+                    }
+                },
+                "required": [
+                    "file"
+                ],
+                "title": "DealFileRequest"
             },
             "DealRequest": {
                 "type": "object",
@@ -25198,6 +26042,60 @@
                 ],
                 "title": "ScheduleSessionRequest"
             },
+            "SendForSignatureRequest": {
+                "type": "object",
+                "description": "Send for signature from a deal (B9.3): the subject, the deal's files in order, and the signers.",
+                "properties": {
+                    "subject": {
+                        "type": "string",
+                        "description": "The email subject signers see.",
+                        "minLength": 3,
+                        "maxLength": 100
+                    },
+                    "files": {
+                        "type": "array",
+                        "description": "The deal's files to send, in order (uploads or signed copies).",
+                        "items": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    "signers": {
+                        "type": "array",
+                        "description": "Who signs, and in what order (1 signs first; the same number signs at the same time).",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "maxLength": 100
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "format": "email",
+                                    "maxLength": 200
+                                },
+                                "routing_order": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 10
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "email",
+                                "routing_order"
+                            ]
+                        }
+                    }
+                },
+                "required": [
+                    "subject",
+                    "files",
+                    "signers"
+                ],
+                "title": "SendForSignatureRequest"
+            },
             "SendMessageRequest": {
                 "type": "object",
                 "description": "Send or edit a message (B6.1), optionally as a reply.",
@@ -25331,7 +26229,8 @@
                             "salesforce",
                             "lone-wolf",
                             "dotloop",
-                            "skyslope"
+                            "skyslope",
+                            "docusign"
                         ]
                     },
                     "history": {

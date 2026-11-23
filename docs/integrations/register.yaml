@@ -1149,6 +1149,7 @@ entries:
         - { key: integration_key }
         - { key: secret_key, secret: true }
         - { key: private_key, secret: true, kind: multiline, required: false }
+        - { key: webhook_secret, secret: true, required: false }
     personal_data: true
     cost: Free to integrate; signers use the customer's DocuSign plan.
     notes: Production go-live review after enough successful calls in the demo environment.
