@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CoursesDialog } from './courses-dialog';
 import { instructors, schoolCourses } from './fixtures';
 import { InstructorsTable } from './instructors-table';
+import { SessionLimitsCard } from './session-limits';
 import { TwinsDialog } from './twins-dialog';
 
 const meta = {
@@ -40,6 +41,15 @@ export const AvatarIds: Story = {
                 },
             }}
             onClose={() => {}}
+        />
+    ),
+};
+
+/** 1-on-1 session prices (A10.2d): at most $40 for 30 minutes, no limit for 60. */
+export const SessionPriceLimits: Story = {
+    render: () => (
+        <SessionLimitsCard
+            limits={{ max_30_cents: 4000, max_60_cents: null }}
         />
     ),
 };

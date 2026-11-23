@@ -36,10 +36,10 @@ final class BookingsPageController extends Controller
         ]);
     }
 
-    public function hours(#[CurrentUser] User $user, VideoSessions $sessions): Response
+    public function hours(#[CurrentUser] User $user, VideoSessions $sessions, SessionBookings $bookings): Response
     {
         abort_unless($sessions->canHost($user), 403);
 
-        return Inertia::render('bookings/hours', ['offer' => BookingController::offerRow(SessionOffer::query()->where('user_id', $user->id)->first())]);
+        return Inertia::render('bookings/hours', ['offer' => BookingController::offerRow(SessionOffer::query()->where('user_id', $user->id)->first()), 'limits' => $bookings->limitsFor($user)]);
     }
 }

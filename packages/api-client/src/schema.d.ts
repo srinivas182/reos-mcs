@@ -258,7 +258,7 @@ export interface paths {
         };
         /**
          * My hours and prices
-         * @description The instructor's or mentor's offer, or null before they set one.
+         * @description The instructor's or mentor's offer, or null before they set one, and the most their school allows (cents; null is no limit).
          */
         get: operations["bookings.offer"];
         /** Save my hours and prices */
@@ -5979,6 +5979,10 @@ export interface operations {
                             price_60_cents: number;
                             active: boolean;
                         } | null;
+                        limits: {
+                            max_30_cents: number | null;
+                            max_60_cents: number | null;
+                        };
                     };
                 };
             };
@@ -6031,6 +6035,10 @@ export interface operations {
                             price_60_cents: number;
                             active: boolean;
                         } | null;
+                        limits: {
+                            max_30_cents: number | null;
+                            max_60_cents: number | null;
+                        };
                     };
                 };
             };

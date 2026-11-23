@@ -2269,7 +2269,8 @@
         "course.exam_success_installed": "Instaló el curso Éxito en el examen para revisión",
         "study_group.created": "Creó un grupo de estudio de clase",
         "class_report.decided": "Decisión en el informe de clase",
-        "class_report.sent": "Informe de clase enviado a la escuela"
+        "class_report.sent": "Informe de clase enviado a la escuela",
+        "school.session_limits_changed": "Límites de precios de sesiones cambiados"
       }
     }
   },
@@ -5274,6 +5275,16 @@
       "heygen": "Identificador de avatar de HeyGen",
       "synthesia": "Identificador de avatar de Synthesia",
       "save": "Guardar identificadores de avatar"
+    },
+    "sessionLimits": {
+      "title": "Precios de sesiones individuales",
+      "description": "Lo máximo que sus instructores y mentores pueden cobrar a los estudiantes. Los precios por encima de un nuevo límite bajan de inmediato.",
+      "max": "Máximo por {{count}} minutos ($)",
+      "none": "Sin límite",
+      "save": "Guardar límites",
+      "saved_one": "Límites guardados. Se bajó :count precio.",
+      "saved_other": "Límites guardados. Se bajaron :count precios.",
+      "current": "Límite: {{price}}"
     }
   },
   "avatarConsent": {
@@ -7050,7 +7061,9 @@
       "topics": "Con qué ayuda (separado por comas)",
       "bio": "Sobre usted",
       "save": "Guardar",
-      "saved": "Guardado."
+      "saved": "Guardado.",
+      "overLimit": "Su escuela permite como máximo :price.",
+      "limitHint": "Su escuela permite como máximo {{price}}."
     },
     "days": {
       "mon": "Lunes",

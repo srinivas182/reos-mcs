@@ -73,10 +73,13 @@ export const dollars = (cents: number, locale: string): string =>
 export const slotText = (iso: string, locale: string): string =>
   new Date(iso).toLocaleString(locale, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
 
-export async function loadOffer(): Promise<SessionOffer | null> {
+/** The most the school allows (A10.2d, cents; null is no limit). */
+export type OfferLimits = Got<'/bookings/offer'>['limits'];
+
+export async function loadOffer(): Promise<{ offer: SessionOffer | null; limits: OfferLimits }> {
   const { data } = await api().GET('/bookings/offer');
 
-  return data?.data ?? null;
+  return { offer: data?.data ?? null, limits: data?.limits ?? { max_30_cents: null, max_60_cents: null } };
 }
 
 export async function saveOffer(body: SessionOffer): Promise<SessionOffer> {

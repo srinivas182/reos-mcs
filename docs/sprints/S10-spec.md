@@ -95,6 +95,10 @@
   - **Paying:** included sessions are confirmed at once; paid ones are held 30 minutes while the student pays at checkout, then confirmed into a LiveKit session.
   - **Rules:** free cancellation until 24 hours before (refunded), the instructor may cancel any time (refunded); an instructor who hasn't joined 10 minutes in means an automatic full refund; the room ends at the booked time.
   - **After:** rate once; the instructor sends follow-up tasks (suggested from the notes) to the student's to-dos.
+- **As built, A10.2d** (decision 3, ADR 0040 §1): **1-on-1 session prices** on the school's Instructors screen (52):
+  - The school sets the most its instructors and mentors may charge for 30 and 60 minutes; empty means no limit.
+  - Prices above a new limit come down at once (audited).
+  - The instructor's Hours and prices shows the limit and won't save above it.
 - **As built, A10.2b** (ADR 0040 §8–13):
   - **Live classes** (web sidebar for candidates and instructors; phone from Today and from each course in Learn):
     - Instructors see this week, next week, later and past, with registrations, seats and CE hours, and schedule a class on the web: course, time, length and seats.

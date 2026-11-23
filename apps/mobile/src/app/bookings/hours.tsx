@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
-import { loadOffer, saveOffer, type SessionOffer } from '@/lib/bookings';
+import { dollars, loadOffer, type OfferLimits, saveOffer, type SessionOffer } from '@/lib/bookings';
 import { Button, Callout, Card, Screen, SwitchRow, Text, TextField, TitleBar, useUndoToast } from '@/ui';
 
 const DAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const;
@@ -26,14 +26,18 @@ const blank = (): SessionOffer => ({
  * more than one).
  */
 export default function HoursScreen() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const toast = useUndoToast();
   const [offer, setOffer] = useState<SessionOffer | null>(null);
+  const [limits, setLimits] = useState<OfferLimits>({ max_30_cents: null, max_60_cents: null });
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
 
   useEffect(() => {
-    void loadOffer().then((found) => setOffer(found ?? blank()));
+    void loadOffer().then((found) => {
+      setOffer(found.offer ?? blank());
+      setLimits(found.limits);
+    });
   }, []);
 
   if (!offer) {
@@ -75,8 +79,16 @@ export default function HoursScreen() {
       <TitleBar title={t('bookings.hours.title')} onBack={() => router.back()} />
       <Text tone="muted">{t('bookings.hours.purpose')}</Text>
       <SwitchRow label={t('bookings.hours.active')} value={offer.active} onValueChange={(active) => set({ active })} />
-      <TextField label={t('bookings.hours.price', { count: 30 })} keyboardType="number-pad" value={String(offer.price_30_cents / 100)} onChangeText={(v) => set({ price_30_cents: Math.round((Number(v) || 0) * 100) })} />
-      <TextField label={t('bookings.hours.price', { count: 60 })} keyboardType="number-pad" value={String(offer.price_60_cents / 100)} onChangeText={(v) => set({ price_60_cents: Math.round((Number(v) || 0) * 100) })} />
+      <TextField
+        label={t('bookings.hours.price', { count: 30 })}
+        hint={limits.max_30_cents !== null ? t('bookings.hours.limitHint', { price: dollars(limits.max_30_cents, i18n.language) }) : undefined}
+        keyboardType="number-pad"
+        value={String(offer.price_30_cents / 100)} onChangeText={(v) => set({ price_30_cents: Math.round((Number(v) || 0) * 100) })} />
+      <TextField
+        label={t('bookings.hours.price', { count: 60 })}
+        hint={limits.max_60_cents !== null ? t('bookings.hours.limitHint', { price: dollars(limits.max_60_cents, i18n.language) }) : undefined}
+        keyboardType="number-pad"
+        value={String(offer.price_60_cents / 100)} onChangeText={(v) => set({ price_60_cents: Math.round((Number(v) || 0) * 100) })} />
       <Text variant="caption" tone="muted">
         {t('bookings.hours.priceHint')}
       </Text>

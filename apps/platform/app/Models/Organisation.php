@@ -39,6 +39,8 @@ use Illuminate\Support\Str;
  * @property array<string, bool>|null $features
  * @property array<string, string|null>|null $brand Logo, colour, app label and email sender (see App\Tenancy\Brand)
  * @property int|null $parent_id
+ * @property int|null $session_max_30_cents Most its instructors may charge for 30 minutes (A10.2d)
+ * @property int|null $session_max_60_cents Most its instructors may charge for 60 minutes (A10.2d)
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Organisation|null $parent

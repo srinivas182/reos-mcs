@@ -14,6 +14,7 @@ use App\Billing\ProductStatus;
 use App\Billing\Refunds;
 use App\Enums\StateStatus;
 use App\Models\Order;
+use App\Models\Organisation;
 use App\Models\Price;
 use App\Models\Product;
 use App\Models\ProductSplit;
@@ -23,6 +24,7 @@ use App\Models\State;
 use App\Models\User;
 use App\Models\VideoSessionParticipant;
 use App\Notifications\SessionRefunded;
+use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\ActiveRole;
 use App\Services\States\PersonStates;
 use App\Services\Todos\Todos;
@@ -68,7 +70,7 @@ final readonly class SessionBookings
 
     public const RATING_DELAY_HOURS = 24;
 
-    public function __construct(private VideoSessions $sessions, private Refunds $refunds, private Todos $todos, private PersonStates $states) {}
+    public function __construct(private VideoSessions $sessions, private Refunds $refunds, private Todos $todos, private PersonStates $states, private AuditLogger $audit) {}
 
     /**
      * The instructor's hours, prices and topics; paid lengths become session products.
@@ -78,6 +80,16 @@ final readonly class SessionBookings
     public function saveOffer(User $instructor, array $values): SessionOffer
     {
         $school = $this->sessions->hostOrganisation($instructor) ?? throw ValidationException::withMessages(['offer' => __('sessions.errors.notHost')]);
+        $limits = self::limitsOf($school);
+
+        // The school's limit (decision 3): no more than it allows per length.
+        foreach (SessionOffer::LENGTHS as $minutes) {
+            $max = $limits["max_{$minutes}_cents"];
+
+            if ($max !== null && $values["price_{$minutes}_cents"] > $max) {
+                throw ValidationException::withMessages(["price_{$minutes}_cents" => __('bookings.hours.overLimit', ['price' => '$'.number_format($max / 100, $max % 100 === 0 ? 0 : 2)])]);
+            }
+        }
 
         return DB::transaction(function () use ($instructor, $values, $school): SessionOffer {
             $offer = SessionOffer::query()->firstOrNew(['user_id' => $instructor->id]);
@@ -107,6 +119,53 @@ final readonly class SessionBookings
 
             return $offer;
         });
+    }
+
+    /**
+     * The most a school's instructors may charge (decision 3); null is no limit.
+     *
+     * @return array{max_30_cents: int|null, max_60_cents: int|null}
+     */
+    public static function limitsOf(?Organisation $school): array
+    {
+        return ['max_30_cents' => $school?->session_max_30_cents, 'max_60_cents' => $school?->session_max_60_cents];
+    }
+
+    /** @return array{max_30_cents: int|null, max_60_cents: int|null} */
+    public function limitsFor(User $instructor): array
+    {
+        return self::limitsOf($this->sessions->hostOrganisation($instructor));
+    }
+
+    /**
+     * The school sets its limits (screen 52). Prices above them come down
+     * to the limit at once, so no student is charged more.
+     */
+    public function setLimits(Organisation $school, ?int $max30, ?int $max60, User $actor): int
+    {
+        $school->forceFill(['session_max_30_cents' => $max30, 'session_max_60_cents' => $max60])->save();
+        $lowered = 0;
+        $instructors = Product::query()->where('kind', ProductKind::Session)->where('seller_organisation_id', $school->id)
+            ->join('product_splits', 'product_splits.product_id', '=', 'products.id')->distinct()->pluck('product_splits.payee_user_id');
+
+        foreach (SessionOffer::query()->whereIn('user_id', $instructors)->with('user')->get() as $offer) {
+            $price30 = $max30 === null ? $offer->price_30_cents : min($offer->price_30_cents, $max30);
+            $price60 = $max60 === null ? $offer->price_60_cents : min($offer->price_60_cents, $max60);
+
+            if ($price30 !== $offer->price_30_cents || $price60 !== $offer->price_60_cents) {
+                $this->saveOffer($offer->user, [
+                    'bio' => $offer->bio, 'languages' => $offer->languages, 'topics' => $offer->topics, 'hours' => $offer->hours,
+                    'timezone' => $offer->timezone, 'price_30_cents' => $price30, 'price_60_cents' => $price60, 'active' => $offer->active,
+                ]);
+                $lowered++;
+            }
+        }
+
+        $this->audit->record('school.session_limits_changed', 'organisation', (string) $school->id, [
+            'max_30_cents' => $max30, 'max_60_cents' => $max60, 'offers_lowered' => $lowered,
+        ], $actor, $school->id);
+
+        return $lowered;
     }
 
     /**
