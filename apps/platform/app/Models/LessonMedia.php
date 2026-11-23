@@ -31,6 +31,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $pages
  * @property string|null $transcript Captions (WebVTT): a captions file, or the video host's
  * @property array<string, string>|null $captions An AI lesson video's captions (WebVTT) by language, timed to it
+ * @property array{resolution: string, bytes: int|null}|null $offline The 720p download Mux made (A8.2b), once ready
  * @property list<array{page: int|null, text: string}>|null $sections Words on each page (slides and documents)
  * @property Carbon|null $scanned_at
  * @property Carbon|null $created_at
@@ -43,7 +44,7 @@ final class LessonMedia extends Model
 
     protected $fillable = [
         'lesson_id', 'kind', 'path', 'original_name', 'mime', 'size', 'status', 'failure', 'mux_asset_id', 'mux_playback_id',
-        'duration_seconds', 'pages', 'transcript', 'sections', 'scanned_at', 'language', 'captions',
+        'duration_seconds', 'pages', 'transcript', 'sections', 'scanned_at', 'language', 'captions', 'offline',
     ];
 
     protected $attributes = ['status' => 'awaiting_upload'];
@@ -60,6 +61,7 @@ final class LessonMedia extends Model
             'pages' => 'integer',
             'sections' => 'array',
             'captions' => 'array',
+            'offline' => 'array',
             'scanned_at' => 'datetime',
         ];
     }

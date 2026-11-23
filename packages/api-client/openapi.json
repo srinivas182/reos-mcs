@@ -3400,6 +3400,50 @@
                                                         ]
                                                     }
                                                 },
+                                                "captions": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "en": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "seconds": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "text": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "seconds",
+                                                                    "text"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "es": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "seconds": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "text": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "seconds",
+                                                                    "text"
+                                                                ]
+                                                            }
+                                                        }
+                                                    }
+                                                },
                                                 "previous": {
                                                     "type": [
                                                         "integer",
@@ -3428,6 +3472,14 @@
                                                             "type": [
                                                                 "string",
                                                                 "null"
+                                                            ],
+                                                            "enum": [
+                                                                "gap",
+                                                                "paused",
+                                                                "hidden",
+                                                                "checkin_due",
+                                                                "daily_max",
+                                                                null
                                                             ]
                                                         },
                                                         "checkin": {
@@ -3513,6 +3565,7 @@
                                                 "documents",
                                                 "video",
                                                 "transcript",
+                                                "captions",
                                                 "previous",
                                                 "next",
                                                 "player"
@@ -6766,6 +6819,952 @@
                 }
             }
         },
+        "/learn/downloads": {
+            "get": {
+                "operationId": "learn.downloads.index",
+                "description": "Each is `active`, or `revoked` (access ended, or removed elsewhere): the\nphone deletes those files.",
+                "summary": "My saved lessons on this phone",
+                "tags": [
+                    "Offline"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "grant": {
+                                                        "type": "integer"
+                                                    },
+                                                    "lesson_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "course": {
+                                                        "type": "string"
+                                                    },
+                                                    "bytes": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "expires_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "active",
+                                                            "revoked"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "grant",
+                                                    "lesson_id",
+                                                    "title",
+                                                    "course",
+                                                    "bytes",
+                                                    "expires_at",
+                                                    "status"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/learn/lessons/{lesson}/downloads": {
+            "post": {
+                "operationId": "learn.downloads.store",
+                "description": "Returns a link to the 720p download (valid an hour), the lesson as the\nplayer needs it offline, its check-ins with answers, the seat-time\nrules, and the key to sign offline seat time with (HMAC-SHA256). Works\nfor 30 days between online checks. 422 when the lesson has no video or\nits download isn't ready yet.",
+                "summary": "Save a lesson on this phone",
+                "tags": [
+                    "Offline"
+                ],
+                "parameters": [
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "grant": {
+                                                    "type": "integer"
+                                                },
+                                                "key": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "bytes": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "expires_at": {
+                                                    "type": "string"
+                                                },
+                                                "lesson": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        },
+                                                        "language": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "en",
+                                                                "es"
+                                                            ]
+                                                        },
+                                                        "minutes": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "course": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "title"
+                                                            ]
+                                                        },
+                                                        "sections": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "heading": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "text": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "heading",
+                                                                    "text"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "documents": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "slides",
+                                                                            "document"
+                                                                        ]
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "pages": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "page": {
+                                                                                    "type": "integer"
+                                                                                },
+                                                                                "text": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "page",
+                                                                                "text"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "kind",
+                                                                    "name",
+                                                                    "url",
+                                                                    "pages"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "video": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "type": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "hls",
+                                                                        "file"
+                                                                    ]
+                                                                },
+                                                                "url": {
+                                                                    "type": "string"
+                                                                },
+                                                                "duration": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "poster": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "type",
+                                                                "url",
+                                                                "duration",
+                                                                "poster"
+                                                            ]
+                                                        },
+                                                        "transcript": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "seconds": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "text": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "seconds",
+                                                                    "text"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "captions": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "en": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "seconds": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "text": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "seconds",
+                                                                            "text"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "es": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "seconds": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "text": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "seconds",
+                                                                            "text"
+                                                                        ]
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "previous": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "next": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title",
+                                                        "language",
+                                                        "minutes",
+                                                        "course",
+                                                        "sections",
+                                                        "documents",
+                                                        "video",
+                                                        "transcript",
+                                                        "captions",
+                                                        "previous",
+                                                        "next"
+                                                    ]
+                                                },
+                                                "player": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "counted": {
+                                                            "type": "integer"
+                                                        },
+                                                        "required": {
+                                                            "type": "integer"
+                                                        },
+                                                        "percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "reason": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "enum": [
+                                                                "gap",
+                                                                "paused",
+                                                                "hidden",
+                                                                "checkin_due",
+                                                                "daily_max",
+                                                                null
+                                                            ]
+                                                        },
+                                                        "checkin": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "key": {
+                                                                    "type": "string"
+                                                                },
+                                                                "at": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "question",
+                                                                        "presence"
+                                                                    ]
+                                                                },
+                                                                "question": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "prompt": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "options": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "prompt",
+                                                                        "options"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "key",
+                                                                "at",
+                                                                "kind",
+                                                                "question"
+                                                            ]
+                                                        },
+                                                        "completed": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "today_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "counted",
+                                                        "required",
+                                                        "percent",
+                                                        "reason",
+                                                        "checkin",
+                                                        "completed",
+                                                        "today_left"
+                                                    ]
+                                                },
+                                                "answered": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "checkpoints": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "at": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "question",
+                                                                    "presence"
+                                                                ]
+                                                            },
+                                                            "question": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "prompt": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "options": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "prompt",
+                                                                    "options"
+                                                                ]
+                                                            },
+                                                            "answer": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "correct": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "explanation": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "source": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "correct",
+                                                                    "explanation",
+                                                                    "source"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "at",
+                                                            "kind",
+                                                            "question",
+                                                            "answer"
+                                                        ]
+                                                    }
+                                                },
+                                                "rules": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "checkin_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "presence_percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "max_seconds_per_day": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "checkin_minutes",
+                                                        "presence_percent",
+                                                        "max_seconds_per_day"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "grant",
+                                                "key",
+                                                "url",
+                                                "bytes",
+                                                "expires_at",
+                                                "lesson",
+                                                "player",
+                                                "answered",
+                                                "checkpoints",
+                                                "rules"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                ""
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/learn/downloads/{grant}/renew": {
+            "post": {
+                "operationId": "learn.downloads.renew",
+                "description": "Another 30 days while I still have the course; 410 once access has\nended (delete the file).",
+                "summary": "Check a saved lesson online",
+                "tags": [
+                    "Offline"
+                ],
+                "parameters": [
+                    {
+                        "name": "grant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "expires_at": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "expires_at"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/learn/downloads/{grant}": {
+            "delete": {
+                "operationId": "learn.downloads.destroy",
+                "summary": "Remove a saved lesson from this phone",
+                "tags": [
+                    "Offline"
+                ],
+                "parameters": [
+                    {
+                        "name": "grant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/learn/downloads/{grant}/seat-time": {
+            "post": {
+                "operationId": "learn.downloads.seat-time",
+                "description": "`payload` is the JSON list of events exactly as signed:\n`{\"id\", \"type\": \"watch\", \"at\", \"seconds\"}` or\n`{\"id\", \"type\": \"checkin\", \"at\", \"key\", \"choice\"}`; `signature` is its\nHMAC-SHA256 (hex) with the grant's key. Events may arrive in any order\nand more than once; each counts once, under the same rules as online.",
+                "summary": "Send seat time recorded offline",
+                "tags": [
+                    "Offline"
+                ],
+                "parameters": [
+                    {
+                        "name": "grant",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "payload": {
+                                        "type": "string",
+                                        "maxLength": 200000
+                                    },
+                                    "signature": {
+                                        "type": "string",
+                                        "minLength": 64,
+                                        "maxLength": 64
+                                    },
+                                    "timezone": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 60
+                                    }
+                                },
+                                "required": [
+                                    "payload",
+                                    "signature"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "accepted": {
+                                            "type": "integer"
+                                        },
+                                        "duplicates": {
+                                            "type": "integer"
+                                        },
+                                        "rejected": {
+                                            "type": "integer"
+                                        },
+                                        "state": {
+                                            "type": "object",
+                                            "properties": {
+                                                "counted": {
+                                                    "type": "integer"
+                                                },
+                                                "required": {
+                                                    "type": "integer"
+                                                },
+                                                "percent": {
+                                                    "type": "integer"
+                                                },
+                                                "reason": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "gap",
+                                                        "paused",
+                                                        "hidden",
+                                                        "checkin_due",
+                                                        "daily_max",
+                                                        null
+                                                    ]
+                                                },
+                                                "checkin": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "at": {
+                                                            "type": "integer"
+                                                        },
+                                                        "kind": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "question",
+                                                                "presence"
+                                                            ]
+                                                        },
+                                                        "question": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "prompt": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "prompt",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "key",
+                                                        "at",
+                                                        "kind",
+                                                        "question"
+                                                    ]
+                                                },
+                                                "completed": {
+                                                    "type": "boolean"
+                                                },
+                                                "today_left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "counted",
+                                                "required",
+                                                "percent",
+                                                "reason",
+                                                "checkin",
+                                                "completed",
+                                                "today_left"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "accepted",
+                                        "duplicates",
+                                        "rejected",
+                                        "state"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/onboarding": {
             "put": {
                 "operationId": "me.onboarding",
@@ -7007,6 +8006,14 @@
                                                     "type": [
                                                         "string",
                                                         "null"
+                                                    ],
+                                                    "enum": [
+                                                        "gap",
+                                                        "paused",
+                                                        "hidden",
+                                                        "checkin_due",
+                                                        "daily_max",
+                                                        null
                                                     ]
                                                 },
                                                 "checkin": {
@@ -7190,7 +8197,101 @@
                                         },
                                         "state": {
                                             "type": "object",
-                                            "additionalProperties": {}
+                                            "properties": {
+                                                "counted": {
+                                                    "type": "integer"
+                                                },
+                                                "required": {
+                                                    "type": "integer"
+                                                },
+                                                "percent": {
+                                                    "type": "integer"
+                                                },
+                                                "reason": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "gap",
+                                                        "paused",
+                                                        "hidden",
+                                                        "checkin_due",
+                                                        "daily_max",
+                                                        null
+                                                    ]
+                                                },
+                                                "checkin": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "at": {
+                                                            "type": "integer"
+                                                        },
+                                                        "kind": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "question",
+                                                                "presence"
+                                                            ]
+                                                        },
+                                                        "question": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "prompt": {
+                                                                    "type": "string"
+                                                                },
+                                                                "options": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "prompt",
+                                                                "options"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "key",
+                                                        "at",
+                                                        "kind",
+                                                        "question"
+                                                    ]
+                                                },
+                                                "completed": {
+                                                    "type": "boolean"
+                                                },
+                                                "today_left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "counted",
+                                                "required",
+                                                "percent",
+                                                "reason",
+                                                "checkin",
+                                                "completed",
+                                                "today_left"
+                                            ]
                                         }
                                     },
                                     "required": [

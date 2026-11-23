@@ -5515,7 +5515,8 @@
       "paused": "En pausa. El tiempo solo cuenta mientras se reproduce el video.",
       "hidden": "Esta pestaña no está al frente, así que el tiempo no cuenta. Regrese para continuar.",
       "checkin_due": "Responda la verificación para que el tiempo siga contando.",
-      "daily_max": "Llegó al límite de hoy para este curso. El tiempo vuelve a contar mañana."
+      "daily_max": "Llegó al límite de hoy para este curso. El tiempo vuelve a contar mañana.",
+      "hiddenApp": "REOS no está en pantalla, así que el tiempo no cuenta. Regrese para continuar."
     },
     "errors": {
       "heartbeat": "No pudimos conectar con REOS, así que el tiempo no cuenta. Revise su conexión.",
@@ -5538,6 +5539,59 @@
       "percent": "{{percent}} % completado",
       "done": "Curso completo",
       "lessonDone": "Completada"
+    },
+    "offline": {
+      "noVideo": "Esta lección no tiene un video para guardar.",
+      "notReady": "La descarga aún se está preparando. Inténtelo de nuevo en unos minutos.",
+      "badSignature": "No pudimos verificar este tiempo sin conexión, así que no se contó.",
+      "badPayload": "No pudimos leer este tiempo sin conexión, así que no se contó.",
+      "ended": "Su acceso a este curso terminó, así que se eliminó la lección guardada.",
+      "phoneOnly": "Las lecciones solo se pueden guardar en la app REOS de su teléfono.",
+      "recording": "No tiene conexión. Su tiempo se guarda en este teléfono y se envía cuando vuelva a conectarse."
+    },
+    "audioOnly": "Solo audio",
+    "audioOnlyHint": "Sigue sonando con la pantalla bloqueada. El tiempo de asistencia solo cuenta mientras REOS está en pantalla.",
+    "audioOnlyOn": "Solo audio está activado. El video se oculta para ahorrar datos.",
+    "downloads": {
+      "title": "Descargas",
+      "purpose": "Estudie sin conexión sin llenar su teléfono.",
+      "save": "Guardar sin conexión",
+      "saved": "Guardada sin conexión",
+      "expired": "Conéctese para seguir usándola",
+      "storage": "Almacenamiento usado",
+      "used": "{{used}} de {{limit}} usados",
+      "limit": "Límite de almacenamiento",
+      "smart": "Descargas inteligentes",
+      "smartHint": "Guarda sus próximas dos lecciones con Wi-Fi y elimina las que ya terminó.",
+      "wifiOnly": "Descargar solo con Wi-Fi",
+      "wifiOnlyHint": "Cada hora de video ocupa unos 180 MB.",
+      "lessons": "Lecciones guardadas",
+      "emptyTitle": "No hay lecciones guardadas",
+      "empty": "Abra una lección y elija Guardar sin conexión para verla sin conexión.",
+      "daysLeft_one": "Funciona {{count}} día más sin conexión",
+      "daysLeft_other": "Funciona {{count}} días más sin conexión",
+      "goOnline": "Conéctese para verificarla",
+      "unsent": "Tiempo sin conexión pendiente de enviar",
+      "remove": "Eliminar",
+      "removed": "Se eliminó {{title}}",
+      "removedEnded_one": "Se eliminó {{count}} lección guardada porque terminó su acceso o ya la completó.",
+      "removedEnded_other": "Se eliminaron {{count}} lecciones guardadas porque terminó su acceso o ya las completó.",
+      "errors": {
+        "wifi": "Conéctese a Wi-Fi para guardar esta lección, o desactive Descargar solo con Wi-Fi en Descargas.",
+        "limit": "No hay espacio dentro de su límite de almacenamiento. Elimine una lección o aumente el límite en Descargas.",
+        "server": "No pudimos guardar esta lección. Inténtelo de nuevo."
+      }
+    },
+    "report": {
+      "title": "Reportar esta pregunta",
+      "send": "Enviar reporte",
+      "sent": "Gracias. Le avisaremos cuando se revise.",
+      "reasons": {
+        "wrong_answer": "La respuesta es incorrecta",
+        "unclear": "No está clara",
+        "out_of_date": "Está desactualizada",
+        "other": "Otra cosa"
+      }
     }
   }
 }

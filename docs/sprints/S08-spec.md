@@ -114,6 +114,13 @@
   - **Learn** shows each course's progress and each lesson's done mark; **refunds** read progress against the limit.
   - **Report this question** is on the web too (`learn.questions.report`).
   - **Moved:** the phone player, audio only and offline downloads are A8.2b; **Save as flashcard** moves to A9.2 with the deck.
+- **As built, A8.2b** (phone player and offline, ADR 0030 §9–10):
+  - **Phone player (candidate screen 25):** seat meter, check-in sheet that can't be closed (with Report this question), Back 10 seconds, speed 0.75×–2×, captions in English or Spanish, **Audio only** (keeps playing with the screen locked; seat time counts only while REOS is on screen), **Save offline**. Heartbeats every 15 seconds online. Quality is automatic (adaptive streaming).
+  - **Offline:** Mux makes a 720p download of every video; a saved lesson plays from the phone's own storage with its key in the Keychain or Keystore, on Wi-Fi only by default, within the storage limit. It works 30 days between online checks and only while the learner has the course.
+  - **Offline seat time** is recorded on the phone, signed (HMAC-SHA256) and replayed when online: in time order, once each, no overlaps, the same check-ins and daily maximum.
+  - **Downloads (candidate screen 34)** from Me and Learn: storage used of the limit (1, 2 or 5 GB), Smart downloads (next two lessons on Wi-Fi, removed once completed), Wi-Fi only, each lesson with size and days left, Remove.
+  - **Web:** Report this question on the check-in.
+  - **Not built yet (no sub-sprint named for them, to schedule at the Sprint 8 wrap-up):** the playback settings sheet (screen 26: quality and data saver per connection) and the player's "Interrupt and ask" bar. Smart downloads remove a lesson once it is completed, until lesson quizzes exist (tests arrive in A9.1).
 
 ### A8.3 Candidate start (Team A)
 

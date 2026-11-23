@@ -21,6 +21,7 @@ use App\Models\User;
 use App\Services\Content\LessonFiles;
 use App\Services\States\PersonStates;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * What a learner sees (A5.3b; web Learn, phone Learn screen 8): live courses
@@ -124,8 +125,7 @@ final readonly class Learning
     public function lesson(Lesson $lesson, string $language = 'en'): array
     {
         $media = $lesson->media()->where('status', MediaStatus::Ready)->get();
-        $videos = $media->filter(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Video);
-        $video = $videos->first(static fn (LessonMedia $m): bool => $m->language === $language) ?? $videos->first();
+        $video = self::pick($media, $language);
         $captions = $media->first(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Captions);
         $vtt = $video?->captions[$language] ?? ($captions !== null ? $captions->transcript : $video?->transcript);
         $siblings = array_values(array_map(static fn (mixed $id): int => is_numeric($id) ? (int) $id : 0, Lesson::query()->learnable()->where('course_id', $lesson->course_id)->orderBy('position')->orderBy('id')->pluck('id')->all()));
@@ -154,6 +154,20 @@ final readonly class Learning
             'previous' => $at === false || $at === 0 ? null : $siblings[$at - 1],
             'next' => $at === false ? null : ($siblings[$at + 1] ?? null),
         ];
+    }
+
+    /** The learner's video: in their language, else the lesson's first (A7.3). */
+    public function videoFor(Lesson $lesson, string $language): ?LessonMedia
+    {
+        return self::pick($lesson->media()->where('status', MediaStatus::Ready)->get(), $language);
+    }
+
+    /** @param  Collection<int, LessonMedia>  $media */
+    private static function pick(Collection $media, string $language): ?LessonMedia
+    {
+        $videos = $media->filter(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Video);
+
+        return $videos->first(static fn (LessonMedia $m): bool => $m->language === $language) ?? $videos->first();
     }
 
     /**

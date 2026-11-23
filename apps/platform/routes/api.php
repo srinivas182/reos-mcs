@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
+use App\Http\Controllers\Api\Learn\OfflineController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licences\LicenceController;
@@ -176,6 +177,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('learn')->name('api.learn.')->controller(PlayerController::class)->group(function () {
         Route::post('lessons/{lesson}/heartbeat', 'heartbeat')->whereNumber('lesson')->middleware('throttle:12,1,api-learn-heartbeat')->name('heartbeat');
         Route::post('lessons/{lesson}/checkins', 'checkin')->whereNumber('lesson')->middleware('throttle:30,1,api-learn-checkin')->name('checkin');
+    });
+    // Lessons saved on the phone (A8.2b): the learner's own downloads, not admin actions.
+    Route::prefix('learn')->name('api.learn.downloads.')->controller(OfflineController::class)->group(function () {
+        Route::get('downloads', 'index')->name('index');
+        Route::post('lessons/{lesson}/downloads', 'store')->whereNumber('lesson')->middleware('throttle:20,1,api-learn-download')->name('store');
+        Route::post('downloads/{grant}/renew', 'renew')->whereNumber('grant')->middleware('throttle:60,1,api-learn-download-renew')->name('renew');
+        Route::delete('downloads/{grant}', 'destroy')->whereNumber('grant')->middleware('throttle:60,1,api-learn-download-remove')->name('destroy');
+        Route::post('downloads/{grant}/seat-time', 'seatTime')->whereNumber('grant')->middleware('throttle:30,1,api-learn-offline-seat')->name('seat-time');
     });
     Route::put('me/states/current', [CurrentStateController::class, 'update'])->middleware('throttle:30,1,api-me-states')->name('api.me.states.update');
 

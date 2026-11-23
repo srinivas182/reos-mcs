@@ -1,6 +1,6 @@
 import type { TFunction } from 'i18next';
 import { router } from 'expo-router';
-import { BookOpen, FileText, Lock, Presentation, Search, Video } from 'lucide-react-native';
+import { BookOpen, Download, FileText, Lock, Presentation, Search, Video } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -47,7 +47,7 @@ export default function Learn() {
 
   return (
     <Screen>
-      <TitleBar title={t('learn.title')} onBack={() => router.back()} />
+      <TitleBar title={t('learn.title')} onBack={() => router.back()} action={<Button label={t('player.downloads.title')} variant="ghost" icon={Download} onPress={() => router.push('/downloads')} />} />
 
       <TextField label={t('learn.searchLabel')} value={query} onChangeText={setQuery} returnKeyType="search" onSubmitEditing={() => void search()} autoCapitalize="none" />
       <Button label={t('learn.searchButton')} icon={Search} loading={busy} onPress={() => void search()} />

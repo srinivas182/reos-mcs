@@ -13,6 +13,7 @@ use App\Models\CourseProgress;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 use App\Models\LessonVersion;
+use App\Models\OfflineGrant;
 use App\Models\QuizQuestion;
 use App\Models\ReviewItem;
 use App\Models\User;
@@ -43,6 +44,9 @@ final readonly class SeatTime
 {
     /** Heartbeats come every 15 seconds; a stretch counts at most this much. */
     public const MAX_STRETCH = 20;
+
+    /** An offline stretch counts at most this much; the phone splits longer ones. */
+    public const MAX_OFFLINE_STRETCH = 900;
 
     /** A longer silence starts a new viewing: the gap doesn't count. */
     public const GAP = 45;
@@ -128,7 +132,7 @@ final readonly class SeatTime
      *
      * @return array{correct: bool|null, explanation: string|null, source: string|null, state: State}
      */
-    public function answer(User $user, Lesson $lesson, string $key, ?int $choice, string $language = 'en'): array
+    public function answer(User $user, Lesson $lesson, string $key, ?int $choice, string $language = 'en', ?CarbonImmutable $at = null): array
     {
         $progress = $this->progress($user, $lesson);
         $checkpoint = collect($this->checkpoints($lesson, $progress->required_seconds))->firstWhere('key', $key);
@@ -149,11 +153,125 @@ final readonly class SeatTime
         }
 
         $checkins = $progress->checkins ?? [];
-        $checkins[$key] = ['correct' => $correct, 'at' => CarbonImmutable::now()->toIso8601String()];
+        $checkins[$key] ??= ['correct' => $correct, 'at' => ($at ?? CarbonImmutable::now())->toIso8601String()];
         $progress->forceFill(['checkins' => $checkins])->save();
         $this->settle($user, $lesson, $progress);
 
         return ['correct' => $correct, 'explanation' => $explanation, 'source' => $source, 'state' => $this->state($lesson, $progress->refresh(), null, null)];
+    }
+
+    /**
+     * Seat time recorded on the phone while offline (A8.2b), replayed when it
+     * is back online. The phone signed it with the grant's key, but nothing
+     * it says is trusted on its own:
+     *
+     * - events are applied in time order, whatever order they arrive in, and
+     *   each only once (by its id);
+     * - a stretch must lie between the grant and now, lasts at most 15
+     *   minutes, and the part that overlaps any other offline stretch of the
+     *   learner (on any lesson) never counts;
+     * - it stops at the next check-in until that is answered, and at the
+     *   approval's daily maximum on the learner's own day.
+     *
+     * @param  list<array{id: string, type: 'watch'|'checkin', at: string, seconds?: int, key?: string, choice?: int|null}>  $events
+     * @return array{accepted: int, duplicates: int, rejected: int, state: State}
+     */
+    public function replay(User $user, OfflineGrant $grant, array $events, string $timezone, ?CarbonImmutable $now = null): array
+    {
+        $now ??= CarbonImmutable::now();
+        $lesson = $grant->lesson;
+        $earliest = CarbonImmutable::parse($grant->created_at ?? $now)->subMinutes(5);
+        $latest = $now->addMinutes(2);
+        usort($events, static fn (array $a, array $b): int => [$a['at'], $a['id']] <=> [$b['at'], $b['id']]);
+
+        return DB::transaction(function () use ($user, $lesson, $grant, $events, $timezone, $now, $earliest, $latest): array {
+            $progress = $this->progress($user, $lesson);
+            $progress = LessonProgress::query()->whereKey($progress->id)->lockForUpdate()->firstOrFail();
+            $rules = $this->rulesFor($lesson->course);
+            $tally = ['accepted' => 0, 'duplicates' => 0, 'rejected' => 0];
+
+            foreach ($events as $event) {
+                $segment = 'offline:'.$grant->id.':'.mb_substr($event['id'], 0, 40);
+
+                if (DB::table('seat_time_events')->where('user_id', $user->id)->where('segment', $segment)->exists()) {
+                    $tally['duplicates']++;
+
+                    continue;
+                }
+
+                $at = rescue(static fn (): CarbonImmutable => CarbonImmutable::parse($event['at']), null, false);
+                $seconds = max(0, min(self::MAX_OFFLINE_STRETCH, (int) ($event['seconds'] ?? 0)));
+                $end = $at?->addSeconds($event['type'] === 'watch' ? $seconds : 0);
+
+                if ($at === null || $end === null || $at->lessThan($earliest) || $end->greaterThan($latest)) {
+                    $this->logOffline($user, $lesson, 0, $seconds, 'invalid', $segment, $at ?? $now, $end ?? $now, $now);
+                    $tally['rejected']++;
+
+                    continue;
+                }
+
+                if ($event['type'] === 'checkin') {
+                    try {
+                        $this->answer($user, $lesson, (string) ($event['key'] ?? ''), $event['choice'] ?? null, $user->locale->value, $at);
+                    } catch (ValidationException) {
+                        $this->logOffline($user, $lesson, 0, 0, 'invalid', $segment, $at, $at, $now);
+                        $tally['rejected']++;
+
+                        continue;
+                    }
+                    $progress->refresh();
+                    $this->logOffline($user, $lesson, 0, 0, 'checkin', $segment, $at, $at, $now);
+                    $tally['accepted']++;
+
+                    continue;
+                }
+
+                // Never the same moment twice: drop what overlaps other offline stretches.
+                $overlap = 0;
+                foreach (DB::table('seat_time_events')->where('user_id', $user->id)->whereNotNull('started_at')->where('counted', '>', 0)
+                    ->where('started_at', '<', $end)->where('ended_at', '>', $at)->get(['started_at', 'ended_at']) as $other) {
+                    $from = max($at->getTimestamp(), CarbonImmutable::parse((string) $other->started_at)->getTimestamp());
+                    $to = min($end->getTimestamp(), CarbonImmutable::parse((string) $other->ended_at)->getTimestamp());
+                    $overlap += max(0, $to - $from);
+                }
+                $real = max(0, $seconds - $overlap);
+
+                $day = $at->setTimezone(self::zone($timezone))->toDateString();
+                $used = DB::table('seat_time_days')->where('user_id', $user->id)->where('course_id', $lesson->course_id)->where('day', $day)->value('seconds');
+                $left = $rules['max_seconds_per_day'] === null ? null : max(0, $rules['max_seconds_per_day'] - (is_numeric($used) ? (int) $used : 0));
+                $next = $this->nextCheckpoint($lesson, $progress);
+
+                $reason = match (true) {
+                    $real === 0 => 'overlap',
+                    $next !== null && $next['at'] <= $progress->counted_seconds => 'checkin_due',
+                    $left === 0 => 'daily_max',
+                    default => null,
+                };
+                $counted = $reason !== null ? 0 : min($real, $left ?? $real, $next === null ? $real : $next['at'] - $progress->counted_seconds);
+
+                if ($counted > 0) {
+                    $progress->forceFill(['counted_seconds' => $progress->counted_seconds + $counted])->save();
+                    $row = ['user_id' => $user->id, 'course_id' => $lesson->course_id, 'day' => $day];
+                    DB::table('seat_time_days')->insertOrIgnore([...$row, 'seconds' => 0, 'created_at' => $now, 'updated_at' => $now]);
+                    DB::table('seat_time_days')->where($row)->increment('seconds', $counted, ['updated_at' => $now]);
+                }
+
+                // A stretch that ran into a check-in or the daily maximum says so.
+                $reason ??= $counted < $real ? ($left !== null && $counted === $left ? 'daily_max' : 'checkin_due') : null;
+                $this->logOffline($user, $lesson, $counted, $seconds - $counted, $reason, $segment, $at, $at->addSeconds($counted), $now);
+                $tally['accepted']++;
+            }
+
+            $this->settle($user, $lesson, $progress->refresh());
+
+            return [...$tally, 'state' => $this->state($lesson, $progress->refresh(), null, null)];
+        });
+    }
+
+    /** @return list<string> the check-ins already answered, for the phone offline */
+    public function answered(User $user, Lesson $lesson): array
+    {
+        return array_map('strval', array_keys($this->progress($user, $lesson)->checkins ?? []));
     }
 
     /** @return State */
@@ -237,6 +355,27 @@ final readonly class SeatTime
         }
 
         return null;
+    }
+
+    /** @return Checkpoint|null the first check-in not yet answered, due or not */
+    private function nextCheckpoint(Lesson $lesson, LessonProgress $progress): ?array
+    {
+        foreach ($this->checkpoints($lesson, $progress->required_seconds) as $point) {
+            if (! isset(($progress->checkins ?? [])[$point['key']])) {
+                return $point;
+            }
+        }
+
+        return null;
+    }
+
+    /** Logs one offline event under its own id (never merged), with its real start and end. */
+    private function logOffline(User $user, Lesson $lesson, int $counted, int $uncounted, ?string $reason, string $segment, CarbonImmutable $start, CarbonImmutable $end, CarbonImmutable $now): void
+    {
+        DB::table('seat_time_events')->insert([
+            'user_id' => $user->id, 'lesson_id' => $lesson->id, 'counted' => $counted, 'uncounted' => max(0, $uncounted), 'reason' => $reason, 'source' => 'offline',
+            'segment' => $segment, 'occurred_at' => $end, 'started_at' => $start, 'ended_at' => $end, 'created_at' => $now,
+        ]);
     }
 
     /** Completes the lesson and, with it, perhaps the course. */

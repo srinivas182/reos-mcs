@@ -92,7 +92,7 @@ final readonly class MuxWebhooks
     private function handle(string $type, array $data): void
     {
         $assetId = match ($type) {
-            'video.asset.track.ready' => $data['asset_id'] ?? null,
+            'video.asset.track.ready', 'video.asset.static_rendition.ready' => $data['asset_id'] ?? null,
             default => $data['id'] ?? null,
         };
 
@@ -116,6 +116,10 @@ final readonly class MuxWebhooks
             IngestLesson::dispatch($media->lesson_id);
         } elseif ($type === 'video.asset.errored') {
             $media->forceFill(['status' => MediaStatus::Failed, 'failure' => 'content.files.failed.video'])->save();
+        } elseif ($type === 'video.asset.static_rendition.ready' && ($data['resolution'] ?? null) === MuxVideoHost::OFFLINE) {
+            // The 720p download is ready: the phone may save the lesson (A8.2b).
+            $bytes = $data['filesize'] ?? null;
+            $media->forceFill(['offline' => ['resolution' => MuxVideoHost::OFFLINE, 'bytes' => is_numeric($bytes) ? (int) $bytes : null]])->save();
         } elseif ($type === 'video.asset.track.ready' && ($data['type'] ?? null) === 'text' && is_string($data['id'] ?? null)) {
             FetchVideoCaptions::dispatch($media->id, $data['id']);
         }

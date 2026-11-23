@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, IdCard, Languages, Map, ShieldCheck, Plug, Wallet } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Download, IdCard, Languages, Map, ShieldCheck, Plug, Wallet } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,7 @@ import { Button, Callout, ChoiceRow, MenuCard, MenuGroup, MenuRow, ProfileHeader
  * Me (mobile journey screen 16): name, role and organisation, every setting
  * in one list, Switch role, Sign out. Tapping the organisation opens Your
  * organisations (screen 150). Rows for features not built yet (My goal,
- * Connections, CE wallet, Membership, Downloads, Notifications, Help) are
+ * CE wallet, Help) are
  * added in their sprints.
  */
 export default function MeScreen() {
@@ -90,6 +90,7 @@ export default function MeScreen() {
         {current?.role === 'instructor' || current?.role === 'mentor' ? <MenuRow icon={Wallet} title={t('mobile.me.earnings')} onPress={() => router.push('/earnings')} /> : null}
         {states && states.options.length > 1 ? <MenuRow icon={Map} title={t('mobile.me.state')} value={states.current.name} onPress={() => setSheet('states')} /> : null}
         <MenuRow icon={Plug} title={t('mobile.me.connections')} onPress={() => router.push('/connections')} />
+        <MenuRow icon={Download} title={t('player.downloads.title')} onPress={() => router.push('/downloads')} />
         <MenuRow icon={Bell} title={t('notifications.settingsTitle')} onPress={() => router.push('/notification-settings')} />
         <MenuRow icon={ShieldCheck} title={t('mobile.me.privacy')} onPress={() => router.push('/privacy')} />
         <MenuRow icon={Languages} title={t('mobile.me.accessibility')} onPress={() => router.push('/accessibility')} />

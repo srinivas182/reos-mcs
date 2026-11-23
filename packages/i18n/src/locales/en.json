@@ -5515,7 +5515,8 @@
       "paused": "Paused. Time counts only while the video plays.",
       "hidden": "This tab isn't in front, so time isn't counting. Come back to keep going.",
       "checkin_due": "Answer the check-in to keep counting time.",
-      "daily_max": "You've reached today's limit for this course. Time counts again tomorrow."
+      "daily_max": "You've reached today's limit for this course. Time counts again tomorrow.",
+      "hiddenApp": "REOS isn't on screen, so time isn't counting. Come back to keep going."
     },
     "errors": {
       "heartbeat": "We couldn't reach REOS, so time isn't counting. Check your connection.",
@@ -5538,6 +5539,59 @@
       "percent": "{{percent}}% done",
       "done": "Course complete",
       "lessonDone": "Done"
+    },
+    "offline": {
+      "noVideo": "This lesson has no video to save.",
+      "notReady": "The download is still being prepared. Try again in a few minutes.",
+      "badSignature": "This offline time couldn't be checked, so it wasn't counted.",
+      "badPayload": "This offline time couldn't be read, so it wasn't counted.",
+      "ended": "Your access to this course has ended, so the saved lesson was removed.",
+      "phoneOnly": "Lessons can be saved only in the REOS app on your phone.",
+      "recording": "You're offline. Your time is kept on this phone and sent when you're back online."
+    },
+    "audioOnly": "Audio only",
+    "audioOnlyHint": "Keeps playing with the screen locked. Seat time counts only while REOS is on screen.",
+    "audioOnlyOn": "Audio only is on. The video is hidden to save data.",
+    "downloads": {
+      "title": "Downloads",
+      "purpose": "Study offline without filling your phone.",
+      "save": "Save offline",
+      "saved": "Saved offline",
+      "expired": "Go online to keep using",
+      "storage": "Storage used",
+      "used": "{{used}} of {{limit}} used",
+      "limit": "Storage limit",
+      "smart": "Smart downloads",
+      "smartHint": "Saves your next two lessons on Wi-Fi and removes lessons you've finished.",
+      "wifiOnly": "Download on Wi-Fi only",
+      "wifiOnlyHint": "Each hour of video is about 180 MB.",
+      "lessons": "Saved lessons",
+      "emptyTitle": "No saved lessons",
+      "empty": "Open a lesson and choose Save offline to watch it without a connection.",
+      "daysLeft_one": "Works {{count}} more day offline",
+      "daysLeft_other": "Works {{count}} more days offline",
+      "goOnline": "Go online to check it",
+      "unsent": "Offline time waiting to send",
+      "remove": "Remove",
+      "removed": "Removed {{title}}",
+      "removedEnded_one": "{{count}} saved lesson was removed because access ended or you finished it.",
+      "removedEnded_other": "{{count}} saved lessons were removed because access ended or you finished them.",
+      "errors": {
+        "wifi": "Connect to Wi-Fi to save this lesson, or turn off Download on Wi-Fi only in Downloads.",
+        "limit": "Not enough room within your storage limit. Remove a lesson or raise the limit in Downloads.",
+        "server": "We couldn't save this lesson. Please try again."
+      }
+    },
+    "report": {
+      "title": "Report this question",
+      "send": "Send report",
+      "sent": "Thanks. We'll tell you when it's reviewed.",
+      "reasons": {
+        "wrong_answer": "The answer is wrong",
+        "unclear": "It's unclear",
+        "out_of_date": "It's out of date",
+        "other": "Something else"
+      }
     }
   }
 }
