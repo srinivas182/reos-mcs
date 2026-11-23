@@ -2248,7 +2248,6 @@
     "learn.ask.demo": "Demo answer: AI isn't connected yet, so this is the course's own words.",
     "learn.ask.from": "From “:lesson”",
     "learn.ask.label": "Your question",
-    "learn.ask.noCredits": "You're out of AI credits this month. Add more in Plan and billing.",
     "learn.ask.notCovered": "Not covered in this course",
     "learn.ask.notFound": "This course doesn't cover that yet. Try other words, or ask about this lesson.",
     "learn.ask.paused": "Paused at :time",

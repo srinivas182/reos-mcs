@@ -3481,7 +3481,6 @@
     "credit": "{{type}} · aprobación {{number}}",
     "ask": {
       "notFound": "Este curso todavía no trata ese tema. Pruebe con otras palabras o pregunte sobre esta lección.",
-      "noCredits": "Ya usó sus créditos de IA de este mes. Agregue más en Plan y facturación.",
       "sim": {
         "simpler": "En pocas palabras: :text",
         "spanish": ":text",

@@ -69,8 +69,7 @@ final class PlayerController extends Controller
      *
      * Mid-lesson: an answer from this course only, with where it comes from;
      * `simpler`, `spanish` or `quiz` build on the previous answer. Says so
-     * when the course doesn't cover it. One AI credit when Claude answers
-     * (402 with none left); candidates' come from their sponsor.
+     * when the course doesn't cover it. Free; 429 over the hourly AI limit.
      *
      * @response array{answer: string, sources: list<array{lesson_id: int, lesson: string, seconds: int|null, page: int|null, heading: string|null, text: string}>, quiz: array{prompt: string, options: list<string>, correct: int, explanation: string}|null, engine: 'ai'|'simulator'|'none', found: bool}
      */

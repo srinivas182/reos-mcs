@@ -255,7 +255,7 @@
   - asking pauses at the second and answers from this course only, with where it's from;
   - then Explain simpler, En español, Quiz me, Resume, or Play from the cited second;
   - says plainly when the course doesn't cover the question;
-  - one AI credit per Claude answer (sponsored for candidates); free in demo mode.
+  - free for every learner (decision of 23 November 2026), logged at 0 credits within the hourly AI limit.
 - **Playback settings** (phone, candidate screen 26, ADR 0030 §11):
   - Quality (Auto, 720p, 540p, 360p), Data saver, Speed, Captions and Audio only, with data use per hour;
   - Auto on Wi-Fi; 540p, or 360p with data saver, on mobile data;
@@ -302,6 +302,7 @@
    - Every use is logged in `ai_credit_uses` with 0 credits, so the cost stays visible.
 3. **Salesforce:** standard Contacts, Leads, Tasks and Notes, with per-brokerage field mapping for real-estate setups.
 4. **Diagnostic:** 50 questions in 45 minutes.
+5. **Ask the instructor is free for every learner** (23 November 2026, at the wrap-up): logged at 0 credits like the CRM summaries, within the hourly AI limit.
 
 ## Sources
 

@@ -1695,8 +1695,7 @@ export interface paths {
          * Ask the instructor (Interrupt and ask)
          * @description Mid-lesson: an answer from this course only, with where it comes from;
          *     `simpler`, `spanish` or `quiz` build on the previous answer. Says so
-         *     when the course doesn't cover it. One AI credit when Claude answers
-         *     (402 with none left); candidates' come from their sponsor.
+         *     when the course doesn't cover it. Free; 429 over the hourly AI limit.
          */
         post: operations["learn.ask"];
         delete?: never;

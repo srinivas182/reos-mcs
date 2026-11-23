@@ -3481,7 +3481,6 @@
     "credit": "{{type}} · approval {{number}}",
     "ask": {
       "notFound": "This course doesn't cover that yet. Try other words, or ask about this lesson.",
-      "noCredits": "You're out of AI credits this month. Add more in Plan and billing.",
       "sim": {
         "simpler": "In short: :text",
         "spanish": ":text",
