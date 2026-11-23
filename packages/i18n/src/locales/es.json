@@ -1327,6 +1327,29 @@
       "planTitle": "Su plan está listo",
       "toDashboard": "Ir a mi panel",
       "questionOf": "Pregunta {{number}} de {{total}}"
+    },
+    "packages": {
+      "eyebrow": "Paquetes",
+      "title": "Paquetes para candidatos de {{state}}",
+      "intro": "Todo para obtener su licencia de {{state}}: cursos de calificación, preparación para el examen, o ambos. ¿Lo patrocina una escuela? Su precio puede ser menor.",
+      "state": "Estado",
+      "none": "Aún no hay paquetes para {{state}}.",
+      "buy": "Comprar",
+      "buyNamed": "Comprar {{product}}",
+      "yourPrice": "Su precio con {{sponsor}} (normalmente {{amount}}).",
+      "discount": "Estudiantes de {{sponsor}}: {{amount}} de descuento",
+      "codeTitle": "¿Tiene un código?",
+      "codeIntro": "Las escuelas, corredurías y asociaciones dan códigos que cubren un paquete. Vea qué cubre el suyo y úselo después de iniciar sesión.",
+      "check": "Revisar código",
+      "codeFailed": "No pudimos revisar ese código. Inténtelo de nuevo.",
+      "covers": "{{sponsor}} cubre {{product}}.",
+      "months_one": "Acceso por {{count}} mes.",
+      "months_other": "Acceso por {{count}} meses.",
+      "asLong": "Acceso mientras dure el paquete.",
+      "noObligation": "Usarlo no lo compromete a nada.",
+      "useCode": "Usar este código",
+      "signInToUse": "Inicie sesión para usar este código",
+      "see": "Ver paquetes y precios"
     }
   },
   "connections": {

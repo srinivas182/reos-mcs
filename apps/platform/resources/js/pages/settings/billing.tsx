@@ -1,4 +1,4 @@
-import { Form, Head, router } from '@inertiajs/react';
+import { Form, Head, router, usePage } from '@inertiajs/react';
 import { CreditCard, ExternalLink, Receipt } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
@@ -65,6 +65,10 @@ export default function Billing({
     }[];
 }) {
     const { t, i18n } = useTranslation();
+    // A code checked on reos.com/packages comes here filled in (A8.3b).
+    const prefill =
+        new URLSearchParams(usePage().url.split('?')[1] ?? '').get('code') ??
+        undefined;
     const date = (iso: string) =>
         new Date(iso).toLocaleDateString(i18n.language, {
             dateStyle: 'medium',
@@ -168,6 +172,7 @@ export default function Billing({
                                 name="code"
                                 autoComplete="off"
                                 maxLength={40}
+                                defaultValue={prefill}
                                 className="font-mono uppercase"
                             />
                             <InputError message={errors.code} />

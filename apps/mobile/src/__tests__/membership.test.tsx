@@ -52,17 +52,17 @@ describe('Membership (candidate screen 6)', () => {
   });
 
   it('links to reos.com when REOS switches it on', async () => {
-    mockApi.GET.mockResolvedValue(ok(membership({ ios_buy_link: 'link', buy_url: 'https://reos.com/settings/billing' })));
+    mockApi.GET.mockResolvedValue(ok(membership({ ios_buy_link: 'link', buy_url: 'https://reos.com/packages/TX' })));
 
     await wrap(<MembershipScreen />);
     await fireEvent.press(await screen.findByRole('button', { name: 'Continue on reos.com' }));
 
-    expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith('https://reos.com/settings/billing');
+    expect(WebBrowser.openBrowserAsync).toHaveBeenCalledWith('https://reos.com/packages/TX');
   });
 
   it('shows the same words without a link on Android', async () => {
     setOs('android');
-    mockApi.GET.mockResolvedValue(ok(membership({ ios_buy_link: 'link', buy_url: 'https://reos.com/settings/billing' })));
+    mockApi.GET.mockResolvedValue(ok(membership({ ios_buy_link: 'link', buy_url: 'https://reos.com/packages/TX' })));
 
     await wrap(<MembershipScreen />);
 

@@ -68,6 +68,35 @@ final readonly class SponsorCodes
     }
 
     /** "Enter a code": the person gets the product's access, once per code, while seats last. */
+    /**
+     * What a code covers, before signing in to use it ("Have a code?" on
+     * reos.com, A8.3b; screen 11's facts). Nothing is used up.
+     *
+     * @return array{code: string, sponsor: string, product: string, state: string, months: int|null, expires_at: string|null}
+     *
+     * @throws ValidationException when the code is unknown, expired or full, saying which
+     */
+    public function preview(string $input): array
+    {
+        $value = Str::upper((string) preg_replace('/\s+/', '', $input));
+        $code = SponsorCode::query()->with(['product', 'sponsor'])->where('code', $value)->first();
+        $error = match (true) {
+            $code === null || ! $code->active => 'billing.codes.errors.unknown',
+            $code->expires_at !== null && $code->expires_at->isPast() => 'billing.codes.errors.expired',
+            $code->used >= $code->seats => 'billing.codes.errors.full',
+            default => null,
+        };
+
+        if ($error !== null) {
+            throw ValidationException::withMessages(['code' => __($error)]);
+        }
+
+        return [
+            'code' => $code->code, 'sponsor' => $code->sponsor->name, 'product' => $code->product->name, 'state' => $code->state_code,
+            'months' => $code->access_months, 'expires_at' => $code->expires_at?->toIso8601String(),
+        ];
+    }
+
     public function redeem(User $user, string $input): SponsorCode
     {
         $value = Str::upper((string) preg_replace('/\s+/', '', $input));

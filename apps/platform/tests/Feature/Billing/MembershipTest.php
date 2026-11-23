@@ -43,7 +43,7 @@ describe('the Membership screen (candidate screen 6)', function () {
         $this->actingAs($this->ops)->put('/admin/plans/ios-buy-link', ['mode' => 'link'])->assertRedirect();
         expect(AuditEvent::query()->where('action', 'platform.setting_changed')->sole()->properties)->toBe(['from' => 'email', 'to' => 'link']);
 
-        $this->actingAs($this->sofia)->getJson('/api/v1/me/membership')->assertJson(['ios_buy_link' => 'link', 'buy_url' => url('/settings/billing')]);
+        $this->actingAs($this->sofia)->getJson('/api/v1/me/membership')->assertJson(['ios_buy_link' => 'link', 'buy_url' => url('/packages/TX')]);
     });
 });
 

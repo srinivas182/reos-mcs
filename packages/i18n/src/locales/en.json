@@ -1327,6 +1327,29 @@
       "planTitle": "Your plan is ready",
       "toDashboard": "Go to my dashboard",
       "questionOf": "Question {{number}} of {{total}}"
+    },
+    "packages": {
+      "eyebrow": "Packages",
+      "title": "Packages for {{state}} candidates",
+      "intro": "Everything to get your {{state}} license: qualifying courses, exam prep, or both. Sponsored by a school? Your price may be lower.",
+      "state": "State",
+      "none": "No packages for {{state}} yet.",
+      "buy": "Buy",
+      "buyNamed": "Buy {{product}}",
+      "yourPrice": "Your price with {{sponsor}} (usually {{amount}}).",
+      "discount": "{{sponsor}} students: {{amount}} off",
+      "codeTitle": "Have a code?",
+      "codeIntro": "Schools, brokerages and associations give codes that cover a package. Check what yours covers, then use it once you've signed in.",
+      "check": "Check code",
+      "codeFailed": "We couldn't check that code. Please try again.",
+      "covers": "{{sponsor}} covers {{product}}.",
+      "months_one": "Access for {{count}} month.",
+      "months_other": "Access for {{count}} months.",
+      "asLong": "Access for as long as the package lasts.",
+      "noObligation": "Using it doesn't commit you to anything.",
+      "useCode": "Use this code",
+      "signInToUse": "Sign in to use this code",
+      "see": "See packages and prices"
     }
   },
   "connections": {
