@@ -1,13 +1,13 @@
 import { router } from 'expo-router';
 import type { LucideIcon } from 'lucide-react-native';
-import { ClipboardCheck, Dumbbell, Gauge, GraduationCap, Target, Wrench } from 'lucide-react-native';
+import { ClipboardCheck, Dumbbell, Gauge, GraduationCap, Sigma, Target, Wrench } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { asTopic, type Coach, startPlan, startTest } from '@/lib/practice';
 import { Button, Card, ListRow, SectionTitle, Text } from '@/ui';
 
-const icons: Record<string, LucideIcon> = { diagnostic: ClipboardCheck, plan: Wrench, drill: Dumbbell, fix: Target, simulation: GraduationCap, readiness: Gauge };
+const icons: Record<string, LucideIcon> = { diagnostic: ClipboardCheck, plan: Wrench, drill: Dumbbell, fix: Target, math: Sigma, simulation: GraduationCap, readiness: Gauge };
 
 /**
  * The top of the practice hub (candidate screen 38, A9.2b): the smart drill
@@ -50,6 +50,9 @@ export function CoachCard({ coach, onSimulation }: { coach: Coach; onSimulation:
       }
       case 'drill':
         await drill();
+        break;
+      case 'math':
+        router.push('/practice/math');
         break;
       case 'simulation':
         onSimulation();

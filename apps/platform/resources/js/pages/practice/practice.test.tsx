@@ -10,6 +10,8 @@ import {
     coach,
     drillAttempt,
     hub,
+    mathKinds,
+    mathProblem,
     readinessMap,
     results,
     studyToday,
@@ -18,6 +20,7 @@ import {
 import { i18n } from '@/lib/i18n';
 import PracticeIndex from '@/pages/practice/index';
 import FixPage from '@/pages/practice/fix';
+import MathPage from '@/pages/practice/math';
 import ReadinessPage from '@/pages/practice/readiness';
 import ResultsPage from '@/pages/practice/results';
 import TestPage from '@/pages/practice/test';
@@ -371,5 +374,130 @@ describe('drills and fix plans (screens 38, 46 and 47, A9.2b)', () => {
         );
         expect(await screen.findByText(/Not this one:/)).toBeInTheDocument();
         expect(screen.getAllByRole('radio')[3]).toBeDisabled();
+    });
+});
+
+describe('math lab (screen 48, A9.2c)', () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+    const reply = (data: unknown, status = 200) =>
+        new Response(JSON.stringify({ data }), {
+            status,
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+    });
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('works a problem step by step: hint when wrong, the answer when right, then a variant', async () => {
+        const user = userEvent.setup();
+        fetchMock
+            .mockResolvedValueOnce(reply(mathProblem, 201))
+            .mockResolvedValueOnce(
+                reply({
+                    correct: false,
+                    hint: 'Lenders use the lower of the price and the appraisal.',
+                    answer: null,
+                    solved: false,
+                }),
+            )
+            .mockResolvedValueOnce(
+                reply({
+                    correct: true,
+                    hint: null,
+                    answer: '$318,000',
+                    solved: false,
+                }),
+            );
+        render(<MathPage kinds={mathKinds} problem={null} />);
+
+        expect(screen.getByText('5 solved')).toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', { name: 'Start: Loan-to-value' }),
+        );
+        expect(
+            await screen.findByText(/The home appraises at \$318,000/),
+        ).toBeInTheDocument();
+
+        await user.type(
+            screen.getByLabelText('The value the lender uses'),
+            '325000',
+        );
+        await user.click(screen.getByRole('button', { name: 'Check step' }));
+        expect(
+            await screen.findByText(
+                'Lenders use the lower of the price and the appraisal.',
+            ),
+        ).toBeInTheDocument();
+        expect(JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body))).toEqual({
+            kind: 'ltv',
+            seed: 4711,
+            step: 1,
+            value: '325000',
+        });
+
+        await user.clear(screen.getByLabelText('The value the lender uses'));
+        await user.type(
+            screen.getByLabelText('The value the lender uses'),
+            '318,000',
+        );
+        await user.click(screen.getByRole('button', { name: 'Check step' }));
+        expect(await screen.findByText('Right: $318,000')).toBeInTheDocument();
+
+        // Wrong once, then Show the answer.
+        fetchMock.mockReset();
+        fetchMock
+            .mockResolvedValueOnce(
+                reply({
+                    correct: false,
+                    hint: 'Multiply that value by the loan-to-value ratio.',
+                    answer: null,
+                    solved: false,
+                }),
+            )
+            .mockResolvedValueOnce(
+                reply({
+                    correct: false,
+                    hint: null,
+                    answer: '$302,100',
+                    solved: false,
+                }),
+            )
+            .mockResolvedValueOnce(
+                reply({
+                    correct: true,
+                    hint: null,
+                    answer: '$22,900',
+                    solved: true,
+                }),
+            )
+            .mockResolvedValueOnce(reply({ ...mathProblem, seed: 99 }, 201));
+        await user.type(
+            screen.getByLabelText('The most the lender will lend'),
+            '300000',
+        );
+        await user.click(screen.getByRole('button', { name: 'Check step' }));
+        await user.click(
+            await screen.findByRole('button', { name: 'Show the answer' }),
+        );
+        expect(
+            await screen.findByText('The answer: $302,100'),
+        ).toBeInTheDocument();
+
+        await user.type(
+            screen.getByLabelText("The buyer's down payment"),
+            '22900',
+        );
+        await user.click(screen.getByRole('button', { name: 'Check step' }));
+        expect(await screen.findByText('Solved')).toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', { name: 'New numbers, same kind' }),
+        );
+        expect(JSON.parse(String(fetchMock.mock.calls[3]?.[1]?.body))).toEqual({
+            kind: 'ltv',
+        });
     });
 });

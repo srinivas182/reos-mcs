@@ -2,6 +2,8 @@ import type {
     Attempt,
     Coach,
     HubTest,
+    MathKind,
+    MathProblem,
     ReadinessMap,
     Results,
     StudyToday,
@@ -421,4 +423,27 @@ export const drillAttempt: Attempt = {
               }
             : { ...q, choice: null, flagged: false, feedback: null },
     ),
+};
+
+/** The math lab's menu (A9.2c). */
+export const mathKinds: { kind: MathKind; solved: number }[] = [
+    { kind: 'proration', solved: 3 },
+    { kind: 'commission', solved: 5 },
+    { kind: 'ltv', solved: 1 },
+    { kind: 'area', solved: 0 },
+    { kind: 'cap', solved: 0 },
+    { kind: 'net', solved: 2 },
+    { kind: 'points', solved: 0 },
+];
+
+/** A loan-to-value problem as the server sends it: no answers. */
+export const mathProblem: MathProblem = {
+    kind: 'ltv',
+    seed: 4711,
+    prompt: 'A buyer agrees to pay $325,000. The home appraises at $318,000. The lender will lend 95% of the value. What are the loan and the down payment?',
+    steps: [
+        { n: 1, label: 'The value the lender uses', unit: 'dollars' },
+        { n: 2, label: 'The most the lender will lend', unit: 'dollars' },
+        { n: 3, label: "The buyer's down payment", unit: 'dollars' },
+    ],
 };

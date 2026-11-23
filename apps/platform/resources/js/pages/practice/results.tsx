@@ -4,6 +4,7 @@ import {
     CheckCircle2,
     PlayCircle,
     Shuffle,
+    Sigma,
     XCircle,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -18,6 +19,7 @@ import { cn } from '@/lib/utils';
 import { lesson as openLesson } from '@/routes/learn';
 import {
     index as practiceIndex,
+    math as mathLab,
     similar as similarRoute,
 } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
@@ -250,6 +252,18 @@ export default function ResultsPage({
                                             >
                                                 <PlayCircle aria-hidden />
                                                 {t('practice.results.watch')}
+                                            </Link>
+                                        </Button>
+                                    ) : null}
+                                    {!q.correct && q.math ? (
+                                        <Button variant="outline" asChild>
+                                            <Link
+                                                href={mathLab({
+                                                    query: { kind: q.math },
+                                                })}
+                                            >
+                                                <Sigma aria-hidden />
+                                                {t('practice.math.practise')}
                                             </Link>
                                         </Button>
                                     ) : null}

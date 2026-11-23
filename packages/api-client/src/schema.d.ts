@@ -1093,6 +1093,68 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practice/math": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The math lab
+         * @description Every kind of problem with how many the candidate has solved.
+         */
+        get: operations["practice.math.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/math/problems": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A new problem
+         * @description New numbers of the kind asked for: the problem and its steps, without
+         *     the answers (the server checks each step).
+         */
+        post: operations["practice.math.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/math/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a step
+         * @description Right: the answer as shown, and whether the problem is solved. Wrong:
+         *     the step's hint. `reveal` shows the answer instead. Steps go in order.
+         */
+        post: operations["practice.math.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me": {
         parameters: {
             query?: never;
@@ -3217,6 +3279,18 @@ export interface components {
          * @enum {string}
          */
         Locale: "en" | "es";
+        /**
+         * MathCheckRequest
+         * @description One math lab step to check, or to show (screen 48, A9.2c).
+         */
+        MathCheckRequest: {
+            /** @enum {string} */
+            kind: "proration" | "commission" | "ltv" | "area" | "cap" | "net" | "points";
+            seed: number;
+            step: number;
+            value?: number | null;
+            reveal?: boolean;
+        };
         /** MeResource */
         MeResource: {
             id: number;
@@ -3870,6 +3944,7 @@ export type SchemaLicenceResource = components['schemas']['LicenceResource'];
 export type SchemaLicenceRoleRequest = components['schemas']['LicenceRoleRequest'];
 export type SchemaLicenceType = components['schemas']['LicenceType'];
 export type SchemaLocale = components['schemas']['Locale'];
+export type SchemaMathCheckRequest = components['schemas']['MathCheckRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
 export type SchemaNotificationSettingsRequest = components['schemas']['NotificationSettingsRequest'];
@@ -4514,7 +4589,7 @@ export interface operations {
                             }[];
                             ranked: {
                                 /** @enum {string} */
-                                mode: "diagnostic" | "plan" | "drill" | "fix" | "simulation" | "readiness";
+                                mode: "diagnostic" | "plan" | "drill" | "fix" | "math" | "simulation" | "readiness";
                                 why: string;
                                 topic: string | null;
                                 plan_id: number | null;
@@ -6336,6 +6411,126 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.math.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            kind: string;
+                            solved: number;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.math.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    kind: "proration" | "commission" | "ltv" | "area" | "cap" | "net" | "points";
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            kind: string;
+                            seed: number;
+                            prompt: string;
+                            steps: {
+                                n: number;
+                                label: string;
+                                unit: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.math.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MathCheckRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            correct: boolean;
+                            hint: string | null;
+                            answer: string | null;
+                            solved: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -8404,6 +8599,7 @@ export interface operations {
                                     id: number;
                                     seconds: number | null;
                                 } | null;
+                                math: string | null;
                             }[];
                         };
                     };
@@ -8493,6 +8689,7 @@ export interface operations {
                                     id: number;
                                     seconds: number | null;
                                 } | null;
+                                math: string | null;
                             }[];
                         };
                     };

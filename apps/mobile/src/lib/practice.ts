@@ -2,7 +2,7 @@
  * Candidate practice and the study plan on the phone (A8.3, ADR 0032):
  * Today's plan, the practice hub, and timed tests saved after every tap.
  */
-import type { paths } from '@reos/api-client';
+import type { paths, Schemas } from '@reos/api-client';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
@@ -26,6 +26,9 @@ export type Coach = Got<'/practice/hub'>['data'];
 export type TopicPlan = Got<'/practice/topic-plans/{plan}'>['data'];
 export type PlanStep = TopicPlan['steps'][number];
 export type PlanNext = Posted<'/practice/topic-plans/{plan}/continue'>['data'];
+export type MathKind = Got<'/practice/math'>['data'][number];
+export type MathCheck = Posted<'/practice/math/check'>['data'];
+export type MathProblem = Posted<'/practice/math/problems'>['data'];
 export type ExamKind = 'national' | 'state' | 'simulation';
 export const isExam = (kind: string): kind is ExamKind => kind === 'national' || kind === 'state' || kind === 'simulation';
 
@@ -96,6 +99,40 @@ export function openStep(plan: number, next: PlanNext) {
   } else {
     router.push({ pathname: '/practice/fix/[id]', params: { id: String(plan), misses: '1' } });
   }
+}
+
+/** Math lab (screen 48, A9.2c): the kinds with how many solved. */
+export async function loadMathKinds(): Promise<MathKind[]> {
+  const { data } = await api().GET('/practice/math');
+
+  return data?.data ?? [];
+}
+
+export type MathLabKind = Schemas['MathCheckRequest']['kind'];
+export const MATH_KINDS: MathLabKind[] = ['proration', 'commission', 'ltv', 'area', 'cap', 'net', 'points'];
+export const asMathKind = (value: string | null | undefined): MathLabKind | null => ((MATH_KINDS as string[]).includes(value ?? '') ? (value as MathLabKind) : null);
+
+/** A new problem of this kind; the answers stay on the server. */
+export async function newMathProblem(kind: MathLabKind): Promise<MathProblem | null> {
+  const { data } = await api().POST('/practice/math/problems', { body: { kind } });
+
+  return data?.data ?? null;
+}
+
+/** "$1,250.50" as a number; null when it isn't one. */
+export function mathValue(text: string): number | null {
+  const value = Number(text.replace(/[$,%\s]/g, ''));
+
+  return text.trim() === '' || Number.isNaN(value) ? null : value;
+}
+
+/** Check one step's value, or (`null`) show its answer. */
+export async function checkMathStep(problem: MathProblem, step: number, value: number | null): Promise<MathCheck | null> {
+  const kind = asMathKind(problem.kind);
+  if (!kind) return null;
+  const { data } = await api().POST('/practice/math/check', { body: { kind, seed: problem.seed, step, ...(value === null ? { reveal: true } : { value }) } });
+
+  return data?.data ?? null;
 }
 
 /** The Readiness map and What you're good at (screens 54 and 44, A9.2). */

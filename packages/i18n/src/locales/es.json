@@ -6227,7 +6227,9 @@
         "rehearse": "Está cerca de la línea de reserva: practique el examen real.",
         "exam_soon": "Su examen se acerca: practique con el formato real.",
         "check": "Vea cómo le iría en el examen real.",
-        "map": "Su probabilidad de aprobar cada parte."
+        "map": "Su probabilidad de aprobar cada parte.",
+        "math_weak": "Matemáticas es uno de sus temas más débiles: practíquelo paso a paso.",
+        "math": "Matemáticas de bienes raíces, paso a paso, con números nuevos."
       },
       "modes": {
         "diagnostic": "Diagnóstico",
@@ -6235,7 +6237,121 @@
         "drill": "Práctica inteligente",
         "fix": "Mejorar mi tema más débil",
         "simulation": "Simulacro completo",
-        "readiness": "Preparación"
+        "readiness": "Preparación",
+        "math": "Laboratorio de matemáticas"
+      }
+    },
+    "math": {
+      "title": "Laboratorio de matemáticas",
+      "description": "Matemáticas de bienes raíces, paso a paso. Cada problema tiene números nuevos, y después de resolverlo sigue otro del mismo tipo.",
+      "kinds": {
+        "proration": "Prorrateos",
+        "commission": "Comisiones",
+        "ltv": "Relación préstamo-valor",
+        "area": "Área y acres",
+        "cap": "Capitalización",
+        "net": "Neto para el vendedor",
+        "points": "Puntos e intereses"
+      },
+      "kindHints": {
+        "proration": "Los impuestos que se reparten en el cierre",
+        "commission": "Del precio de venta a la parte del agente",
+        "ltv": "Lo máximo que presta el prestamista, y el enganche",
+        "area": "Pies cuadrados, acres y precio",
+        "cap": "El valor a partir de los ingresos",
+        "net": "Lo que recibe el vendedor",
+        "points": "Lo que cuestan los puntos y el interés del primer mes"
+      },
+      "solved_one": "{{count}} resuelto",
+      "solved_other": "{{count}} resueltos",
+      "start": "Empezar",
+      "step": "Paso {{n}} de {{of}}",
+      "value": "Su respuesta",
+      "check": "Revisar el paso",
+      "show": "Ver la respuesta",
+      "right": "Correcto: {{answer}}",
+      "shown": "La respuesta: {{answer}}",
+      "wrong": "No exactamente.",
+      "next": "Siguiente paso",
+      "variant": "Números nuevos, mismo tipo",
+      "choose": "Elegir otro tipo",
+      "solvedTitle": "Resuelto",
+      "solvedBody": "Completó todos los pasos. Pruebe el mismo tipo con números nuevos para afianzarlo.",
+      "calculator": "Calculadora",
+      "practise": "Practicar esto en el laboratorio de matemáticas",
+      "units": {
+        "dollars": "dólares",
+        "percent": "por ciento",
+        "days": "días",
+        "sqft": "pies²",
+        "acres": "acres"
+      },
+      "errors": {
+        "step": "Complete los pasos en orden.",
+        "number": "Escriba un número, como 1250 o 12.50."
+      },
+      "proration": {
+        "prompt": "Los impuestos anuales sobre la propiedad son :tax y aún no se han pagado (en Texas se pagan al final del año). La venta se cierra el :date, y el vendedor paga hasta la fecha de cierre. Con un año de 365 días, ¿cuánto le acredita el vendedor al comprador?",
+        "daily": "El impuesto de un día",
+        "dailyHint": "Divida el impuesto anual entre 365.",
+        "days": "Días en que el vendedor fue dueño este año",
+        "daysHint": "Cuente desde el 1 de enero hasta la fecha de cierre, incluidos ambos.",
+        "share": "La parte del vendedor, acreditada al comprador",
+        "shareHint": "Multiplique el impuesto diario por los días del vendedor."
+      },
+      "commission": {
+        "prompt": "Una casa se vende en :price con una comisión de :rate. La agencia del listado paga a la agencia del comprador y se queda con :side de la comisión. El reparto del agente del listado con su bróker es de :split. ¿Cuánto gana el agente del listado?",
+        "total": "La comisión total",
+        "totalHint": "Multiplique el precio de venta por la tasa de comisión.",
+        "side": "La parte de la agencia del listado",
+        "sideHint": "Multiplique la comisión total por la parte de la agencia.",
+        "agent": "La parte del agente del listado",
+        "agentHint": "Multiplique la parte de la agencia por el reparto del agente."
+      },
+      "ltv": {
+        "prompt": "Un comprador acepta pagar :price. La casa se valúa en :appraisal. El prestamista presta el :ltv del valor. ¿Cuánto es el préstamo y cuánto el enganche?",
+        "value": "El valor que usa el prestamista",
+        "valueHint": "Los prestamistas usan el menor entre el precio y el avalúo.",
+        "loan": "Lo máximo que presta el prestamista",
+        "loanHint": "Multiplique ese valor por la relación préstamo-valor.",
+        "down": "El enganche del comprador",
+        "downHint": "Reste el préstamo del precio que paga el comprador."
+      },
+      "area": {
+        "prompt": "Un lote rectangular mide :front pies de ancho y :depth pies de fondo. Los terrenos cercanos se venden a :per_acre por acre. ¿Cuánto vale el lote?",
+        "sqft": "El área del lote en pies cuadrados",
+        "sqftHint": "Multiplique el ancho por el fondo.",
+        "acres": "El área del lote en acres (dos decimales)",
+        "acresHint": "Divida los pies cuadrados entre 43,560.",
+        "price": "El precio del lote",
+        "priceHint": "Multiplique los acres por el precio por acre."
+      },
+      "cap": {
+        "prompt": "Un edificio pequeño de apartamentos tiene un ingreso bruto potencial de :gross al año, con :vacancy de desocupación y pérdida por cobranza y :expenses de gastos operativos. Edificios similares se venden con una tasa de capitalización de :cap. ¿Cuánto vale?",
+        "effective": "Ingreso bruto efectivo",
+        "effectiveHint": "Reste la desocupación y la pérdida por cobranza del ingreso bruto potencial.",
+        "noi": "Ingreso operativo neto",
+        "noiHint": "Reste los gastos operativos del ingreso bruto efectivo.",
+        "value": "El valor del edificio",
+        "valueHint": "Divida el ingreso operativo neto entre la tasa de capitalización."
+      },
+      "net": {
+        "prompt": "Un vendedor acepta :price. La comisión es de :rate, otros gastos de venta suman :costs y el saldo de la hipoteca es :payoff. ¿Cuánto recibe neto el vendedor?",
+        "commission": "La comisión",
+        "commissionHint": "Multiplique el precio por la tasa de comisión.",
+        "selling": "El total de gastos de venta",
+        "sellingHint": "Sume la comisión y los otros gastos de venta.",
+        "net": "El neto del vendedor",
+        "netHint": "Reste del precio los gastos de venta y el saldo de la hipoteca."
+      },
+      "points": {
+        "prompt": "Un comprador paga :price con :down de enganche. El prestamista cobra :points puntos de descuento sobre un préstamo al :rate anual. ¿Cuánto cuestan los puntos y cuánto es el interés del primer mes?",
+        "loan": "El monto del préstamo",
+        "loanHint": "Reste el enganche del precio.",
+        "cost": "Lo que cuestan los puntos",
+        "costHint": "Cada punto es el 1% del préstamo.",
+        "interest": "El interés del primer mes",
+        "interestHint": "Multiplique el préstamo por la tasa anual y divida entre 12."
       }
     }
   },

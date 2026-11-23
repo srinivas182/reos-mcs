@@ -7,6 +7,7 @@ import PracticeHub from '@/app/practice/index';
 import ReadinessScreen from '@/app/practice/readiness';
 import ResultsScreen from '@/app/practice/results/[id]';
 import FixScreen from '@/app/practice/fix/[id]';
+import MathLabScreen from '@/app/practice/math';
 import GoodAtScreen from '@/app/practice/topics';
 import { CandidateToday } from '@/features/study/CandidateToday';
 import { i18n } from '@/lib/i18n';
@@ -103,8 +104,8 @@ const results: Results = {
   weakest: ['math'],
   strongest: ['agency'],
   review: [
-    { id: 101, n: 1, topic: 'agency', prompt: 'Question 1?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: 0, right: 0, correct: true, explanation: 'Because A.', source: 'TREC Rules', portion: 'national', scored: true, lesson: null },
-    { id: 102, n: 2, topic: 'math', prompt: 'Question 2?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: null, right: 2, correct: false, explanation: 'Because C.', source: 'Exam outline', portion: 'national', scored: true, lesson: null },
+    { id: 101, n: 1, topic: 'agency', prompt: 'Question 1?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: 0, right: 0, correct: true, explanation: 'Because A.', source: 'TREC Rules', portion: 'national', scored: true, lesson: null, math: null },
+    { id: 102, n: 2, topic: 'math', prompt: 'Question 2?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: null, right: 2, correct: false, explanation: 'Because C.', source: 'Exam outline', portion: 'national', scored: true, lesson: null, math: null },
   ],
 };
 
@@ -358,6 +359,51 @@ describe('drills and fix plans (screens 38, 46 and 47, A9.2b)', () => {
     await fireEvent.press(screen.getByLabelText('Continue'));
     expect(mockApi.POST).toHaveBeenCalledWith('/practice/topic-plans/{plan}/continue', { params: { path: { plan: 31 } } });
     expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/[id]', params: { id: '44' } });
+  });
+});
+
+describe('math lab (screen 48, A9.2c)', () => {
+  const problem = {
+    kind: 'ltv',
+    seed: 4711,
+    prompt: 'A buyer agrees to pay $325,000. The home appraises at $318,000. The lender will lend 95% of the value.',
+    steps: [
+      { n: 1, label: 'The value the lender uses', unit: 'dollars' },
+      { n: 2, label: 'The most the lender will lend', unit: 'dollars' },
+    ],
+  };
+
+  it('opens a missed question\'s kind, checks each step with a hint when wrong, and offers a variant', async () => {
+    (useLocalSearchParams as jest.Mock).mockReturnValue({ kind: 'ltv' });
+    mockApi.GET.mockResolvedValue(ok({ data: [{ kind: 'ltv', solved: 1 }] }));
+    mockApi.POST.mockImplementation((path: string, init: { body: Record<string, unknown> }) => {
+      if (path === '/practice/math/problems') return Promise.resolve(ok({ data: problem }));
+      const { step, value, reveal } = init.body;
+      if (step === 1 && value === 325000) return Promise.resolve(ok({ data: { correct: false, hint: 'Lenders use the lower of the price and the appraisal.', answer: null, solved: false } }));
+      if (step === 1) return Promise.resolve(ok({ data: { correct: true, hint: null, answer: '$318,000', solved: false } }));
+
+      return Promise.resolve(ok({ data: reveal ? { correct: false, hint: null, answer: '$302,100', solved: true } : { correct: false, hint: 'Multiply that value by the loan-to-value ratio.', answer: null, solved: false } }));
+    });
+    await render(wrap(<MathLabScreen />));
+
+    expect(await screen.findByText(problem.prompt)).toBeTruthy();
+    await fireEvent.changeText(screen.getByLabelText('The value the lender uses'), '$325,000');
+    await fireEvent.press(screen.getByLabelText('Check step'));
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/practice/math/check', { body: { kind: 'ltv', seed: 4711, step: 1, value: 325000 } });
+    expect(await screen.findByText('Lenders use the lower of the price and the appraisal.')).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByLabelText('The value the lender uses'), '318000');
+    await fireEvent.press(screen.getByLabelText('Check step'));
+    expect(await screen.findByText('Right: $318,000')).toBeTruthy();
+
+    await fireEvent.changeText(screen.getByLabelText('The most the lender will lend'), '1');
+    await fireEvent.press(screen.getByLabelText('Check step'));
+    await fireEvent.press(await screen.findByLabelText('Show the answer'));
+    expect(await screen.findByText('The answer: $302,100')).toBeTruthy();
+    expect(screen.getByText('Solved')).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText('New numbers, same kind'));
+    expect(mockApi.POST).toHaveBeenLastCalledWith('/practice/math/problems', { body: { kind: 'ltv' } });
   });
 });
 

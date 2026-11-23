@@ -73,6 +73,16 @@ A candidate who passes one portion retakes only the other. Sprint 9 decision 1 s
     - The readiness map is last.
     - Every item says why. Later modes join the ranking as they arrive.
 
+## Math lab (A9.2c)
+
+17. **Each kind of math problem is a generator** (`ProblemType`) that makes a problem from a seed with a small xorshift generator, so the same seed always gives the same numbers.
+    - **Kinds:** prorations (Texas taxes paid at year end, the seller through closing, 365-day year), commissions, loan-to-value, area and acres, capitalization, net to seller, and points and interest.
+    - **No answers on the screen:** the client gets the kind, the seed, the wording and the step labels. The server rebuilds the problem to check each step in order, with a tolerance for rounding.
+    - **Wrong value:** returns the step's hint. **Show the answer** reveals it and counts as shown, not right.
+    - **Records:** each problem's steps are kept in `math_solves`.
+    - **Variants and links:** each solve offers a variant of the same kind with a new seed. A missed math question in the results links to its kind (`MathLab::kindFor`, from the question's wording).
+    - **Tests:** each generator is tested against worked answers computed from its own wording, over 60 seeds.
+
 ## Consequences
 
 - Readiness (A9.2) reads `by_topic` with portions mapped from topics (state rules to the state portion), and `by_portion` from simulations for the booking line.

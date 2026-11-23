@@ -2,7 +2,12 @@ import { Link, router } from '@inertiajs/react';
 import { ArrowRight, Dumbbell, Sparkles } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { attempt as openAttempt, readiness, start } from '@/routes/practice';
+import {
+    attempt as openAttempt,
+    math as mathLab,
+    readiness,
+    start,
+} from '@/routes/practice';
 import { show as showPlan, store as storePlan } from '@/routes/practice/plans';
 import type { Coach } from './types';
 
@@ -33,6 +38,8 @@ export function CoachPanel({ coach }: { coach: Coach }) {
                 return drill();
             case 'fix':
                 return router.post(storePlan().url, { topic: item.topic });
+            case 'math':
+                return router.visit(mathLab().url);
             case 'simulation':
                 return document
                     .getElementById('simulations')

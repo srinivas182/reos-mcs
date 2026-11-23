@@ -17,15 +17,17 @@ use App\Models\User;
  * - The smart drill on the three weakest topics (15 questions, misses
  *   included), refreshed after every session.
  * - Fix the weakest topic, when it's below the pass line and has no plan.
+ * - Math lab: right after, when math is among the weakest; otherwise
+ *   before the readiness map.
  * - A full simulation: first when readiness is 80% or more (rehearse before
  *   booking), otherwise after practice once readiness reaches 60% or the
  *   exam is 45 days away.
  * - The readiness map.
  *
- * Flashcards, the speed round, math lab, hands-free and challenges join
+ * Flashcards, the speed round, hands-free and challenges join
  * the ranking as they arrive (A9.2c to A9.3).
  *
- * @phpstan-type Suggestion array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'simulation'|'readiness', why: string, topic: string|null, plan_id: int|null}
+ * @phpstan-type Suggestion array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'math'|'simulation'|'readiness', why: string, topic: string|null, plan_id: int|null}
  */
 final readonly class PracticeCoach
 {
@@ -59,8 +61,15 @@ final readonly class PracticeCoach
         if ($weakest !== null && ! $plans->contains('topic', $weakest)) {
             $ranked[] = ['mode' => 'fix', 'why' => 'weakest', 'topic' => $weakest, 'plan_id' => null];
         }
+        $mathWeak = in_array('math', array_slice($readiness['weakest'], 0, Drills::TOPICS), true);
+        if ($mathWeak) {
+            $ranked[] = ['mode' => 'math', 'why' => 'math_weak', 'topic' => 'math', 'plan_id' => null];
+        }
         if ($diagnostic && $percent < 80 && ($percent >= 60 || ($days !== null && $days <= 45))) {
             $ranked[] = $simulation;
+        }
+        if (! $mathWeak) {
+            $ranked[] = ['mode' => 'math', 'why' => 'math', 'topic' => 'math', 'plan_id' => null];
         }
         $ranked[] = ['mode' => 'readiness', 'why' => 'map', 'topic' => null, 'plan_id' => null];
         $open = TestAttempt::query()->where('user_id', $user->id)->where('kind', TestAttempt::DRILL)->whereNull('topic')->whereNull('submitted_at')->value('id');

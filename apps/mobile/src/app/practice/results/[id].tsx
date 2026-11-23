@@ -129,6 +129,7 @@ export default function ResultsScreen() {
             </Text>
           ) : null}
           {q.lesson ? <Button variant="secondary" label={t('practice.results.watch')} onPress={() => router.push({ pathname: '/learn/[id]', params: { id: String(q.lesson?.id) } })} /> : null}
+          {!q.correct && q.math ? <Button variant="secondary" label={t('practice.math.practise')} onPress={() => router.push({ pathname: '/practice/math', params: { kind: q.math ?? '' } })} /> : null}
           {!q.correct && similar[q.id] === undefined ? (
             <Button variant="ghost" label={t('practice.results.similar')} onPress={() => void more(q.id)} />
           ) : null}

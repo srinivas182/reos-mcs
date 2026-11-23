@@ -8,6 +8,7 @@ use App\Enums\QuizTopic;
 use App\Models\QuizQuestion;
 use App\Models\TestAttempt;
 use App\Models\User;
+use App\Practice\MathLab\MathLab;
 use App\Services\States\PersonStates;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
@@ -34,7 +35,7 @@ use Illuminate\Validation\ValidationException;
  * @phpstan-type Attempt array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, paused: bool, section: array{index: int, of: int, portion: string, minutes: int, questions: int}|null, questions: list<Question>}
  * @phpstan-type TopicScore array{topic: string, correct: int, total: int, percent: int, weight: int}
  * @phpstan-type PortionScore array{portion: string, correct: int, total: int, pass: int, passed: bool, percent: int, previous: int|null, seconds: int, pace: int}
- * @phpstan-type Results array{id: int, kind: string, mode: string, score: int, correct: int, total: int, pass_line: int, passed: bool|null, previous: int|null, seconds: int, portions: list<PortionScore>, timing: array{seconds_per_question: int, pace: int}|null, topics: list<TopicScore>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, portion: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, scored: bool, explanation: string, source: string, lesson: array{id: int, seconds: int|null}|null}>}
+ * @phpstan-type Results array{id: int, kind: string, mode: string, score: int, correct: int, total: int, pass_line: int, passed: bool|null, previous: int|null, seconds: int, portions: list<PortionScore>, timing: array{seconds_per_question: int, pace: int}|null, topics: list<TopicScore>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, portion: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, scored: bool, explanation: string, source: string, lesson: array{id: int, seconds: int|null}|null, math: string|null}>}
  */
 final readonly class Tests
 {
@@ -411,6 +412,8 @@ final readonly class Tests
                 'prompt' => $text['question'], 'options' => $text['options'], 'choice' => $choice, 'right' => $question->correct_option,
                 'correct' => $choice === $question->correct_option, 'scored' => ! in_array($id, $unscored, true), 'explanation' => $text['explanation'], 'source' => $question->source,
                 'lesson' => is_numeric($lesson) ? ['id' => (int) $lesson, 'seconds' => null] : null,
+                // A math question opens its kind in the math lab (A9.2c).
+                'math' => MathLab::kindFor($question),
             ];
         }
 

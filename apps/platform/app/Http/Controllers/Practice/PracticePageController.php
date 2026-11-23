@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TestAttempt;
 use App\Models\User;
 use App\Practice\DiagnosticBank;
+use App\Practice\MathLab\MathLab;
 use App\Practice\PracticeAccess;
 use App\Practice\PracticeCoach;
 use App\Practice\Readiness;
@@ -71,6 +72,15 @@ final class PracticePageController extends Controller
         $access->allow($user);
 
         return Inertia::render('practice/readiness', ['map' => $readiness->map($user)]);
+    }
+
+    /** Math lab (the phone's screen 48, A9.2c); `kind` opens a problem of that kind at once (a missed math question). */
+    public function math(Request $request, #[CurrentUser] User $user, PracticeAccess $access, MathLab $lab): Response
+    {
+        $access->allow($user);
+        $kind = $request->query('kind');
+
+        return Inertia::render('practice/math', ['kinds' => $lab->menu($user), 'problem' => is_string($kind) && in_array($kind, $lab->kinds(), true) ? $lab->problem($kind)->toArray() : null]);
     }
 
     public function results(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests, Readiness $readiness): Response|RedirectResponse
