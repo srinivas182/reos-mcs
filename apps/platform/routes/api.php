@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ActiveRoleController;
+use App\Http\Controllers\Api\Agents\BriefController;
 use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\AppConfigController;
@@ -280,6 +281,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('plan/tasks/{code}', 'tick')->where('code', '[a-z_]+')->middleware('throttle:60,1,api-agent-plan')->name('plan.tick');
         Route::post('plan/promise', 'promise')->middleware('throttle:10,1,api-agent-plan')->name('plan.promise');
         Route::get('scorecard', 'scorecard')->name('scorecard');
+    });
+    // The morning brief (A11.1c, screen 184).
+    Route::prefix('agent/brief')->name('api.agent.brief.')->controller(BriefController::class)->group(function () {
+        Route::get('/', 'show')->middleware('throttle:30,1,api-agent-brief')->name('show');
+        Route::get('settings', 'settings')->name('settings');
+        Route::put('settings', 'update')->middleware('throttle:20,1,api-agent-brief')->name('update');
     });
     // Certificates for CE taken elsewhere (B10.3b): read by OCR, checked, saved.
     Route::post('me/certificates/read', [CertificateController::class, 'read'])->middleware('throttle:10,1,api-certificates-read')->name('api.me.certificates.read');

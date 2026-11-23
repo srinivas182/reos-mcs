@@ -146,3 +146,70 @@ export type PlanPhase = 'setup' | 'conversations' | 'appointments' | 'contract' 
 export type ScoreMetric = 'conversations' | 'appointments' | 'clients' | 'ce_hours';
 export type TodayStatKey = 'week' | 'conversations' | 'appointments' | 'pipeline' | 'under_contract' | 'hot_today' | 'closings_12m';
 export type DayOneCode = 'import_contacts' | 'announce_licence' | 'connect_tools';
+
+/** The morning brief (A11.1c; screen 184). */
+export type Brief = Got<'/agent/brief'>['data'];
+export type BriefCommand = Brief['commands'][number];
+export type BriefSettings = Got<'/agent/brief/settings'>['data'];
+export type BriefSection = 'todos' | 'appointments' | 'deadlines' | 'leads' | 'ce';
+export const BRIEF_SECTIONS: BriefSection[] = ['todos', 'appointments', 'deadlines', 'leads', 'ce'];
+export const BRIEF_TIMES = ['06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00'] as const;
+
+export async function saveBriefSettings(settings: BriefSettings): Promise<BriefSettings> {
+  const { data, error } = await api().PUT('/agent/brief/settings', { body: settings });
+
+  return data ? data.data : fail(error);
+}
+
+/** Today's brief and its settings. */
+export function useBrief() {
+  const [brief, setBrief] = useState<Brief | null>(null);
+  const [settings, setSettings] = useState<BriefSettings | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      void api()
+        .GET('/agent/brief')
+        .then(({ data }) => setBrief(data?.data ?? null))
+        .catch(() => undefined);
+      void api()
+        .GET('/agent/brief/settings')
+        .then(({ data }) => setSettings(data?.data ?? null))
+        .catch(() => undefined);
+    }, []),
+  );
+
+  return { brief, settings, setSettings };
+}
+
+/** Words that say nothing about which command was meant, in English and Spanish. */
+const FILLER = new Set(['the', 'and', 'please', 'now', 'for', 'with', 'del', 'los', 'las', 'por', 'favor', 'con', 'una', 'uno']);
+
+const words = (text: string): string[] =>
+  text
+    .toLocaleLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !FILLER.has(w));
+
+/**
+ * The command a spoken phrase asks for ("Call Ana", "open the Oak Ridge
+ * deal"): the one sharing the most words with what was heard, or null.
+ */
+export function matchCommand(heard: string, commands: BriefCommand[]): BriefCommand | null {
+  const said = new Set(words(heard));
+  let best: BriefCommand | null = null;
+  let score = 0;
+
+  for (const command of commands) {
+    const shared = words(command.label).filter((w) => said.has(w)).length;
+    if (shared > score) {
+      best = command;
+      score = shared;
+    }
+  }
+
+  return best;
+}

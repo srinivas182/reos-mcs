@@ -103,7 +103,7 @@ final readonly class AgentPages
     }
 
     /** Paths under /agent that aren't public pages. */
-    public const RESERVED = ['setup', 'mode', 'plan'];
+    public const RESERVED = ['setup', 'mode', 'plan', 'brief'];
 
     /** "james-miller", or "james-miller-2" when that's taken. */
     private function handleFor(User $user): string

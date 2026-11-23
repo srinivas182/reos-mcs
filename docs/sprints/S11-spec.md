@@ -90,6 +90,18 @@
   - **API:** `GET /api/v1/agent/today`, `GET /api/v1/agent/plan`, `PUT /api/v1/agent/plan/tasks/{code}`, `POST /api/v1/agent/plan/promise`, `GET /api/v1/agent/scorecard`.
   - **Web:** Today on the dashboard (screen 12); `/agent/plan` with the scorecard; to-dos are marked done from the dashboard through `/today/todos/{id}/done`. The public agent pages also reserve `plan`.
   - **Phone:** Today's ranked list and day one; `agent/plan` with the scorecard.
+- **As built, A11.1c** (ADR 0044):
+  - **The brief** (`AgentBriefs`): a greeting; then to-dos (with how many are overdue), today's appointments, deal deadlines in the next three days, new leads since yesterday and CE progress; who to call first; and a closing line. It's in the agent's language, about a minute read aloud.
+    - "Call first" is the newest new lead with a phone, or else the contact on the first follow-up.
+    - The commands offered at the end: call that person, open the first deadline's deal, and open Today.
+  - **Settings** (on `agent_profiles`): on or off, the time (HH:MM in the agent's own time zone, sent by the phone or browser), and which sections it covers.
+  - **Sending:** `reos:agents:briefs` every five minutes sends "Your morning brief is ready" once a day, within two hours of the chosen time. It's push only, never digested, and says nothing else, so nothing private shows on a lock screen.
+  - **Phone** (`agent/brief`): read aloud with the phone's own voice (expo-speech) through the speaker or headphones; Play, Pause, Skip and Read instead; the transcript highlights the line being read.
+    - At the end it listens for a command ("Call Ana", "Open the Oak Ridge deal"), recognized on the phone only. Commands can also be tapped.
+    - "Hey Siri, play my REOS brief" (an App Shortcut) and the Google Assistant "open app feature" open it.
+    - It's linked from Today.
+  - **Web** (`/agent/brief`, linked from the dashboard's Today): the same transcript read aloud by the browser's speech, the commands as links (Call opens the phone dialer), and the settings.
+  - **API:** `GET /api/v1/agent/brief`, `GET` and `PUT /api/v1/agent/brief/settings`. Public agent pages also reserve `brief`.
 - **Done when:** Today shows to-dos from CRM, deals and calendar.
 
 ### A11.2 CE wallet (Team A)

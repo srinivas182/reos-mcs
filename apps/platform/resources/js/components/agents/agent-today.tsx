@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Check, CircleCheck, ListChecks, Sun } from 'lucide-react';
+import { Check, CircleCheck, ListChecks, Sun, Sunrise } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
@@ -27,10 +27,13 @@ const TONE: Record<TodayReason, string> = {
 export function AgentToday({
     today,
     planUrl,
+    briefUrl,
     onDone,
 }: {
     today: AgentTodayData;
     planUrl: string;
+    /** The morning brief (A11.1c). */
+    briefUrl?: string;
     /** Marks an item done (true) or not done (false) at its source. */
     onDone: (item: TodayItem, done: boolean) => Promise<unknown>;
 }) {
@@ -71,13 +74,24 @@ export function AgentToday({
                 <h2 id="agent-today" className="text-lg font-semibold">
                     {t('agents.today.title')}
                 </h2>
-                <Link
-                    href={planUrl}
-                    className="inline-flex min-h-12 items-center gap-2 text-base font-medium text-primary underline-offset-4 hover:underline"
-                >
-                    <ListChecks aria-hidden className="size-5" />
-                    {t('agents.plan.title')}
-                </Link>
+                <div className="flex flex-wrap gap-4">
+                    <Link
+                        href={planUrl}
+                        className="inline-flex min-h-12 items-center gap-2 text-base font-medium text-primary underline-offset-4 hover:underline"
+                    >
+                        <ListChecks aria-hidden className="size-5" />
+                        {t('agents.plan.title')}
+                    </Link>
+                    {briefUrl ? (
+                        <Link
+                            href={briefUrl}
+                            className="inline-flex min-h-12 items-center gap-2 text-base font-medium text-primary underline-offset-4 hover:underline"
+                        >
+                            <Sunrise aria-hidden className="size-5" />
+                            {t('agents.brief.title')}
+                        </Link>
+                    ) : null}
+                </div>
             </div>
             <dl className="grid gap-3 sm:grid-cols-3">
                 {today.stats.map((s) => (

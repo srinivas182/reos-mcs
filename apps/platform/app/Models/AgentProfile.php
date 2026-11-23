@@ -6,9 +6,11 @@ namespace App\Models;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * An agent's goal (mode) and work-style flags (A11.1a).
+ * An agent's goal (mode) and work-style flags (A11.1a), and when the
+ * morning brief goes out (A11.1c).
  *
  * @property int $id
  * @property int $user_id
@@ -17,17 +19,29 @@ use Illuminate\Database\Eloquent\Model;
  * @property CarbonImmutable|null $welcomed_at
  * @property string|null $snoozed_goal
  * @property CarbonImmutable|null $snoozed_until
+ * @property bool $brief_enabled the morning brief (A11.1c)
+ * @property string $brief_at local time, HH:MM
+ * @property string $brief_timezone
+ * @property list<string>|null $brief_sections null for all
+ * @property CarbonImmutable|null $brief_sent_on
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
+ * @property-read User|null $user
  */
 final class AgentProfile extends Model
 {
-    protected $fillable = ['user_id', 'goal', 'flags', 'welcomed_at', 'snoozed_goal', 'snoozed_until'];
+    protected $fillable = ['user_id', 'goal', 'flags', 'welcomed_at', 'snoozed_goal', 'snoozed_until', 'brief_enabled', 'brief_at', 'brief_timezone', 'brief_sections', 'brief_sent_on'];
 
     protected $attributes = ['flags' => '[]'];
 
     protected function casts(): array
     {
-        return ['flags' => 'array', 'welcomed_at' => 'immutable_datetime', 'snoozed_until' => 'immutable_datetime'];
+        return ['flags' => 'array', 'welcomed_at' => 'immutable_datetime', 'snoozed_until' => 'immutable_datetime', 'brief_enabled' => 'boolean', 'brief_sections' => 'array', 'brief_sent_on' => 'immutable_date'];
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -94,3 +94,4 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | 90-day plan | Plan de 90 días | A11.1b |
 | Scorecard (weekly) | Resultados de la semana | A11.1b |
 | First-Closing Promise | Promesa del Primer Cierre | A11.1b |
+| Morning brief | Resumen matutino | A11.1c |

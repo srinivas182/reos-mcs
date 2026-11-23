@@ -164,3 +164,34 @@ export type Scorecard = {
     metrics: { key: ScoreMetric; done: number; target: number }[];
     fix: ScoreMetric | null;
 };
+
+/** The morning brief (A11.1c): what `AgentBriefs::for()` and `settings()` send. */
+export type BriefSection =
+    | 'todos'
+    | 'appointments'
+    | 'deadlines'
+    | 'leads'
+    | 'ce';
+
+export type BriefCommand = {
+    kind: 'call' | 'deal' | 'today';
+    label: string;
+    phone: string | null;
+    contact: string | null;
+    deal: string | null;
+};
+
+export type Brief = {
+    date: string;
+    sections: { key: BriefSection; count: number; text: string }[];
+    first_call: { name: string; phone: string; contact: string } | null;
+    commands: BriefCommand[];
+    script: string[];
+};
+
+export type BriefSettings = {
+    enabled: boolean;
+    at: string;
+    timezone: string;
+    sections: BriefSection[];
+};

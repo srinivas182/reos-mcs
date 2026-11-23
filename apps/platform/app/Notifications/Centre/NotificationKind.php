@@ -59,6 +59,8 @@ enum NotificationKind: string
     case BrokerOffer = 'broker_offer';
     /** The candidate's licence is active on the regulator's record: switch to agent (A10.3c). */
     case LicenceFound = 'licence_found';
+    /** The agent's morning brief is ready, at their chosen time (A11.1c). */
+    case MorningBrief = 'morning_brief';
 
     public const INBOX = 'inbox';
 
@@ -83,6 +85,8 @@ enum NotificationKind: string
             // Chats would flood email and the inbox; the Messages badge already counts them.
             self::Message => [self::PUSH],
             self::Announcement => [self::INBOX, self::PUSH],
+            // A tap opens the brief; email would arrive after the morning has started.
+            self::MorningBrief => [self::PUSH],
             default => [self::INBOX, self::PUSH, self::EMAIL],
         };
     }
@@ -102,7 +106,7 @@ enum NotificationKind: string
     /** Can be gathered into a daily or weekly digest instead of one at a time. */
     public function digestible(): bool
     {
-        return ! $this->urgent() && ! $this->locked();
+        return ! $this->urgent() && ! $this->locked() && $this !== self::MorningBrief;
     }
 
     /** The group it's listed under on the settings screen. */
@@ -115,7 +119,7 @@ enum NotificationKind: string
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline, self::SignatureCompleted => 'deals',
+            self::DealDeadline, self::SignatureCompleted, self::MorningBrief => 'deals',
         };
     }
 

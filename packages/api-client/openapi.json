@@ -2338,6 +2338,318 @@
                 }
             }
         },
+        "/agent/brief": {
+            "get": {
+                "operationId": "agent.brief.show",
+                "description": "The spoken script (and transcript), its sections, the person to call first and the commands offered at the end.",
+                "summary": "Today's morning brief",
+                "tags": [
+                    "Brief"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "date": {
+                                                    "type": "string"
+                                                },
+                                                "sections": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "count",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "first_call": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "phone": {
+                                                            "type": "string"
+                                                        },
+                                                        "contact": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "phone",
+                                                        "contact"
+                                                    ]
+                                                },
+                                                "commands": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "call",
+                                                                    "deal",
+                                                                    "today"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "phone": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "contact": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "deal": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "label",
+                                                            "phone",
+                                                            "contact",
+                                                            "deal"
+                                                        ]
+                                                    }
+                                                },
+                                                "script": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "date",
+                                                "sections",
+                                                "first_call",
+                                                "commands",
+                                                "script"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/agent/brief/settings": {
+            "get": {
+                "operationId": "agent.brief.settings",
+                "summary": "Morning brief settings",
+                "tags": [
+                    "Brief"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "at": {
+                                                    "type": "string"
+                                                },
+                                                "timezone": {
+                                                    "type": "string"
+                                                },
+                                                "sections": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "todos",
+                                                            "appointments",
+                                                            "deadlines",
+                                                            "leads",
+                                                            "ce"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "at",
+                                                "timezone",
+                                                "sections"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "agent.brief.update",
+                "summary": "Change when the brief goes out and what it covers",
+                "tags": [
+                    "Brief"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BriefSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "enabled": {
+                                                    "type": "boolean"
+                                                },
+                                                "at": {
+                                                    "type": "string"
+                                                },
+                                                "timezone": {
+                                                    "type": "string"
+                                                },
+                                                "sections": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "todos",
+                                                            "appointments",
+                                                            "deadlines",
+                                                            "leads",
+                                                            "ce"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "enabled",
+                                                "at",
+                                                "timezone",
+                                                "sections"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/broadcasting/auth": {
             "get": {
                 "operationId": "broadcast.authenticate",
@@ -40004,6 +40316,44 @@
                     "topic"
                 ],
                 "title": "BookSessionRequest"
+            },
+            "BriefSettingsRequest": {
+                "type": "object",
+                "description": "When the morning brief goes out and what it covers (A11.1c).",
+                "properties": {
+                    "enabled": {
+                        "type": "boolean"
+                    },
+                    "at": {
+                        "type": "string",
+                        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+                    },
+                    "timezone": {
+                        "type": "string"
+                    },
+                    "sections": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "todos",
+                                "appointments",
+                                "deadlines",
+                                "leads",
+                                "ce"
+                            ]
+                        },
+                        "maxItems": 5,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "enabled",
+                    "at",
+                    "timezone",
+                    "sections"
+                ],
+                "title": "BriefSettingsRequest"
             },
             "BrokerRole": {
                 "type": "string",

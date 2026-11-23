@@ -334,6 +334,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/agent/brief": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Today's morning brief
+         * @description The spoken script (and transcript), its sections, the person to call first and the commands offered at the end.
+         */
+        get: operations["agent.brief.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/agent/brief/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Morning brief settings */
+        get: operations["agent.brief.settings"];
+        /** Change when the brief goes out and what it covers */
+        put: operations["agent.brief.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/broadcasting/auth": {
         parameters: {
             query?: never;
@@ -4697,6 +4735,16 @@ export interface components {
             topic: string;
         };
         /**
+         * BriefSettingsRequest
+         * @description When the morning brief goes out and what it covers (A11.1c).
+         */
+        BriefSettingsRequest: {
+            enabled: boolean;
+            at: string;
+            timezone: string;
+            sections: ("todos" | "appointments" | "deadlines" | "leads" | "ce")[];
+        };
+        /**
          * BrokerRole
          * @description Supervising duties that change a licence's CE (A5.2): in Texas, Broker Responsibility is required for brokers who sponsor agents, designated brokers of sponsoring entities and delegated supervisors (22 TAC §535.92(a)(4)).
          * @enum {string}
@@ -6075,6 +6123,7 @@ export type SchemaAppConfigResource = components['schemas']['AppConfigResource']
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaAskRequest = components['schemas']['AskRequest'];
 export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest'];
+export type SchemaBriefSettingsRequest = components['schemas']['BriefSettingsRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
@@ -7056,6 +7105,132 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "agent.brief.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            date: string;
+                            sections: {
+                                key: string;
+                                count: number;
+                                text: string;
+                            }[];
+                            first_call: {
+                                name: string;
+                                phone: string;
+                                contact: string;
+                            } | null;
+                            commands: {
+                                /** @enum {string} */
+                                kind: "call" | "deal" | "today";
+                                label: string;
+                                phone: string | null;
+                                contact: string | null;
+                                deal: string | null;
+                            }[];
+                            script: string[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "agent.brief.settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            enabled: boolean;
+                            at: string;
+                            timezone: string;
+                            sections: ("todos" | "appointments" | "deadlines" | "leads" | "ce")[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "agent.brief.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BriefSettingsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            enabled: boolean;
+                            at: string;
+                            timezone: string;
+                            sections: ("todos" | "appointments" | "deadlines" | "leads" | "ce")[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

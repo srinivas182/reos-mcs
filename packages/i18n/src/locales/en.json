@@ -2914,6 +2914,70 @@
         "clients": "Few active clients. Follow up with everyone you met this month.",
         "ce_hours": "No CE this week yet. A short lesson keeps you on pace."
       }
+    },
+    "brief": {
+      "title": "Morning brief",
+      "description": "Your day in about a minute: read aloud on your phone, or here.",
+      "ready": "Your morning brief is ready",
+      "greeting": "Good morning, {{name}}.",
+      "greetingNoName": "Good morning.",
+      "sections": {
+        "todos": "[0] No to-dos are due today.|{1} One to-do: {{first}}.|[2,*] {{count}} to-dos, starting with {{first}}.",
+        "overdue": "{1} One is overdue.|[2,*] {{count}} are overdue.",
+        "appointments": "[0] No appointments today.|{1} One appointment: {{first}} at {{time}}.|[2,*] {{count}} appointments. The first is {{first}} at {{time}}.",
+        "deadlines": "[0] No deal deadlines in the next three days.|{1} One deal deadline coming up: {{first}}.|[2,*] {{count}} deal deadlines coming up. The first is {{first}}.",
+        "leads": "[0] No new leads since yesterday.|{1} One new lead: {{first}}.|[2,*] {{count}} new leads. The newest is {{first}}.",
+        "ce": "CE: {{done}} of {{required}} hours done, due {{date}}.",
+        "ceComplete": "Your CE is complete for this renewal."
+      },
+      "firstCall": "Call {{name}} first.",
+      "outro": "That’s your day. Say a command, or open Today.",
+      "commands": {
+        "title": "What next?",
+        "call": "Call {{name}}",
+        "deal": "Open the {{property}} deal",
+        "today": "Open Today"
+      },
+      "player": {
+        "play": "Play",
+        "pause": "Pause",
+        "resume": "Resume",
+        "skip": "Skip",
+        "readInstead": "Read instead",
+        "listen": "Say a command",
+        "listening": "Listening…",
+        "heard": "Heard: “{{text}}”",
+        "notUnderstood": "Try “{{example}}”, or tap a command.",
+        "transcript": "Transcript",
+        "unsupported": "Your browser can’t read aloud. The transcript is below."
+      },
+      "settings": {
+        "title": "Brief settings",
+        "enabled": "Send my morning brief",
+        "enabledHint": "A notification at this time opens your brief.",
+        "time": "Time",
+        "sections": "What it covers",
+        "privacy": "The notification only says your brief is ready. Nothing private shows on your lock screen.",
+        "save": "Save",
+        "saved": "Brief settings saved",
+        "names": {
+          "todos": "To-dos",
+          "appointments": "Appointments",
+          "deadlines": "Deal deadlines",
+          "leads": "New leads",
+          "ce": "CE progress"
+        }
+      },
+      "empty": {
+        "title": "Nothing in your brief",
+        "body": "Choose at least one thing for it to cover in Brief settings."
+      },
+      "shortcut": "Play my brief",
+      "shortcutSubtitle": "Your day in a minute",
+      "errors": {
+        "time": "Choose a time such as 07:00.",
+        "timezone": "Choose a valid time zone."
+      }
     }
   },
   "invitePage": {
@@ -5155,7 +5219,8 @@
       "exam_reminder": "Exam reminders",
       "pass_news": "Passing news",
       "broker_offer": "Broker offers",
-      "licence_found": "Licence found"
+      "licence_found": "Licence found",
+      "morning_brief": "Morning brief"
     },
     "digest": {
       "subject": {
