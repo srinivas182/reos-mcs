@@ -2278,7 +2278,9 @@
         "recruiting.offer_made": "Oferta de correduría hecha",
         "recruiting.offer_changed": "Oferta de correduría cambiada",
         "recruiting.offer_withdrawn": "Oferta de correduría retirada",
-        "licence.switched_to_agent": "Se cambió a agente"
+        "licence.switched_to_agent": "Se cambió a agente",
+        "provider_licence.approved": "Aprobó una licencia de proveedor",
+        "provider_licence.rejected": "Rechazó una licencia de proveedor"
       }
     }
   },
@@ -3118,7 +3120,8 @@
     "added": "Su licencia de {{state}} se verificó y se agregó.",
     "sentForReview": "Su licencia de {{state}} se envió a revisión. Contará una vez aprobada.",
     "source": {
-      "simulator": "Verificada con los registros de licencias de demostración de REOS (Simulador)."
+      "simulator": "Verificada con los registros de licencias de demostración de REOS (Simulador).",
+      "trec": "Verificado con los datos públicos de licencias de la Comisión de Bienes Raíces de Texas (TREC)."
     },
     "errors": {
       "already": "Ya tiene una licencia de {{state}}. Quítela primero para agregar otra.",
@@ -7787,6 +7790,47 @@
       "cpn": "TREC Consumer Protection Notice",
       "iabs": "Texas Real Estate Commission Information About Brokerage Services",
       "metaDescription": "Listados de {{name}}{{brokerage}}. Datos de listados del MLS."
+    }
+  },
+  "providers": {
+    "licences": {
+      "title": "Su licencia profesional",
+      "description": "REOS la verifica antes de que su perfil se publique: las licencias de inspector de TREC y de TDI en segundos, y los NMLS ID con nuestro equipo.",
+      "kind": "Licencia",
+      "kinds": {
+        "trec_inspector": "Licencia de inspector de TREC",
+        "tdi": "Licencia del Departamento de Seguros de Texas",
+        "nmls": "NMLS ID"
+      },
+      "number": "Número de licencia",
+      "check": "Verificar licencia",
+      "statuses": {
+        "verified": "Verificada",
+        "inactive": "No activa",
+        "review": "Nuestro equipo la está verificando",
+        "rejected": "No aprobada"
+      },
+      "onRecord": "En el registro: {{name}}",
+      "expires": "Vence el {{date}}",
+      "via": {
+        "trec-licence": "Verificada con los datos públicos de licencias de TREC.",
+        "tdi-lookup": "Verificada con los datos públicos de licencias de TDI.",
+        "reviewer": "Verificada por el equipo de REOS."
+      },
+      "empty": "Todavía no ha agregado una licencia.",
+      "notes": {
+        "nmls": "NMLS no tiene una consulta pública: un revisor verifica NMLS Consumer Access.",
+        "notFound": "Todavía no hay un registro de :authority con este número. Un revisor lo verificará.",
+        "otherName": "La licencia está a otro nombre. Un revisor lo verificará."
+      },
+      "reviews": {
+        "title_one": "{{count}} licencia de proveedor por revisar",
+        "title_other": "{{count}} licencias de proveedores por revisar",
+        "open": "Abrir en NMLS Consumer Access",
+        "approve": "Aprobar",
+        "reject": "Rechazar",
+        "why": "Por qué no se aprueba"
+      }
     }
   }
 }

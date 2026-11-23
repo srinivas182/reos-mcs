@@ -228,7 +228,16 @@
 - **TREC:** the daily public files (licence holders: type, number, name, status, dates, education and MCE status, sponsoring broker) imported nightly into a lookup table; the real `trec-licence` lookup reads it (decision 8).
 - **TDI** insurance licences (for providers) from data.texas.gov; **NMLS** by a reviewer with the consumer-access link (no public API).
 - **Certificate OCR:** AWS Textract reads uploaded certificates (CE, course completion) into name, course, hours, date and provider for review.
-- **Done when:** a licence number is verified in seconds.
+- **As built, B10.3a** (ADR 0043):
+  - **Regulator data:**
+    - TREC's agents and brokers and inspectors, and TDI's licensees, come from the Texas Open Data Portal. The `regulator` block in the register lists them.
+    - They are imported nightly at 05:30 Central into one lookup table. One reader handles TREC's tab layout and the portal's CSVs.
+    - A short file keeps the last import.
+  - **TREC lookup:** live Texas licence checks read the table (type, status, dates, sponsor), so a number is verified in milliseconds.
+  - **Provider licences** (Settings › Profile for providers):
+    - TREC inspector and TDI numbers (or an NPN) are checked against the data at once. Another name or no record goes to a reviewer.
+    - NMLS IDs always go to a reviewer, with the NMLS Consumer Access link on People. Approvals and rejections are audited.
+- **Done when:** a licence number is verified in seconds. ✅ Met: `RegulatorDataTest` adds a Texas licence and has it verified from TREC's imported data in well under two seconds.
 
 ## 4. Definition of done (whole sprint)
 

@@ -950,7 +950,8 @@ Verify agent, broker and inspector licences in seconds.
 - **Sandbox:** Public data.
 - **Credentials:** None · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Free public data.
-- **Notes:** Use TREC's published licence-holder data files rather than scraping the search pages.
+- **Notes:** Use TREC's published licence-holder data files rather than scraping the search pages. TREC's High Value Data Sets page links the broker and sales agent, inspector, and easement or right-of-way files on the Texas Open Data Portal, updated daily; phone, email and addresses are withheld (SB 510).
+- **Sources:** [1](https://www.trec.texas.gov/public/high-value-data-sets) · [2](https://trec.texas.gov/public/trec-public-information-files-instructions)
 
 ### TREC CE completion reporting
 <a id="trec-ce-reporting"></a>
@@ -993,7 +994,9 @@ Verify insurance agent licences for service providers.
 - **Sandbox:** Public data.
 - **Credentials:** None · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Free public data (to confirm).
+- **Notes:** Dataset kxv3-diwf ("Insurance agents, adjusters, and people approved to manage insurance-related products or claims"). Columns are matched by name; confirm them on the first live import.
 - **Fallback:** Manual verification.
+- **Sources:** [1](https://catalog.data.gov/dataset/insurance-agents-adjusters-and-people-approved-to-manage-insurance-related-products-or-cla)
 
 ### Pearson VUE (Texas exam booking)
 <a id="pearson-vue"></a>

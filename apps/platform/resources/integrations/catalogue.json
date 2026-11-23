@@ -1709,6 +1709,19 @@
         "auth": "none",
         "accounts": "platform",
         "fields": []
+      },
+      "regulator": {
+        "authority": "TREC",
+        "files": [
+          {
+            "kind": "agents",
+            "url": "https://data.texas.gov/api/views/s7ft-44qi/rows.csv?accessType=DOWNLOAD"
+          },
+          {
+            "kind": "inspectors",
+            "url": "https://data.texas.gov/api/views/pkr9-9isv/rows.csv?accessType=DOWNLOAD"
+          }
+        ]
       }
     },
     {
@@ -1763,6 +1776,15 @@
         "auth": "none",
         "accounts": "platform",
         "fields": []
+      },
+      "regulator": {
+        "authority": "TDI",
+        "files": [
+          {
+            "kind": "insurance",
+            "url": "https://data.texas.gov/api/views/kxv3-diwf/rows.csv?accessType=DOWNLOAD"
+          }
+        ]
       }
     },
     {

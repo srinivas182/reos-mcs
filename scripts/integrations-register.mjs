@@ -284,6 +284,7 @@ const catalogue = `${JSON.stringify(
           })),
         },
         ...(e.mls ? { mls: e.mls } : {}),
+        ...(e.regulator ? { regulator: e.regulator } : {}),
       })),
   },
   null,

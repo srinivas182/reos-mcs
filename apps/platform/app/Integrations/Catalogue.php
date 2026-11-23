@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Integrations;
 
+use App\Licences\Regulators\RegulatorDefinition;
 use App\Mls\MlsDefinition;
 use App\Mls\MlsDisplayRules;
 use App\Mls\MlsVendor;
@@ -99,6 +100,7 @@ final class Catalogue
                 shortName: $this->string($entry['mls'], 'short_name'),
                 display: MlsDisplayRules::from(is_array($entry['mls']['display'] ?? null) ? $entry['mls']['display'] : []),
             ) : null,
+            regulator: is_array($entry['regulator'] ?? null) ? RegulatorDefinition::from($entry['regulator']) : null,
         );
     }
 

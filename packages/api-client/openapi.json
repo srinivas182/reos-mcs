@@ -16776,10 +16776,10 @@
                                         "check": {
                                             "type": "string",
                                             "enum": [
-                                                "verified",
-                                                "name_mismatch",
+                                                "no_lookup",
                                                 "not_found",
-                                                "no_lookup"
+                                                "name_mismatch",
+                                                "verified"
                                             ]
                                         },
                                         "record": {
@@ -16794,12 +16794,17 @@
                                                 "type": {
                                                     "type": "string",
                                                     "enum": [
-                                                        "sales_agent",
-                                                        "broker"
+                                                        "broker",
+                                                        "sales_agent"
                                                     ]
                                                 },
                                                 "status": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "inactive",
+                                                        "active",
+                                                        "expired"
+                                                    ]
                                                 },
                                                 "expires_on": {
                                                     "type": [
@@ -16819,6 +16824,11 @@
                                             "type": [
                                                 "string",
                                                 "null"
+                                            ],
+                                            "enum": [
+                                                "Checked with REOS demo license records (Simulator).",
+                                                "Checked with the Texas Real Estate Commission's public license data.",
+                                                null
                                             ]
                                         }
                                     },
@@ -29505,6 +29515,228 @@
                 }
             }
         },
+        "/provider/licences": {
+            "get": {
+                "operationId": "provider.licences.index",
+                "summary": "My professional licences",
+                "tags": [
+                    "ProviderLicence"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string"
+                                                    },
+                                                    "number": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string"
+                                                    },
+                                                    "name_on_record": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "licence_type": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "expires_on": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "checked_via": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "review_note": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "consumer_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "number",
+                                                    "status",
+                                                    "name_on_record",
+                                                    "licence_type",
+                                                    "expires_on",
+                                                    "checked_via",
+                                                    "review_note",
+                                                    "consumer_url"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "provider.licences.store",
+                "description": "`trec_inspector` and `tdi` are checked against the regulator's public data at once: verified when active and in my name, otherwise a reviewer checks. `nmls` always goes to a reviewer.",
+                "summary": "Add or replace my professional licence",
+                "tags": [
+                    "ProviderLicence"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProviderLicenceRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "kind": {
+                                                    "type": "string"
+                                                },
+                                                "number": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "name_on_record": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "licence_type": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "expires_on": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "checked_via": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "review_note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "consumer_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "kind",
+                                                "number",
+                                                "status",
+                                                "name_on_record",
+                                                "licence_type",
+                                                "expires_on",
+                                                "checked_via",
+                                                "review_note",
+                                                "consumer_url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/me/push-devices": {
             "post": {
                 "operationId": "me.push-devices.store",
@@ -40708,6 +40940,31 @@
                     "device"
                 ],
                 "title": "PhoneVerifyRequest"
+            },
+            "ProviderLicenceRequest": {
+                "type": "object",
+                "description": "A provider's professional licence: its kind and number (B10.3).",
+                "properties": {
+                    "kind": {
+                        "type": "string",
+                        "enum": [
+                            "trec_inspector",
+                            "tdi",
+                            "nmls"
+                        ]
+                    },
+                    "number": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9 -]+$",
+                        "minLength": 3,
+                        "maxLength": 40
+                    }
+                },
+                "required": [
+                    "kind",
+                    "number"
+                ],
+                "title": "ProviderLicenceRequest"
             },
             "PushDeviceRequest": {
                 "type": "object",

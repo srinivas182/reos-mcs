@@ -9,9 +9,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AuditEventResource;
 use App\Http\Resources\Licences\LicenceResource;
 use App\Http\Resources\People\PersonResource;
+use App\Licences\ProviderLicences;
 use App\Models\AuditEvent;
 use App\Models\Licence;
 use App\Models\Organisation;
+use App\Models\ProviderLicence;
 use App\Models\User;
 use App\Services\Authorization\Memberships;
 use App\Services\Authorization\PeopleDirectory;
@@ -24,7 +26,7 @@ use Inertia\Response;
 /** Settings › People (super admin): find a person, see and change their roles. */
 final class PeopleController extends Controller
 {
-    public function index(Request $request, PeopleDirectory $directory, Licences $licences): Response
+    public function index(Request $request, PeopleDirectory $directory, Licences $licences, ProviderLicences $providerLicences): Response
     {
         $search = $request->string('search')->trim()->limit(100, '')->toString();
         $people = $directory->search($search);
@@ -47,6 +49,17 @@ final class PeopleController extends Controller
                 'state' => $licence->state->name,
                 'number' => $licence->number,
                 'note' => $licence->review_note,
+                'created_at' => $licence->created_at?->toIso8601String(),
+            ])->all(),
+            // Providers' licences waiting for a reviewer (B10.3): NMLS IDs, and numbers with no regulator match.
+            'providerLicenceReviews' => $providerLicences->waitingForReview()->map(static fn (ProviderLicence $licence): array => [
+                'id' => $licence->id,
+                'person' => ['id' => $licence->user_id, 'name' => $licence->user->name ?? $licence->user->email ?? $licence->user->phone],
+                'kind' => $licence->kind,
+                'number' => $licence->number,
+                'name_on_record' => $licence->name_on_record,
+                'note' => $licence->review_note,
+                'consumer_url' => ProviderLicences::consumerUrl($licence->kind, $licence->number),
                 'created_at' => $licence->created_at?->toIso8601String(),
             ])->all(),
         ]);

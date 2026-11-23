@@ -68,6 +68,8 @@ Schedule::command('reos:deals:deadlines')->hourlyAt(5)->withoutOverlapping()->on
 Schedule::command('reos:sessions:bookings')->everyMinute()->withoutOverlapping()->onOneServer();
 // The licence exam's reminders (A10.3a): 8:15 in Texas, before the candidate's day starts.
 Schedule::command('reos:licence:remind')->dailyAt('08:15')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
+// Regulators' public licence data (B10.3): TREC's and TDI's daily files, before the morning's checks.
+Schedule::command('reos:regulators:import')->dailyAt('05:30')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // Licence numbers not active yet (A10.3c): checked each morning, after the regulator's nightly file.
 Schedule::command('reos:licence:watch')->dailyAt('07:40')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // MLS feeds (B10.1): listings replicated every 15 minutes, platform-wide.

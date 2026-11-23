@@ -25,6 +25,7 @@ use App\Http\Controllers\Admin\PersonConsentController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\PlanController;
 use App\Http\Controllers\Admin\ProviderCategoryController;
+use App\Http\Controllers\Admin\ProviderLicenceReviewController;
 use App\Http\Controllers\Admin\StateController;
 use App\Http\Controllers\Admin\StateRuleController;
 use App\Http\Controllers\Admin\TenantController;
@@ -96,6 +97,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:people.ma
         Route::middleware('throttle:60,1,admin-licence-reviews')->group(function () {
             Route::post('licences/{licence}/approve', [LicenceReviewController::class, 'approve'])->whereNumber('licence')->name('licences.approve');
             Route::post('licences/{licence}/reject', [LicenceReviewController::class, 'reject'])->whereNumber('licence')->name('licences.reject');
+            // Providers' professional licences (B10.3): NMLS IDs and numbers with no regulator match.
+            Route::post('provider-licences/{licence}/approve', [ProviderLicenceReviewController::class, 'approve'])->whereNumber('licence')->name('provider-licences.approve');
+            Route::post('provider-licences/{licence}/reject', [ProviderLicenceReviewController::class, 'reject'])->whereNumber('licence')->name('provider-licences.reject');
         });
     });
 

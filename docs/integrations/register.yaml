@@ -1416,9 +1416,18 @@ entries:
       auth: none
       accounts: platform
       fields: []
+    # The license-holder files TREC publishes daily (B10.3, decision 8), imported nightly.
+    regulator:
+      authority: TREC
+      files:
+        - { kind: agents, url: "https://data.texas.gov/api/views/s7ft-44qi/rows.csv?accessType=DOWNLOAD" }
+        - { kind: inspectors, url: "https://data.texas.gov/api/views/pkr9-9isv/rows.csv?accessType=DOWNLOAD" }
     personal_data: true
     cost: Free public data.
-    notes: Use TREC's published licence-holder data files rather than scraping the search pages.
+    notes: Use TREC's published licence-holder data files rather than scraping the search pages. TREC's High Value Data Sets page links the broker and sales agent, inspector, and easement or right-of-way files on the Texas Open Data Portal, updated daily; phone, email and addresses are withheld (SB 510).
+    sources:
+      - https://www.trec.texas.gov/public/high-value-data-sets
+      - https://trec.texas.gov/public/trec-public-information-files-instructions
 
   - id: trec-ce-reporting
     name: TREC CE completion reporting
@@ -1487,9 +1496,17 @@ entries:
       auth: none
       accounts: platform
       fields: []
+    # TDI's individual licensee data on the Texas Open Data Portal (B10.3), imported nightly.
+    regulator:
+      authority: TDI
+      files:
+        - { kind: insurance, url: "https://data.texas.gov/api/views/kxv3-diwf/rows.csv?accessType=DOWNLOAD" }
     personal_data: true
     cost: Free public data (to confirm).
     fallback: Manual verification.
+    notes: Dataset kxv3-diwf ("Insurance agents, adjusters, and people approved to manage insurance-related products or claims"). Columns are matched by name; confirm them on the first live import.
+    sources:
+      - https://catalog.data.gov/dataset/insurance-agents-adjusters-and-people-approved-to-manage-insurance-related-products-or-cla
 
   - id: pearson-vue
     name: Pearson VUE (Texas exam booking)

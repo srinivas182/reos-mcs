@@ -105,6 +105,28 @@
         "fallback": { "type": "string" },
         "sources": { "type": "array", "items": { "type": "string", "format": "uri" } },
         "connection": { "$ref": "#/$defs/connection" },
+        "regulator": {
+          "description": "Public regulator data imported nightly into REOS's lookup table (B10.3, decision 8). Each file is CSV with a header row, or TREC's tab-delimited layout.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["authority", "files"],
+          "properties": {
+            "authority": { "enum": ["TREC", "TDI"] },
+            "files": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "url"],
+                "properties": {
+                  "kind": { "enum": ["agents", "inspectors", "insurance"] },
+                  "url": { "type": "string", "format": "uri" }
+                }
+              }
+            }
+          }
+        },
         "mls": {
           "description": "MLS feeds (B10.1): the data vendor that delivers the RESO Web API feed and the dataset it serves. One driver reads every vendor; to_confirm runs on the Simulator only until the MLS names its vendor.",
           "type": "object",
