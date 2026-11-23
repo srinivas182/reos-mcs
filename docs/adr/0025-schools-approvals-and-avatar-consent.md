@@ -1,6 +1,6 @@
 # 0025: Schools, course approvals and avatar consent
 
-**Status:** course approvals accepted (A7.1a), 23 November 2026. Instructors and avatar consent follow in A7.1b.
+**Status:** accepted for course approvals (A7.1a) and instructors with avatar consent (A7.1b), 23 November 2026.
 
 ## Context
 
@@ -42,8 +42,23 @@ A Texas school may call a course CE or qualifying only while it holds TREC's app
    Every change is audited (`course.approval_added`, `_changed`, `_renewed`, `_withdrawn`, `_expired`).
 7. **School dashboard (screen 49)** gains the approvals card: approvals in force, courses, and what needs attention (expiring within 60 days, expired, waiting for the regulator).
 
+8. **Instructors (screen 52)** for school admins:
+   - a table of the instructor, approvals in force on the courses they teach, those courses, avatar consent, rating and price (both empty until reviews and the marketplace), and status, with invitations still waiting;
+   - Invite uses the existing invitation sheet, starting on Instructor;
+   - **Edit** sets the courses they teach (`course_instructors`, the school's own courses only). A7.2 lets instructors edit only those courses;
+   - **Revoke** ends the role at the school and stops the avatar, with Undo.
+9. **Avatar consent is the instructor's, per school** (`avatar_consents`, under row-level security; consent purpose `avatar_likeness`, subject `school:<id>`).
+   - Under Settings › AI avatar, the instructor reads the terms and their version, then agrees with a 2-minute sample (MP4, MOV or WebM, up to 500 MB), stored under `tenants/<school>/avatars/`.
+   - The terms say: the avatar is used only by that school; only in lessons they approve; it's made by the school's video provider and deleted there when consent ends; they can withdraw at any time; and payment is between them and the school.
+   - The version is the template's date. Counsel's sign-off changes it, and an older agreement then stops the avatar being used until they agree again.
+10. **When consent ends, the school has 30 days.**
+    - **Withdrawing** (in Settings or from the privacy history) deletes the sample at once, records the withdrawal and tells the school's admins (`avatar_consent_ended`). Lessons using the avatar must be unpublished or re-rendered by the date given; A7.3 lessons carry the avatar they use, so they can be found and flagged.
+    - **Revoke** ends use the same way, but keeps the sample for a day so Undo can bring it back. `reos:approvals:check` then deletes it.
+    - Deleting an account deletes its samples. Avatar consents are in "Download my data".
+
 ## Consequences
 
 - The REOS content library's quick approval-number edit still works: it writes approved records for the course's delivery, and a cleared number withdraws the approval.
 - The course player (A8.2) and live classes read seat time and attendance from the approval in force, not from the course.
 - CE reporting to TREC (screen 51) can name the approval number that applied on the day of completion.
+- A7.3 renders a presenter only while `AvatarConsents::usable()` is true, and deletes the vendor's avatar when consent ends.

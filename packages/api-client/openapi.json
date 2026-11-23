@@ -11381,7 +11381,8 @@
                     "contact_sharing",
                     "ai_personal_data",
                     "provider_network",
-                    "recruiting"
+                    "recruiting",
+                    "avatar_likeness"
                 ],
                 "title": "ConsentPurpose"
             },

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Services\Identity;
 
+use App\Models\AvatarConsent;
 use App\Models\User;
 use App\Notifications\AccountDeletionScheduled;
 use App\Services\Audit\AuditLogger;
+use App\Services\Content\LessonFiles;
 use App\Services\Privacy\PrivacyRequests;
 use Illuminate\Support\Facades\DB;
 
@@ -65,6 +67,9 @@ final readonly class AccountDeletion
                 $this->privacy->deletionDone($user);
                 // The inbox is polymorphic, so it has no cascade (B6.2).
                 $user->notifications()->delete();
+                // Avatar samples are files (A7.1b); their rows go with the account.
+                AvatarConsent::query()->withoutGlobalScopes()->where('user_id', $user->id)->whereNotNull('sample_path')
+                    ->pluck('sample_path')->each(static fn (mixed $path) => is_string($path) ? LessonFiles::disk()->delete($path) : null);
                 $user->delete();
                 // The audit row keeps only the id: the person's details are gone.
                 $this->audit->record('account.deleted', 'user', $id);

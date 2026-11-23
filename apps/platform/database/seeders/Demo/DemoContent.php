@@ -14,6 +14,7 @@ use App\Models\Course;
 use App\Models\CourseApproval;
 use App\Models\Lesson;
 use App\Models\Organisation;
+use App\Models\User;
 use App\Services\Content\LessonFiles;
 
 /**
@@ -55,6 +56,14 @@ final readonly class DemoContent
         $contracts = $this->course('contracts-for-new-agents', 'Contracts for new agents', CourseType::Ce, 4, CourseStatus::Draft, is_int($school) ? $school : null);
         // Expires in 25 days: on the school dashboard's "Needs attention".
         $this->approval($contracts, Delivery::SelfPaced, 'TREC CE 30117', CourseApproval::APPROVED, '2024-12-15', now()->addDays(25)->toDateString());
+
+        // Dr. Rachel Hughes teaches both (A7.1b, screen 52); her avatar consent is hers to give.
+        $rachel = User::query()->where('email', 'rachel.hughes@demo.reos.test')->value('id');
+
+        if (is_int($rachel)) {
+            $principles->instructors()->syncWithoutDetaching([$rachel]);
+            $contracts->instructors()->syncWithoutDetaching([$rachel]);
+        }
 
         // Waiting for review with one legal flag (screen 63).
         $strategies = $this->course('exam-day-strategies', 'Exam day strategies', CourseType::TestPrep, 2, CourseStatus::InReview);

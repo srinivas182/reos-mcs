@@ -4,6 +4,7 @@ use App\Http\Controllers\Notifications\NotificationsController;
 use App\Http\Controllers\Notifications\TextsController;
 use App\Http\Controllers\Settings\ActiveRoleController;
 use App\Http\Controllers\Settings\AppearanceController;
+use App\Http\Controllers\Settings\AvatarController;
 use App\Http\Controllers\Settings\ConsentController;
 use App\Http\Controllers\Settings\CurrentStateController;
 use App\Http\Controllers\Settings\LicenceController;
@@ -52,6 +53,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Privacy switches and "Your consents" (A6.3).
     Route::get('settings/privacy', [ConsentController::class, 'edit'])->name('consents.edit');
+
+    // Avatar consent for instructors (A7.1b).
+    Route::get('settings/avatar', [AvatarController::class, 'edit'])->name('avatar.edit');
+    Route::post('settings/avatar', [AvatarController::class, 'store'])->middleware('throttle:6,1,avatar-consent')->name('avatar.store');
+    Route::delete('settings/avatar', [AvatarController::class, 'destroy'])->middleware('throttle:6,1,avatar-withdraw')->name('avatar.destroy');
     Route::put('settings/privacy/consents/{purpose}', [ConsentController::class, 'update'])
         ->middleware('throttle:30,1,consents-update')
         ->name('consents.update');

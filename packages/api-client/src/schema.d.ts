@@ -2070,7 +2070,7 @@ export interface components {
          * @description Everything REOS asks a person to agree to (A6.3). Each purpose has the version of the words they agreed to; a new version of the terms or the privacy notice asks again. Some purposes are agreed per thing (a session to record, a provider to share contacts with); some are switches on the privacy settings; the terms and privacy notice can only be withdrawn by deleting the account.
          * @enum {string}
          */
-        ConsentPurpose: "terms" | "privacy_notice" | "marketing_email" | "sms" | "session_recording" | "contact_sharing" | "ai_personal_data" | "provider_network" | "recruiting";
+        ConsentPurpose: "terms" | "privacy_notice" | "marketing_email" | "sms" | "session_recording" | "contact_sharing" | "ai_personal_data" | "provider_network" | "recruiting" | "avatar_likeness";
         /**
          * ConsentRequest
          * @description Turn a privacy switch on or off, or withdraw a consent given for one thing (A6.3).

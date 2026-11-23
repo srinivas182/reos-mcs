@@ -25,11 +25,15 @@ enum ConsentPurpose: string
     case AiPersonalData = 'ai_personal_data';
     case ProviderNetwork = 'provider_network';
     case Recruiting = 'recruiting';
+    // An AI avatar of an instructor, for one school (A7.1b, subject `school:<id>`).
+    case AvatarLikeness = 'avatar_likeness';
 
     /** Change a version when its words change; people are asked again. */
     private const VERSIONS = [
         'terms' => '2026-11-22',
         'privacy_notice' => '2026-11-22',
+        // The instructor avatar consent template (A7.1b); counsel's sign-off changes this date.
+        'avatar_likeness' => '2026-11-23',
     ];
 
     /** The version of the words in force (the date they were published). */
@@ -49,7 +53,7 @@ enum ConsentPurpose: string
     /** Agreed for one thing at a time (a session, a provider), never as a switch. */
     public function perSubject(): bool
     {
-        return in_array($this, [self::SessionRecording, self::ContactSharing], true);
+        return in_array($this, [self::SessionRecording, self::ContactSharing, self::AvatarLikeness], true);
     }
 
     /** Shown as a switch on the privacy settings (web and phone). */
