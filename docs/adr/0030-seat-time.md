@@ -48,7 +48,7 @@ TREC and other state regulators approve CE and qualifying courses for a number o
     - searches **this course only** (`KnowledgeSearch` with a course filter), matching any of the question's words, best first, plus meaning search when embeddings exist;
     - passes up to five passages to Claude as numbered sources, with the question as data. Claude must cite the sources it used, and must say when they don't cover the question instead of answering from general knowledge;
     - lets the learner follow up with Explain simpler, En español or Quiz me (one multiple-choice question, checked on the screen), then Resume, or Play from the cited second.
-    - **Cost:** one AI credit per answer Claude writes (candidates' credits come from their sponsor, as for every AI action), with 402 when none are left. The simulator answers in the course's own words and costs nothing. When nothing matches, REOS says so and charges nothing.
+    - **Cost:** free for every learner (decided 23 November 2026). Each answer is logged in `ai_credit_uses` at 0 credits, so the cost stays visible, and the hourly AI limit (screen 69) holds back abuse with 429. The simulator answers in the course's own words.
     - Seat time doesn't count while paused, as always. "Ask a human tutor" waits for the tutor marketplace.
 
 ## Consequences

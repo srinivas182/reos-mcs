@@ -20,8 +20,8 @@ use Throwable;
  * the learner asks mid-lesson, the video pauses at the second, and the
  * instructor answers from this course only, citing where. Then: explain it
  * simpler, in Spanish, or quiz me. With no passage to go on, it says so
- * rather than guess. One AI credit an answer (candidates' come from their
- * sponsor, as for every AI action); the simulator answers free.
+ * rather than guess. Free for every learner (decided 23 November 2026):
+ * logged at 0 credits and held back by the hourly AI limit (429).
  *
  * @phpstan-type Source array{lesson_id: int, lesson: string, seconds: int|null, page: int|null, heading: string|null, text: string}
  * @phpstan-type Quiz array{prompt: string, options: list<string>, correct: int, explanation: string}
@@ -59,8 +59,8 @@ final readonly class AskInstructor
             return SimulatedInstructor::answer($passages, $mode, $previous, $language);
         }
 
-        if (! $this->credits->canSpend($learner)) {
-            throw new HttpException(402, __('learn.ask.noCredits'));
+        if (! $this->credits->withinHourlyLimit($learner)) {
+            throw new HttpException(429, __('crm.insight.limit'));
         }
 
         try {
@@ -71,7 +71,7 @@ final readonly class AskInstructor
             return SimulatedInstructor::answer($passages, $mode, $previous, $language);
         }
 
-        $this->credits->charge($learner, self::FEATURE, 'ai');
+        $this->credits->logFree($learner, self::FEATURE, 'ai');
 
         return $answer;
     }
