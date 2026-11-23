@@ -19,6 +19,10 @@ export type TestQuestion = Attempt['questions'][number];
 export type Results = Posted<'/practice/attempts/{attempt}/submit'>['data'];
 export type Topic = 'agency' | 'contracts' | 'ownership' | 'finance' | 'math' | 'state_rules';
 
+export type TestKind = 'diagnostic' | 'topic' | 'national' | 'state' | 'simulation';
+export type ExamKind = 'national' | 'state' | 'simulation';
+export const isExam = (kind: string): kind is ExamKind => kind === 'national' || kind === 'state' || kind === 'simulation';
+
 export const TOPICS: Topic[] = ['agency', 'contracts', 'ownership', 'finance', 'math', 'state_rules'];
 
 export const asTopic = (value: string | null | undefined): Topic | null => (TOPICS as string[]).includes(value ?? '') ? (value as Topic) : null;
@@ -51,8 +55,8 @@ export async function loadHub(): Promise<HubTest[]> {
 }
 
 /** Start a test (or carry on with the same one still open). */
-export async function startTest(kind: 'diagnostic' | 'topic', topic: Topic | null = null): Promise<Attempt | null> {
-  const { data } = await api().POST('/practice/tests', { body: { kind, topic } });
+export async function startTest(kind: TestKind, topic: Topic | null = null, mode: 'exam' | 'practice' | null = null): Promise<Attempt | null> {
+  const { data } = await api().POST('/practice/tests', { body: { kind, topic, ...(mode === null ? {} : { mode }) } });
 
   return data?.data ?? null;
 }
@@ -78,6 +82,28 @@ export async function submitTest(attempt: number): Promise<Results | null> {
 
 export async function loadResults(attempt: number): Promise<Results | null> {
   const { data } = await api().GET('/practice/attempts/{attempt}/results', { params: { path: { attempt } } });
+
+  return data?.data ?? null;
+}
+
+/** Practice mode only: stop or restart the clock. */
+export async function pauseTest(attempt: number, paused: boolean): Promise<Attempt | null> {
+  const { data } = await api().POST('/practice/attempts/{attempt}/pause', { params: { path: { attempt } }, body: { paused } });
+
+  return data?.data ?? null;
+}
+
+/** Finish this portion: a simulation's next portion starts now; the last one submits. */
+export async function finishPortion(attempt: number): Promise<Attempt | null> {
+  const { data } = await api().POST('/practice/attempts/{attempt}/finish', { params: { path: { attempt } } });
+
+  return data?.data ?? null;
+}
+
+export type Similar = NonNullable<Got<'/practice/attempts/{attempt}/similar/{question}'>['data']>;
+
+export async function similarQuestion(attempt: number, question: number): Promise<Similar | null> {
+  const { data } = await api().GET('/practice/attempts/{attempt}/similar/{question}', { params: { path: { attempt, question } } });
 
   return data?.data ?? null;
 }

@@ -96,6 +96,8 @@ export const attempt: Attempt = {
     ends_at: '2026-11-23T15:45:00Z',
     seconds_left: 2700,
     submitted: false,
+    paused: false,
+    section: null,
     questions: [
         {
             id: 101,
@@ -143,10 +145,14 @@ export const attempt: Attempt = {
 export const results: Results = {
     id: 9,
     kind: 'diagnostic',
+    mode: 'exam',
     score: 72,
     correct: 36,
     total: 50,
     pass_line: 70,
+    passed: null,
+    portions: [],
+    timing: null,
     previous: null,
     seconds: 2412,
     topics: [
@@ -169,6 +175,46 @@ export const results: Results = {
             correct: false,
             explanation: '$240,000 ÷ $300,000 = 0.80, or 80%.',
             source: 'Licensing exam content outline · Real estate calculations: loan-to-value',
+            portion: 'national',
+            scored: true,
+            lesson: null,
         },
     ],
+};
+
+/** A full simulation, National passed and Texas not yet (A9.1). */
+export const simulationResults: Results = {
+    ...results,
+    id: 12,
+    kind: 'simulation',
+    score: 71,
+    correct: 85,
+    total: 120,
+    pass_line: 70,
+    passed: false,
+    portions: [
+        {
+            portion: 'national',
+            correct: 61,
+            total: 80,
+            pass: 56,
+            passed: true,
+            percent: 76,
+            previous: 68,
+            seconds: 7920,
+            pace: 106,
+        },
+        {
+            portion: 'state',
+            correct: 24,
+            total: 40,
+            pass: 28,
+            passed: false,
+            percent: 60,
+            previous: null,
+            seconds: 4980,
+            pace: 108,
+        },
+    ],
+    timing: { seconds_per_question: 95, pace: 107 },
 };

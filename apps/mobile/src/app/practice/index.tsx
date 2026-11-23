@@ -1,10 +1,10 @@
 import { router, useFocusEffect } from 'expo-router';
-import { ClipboardCheck, Target } from 'lucide-react-native';
+import { ClipboardCheck, GraduationCap, Target } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { asTopic, type HubTest, loadHub, startTest } from '@/lib/practice';
-import { Button, Card, ListRow, Screen, SectionTitle, Text, TitleBar } from '@/ui';
+import { asTopic, type ExamKind, type HubTest, isExam, loadHub, startTest } from '@/lib/practice';
+import { Button, Card, ListRow, OptionGroup, Screen, SectionTitle, Sheet, Text, TitleBar } from '@/ui';
 
 /**
  * Practice tests (candidate screen 39, A8.3): the Texas diagnostic and a quiz
@@ -37,6 +37,18 @@ export default function PracticeHub() {
   };
 
   const diagnostic = tests?.find((x) => x.kind === 'diagnostic');
+  const exams = (tests ?? []).flatMap((x) => (isExam(x.kind) ? [{ test: x, kind: x.kind as ExamKind }] : []));
+  const [intro, setIntro] = useState<{ test: HubTest; kind: ExamKind } | null>(null);
+  const [mode, setMode] = useState<'exam' | 'practice'>('exam');
+
+  const startExam = async () => {
+    if (!intro) return;
+    setBusy(true);
+    const attempt = await startTest(intro.kind, null, mode).catch(() => null);
+    setBusy(false);
+    setIntro(null);
+    if (attempt) router.push({ pathname: '/practice/[id]', params: { id: String(attempt.id) } });
+  };
 
   return (
     <Screen>
@@ -61,6 +73,38 @@ export default function PracticeHub() {
           ) : null}
         </Card>
       ) : null}
+      {exams.length > 0 ? <SectionTitle>{t('practice.portions.title')}</SectionTitle> : null}
+      {exams.map(({ test, kind }) => (
+        <ListRow
+          key={kind}
+          icon={GraduationCap}
+          tone="info"
+          title={t(`practice.portions.${kind}.title`)}
+          subtitle={[t('practice.intro.format', { questions: test.questions, minutes: test.minutes ?? 0 }), test.best !== null ? t('practice.best', { best: test.best }) : null].filter(Boolean).join(' · ')}
+          onPress={() => (test.open !== null ? void begin(test) : setIntro({ test, kind }))}
+        />
+      ))}
+      <Sheet open={intro !== null} onClose={() => setIntro(null)} title={intro ? t(`practice.portions.${intro.kind}.title`) : ''}>
+        {intro ? (
+          <>
+            <Text>{t('practice.intro.format', { questions: intro.test.questions, minutes: intro.test.minutes ?? 0 })}</Text>
+            <Text tone="muted">{t(`practice.intro.pass.${intro.kind === 'simulation' ? 'both' : intro.kind}`)}</Text>
+            {intro.kind === 'simulation' ? <Text tone="muted">{t('practice.intro.portions')}</Text> : null}
+            <Text tone="muted">{t('practice.intro.tools')}</Text>
+            <Text tone="muted">{t('practice.intro.pretest')}</Text>
+            <OptionGroup<'exam' | 'practice'>
+              label={t('practice.intro.modeLabel')}
+              value={mode}
+              onChange={setMode}
+              options={[
+                { value: 'exam', label: t('practice.intro.exam'), description: t('practice.intro.examHint') },
+                { value: 'practice', label: t('practice.intro.practice'), description: t('practice.intro.practiceHint') },
+              ]}
+            />
+            <Button label={t('practice.intro.start')} loading={busy} onPress={() => void startExam()} fullWidth />
+          </>
+        ) : null}
+      </Sheet>
       <SectionTitle>{t('practice.topicQuizzes')}</SectionTitle>
       {(tests ?? [])
         .filter((x) => x.kind === 'topic')

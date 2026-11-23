@@ -1,13 +1,25 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, CheckCircle2, XCircle } from 'lucide-react';
+import {
+    ArrowLeft,
+    CheckCircle2,
+    PlayCircle,
+    Shuffle,
+    XCircle,
+} from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
+import { PortionScores } from '@/components/practice/portion-scores';
 import { TopicBars } from '@/components/practice/readiness-ring';
 import type { ReadinessSummary, Results } from '@/components/practice/types';
 import { countdown } from '@/components/practice/types';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { index as practiceIndex } from '@/routes/practice';
+import { lesson as openLesson } from '@/routes/learn';
+import {
+    index as practiceIndex,
+    similar as similarRoute,
+} from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 
 /**
@@ -16,6 +28,16 @@ import { show as studyPlan } from '@/routes/study-plan';
  * steps, and every answer with why and its source. The study plan has
  * already been rebuilt from this result.
  */
+type SimilarQuestion = {
+    id: number;
+    topic: string;
+    prompt: string;
+    options: string[];
+    right: number;
+    explanation: string;
+    source: string;
+};
+
 export default function ResultsPage({
     results,
     readiness,
@@ -24,7 +46,25 @@ export default function ResultsPage({
     readiness: ReadinessSummary;
 }) {
     const { t } = useTranslation();
-    const passed = results.score >= results.pass_line;
+    const passed = results.passed ?? results.score >= results.pass_line;
+    const [similar, setSimilar] = useState<
+        Record<number, SimilarQuestion | null>
+    >({});
+    const [revealed, setRevealed] = useState<Record<number, boolean>>({});
+
+    const more = async (id: number) => {
+        const response = await fetch(
+            similarRoute({ attempt: results.id, question: id }).url,
+            {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            },
+        );
+        const body = (await response.json().catch(() => ({ data: null }))) as {
+            data: SimilarQuestion | null;
+        };
+        setSimilar({ ...similar, [id]: body.data });
+    };
     const change =
         results.previous === null ? null : results.score - results.previous;
 
@@ -58,6 +98,13 @@ export default function ResultsPage({
                         </Button>
                     }
                 />
+
+                {results.portions.length > 0 ? (
+                    <PortionScores
+                        portions={results.portions}
+                        timing={results.timing}
+                    />
+                ) : null}
 
                 <section className="grid gap-4 rounded-reos-lg border border-border bg-card p-5 sm:grid-cols-3">
                     <div>
@@ -163,6 +210,11 @@ export default function ResultsPage({
                                     )}
                                     <span>{`${q.n}. ${q.prompt}`}</span>
                                 </p>
+                                {!q.scored ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('practice.results.pretest')}
+                                    </p>
+                                ) : null}
                                 <p className="text-body">
                                     {q.choice === null
                                         ? t('practice.results.blank')
@@ -181,6 +233,87 @@ export default function ResultsPage({
                                         source: q.source,
                                     })}
                                 </p>
+                                <div className="flex flex-wrap gap-2">
+                                    {q.lesson ? (
+                                        <Button variant="outline" asChild>
+                                            <Link
+                                                href={openLesson(q.lesson.id, {
+                                                    query:
+                                                        q.lesson.seconds ===
+                                                        null
+                                                            ? {}
+                                                            : {
+                                                                  t: q.lesson
+                                                                      .seconds,
+                                                              },
+                                                })}
+                                            >
+                                                <PlayCircle aria-hidden />
+                                                {t('practice.results.watch')}
+                                            </Link>
+                                        </Button>
+                                    ) : null}
+                                    {!q.correct &&
+                                    similar[q.id] === undefined ? (
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => void more(q.id)}
+                                        >
+                                            <Shuffle aria-hidden />
+                                            {t('practice.results.similar')}
+                                        </Button>
+                                    ) : null}
+                                </div>
+                                {similar[q.id] === null ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('practice.results.noSimilar')}
+                                    </p>
+                                ) : null}
+                                {similar[q.id] ? (
+                                    <div className="space-y-2 rounded-reos-md bg-muted p-3">
+                                        <p className="font-medium">
+                                            {similar[q.id]?.prompt}
+                                        </p>
+                                        <ol className="list-[upper-alpha] space-y-1 pl-6 text-body">
+                                            {similar[q.id]?.options.map(
+                                                (option, i) => (
+                                                    <li
+                                                        key={option}
+                                                        className={
+                                                            revealed[q.id] &&
+                                                            i ===
+                                                                similar[q.id]
+                                                                    ?.right
+                                                                ? 'font-semibold text-reos-tone-success-fg'
+                                                                : undefined
+                                                        }
+                                                    >
+                                                        {option}
+                                                    </li>
+                                                ),
+                                            )}
+                                        </ol>
+                                        {revealed[q.id] ? (
+                                            <p className="text-body">
+                                                {similar[q.id]?.explanation}
+                                            </p>
+                                        ) : (
+                                            <Button
+                                                variant="outline"
+                                                onClick={() =>
+                                                    setRevealed({
+                                                        ...revealed,
+                                                        [q.id]: true,
+                                                    })
+                                                }
+                                            >
+                                                {t(
+                                                    'practice.results.showAnswer',
+                                                )}
+                                            </Button>
+                                        )}
+                                    </div>
+                                ) : null}
                             </li>
                         ))}
                     </ol>

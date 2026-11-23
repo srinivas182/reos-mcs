@@ -21,6 +21,15 @@ final class RuleCatalogue
             'licensing.qualifying_courses' => ['topic' => RuleTopic::Licensing, 'type' => RuleType::Courses, 'used_by' => ['candidate_plan', 'course_catalogue']],
             'licensing.minimum_age' => ['topic' => RuleTopic::Licensing, 'type' => RuleType::Number, 'unit' => 'years', 'used_by' => ['licence_journey']],
             'exam.vendor' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Text, 'used_by' => ['licence_journey', 'test_prep']],
+            // The licensing exam's format per portion (A9.1): test prep simulates it.
+            'exam.national.questions' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'questions', 'used_by' => ['test_prep']],
+            'exam.national.scored' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'questions', 'used_by' => ['test_prep']],
+            'exam.national.minutes' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'minutes', 'used_by' => ['test_prep']],
+            'exam.national.pass' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'correct', 'used_by' => ['test_prep']],
+            'exam.state.questions' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'questions', 'used_by' => ['test_prep']],
+            'exam.state.scored' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'questions', 'used_by' => ['test_prep']],
+            'exam.state.minutes' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'minutes', 'used_by' => ['test_prep']],
+            'exam.state.pass' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'correct', 'used_by' => ['test_prep']],
             'ce.period_months' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Number, 'unit' => 'months', 'used_by' => ['ce_card', 'broker_compliance', 'reminders']],
             'ce.hours' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Number, 'unit' => 'hours', 'used_by' => ['ce_card', 'broker_compliance', 'course_catalogue']],
             'ce.mandatory_courses' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Courses, 'used_by' => ['ce_card', 'broker_compliance', 'course_catalogue']],
@@ -45,5 +54,5 @@ final class RuleCatalogue
     }
 
     /** Features that read rules today (the rest arrive in their sprints). */
-    public const LIVE_FEATURES = ['ce_card', 'course_approvals'];
+    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep'];
 }

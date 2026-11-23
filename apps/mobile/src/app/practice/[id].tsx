@@ -1,11 +1,12 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, ArrowRight, Flag } from 'lucide-react-native';
+import { ArrowLeft, ArrowRight, Calculator as CalculatorIcon, Flag, Pause, Play } from 'lucide-react-native';
 import { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { type Attempt, asTopic, countdown, loadAttempt, saveAnswer, submitTest, type TestQuestion } from '@/lib/practice';
+import { Calculator } from '@/features/practice/Calculator';
+import { type Attempt, asTopic, countdown, finishPortion, isExam, loadAttempt, pauseTest, saveAnswer, submitTest, type TestQuestion } from '@/lib/practice';
 import { Button, Callout, Chip, OptionGroup, Screen, Sheet, Text, TitleBar } from '@/ui';
 
 /**
@@ -28,6 +29,16 @@ export default function TestScreen() {
   const [reviewing, setReviewing] = useState(false);
   const [failed, setFailed] = useState(false);
   const submitted = useRef(false);
+  const [paused, setPaused] = useState(false);
+  const [calculator, setCalculator] = useState(false);
+
+  const show = (found: Attempt) => {
+    setAttempt(found);
+    setQuestions(found.questions);
+    setAt(Math.max(0, found.questions.findIndex((q) => q.choice === null)));
+    setLeft(found.seconds_left ?? null);
+    setPaused(found.paused);
+  };
 
   useEffect(() => {
     let active = true;
@@ -40,10 +51,8 @@ export default function TestScreen() {
 
           return;
         }
-        setAttempt(found);
-        setQuestions(found?.questions ?? []);
-        setAt(Math.max(0, (found?.questions ?? []).findIndex((q) => q.choice === null)));
-        setLeft(found?.seconds_left ?? null);
+        if (found) show(found);
+        else setAttempt(null);
       });
 
     return () => {
@@ -53,22 +62,45 @@ export default function TestScreen() {
 
   const timed = left !== null;
   useEffect(() => {
-    if (!timed) return;
+    if (!timed || paused) return;
     const timer = setInterval(() => setLeft((s) => (s === null ? s : Math.max(0, s - 1))), 1000);
 
     return () => clearInterval(timer);
-  }, [timed]);
+  }, [timed, paused]);
 
   const finish = async () => {
     if (submitted.current) return;
     submitted.current = true;
     setReviewing(false);
-    await submitTest(attemptId).catch(() => null);
+    // A simulation's first portion: the next one starts now (A9.1).
+    if (attempt?.section && attempt.section.index < attempt.section.of) {
+      const next = await finishPortion(attemptId).catch(() => null);
+      submitted.current = false;
+      if (next && !next.submitted) {
+        show(next);
+
+        return;
+      }
+    } else {
+      await submitTest(attemptId).catch(() => null);
+    }
     router.replace({ pathname: '/practice/results/[id]', params: { id: String(attemptId) } });
   };
 
+  const togglePause = async () => {
+    const next = await pauseTest(attemptId, !paused).catch(() => null);
+    if (next) {
+      setPaused(next.paused);
+      setLeft(next.seconds_left ?? null);
+    }
+  };
+
   useEffect(() => {
-    if (left === 0) void finish();
+    if (left !== 0) return;
+    // Out of time: the server submits (or starts the next portion); this follows it.
+    const id = setTimeout(() => void finish(), 0);
+
+    return () => clearTimeout(id);
   }, [left]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (attempt === undefined) {
@@ -99,11 +131,26 @@ export default function TestScreen() {
     setFailed(saved === null);
     if (saved) setQuestions((list) => list.map((q) => (q.id === saved.id ? saved : q)));
   };
-  const title = attempt.kind === 'diagnostic' ? t('practice.diagnostic.title') : t('practice.topicQuiz', { topic: topic ? t(`practice.topics.${topic}`) : '' });
+  const title = attempt.kind === 'diagnostic' ? t('practice.diagnostic.title') : isExam(attempt.kind) ? t(`practice.portions.${attempt.kind}.title`) : t('practice.topicQuiz', { topic: topic ? t(`practice.topics.${topic}`) : '' });
+  const section = attempt.section;
+  const lastPortion = section === null || section.index === section.of;
 
   return (
     <Screen>
       <TitleBar title={title} onBack={() => router.back()} action={left !== null ? <Chip tone={left < 300 ? 'warning' : 'neutral'} label={countdown(left)} accessibilityLabel={t('practice.test.timeLeft', { time: countdown(left) })} /> : undefined} />
+      {section ? (
+        <Text tone="muted">{t('practice.test.section', { portion: t(`practice.portions.${section.portion === 'state' ? 'state' : 'national'}.title`), n: section.index, of: section.of, count: attempt.total, mode: t(`practice.modes.${attempt.mode === 'practice' ? 'practice' : 'exam'}`) })}</Text>
+      ) : null}
+      {isExam(attempt.kind) ? (
+        <View style={styles.row}>
+          <Button variant="secondary" icon={CalculatorIcon} label={t('practice.calculator.title')} onPress={() => setCalculator(true)} />
+          {attempt.mode === 'practice' && left !== null ? (
+            <Button variant="secondary" icon={paused ? Play : Pause} label={paused ? t('practice.test.resume') : t('practice.test.pause')} onPress={() => void togglePause()} />
+          ) : null}
+        </View>
+      ) : null}
+      <Calculator open={calculator} onClose={() => setCalculator(false)} />
+      {paused ? <Callout tone="info" title={t('practice.test.pausedNote')} live /> : null}
       <Pressable accessibilityRole="button" accessibilityLabel={t('practice.test.openMap', { n: question.n, total: attempt.total })} onPress={() => setReviewing(true)}>
         <Text tone="muted">{`${t('practice.test.counter', { n: question.n, total: attempt.total })} · ${topic ? t(`practice.topics.${topic}`) : ''}`}</Text>
       </Pressable>
@@ -114,7 +161,7 @@ export default function TestScreen() {
         label={question.prompt}
         value={question.choice === null ? null : String(question.choice)}
         options={question.options.map((option, i) => ({ value: String(i), label: option }))}
-        onChange={(value) => (question.feedback ? undefined : void save({ choice: Number(value) }))}
+        onChange={(value) => (question.feedback || paused ? undefined : void save({ choice: Number(value) }))}
       />
       {question.feedback ? (
         <Callout
@@ -172,7 +219,7 @@ export default function TestScreen() {
             }}
           />
         ) : null}
-        <Button label={blanks > 0 ? t('practice.test.submitAnyway') : t('practice.test.submit')} onPress={() => void finish()} fullWidth />
+        <Button label={!lastPortion ? t('practice.test.nextPortion') : blanks > 0 ? t('practice.test.submitAnyway') : t('practice.test.submit')} onPress={() => void finish()} fullWidth />
       </Sheet>
     </Screen>
   );

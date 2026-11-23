@@ -1,13 +1,15 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { ClipboardCheck, Target } from 'lucide-react';
+import { ClipboardCheck, GraduationCap, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
 import { ReadinessRing, TopicBars } from '@/components/practice/readiness-ring';
+import { TestIntroDialog } from '@/components/practice/test-intro-dialog';
 import type {
     HubTest,
     ReadinessSummary,
     Topic,
 } from '@/components/practice/types';
+import { isExam } from '@/components/practice/types';
 import { Button } from '@/components/ui/button';
 import {
     attempt as openAttempt,
@@ -18,7 +20,9 @@ import {
 /**
  * Practice and exams (candidate web nav, A8.3): the 45-minute diagnostic and
  * a 10-question quiz per topic, each with the best and last score, and
- * readiness by topic. Portion tests and the full simulation join in A9.1.
+ * readiness by topic; and (A9.1) the National and Texas portion tests and
+ * the full simulation in the real exam's format, started from the test
+ * intro (Exam or Practice mode).
  */
 export default function PracticeIndex({
     tests,
@@ -32,6 +36,9 @@ export default function PracticeIndex({
     const { t } = useTranslation();
     const diagnostic = tests.find((x) => x.kind === 'diagnostic');
     const topics = tests.filter((x) => x.kind === 'topic');
+    const exams = tests.flatMap((x) =>
+        isExam(x.kind) ? [{ test: x, kind: x.kind }] : [],
+    );
     const begin = (test: HubTest) =>
         test.open !== null
             ? router.visit(openAttempt(test.open).url)
@@ -94,6 +101,75 @@ export default function PracticeIndex({
                                       : t('practice.diagnostic.start')}
                             </Button>
                         </div>
+                    </section>
+                ) : null}
+
+                {exams.length > 0 ? (
+                    <section
+                        aria-labelledby="exams-title"
+                        className="space-y-3"
+                    >
+                        <h2 id="exams-title" className="text-lg font-semibold">
+                            {t('practice.portions.title')}
+                        </h2>
+                        <ul className="grid gap-3 md:grid-cols-3">
+                            {exams.map(({ test, kind }) => (
+                                <li
+                                    key={kind}
+                                    className="flex flex-col justify-between gap-3 rounded-reos-lg border border-border bg-card p-4"
+                                >
+                                    <div className="space-y-1">
+                                        <h3 className="flex items-center gap-2 font-semibold">
+                                            <GraduationCap
+                                                aria-hidden
+                                                className="size-5 text-primary"
+                                            />
+                                            {t(
+                                                `practice.portions.${kind}.title`,
+                                            )}
+                                        </h3>
+                                        <p className="text-sm text-muted-foreground">
+                                            {t('practice.intro.format', {
+                                                questions: test.questions,
+                                                minutes: test.minutes ?? 0,
+                                            })}
+                                        </p>
+                                        {test.best !== null ? (
+                                            <p className="text-body">
+                                                {t('practice.scores', {
+                                                    best: test.best,
+                                                    last: test.last,
+                                                })}
+                                            </p>
+                                        ) : null}
+                                    </div>
+                                    <div className="flex flex-wrap gap-3">
+                                        {test.last_attempt !== null ? (
+                                            <Button variant="outline" asChild>
+                                                <Link
+                                                    href={openResults(
+                                                        test.last_attempt,
+                                                    )}
+                                                >
+                                                    {t('practice.seeResults')}
+                                                </Link>
+                                            </Button>
+                                        ) : null}
+                                        {test.open !== null ? (
+                                            <Button onClick={() => begin(test)}>
+                                                {t('practice.carryOn')}
+                                            </Button>
+                                        ) : (
+                                            <TestIntroDialog
+                                                test={test}
+                                                kind={kind}
+                                                label={t('practice.start')}
+                                            />
+                                        )}
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
                     </section>
                 ) : null}
 

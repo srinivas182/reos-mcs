@@ -73,12 +73,18 @@ const attempt: Attempt = {
   ends_at: '2026-11-23T15:45:00Z',
   seconds_left: 2700,
   submitted: false,
+  paused: false,
+  section: null,
   questions: [question(101, 1), question(102, 2, { topic: 'math' })],
 };
 
 const results: Results = {
   id: 9,
   kind: 'diagnostic',
+  mode: 'exam',
+  passed: null,
+  portions: [],
+  timing: null,
   score: 50,
   correct: 1,
   total: 2,
@@ -92,12 +98,41 @@ const results: Results = {
   weakest: ['math'],
   strongest: ['agency'],
   review: [
-    { id: 101, n: 1, topic: 'agency', prompt: 'Question 1?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: 0, right: 0, correct: true, explanation: 'Because A.', source: 'TREC Rules' },
-    { id: 102, n: 2, topic: 'math', prompt: 'Question 2?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: null, right: 2, correct: false, explanation: 'Because C.', source: 'Exam outline' },
+    { id: 101, n: 1, topic: 'agency', prompt: 'Question 1?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: 0, right: 0, correct: true, explanation: 'Because A.', source: 'TREC Rules', portion: 'national', scored: true, lesson: null },
+    { id: 102, n: 2, topic: 'math', prompt: 'Question 2?', options: ['Option A', 'Option B', 'Option C', 'Option D'], choice: null, right: 2, correct: false, explanation: 'Because C.', source: 'Exam outline', portion: 'national', scored: true, lesson: null },
   ],
 };
 
 beforeEach(() => jest.clearAllMocks());
+
+describe('exam simulations (A9.1)', () => {
+  it('starts a portion test from the intro sheet in the chosen mode, then runs portion by portion with the calculator', async () => {
+    const sim: Attempt = { ...attempt, id: 31, kind: 'simulation', mode: 'practice', total: 2, section: { index: 1, of: 2, portion: 'national', minutes: 150, questions: 2 }, seconds_left: 9000 };
+    mockApi.GET.mockResolvedValue(ok({ data: [{ kind: 'simulation', topic: null, questions: 135, minutes: 240, best: null, last: null, open: null, last_attempt: null }] }));
+    mockApi.POST.mockResolvedValue(ok({ data: sim }));
+    await render(wrap(<PracticeHub />));
+
+    await fireEvent.press(await screen.findByText('Full simulation'));
+    await fireEvent.press(screen.getByText('Practice mode'));
+    await fireEvent.press(screen.getByRole('button', { name: 'Start test' }));
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/tests', { body: { kind: 'simulation', topic: null, mode: 'practice' } });
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/[id]', params: { id: '31' } });
+
+    jest.mocked(useLocalSearchParams).mockReturnValue({ id: '31' });
+    mockApi.GET.mockResolvedValue(ok({ data: sim }));
+    mockApi.POST.mockResolvedValue(ok({ data: { ...sim, section: { index: 2, of: 2, portion: 'state', minutes: 90, questions: 2 }, seconds_left: 5400 } }));
+    await render(wrap(<TestScreen />));
+
+    expect(await screen.findByText('National portion, part 1 of 2 · 2 questions · why after each answer')).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: 'Calculator' }));
+    expect(screen.getByLabelText('Percent')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Next'));
+    await fireEvent.press(screen.getByText('Review and submit'));
+    await fireEvent.press(screen.getByText('Finish and start the next portion'));
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/attempts/{attempt}/finish', { params: { path: { attempt: 31 } } });
+    expect(await screen.findByText('Texas portion, part 2 of 2 · 2 questions · why after each answer')).toBeTruthy();
+  });
+});
 
 describe('Today for candidates (screen 12)', () => {
   it('shows readiness, days to the exam, the streak, Continue at its second, and today\'s tasks with why', async () => {

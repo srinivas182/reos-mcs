@@ -41,10 +41,11 @@ final class PracticeController extends Controller
     /**
      * The practice hub.
      *
-     * The diagnostic and a quiz per topic, each with the best and last score
+     * The diagnostic, the National and state portion tests, the full
+     * simulation and a quiz per topic, each with the best and last score
      * and any attempt still open.
      *
-     * @response array{data: list<array{kind: 'diagnostic'|'topic', topic: string|null, questions: int, minutes: int|null, best: int|null, last: int|null, open: int|null, last_attempt: int|null}>}
+     * @response array{data: list<array{kind: 'diagnostic'|'topic'|'national'|'state'|'simulation', topic: string|null, questions: int, minutes: int|null, best: int|null, last: int|null, open: int|null, last_attempt: int|null}>}
      */
     public function index(#[CurrentUser] User $user, PracticeAccess $access): JsonResponse
     {
@@ -56,22 +57,26 @@ final class PracticeController extends Controller
     /**
      * Start a test.
      *
-     * The diagnostic (50 questions, 45 minutes, results at the end) or a
-     * topic quiz (10 questions, why after each answer). An attempt of the
-     * same kind still open is returned instead.
+     * The diagnostic (50 questions, 45 minutes, results at the end), a
+     * topic quiz (10 questions, why after each answer), or (A9.1) the
+     * National or state portion test or the full simulation in the state's
+     * real format, in `exam` mode (feedback at the end, no pause) or
+     * `practice` mode. An attempt of the same kind still open is returned
+     * instead.
      *
      * @status 201
      *
-     * @response array{data: array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, questions: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, flagged: bool, feedback: array{correct: bool, right: int, explanation: string, source: string}|null}>}}
+     * @response array{data: array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, paused: bool, section: array{index: int, of: int, portion: string, minutes: int, questions: int}|null, questions: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, flagged: bool, feedback: array{correct: bool, right: int, explanation: string, source: string}|null}>}}
      */
     public function store(Request $request, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): JsonResponse
     {
         $access->allow($user);
         $data = $request->validate([
-            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC])],
+            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC, ...TestAttempt::PORTION_KINDS])],
             'topic' => ['required_if:kind,topic', 'nullable', Rule::in(array_keys(DiagnosticBank::WEIGHTS))],
+            'mode' => ['nullable', Rule::in(['exam', 'practice'])],
         ]);
-        $attempt = $tests->start($user, (string) $data['kind'], $data['kind'] === TestAttempt::TOPIC && is_string($data['topic'] ?? null) ? $data['topic'] : null);
+        $attempt = $tests->start($user, (string) $data['kind'], $data['kind'] === TestAttempt::TOPIC && is_string($data['topic'] ?? null) ? $data['topic'] : null, is_string($data['mode'] ?? null) ? $data['mode'] : null);
 
         return response()->json(['data' => $tests->show($attempt, $user->locale->value)], $attempt->wasRecentlyCreated ? 201 : 200);
     }
@@ -82,7 +87,7 @@ final class PracticeController extends Controller
      * Its questions with my answers and flags, and the time left on the
      * server's clock. A timed test whose time ran out is scored as it stood.
      *
-     * @response array{data: array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, questions: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, flagged: bool, feedback: array{correct: bool, right: int, explanation: string, source: string}|null}>}}
+     * @response array{data: array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, paused: bool, section: array{index: int, of: int, portion: string, minutes: int, questions: int}|null, questions: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, flagged: bool, feedback: array{correct: bool, right: int, explanation: string, source: string}|null}>}}
      */
     public function show(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): JsonResponse
     {
@@ -110,7 +115,7 @@ final class PracticeController extends Controller
      *
      * Scored by topic; readiness and the study plan update at once.
      *
-     * @response array{data: array{id: int, kind: string, score: int, correct: int, total: int, pass_line: int, previous: int|null, seconds: int, topics: list<array{topic: string, correct: int, total: int, percent: int, weight: int}>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, explanation: string, source: string}>}}
+     * @response array{data: array{id: int, kind: string, mode: string, score: int, correct: int, total: int, pass_line: int, passed: bool|null, previous: int|null, seconds: int, portions: list<array{portion: string, correct: int, total: int, pass: int, passed: bool, percent: int, previous: int|null, seconds: int, pace: int}>, timing: array{seconds_per_question: int, pace: int}|null, topics: list<array{topic: string, correct: int, total: int, percent: int, weight: int}>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, portion: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, scored: bool, explanation: string, source: string, lesson: array{id: int, seconds: int|null}|null}>}}
      */
     public function submit(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): JsonResponse
     {
@@ -120,13 +125,56 @@ final class PracticeController extends Controller
     }
 
     /**
+     * Pause or resume.
+     *
+     * Practice mode only: the clock stops while paused. 422 in exam mode.
+     *
+     * @response array{data: array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, paused: bool, section: array{index: int, of: int, portion: string, minutes: int, questions: int}|null, questions: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, flagged: bool, feedback: array{correct: bool, right: int, explanation: string, source: string}|null}>}}
+     */
+    public function pause(Request $request, int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): JsonResponse
+    {
+        $paused = (bool) $request->validate(['paused' => ['required', 'boolean']])['paused'];
+
+        return response()->json(['data' => $tests->show($tests->pause($access->attempt($user, $attempt), $paused), $user->locale->value)]);
+    }
+
+    /**
+     * Finish this portion.
+     *
+     * In a simulation, the next portion starts now with its own clock; the
+     * last portion submits the test (then `submitted` is true).
+     *
+     * @response array{data: array{id: int, kind: string, mode: string, topic: string|null, total: int, answered: int, started_at: string, ends_at: string|null, seconds_left: int|null, submitted: bool, paused: bool, section: array{index: int, of: int, portion: string, minutes: int, questions: int}|null, questions: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, flagged: bool, feedback: array{correct: bool, right: int, explanation: string, source: string}|null}>}}
+     */
+    public function finish(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): JsonResponse
+    {
+        return response()->json(['data' => $tests->show($tests->finish($access->attempt($user, $attempt)), $user->locale->value)]);
+    }
+
+    /**
+     * A similar question.
+     *
+     * One more on the same topic, not in this test, with its answer and why
+     * (answer review). `data` is null when there's none.
+     *
+     * @response array{data: array{id: int, topic: string, prompt: string, options: list<string>, right: int, explanation: string, source: string}|null}
+     */
+    public function similar(int $attempt, int $question, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): JsonResponse
+    {
+        $found = $access->attempt($user, $attempt);
+        abort_unless($tests->expire($found), 409, __('practice.errors.stillOpen'));
+
+        return response()->json(['data' => $tests->similar($found, $question, $user->locale->value)]);
+    }
+
+    /**
      * A test's results.
      *
      * Score and pass line, the change since last time, topics weakest first
      * with their exam weight, and every answer with why and its source. 409
      * while the test is still open.
      *
-     * @response array{data: array{id: int, kind: string, score: int, correct: int, total: int, pass_line: int, previous: int|null, seconds: int, topics: list<array{topic: string, correct: int, total: int, percent: int, weight: int}>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, explanation: string, source: string}>}}
+     * @response array{data: array{id: int, kind: string, mode: string, score: int, correct: int, total: int, pass_line: int, passed: bool|null, previous: int|null, seconds: int, portions: list<array{portion: string, correct: int, total: int, pass: int, passed: bool, percent: int, previous: int|null, seconds: int, pace: int}>, timing: array{seconds_per_question: int, pace: int}|null, topics: list<array{topic: string, correct: int, total: int, percent: int, weight: int}>, weakest: list<string>, strongest: list<string>, review: list<array{id: int, n: int, topic: string, portion: string, prompt: string, options: list<string>, choice: int|null, right: int, correct: bool, scored: bool, explanation: string, source: string, lesson: array{id: int, seconds: int|null}|null}>}}
      */
     public function results(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): JsonResponse
     {

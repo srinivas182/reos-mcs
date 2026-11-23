@@ -4,7 +4,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { asTopic, countdown, loadResults, type Results } from '@/lib/practice';
+import { asTopic, countdown, loadResults, type Results, type Similar, similarQuestion } from '@/lib/practice';
 import { Button, Callout, Card, ProgressBar, Screen, SectionTitle, Text, TitleBar } from '@/ui';
 
 /**
@@ -17,6 +17,8 @@ export default function ResultsScreen() {
   const { theme } = useUnistyles();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [results, setResults] = useState<Results | null | undefined>(undefined);
+  const [similar, setSimilar] = useState<Record<number, Similar | null>>({});
+  const [revealed, setRevealed] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     let active = true;
@@ -47,8 +49,12 @@ export default function ResultsScreen() {
     );
   }
 
-  const passed = results.score >= results.pass_line;
+  const passed = results.passed ?? results.score >= results.pass_line;
   const change = results.previous === null ? null : results.score - results.previous;
+  const more = async (id: number) => {
+    const found = await similarQuestion(results.id, id).catch(() => null);
+    setSimilar((all) => ({ ...all, [id]: found }));
+  };
   const name = (topic: string) => {
     const known = asTopic(topic);
 
@@ -78,6 +84,22 @@ export default function ResultsScreen() {
         title={passed ? t('practice.results.above', { line: results.pass_line }) : t('practice.results.below', { line: results.pass_line })}
         body={change !== null ? t('practice.results.change', { change: change > 0 ? `+${change}` : change }) : undefined}
       />
+      {results.portions.length > 0 ? <SectionTitle>{t('practice.results.portions')}</SectionTitle> : null}
+      {results.portions.map((p) => (
+        <Callout
+          key={p.portion}
+          tone={p.passed ? 'success' : 'warning'}
+          title={`${t(`practice.portions.${p.portion === 'state' ? 'state' : 'national'}.title`)}: ${t('practice.results.portionScore', { correct: p.correct, total: p.total })}`}
+          body={[p.passed ? t('practice.results.portionPassed', { pass: p.pass }) : t('practice.results.portionShort', { pass: p.pass, short: p.pass - p.correct }), p.previous !== null ? t('practice.results.portionChange', { previous: p.previous, now: p.percent }) : null].filter(Boolean).join('\n')}
+        />
+      ))}
+      {results.timing ? (
+        <Text>
+          {results.timing.seconds_per_question > results.timing.pace
+            ? t('practice.results.timingSlow', { seconds: results.timing.seconds_per_question, pace: results.timing.pace })
+            : t('practice.results.timingOk', { seconds: results.timing.seconds_per_question, pace: results.timing.pace })}
+        </Text>
+      ) : null}
       <SectionTitle>{t('practice.results.byTopic')}</SectionTitle>
       <Card>
         {results.topics.map((topic) => (
@@ -101,6 +123,27 @@ export default function ResultsScreen() {
           <Text variant="caption" tone="muted">
             {t('player.checkin.source', { source: q.source })}
           </Text>
+          {!q.scored ? (
+            <Text variant="caption" tone="muted">
+              {t('practice.results.pretest')}
+            </Text>
+          ) : null}
+          {q.lesson ? <Button variant="secondary" label={t('practice.results.watch')} onPress={() => router.push({ pathname: '/learn/[id]', params: { id: String(q.lesson?.id) } })} /> : null}
+          {!q.correct && similar[q.id] === undefined ? (
+            <Button variant="ghost" label={t('practice.results.similar')} onPress={() => void more(q.id)} />
+          ) : null}
+          {similar[q.id] === null ? <Text tone="muted">{t('practice.results.noSimilar')}</Text> : null}
+          {similar[q.id] ? (
+            <Card>
+              <Text weight="semibold">{similar[q.id]?.prompt}</Text>
+              {similar[q.id]?.options.map((option, i) => (
+                <Text key={option} tone={revealed[q.id] && i === similar[q.id]?.right ? 'success' : 'default'}>
+                  {`${String.fromCharCode(65 + i)}. ${option}`}
+                </Text>
+              ))}
+              {revealed[q.id] ? <Text>{similar[q.id]?.explanation}</Text> : <Button variant="secondary" label={t('practice.results.showAnswer')} onPress={() => setRevealed({ ...revealed, [q.id]: true })} />}
+            </Card>
+          ) : null}
         </Card>
       ))}
     </Screen>
