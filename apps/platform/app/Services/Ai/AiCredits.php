@@ -104,6 +104,15 @@ final readonly class AiCredits
         return $this->isCandidate($user) || $this->left($user) >= $credits;
     }
 
+    /**
+     * An AI action that costs no credits (CRM summaries for agents, B8.3):
+     * logged at 0 so it still counts toward the hourly limit and AI usage.
+     */
+    public function logFree(User $user, string $feature, string $engine): void
+    {
+        DB::table('ai_credit_uses')->insert(['user_id' => $user->id, 'feature' => $feature, 'engine' => $engine, 'credits' => 0, 'created_at' => CarbonImmutable::now()]);
+    }
+
     public function charge(User $user, string $feature, string $engine, int $credits = 1): void
     {
         DB::transaction(function () use ($user, $feature, $engine, $credits): void {

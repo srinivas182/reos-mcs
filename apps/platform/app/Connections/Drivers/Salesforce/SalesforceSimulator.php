@@ -6,6 +6,7 @@ namespace App\Connections\Drivers\Salesforce;
 
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
+use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Crm\MapsStageFields;
 use App\Connections\Exceptions\AccessRevoked;
@@ -28,7 +29,7 @@ use Illuminate\Support\Str;
  * account, a note and a task, read and written with Salesforce's own field
  * names and the brokerage's stage mapping.
  */
-final class SalesforceSimulator implements ConnectorDriver, CrmDriver, MapsStageFields
+final class SalesforceSimulator implements ConnectorDriver, CreatesTasks, CrmDriver, MapsStageFields
 {
     private const CONTAINER = 'sf';
 
@@ -121,6 +122,17 @@ final class SalesforceSimulator implements ConnectorDriver, CrmDriver, MapsStage
         $this->authorise($connection);
 
         return self::write($connection, 'notes', '069'.Str::lower(Str::random(12)), ['Title' => mb_substr($body, 0, 80), 'TextPreview' => mb_substr($body, 0, 255), 'LinkedEntityId' => $personId])->external_id;
+    }
+
+    public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string
+    {
+        $this->authorise($connection);
+        $person = SimulatorRecord::query()->where('connection_id', $connection->id)->where('stream', 'people')->where('external_id', $personId)->first();
+        $owner = $person === null ? [] : ($person->data['Owner'] ?? []);
+
+        return self::write($connection, 'tasks', '00Tsim'.str_pad((string) random_int(1, 999999999), 9, '0', STR_PAD_LEFT), [
+            'WhoId' => $personId, 'Subject' => $title, 'Status' => 'Not Started', 'IsClosed' => false, 'ActivityDate' => $due?->toDateString(), 'Owner' => $owner,
+        ])->external_id;
     }
 
     public function setTaskDone(Connection $connection, string $token, string $taskId, bool $done): void

@@ -7,3 +7,4 @@ export type * from './connections';
 export type * from './tenants';
 export type * from './brand';
 export type * from './licences';
+export type * from './contacts';

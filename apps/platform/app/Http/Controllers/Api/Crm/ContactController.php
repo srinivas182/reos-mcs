@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Crm;
 
+use App\Crm\ContactHub;
 use App\Crm\Contacts;
 use App\Crm\CrmWriteBack;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Crm\ContactListRequest;
 use App\Http\Requests\Crm\PhoneContactsRequest;
 use App\Http\Resources\Crm\ContactActivityResource;
+use App\Http\Resources\Crm\ContactInsightResource;
 use App\Http\Resources\Crm\ContactNoteResource;
 use App\Http\Resources\Crm\ContactResource;
+use App\Http\Resources\Crm\ContactRowResource;
+use App\Http\Resources\Todos\TodoResource;
 use App\Models\Connection;
 use App\Models\Contact;
 use App\Models\User;
@@ -28,10 +33,24 @@ use Illuminate\Http\Response;
  */
 final class ContactController extends Controller
 {
-    /** List your contacts, newest change first. */
-    public function index(#[CurrentUser] User $user, Contacts $contacts): AnonymousResourceCollection
+    /**
+     * Your contacts (CRM hub, B8.3).
+     *
+     * Every source in one list, newest change first: by tab (segment), tag
+     * or search, with the last touch and the AI next step while it's fresh,
+     * plus the count in each tab and your tags.
+     */
+    public function index(ContactListRequest $request, #[CurrentUser] User $user, ContactHub $hub): AnonymousResourceCollection
     {
-        return ContactResource::collection($contacts->of(Connection::OWNER_USER, $user->id));
+        $list = $hub->list($user, $request->segmentName(), $request->tag(), $request->search());
+
+        return ContactRowResource::collection($list['rows'])->additional([
+            /** @var array<string, int> */
+            'counts' => $list['counts'],
+            /** @var list<string> */
+            'tags' => $list['tags'],
+            'total' => $list['total'],
+        ]);
     }
 
     /**
@@ -91,16 +110,26 @@ final class ContactController extends Controller
     }
 
     /**
-     * One contact: every source that knows them, and their notes, newest first.
+     * One contact: every source that knows them, notes (newest first), your
+     * tasks about them, recent sync activity, and the AI insight while it's
+     * fresh (null until you ask for one).
      *
-     * @response array{data: array<string, mixed>, notes: list<array{id: int, body: string, source: string, source_name: string, sent_to: list<string>, at: string|null}>}
+     * @response array{data: array<string, mixed>, notes: list<array{id: int, body: string, source: string, source_name: string, sent_to: list<string>, at: string|null}>, tasks: list<array<string, mixed>>, activity: list<array{id: int, kind: string, contact: array{id: string, name: string}, source: string, source_name: string, text: string, occurred_at: string}>, insight: array{summary: string, next_step: string, why: string, channel: string, draft: string|null, engine: string, generated_at: string}|null, segment: string|null, last_touch_at: string|null}
      */
-    public function show(string $contact, #[CurrentUser] User $user, Request $request): JsonResponse
+    public function show(string $contact, #[CurrentUser] User $user, Request $request, ContactHub $hub): JsonResponse
     {
         $found = $this->find($user, $contact)->load(['links', 'tags']);
-        $notes = $found->notes()->orderByDesc('created_at')->orderByDesc('id')->limit(100)->get();
+        $panel = $hub->panel($user, $found);
 
-        return response()->json(['data' => (new ContactResource($found))->toArray($request), 'notes' => ContactNoteResource::collection($notes)->toArray($request)]);
+        return response()->json([
+            'data' => (new ContactResource($found))->toArray($request),
+            'notes' => ContactNoteResource::collection($panel['notes'])->toArray($request),
+            'tasks' => TodoResource::collection($panel['tasks'])->toArray($request),
+            'activity' => ContactActivityResource::collection($panel['activity'])->toArray($request),
+            'insight' => $panel['insight'] === null ? null : (new ContactInsightResource($panel['insight']))->toArray($request),
+            'segment' => $panel['segment'],
+            'last_touch_at' => $panel['last_touch_at'],
+        ]);
     }
 
     /**

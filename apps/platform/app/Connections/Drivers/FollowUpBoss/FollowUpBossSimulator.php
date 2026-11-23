@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\FollowUpBoss;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\SimulatorSignature;
@@ -28,7 +29,7 @@ use LogicException;
  * Any key of four or more characters connects. `changeInTool()` lets demos
  * and tests write in "Follow Up Boss" and see it arrive in REOS.
  */
-final class FollowUpBossSimulator implements ConnectorDriver, ConnectsWithApiKey, CrmDriver
+final class FollowUpBossSimulator implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver
 {
     private const CONTAINER = 'fub';
 
@@ -114,6 +115,13 @@ final class FollowUpBossSimulator implements ConnectorDriver, ConnectsWithApiKey
         $this->authorise($connection);
 
         return self::write($connection, 'notes', null, ['personId' => $personId, 'subject' => 'REOS', 'body' => $body])->external_id;
+    }
+
+    public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string
+    {
+        $this->authorise($connection);
+
+        return self::write($connection, 'tasks', null, ['personId' => $personId, 'name' => $title, 'dueDate' => $due?->toDateString(), 'isCompleted' => false])->external_id;
     }
 
     public function setTaskDone(Connection $connection, string $token, string $taskId, bool $done): void

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -37,6 +38,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property-read Collection<int, ContactLink> $links
  * @property-read Collection<int, Tag> $tags
+ * @property-read ContactInsight|null $insight
  */
 final class Contact extends Model implements HasPersonalRows
 {
@@ -86,5 +88,11 @@ final class Contact extends Model implements HasPersonalRows
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'contact_tag');
+    }
+
+    /** @return HasOne<ContactInsight, $this> */
+    public function insight(): HasOne
+    {
+        return $this->hasOne(ContactInsight::class);
     }
 }
