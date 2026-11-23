@@ -51,7 +51,7 @@ final class Personas
         ];
     }
 
-    private static function email(string $local): string
+    public static function email(string $local): string
     {
         return $local.'@'.self::DOMAIN;
     }

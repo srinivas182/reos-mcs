@@ -1546,6 +1546,42 @@
       "reads": "Lo que REOS lee",
       "readsBody": "Sus eventos y su tiempo libre, para que Hoy se organice en torno a sus reuniones.",
       "saved": "Guardado. Sincronizando sus calendarios ahora."
+    },
+    "contacts": {
+      "title": "Contactos",
+      "activity": "Actividad de sincronización",
+      "activityDetail": "Qué cambió en sus contactos y dónde",
+      "phone": "Contactos del teléfono",
+      "phoneOff": "No agregados",
+      "phoneOn": "Agregados"
+    },
+    "phone": {
+      "title": "Contactos del teléfono",
+      "intro": "Agregue a REOS las personas de los contactos de su teléfono, para que cada persona aparezca una sola vez con lo que sus CRM saben de ella.",
+      "never": "REOS lee nombres, correos electrónicos, números de teléfono y cumpleaños. Nunca cambia ni elimina nada en su teléfono.",
+      "match": "Las personas se vinculan por correo electrónico o número de teléfono, nunca solo por el nombre.",
+      "add": "Agregar contactos del teléfono",
+      "again": "Agregarlos de nuevo",
+      "adding": "Agregando…",
+      "added_one": "Se agregó {{count}} contacto de su teléfono.",
+      "added_other": "Se agregaron {{count}} contactos de su teléfono.",
+      "denied": "REOS no puede ver sus contactos. Permita Contactos para REOS en la Configuración de su teléfono.",
+      "failed": "No se pudieron agregar los contactos. Vuelva a intentarlo.",
+      "stop": "Dejar de usar los contactos del teléfono",
+      "stopBody": "Los contactos que solo vinieron de su teléfono se quitan de REOS. Su teléfono no cambia.",
+      "stopped": "Se quitaron de REOS los contactos del teléfono.",
+      "keep": "Conservarlos"
+    },
+    "activity": {
+      "title": "Actividad de sincronización",
+      "empty": "Todavía no hay nada",
+      "emptyBody": "Cuando sus CRM o los contactos del teléfono cambien un contacto, aparecerá aquí en palabras sencillas.",
+      "duplicates": "Posibles duplicados",
+      "sameName": "{{a}} y {{b}} tienen el mismo nombre, pero no comparten correo electrónico ni teléfono.",
+      "merge": "Combinar",
+      "notSame": "No es la misma persona",
+      "merged": "Se combinó a {{name}}.",
+      "undo": "Deshacer"
     }
   },
   "catalogue": {
@@ -2030,7 +2066,9 @@
         "module.source_started": "Carga de material fuente iniciada",
         "module.generated": "Generó lecciones con IA",
         "lesson.regenerated": "Generó de nuevo una lección",
-        "avatar.twins_recorded": "Registró identificadores de avatar"
+        "avatar.twins_recorded": "Registró identificadores de avatar",
+        "contact.merged": "Combinó dos contactos",
+        "contact.split": "Separó un contacto combinado"
       }
     }
   },
@@ -5231,6 +5269,30 @@
       "close": "Cerrar",
       "regenerate": "Generar de nuevo",
       "view": "Ver borrador"
+    }
+  },
+  "crm": {
+    "sources": {
+      "phone": "Contactos del teléfono"
+    },
+    "fields": {
+      "first_name": "el nombre",
+      "last_name": "el apellido",
+      "stage": "la etapa",
+      "birthday": "el cumpleaños"
+    },
+    "activity": {
+      "created": ":source agregó a :name.",
+      "linked": ":source vinculó a :name con un contacto que usted ya tenía.",
+      "changed": ":source cambió :field de :name a “:value”. El valor anterior de :previousSource era “:previous”.",
+      "kept": ":source tenía un valor más antiguo para :field de :name (“:previous”), así que se conservó el más reciente, “:value”.",
+      "removed": "Se eliminó a :name en :source. El contacto se conserva en REOS.",
+      "merged": "Se combinó a :other con :name.",
+      "split": "Se separó de nuevo a :other de :name."
+    },
+    "errors": {
+      "merge": "Estos dos contactos no se pueden combinar.",
+      "split": "Este contacto no se combinó, así que no se puede separar."
     }
   }
 }

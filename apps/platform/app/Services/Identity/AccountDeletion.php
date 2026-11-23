@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services\Identity;
 
 use App\Models\AvatarConsent;
+use App\Models\Contact;
+use App\Models\Tag;
 use App\Models\User;
 use App\Notifications\AccountDeletionScheduled;
 use App\Services\Audit\AuditLogger;
@@ -70,6 +72,9 @@ final readonly class AccountDeletion
                 // Avatar samples are files (A7.1b); their rows go with the account.
                 AvatarConsent::query()->withoutGlobalScopes()->where('user_id', $user->id)->whereNotNull('sample_path')
                     ->pluck('sample_path')->each(static fn (mixed $path) => is_string($path) ? LessonFiles::disk()->delete($path) : null);
+                // Their own contacts and tags (B7.1) are owned, not linked by key.
+                Contact::withTrashed()->withoutGlobalScopes()->where('owner_type', 'user')->where('owner_id', $user->id)->forceDelete();
+                Tag::query()->withoutGlobalScopes()->where('owner_type', 'user')->where('owner_id', $user->id)->delete();
                 $user->delete();
                 // The audit row keeps only the id: the person's details are gone.
                 $this->audit->record('account.deleted', 'user', $id);

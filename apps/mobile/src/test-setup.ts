@@ -137,7 +137,7 @@ jest.mock('expo-speech-recognition', () => {
 jest.mock('expo-contacts', () => ({
   getPermissionsAsync: jest.fn(async () => ({ granted: true, canAskAgain: true })),
   requestPermissionsAsync: jest.fn(async () => ({ granted: true, canAskAgain: true })),
-  ContactField: { FULL_NAME: 'fullName' },
+  ContactField: { FULL_NAME: 'fullName', GIVEN_NAME: 'givenName', FAMILY_NAME: 'familyName', EMAILS: 'emails', PHONES: 'phones', BIRTHDAY: 'birthday' },
   Contact: { getAllDetails: jest.fn(async () => []) },
 }));
 

@@ -170,6 +170,20 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 - **Sync engine:** contact drivers on the B3.2 connections framework (cursors, webhooks, rate limits, reconnect), the default CRM for new contacts (screen 24), and **Sync activity (23)** in plain English.
 - **Phone contacts** as the first source: read on the phone with permission, matched like any other source, and never written back.
 - **Done when:** two sources merge without duplicates (the same people from the simulator CRM and phone contacts end up once each, with both links).
+- **As built, B7.1** (ADR 0027):
+  - **Model:** contacts with links per source, notes, tasks linked to to-dos, tags, activities and merge suggestions, owned by the agent or the brokerage under row-level security.
+  - **Matching** on a well-formed email or E.164 phone. A name only suggests a merge.
+  - **Conflicts:** the newest change wins field by field, and the losing value is logged in plain English. REOS's own writes are fingerprinted, so they never come back as changes.
+  - **Merge and split** are audited.
+  - **Sources:**
+    - CRMs save their people through the connections engine's `ContactStore`.
+    - **Phone contacts** (phone app › Connections › Phone contacts) are read only when the person taps Add, and never written back.
+  - **Sync activity (screen 23)** on the phone shows what changed in plain words, with Merge and "Not the same" for same-name contacts. Merge has Undo.
+  - **Privacy:** contacts are in "Download my data", deleted with the account, and recorded in the data map.
+  - **Demo data:** James Miller's CRM and phone contacts. Maria Lopez and David Chen end up once each with both links, the two Mike Johnsons are suggested as a merge, and Maria's newer stage from the CRM is logged.
+  - **Moved to later sub-sprints:**
+    - The default CRM for new contacts (screen 24) and brokerage contact screens come with Follow Up Boss (B7.2).
+    - The CRM simulator's sign-in comes with each CRM driver.
 
 ### B7.2 Follow Up Boss (Team B)
 

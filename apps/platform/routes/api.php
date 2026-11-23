@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
+use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Licences\LicenceController;
@@ -177,6 +178,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('tool-requests', [CatalogueController::class, 'request'])->middleware('throttle:10,60,api-tool-requests-store')->name('api.tool-requests.store');
 
     // Connections (B3.1, ADR 0013).
+    // Contacts (B7.1, ADR 0027): one person, all sources.
+    Route::get('contacts', [ContactController::class, 'index'])->name('api.contacts.index');
+    Route::get('contacts/activity', [ContactController::class, 'activity'])->name('api.contacts.activity');
+    Route::post('contacts/phone', [ContactController::class, 'phone'])->middleware('throttle:20,1,api-contacts-phone')->name('api.contacts.phone');
+    Route::delete('contacts/phone', [ContactController::class, 'forgetPhone'])->middleware('throttle:10,1,api-contacts-phone-forget')->name('api.contacts.phone.forget');
+    Route::post('contacts/{contact}/merge', [ContactController::class, 'merge'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.merge');
+    Route::post('contacts/{contact}/split', [ContactController::class, 'split'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.split');
+    Route::post('contacts/suggestions/{suggestion}/dismiss', [ContactController::class, 'dismiss'])->whereNumber('suggestion')->middleware('throttle:60,1,api-contacts-dismiss')->name('api.contacts.suggestions.dismiss');
     Route::get('connections', [ConnectionController::class, 'index'])->name('api.connections.index');
     Route::post('connections', [ConnectionController::class, 'store'])->middleware('throttle:sign-in')->name('api.connections.store');
     Route::post('connections/{connection}/sync', [ConnectionController::class, 'sync'])->whereNumber('connection')->middleware('throttle:10,1,api-connections-sync')->name('api.connections.sync');

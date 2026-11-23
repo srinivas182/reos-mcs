@@ -100,6 +100,9 @@ final readonly class DataExport
             // To-dos, typed or spoken (B4.3); what was said is never stored.
             'todos' => DB::table('todos')->where('user_id', $user->id)->whereNull('deleted_at')->orderBy('id')->limit(5000)
                 ->get(['title', 'notes', 'due_at', 'due_date', 'remind_at', 'related_label', 'source', 'done_at', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
+            // Contacts from their CRMs and phone (B7.1), with where each came from.
+            'contacts' => DB::table('contacts')->where('owner_type', 'user')->where('owner_id', $user->id)->whereNull('deleted_at')->orderBy('id')->limit(10000)
+                ->get(['first_name', 'last_name', 'emails', 'phones', 'birthday', 'stage', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             'ai_credit_uses' => DB::table('ai_credit_uses')->where('user_id', $user->id)->orderBy('id')->limit(5000)
                 ->get(['feature', 'engine', 'credits', 'created_at'])->map(static fn ($r): array => (array) $r)->all(),
             // The REOS calendar: events made in REOS and those synced from calendars (B4.1).
