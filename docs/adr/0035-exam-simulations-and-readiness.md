@@ -83,6 +83,22 @@ A candidate who passes one portion retakes only the other. Sprint 9 decision 1 s
     - **Variants and links:** each solve offers a variant of the same kind with a new seed. A missed math question in the results links to its kind (`MathLab::kindFor`, from the question's wording).
     - **Tests:** each generator is tested against worked answers computed from its own wording, over 60 seeds.
 
+## Flashcards and the speed round (A9.2d)
+
+18. **Flashcards are scheduled by FSRS-5 with its published default weights**, at 90% target retention. The ratings are Again, Hard and Got it.
+    - **Again** brings a card back in ten minutes, so a miss returns within the same two-minute burst.
+    - **Same-day reviews** use FSRS's short-term stability.
+    - The same algorithm is written twice, `Fsrs.php` and `apps/mobile/src/lib/fsrs.ts`, and both are tested against the same values.
+    - **On the phone:** the whole deck is kept in MMKV and reviews are scheduled there, so flashcards work fully offline. Each review is queued with a UUID.
+    - **Sync:** the server applies synced reviews oldest first, each once by its UUID, and counts a review older than the card's last one as now. It stays the record.
+    - **Limit:** up to 15 new cards a day.
+    - **Where cards come from:** the course's approved flashcards for lessons started; **Save as flashcard** from a check-in, an Ask answer or answer review (once per question); and speed-round misses.
+19. **The speed round** is 60 seconds of true or false, made from questions: is this option the answer? It is right half the time.
+    - The server keeps the truths and scores the taps.
+    - Misses become flashcards.
+    - Each answer counts a quarter of a test answer towards readiness ("lightly").
+20. **Fix plans** gain a two-minute flashcards step when the topic has cards. **The hub** ranks flashcards due (with the count) and the speed round after the drill and fix plans.
+
 ## Consequences
 
 - Readiness (A9.2) reads `by_topic` with portions mapped from topics (state rules to the state portion), and `by_portion` from simulations for the booking line.

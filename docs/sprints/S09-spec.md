@@ -128,6 +128,12 @@
   - **fully offline on the phone**, synced when back online;
   - cards come from the course's approved flashcards (A7.3), **Save as flashcard** (check-ins, Ask, answer review), and misses from the speed round.
 - **Speed round (screen 50):** 60 seconds of true-or-false statements with two big buttons and the best and current score. It feeds readiness only lightly, and misses become flashcards.
+- **As built, A9.2d** (ADR 0035 §18–20):
+  - **Flashcards** (phone screen 31 and a web page): two-minute bursts with a counter, and Again, Hard or Got it scheduled by FSRS.
+  - **Offline:** fully offline on the phone, with a queue that syncs each review once.
+  - **Where cards come from:** the course's approved cards, **Save as flashcard** from check-ins, Ask and answer review (web and phone), and speed-round misses.
+  - **Speed round** (phone screen 50 and a web page): 60 seconds of true or false, scored on the server with the best score kept, feeding readiness at a quarter weight.
+  - **Elsewhere:** fix plans get a flashcards step, and the hub ranks cards due and the speed round.
 - **Practice hub (screen 38):** the smart drill on the 3 weakest topics first, then flashcards due, speed round, math lab, hands-free, full simulation and challenge a friend, ranked by what helps most.
 - **Weekly progress report (screen 55):**
   - time studied, questions answered, readiness change, minutes per day, lessons and course hours, weakest topic and streak;

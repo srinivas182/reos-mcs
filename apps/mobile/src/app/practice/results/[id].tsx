@@ -6,6 +6,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { asTopic, countdown, loadResults, type Results, type Similar, similarQuestion } from '@/lib/practice';
 import { Button, Callout, Card, ProgressBar, Screen, SectionTitle, Text, TitleBar } from '@/ui';
+import { SaveFlashcard } from '@/features/practice/SaveFlashcard';
 
 /**
  * Your results (candidate screen 43, A8.3): score and pass line, the change
@@ -129,6 +130,7 @@ export default function ResultsScreen() {
             </Text>
           ) : null}
           {q.lesson ? <Button variant="secondary" label={t('practice.results.watch')} onPress={() => router.push({ pathname: '/learn/[id]', params: { id: String(q.lesson?.id) } })} /> : null}
+          <SaveFlashcard source="review" front={q.prompt} back={`${q.options[q.right] ?? ''}. ${q.explanation}`} questionId={q.id} />
           {!q.correct && q.math ? <Button variant="secondary" label={t('practice.math.practise')} onPress={() => router.push({ pathname: '/practice/math', params: { kind: q.math ?? '' } })} /> : null}
           {!q.correct && similar[q.id] === undefined ? (
             <Button variant="ghost" label={t('practice.results.similar')} onPress={() => void more(q.id)} />

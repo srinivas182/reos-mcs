@@ -6229,7 +6229,9 @@
         "check": "See how you'd do on the real exam.",
         "map": "Your pass chance for each portion.",
         "math_weak": "Math is one of your weakest topics: work it step by step.",
-        "math": "Real estate math, step by step, with new numbers."
+        "math": "Real estate math, step by step, with new numbers.",
+        "due": "Cards due: two minutes keeps them fresh.",
+        "quick": "60 seconds of quick recall."
       },
       "modes": {
         "diagnostic": "Diagnostic",
@@ -6238,7 +6240,10 @@
         "fix": "Fix my weakest",
         "simulation": "Full simulation",
         "readiness": "Readiness",
-        "math": "Math lab"
+        "math": "Math lab",
+        "flashcards": "Flashcards",
+        "speed": "Speed round",
+        "flashcardsDue": "Flashcards ({{count}} due)"
       }
     },
     "math": {
@@ -6353,6 +6358,58 @@
         "interest": "The first month's interest",
         "interestHint": "Multiply the loan by the yearly rate, then divide by 12."
       }
+    },
+    "flashcards": {
+      "title": "Flashcards",
+      "description": "Two-minute bursts of spaced repetition. Cards you miss come back sooner.",
+      "topicTitle": "{{topic}} flashcards",
+      "due_one": "{{count}} card due",
+      "due_other": "{{count}} cards due",
+      "newLeft_one": "{{count}} new card today",
+      "newLeft_other": "{{count}} new cards today",
+      "start": "Start a 2-minute burst",
+      "counter": "Card {{n}} · {{left}} to go",
+      "timeLeft": "{{time}} left",
+      "show": "Show the answer",
+      "front": "Question",
+      "back": "Answer",
+      "again": "Again",
+      "hard": "Hard",
+      "good": "Got it",
+      "againHint": "Back in 10 minutes",
+      "doneTitle": "Burst done",
+      "doneBody_one": "You reviewed {{count}} card.",
+      "doneBody_other": "You reviewed {{count}} cards.",
+      "another": "Another burst",
+      "emptyTitle": "No cards due",
+      "empty": "Save cards from check-ins, Ask and answer review, or finish lessons with flashcards. They show up here when they're due.",
+      "save": "Save as flashcard",
+      "saved": "Saved to your flashcards.",
+      "offline": "Offline: your reviews are saved on this phone and sync when you're back online.",
+      "pending_one": "{{count}} review to sync",
+      "pending_other": "{{count}} reviews to sync"
+    },
+    "speed": {
+      "title": "Speed round",
+      "description": "60 seconds of true or false. Is this the right answer?",
+      "best": "Best: {{score}}",
+      "noBest": "No best score yet",
+      "start": "Start",
+      "score": "Score: {{score}}",
+      "true": "True",
+      "false": "False",
+      "proposed": "Answer: {{answer}}",
+      "timeLeft_one": "{{count}} second left",
+      "timeLeft_other": "{{count}} seconds left",
+      "right": "Right",
+      "wrong": "Wrong",
+      "doneTitle": "Time's up",
+      "doneBody": "{{score}} right out of {{answered}}.",
+      "record": "New best score!",
+      "misses_one": "{{count}} miss saved to your flashcards.",
+      "misses_other": "{{count}} misses saved to your flashcards.",
+      "again": "Play again",
+      "cardBack": "Answer: :answer. :why"
     }
   },
   "brokerageIntegrations": {

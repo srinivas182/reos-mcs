@@ -29,9 +29,11 @@ use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
 use App\Http\Controllers\Api\Practice\CoachController;
+use App\Http\Controllers\Api\Practice\FlashcardController;
 use App\Http\Controllers\Api\Practice\MathLabController;
 use App\Http\Controllers\Api\Practice\PracticeController;
 use App\Http\Controllers\Api\Practice\ReadinessController;
+use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
@@ -210,6 +212,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('practice/math', [MathLabController::class, 'index'])->name('api.practice.math.index');
     Route::post('practice/math/problems', [MathLabController::class, 'store'])->middleware('throttle:120,1,api-practice-math')->name('api.practice.math.store');
     Route::post('practice/math/check', [MathLabController::class, 'check'])->middleware('throttle:240,1,api-practice-math')->name('api.practice.math.check');
+    // Flashcards and the speed round (A9.2d).
+    Route::get('practice/flashcards', [FlashcardController::class, 'index'])->name('api.practice.flashcards.index');
+    Route::post('practice/flashcards', [FlashcardController::class, 'store'])->middleware('throttle:60,1,api-practice-flashcards')->name('api.practice.flashcards.store');
+    Route::post('practice/flashcards/reviews', [FlashcardController::class, 'reviews'])->middleware('throttle:120,1,api-practice-flashcards')->name('api.practice.flashcards.reviews');
+    Route::post('practice/speed', [SpeedRoundController::class, 'store'])->middleware('throttle:30,1,api-practice-speed')->name('api.practice.speed.store');
+    Route::post('practice/speed/{round}/finish', [SpeedRoundController::class, 'finish'])->whereNumber('round')->middleware('throttle:30,1,api-practice-speed')->name('api.practice.speed.finish');
     // Lessons saved on the phone (A8.2b): the learner's own downloads, not admin actions.
     Route::prefix('learn')->name('api.learn.downloads.')->controller(OfflineController::class)->group(function () {
         Route::get('downloads', 'index')->name('index');

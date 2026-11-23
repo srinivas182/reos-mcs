@@ -5,9 +5,12 @@ import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CandidateToday } from '@/components/practice/candidate-today';
 import { CoachPanel } from '@/components/practice/coach';
+import { burstQueue } from '@/components/practice/flashcard-session';
+import { SaveFlashcard } from '@/components/practice/save-flashcard';
 import {
     attempt,
     coach,
+    deck,
     drillAttempt,
     hub,
     mathKinds,
@@ -20,6 +23,8 @@ import {
 import { i18n } from '@/lib/i18n';
 import PracticeIndex from '@/pages/practice/index';
 import FixPage from '@/pages/practice/fix';
+import FlashcardsPage from '@/pages/practice/flashcards';
+import SpeedPage from '@/pages/practice/speed';
 import MathPage from '@/pages/practice/math';
 import ReadinessPage from '@/pages/practice/readiness';
 import ResultsPage from '@/pages/practice/results';
@@ -499,5 +504,150 @@ describe('math lab (screen 48, A9.2c)', () => {
         expect(JSON.parse(String(fetchMock.mock.calls[3]?.[1]?.body))).toEqual({
             kind: 'ltv',
         });
+    });
+});
+
+describe('flashcards and the speed round (screens 31 and 50, A9.2d)', () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+    const reply = (data: unknown, status = 200) =>
+        new Response(JSON.stringify({ data }), {
+            status,
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+    });
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('works through cards due, then new ones; Again brings a card back in the burst', async () => {
+        const user = userEvent.setup();
+        fetchMock.mockImplementation(() =>
+            Promise.resolve(reply({ applied: 1, cards: [] })),
+        );
+        expect(
+            burstQueue(deck, Date.parse('2026-11-23T16:00:00Z')).map(
+                (c) => c.id,
+            ),
+        ).toEqual([61, 62, 63]);
+        render(<FlashcardsPage deck={deck} topic={null} />);
+
+        await user.click(
+            screen.getByRole('button', { name: 'Start a 2-minute burst' }),
+        );
+        expect(
+            screen.getByText('When must borrower-paid PMI end automatically?'),
+        ).toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', { name: 'Show the answer' }),
+        );
+        await user.click(screen.getByRole('button', { name: 'Again' }));
+        const body = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
+        expect(body.reviews[0]).toMatchObject({ card_id: 61, rating: 1 });
+        expect(body.reviews[0].client_id).toMatch(/^[0-9a-f-]{36}$/);
+
+        expect(
+            screen.getByText('What does IABS stand for?'),
+        ).toBeInTheDocument();
+        expect(screen.getByText('Card 2 · 2 to go')).toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', { name: 'Show the answer' }),
+        );
+        await user.click(screen.getByRole('button', { name: 'Got it' }));
+        await user.click(
+            screen.getByRole('button', { name: 'Show the answer' }),
+        );
+        await user.click(screen.getByRole('button', { name: 'Hard' }));
+        // The missed card comes back.
+        expect(
+            screen.getByText('When must borrower-paid PMI end automatically?'),
+        ).toBeInTheDocument();
+    });
+
+    it('saves a card from answer review', async () => {
+        const user = userEvent.setup();
+        fetchMock.mockResolvedValue(reply({ id: 70 }, 201));
+        render(
+            <SaveFlashcard
+                source="review"
+                front="What does IABS stand for?"
+                back="Information About Brokerage Services."
+                questionId={12}
+            />,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: 'Save as flashcard' }),
+        );
+        expect(
+            await screen.findByText('Saved to your flashcards.'),
+        ).toBeInTheDocument();
+        expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+            source: 'review',
+            front: 'What does IABS stand for?',
+            back: 'Information About Brokerage Services.',
+            question_id: 12,
+        });
+    });
+
+    it("plays a speed round: true or false, the score, then the server's result", async () => {
+        const user = userEvent.setup();
+        fetchMock
+            .mockResolvedValueOnce(
+                reply(
+                    {
+                        id: 5,
+                        seconds: 60,
+                        best: 27,
+                        statements: [
+                            {
+                                id: 1,
+                                prompt: 'How many acres are in a section?',
+                                answer: '640',
+                                truth: true,
+                                topic: 'math',
+                            },
+                            {
+                                id: 2,
+                                prompt: 'Who appoints TREC members?',
+                                answer: 'The voters',
+                                truth: false,
+                                topic: 'state_rules',
+                            },
+                        ],
+                    },
+                    201,
+                ),
+            )
+            .mockResolvedValueOnce(
+                reply({
+                    score: 1,
+                    answered: 2,
+                    best: 27,
+                    record: false,
+                    misses: 1,
+                }),
+            );
+        render(<SpeedPage best={27} />);
+
+        expect(screen.getByText('Best: 27')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Start' }));
+        expect(await screen.findByText('Answer: 640')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'True' }));
+        expect(screen.getByText('Score: 1')).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'True' }));
+
+        expect(await screen.findByText("Time's up")).toBeInTheDocument();
+        expect(JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body))).toEqual({
+            taps: [
+                { id: 1, true: true },
+                { id: 2, true: true },
+            ],
+        });
+        expect(
+            screen.getByText('1 miss saved to your flashcards.'),
+        ).toBeInTheDocument();
     });
 });

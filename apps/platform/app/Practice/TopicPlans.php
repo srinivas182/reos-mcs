@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Practice;
 
 use App\Content\Learning\Learning;
+use App\Models\Flashcard;
 use App\Models\Lesson;
 use App\Models\QuizQuestion;
 use App\Models\TestAttempt;
@@ -24,10 +25,13 @@ use Illuminate\Validation\ValidationException;
  * - **Practice**: a 10-question topic drill, misses first.
  * - **Retest**: 10 questions not seen yet. Finishing it completes the plan.
  *
- * Short plans get a second practice round to reach four steps. Lessons and
- * the misses are done once opened; practice and the retest once submitted.
- * The topic leaves the weak list when readiness reaches 70% (Tests::PASS).
- * Flashcards join as a step when the topic has some (A9.2d).
+ * - **Flashcards** (A9.2d): a two-minute burst of the topic's cards, when
+ *   the candidate has some.
+ *
+ * Short plans get a second practice round to reach four steps. Lessons, the
+ * misses and flashcards are done once opened; practice and the retest once
+ * submitted. The topic leaves the weak list when readiness reaches 70%
+ * (Tests::PASS).
  *
  * @phpstan-type Step array{n: int, kind: string, minutes: int, status: 'done'|'current'|'todo', lesson: array{id: int, title: string, seconds: int|null}|null, attempt_id: int|null, results_id: int|null}
  * @phpstan-type Plan array{id: int, topic: string, now: int|null, start: int|null, goal: int, weak: bool, minutes: int, completed: bool, steps: list<Step>, misses: list<array{id: int, prompt: string, options: list<string>, right: int, explanation: string, source: string}>}
@@ -41,6 +45,9 @@ final readonly class TopicPlans
     public const PRACTICE_MINUTES = 10;
 
     public const RETEST_MINUTES = 8;
+
+    /** A two-minute flashcard burst (A9.2d). */
+    public const FLASHCARD_MINUTES = 2;
 
     public function __construct(private Readiness $readiness, private Drills $drills, private Learning $learning, private Tests $tests) {}
 
@@ -71,6 +78,9 @@ final readonly class TopicPlans
         $steps[] = ['kind' => 'practice', 'minutes' => self::PRACTICE_MINUTES, 'attempt_id' => null, 'done_at' => null];
         if (count($steps) < 3) {
             $steps[] = ['kind' => 'practice', 'minutes' => self::PRACTICE_MINUTES, 'attempt_id' => null, 'done_at' => null];
+        }
+        if (Flashcard::query()->where('user_id', $user->id)->where('topic', $topic)->exists()) {
+            $steps[] = ['kind' => 'flashcards', 'minutes' => self::FLASHCARD_MINUTES, 'done_at' => null];
         }
         $steps[] = ['kind' => 'retest', 'minutes' => self::RETEST_MINUTES, 'attempt_id' => null, 'done_at' => null];
 
@@ -141,7 +151,7 @@ final readonly class TopicPlans
             $user = User::query()->findOrFail($locked->user_id);
             $out = ['kind' => $step['kind'], 'lesson' => null, 'attempt_id' => null];
 
-            if (in_array($step['kind'], ['lesson', 'review'], true)) {
+            if (in_array($step['kind'], ['lesson', 'review', 'flashcards'], true)) {
                 $steps[$n]['done_at'] = now()->toIso8601String();
                 $out['lesson'] = isset($step['lesson_id']) ? ['id' => (int) $step['lesson_id'], 'seconds' => $step['seconds'] ?? null] : null;
             } else {

@@ -153,16 +153,16 @@ describe('Fix a weak topic (screen 46, A9.2b)', function () {
 describe('the practice hub (screen 38)', function () {
     it('ranks what helps most: the diagnostic first, then plans under way, the drill and fixing the weakest', function () {
         $first = $this->actingAs($this->sofia)->getJson('/api/v1/practice/hub')->json('data.ranked');
-        expect(array_column($first, 'mode'))->toBe(['diagnostic', 'drill', 'math', 'readiness']);
+        expect(array_column($first, 'mode'))->toBe(['diagnostic', 'drill', 'speed', 'math', 'readiness']);
 
         TestAttempt::query()->create(['user_id' => $this->sofia->id, 'kind' => 'diagnostic', 'mode' => 'exam', 'state_code' => 'TX', 'question_ids' => [], 'total' => 0,
             'started_at' => now()->subDay(), 'submitted_at' => now()->subDay(), 'by_topic' => ['finance' => ['correct' => 1, 'total' => 7], 'agency' => ['correct' => 9, 'total' => 9]]]);
         $ranked = $this->getJson('/api/v1/practice/hub')->json('data.ranked');
-        expect(array_column($ranked, 'mode'))->toBe(['drill', 'fix', 'math', 'readiness'])->and($ranked[1]['topic'])->toBe('finance');
+        expect(array_column($ranked, 'mode'))->toBe(['drill', 'fix', 'speed', 'math', 'readiness'])->and($ranked[1]['topic'])->toBe('finance');
 
         $this->postJson('/api/v1/practice/topic-plans', ['topic' => 'finance'])->assertCreated();
         $hub = $this->getJson('/api/v1/practice/hub')->json('data');
-        expect(array_column($hub['ranked'], 'mode'))->toBe(['plan', 'drill', 'math', 'readiness'])->and($hub['plans'][0])->toMatchArray(['topic' => 'finance', 'done' => 0]);
+        expect(array_column($hub['ranked'], 'mode'))->toBe(['plan', 'drill', 'speed', 'math', 'readiness'])->and($hub['plans'][0])->toMatchArray(['topic' => 'finance', 'done' => 0]);
 
         $this->get('/practice')->assertInertia(fn (Assert $page) => $page->where('coach.ranked.0.mode', 'plan'));
     });

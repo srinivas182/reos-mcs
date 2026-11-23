@@ -44,7 +44,7 @@ export default function FixScreen() {
     setBusy(true);
     const next = await continuePlan(planId).catch(() => null);
     setBusy(false);
-    if (next) openStep(planId, next);
+    if (next) openStep(planId, next, plan?.topic ?? null);
   };
   const review = (step: PlanStep) => {
     if (step.lesson) router.push({ pathname: '/learn/[id]', params: { id: String(step.lesson.id), ...(step.lesson.seconds !== null ? { t: String(step.lesson.seconds) } : {}) } });

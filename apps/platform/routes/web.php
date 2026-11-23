@@ -4,8 +4,10 @@ use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Practice\CoachController;
+use App\Http\Controllers\Api\Practice\FlashcardController;
 use App\Http\Controllers\Api\Practice\MathLabController;
 use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeController;
+use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
@@ -173,6 +175,13 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::post('practice/topic-plans', [TopicPlanPageController::class, 'store'])->middleware('throttle:30,1,practice-plans')->name('practice.plans.store');
     Route::get('practice/fix/{plan}', [TopicPlanPageController::class, 'show'])->whereNumber('plan')->name('practice.plans.show');
     Route::post('practice/fix/{plan}/continue', [TopicPlanPageController::class, 'continue'])->whereNumber('plan')->middleware('throttle:60,1,practice-plans')->name('practice.plans.continue');
+    // Flashcards and the speed round (A9.2d): the pages, and their JSON.
+    Route::get('practice/flashcards', [PracticePageController::class, 'flashcards'])->name('practice.flashcards');
+    Route::post('practice/flashcards', [FlashcardController::class, 'store'])->middleware('throttle:60,1,practice-flashcards')->name('practice.flashcards.store');
+    Route::post('practice/flashcards/reviews', [FlashcardController::class, 'reviews'])->middleware('throttle:120,1,practice-flashcards')->name('practice.flashcards.reviews');
+    Route::get('practice/speed', [PracticePageController::class, 'speed'])->name('practice.speed');
+    Route::post('practice/speed', [SpeedRoundController::class, 'store'])->middleware('throttle:30,1,practice-speed')->name('practice.speed.store');
+    Route::post('practice/speed/{round}/finish', [SpeedRoundController::class, 'finish'])->whereNumber('round')->middleware('throttle:30,1,practice-speed')->name('practice.speed.finish');
     // Math lab (A9.2c): the page, and its problems and checks as JSON.
     Route::get('practice/math', [PracticePageController::class, 'math'])->name('practice.math');
     Route::post('practice/math/problems', [MathLabController::class, 'store'])->middleware('throttle:120,1,practice-math')->name('practice.math.problems');

@@ -1073,6 +1073,8 @@
                                                                     "plan",
                                                                     "drill",
                                                                     "fix",
+                                                                    "flashcards",
+                                                                    "speed",
                                                                     "math",
                                                                     "simulation",
                                                                     "readiness"
@@ -1092,13 +1094,20 @@
                                                                     "integer",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "count": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
                                                             }
                                                         },
                                                         "required": [
                                                             "mode",
                                                             "why",
                                                             "topic",
-                                                            "plan_id"
+                                                            "plan_id",
+                                                            "count"
                                                         ]
                                                     }
                                                 }
@@ -3776,6 +3785,415 @@
                     }
                 },
                 "security": []
+            }
+        },
+        "/practice/flashcards": {
+            "get": {
+                "operationId": "practice.flashcards.index",
+                "description": "The whole deck with each card's schedule, for reviewing offline, plus\nhow many are due and how many new cards are left today. The course's\napproved flashcards for lessons started are added first. `topic`\nkeeps to one topic.",
+                "summary": "My flashcards",
+                "tags": [
+                    "Flashcard"
+                ],
+                "parameters": [
+                    {
+                        "name": "topic",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "due": {
+                                                    "type": "integer"
+                                                },
+                                                "new_left": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "cards": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "topic": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "front": {
+                                                                "type": "string"
+                                                            },
+                                                            "back": {
+                                                                "type": "string"
+                                                            },
+                                                            "new": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "due_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reps": {
+                                                                "type": "integer"
+                                                            },
+                                                            "lapses": {
+                                                                "type": "integer"
+                                                            },
+                                                            "stability": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "difficulty": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "last_reviewed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "topic",
+                                                            "front",
+                                                            "back",
+                                                            "new",
+                                                            "due_at",
+                                                            "reps",
+                                                            "lapses",
+                                                            "stability",
+                                                            "difficulty",
+                                                            "last_reviewed_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "due",
+                                                "new_left",
+                                                "total",
+                                                "cards"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "practice.flashcards.store",
+                "description": "From a check-in, an Ask answer, or answer review (with the question,\nsaved once). The card is due at once.",
+                "summary": "Save as flashcard",
+                "tags": [
+                    "Flashcard"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SaveFlashcardRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "topic": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "front": {
+                                                    "type": "string"
+                                                },
+                                                "back": {
+                                                    "type": "string"
+                                                },
+                                                "new": {
+                                                    "type": "boolean"
+                                                },
+                                                "due_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "reps": {
+                                                    "type": "integer"
+                                                },
+                                                "lapses": {
+                                                    "type": "integer"
+                                                },
+                                                "stability": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "difficulty": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last_reviewed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "source",
+                                                "topic",
+                                                "front",
+                                                "back",
+                                                "new",
+                                                "due_at",
+                                                "reps",
+                                                "lapses",
+                                                "stability",
+                                                "difficulty",
+                                                "last_reviewed_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/practice/flashcards/reviews": {
+            "post": {
+                "operationId": "practice.flashcards.reviews",
+                "description": "Again, Hard or Got it (1, 2 or 3) for one card, or the phone's offline\nqueue. Each review has its own id and counts once; they apply oldest\nfirst. Returns the cards as now scheduled.",
+                "summary": "Review flashcards",
+                "tags": [
+                    "Flashcard"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FlashcardReviewsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "applied": {
+                                                    "type": "integer"
+                                                },
+                                                "cards": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "topic": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "front": {
+                                                                "type": "string"
+                                                            },
+                                                            "back": {
+                                                                "type": "string"
+                                                            },
+                                                            "new": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "due_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reps": {
+                                                                "type": "integer"
+                                                            },
+                                                            "lapses": {
+                                                                "type": "integer"
+                                                            },
+                                                            "stability": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "difficulty": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "last_reviewed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "topic",
+                                                            "front",
+                                                            "back",
+                                                            "new",
+                                                            "due_at",
+                                                            "reps",
+                                                            "lapses",
+                                                            "stability",
+                                                            "difficulty",
+                                                            "last_reviewed_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "applied",
+                                                "cards"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
             }
         },
         "/states/{state}/free-quiz": {
@@ -15704,6 +16122,207 @@
                 }
             }
         },
+        "/practice/speed": {
+            "post": {
+                "operationId": "practice.speed.store",
+                "description": "60 seconds and 40 true-or-false statements (a question and one of\nits options: is it the answer?), with the best score so far.",
+                "summary": "Start a speed round",
+                "tags": [
+                    "SpeedRound"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "seconds": {
+                                                    "type": "integer"
+                                                },
+                                                "best": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "statements": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "prompt": {
+                                                                "type": "string"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string"
+                                                            },
+                                                            "truth": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "topic": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "prompt",
+                                                            "answer",
+                                                            "truth",
+                                                            "topic"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "seconds",
+                                                "best",
+                                                "statements"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/speed/{round}/finish": {
+            "post": {
+                "operationId": "practice.speed.finish",
+                "description": "The taps (each statement answered True or False). The server scores\nthem, keeps the best score, and puts the misses into flashcards.",
+                "summary": "Finish a speed round",
+                "tags": [
+                    "SpeedRound"
+                ],
+                "parameters": [
+                    {
+                        "name": "round",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FinishSpeedRoundRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "score": {
+                                                    "type": "integer"
+                                                },
+                                                "answered": {
+                                                    "type": "integer"
+                                                },
+                                                "best": {
+                                                    "type": "integer"
+                                                },
+                                                "record": {
+                                                    "type": "boolean"
+                                                },
+                                                "misses": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "score",
+                                                "answered",
+                                                "best",
+                                                "record",
+                                                "misses"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/states": {
             "get": {
                 "operationId": "states",
@@ -18675,6 +19294,80 @@
                 ],
                 "title": "ExchangeSignInRequest"
             },
+            "FinishSpeedRoundRequest": {
+                "type": "object",
+                "description": "The taps of a speed round (A9.2d): each statement answered, True or False.",
+                "properties": {
+                    "taps": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                },
+                                "true": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "true"
+                            ]
+                        },
+                        "maxItems": 40,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "taps"
+                ],
+                "title": "FinishSpeedRoundRequest"
+            },
+            "FlashcardReviewsRequest": {
+                "type": "object",
+                "description": "Flashcard reviews to apply (A9.2d): one from the web, or the phone's offline queue.",
+                "properties": {
+                    "reviews": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "card_id": {
+                                    "type": "integer"
+                                },
+                                "rating": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 3
+                                },
+                                "reviewed_at": {
+                                    "type": "string",
+                                    "format": "date-time"
+                                },
+                                "client_id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                }
+                            },
+                            "required": [
+                                "card_id",
+                                "rating",
+                                "reviewed_at",
+                                "client_id"
+                            ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 500,
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "reviews"
+                ],
+                "title": "FlashcardReviewsRequest"
+            },
             "HealthResource": {
                 "type": "object",
                 "properties": {
@@ -20161,6 +20854,57 @@
                     "title"
                 ],
                 "title": "SaveCalendarEventRequest"
+            },
+            "SaveFlashcardRequest": {
+                "type": "object",
+                "description": "Save as flashcard (A9.2d): from a check-in, an Ask answer, or answer review.",
+                "properties": {
+                    "source": {
+                        "type": "string",
+                        "enum": [
+                            "checkin",
+                            "ask",
+                            "review"
+                        ]
+                    },
+                    "front": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 500
+                    },
+                    "back": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1000
+                    },
+                    "topic": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "agency",
+                            "contracts",
+                            "ownership",
+                            "finance",
+                            "math",
+                            "state_rules",
+                            null
+                        ]
+                    },
+                    "question_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "source",
+                    "front",
+                    "back"
+                ],
+                "title": "SaveFlashcardRequest"
             },
             "SaveTodoRequest": {
                 "type": "object",

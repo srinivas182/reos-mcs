@@ -835,6 +835,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practice/flashcards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My flashcards
+         * @description The whole deck with each card's schedule, for reviewing offline, plus
+         *     how many are due and how many new cards are left today. The course's
+         *     approved flashcards for lessons started are added first. `topic`
+         *     keeps to one topic.
+         */
+        get: operations["practice.flashcards.index"];
+        put?: never;
+        /**
+         * Save as flashcard
+         * @description From a check-in, an Ask answer, or answer review (with the question,
+         *     saved once). The card is due at once.
+         */
+        post: operations["practice.flashcards.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/flashcards/reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Review flashcards
+         * @description Again, Hard or Got it (1, 2 or 3) for one card, or the phone's offline
+         *     queue. Each review has its own id and counts once; they apply oldest
+         *     first. Returns the cards as now scheduled.
+         */
+        post: operations["practice.flashcards.reviews"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/states/{state}/free-quiz": {
         parameters: {
             query?: never;
@@ -2353,6 +2403,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practice/speed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start a speed round
+         * @description 60 seconds and 40 true-or-false statements (a question and one of
+         *     its options: is it the answer?), with the best score so far.
+         */
+        post: operations["practice.speed.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/speed/{round}/finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Finish a speed round
+         * @description The taps (each statement answered True or False). The server scores
+         *     them, keeps the best score, and puts the misses into flashcards.
+         */
+        post: operations["practice.speed.finish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/states": {
         parameters: {
             query?: never;
@@ -3119,6 +3211,30 @@ export interface components {
                 app_version?: string | null;
             };
         };
+        /**
+         * FinishSpeedRoundRequest
+         * @description The taps of a speed round (A9.2d): each statement answered, True or False.
+         */
+        FinishSpeedRoundRequest: {
+            taps: {
+                id: number;
+                true: boolean;
+            }[];
+        };
+        /**
+         * FlashcardReviewsRequest
+         * @description Flashcard reviews to apply (A9.2d): one from the web, or the phone's offline queue.
+         */
+        FlashcardReviewsRequest: {
+            reviews: {
+                card_id: number;
+                rating: number;
+                /** Format: date-time */
+                reviewed_at: string;
+                /** Format: uuid */
+                client_id: string;
+            }[];
+        };
         /** HealthResource */
         HealthResource: {
             /**
@@ -3604,6 +3720,19 @@ export interface components {
             notify_guests?: boolean;
         };
         /**
+         * SaveFlashcardRequest
+         * @description Save as flashcard (A9.2d): from a check-in, an Ask answer, or answer review.
+         */
+        SaveFlashcardRequest: {
+            /** @enum {string} */
+            source: "checkin" | "ask" | "review";
+            front: string;
+            back: string;
+            /** @enum {string|null} */
+            topic?: "agency" | "contracts" | "ownership" | "finance" | "math" | "state_rules" | null;
+            question_id?: number | null;
+        };
+        /**
          * SaveTodoRequest
          * @description A to-do from the confirm card or typed in (B4.3). Due at a moment
          *     (`due_at`, with offset) or on a day (`due_date`), not both.
@@ -3934,6 +4063,8 @@ export type SchemaContactTouchRequest = components['schemas']['ContactTouchReque
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
+export type SchemaFinishSpeedRoundRequest = components['schemas']['FinishSpeedRoundRequest'];
+export type SchemaFlashcardReviewsRequest = components['schemas']['FlashcardReviewsRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
 export type SchemaHistoryRange = components['schemas']['HistoryRange'];
 export type SchemaIdentityProvider = components['schemas']['IdentityProvider'];
@@ -3965,6 +4096,7 @@ export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswe
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
+export type SchemaSaveFlashcardRequest = components['schemas']['SaveFlashcardRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
 export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessionRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
@@ -4589,10 +4721,11 @@ export interface operations {
                             }[];
                             ranked: {
                                 /** @enum {string} */
-                                mode: "diagnostic" | "plan" | "drill" | "fix" | "math" | "simulation" | "readiness";
+                                mode: "diagnostic" | "plan" | "drill" | "fix" | "flashcards" | "speed" | "math" | "simulation" | "readiness";
                                 why: string;
                                 topic: string | null;
                                 plan_id: number | null;
+                                count: number | null;
                             }[];
                         };
                     };
@@ -5814,6 +5947,155 @@ export interface operations {
                     "application/json": components["schemas"]["SignInResource"];
                 };
             };
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.flashcards.index": {
+        parameters: {
+            query?: {
+                topic?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            due: number;
+                            new_left: number;
+                            total: number;
+                            cards: {
+                                id: number;
+                                source: string;
+                                topic: string | null;
+                                front: string;
+                                back: string;
+                                new: boolean;
+                                due_at: string | null;
+                                reps: number;
+                                lapses: number;
+                                stability: number | null;
+                                difficulty: number | null;
+                                last_reviewed_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.flashcards.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveFlashcardRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            source: string;
+                            topic: string | null;
+                            front: string;
+                            back: string;
+                            new: boolean;
+                            due_at: string | null;
+                            reps: number;
+                            lapses: number;
+                            stability: number | null;
+                            difficulty: number | null;
+                            last_reviewed_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.flashcards.reviews": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FlashcardReviewsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            applied: number;
+                            cards: {
+                                id: number;
+                                source: string;
+                                topic: string | null;
+                                front: string;
+                                back: string;
+                                new: boolean;
+                                due_at: string | null;
+                                reps: number;
+                                lapses: number;
+                                stability: number | null;
+                                difficulty: number | null;
+                                last_reviewed_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
@@ -10059,6 +10341,98 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.speed.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            seconds: number;
+                            best: number | null;
+                            statements: {
+                                id: number;
+                                prompt: string;
+                                answer: string;
+                                truth: boolean;
+                                topic: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.speed.finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                round: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FinishSpeedRoundRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            score: number;
+                            answered: number;
+                            best: number;
+                            record: boolean;
+                            misses: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

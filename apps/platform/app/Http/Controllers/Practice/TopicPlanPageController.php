@@ -36,7 +36,12 @@ final class TopicPlanPageController extends Controller
     /** Continue: to the lesson at its second, the step's test, or back to the plan's misses. */
     public function continue(int $plan, #[CurrentUser] User $user, PracticeAccess $access, TopicPlans $plans): RedirectResponse
     {
-        $next = $plans->continue(TopicPlanController::own($user, $plan, $access));
+        $found = TopicPlanController::own($user, $plan, $access);
+        $next = $plans->continue($found);
+
+        if ($next['kind'] === 'flashcards') {
+            return to_route('practice.flashcards', ['topic' => $found->topic]);
+        }
 
         if ($next['lesson'] !== null) {
             return to_route('learn.lesson', ['lesson' => $next['lesson']['id'], ...($next['lesson']['seconds'] !== null ? ['t' => $next['lesson']['seconds']] : [])]);
