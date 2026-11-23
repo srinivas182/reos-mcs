@@ -1332,7 +1332,9 @@
       "cancelled": "No permitió el acceso, así que no se conectó nada.",
       "refused": "La herramienta no aceptó el inicio de sesión. Vuelva a conectarla.",
       "vendorUnavailable": "No pudimos comunicarnos con la herramienta. Inténtelo de nuevo en unos minutos.",
-      "modeChanged": "REOS cambió la forma de conectarse a esta herramienta. Vuelva a conectarla."
+      "modeChanged": "REOS cambió la forma de conectarse a esta herramienta. Vuelva a conectarla.",
+      "keyNeeded": "Escriba su clave de API.",
+      "keyRefused": "La herramienta no aceptó esa clave de API. Revísela y vuelva a intentarlo."
     },
     "outcome": {
       "connected": "{{tool}} está conectado. Sus datos se están sincronizando.",
@@ -1434,15 +1436,25 @@
       "can": {
         "read_events": "Ver los eventos de su calendario",
         "write_events": "Agregar al calendario que usted elija las citas, visitas y fechas límite que cree en REOS, y guardar allí sus cambios",
-        "change_alerts": "Recibir avisos cuando algo cambie"
+        "change_alerts": "Recibir avisos cuando algo cambie",
+        "read_people": "Ver sus contactos, notas y tareas",
+        "write_notes": "Agregar las notas que usted escriba en REOS",
+        "write_tasks": "Marcar como terminadas las tareas que usted termine en REOS",
+        "write_stage": "Actualizar la etapa de un contacto cuando usted la cambie en REOS"
       },
       "never": {
         "delete_yours": "Nunca eliminará los eventos que usted creó en su calendario",
-        "email": "Nunca enviará correos a sus invitados a menos que usted lo pida"
+        "email": "Nunca enviará correos a sus invitados a menos que usted lo pida",
+        "delete_people": "Nunca eliminar sus contactos",
+        "send_messages": "Nunca enviar mensajes de texto ni correos electrónicos a sus contactos"
       },
       "footer": "Puede desconectarla en cualquier momento desde Conexiones. Sus datos siguen siendo suyos.",
       "continue": "Continuar a {{tool}}",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "keyBody": "Conecte con su propia clave de API de {{tool}}. REOS la guarda cifrada y nunca la vuelve a mostrar.",
+      "keyLabel": "Clave de API de {{tool}}",
+      "keyHint": "En {{tool}}: Admin › API.",
+      "connectKey": "Conectar {{tool}}"
     },
     "connected": {
       "title": "{{tool}} está conectado",
@@ -5293,6 +5305,19 @@
     "errors": {
       "merge": "Estos dos contactos no se pueden combinar.",
       "split": "Este contacto no se combinó, así que no se puede separar."
+    },
+    "contact": {
+      "notes": "Notas",
+      "addNote": "Agregar una nota",
+      "noteLabel": "Nota",
+      "save": "Guardar nota",
+      "saved": "Nota guardada. Se envía a sus CRM conectados.",
+      "noNotes": "Todavía no hay notas",
+      "noNotesBody": "Aquí aparecen las notas que usted escriba y las de sus CRM.",
+      "from": "De {{source}}",
+      "sentTo": "Enviada a {{tools}}",
+      "sources": "Orígenes",
+      "stage": "Etapa"
     }
   }
 }

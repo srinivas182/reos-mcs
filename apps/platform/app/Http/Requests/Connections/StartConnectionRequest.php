@@ -23,6 +23,8 @@ final class StartConnectionRequest extends FormRequest
             'integration' => ['required', 'string', Rule::in(ConnectorRegistry::ids())],
             /** How far back the first sync reaches: `3m` (default), `12m` or `all`. */
             'history' => ['sometimes', 'nullable', Rule::enum(HistoryRange::class)],
+            // Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API.
+            'api_key' => ['sometimes', 'nullable', 'string', 'min:4', 'max:200'],
         ];
     }
 

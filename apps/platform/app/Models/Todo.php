@@ -23,7 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $related_type `phone_contact` today; CRM contacts from Sprint 5
  * @property string|null $related_id
  * @property string|null $related_label The person's name, as shown
- * @property string $source `typed` or `voice`
+ * @property string $source `typed`, `voice`, or `crm` (a task from a connected CRM, B7.2)
  * @property Carbon|null $done_at
  * @property int|null $calendar_event_id The due date on the person's calendar
  * @property Carbon|null $created_at
@@ -34,7 +34,7 @@ final class Todo extends Model
 {
     use SoftDeletes;
 
-    public const SOURCES = ['typed', 'voice'];
+    public const SOURCES = ['typed', 'voice', 'crm'];
 
     protected $fillable = [
         'user_id', 'client_id', 'title', 'notes', 'due_at', 'due_date', 'remind_at',

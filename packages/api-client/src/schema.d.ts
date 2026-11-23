@@ -293,6 +293,10 @@ export interface paths {
          * @description Returns the tool's sign-in address. Open it in a secure browser sheet;
          *     after signing in, the tool comes back to REOS, which returns to
          *     `reos://connections?outcome=connected|cancelled|failed&integration=…`.
+         *
+         *     Tools connected with the person's own API key (Follow Up Boss) take
+         *     `api_key` instead: the key is checked with the tool at once and the
+         *     new connection's id comes back (422 when the tool refuses it).
          */
         post: operations["connections.store"];
         delete?: never;
@@ -449,6 +453,44 @@ export interface paths {
         post: operations["contacts.phone"];
         /** Stop using your phone's contacts: they are removed from REOS unless another source also has them */
         delete: operations["contacts.phone.forget"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/{contact}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One contact: every source that knows them, and their notes, newest first */
+        get: operations["contacts.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Change the stage; sent to the person's connected CRMs */
+        patch: operations["contacts.update"];
+        trace?: never;
+    };
+    "/contacts/{contact}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a note
+         * @description Saved at once and sent to every connected CRM that knows this person.
+         */
+        post: operations["contacts.notes.store"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2078,9 +2120,14 @@ export interface components {
             accounts: string;
             /** @description For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet). */
             consent: {
-                can: ("read_events" | "write_events" | "change_alerts")[];
-                never: ("delete_yours" | "email")[];
+                can: ("read_events" | "write_events" | "change_alerts" | "read_people" | "write_notes" | "write_tasks" | "write_stage")[];
+                never: ("delete_yours" | "email" | "delete_people" | "send_messages")[];
             } | null;
+            /**
+             * @description How it's connected: the tool's own sign-in page, or the person's API key (B7.2).
+             * @enum {string}
+             */
+            connects_with: "sign_in" | "api_key";
         };
         /**
          * CatalogueStatus
@@ -2189,6 +2236,16 @@ export interface components {
         ConsentRequest: {
             granted: boolean;
             subject?: string | null;
+        };
+        /** ContactNoteResource */
+        ContactNoteResource: {
+            id: number;
+            body: string;
+            source: string;
+            source_name: string;
+            /** @description The CRMs this REOS note was sent to. */
+            sent_to: string[];
+            at: string | null;
         };
         /** ContactResource */
         ContactResource: {
@@ -2749,7 +2806,7 @@ export interface components {
              * @description `typed` or `voice`.
              * @enum {string}
              */
-            source?: "typed" | "voice";
+            source?: "typed" | "voice" | "crm";
         };
         /**
          * ScheduleSessionRequest
@@ -2823,8 +2880,10 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar" | "outlook-calendar";
+            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss";
             history?: components["schemas"]["HistoryRange"] | null;
+            /** @description Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API. */
+            api_key?: string | null;
         };
         /**
          * StartConversationRequest
@@ -2898,7 +2957,7 @@ export interface components {
                 label: string | null;
             } | null;
             /** @enum {string} */
-            source: "typed" | "voice";
+            source: "typed" | "voice" | "crm";
             done: boolean;
             done_at: string | null;
             /** @description The calendar event its due date made, if any. */
@@ -3028,6 +3087,7 @@ export type SchemaConnectionResource = components['schemas']['ConnectionResource
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
 export type SchemaConsentPurpose = components['schemas']['ConsentPurpose'];
 export type SchemaConsentRequest = components['schemas']['ConsentRequest'];
+export type SchemaContactNoteResource = components['schemas']['ContactNoteResource'];
 export type SchemaContactResource = components['schemas']['ContactResource'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
@@ -3697,7 +3757,8 @@ export interface operations {
                 };
                 content: {
                     "application/json": {
-                        authorization_url: string;
+                        authorization_url: string | null;
+                        connection_id: number | null;
                     };
                 };
             };
@@ -4061,6 +4122,128 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            [key: string]: unknown;
+                        };
+                        notes: {
+                            id: number;
+                            body: string;
+                            source: string;
+                            source_name: string;
+                            sent_to: string[];
+                            at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "contacts.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    stage: string;
+                };
+            };
+        };
+        responses: {
+            /** @description `ContactResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ContactResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.notes.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            /** @description `ContactNoteResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ContactNoteResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

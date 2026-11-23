@@ -193,6 +193,20 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 - Rate limits respected, deletes handled as "removed in Follow Up Boss".
 - Connections screens 13–15 for Follow Up Boss: what's synced, counts, direction, Sync now, activity.
 - **Done when:** a note written in REOS appears in Follow Up Boss (and one written there appears in REOS).
+- **As built, B7.2** (ADR 0028):
+  - **Connecting:**
+    - The agent connects with their own Follow Up Boss API key; REOS's system name and key go with every request.
+    - The phone's consent screen takes the key, because the catalogue says `connects_with: api_key`.
+  - **Sync:**
+    - People, notes and tasks are read in pages, newest change first.
+    - Notes written in REOS are sent to every connected CRM, and are never read back twice.
+    - Follow Up Boss tasks are REOS to-dos, so done in one means done in the other.
+    - Stages are sent both ways.
+    - A person deleted in Follow Up Boss stays in REOS as "removed in Follow Up Boss".
+  - **Webhooks:** checked against `FUB-Signature` and the signed connection in the address, and they only queue a sync.
+  - **Phone:** a new contact screen (screen 14) shows the sources and notes, with Add a note.
+  - **Simulator:** Follow Up Boss demo data, used until the client registers the system key.
+  - **Still to come:** the default CRM for new contacts (screen 24) waits for REOS-created contacts.
 
 ### B7.3 kvCORE / BoldTrail (Team B)
 

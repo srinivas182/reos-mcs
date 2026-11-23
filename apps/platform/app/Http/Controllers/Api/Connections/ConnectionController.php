@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\Connections;
 
+use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Connections\StartConnectionRequest;
 use App\Http\Requests\Connections\UpdateConnectionRequest;
@@ -40,7 +41,11 @@ final class ConnectionController extends Controller
      * after signing in, the tool comes back to REOS, which returns to
      * `reos://connections?outcome=connected|cancelled|failed&integration=…`.
      *
-     * @response array{authorization_url: string}
+     * Tools connected with the person's own API key (Follow Up Boss) take
+     * `api_key` instead: the key is checked with the tool at once and the
+     * new connection's id comes back (422 when the tool refuses it).
+     *
+     * @response array{authorization_url: string|null, connection_id: int|null}
      */
     public function store(StartConnectionRequest $request, #[CurrentUser] User $user, Connections $connections, ConnectionAuthorizer $authorizer, IntegrationCatalogue $catalogue): JsonResponse
     {
@@ -52,7 +57,23 @@ final class ConnectionController extends Controller
             return response()->json(['message' => __('connections.errors.unavailable')], 422);
         }
 
+        // Key-based tools (Follow Up Boss, B7.2): checked with the tool now, no sign-in page.
+        if (ConnectorRegistry::usesApiKey($integration)) {
+            $key = $request->string('api_key')->toString();
+
+            if ($key === '') {
+                return response()->json(['message' => __('connections.errors.keyNeeded'), 'errors' => ['api_key' => [__('connections.errors.keyNeeded')]]], 422);
+            }
+
+            $result = $authorizer->connectWithKey($user, $integration, $owner[0], $owner[1], $key, $request->history());
+
+            return $result['connection'] === null
+                ? response()->json(['message' => __((string) $result['reason']), 'errors' => ['api_key' => [__((string) $result['reason'])]]], 422)
+                : response()->json(['authorization_url' => null, 'connection_id' => $result['connection']->id]);
+        }
+
         return response()->json([
+            'connection_id' => null,
             'authorization_url' => $authorizer->start($user, $integration, $owner[0], $owner[1], OAuthAuthorization::RETURN_APP, $request->history()),
         ]);
     }

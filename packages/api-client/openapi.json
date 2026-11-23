@@ -1024,7 +1024,7 @@
             },
             "post": {
                 "operationId": "connections.store",
-                "description": "Returns the tool's sign-in address. Open it in a secure browser sheet;\nafter signing in, the tool comes back to REOS, which returns to\n`reos://connections?outcome=connected|cancelled|failed&integration=\u2026`.",
+                "description": "Returns the tool's sign-in address. Open it in a secure browser sheet;\nafter signing in, the tool comes back to REOS, which returns to\n`reos://connections?outcome=connected|cancelled|failed&integration=\u2026`.\n\nTools connected with the person's own API key (Follow Up Boss) take\n`api_key` instead: the key is checked with the tool at once and the\nnew connection's id comes back (422 when the tool refuses it).",
                 "summary": "Start connecting a tool",
                 "tags": [
                     "Connection"
@@ -1048,11 +1048,21 @@
                                     "type": "object",
                                     "properties": {
                                         "authorization_url": {
-                                            "type": "string"
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "connection_id": {
+                                            "type": [
+                                                "integer",
+                                                "null"
+                                            ]
                                         }
                                     },
                                     "required": [
-                                        "authorization_url"
+                                        "authorization_url",
+                                        "connection_id"
                                     ]
                                 }
                             }
@@ -1850,6 +1860,257 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contacts/{contact}": {
+            "get": {
+                "operationId": "contacts.show",
+                "summary": "One contact: every source that knows them, and their notes, newest first",
+                "tags": [
+                    "Contact"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {}
+                                        },
+                                        "notes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "body": {
+                                                        "type": "string"
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    },
+                                                    "source_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "sent_to": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "body",
+                                                    "source",
+                                                    "source_name",
+                                                    "sent_to",
+                                                    "at"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "notes"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "contacts.update",
+                "summary": "Change the stage; sent to the person's connected CRMs",
+                "tags": [
+                    "Contact"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "stage": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 60
+                                    }
+                                },
+                                "required": [
+                                    "stage"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`ContactResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ContactResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contacts/{contact}/notes": {
+            "post": {
+                "operationId": "contacts.notes.store",
+                "description": "Saved at once and sent to every connected CRM that knows this person.",
+                "summary": "Add a note",
+                "tags": [
+                    "Contact"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "body": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 20000
+                                    }
+                                },
+                                "required": [
+                                    "body"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`ContactNoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ContactNoteResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -11564,7 +11825,11 @@
                                     "enum": [
                                         "read_events",
                                         "write_events",
-                                        "change_alerts"
+                                        "change_alerts",
+                                        "read_people",
+                                        "write_notes",
+                                        "write_tasks",
+                                        "write_stage"
                                     ]
                                 }
                             },
@@ -11574,7 +11839,9 @@
                                     "type": "string",
                                     "enum": [
                                         "delete_yours",
-                                        "email"
+                                        "email",
+                                        "delete_people",
+                                        "send_messages"
                                     ]
                                 }
                             }
@@ -11582,6 +11849,14 @@
                         "required": [
                             "can",
                             "never"
+                        ]
+                    },
+                    "connects_with": {
+                        "type": "string",
+                        "description": "How it's connected: the tool's own sign-in page, or the person's API key (B7.2).",
+                        "enum": [
+                            "sign_in",
+                            "api_key"
                         ]
                     }
                 },
@@ -11597,7 +11872,8 @@
                     "retires_on",
                     "connected",
                     "accounts",
-                    "consent"
+                    "consent",
+                    "connects_with"
                 ],
                 "title": "CatalogueItemResource"
             },
@@ -11864,6 +12140,45 @@
                     "granted"
                 ],
                 "title": "ConsentRequest"
+            },
+            "ContactNoteResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "source": {
+                        "type": "string"
+                    },
+                    "source_name": {
+                        "type": "string"
+                    },
+                    "sent_to": {
+                        "type": "array",
+                        "description": "The CRMs this REOS note was sent to.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "body",
+                    "source",
+                    "source_name",
+                    "sent_to",
+                    "at"
+                ],
+                "title": "ContactNoteResource"
             },
             "ContactResource": {
                 "type": "object",
@@ -13591,7 +13906,8 @@
                         "description": "`typed` or `voice`.",
                         "enum": [
                             "typed",
-                            "voice"
+                            "voice",
+                            "crm"
                         ]
                     }
                 },
@@ -13788,7 +14104,8 @@
                         "description": "The tool's register id, for example `google-calendar`.",
                         "enum": [
                             "google-calendar",
-                            "outlook-calendar"
+                            "outlook-calendar",
+                            "follow-up-boss"
                         ]
                     },
                     "history": {
@@ -13801,6 +14118,15 @@
                                 "type": "null"
                             }
                         ]
+                    },
+                    "api_key": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Tools connected with the person's own key (B7.2): Follow Up Boss \u203a Admin \u203a API.",
+                        "minLength": 4,
+                        "maxLength": 200
                     }
                 },
                 "required": [
@@ -14007,7 +14333,8 @@
                         "type": "string",
                         "enum": [
                             "typed",
-                            "voice"
+                            "voice",
+                            "crm"
                         ]
                     },
                     "done": {

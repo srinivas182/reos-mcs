@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Services\Connections;
 
+use App\Connections\ConnectedAccount;
 use App\Connections\ConnectionStatus;
+use App\Connections\ConnectorDriver;
 use App\Connections\ConnectorRegistry;
+use App\Connections\ConnectsWithApiKey;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\Exceptions\VendorRateLimited;
 use App\Connections\Exceptions\VendorUnavailable;
 use App\Connections\HistoryRange;
 use App\Connections\SyncTrigger;
+use App\Connections\TokenSet;
 use App\Integrations\IntegrationMode;
 use App\Jobs\SyncConnection;
 use App\Models\Connection;
@@ -126,17 +130,59 @@ final readonly class ConnectionAuthorizer
             return ['outcome' => self::OUTCOME_FAILED, 'authorization' => $authorization, 'connection' => null, 'reason' => 'connections.errors.vendorUnavailable'];
         }
 
+        $connection = $this->save($integrationId, $authorization->owner_type, $authorization->owner_id, $authorization->user, $authorization->mode, $account, $tokens, $authorization->settings, $driver);
+
+        return ['outcome' => self::OUTCOME_CONNECTED, 'authorization' => $authorization, 'connection' => $connection, 'reason' => null];
+    }
+
+    /**
+     * Connects a tool with the person's own API key (B7.2): the tool checks
+     * the key and says whose account it is; then it's saved and synced like
+     * a sign-in.
+     *
+     * @return array{outcome: string, connection: Connection|null, reason: string|null}
+     */
+    public function connectWithKey(User $user, string $integrationId, string $ownerType, int $ownerId, string $apiKey, HistoryRange $history): array
+    {
+        $mode = $this->registry->mode($integrationId);
+
+        if ($mode === IntegrationMode::Off) {
+            return ['outcome' => self::OUTCOME_FAILED, 'connection' => null, 'reason' => 'connections.errors.unavailable'];
+        }
+
+        $driver = $this->registry->driver($integrationId, $mode);
+
+        if (! $driver instanceof ConnectsWithApiKey) {
+            return ['outcome' => self::OUTCOME_FAILED, 'connection' => null, 'reason' => 'connections.errors.unavailable'];
+        }
+
+        try {
+            $account = $driver->accountForKey(trim($apiKey));
+        } catch (AccessRevoked) {
+            return ['outcome' => self::OUTCOME_FAILED, 'connection' => null, 'reason' => 'connections.errors.keyRefused'];
+        } catch (VendorUnavailable|VendorRateLimited) {
+            return ['outcome' => self::OUTCOME_FAILED, 'connection' => null, 'reason' => 'connections.errors.vendorUnavailable'];
+        }
+
+        $connection = $this->save($integrationId, $ownerType, $ownerId, $user, $mode, $account, new TokenSet(trim($apiKey), null, null, []), ['history' => $history->value], $driver);
+
+        return ['outcome' => self::OUTCOME_CONNECTED, 'connection' => $connection, 'reason' => null];
+    }
+
+    /** @param  array{history?: string, calendars?: array<string, string>, write_calendar?: string|null}  $settings */
+    private function save(string $integrationId, string $ownerType, int $ownerId, ?User $user, IntegrationMode $mode, ConnectedAccount $account, TokenSet $tokens, array $settings, ConnectorDriver $driver): Connection
+    {
         $connection = Connection::query()->firstOrNew([
             'integration_id' => $integrationId,
-            'owner_type' => $authorization->owner_type,
-            'owner_id' => $authorization->owner_id,
+            'owner_type' => $ownerType,
+            'owner_id' => $ownerId,
             'external_account_id' => $account->externalId,
         ]);
         $reconnected = $connection->exists;
 
         $connection->fill([
-            'connected_by' => $authorization->user_id,
-            'mode' => $authorization->mode,
+            'connected_by' => $user?->id,
+            'mode' => $mode,
             'account_label' => $account->label,
             'scopes' => $tokens->scopes,
             'status' => ConnectionStatus::Active,
@@ -145,7 +191,7 @@ final readonly class ConnectionAuthorizer
             'token_expires_at' => $tokens->expiresAt,
         ]);
         if (! $reconnected) {
-            $connection->settings = $authorization->settings;
+            $connection->settings = $settings;
         }
         // Signing in again undoes a revocation simulated on demo data.
         $connection->meta = array_diff_key($connection->meta, ['simulator_revoked' => true]);
@@ -154,8 +200,8 @@ final readonly class ConnectionAuthorizer
         $this->audit->record($reconnected ? 'connection.reconnected' : 'connection.connected', 'connection', (string) $connection->id, [
             'integration' => $integrationId,
             'owner' => $connection->ownerKey(),
-            'mode' => $authorization->mode->value,
-        ], $authorization->user);
+            'mode' => $mode->value,
+        ], $user);
 
         foreach (array_keys($driver->streams()) as $stream) {
             SyncConnection::dispatch($connection->id, $stream, $reconnected ? SyncTrigger::Manual : SyncTrigger::First);
@@ -164,7 +210,7 @@ final readonly class ConnectionAuthorizer
         // Calendars: where REOS's events go, and anything waiting to be written.
         app(CalendarConnections::class)->connected($connection);
 
-        return ['outcome' => self::OUTCOME_CONNECTED, 'authorization' => $authorization, 'connection' => $connection, 'reason' => null];
+        return $connection;
     }
 
     public static function challenge(string $verifier): string
