@@ -262,6 +262,41 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 3. **Course ownership:** **the school** owns what it builds (content, files, passages under `tenants/<id>/`), and only it sells those courses. The REOS library stays separate.
 4. **Spanish in AI lessons:** **always both voices.** Every lesson is rendered twice, an English-voiced and a Spanish-voiced video from the line-by-line translated script, each with captions in both languages. The credit cost shown before rendering covers both.
 
+## 7. Wrap-up (23 November 2026)
+
+Every sub-sprint merged with green CI, in order:
+- P7.0 (#74), A7.1a (#75), A7.1b (#76), A7.2 (#77), A7.3 (#78);
+- B7.1 (#79), B7.2 (#80), B7.3 (this PR).
+
+| Definition of done | Status |
+| --- | --- |
+| Own PR per sub-sprint, green CI, merged in order | Done |
+| Screens match the journeys, English and Spanish | Done. Web screens 42, 43, 49, 50 and 52 and the phone's Connections, Phone contacts, Sync activity (23) and contact (14) screens were compared with the journeys in each PR. Every string is in both languages, and the CI check enforces it. |
+| `/api/v1`, documented, api-client regenerated, Pest feature tests | Done |
+| Security: a school sees only its own courses, files, students and approvals | `CourseApprovalsTest`, `CourseBuilderTest`, and `SprintSevenSecurityTest` (new at the wrap-up: another school can't open, generate or regenerate) |
+| Security: instructors edit only their courses | `CourseBuilderTest` |
+| Security: nothing renders without avatar consent; withdrawal flags lessons | `InstructorsAndAvatarTest`, `AiLessonPipelineTest` (twin only while consent is in force) |
+| Security: AI drafts use only the course's sources | `SprintSevenSecurityTest` (new at the wrap-up) |
+| Security: contacts visible only to their owner | `ContactsTest` (people and row-level security for brokerages) |
+| Security: CRM keys in the vault, never shown again | `SprintSevenSecurityTest` (new at the wrap-up) |
+| Security: webhooks signed and idempotent | `FollowUpBossTest` (kvCORE has no webhooks) |
+| Usability check 1 | **Waiting on pilot users.** The preview server (P7.0) and the kit (`docs/usability/check-1.md`) are ready; it runs when Nelle's pilot users and the preview server, DNS and Cloudflare arrive. |
+| ADRs | 0025, 0026, 0027, and 0028 (Follow Up Boss) and 0029 (kvCORE), added during the sprint |
+
+**Waiting on the client, all set in Settings › Integrations:**
+- HeyGen credits and/or Synthesia API access, plus a stock avatar and the voices;
+- the instructor avatar consent template signed off by counsel;
+- the Follow Up Boss system name and key;
+- a kvCORE test token;
+- the preview server, DNS and Cloudflare;
+- carried from Sprint 6: Twilio 10DLC, SES and SNS, LiveKit, the egress key, and the Apple and Firebase push keys.
+
+**Carried to Sprint 8:**
+- A8.1, the line-by-line review of AI lessons (screens 44–45) and the question bank. It uses `review_items` and lesson versions, and adds state-rule citations per line.
+- The default CRM for new contacts (screen 24).
+- Brokerage contact screens.
+- Course progress in refunds.
+
 ## Sources
 
 - REOS Sprint Plan v1.0, Sprint 7; Web App Journey screens 42–45 and 49–52; Instructor and Mentor Journey (avatar consent); Connections and Sync Journey; PRD SCH-01 and LRN-01.
