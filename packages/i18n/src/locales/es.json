@@ -72,7 +72,8 @@
     "progress": "Progreso semanal",
     "deals": "Operaciones",
     "ask": "Preguntar",
-    "studentQuestions": "Preguntas de estudiantes"
+    "studentQuestions": "Preguntas de estudiantes",
+    "licenceJourney": "Camino a la licencia"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -3178,18 +3179,32 @@
       "months_one": "{{count}} mes",
       "months_other": "{{count}} meses",
       "years_one": "{{count}} año",
-      "years_other": "{{count}} años"
+      "years_other": "{{count}} años",
+      "questions_one": "{{count}} pregunta",
+      "questions_other": "{{count}} preguntas",
+      "minutes_one": "{{count}} minuto",
+      "minutes_other": "{{count}} minutos",
+      "correct_one": "{{count}} correcta",
+      "correct_other": "{{count}} correctas",
+      "attempts_one": "{{count}} intento",
+      "attempts_other": "{{count}} intentos"
     },
     "unitNames": {
       "hours": "horas",
       "months": "meses",
-      "years": "años"
+      "years": "años",
+      "questions": "preguntas",
+      "minutes": "minutos",
+      "correct": "correctas",
+      "attempts": "intentos"
     },
     "values": {
       "roleCourse": "{{hours}} horas para: {{roles}}",
       "firstRenewal": "{{hours}} horas de cursos de calificación (SAE), más {{count}} cursos obligatorios",
       "feeDays": "Cargo de ${{fee}} por {{days}} días más",
-      "seatTime": "Hasta {{max}} horas al día · presente el {{presence}} % de las horas acreditadas · recuperación tras asistir al {{makeup}} %, dentro de {{days}} días"
+      "seatTime": "Hasta {{max}} horas al día · presente el {{presence}} % de las horas acreditadas · recuperación tras asistir al {{makeup}} %, dentro de {{days}} días",
+      "steps_one": "{{count}} paso: {{titles}}",
+      "steps_other": "{{count}} pasos: {{titles}}"
     },
     "edit": {
       "button": "Editar",
@@ -3217,7 +3232,13 @@
       "maxHoursPerDay": "Máximo de horas en un día",
       "presencePercent": "Presente (% de las horas acreditadas)",
       "makeupMinPercent": "Recuperación permitida tras asistir (%)",
-      "makeupDays": "Recuperación dentro de (días)"
+      "makeupDays": "Recuperación dentro de (días)",
+      "steps": "Pasos",
+      "stepTitle": "Paso",
+      "stepDetail": "Qué hacer",
+      "stepUrl": "Página oficial (https)",
+      "removeStep": "Quitar el paso {{number}}",
+      "addStep": "Agregar un paso"
     },
     "errors": {
       "unknown": "Esa no es una regla que REOS conozca.",
@@ -3241,10 +3262,26 @@
       "licensing": {
         "qualifying_hours": "Educación de calificación",
         "qualifying_courses": "Cursos de calificación",
-        "minimum_age": "Edad mínima"
+        "minimum_age": "Edad mínima",
+        "steps": "Pasos para la licencia",
+        "application_months": "Plazo de solicitud"
       },
       "exam": {
-        "vendor": "Proveedor del examen"
+        "vendor": "Proveedor del examen",
+        "attempts": "Intentos del examen",
+        "day_rules": "Reglas del día del examen",
+        "national": {
+          "questions": "Nacional: preguntas",
+          "scored": "Nacional: preguntas calificadas",
+          "minutes": "Nacional: tiempo",
+          "pass": "Nacional: calificación para aprobar"
+        },
+        "state": {
+          "questions": "Estatal: preguntas",
+          "scored": "Estatal: preguntas calificadas",
+          "minutes": "Estatal: tiempo",
+          "pass": "Estatal: calificación para aprobar"
+        }
       },
       "ce": {
         "period_months": "Período de renovación",
@@ -3273,10 +3310,26 @@
       "licensing": {
         "qualifying_hours": "Horas de calificación",
         "qualifying_courses": "cursos de calificación",
-        "minimum_age": "edad mínima"
+        "minimum_age": "edad mínima",
+        "steps": "pasos para la licencia",
+        "application_months": "plazo de solicitud"
       },
       "exam": {
-        "vendor": "proveedor del examen"
+        "vendor": "proveedor del examen",
+        "attempts": "intentos del examen",
+        "day_rules": "reglas del día del examen",
+        "national": {
+          "questions": "preguntas nacionales",
+          "scored": "preguntas nacionales calificadas",
+          "minutes": "tiempo nacional",
+          "pass": "calificación nacional para aprobar"
+        },
+        "state": {
+          "questions": "preguntas estatales",
+          "scored": "preguntas estatales calificadas",
+          "minutes": "tiempo estatal",
+          "pass": "calificación estatal para aprobar"
+        }
       },
       "ce": {
         "period_months": "período de renovación",
@@ -4847,7 +4900,8 @@
       "student_question": "Preguntas de estudiantes",
       "instructor_answer": "Respuestas de su instructor",
       "class_check": "Verificaciones de asistencia",
-      "class_report": "Informes de CE de clases"
+      "class_report": "Informes de CE de clases",
+      "exam_reminder": "Recordatorios del examen"
     },
     "digest": {
       "subject": {
@@ -7256,5 +7310,128 @@
       }
     },
     "recording": "Ver la grabación"
+  },
+  "licence": {
+    "title": "Camino a la licencia",
+    "purpose": "Cada paso en {{state}} hasta una licencia activa, y su examen.",
+    "steps": "Pasos en {{state}}",
+    "stepNumber": "{{number}}. {{title}}",
+    "doneOn": "Hecho el {{date}}",
+    "doneAuto": "Hecho el {{date}}: aprobó las dos partes del examen",
+    "doneOnLabel": "Hecho el",
+    "markDone": "Marcar como hecho",
+    "undo": "Aún no está hecho",
+    "whatToDo": "Qué hacer",
+    "openLink": "Qué hacer para {{title}} (abre la página oficial)",
+    "window": {
+      "title": "Su plazo de solicitud",
+      "left_one": "Queda {{count}} día, hasta el {{date}}",
+      "left_other": "Quedan {{count}} días, hasta el {{date}}",
+      "used": "Plazo de solicitud usado",
+      "filed": "Presentada el {{date}}. Todo, incluso aprobar las dos partes del examen, debe hacerse en {{months}} meses.",
+      "notFiled": "Cuando presente su solicitud, márquela como hecha. Desde entonces tiene {{months}} meses para terminar cada paso."
+    },
+    "portions": {
+      "national": "Parte nacional",
+      "state": "Parte estatal"
+    },
+    "book": {
+      "ready": "Está listo para reservar",
+      "notYet": "Casi listo para reservar",
+      "unknown": "Aún no se sabe",
+      "simulations": "Simulaciones aprobadas",
+      "simulationsValue": "{{count}} de {{needed}}",
+      "readyBody": "Las dos partes están por encima de la línea y sus simulaciones recientes fueron aprobadas. Reserve con {{vendor}} en su sitio y luego ingrese la fecha aquí.",
+      "notYetBody": "Reserve cuando las dos partes lleguen al {{line}} % y haya aprobado {{needed}} simulaciones recientes.",
+      "button": "Reservar con {{vendor}}",
+      "seeReadiness": "Ver lo que falta",
+      "dateTitle": "La fecha de su examen",
+      "booked_one": "Examen el {{date}}: falta {{count}} día",
+      "booked_other": "Examen el {{date}}: faltan {{count}} días",
+      "date": "Fecha",
+      "time": "Hora",
+      "centre": "Centro de examen",
+      "dateHint": "De su confirmación. Su plan de estudio y los recordatorios la siguen.",
+      "save": "Guardar fecha del examen"
+    },
+    "kit": {
+      "title": "Kit para el día del examen",
+      "purpose": "Llegue tranquilo y preparado.",
+      "noDate": "Primero indique la fecha de su examen.",
+      "arrive": "Llegue 30 minutos antes.",
+      "directions": "Cómo llegar",
+      "checklist": "Lista",
+      "items": {
+        "id": "Dos identificaciones vigentes con su firma",
+        "confirmation": "Confirmación del examen",
+        "final_simulation": "Una última simulación el día anterior",
+        "flashcards": "Un último repaso de sus tarjetas",
+        "sleep": "Dormir bien la noche anterior"
+      },
+      "rules": "Reglas de {{vendor}}",
+      "readiness": "Su preparación: nacional {{national}} %, estatal {{state}} %."
+    },
+    "calm": {
+      "title": "Dos minutos para calmarse",
+      "body": "Inhale contando 4, sostenga 4 y exhale 6. Su dispositivo lo lee en voz alta si puede.",
+      "start": "Empezar",
+      "stop": "Detener",
+      "in": "Inhale",
+      "hold": "Sostenga",
+      "out": "Exhale",
+      "left": "Quedan {{time}}"
+    },
+    "result": {
+      "title": "Ingrese su resultado",
+      "purpose": "Díganos cómo le fue, para que su siguiente paso esté listo.",
+      "prompt": "¿Cómo le fue en el examen?",
+      "notYet": "Puede ingresar su resultado después de la fecha de su examen.",
+      "answers": {
+        "passed": "Aprobé",
+        "failed": "No aprobé",
+        "skipped": "No la tomé esta vez"
+      },
+      "kept": "{{portion}}: aprobada y guardada.",
+      "weakTitle": "Áreas débiles en su reporte de calificaciones (opcional)",
+      "weakHint": "Solo se usan para armar su plan para repetir el examen.",
+      "save": "Guardar resultado"
+    },
+    "retake": {
+      "title": "Su plan para repetir el examen",
+      "body": "La parte aprobada se conserva. Repita: {{portions}}. Empiece por estas áreas:",
+      "attemptsLeft_one": "{{portion}}: le queda {{count}} intento.",
+      "attemptsLeft_other": "{{portion}}: le quedan {{count}} intentos.",
+      "moreEducation": "Usó todos los intentos. Necesita más educación previa a la licencia antes de volver a presentar el examen.",
+      "start": "Empezar"
+    },
+    "passed": {
+      "title": "Aprobó las dos partes",
+      "body": "Siguiente: un corredor patrocinador y luego su licencia activa."
+    },
+    "errors": {
+      "step": "Ese paso no forma parte del camino de este estado.",
+      "future": "Elija hoy o una fecha anterior.",
+      "past": "Elija hoy o una fecha posterior.",
+      "afterWindow": "Esa fecha es después de que cierre su plazo de solicitud.",
+      "item": "Eso no está en la lista.",
+      "notYet": "Puede ingresar su resultado después de la fecha de su examen.",
+      "nothing": "Elija un resultado para una parte que aún no ha aprobado."
+    },
+    "mail": {
+      "week": {
+        "title": "Su examen es en una semana: :date",
+        "body": "Siga su plan. Haga una última simulación el día anterior."
+      },
+      "day": {
+        "title": "Su examen es mañana: :date",
+        "body": "Revise su kit para el día del examen: identificaciones, confirmación y cómo llegar a :centre."
+      },
+      "result": {
+        "title": "¿Cómo le fue en el examen?",
+        "body": "Ingrese su resultado para que su siguiente paso esté listo."
+      },
+      "open": "Abrir su camino a la licencia"
+    },
+    "today": "Sus pasos hacia la licencia, y su examen."
   }
 }

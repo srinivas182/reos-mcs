@@ -1921,6 +1921,103 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/licence-journey": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My licence journey
+         * @description Steps from the state's rules, the one-year window from the application, readiness to book, the booked exam, the exam-day kit, results and the retake plan.
+         */
+        get: operations["licence.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/steps/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Check a step off, or un-check it
+         * @description With the date it was done (today if left out). Checking off the application starts the window.
+         */
+        put: operations["licence.step"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/exam": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Set my exam date
+         * @description From the testing vendor's confirmation; the study plan and reminders follow it. Null clears it.
+         */
+        put: operations["licence.exam"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/kit/{item}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Tick an exam-day checklist item */
+        put: operations["licence.kit"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Enter my exam result
+         * @description Passed or didn't per portion (null: not taken this time). A passed portion is kept; a missed one gets the retake plan, built from the weak areas on the score report.
+         */
+        post: operations["licence.result"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/math": {
         parameters: {
             query?: never;
@@ -11317,6 +11414,558 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            state: {
+                                code: string;
+                                name: string;
+                            };
+                            steps: {
+                                code: string;
+                                title: string;
+                                detail: string;
+                                url: string | null;
+                                done_on: string | null;
+                                auto: boolean;
+                            }[];
+                            window: {
+                                filed_on: string | null;
+                                ends_on: string | null;
+                                days_left: number | null;
+                                months: number;
+                            };
+                            readiness: {
+                                percent: number | null;
+                                national: number | null;
+                                state: number | null;
+                                line: number;
+                                ready: boolean;
+                                simulations: number;
+                                needed: number;
+                            };
+                            exam: {
+                                vendor: string | null;
+                                book_url: string | null;
+                                on: string | null;
+                                time: string | null;
+                                centre: string | null;
+                                days_to: number | null;
+                                directions_url: string | null;
+                            };
+                            kit: {
+                                items: {
+                                    /** @enum {string} */
+                                    key: "id" | "confirmation" | "final_simulation" | "flashcards" | "sleep";
+                                    done: boolean;
+                                }[];
+                                rules: string | null;
+                            };
+                            results: {
+                                national: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                state: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                can_enter: boolean;
+                                attempts_allowed: number;
+                                passed_both: boolean;
+                            };
+                            retake: {
+                                portions: ("national" | "state")[];
+                                topics: string[];
+                                more_education: boolean;
+                                attempts_left: {
+                                    national?: number;
+                                    state?: number;
+                                };
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "licence.step": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    done: boolean;
+                    /** Format: date */
+                    on?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            state: {
+                                code: string;
+                                name: string;
+                            };
+                            steps: {
+                                code: string;
+                                title: string;
+                                detail: string;
+                                url: string | null;
+                                done_on: string | null;
+                                auto: boolean;
+                            }[];
+                            window: {
+                                filed_on: string | null;
+                                ends_on: string | null;
+                                days_left: number | null;
+                                months: number;
+                            };
+                            readiness: {
+                                percent: number | null;
+                                national: number | null;
+                                state: number | null;
+                                line: number;
+                                ready: boolean;
+                                simulations: number;
+                                needed: number;
+                            };
+                            exam: {
+                                vendor: string | null;
+                                book_url: string | null;
+                                on: string | null;
+                                time: string | null;
+                                centre: string | null;
+                                days_to: number | null;
+                                directions_url: string | null;
+                            };
+                            kit: {
+                                items: {
+                                    /** @enum {string} */
+                                    key: "id" | "confirmation" | "final_simulation" | "flashcards" | "sleep";
+                                    done: boolean;
+                                }[];
+                                rules: string | null;
+                            };
+                            results: {
+                                national: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                state: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                can_enter: boolean;
+                                attempts_allowed: number;
+                                passed_both: boolean;
+                            };
+                            retake: {
+                                portions: ("national" | "state")[];
+                                topics: string[];
+                                more_education: boolean;
+                                attempts_left: {
+                                    national?: number;
+                                    state?: number;
+                                };
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.exam": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    exam_on?: string | null;
+                    time?: string | null;
+                    centre?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            state: {
+                                code: string;
+                                name: string;
+                            };
+                            steps: {
+                                code: string;
+                                title: string;
+                                detail: string;
+                                url: string | null;
+                                done_on: string | null;
+                                auto: boolean;
+                            }[];
+                            window: {
+                                filed_on: string | null;
+                                ends_on: string | null;
+                                days_left: number | null;
+                                months: number;
+                            };
+                            readiness: {
+                                percent: number | null;
+                                national: number | null;
+                                state: number | null;
+                                line: number;
+                                ready: boolean;
+                                simulations: number;
+                                needed: number;
+                            };
+                            exam: {
+                                vendor: string | null;
+                                book_url: string | null;
+                                on: string | null;
+                                time: string | null;
+                                centre: string | null;
+                                days_to: number | null;
+                                directions_url: string | null;
+                            };
+                            kit: {
+                                items: {
+                                    /** @enum {string} */
+                                    key: "id" | "confirmation" | "final_simulation" | "flashcards" | "sleep";
+                                    done: boolean;
+                                }[];
+                                rules: string | null;
+                            };
+                            results: {
+                                national: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                state: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                can_enter: boolean;
+                                attempts_allowed: number;
+                                passed_both: boolean;
+                            };
+                            retake: {
+                                portions: ("national" | "state")[];
+                                topics: string[];
+                                more_education: boolean;
+                                attempts_left: {
+                                    national?: number;
+                                    state?: number;
+                                };
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.kit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    done: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            state: {
+                                code: string;
+                                name: string;
+                            };
+                            steps: {
+                                code: string;
+                                title: string;
+                                detail: string;
+                                url: string | null;
+                                done_on: string | null;
+                                auto: boolean;
+                            }[];
+                            window: {
+                                filed_on: string | null;
+                                ends_on: string | null;
+                                days_left: number | null;
+                                months: number;
+                            };
+                            readiness: {
+                                percent: number | null;
+                                national: number | null;
+                                state: number | null;
+                                line: number;
+                                ready: boolean;
+                                simulations: number;
+                                needed: number;
+                            };
+                            exam: {
+                                vendor: string | null;
+                                book_url: string | null;
+                                on: string | null;
+                                time: string | null;
+                                centre: string | null;
+                                days_to: number | null;
+                                directions_url: string | null;
+                            };
+                            kit: {
+                                items: {
+                                    /** @enum {string} */
+                                    key: "id" | "confirmation" | "final_simulation" | "flashcards" | "sleep";
+                                    done: boolean;
+                                }[];
+                                rules: string | null;
+                            };
+                            results: {
+                                national: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                state: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                can_enter: boolean;
+                                attempts_allowed: number;
+                                passed_both: boolean;
+                            };
+                            retake: {
+                                portions: ("national" | "state")[];
+                                topics: string[];
+                                more_education: boolean;
+                                attempts_left: {
+                                    national?: number;
+                                    state?: number;
+                                };
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.result": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    national: boolean | null;
+                    state: boolean | null;
+                    weak_topics: ("agency" | "contracts" | "ownership" | "finance" | "math" | "state_rules")[];
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            state: {
+                                code: string;
+                                name: string;
+                            };
+                            steps: {
+                                code: string;
+                                title: string;
+                                detail: string;
+                                url: string | null;
+                                done_on: string | null;
+                                auto: boolean;
+                            }[];
+                            window: {
+                                filed_on: string | null;
+                                ends_on: string | null;
+                                days_left: number | null;
+                                months: number;
+                            };
+                            readiness: {
+                                percent: number | null;
+                                national: number | null;
+                                state: number | null;
+                                line: number;
+                                ready: boolean;
+                                simulations: number;
+                                needed: number;
+                            };
+                            exam: {
+                                vendor: string | null;
+                                book_url: string | null;
+                                on: string | null;
+                                time: string | null;
+                                centre: string | null;
+                                days_to: number | null;
+                                directions_url: string | null;
+                            };
+                            kit: {
+                                items: {
+                                    /** @enum {string} */
+                                    key: "id" | "confirmation" | "final_simulation" | "flashcards" | "sleep";
+                                    done: boolean;
+                                }[];
+                                rules: string | null;
+                            };
+                            results: {
+                                national: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                state: {
+                                    passed: boolean | null;
+                                    attempts: number;
+                                    failed: number;
+                                    on: string | null;
+                                };
+                                can_enter: boolean;
+                                attempts_allowed: number;
+                                passed_both: boolean;
+                            };
+                            retake: {
+                                portions: ("national" | "state")[];
+                                topics: string[];
+                                more_education: boolean;
+                                attempts_left: {
+                                    national?: number;
+                                    state?: number;
+                                };
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

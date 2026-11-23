@@ -20,6 +20,9 @@ final class RuleCatalogue
             'licensing.qualifying_hours' => ['topic' => RuleTopic::Licensing, 'type' => RuleType::Number, 'unit' => 'hours', 'used_by' => ['candidate_plan', 'course_catalogue']],
             'licensing.qualifying_courses' => ['topic' => RuleTopic::Licensing, 'type' => RuleType::Courses, 'used_by' => ['candidate_plan', 'course_catalogue']],
             'licensing.minimum_age' => ['topic' => RuleTopic::Licensing, 'type' => RuleType::Number, 'unit' => 'years', 'used_by' => ['licence_journey']],
+            // The licence journey (A10.3a, screen 16): the state's steps, and how long an application stays open.
+            'licensing.steps' => ['topic' => RuleTopic::Licensing, 'type' => RuleType::Steps, 'used_by' => ['licence_journey']],
+            'licensing.application_months' => ['topic' => RuleTopic::Licensing, 'type' => RuleType::Number, 'unit' => 'months', 'used_by' => ['licence_journey']],
             'exam.vendor' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Text, 'used_by' => ['licence_journey', 'test_prep']],
             // The licensing exam's format per portion (A9.1): test prep simulates it.
             'exam.national.questions' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'questions', 'used_by' => ['test_prep']],
@@ -30,6 +33,9 @@ final class RuleCatalogue
             'exam.state.scored' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'questions', 'used_by' => ['test_prep']],
             'exam.state.minutes' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'minutes', 'used_by' => ['test_prep']],
             'exam.state.pass' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'correct', 'used_by' => ['test_prep']],
+            // Retakes and exam day (A10.3a, screens 14 and 19): attempts before more education, and the testing vendor's rules.
+            'exam.attempts' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Number, 'unit' => 'attempts', 'used_by' => ['licence_journey']],
+            'exam.day_rules' => ['topic' => RuleTopic::Exam, 'type' => RuleType::Text, 'used_by' => ['licence_journey']],
             'ce.period_months' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Number, 'unit' => 'months', 'used_by' => ['ce_card', 'broker_compliance', 'reminders']],
             'ce.hours' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Number, 'unit' => 'hours', 'used_by' => ['ce_card', 'broker_compliance', 'course_catalogue']],
             'ce.mandatory_courses' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Courses, 'used_by' => ['ce_card', 'broker_compliance', 'course_catalogue']],
@@ -54,5 +60,5 @@ final class RuleCatalogue
     }
 
     /** Features that read rules today (the rest arrive in their sprints). */
-    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep'];
+    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes'];
 }

@@ -24,6 +24,8 @@ enum RuleType: string
     case Text = 'text';
     /** `{"max_hours_per_day": 12, "presence_percent": 100, "makeup_min_percent": 67, "makeup_days": 90}` (A7.1) */
     case SeatTime = 'seat_time';
+    /** `{"steps": [{"code": "application", "title": "…", "detail": "…", "url": "https://…"}]}`: the licence journey (A10.3a) */
+    case Steps = 'steps';
 
     /**
      * Validation rules for the value.
@@ -62,6 +64,13 @@ enum RuleType: string
                 'value.presence_percent' => ['required', 'integer', 'min:0', 'max:100'],
                 'value.makeup_min_percent' => ['required', 'integer', 'min:0', 'max:100'],
                 'value.makeup_days' => ['required', 'integer', 'min:0', 'max:365'],
+            ],
+            self::Steps => [
+                'value.steps' => ['required', 'array', 'min:1', 'max:12'],
+                'value.steps.*.code' => ['required', 'string', 'max:60', 'regex:/^[a-z0-9_]+$/', 'distinct'],
+                'value.steps.*.title' => ['required', 'string', 'max:120'],
+                'value.steps.*.detail' => ['required', 'string', 'max:600'],
+                'value.steps.*.url' => ['nullable', 'url:https', 'max:300'],
             ],
         };
     }

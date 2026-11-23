@@ -16528,6 +16528,2206 @@
                 }
             }
         },
+        "/licence-journey": {
+            "get": {
+                "operationId": "licence.show",
+                "description": "Steps from the state's rules, the one-year window from the application, readiness to book, the booked exam, the exam-day kit, results and the retake plan.",
+                "summary": "My licence journey",
+                "tags": [
+                    "LicenceJourney"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "state": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "code": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "code",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "done_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "title",
+                                                            "detail",
+                                                            "url",
+                                                            "done_on",
+                                                            "auto"
+                                                        ]
+                                                    }
+                                                },
+                                                "window": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "filed_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ends_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "months": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "filed_on",
+                                                        "ends_on",
+                                                        "days_left",
+                                                        "months"
+                                                    ]
+                                                },
+                                                "readiness": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "percent": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "national": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "line": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ready": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "simulations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "percent",
+                                                        "national",
+                                                        "state",
+                                                        "line",
+                                                        "ready",
+                                                        "simulations",
+                                                        "needed"
+                                                    ]
+                                                },
+                                                "exam": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "vendor": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "book_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "time": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "centre": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_to": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "directions_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "vendor",
+                                                        "book_url",
+                                                        "on",
+                                                        "time",
+                                                        "centre",
+                                                        "days_to",
+                                                        "directions_url"
+                                                    ]
+                                                },
+                                                "kit": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "id",
+                                                                            "confirmation",
+                                                                            "final_simulation",
+                                                                            "flashcards",
+                                                                            "sleep"
+                                                                        ]
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "rules": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "items",
+                                                        "rules"
+                                                    ]
+                                                },
+                                                "results": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "national": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "can_enter": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_allowed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "passed_both": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "national",
+                                                        "state",
+                                                        "can_enter",
+                                                        "attempts_allowed",
+                                                        "passed_both"
+                                                    ]
+                                                },
+                                                "retake": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "portions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "national",
+                                                                    "state"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "topics": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "more_education": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_left": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "national": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "state": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "portions",
+                                                        "topics",
+                                                        "more_education",
+                                                        "attempts_left"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "state",
+                                                "steps",
+                                                "window",
+                                                "readiness",
+                                                "exam",
+                                                "kit",
+                                                "results",
+                                                "retake"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/steps/{code}": {
+            "put": {
+                "operationId": "licence.step",
+                "description": "With the date it was done (today if left out). Checking off the application starts the window.",
+                "summary": "Check a step off, or un-check it",
+                "tags": [
+                    "LicenceJourney"
+                ],
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "done": {
+                                        "type": "boolean"
+                                    },
+                                    "on": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date"
+                                    }
+                                },
+                                "required": [
+                                    "done"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "state": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "code": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "code",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "done_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "title",
+                                                            "detail",
+                                                            "url",
+                                                            "done_on",
+                                                            "auto"
+                                                        ]
+                                                    }
+                                                },
+                                                "window": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "filed_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ends_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "months": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "filed_on",
+                                                        "ends_on",
+                                                        "days_left",
+                                                        "months"
+                                                    ]
+                                                },
+                                                "readiness": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "percent": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "national": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "line": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ready": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "simulations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "percent",
+                                                        "national",
+                                                        "state",
+                                                        "line",
+                                                        "ready",
+                                                        "simulations",
+                                                        "needed"
+                                                    ]
+                                                },
+                                                "exam": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "vendor": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "book_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "time": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "centre": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_to": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "directions_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "vendor",
+                                                        "book_url",
+                                                        "on",
+                                                        "time",
+                                                        "centre",
+                                                        "days_to",
+                                                        "directions_url"
+                                                    ]
+                                                },
+                                                "kit": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "id",
+                                                                            "confirmation",
+                                                                            "final_simulation",
+                                                                            "flashcards",
+                                                                            "sleep"
+                                                                        ]
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "rules": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "items",
+                                                        "rules"
+                                                    ]
+                                                },
+                                                "results": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "national": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "can_enter": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_allowed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "passed_both": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "national",
+                                                        "state",
+                                                        "can_enter",
+                                                        "attempts_allowed",
+                                                        "passed_both"
+                                                    ]
+                                                },
+                                                "retake": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "portions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "national",
+                                                                    "state"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "topics": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "more_education": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_left": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "national": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "state": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "portions",
+                                                        "topics",
+                                                        "more_education",
+                                                        "attempts_left"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "state",
+                                                "steps",
+                                                "window",
+                                                "readiness",
+                                                "exam",
+                                                "kit",
+                                                "results",
+                                                "retake"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/exam": {
+            "put": {
+                "operationId": "licence.exam",
+                "description": "From the testing vendor's confirmation; the study plan and reminders follow it. Null clears it.",
+                "summary": "Set my exam date",
+                "tags": [
+                    "LicenceJourney"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "exam_on": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date"
+                                    },
+                                    "time": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "centre": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 160
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "state": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "code": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "code",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "done_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "title",
+                                                            "detail",
+                                                            "url",
+                                                            "done_on",
+                                                            "auto"
+                                                        ]
+                                                    }
+                                                },
+                                                "window": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "filed_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ends_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "months": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "filed_on",
+                                                        "ends_on",
+                                                        "days_left",
+                                                        "months"
+                                                    ]
+                                                },
+                                                "readiness": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "percent": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "national": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "line": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ready": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "simulations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "percent",
+                                                        "national",
+                                                        "state",
+                                                        "line",
+                                                        "ready",
+                                                        "simulations",
+                                                        "needed"
+                                                    ]
+                                                },
+                                                "exam": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "vendor": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "book_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "time": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "centre": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_to": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "directions_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "vendor",
+                                                        "book_url",
+                                                        "on",
+                                                        "time",
+                                                        "centre",
+                                                        "days_to",
+                                                        "directions_url"
+                                                    ]
+                                                },
+                                                "kit": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "id",
+                                                                            "confirmation",
+                                                                            "final_simulation",
+                                                                            "flashcards",
+                                                                            "sleep"
+                                                                        ]
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "rules": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "items",
+                                                        "rules"
+                                                    ]
+                                                },
+                                                "results": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "national": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "can_enter": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_allowed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "passed_both": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "national",
+                                                        "state",
+                                                        "can_enter",
+                                                        "attempts_allowed",
+                                                        "passed_both"
+                                                    ]
+                                                },
+                                                "retake": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "portions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "national",
+                                                                    "state"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "topics": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "more_education": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_left": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "national": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "state": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "portions",
+                                                        "topics",
+                                                        "more_education",
+                                                        "attempts_left"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "state",
+                                                "steps",
+                                                "window",
+                                                "readiness",
+                                                "exam",
+                                                "kit",
+                                                "results",
+                                                "retake"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/kit/{item}": {
+            "put": {
+                "operationId": "licence.kit",
+                "summary": "Tick an exam-day checklist item",
+                "tags": [
+                    "LicenceJourney"
+                ],
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "done": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "done"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "state": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "code": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "code",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "done_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "title",
+                                                            "detail",
+                                                            "url",
+                                                            "done_on",
+                                                            "auto"
+                                                        ]
+                                                    }
+                                                },
+                                                "window": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "filed_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ends_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "months": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "filed_on",
+                                                        "ends_on",
+                                                        "days_left",
+                                                        "months"
+                                                    ]
+                                                },
+                                                "readiness": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "percent": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "national": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "line": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ready": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "simulations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "percent",
+                                                        "national",
+                                                        "state",
+                                                        "line",
+                                                        "ready",
+                                                        "simulations",
+                                                        "needed"
+                                                    ]
+                                                },
+                                                "exam": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "vendor": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "book_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "time": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "centre": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_to": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "directions_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "vendor",
+                                                        "book_url",
+                                                        "on",
+                                                        "time",
+                                                        "centre",
+                                                        "days_to",
+                                                        "directions_url"
+                                                    ]
+                                                },
+                                                "kit": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "id",
+                                                                            "confirmation",
+                                                                            "final_simulation",
+                                                                            "flashcards",
+                                                                            "sleep"
+                                                                        ]
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "rules": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "items",
+                                                        "rules"
+                                                    ]
+                                                },
+                                                "results": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "national": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "can_enter": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_allowed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "passed_both": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "national",
+                                                        "state",
+                                                        "can_enter",
+                                                        "attempts_allowed",
+                                                        "passed_both"
+                                                    ]
+                                                },
+                                                "retake": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "portions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "national",
+                                                                    "state"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "topics": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "more_education": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_left": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "national": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "state": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "portions",
+                                                        "topics",
+                                                        "more_education",
+                                                        "attempts_left"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "state",
+                                                "steps",
+                                                "window",
+                                                "readiness",
+                                                "exam",
+                                                "kit",
+                                                "results",
+                                                "retake"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/licence-journey/results": {
+            "post": {
+                "operationId": "licence.result",
+                "description": "Passed or didn't per portion (null: not taken this time). A passed portion is kept; a missed one gets the retake plan, built from the weak areas on the score report.",
+                "summary": "Enter my exam result",
+                "tags": [
+                    "LicenceJourney"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "national": {
+                                        "type": [
+                                            "boolean",
+                                            "null"
+                                        ]
+                                    },
+                                    "state": {
+                                        "type": [
+                                            "boolean",
+                                            "null"
+                                        ]
+                                    },
+                                    "weak_topics": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": [
+                                                "agency",
+                                                "contracts",
+                                                "ownership",
+                                                "finance",
+                                                "math",
+                                                "state_rules"
+                                            ]
+                                        },
+                                        "maxItems": 6
+                                    }
+                                },
+                                "required": [
+                                    "national",
+                                    "state",
+                                    "weak_topics"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "state": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "code": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "code",
+                                                        "name"
+                                                    ]
+                                                },
+                                                "steps": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "done_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "auto": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "title",
+                                                            "detail",
+                                                            "url",
+                                                            "done_on",
+                                                            "auto"
+                                                        ]
+                                                    }
+                                                },
+                                                "window": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "filed_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ends_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "months": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "filed_on",
+                                                        "ends_on",
+                                                        "days_left",
+                                                        "months"
+                                                    ]
+                                                },
+                                                "readiness": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "percent": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "national": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "line": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ready": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "simulations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "percent",
+                                                        "national",
+                                                        "state",
+                                                        "line",
+                                                        "ready",
+                                                        "simulations",
+                                                        "needed"
+                                                    ]
+                                                },
+                                                "exam": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "vendor": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "book_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "time": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "centre": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_to": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "directions_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "vendor",
+                                                        "book_url",
+                                                        "on",
+                                                        "time",
+                                                        "centre",
+                                                        "days_to",
+                                                        "directions_url"
+                                                    ]
+                                                },
+                                                "kit": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "id",
+                                                                            "confirmation",
+                                                                            "final_simulation",
+                                                                            "flashcards",
+                                                                            "sleep"
+                                                                        ]
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "rules": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "items",
+                                                        "rules"
+                                                    ]
+                                                },
+                                                "results": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "national": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "passed": {
+                                                                    "type": [
+                                                                        "boolean",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "attempts": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "failed": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "passed",
+                                                                "attempts",
+                                                                "failed",
+                                                                "on"
+                                                            ]
+                                                        },
+                                                        "can_enter": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_allowed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "passed_both": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "national",
+                                                        "state",
+                                                        "can_enter",
+                                                        "attempts_allowed",
+                                                        "passed_both"
+                                                    ]
+                                                },
+                                                "retake": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "portions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "national",
+                                                                    "state"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "topics": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "more_education": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "attempts_left": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "national": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "state": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "portions",
+                                                        "topics",
+                                                        "more_education",
+                                                        "attempts_left"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "state",
+                                                "steps",
+                                                "window",
+                                                "readiness",
+                                                "exam",
+                                                "kit",
+                                                "results",
+                                                "retake"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/practice/math": {
             "get": {
                 "operationId": "practice.math.index",

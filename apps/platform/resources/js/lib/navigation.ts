@@ -29,6 +29,7 @@ import {
     Wallet,
     Handshake,
     CalendarCheck,
+    Milestone,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -55,6 +56,7 @@ import { index as featuresIndex } from '@/routes/features';
 import { index as askIndex } from '@/routes/ask';
 import { index as bookingsIndex } from '@/routes/bookings';
 import { index as classesIndex } from '@/routes/classes';
+import { show as licenceJourney } from '@/routes/licence';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -75,6 +77,7 @@ export type NavLabel =
     | 'ask'
     | 'instructors'
     | 'studentQuestions'
+    | 'licenceJourney'
     | 'deals'
     | 'dashboard'
     | 'overview'
@@ -189,7 +192,13 @@ export function roleNavigation(
                 : []),
             // Book an instructor (A10.2a, screen 18).
             item('instructors', GraduationCap, bookingsIndex(), '/bookings'),
-            planned('licenceJourney'),
+            // The licence journey (A10.3a, screen 16).
+            item(
+                'licenceJourney',
+                Milestone,
+                licenceJourney(),
+                '/licence-journey',
+            ),
             item('account', Settings, profile(), '/settings'),
         ],
         agent: [

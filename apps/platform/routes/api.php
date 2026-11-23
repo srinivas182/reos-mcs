@@ -24,6 +24,7 @@ use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Learn\OfflineController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
+use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
@@ -230,6 +231,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('lessons/{lesson}/heartbeat', 'heartbeat')->whereNumber('lesson')->middleware('throttle:12,1,api-learn-heartbeat')->name('heartbeat');
         Route::post('lessons/{lesson}/checkins', 'checkin')->whereNumber('lesson')->middleware('throttle:30,1,api-learn-checkin')->name('checkin');
         Route::post('lessons/{lesson}/ask', 'ask')->whereNumber('lesson')->middleware('throttle:20,1,api-learn-ask')->name('ask');
+    });
+    // The licence journey (A10.3a): the learner's own, not admin actions (studying is checked in the controller).
+    Route::prefix('licence-journey')->name('api.licence.')->controller(LicenceJourneyController::class)->group(function () {
+        Route::get('/', 'show')->name('show');
+        Route::put('steps/{code}', 'step')->where('code', '[a-z0-9_]+')->middleware('throttle:60,1,api-licence-step')->name('step');
+        Route::put('exam', 'exam')->middleware('throttle:20,1,api-licence-exam')->name('exam');
+        Route::put('kit/{item}', 'kit')->where('item', '[a-z_]+')->middleware('throttle:60,1,api-licence-kit')->name('kit');
+        Route::post('results', 'result')->middleware('throttle:10,1,api-licence-result')->name('result');
     });
     // Candidate practice and the study plan (A8.3): the learner's own, not admin actions.
     Route::controller(PracticeController::class)->name('api.practice.')->group(function () {

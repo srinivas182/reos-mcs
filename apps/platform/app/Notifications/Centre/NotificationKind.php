@@ -51,6 +51,8 @@ enum NotificationKind: string
     case ClassCheck = 'class_check';
     /** A CE class report is ready to confirm, or was sent to the school (A10.2c). */
     case ClassReport = 'class_report';
+    /** The licence exam: a week and a day before, then enter the result (A10.3a). */
+    case ExamReminder = 'exam_reminder';
 
     public const INBOX = 'inbox';
 
@@ -104,7 +106,7 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
+            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
             self::DealDeadline, self::SignatureCompleted => 'deals',

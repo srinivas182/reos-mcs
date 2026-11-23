@@ -66,3 +66,5 @@ Schedule::command('reos:deals:deadlines')->hourlyAt(5)->withoutOverlapping()->on
 
 // Booked 1-on-1 sessions (A10.2a): unpaid holds, no-show refunds, completion.
 Schedule::command('reos:sessions:bookings')->everyMinute()->withoutOverlapping()->onOneServer();
+// The licence exam's reminders (A10.3a): 8:15 in Texas, before the candidate's day starts.
+Schedule::command('reos:licence:remind')->dailyAt('08:15')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();

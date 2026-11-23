@@ -31,9 +31,18 @@ export type RuleType =
     | 'first_renewal'
     | 'fee_days'
     | 'text'
-    | 'seat_time';
+    | 'seat_time'
+    | 'steps';
 
 export type Course = { code: string; title: string; hours: number };
+
+/** A step of the licence journey (A10.3a). */
+export type Step = {
+    code: string;
+    title: string;
+    detail: string;
+    url: string | null;
+};
 
 export type RuleValue = {
     number?: number;
@@ -50,6 +59,7 @@ export type RuleValue = {
     presence_percent?: number;
     makeup_min_percent?: number;
     makeup_days?: number;
+    steps?: Step[];
 };
 
 export type RuleRow = {
@@ -81,7 +91,7 @@ export function ruleText(
 
             return unit
                 ? t(
-                      `stateRules.units.${unit as 'hours' | 'months' | 'years'}`,
+                      `stateRules.units.${unit as 'hours' | 'months' | 'years' | 'questions' | 'minutes' | 'correct' | 'attempts'}`,
                       {
                           count: n,
                       },
@@ -115,6 +125,11 @@ export function ruleText(
             });
         case 'text':
             return value.text ?? '';
+        case 'steps':
+            return t('stateRules.values.steps', {
+                count: (value.steps ?? []).length,
+                titles: (value.steps ?? []).map((s) => s.title).join(', '),
+            });
         case 'seat_time':
             return t('stateRules.values.seatTime', {
                 max: value.max_hours_per_day ?? 0,

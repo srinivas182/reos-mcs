@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bell, BookOpen, GraduationCap, Handshake, MessageCircleQuestion, MessageSquare, Palette, Users, Video } from 'lucide-react-native';
+import { Bell, BookOpen, GraduationCap, Handshake, MessageCircleQuestion, MessageSquare, Milestone, Palette, Users, Video } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -186,6 +186,8 @@ export default function HomeScreen() {
       {learner ? <ListRow icon={BookOpen} tone="info" title={t('learn.title')} subtitle={t('learn.searchLabel')} onPress={() => router.push('/learn')} /> : null}
       {/* Do this now (Agent App Journey screen 6, B8.3), and every contact. */}
       {agent && insight ? <TodayInsight contact={insight.contact} insight={insight.insight} onDone={() => void reloadInsight()} /> : null}
+      {/* The licence journey (A10.3a, screen 16): steps, window, exam date, result. */}
+      {candidate ? <ListRow icon={Milestone} tone="info" title={t('licence.title')} subtitle={t('licence.today')} onPress={() => router.push('/licence-journey')} /> : null}
       {/* Live classes (A10.2b): for candidates their courses' classes (L12); for instructors their week (i11). */}
       {sessions !== null && (candidate || role === 'instructor') ? (
         <ListRow icon={Users} tone="info" title={t('classes.title')} subtitle={role === 'instructor' ? t('classes.purposeHost') : t('classes.purpose')} onPress={() => router.push('/classes')} />

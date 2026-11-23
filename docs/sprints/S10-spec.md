@@ -135,6 +135,29 @@
   - **Broker offers** (17): candidates opt in from the tracker; brokerages with Texas offices make offers (split, fees, training, mentoring) on the web; offers ranked by fit, rating and terms; **Accept** shares the candidate's contact details with that brokerage; Decline hides it.
   - **Switch to agent** (f03, 20): enter the TREC licence number; checked against TREC's record (B10.3); the name must match; if it's not active yet, REOS checks daily and notifies; **same account**, progress and certificates kept; three ways in (broker seat, association code, continue alone).
   - **Your mentors** (f04): mentors from the sponsoring brokerage, bookable through A10.2.
+- **As built, A10.3a** (ADR 0041):
+  - **Licence journey** (web sidebar; phone from Today):
+    - The state's steps from screen 62. Texas, from TREC: qualifying education, application, fingerprints, exam, sponsoring broker, active.
+    - Each step has what to do, the official page, and the candidate's check-off with its date.
+    - Checking off the application starts the one-year window countdown.
+  - **Ready to book:**
+    - Both portions against the 90% line, plus the simulations passed.
+    - "Book with Pearson VUE" (hand-off) once ready.
+    - The exam date, time and test centre from the confirmation, which the study plan follows.
+    - Reminders a week and a day before, then "Enter your result".
+  - **Exam-day kit:**
+    - When and where, with Directions.
+    - A checklist (two IDs, confirmation, final simulation, flashcards, sleep).
+    - Pearson VUE's rules from the back office, and readiness.
+    - A two-minute calm-down read aloud by the device.
+  - **Result:**
+    - Passed, didn't pass, or not taken, per portion; a passed portion is kept.
+    - A missed portion gets the **retake plan**: weak areas ticked from the score report, then readiness, each opening Fix a weak topic.
+    - It shows the attempts left (Texas: 3, then more education).
+    - Both portions passed checks the exam step off.
+  - **Screen 62:**
+    - New rules: licence steps (with their own editor), application window, exam attempts and exam-day rules.
+    - The exam-format rules now have labels.
 - **Done when:** a candidate becomes an agent on the same account.
 
 ### B10.1 MLS feeds (Team B)

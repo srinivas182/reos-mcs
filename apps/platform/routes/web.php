@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
+use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
@@ -47,6 +48,7 @@ use App\Http\Controllers\Instructor\QuestionsPageController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\Licence\LicenceJourneyPageController;
 use App\Http\Controllers\Messaging\AnnouncementController;
 use App\Http\Controllers\Messaging\AttachmentController;
 use App\Http\Controllers\Messaging\MessagesController;
@@ -193,6 +195,19 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::post('{price}', 'start')->whereNumber('price')->middleware('throttle:10,1,checkout-start')->name('start');
         Route::post('orders/{order}/simulate', 'simulate')->middleware('throttle:10,1,checkout-simulate')->name('simulate');
         Route::get('orders/{order}/return', 'complete')->middleware('throttle:30,1,checkout-return')->name('complete');
+    });
+
+    // The licence journey (A10.3a, screens 16, 15, 14 and 19): the learner's own pages and JSON actions (studying is checked in the controller).
+    Route::prefix('licence-journey')->name('licence.')->group(function () {
+        Route::get('/', [LicenceJourneyPageController::class, 'show'])->name('show');
+        Route::get('exam-day', [LicenceJourneyPageController::class, 'examDay'])->name('exam-day');
+        Route::get('result', [LicenceJourneyPageController::class, 'result'])->name('result');
+        Route::controller(LicenceJourneyController::class)->group(function () {
+            Route::put('steps/{code}', 'step')->where('code', '[a-z0-9_]+')->middleware('throttle:60,1,licence-step')->name('step');
+            Route::put('exam', 'exam')->middleware('throttle:20,1,licence-exam')->name('exam');
+            Route::put('kit/{item}', 'kit')->where('item', '[a-z_]+')->middleware('throttle:60,1,licence-kit')->name('kit');
+            Route::post('results', 'result')->middleware('throttle:10,1,licence-result')->name('results');
+        });
     });
 
     // Learn (A5.3b): courses for my state, search inside them, a lesson opened at its place.
