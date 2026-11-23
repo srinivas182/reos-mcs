@@ -4,10 +4,12 @@ import { I18nextProvider } from 'react-i18next';
 
 import TestScreen from '@/app/practice/[id]';
 import PracticeHub from '@/app/practice/index';
+import ReadinessScreen from '@/app/practice/readiness';
 import ResultsScreen from '@/app/practice/results/[id]';
+import GoodAtScreen from '@/app/practice/topics';
 import { CandidateToday } from '@/features/study/CandidateToday';
 import { i18n } from '@/lib/i18n';
-import type { Attempt, CandidateToday as Today, Results } from '@/lib/practice';
+import type { Attempt, ReadinessMap, CandidateToday as Today, Results } from '@/lib/practice';
 import { countdown } from '@/lib/practice';
 import { ToastProvider } from '@/ui';
 
@@ -33,6 +35,8 @@ const wrap = (ui: React.ReactElement) => (
 
 const today: Today = {
   readiness: 72,
+  portions: { national: 72, state: 95 },
+  ready_to_book: false,
   topics: { agency: 100, contracts: 100, ownership: 100, finance: 0, math: 0, state_rules: 100 },
   weakest: ['finance', 'math'],
   exam_on: '2027-03-15',
@@ -140,12 +144,16 @@ describe('Today for candidates (screen 12)', () => {
 
     await render(wrap(<CandidateToday today={today} />));
 
-    expect(screen.getByLabelText('Readiness 72%')).toBeTruthy();
+    expect(screen.getByLabelText('Readiness 72%: predicted pass chance of your weaker portion')).toBeTruthy();
     expect(screen.getByText('112 days to your exam')).toBeTruthy();
     expect(screen.getByLabelText('3-day streak')).toBeTruthy();
     expect(screen.getByText('Finance is your fastest win.')).toBeTruthy();
     expect(screen.getByText("Today's plan · 20 minutes")).toBeTruthy();
     expect(screen.getByText('10 min · Next in your course · Done')).toBeTruthy();
+
+    // The ring opens the Readiness map (screen 54).
+    await fireEvent.press(screen.getByHintText('Opens your readiness map'));
+    expect(router.push).toHaveBeenCalledWith('/practice/readiness');
 
     await fireEvent.press(screen.getByLabelText('Continue: Agency basics'));
     expect(router.push).toHaveBeenCalledWith({ pathname: '/learn/[id]', params: { id: '7', t: '245' } });
@@ -207,3 +215,60 @@ describe('tests (screens 39–43)', () => {
     expect(countdown(3729)).toBe('1:02:09');
   });
 });
+
+const readinessMap: ReadinessMap = {
+  percent: 84,
+  portions: { national: 84, state: 93 },
+  line: 90,
+  booking: { ready: false, national: false, state: true, simulations: 1, needed: 2, url: 'https://www.pearsonvue.com/us/en/tx/realestate.html' },
+  topics: [
+    { topic: 'finance', portion: 'national', weight: 7, percent: 61, answers: 48, shown: true, trend: 9, weak: true },
+    { topic: 'math', portion: 'national', weight: 7, percent: 72, answers: 41, shown: true, trend: -3, weak: false },
+    { topic: 'state_rules', portion: 'state', weight: 10, percent: 88, answers: 90, shown: true, trend: 6, weak: false },
+    { topic: 'agency', portion: 'national', weight: 9, percent: 90, answers: 8, shown: false, trend: null, weak: false },
+  ],
+  gain: { topic: 'finance', portion: 'national', points: 7 },
+  computed_on: '2027-01-04',
+};
+
+describe('readiness (screens 54 and 44, A9.2)', () => {
+  it('shows each portion against the booking line and what booking still needs, and practises a topic', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: readinessMap }));
+    mockApi.POST.mockResolvedValue(ok({ data: { ...attempt, kind: 'topic', mode: 'practice', id: 12 } }));
+    await render(wrap(<ReadinessScreen />));
+
+    expect(await screen.findByLabelText('National portion: 84% predicted pass chance')).toBeTruthy();
+    expect(screen.getByText('6 points to the booking line')).toBeTruthy();
+    expect(screen.getByLabelText('1 of 2 recent simulations passed: Not yet')).toBeTruthy();
+    expect(screen.getByText('8 of 10 answers so far')).toBeTruthy();
+
+    await fireEvent.press(screen.getByText('Finance'));
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/tests', { body: { kind: 'topic', topic: 'finance' } });
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/[id]', params: { id: '12' } });
+  });
+
+  it('offers booking with the testing vendor once ready', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: { ...readinessMap, portions: { national: 92, state: 95 }, booking: { ...readinessMap.booking, ready: true, national: true, simulations: 2 } } }));
+    await render(wrap(<ReadinessScreen />));
+
+    expect(await screen.findByText('Ready to book')).toBeTruthy();
+    expect(screen.getByLabelText('Book the exam')).toBeTruthy();
+  });
+
+  it('filters topics by portion, with trends, and fixes the weakest', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: readinessMap }));
+    mockApi.POST.mockResolvedValue(ok({ data: { ...attempt, kind: 'topic', mode: 'practice', id: 13 } }));
+    await render(wrap(<GoodAtScreen />));
+
+    expect(await screen.findByText('Up 9 points this week')).toBeTruthy();
+    expect(screen.getByText('Fixing Finance could add 7 points to your pass chance on the National portion.')).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText('Texas'));
+    expect(screen.queryByText('Up 9 points this week')).toBeNull();
+    expect(screen.getByText('Up 6 points this week')).toBeTruthy();
+
+    await fireEvent.press(screen.getByLabelText('Fix my weakest'));
+    expect(mockApi.POST).toHaveBeenCalledWith('/practice/tests', { body: { kind: 'topic', topic: 'finance' } });
+  });
+});
+

@@ -9300,7 +9300,7 @@
         "/me/study": {
             "get": {
                 "operationId": "practice.today",
-                "description": "Readiness and days to the exam, the streak, Continue, and today's tasks\n(never more than the minutes chosen, the diagnostic day aside), each\nwith why. Rebuilds the plan first if a day was missed.",
+                "description": "Readiness (the lower portion's predicted pass chance, A9.2) and each\nportion's, whether booking is unlocked, days to the exam, the streak,\nContinue, and today's tasks\n(never more than the minutes chosen, the diagnostic day aside), each\nwith why. Rebuilds the plan first if a day was missed.",
                 "summary": "Today for a candidate",
                 "tags": [
                     "Practice"
@@ -9321,6 +9321,30 @@
                                                         "integer",
                                                         "null"
                                                     ]
+                                                },
+                                                "portions": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "national": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "national",
+                                                        "state"
+                                                    ]
+                                                },
+                                                "ready_to_book": {
+                                                    "type": "boolean"
                                                 },
                                                 "topics": {
                                                     "type": "object",
@@ -9489,6 +9513,8 @@
                                             },
                                             "required": [
                                                 "readiness",
+                                                "portions",
+                                                "ready_to_book",
                                                 "topics",
                                                 "weakest",
                                                 "exam_on",
@@ -11653,6 +11679,190 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/readiness": {
+            "get": {
+                "operationId": "practice.readiness",
+                "description": "The predicted pass chance for each exam portion against the 90%\nbooking line; what booking still needs (both portions at the line and\ntwo recent simulations passed) and where to book; every topic weakest\nfirst with its share right, answers, trend over the last week (from 10\nanswers) and exam portion; and how many points of pass chance fixing\nthe weakest topic would add. Kept nightly and after every test.",
+                "summary": "The Readiness map",
+                "tags": [
+                    "Readiness"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "percent": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "portions": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "national": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "state": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "national",
+                                                        "state"
+                                                    ]
+                                                },
+                                                "line": {
+                                                    "type": "integer"
+                                                },
+                                                "booking": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "ready": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "national": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "state": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "simulations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "ready",
+                                                        "national",
+                                                        "state",
+                                                        "simulations",
+                                                        "needed",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "topics": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "topic": {
+                                                                "type": "string"
+                                                            },
+                                                            "portion": {
+                                                                "type": "string"
+                                                            },
+                                                            "weight": {
+                                                                "type": "integer"
+                                                            },
+                                                            "percent": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "answers": {
+                                                                "type": "integer"
+                                                            },
+                                                            "shown": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "trend": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "weak": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "topic",
+                                                            "portion",
+                                                            "weight",
+                                                            "percent",
+                                                            "answers",
+                                                            "shown",
+                                                            "trend",
+                                                            "weak"
+                                                        ]
+                                                    }
+                                                },
+                                                "gain": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "topic": {
+                                                            "type": "string"
+                                                        },
+                                                        "portion": {
+                                                            "type": "string"
+                                                        },
+                                                        "points": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "topic",
+                                                        "portion",
+                                                        "points"
+                                                    ]
+                                                },
+                                                "computed_on": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "percent",
+                                                "portions",
+                                                "line",
+                                                "booking",
+                                                "topics",
+                                                "gain",
+                                                "computed_on"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"

@@ -2,15 +2,20 @@ import { useTranslation } from 'react-i18next';
 import type { Topic } from './types';
 
 /**
- * Readiness as a ring (A8.3): the share of the exam outline answered right
- * in recent tests. Before the first test it says so instead of showing 0.
+ * Readiness as a ring (A8.3; A9.2): the predicted chance of passing the
+ * weaker exam portion. Before the first test it says so instead of showing
+ * 0. `label` and `caption` show one portion instead.
  */
 export function ReadinessRing({
     percent,
     size = 120,
+    label,
+    caption,
 }: {
     percent: number | null;
     size?: number;
+    label?: string;
+    caption?: string;
 }) {
     const { t } = useTranslation();
     const stroke = 10;
@@ -22,9 +27,10 @@ export function ReadinessRing({
         <div
             role="img"
             aria-label={
-                percent === null
+                label ??
+                (percent === null
                     ? t('practice.readiness.unknown')
-                    : t('practice.readiness.label', { percent })
+                    : t('practice.readiness.label', { percent }))
             }
             className="relative inline-flex items-center justify-center"
             style={{ width: size, height: size }}
@@ -53,7 +59,7 @@ export function ReadinessRing({
                     {percent === null ? '—' : `${percent}%`}
                 </span>
                 <span className="block text-sm text-muted-foreground">
-                    {t('practice.readiness.title')}
+                    {caption ?? t('practice.readiness.title')}
                 </span>
             </span>
         </div>

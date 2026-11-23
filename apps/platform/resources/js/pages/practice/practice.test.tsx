@@ -7,11 +7,13 @@ import { CandidateToday } from '@/components/practice/candidate-today';
 import {
     attempt,
     hub,
+    readinessMap,
     results,
     studyToday,
 } from '@/components/practice/fixtures';
 import { i18n } from '@/lib/i18n';
 import PracticeIndex from '@/pages/practice/index';
+import ReadinessPage from '@/pages/practice/readiness';
 import ResultsPage from '@/pages/practice/results';
 import TestPage from '@/pages/practice/test';
 import StudyPlanPage from '@/pages/study-plan';
@@ -49,7 +51,9 @@ describe('candidate practice (A8.3)', () => {
         render(<CandidateToday study={studyToday} />);
 
         expect(
-            screen.getByRole('img', { name: 'Readiness 72%' }),
+            screen.getByRole('img', {
+                name: 'Readiness 72%: predicted pass chance of your weaker portion',
+            }),
         ).toBeInTheDocument();
         expect(screen.getByText(/112 days to your exam/)).toBeInTheDocument();
         expect(screen.getByText('3-day streak')).toBeInTheDocument();
@@ -212,5 +216,79 @@ describe('candidate practice (A8.3)', () => {
             { day: '2026-11-25' },
             { preserveScroll: true },
         );
+    });
+});
+
+describe('Readiness (screens 54 and 44, A9.2)', () => {
+    it('shows each portion against the booking line and what booking still needs', () => {
+        render(<ReadinessPage map={readinessMap} />);
+
+        expect(
+            screen.getByRole('img', {
+                name: 'National portion: 84% predicted pass chance',
+            }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText('6 points to the booking line'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText('At or above the 90% booking line'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText('1 of 2 recent simulations passed'),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('link', { name: 'Book the exam' }),
+        ).not.toBeInTheDocument();
+    });
+
+    it('unlocks booking with the testing vendor at 90% on both', () => {
+        render(
+            <ReadinessPage
+                map={{
+                    ...readinessMap,
+                    portions: { national: 92, state: 95 },
+                    booking: {
+                        ...readinessMap.booking,
+                        ready: true,
+                        national: true,
+                        simulations: 2,
+                    },
+                }}
+            />,
+        );
+
+        expect(
+            screen.getByRole('link', { name: 'Book the exam' }),
+        ).toHaveAttribute(
+            'href',
+            'https://www.pearsonvue.com/us/en/tx/realestate.html',
+        );
+    });
+
+    it('ranks topics weakest first, filters by portion, and practises the weakest', async () => {
+        const user = userEvent.setup();
+        render(<ReadinessPage map={readinessMap} />);
+
+        expect(screen.getByText('8 of 10 answers so far')).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Fixing Finance could add 7 points to your pass chance on the National portion.',
+            ),
+        ).toBeInTheDocument();
+
+        await user.click(screen.getByRole('button', { name: 'Texas' }));
+        expect(
+            screen.queryByRole('button', { name: 'Practice Finance' }),
+        ).not.toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'All' }));
+
+        await user.click(
+            screen.getByRole('button', { name: 'Fix my weakest' }),
+        );
+        expect(router.post).toHaveBeenCalledWith('/practice/tests', {
+            kind: 'topic',
+            topic: 'finance',
+        });
     });
 });

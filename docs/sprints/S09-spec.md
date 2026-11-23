@@ -99,6 +99,11 @@
   - the **90% booking line**: "Ready to book" unlocks at 90% on both portions (candidate screen 15).
   - It's recomputed **nightly** (in the candidate's time zone) and after every test, and **readiness drives tomorrow's plan**.
 - **What you're good at (screen 44):** National, Texas or All. Each topic shows its % and trend once it has 10 or more answers, plus the pass-chance gain from fixing the weakest.
+- **As built, A9.2a** (ADR 0035 §10–13):
+  - **Readiness:** a predicted pass chance per portion, from decayed answers per topic. It is shown on Today (the lower of the two, and the ring opens the map), on the practice hub, and on the web's new **Readiness** sidebar page.
+  - **Readiness map:** both portions against the 90% line, plus what booking still needs. Booking needs both portions at 90% **and** the last two simulations passed, per web screen 8. Once that's met, **Book the exam** goes to the testing vendor.
+  - **What you're good at:** National, Texas or All, with each topic's share, answers and trend from 10 answers, and the gain from fixing the weakest. **Fix my weakest** and each topic start a topic quiz until the fix plan and smart drill arrive in A9.2b.
+  - **Kept nightly and after every test:** the nightly job rebuilds plans whose weak topics changed.
 - **Fix a weak topic (screen 46):**
   - a 4–6 step plan built from the candidate's actual misses: micro-lessons (the lesson at the right second), practice questions, flashcards, then a retest with new questions;
   - the topic leaves the weak list at 70%.

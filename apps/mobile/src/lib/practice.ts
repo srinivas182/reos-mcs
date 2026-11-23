@@ -17,6 +17,8 @@ export type HubTest = Got<'/practice/tests'>['data'][number];
 export type Attempt = Got<'/practice/attempts/{attempt}'>['data'];
 export type TestQuestion = Attempt['questions'][number];
 export type Results = Posted<'/practice/attempts/{attempt}/submit'>['data'];
+export type ReadinessMap = Got<'/practice/readiness'>['data'];
+export type ReadinessTopic = ReadinessMap['topics'][number];
 export type Topic = 'agency' | 'contracts' | 'ownership' | 'finance' | 'math' | 'state_rules';
 
 export type TestKind = 'diagnostic' | 'topic' | 'national' | 'state' | 'simulation';
@@ -46,6 +48,13 @@ export function useCandidateToday(enabled: boolean) {
   );
 
   return { today, reload: load };
+}
+
+/** The Readiness map and What you're good at (screens 54 and 44, A9.2). */
+export async function loadReadiness(): Promise<ReadinessMap | null> {
+  const { data } = await api().GET('/practice/readiness');
+
+  return data?.data ?? null;
 }
 
 export async function loadHub(): Promise<HubTest[]> {

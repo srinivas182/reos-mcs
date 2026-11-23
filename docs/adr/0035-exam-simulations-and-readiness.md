@@ -1,6 +1,6 @@
 # ADR 0035: Exam simulations and readiness
 
-- Status: Accepted (simulations, A9.1; readiness follows in A9.2)
+- Status: Accepted (simulations and the starter bank, A9.1; readiness, A9.2)
 - Date: 2026-11-23 (Sprint 9; spec in docs/sprints/S09-spec.md)
 
 ## Context
@@ -35,9 +35,28 @@ A candidate who passes one portion retakes only the other. Sprint 9 decision 1 s
    - **Review:** each deployment reviews it once, by its school admin, on the Starter bank tab. Approving or retiring a question changes `is_sample` or `retired_at` on REOS's own row; edits change its content in place.
    - **Loading:** never overwrites a row already loaded, so a school's decisions and edits survive later releases. A corrected question ships as a new key, and the old one is retired.
 
+## Readiness (A9.2)
+
+10. **Readiness is a predicted pass chance**, not a share right. For each portion it is the chance of reaching the pass mark over the portion's scored questions on a new draw (80 at 56 and 40 at 28 in Texas, from the state rules).
+    - **Topic ability:** each topic's share right is a Beta estimate (prior: one right, one wrong) from its answers over the last 120 days. Each answer's weight halves every 21 days.
+    - **Portion share:** the outline-weighted mix of its topics.
+    - **The chance:** a normal approximation of the binomial with a continuity correction, widened by the estimate's own variance. A few lucky answers therefore can't show 90%. As a guide, about 76% right on solid data gives 90% on the National portion.
+    - **The headline figure:** readiness on Today and the ring is the lower of the two portions, because both must pass.
+11. **Booking line (screens 54 and 56):** "Ready to book" unlocks when:
+    - both portions are at 90% or better;
+    - the last two full simulations passed both portions. This is the web journey's "readiness needs two simulations above the line".
+
+    The Book link is the source URL of the state's exam format rule, so no vendor is hard-coded.
+12. **What you're good at (screen 44):**
+    - A topic's share and trend are shown only from 10 answers. The trend is the change against the snapshot from at least 7 days before.
+    - The gain shown is the pass-chance points the weakest topic's portion would add if that topic reached 80%.
+13. **Kept nightly and after every test** in `readiness_snapshots`, one row per candidate per day.
+    - The nightly job runs at 00:10 Texas time, the candidates' time zone (`StudyPlans::TIMEZONE`). It records the day and rebuilds the study plan (reason `readiness`) when the weak topics have changed, so tomorrow's plan follows readiness.
+    - The snapshots feed trends and the weekly report.
+
 ## Consequences
 
-- Readiness (A9.2) reads `by_portion` as well as `by_topic` to predict the pass chance per portion.
+- Readiness (A9.2) reads `by_topic` with portions mapped from topics (state rules to the state portion), and `by_portion` from simulations for the booking line.
 - Seat time is unaffected: tests aren't lessons.
 - The Pearson VUE numbers must be re-checked against the current candidate handbook before the pilot. They are state rules, so this needs no deploy.
 

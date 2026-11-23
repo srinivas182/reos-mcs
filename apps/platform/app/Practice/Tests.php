@@ -44,7 +44,7 @@ final readonly class Tests
     /** The share of questions to pass (the Texas exams' 70%). */
     public const PASS = 70;
 
-    public function __construct(private PersonStates $states, private StudyPlans $plans, private ExamFormats $formats) {}
+    public function __construct(private PersonStates $states, private StudyPlans $plans, private ExamFormats $formats, private Readiness $readiness) {}
 
     /**
      * Start a test, or carry on with the same kind still open.
@@ -274,6 +274,7 @@ final readonly class Tests
 
         // Readiness and the plan follow from this result at once (screen 43).
         $this->plans->rebuild($attempt->user, $attempt->kind === TestAttempt::DIAGNOSTIC ? 'diagnostic' : 'test');
+        $this->readiness->record($attempt->user);
 
         return $attempt;
     }

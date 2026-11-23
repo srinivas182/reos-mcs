@@ -51,6 +51,14 @@ final readonly class ExamFormats
         ];
     }
 
+    /** Where candidates book the exam: the source of the state's exam format rule (null without one). */
+    public function bookingUrl(string $state): ?string
+    {
+        $rule = $this->rules->inForce($state, CarbonImmutable::now())['exam.national.questions'] ?? null;
+
+        return $rule?->source_url;
+    }
+
     /** The portion a question belongs to: its own, else the state portion for state rules and national for the rest. */
     public static function portionOf(QuizTopic $topic, ?string $portion): string
     {

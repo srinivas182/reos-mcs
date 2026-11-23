@@ -20,7 +20,7 @@ use Carbon\CarbonImmutable;
  * minutes the person chose (the diagnostic day aside), each with why.
  *
  * @phpstan-type Task array{id: int, kind: 'diagnostic'|'lesson'|'practice'|'review', why: 'next'|'weak'|'review'|'catch_up'|'baseline', minutes: int, done: bool, day: string, lesson: array{id: int, title: string, course: string}|null, topic: string|null}
- * @phpstan-type Today array{readiness: int|null, topics: array<string, int|null>, weakest: list<string>, exam_on: string, days_to_exam: int, streak: int, minutes_per_day: int, reminder_time: string|null, diagnostic_done: bool, continue: array{lesson_id: int, title: string, course: string, position: int}|null, tasks: list<Task>, behind_minutes: int, plan: array{id: int, reason: string, built_at: string|null}}
+ * @phpstan-type Today array{readiness: int|null, portions: array{national: int|null, state: int|null}, ready_to_book: bool, topics: array<string, int|null>, weakest: list<string>, exam_on: string, days_to_exam: int, streak: int, minutes_per_day: int, reminder_time: string|null, diagnostic_done: bool, continue: array{lesson_id: int, title: string, course: string, position: int}|null, tasks: list<Task>, behind_minutes: int, plan: array{id: int, reason: string, built_at: string|null}}
  */
 final readonly class CandidateToday
 {
@@ -36,6 +36,8 @@ final readonly class CandidateToday
 
         return [
             'readiness' => $readiness['percent'],
+            'portions' => $readiness['portions'],
+            'ready_to_book' => $readiness['ready_to_book'],
             'topics' => $readiness['topics'],
             'weakest' => $readiness['weakest'],
             'exam_on' => $plan->exam_on->toDateString(),

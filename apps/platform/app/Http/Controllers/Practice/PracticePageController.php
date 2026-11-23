@@ -64,6 +64,14 @@ final class PracticePageController extends Controller
         return $found->submitted_at === null ? to_route('practice.attempt', $attempt) : to_route('practice.results', $attempt);
     }
 
+    /** Readiness (candidate web sidebar; phone screens 54 and 44, A9.2): each portion's pass chance, the booking line, and every topic. */
+    public function readiness(#[CurrentUser] User $user, PracticeAccess $access, Readiness $readiness): Response
+    {
+        $access->allow($user);
+
+        return Inertia::render('practice/readiness', ['map' => $readiness->map($user)]);
+    }
+
     public function results(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests, Readiness $readiness): Response|RedirectResponse
     {
         $found = $access->attempt($user, $attempt);

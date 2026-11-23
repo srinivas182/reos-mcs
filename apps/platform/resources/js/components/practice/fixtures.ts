@@ -1,4 +1,10 @@
-import type { Attempt, HubTest, Results, StudyToday } from './types';
+import type {
+    Attempt,
+    HubTest,
+    ReadinessMap,
+    Results,
+    StudyToday,
+} from './types';
 
 export const studyToday: StudyToday = {
     readiness: 72,
@@ -217,4 +223,83 @@ export const simulationResults: Results = {
         },
     ],
     timing: { seconds_per_question: 95, pace: 107 },
+};
+
+/** Sofia six weeks in (A9.2): National nearly there, Texas at the line, one simulation passed. */
+export const readinessMap: ReadinessMap = {
+    percent: 84,
+    portions: { national: 84, state: 93 },
+    line: 90,
+    booking: {
+        ready: false,
+        national: false,
+        state: true,
+        simulations: 1,
+        needed: 2,
+        url: 'https://www.pearsonvue.com/us/en/tx/realestate.html',
+    },
+    topics: [
+        {
+            topic: 'finance',
+            portion: 'national',
+            weight: 7,
+            percent: 61,
+            answers: 48,
+            shown: true,
+            trend: 9,
+            weak: true,
+        },
+        {
+            topic: 'math',
+            portion: 'national',
+            weight: 7,
+            percent: 72,
+            answers: 41,
+            shown: true,
+            trend: -3,
+            weak: false,
+        },
+        {
+            topic: 'contracts',
+            portion: 'national',
+            weight: 9,
+            percent: 80,
+            answers: 63,
+            shown: true,
+            trend: 0,
+            weak: false,
+        },
+        {
+            topic: 'ownership',
+            portion: 'national',
+            weight: 8,
+            percent: 84,
+            answers: 52,
+            shown: true,
+            trend: 4,
+            weak: false,
+        },
+        {
+            topic: 'state_rules',
+            portion: 'state',
+            weight: 10,
+            percent: 88,
+            answers: 90,
+            shown: true,
+            trend: 6,
+            weak: false,
+        },
+        {
+            topic: 'agency',
+            portion: 'national',
+            weight: 9,
+            percent: 90,
+            answers: 8,
+            shown: false,
+            trend: null,
+            weak: false,
+        },
+    ],
+    gain: { topic: 'finance', portion: 'national', points: 7 },
+    computed_on: '2027-01-04',
 };

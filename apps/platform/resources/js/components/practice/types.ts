@@ -113,11 +113,44 @@ export type Results = {
     }[];
 };
 
+export type PortionChances = { national: number | null; state: number | null };
+
 export type ReadinessSummary = {
+    /** The weaker portion's predicted pass chance (A9.2). */
     percent: number | null;
+    portions?: PortionChances;
     topics: Partial<Record<Topic, number | null>>;
+    answers?: Partial<Record<Topic, number>>;
     weakest: Topic[];
     tests: number;
+    ready_to_book?: boolean;
+};
+
+/** The Readiness map and What you're good at (screens 54 and 44, A9.2). */
+export type ReadinessMap = {
+    percent: number | null;
+    portions: PortionChances;
+    line: number;
+    booking: {
+        ready: boolean;
+        national: boolean;
+        state: boolean;
+        simulations: number;
+        needed: number;
+        url: string | null;
+    };
+    topics: {
+        topic: Topic;
+        portion: Portion;
+        weight: number;
+        percent: number | null;
+        answers: number;
+        shown: boolean;
+        trend: number | null;
+        weak: boolean;
+    }[];
+    gain: { topic: Topic; portion: Portion; points: number } | null;
+    computed_on: string | null;
 };
 
 export type HubTest = {
@@ -144,6 +177,8 @@ export type StudyTask = {
 
 export type StudyToday = {
     readiness: number | null;
+    portions?: PortionChances;
+    ready_to_book?: boolean;
     topics: Partial<Record<Topic, number | null>>;
     weakest: Topic[];
     exam_on: string;

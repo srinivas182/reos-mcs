@@ -1713,7 +1713,9 @@ export interface paths {
         };
         /**
          * Today for a candidate
-         * @description Readiness and days to the exam, the streak, Continue, and today's tasks
+         * @description Readiness (the lower portion's predicted pass chance, A9.2) and each
+         *     portion's, whether booking is unlocked, days to the exam, the streak,
+         *     Continue, and today's tasks
          *     (never more than the minutes chosen, the diagnostic day aside), each
          *     with why. Rebuilds the plan first if a day was missed.
          */
@@ -1959,6 +1961,31 @@ export interface paths {
          * @description One open report per person and question; sending again returns the same report.
          */
         post: operations["questions.report"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The Readiness map
+         * @description The predicted pass chance for each exam portion against the 90%
+         *     booking line; what booking still needs (both portions at the line and
+         *     two recent simulations passed) and where to book; every topic weakest
+         *     first with its share right, answers, trend over the last week (from 10
+         *     answers) and exam portion; and how many points of pass chance fixing
+         *     the weakest topic would add. Kept nightly and after every test.
+         */
+        get: operations["practice.readiness"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -7836,6 +7863,11 @@ export interface operations {
                     "application/json": {
                         data: {
                             readiness: number | null;
+                            portions: {
+                                national: number | null;
+                                state: number | null;
+                            };
+                            ready_to_book: boolean;
                             topics: {
                                 [key: string]: number | null;
                             };
@@ -8611,6 +8643,59 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "practice.readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            percent: number | null;
+                            portions: {
+                                national: number | null;
+                                state: number | null;
+                            };
+                            line: number;
+                            booking: {
+                                ready: boolean;
+                                national: boolean;
+                                state: boolean;
+                                simulations: number;
+                                needed: number;
+                                url: string | null;
+                            };
+                            topics: {
+                                topic: string;
+                                portion: string;
+                                weight: number;
+                                percent: number | null;
+                                answers: number;
+                                shown: boolean;
+                                trend: number | null;
+                                weak: boolean;
+                            }[];
+                            gain: {
+                                topic: string;
+                                portion: string;
+                                points: number;
+                            } | null;
+                            computed_on: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "sessions.index": {

@@ -165,6 +165,7 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::post('attempts/{attempt}/submit', 'submit')->whereNumber('attempt')->middleware('throttle:30,1,practice-submit')->name('submit');
         Route::get('attempts/{attempt}/results', 'results')->whereNumber('attempt')->name('results');
     });
+    Route::get('readiness', [PracticePageController::class, 'readiness'])->name('practice.readiness');
     Route::put('practice/attempts/{attempt}/answers/{question}', [ApiPracticeController::class, 'answer'])->whereNumber(['attempt', 'question'])->middleware('throttle:240,1,practice-answer')->name('practice.answer');
     Route::post('practice/attempts/{attempt}/pause', [ApiPracticeController::class, 'pause'])->whereNumber('attempt')->middleware('throttle:60,1,practice-pause')->name('practice.pause');
     Route::post('practice/attempts/{attempt}/finish', [ApiPracticeController::class, 'finish'])->whereNumber('attempt')->middleware('throttle:30,1,practice-finish')->name('practice.finish');

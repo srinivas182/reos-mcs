@@ -89,7 +89,9 @@ describe('the Texas diagnostic (decision 4)', function () {
             ->where('results.weakest', ['finance', 'math'])
             ->where('results.topics.0.percent', 0)
             ->has('results.review', 50)
-            ->where('readiness.percent', 72));
+            // Readiness is now the pass chance of the weaker portion (A9.2): no finance or math right sinks the National portion.
+            ->where('readiness.percent', 16)
+            ->where('readiness.portions.national', 16));
         expect($attempt->refresh()->submitted_at?->equalTo($attempt->ends_at))->toBeTrue();
     });
 
@@ -142,7 +144,7 @@ describe('the study plan and Today, the A8.3 done-when', function () {
 
         // On Today (web screen 4 and the phone) …
         $this->get('/dashboard')->assertInertia(fn (Assert $page) => $page
-            ->where('study.readiness', 72)
+            ->where('study.readiness', 16)
             ->where('study.tasks.0.why', 'weak')
             ->where('study.continue.lesson_id', $this->first->id));
         // … and on the calendar: the next 14 days at 7:30 pm, 20 minutes each.

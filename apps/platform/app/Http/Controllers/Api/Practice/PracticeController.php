@@ -25,11 +25,13 @@ final class PracticeController extends Controller
     /**
      * Today for a candidate.
      *
-     * Readiness and days to the exam, the streak, Continue, and today's tasks
+     * Readiness (the lower portion's predicted pass chance, A9.2) and each
+     * portion's, whether booking is unlocked, days to the exam, the streak,
+     * Continue, and today's tasks
      * (never more than the minutes chosen, the diagnostic day aside), each
      * with why. Rebuilds the plan first if a day was missed.
      *
-     * @response array{data: array{readiness: int|null, topics: array<string, int|null>, weakest: list<string>, exam_on: string, days_to_exam: int, streak: int, minutes_per_day: int, reminder_time: string|null, diagnostic_done: bool, continue: array{lesson_id: int, title: string, course: string, position: int}|null, tasks: list<array{id: int, kind: 'diagnostic'|'lesson'|'practice'|'review', why: 'next'|'weak'|'review'|'catch_up'|'baseline', minutes: int, done: bool, day: string, lesson: array{id: int, title: string, course: string}|null, topic: string|null}>, behind_minutes: int, plan: array{id: int, reason: string, built_at: string|null}}}
+     * @response array{data: array{readiness: int|null, portions: array{national: int|null, state: int|null}, ready_to_book: bool, topics: array<string, int|null>, weakest: list<string>, exam_on: string, days_to_exam: int, streak: int, minutes_per_day: int, reminder_time: string|null, diagnostic_done: bool, continue: array{lesson_id: int, title: string, course: string, position: int}|null, tasks: list<array{id: int, kind: 'diagnostic'|'lesson'|'practice'|'review', why: 'next'|'weak'|'review'|'catch_up'|'baseline', minutes: int, done: bool, day: string, lesson: array{id: int, title: string, course: string}|null, topic: string|null}>, behind_minutes: int, plan: array{id: int, reason: string, built_at: string|null}}}
      */
     public function today(#[CurrentUser] User $user, PracticeAccess $access, CandidateToday $today): JsonResponse
     {

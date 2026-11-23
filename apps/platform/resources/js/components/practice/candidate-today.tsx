@@ -3,7 +3,7 @@ import { CalendarDays, Flame, Play } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { lesson as openLesson } from '@/routes/learn';
-import { index as practiceIndex } from '@/routes/practice';
+import { index as practiceIndex, readiness } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 import { ReadinessRing, TopicBars } from './readiness-ring';
 import { TaskRow } from './task-row';
@@ -26,7 +26,12 @@ export function CandidateToday({ study }: { study: StudyToday }) {
                 aria-label={t('practice.today.summary')}
                 className="grid gap-4 rounded-reos-lg border border-border bg-card p-5 md:grid-cols-[auto_1fr]"
             >
-                <ReadinessRing percent={study.readiness} />
+                <Link
+                    href={readiness()}
+                    className="justify-self-start rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                >
+                    <ReadinessRing percent={study.readiness} />
+                </Link>
                 <div className="grid content-center gap-3 sm:grid-cols-2">
                     <p className="flex items-center gap-2 text-body">
                         <CalendarDays
