@@ -1,6 +1,6 @@
 # ADR 0036: Hands-free mode, challenges and study groups
 
-- Status: Accepted (hands-free mode, A9.3a)
+- Status: Accepted (hands-free mode, A9.3a; challenges, A9.3b)
 - Date: 2026-11-23 (Sprint 9; spec in docs/sprints/S09-spec.md)
 
 ## Context
@@ -39,6 +39,23 @@ Sprint 9 decision 4 settled the approach:
    - the Android App Action: a `shortcuts.xml` "open app feature" capability ("voice quiz").
 
    All of them open `reos://practice/hands-free`.
+
+## Decision (challenges, A9.3b; screen 52)
+
+7. **A challenge is 10 questions picked once** from the sender's state bank and stored on `challenges`. Everyone who accepts gets their own test attempt (kind `challenge`) on exactly those questions.
+   - **One attempt per person per challenge:** a unique key on `test_attempts (challenge_id, user_id)` enforces it, and accepting again carries on.
+   - **The link** (`/challenges/{uuid}`) works for 7 days.
+   - **Exam mode:** results come at the end, so nobody can read answers off the board.
+8. **Points:** 10 for each right answer, less 5 for each hint. The drill's Hint, which strikes out one wrong option, is allowed in challenges, and only there does it cost points.
+9. **Privacy: first names only.** The board and the notifications show first names only.
+   - The board is visible only to people who sent or accepted the challenge. Someone who has only the link sees who sent it and how many questions.
+   - A signed-out visitor sees the sender's first name and a sign-in button, and returns to the challenge after signing in.
+10. **Results go to both:** when anyone finishes, everyone else who took part gets a `challenge` notification (Learning group) with the first name and points.
+11. **Challenge answers count towards readiness** like any test.
+
+**Consequences:**
+- The share link opens on the web. The app opens it from notifications and from `reos://challenges/{uuid}`.
+- Universal links (`https://reos.com/challenges/…` opening the app) come with the store builds and associated domains.
 
 ## Consequences
 

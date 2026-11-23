@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property string $mode exam or practice
  * @property string|null $state_code
  * @property string|null $topic
+ * @property int|null $challenge_id A challenge's attempt (A9.3b)
  * @property list<int> $question_ids
  * @property array<int, int>|null $answers {question id: choice}
  * @property list<int>|null $flags
@@ -35,6 +36,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $paused_at
  * @property array<string, array{correct: int, total: int, pass: int, passed: bool}>|null $by_portion
  * @property-read User $user
+ * @property-read Challenge|null $challenge
  */
 final class TestAttempt extends Model
 {
@@ -59,7 +61,10 @@ final class TestAttempt extends Model
     /** A fix plan's retest (A9.2b): new questions on one topic, why at the end. */
     public const RETEST = 'retest';
 
-    protected $fillable = ['user_id', 'kind', 'mode', 'state_code', 'topic', 'question_ids', 'answers', 'flags', 'hints', 'started_at', 'ends_at', 'submitted_at', 'correct', 'total', 'score', 'by_topic', 'sections', 'unscored', 'paused_at', 'by_portion'];
+    /** A challenge (A9.3b): the challenge's 10 questions, results at the end, hints cost points. */
+    public const CHALLENGE = 'challenge';
+
+    protected $fillable = ['user_id', 'kind', 'mode', 'state_code', 'topic', 'challenge_id', 'question_ids', 'answers', 'flags', 'hints', 'started_at', 'ends_at', 'submitted_at', 'correct', 'total', 'score', 'by_topic', 'sections', 'unscored', 'paused_at', 'by_portion'];
 
     protected function casts(): array
     {
@@ -68,6 +73,12 @@ final class TestAttempt extends Model
             'started_at' => 'datetime', 'ends_at' => 'datetime', 'submitted_at' => 'datetime',
             'correct' => 'integer', 'total' => 'integer', 'score' => 'integer',
         ];
+    }
+
+    /** @return BelongsTo<Challenge, $this> */
+    public function challenge(): BelongsTo
+    {
+        return $this->belongsTo(Challenge::class);
     }
 
     /** @return BelongsTo<User, $this> */

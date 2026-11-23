@@ -9,6 +9,7 @@ import { burstQueue } from '@/components/practice/flashcard-session';
 import { SaveFlashcard } from '@/components/practice/save-flashcard';
 import {
     attempt,
+    challengeBoard,
     coach,
     deck,
     drillAttempt,
@@ -23,6 +24,8 @@ import {
     weeklyReport,
 } from '@/components/practice/fixtures';
 import { i18n } from '@/lib/i18n';
+import ChallengePage from '@/pages/practice/challenge';
+import ChallengesPage from '@/pages/practice/challenges';
 import PracticeIndex from '@/pages/practice/index';
 import ProgressPage from '@/pages/practice/progress';
 import SharedReport from '@/pages/public/report';
@@ -40,6 +43,7 @@ const router = vi.hoisted(() => ({
     post: vi.fn(),
     put: vi.fn(),
     visit: vi.fn(),
+    reload: vi.fn(),
     on: vi.fn(() => () => {}),
 }));
 
@@ -819,5 +823,90 @@ describe('Ask why and the weekly report (screens 45 and 55, A9.2e)', () => {
         const row = screen.getByRole('row', { name: /Sofia Reyes/ });
         expect(within(row).getByText('70 / 140')).toBeInTheDocument();
         expect(within(row).getByText('68%')).toBeInTheDocument();
+    });
+});
+
+describe('challenges (screen 52, A9.3b)', () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+    const reply = (data: unknown, status = 200) =>
+        new Response(JSON.stringify({ data }), {
+            status,
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+        router.visit.mockClear();
+    });
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    it('challenges a friend and starts on the same 10 questions; the board shows first names by points', async () => {
+        const user = userEvent.setup();
+        fetchMock.mockResolvedValue(
+            reply(
+                {
+                    ...challengeBoard,
+                    attempt_id: 72,
+                    submitted: false,
+                    entries: [],
+                },
+                201,
+            ),
+        );
+        render(<ChallengesPage challenges={[challengeBoard]} />);
+
+        const board = screen.getByRole('list', { name: 'Board' });
+        expect(
+            within(board)
+                .getAllByRole('listitem')
+                .map((li) => li.textContent),
+        ).toEqual([
+            'Marco85 points · 9 of 10 right',
+            'Sofia (you)80 points · 8 of 10 right',
+            'LenaStill answering',
+        ]);
+        expect(screen.getByText(challengeBoard.link)).toBeInTheDocument();
+
+        await user.click(
+            screen.getByRole('button', { name: 'Challenge a friend' }),
+        );
+        expect(fetchMock.mock.calls[0]?.[0]).toBe('/practice/challenges');
+        expect(router.visit).toHaveBeenCalledWith('/practice/attempts/72');
+    });
+
+    it('accepts a challenge from its link', async () => {
+        const user = userEvent.setup();
+        fetchMock.mockResolvedValue(
+            reply({
+                ...challengeBoard,
+                mine: false,
+                attempt_id: 73,
+                submitted: false,
+            }),
+        );
+        render(
+            <ChallengePage
+                challenge={{
+                    ...challengeBoard,
+                    mine: false,
+                    attempt_id: null,
+                    submitted: false,
+                    entries: [],
+                }}
+            />,
+        );
+
+        expect(
+            screen.getByText(
+                'Sofia sent you 10 questions. Answer them and see who scores more.',
+            ),
+        ).toBeInTheDocument();
+        await user.click(screen.getByRole('button', { name: 'Accept' }));
+        expect(fetchMock.mock.calls[0]?.[0]).toBe(
+            `/practice/challenges/${challengeBoard.uuid}/accept`,
+        );
+        expect(router.visit).toHaveBeenCalledWith('/practice/attempts/73');
     });
 });

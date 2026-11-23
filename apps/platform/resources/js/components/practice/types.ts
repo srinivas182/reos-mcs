@@ -32,7 +32,8 @@ export type TestKind =
     | 'state'
     | 'simulation'
     | 'drill'
-    | 'retest';
+    | 'retest'
+    | 'challenge';
 
 export type Portion = 'national' | 'state';
 
@@ -41,6 +42,8 @@ export type Attempt = {
     kind: TestKind;
     mode: 'exam' | 'practice';
     topic: Topic | null;
+    /** A challenge's share id (A9.3b). */
+    challenge: string | null;
     total: number;
     answered: number;
     started_at: string;
@@ -84,6 +87,7 @@ export type Results = {
     id: number;
     kind: TestKind;
     mode: 'exam' | 'practice';
+    challenge: string | null;
     score: number;
     correct: number;
     total: number;
@@ -371,4 +375,26 @@ export type ReportShares = {
     school: boolean;
     can_share_school: boolean;
     link: string | null;
+};
+
+/** A challenge's board (screen 52, A9.3b): first names only. */
+export type ChallengeBoard = {
+    uuid: string;
+    link: string;
+    from: string;
+    mine: boolean;
+    questions: number;
+    expires_at: string;
+    expired: boolean;
+    attempt_id: number | null;
+    submitted: boolean;
+    entries: {
+        first_name: string;
+        correct: number;
+        total: number;
+        hints: number;
+        points: number;
+        mine: boolean;
+        finished: boolean;
+    }[];
 };

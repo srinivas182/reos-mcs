@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
+import { show as challengeShow } from '@/routes/challenges';
 import { PortionScores } from '@/components/practice/portion-scores';
 import { TopicBars } from '@/components/practice/readiness-ring';
 import { SaveFlashcard } from '@/components/practice/save-flashcard';
@@ -127,13 +128,24 @@ export default function ResultsPage({
                         </Link>
                     }
                     actions={
-                        <Button asChild>
-                            <Link href={studyPlan()}>
-                                {results.weakest.length > 0
-                                    ? t('practice.results.fixWeakest')
-                                    : t('practice.results.seePlan')}
-                            </Link>
-                        </Button>
+                        <>
+                            {results.challenge ? (
+                                <Button variant="outline" asChild>
+                                    <Link
+                                        href={challengeShow(results.challenge)}
+                                    >
+                                        {t('practice.challenges.board')}
+                                    </Link>
+                                </Button>
+                            ) : null}
+                            <Button asChild>
+                                <Link href={studyPlan()}>
+                                    {results.weakest.length > 0
+                                        ? t('practice.results.fixWeakest')
+                                        : t('practice.results.seePlan')}
+                                </Link>
+                            </Button>
+                        </>
                     }
                 />
 
