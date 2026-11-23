@@ -146,6 +146,11 @@ final readonly class DataExport
                 ->where('video_recordings.status', '!=', 'deleted')
                 ->get(['video_sessions.title', 'video_recordings.status', 'video_recordings.started_at', 'video_recordings.stopped_at', 'video_recordings.expires_at'])
                 ->map(static fn ($r): array => (array) $r)->all(),
+            // AI avatar consent per school (A7.1b): its status and dates (the agreement itself is under consents).
+            'avatar_consents' => DB::table('avatar_consents')->join('organisations', 'organisations.id', '=', 'avatar_consents.organisation_id')
+                ->where('avatar_consents.user_id', $user->id)
+                ->get(['organisations.name as school', 'avatar_consents.status', 'avatar_consents.version', 'avatar_consents.given_at', 'avatar_consents.withdrawn_at', 'avatar_consents.lessons_due_by'])
+                ->map(static fn ($r): array => (array) $r)->all(),
             // The notification centre (B6.2): the inbox, choices and phones with push (never the token).
             'notifications' => [
                 'inbox' => $user->notifications()->latest()->get(['data', 'read_at', 'created_at'])->map(static fn ($n): array => [

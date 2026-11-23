@@ -47,6 +47,7 @@ import { edit as profile } from '@/routes/profile';
 import { index as states } from '@/routes/states';
 import { index as tenantsIndex } from '@/routes/tenants';
 import { index as schoolApprovals } from '@/routes/school/approvals';
+import { index as schoolInstructors } from '@/routes/school/instructors';
 import type { RoleName } from '@/types/auth';
 
 /** Sidebar labels that exist in the translations (pages that are built). */
@@ -78,7 +79,8 @@ export type NavLabel =
     | 'planAndBilling'
     | 'connections'
     | 'liveClasses'
-    | 'stateApprovals';
+    | 'stateApprovals'
+    | 'instructors';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -226,7 +228,13 @@ export function roleNavigation(
                 '/school/approvals',
             ),
             planned('ceReporting'),
-            planned('instructors'),
+            // Instructors and avatar consent (A7.1b, screen 52).
+            item(
+                'instructors',
+                GraduationCap,
+                schoolInstructors(),
+                '/school/instructors',
+            ),
             planned('students'),
             item('salesAndPayouts', CreditCard, sales(), '/organisation/sales'),
             planned('schoolSettings'),

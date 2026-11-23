@@ -529,6 +529,25 @@ function adminActions(): array
 
             return auditCase($paul, 'PUT', "/school/approvals/{$approval->id}/status", ['status' => 'withdrawn'], tenant: $school->id);
         },
+        // School: instructors (A7.1b, screen 52).
+        'school.instructors.courses' => function () {
+            [$school, $paul, $course] = auditSchoolCourse();
+            $rachel = User::factory()->withRole(Role::Instructor, $school)->create();
+
+            return auditCase($paul, 'PUT', "/school/instructors/{$rachel->id}/courses", ['courses' => [$course->id]], tenant: $school->id);
+        },
+        'school.instructors.revoke' => function () {
+            [$school, $paul] = auditSchoolCourse();
+            $rachel = User::factory()->withRole(Role::Instructor, $school)->create();
+
+            return auditCase($paul, 'DELETE', "/school/instructors/{$rachel->id}", tenant: $school->id);
+        },
+        'school.instructors.restore' => function () {
+            [$school, $paul] = auditSchoolCourse();
+            $rachel = User::factory()->create();
+
+            return auditCase($paul, 'POST', "/school/instructors/{$rachel->id}/restore", tenant: $school->id);
+        },
         'plans.splits' => function () {
             $ops = auditOps();
             $plan = auditPlan($ops);

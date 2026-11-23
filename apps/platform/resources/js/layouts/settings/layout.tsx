@@ -1,10 +1,13 @@
 import { edit as editPrivacy } from '@/routes/consents';
 import { edit as editNotifications } from '@/routes/notification-settings';
+import { usePage } from '@inertiajs/react';
 import type { PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
 import { PageTabs } from '@/components/page-tabs';
+import { activeMembership } from '@/lib/roles';
 import { edit as editAppearance } from '@/routes/appearance';
+import { edit as editAvatar } from '@/routes/avatar';
 import { index as billing } from '@/routes/billing';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
@@ -16,6 +19,9 @@ import { edit as editSecurity } from '@/routes/security';
  */
 export default function SettingsLayout({ children }: PropsWithChildren) {
     const { t } = useTranslation();
+    const { auth } = usePage().props;
+    // Instructors at a school give or withdraw avatar consent here (A7.1b).
+    const instructor = activeMembership(auth.roles)?.role === 'instructor';
 
     return (
         <div className="space-y-6 px-4 py-6 md:px-8">
@@ -34,6 +40,9 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                         title: t('nav.notifications'),
                         href: editNotifications(),
                     },
+                    ...(instructor
+                        ? [{ title: t('nav.avatar'), href: editAvatar() }]
+                        : []),
                     { title: t('nav.appearance'), href: editAppearance() },
                     { title: t('nav.planAndBilling'), href: billing() },
                 ]}

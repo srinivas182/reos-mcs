@@ -56,7 +56,9 @@
     "announcements": "Announcements",
     "notifications": "Notifications",
     "liveClasses": "Live classes",
-    "stateApprovals": "State approvals"
+    "stateApprovals": "State approvals",
+    "instructors": "Instructors",
+    "avatar": "AI avatar"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2005,7 +2007,13 @@
         "course.approval_changed": "Course approval changed",
         "course.approval_renewed": "Course approval renewed",
         "course.approval_withdrawn": "Course approval withdrawn",
-        "course.approval_expired": "Course approval expired"
+        "course.approval_expired": "Course approval expired",
+        "avatar.consent_given": "Avatar consent given",
+        "avatar.consent_withdrawn": "Avatar consent withdrawn",
+        "avatar.consent_ended": "Avatar use ended",
+        "instructor.courses_changed": "Instructor courses changed",
+        "instructor.revoked": "Instructor revoked",
+        "instructor.restored": "Instructor restored"
       }
     }
   },
@@ -4278,6 +4286,10 @@
       "recruiting": {
         "title": "Open to recruiting",
         "body": "Brokerages can see that you're open to joining and invite you."
+      },
+      "avatar_likeness": {
+        "title": "AI avatar of you",
+        "body": "An AI avatar made from your sample, used only by your school and only for lessons you approve."
       }
     },
     "methods": {
@@ -4535,7 +4547,8 @@
       "announcement": "Announcements",
       "session_starting": "Session starting",
       "session_booked": "Sessions booked or cancelled",
-      "approval_expiring": "Course approvals expiring"
+      "approval_expiring": "Course approvals expiring",
+      "avatar_consent_ended": "Avatar consent ended"
     },
     "digest": {
       "subject": {
@@ -4891,6 +4904,85 @@
       "expiredBody": "Approval {{number}} for {{course}} in {{state}} expired on {{date}}. The course stays visible but can't be called CE or qualifying, or sold for credit, in {{state}} until it's renewed.",
       "action": "Open state approvals",
       "next": "You'll get these reminders 60 and 30 days before each approval expires."
+    }
+  },
+  "instructors": {
+    "title": "Instructors",
+    "description": "Manage instructors and avatar consent.",
+    "invite": "Invite instructors",
+    "columns": {
+      "instructor": "Instructor",
+      "approvals": "Approvals",
+      "courses": "Courses",
+      "avatar": "Avatar consent",
+      "rating": "Rating",
+      "price": "Price",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "approvals_one": "{{count}} in force",
+    "approvals_other": "{{count}} in force",
+    "noCourses": "No courses yet",
+    "noRating": "No reviews yet",
+    "noPrice": "Not set",
+    "statuses": {
+      "active": "Active",
+      "invited": "Invited"
+    },
+    "avatar": {
+      "given": "Given {{date}}",
+      "none": "Not given",
+      "withdrawn": "Withdrawn: stop using by {{date}}",
+      "ended": "Ended: stop using by {{date}}"
+    },
+    "edit": "Edit",
+    "revoke": "Revoke",
+    "revoked": "{{name}} is no longer an instructor here.",
+    "saved": "Courses saved.",
+    "coursesTitle": "Courses {{name}} teaches",
+    "coursesIntro": "Instructors teach and edit only the courses picked here.",
+    "save": "Save courses",
+    "cancel": "Cancel",
+    "emptyTitle": "No instructors yet",
+    "empty": "Invite your instructors. They teach your courses, host live classes and, if they agree, lend their likeness to AI avatar lessons.",
+    "errors": {
+      "notInstructor": "That person isn't an instructor at your school."
+    }
+  },
+  "avatarConsent": {
+    "title": "AI avatar",
+    "description": "Your consent for an AI avatar of you at {{school}}.",
+    "templateTitle": "What you agree to (version {{version}})",
+    "terms": {
+      "school": "Your avatar is used only by {{school}}, never by REOS or another school.",
+      "approve": "It appears only in lessons you have approved line by line.",
+      "vendor": "It is made by the school's AI video provider (HeyGen or Synthesia) from your sample, and deleted there when consent ends.",
+      "withdraw": "You can withdraw at any time. Your sample is deleted at once, and the school has 30 days to unpublish or re-record lessons that use your avatar.",
+      "pay": "Any payment for your likeness is agreed with your school, not set by REOS."
+    },
+    "sampleTitle": "Your 2-minute sample",
+    "sampleHint": "Record about 2 minutes looking at the camera, in good light, speaking naturally. MP4, MOV or WebM, up to 500 MB.",
+    "sample": "Sample video",
+    "agree": "I agree to an AI avatar of me on these terms",
+    "give": "Give consent",
+    "replace": "Replace sample",
+    "withdraw": "Withdraw consent",
+    "given": "Thank you. Your avatar consent is recorded.",
+    "withdrawn": "Avatar consent withdrawn. Your sample is deleted.",
+    "statusGiven": "You gave consent on {{date}} (version {{version}}).",
+    "statusOld": "The terms changed since you agreed. Agree again to keep your avatar in use.",
+    "statusWithdrawn": "You withdrew consent on {{date}}. Lessons using your avatar come down by {{due}}.",
+    "statusEnded": "Your school stopped using your avatar on {{date}}.",
+    "statusNone": "No avatar of you is made or used until you agree here.",
+    "mail": {
+      "withdrawnSubject": "{{name}} withdrew avatar consent",
+      "endedSubject": "{{name}}'s avatar can no longer be used",
+      "body": "Unpublish or re-record lessons that use {{name}}'s avatar by {{date}}.",
+      "action": "Open instructors"
+    },
+    "errors": {
+      "notInstructor": "Only instructors at a school can give avatar consent.",
+      "notGiven": "There is no avatar consent to withdraw."
     }
   }
 }

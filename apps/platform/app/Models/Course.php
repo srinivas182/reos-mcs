@@ -12,6 +12,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -46,6 +47,7 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Lesson> $lessons
  * @property-read Collection<int, CourseApproval> $approvals
  * @property-read Organisation|null $owner
+ * @property-read Collection<int, User> $instructors
  */
 final class Course extends Model
 {
@@ -86,6 +88,16 @@ final class Course extends Model
     public function approvals(): HasMany
     {
         return $this->hasMany(CourseApproval::class)->orderBy('state_code')->orderBy('delivery');
+    }
+
+    /**
+     * Instructors who teach and edit the course (A7.1b, screen 52).
+     *
+     * @return BelongsToMany<User, $this>
+     */
+    public function instructors(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'course_instructors')->withTimestamps();
     }
 
     /** @return BelongsTo<Organisation, $this> */

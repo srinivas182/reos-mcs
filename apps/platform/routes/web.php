@@ -36,7 +36,9 @@ use App\Http\Controllers\Payouts\EarningsController;
 use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
+use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
 use App\Http\Controllers\Sessions\SessionsController;
+use App\Http\Controllers\Settings\AvatarController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
@@ -187,6 +189,15 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.m
         Route::put('{approval}/status', [SchoolApprovalsController::class, 'status'])->whereNumber('approval')->name('status');
     });
 });
+// Instructors (A7.1b, school admin screen 52): courses they teach, avatar consent, Revoke with Undo.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage', 'throttle:60,1,instructors'])->prefix('school/instructors')->name('school.instructors.')->group(function () {
+    Route::get('/', [SchoolInstructorsController::class, 'index'])->withoutMiddleware('throttle:60,1,instructors')->name('index');
+    Route::put('{instructor}/courses', [SchoolInstructorsController::class, 'courses'])->whereNumber('instructor')->name('courses');
+    Route::delete('{instructor}', [SchoolInstructorsController::class, 'revoke'])->whereNumber('instructor')->name('revoke');
+    Route::post('{instructor}/restore', [SchoolInstructorsController::class, 'restore'])->whereNumber('instructor')->name('restore');
+});
+// The instructor's avatar sample, through a signed link (A7.1b).
+Route::get('avatar-samples/{consent}', [AvatarController::class, 'sample'])->whereUuid('consent')->middleware(['signed', 'throttle:60,1,avatar-sample'])->name('avatar.sample');
 // Earnings (B5.2b): instructors and mentors.
 // Messages (B6.1): behind the `messages` flag (screen 70) while it rolls out.
 Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix('messages')->name('messages.')->group(function () {

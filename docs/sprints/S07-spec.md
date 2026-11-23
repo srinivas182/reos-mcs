@@ -97,6 +97,11 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
   - **Owners:** courses have an owner school and a delivery. Texas Realty School owns the demo's Principles of Real Estate II and Contracts for new agents.
   - **Screen 50** offers Add approval, Renew, Edit, Add state, and Withdraw with Undo. **Screen 49** has the approvals card.
   - Instructors and avatar consent follow in A7.1b.
+- **As built, A7.1b** (ADR 0025 items 8–10):
+  - **Screen 52, Instructors:** courses taught, approvals in force, avatar consent, rating, price, status and pending invitations, with Invite, Edit (the courses they teach) and Revoke with Undo.
+  - **Settings › AI avatar** for instructors: the terms with their version; agree with a 2-minute sample; withdraw.
+  - **When consent ends:** withdrawal (here or from the privacy history) deletes the sample, audits it and tells the school's admins they have 30 days. Revoke keeps the sample for a day so Undo works.
+  - **Privacy:** samples are deleted with the account, and avatar consents are in "Download my data".
 
 ### A7.2 Course builder (Team A)
 

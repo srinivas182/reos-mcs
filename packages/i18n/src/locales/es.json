@@ -56,7 +56,9 @@
     "announcements": "Anuncios",
     "notifications": "Notificaciones",
     "liveClasses": "Clases en vivo",
-    "stateApprovals": "Aprobaciones estatales"
+    "stateApprovals": "Aprobaciones estatales",
+    "instructors": "Instructores",
+    "avatar": "Avatar de IA"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2005,7 +2007,13 @@
         "course.approval_changed": "Aprobación de curso modificada",
         "course.approval_renewed": "Aprobación de curso renovada",
         "course.approval_withdrawn": "Aprobación de curso retirada",
-        "course.approval_expired": "Aprobación de curso vencida"
+        "course.approval_expired": "Aprobación de curso vencida",
+        "avatar.consent_given": "Consentimiento de avatar otorgado",
+        "avatar.consent_withdrawn": "Consentimiento de avatar retirado",
+        "avatar.consent_ended": "Uso del avatar terminado",
+        "instructor.courses_changed": "Cursos del instructor modificados",
+        "instructor.revoked": "Instructor revocado",
+        "instructor.restored": "Instructor restablecido"
       }
     }
   },
@@ -4278,6 +4286,10 @@
       "recruiting": {
         "title": "Disponible para reclutamiento",
         "body": "Las agencias pueden ver que usted está disponible para unirse e invitarle."
+      },
+      "avatar_likeness": {
+        "title": "Avatar de IA con su imagen",
+        "body": "Un avatar de IA hecho con su muestra, que solo usa su escuela y solo para lecciones que usted aprueba."
       }
     },
     "methods": {
@@ -4535,7 +4547,8 @@
       "announcement": "Anuncios",
       "session_starting": "Sesión por comenzar",
       "session_booked": "Sesiones programadas o canceladas",
-      "approval_expiring": "Aprobaciones de cursos por vencer"
+      "approval_expiring": "Aprobaciones de cursos por vencer",
+      "avatar_consent_ended": "Consentimiento de avatar terminado"
     },
     "digest": {
       "subject": {
@@ -4891,6 +4904,85 @@
       "expiredBody": "La aprobación {{number}} de {{course}} en {{state}} venció el {{date}}. El curso sigue visible, pero no puede llamarse de educación continua o de calificación, ni venderse con créditos, en {{state}} hasta que se renueve.",
       "action": "Abrir aprobaciones estatales",
       "next": "Recibirá estos recordatorios 60 y 30 días antes de que venza cada aprobación."
+    }
+  },
+  "instructors": {
+    "title": "Instructores",
+    "description": "Administre a los instructores y el consentimiento de avatar.",
+    "invite": "Invitar instructores",
+    "columns": {
+      "instructor": "Instructor",
+      "approvals": "Aprobaciones",
+      "courses": "Cursos",
+      "avatar": "Consentimiento de avatar",
+      "rating": "Calificación",
+      "price": "Precio",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "approvals_one": "{{count}} vigente",
+    "approvals_other": "{{count}} vigentes",
+    "noCourses": "Aún sin cursos",
+    "noRating": "Aún sin reseñas",
+    "noPrice": "Sin definir",
+    "statuses": {
+      "active": "Activo",
+      "invited": "Invitado"
+    },
+    "avatar": {
+      "given": "Otorgado el {{date}}",
+      "none": "No otorgado",
+      "withdrawn": "Retirado: dejar de usar antes del {{date}}",
+      "ended": "Terminado: dejar de usar antes del {{date}}"
+    },
+    "edit": "Editar",
+    "revoke": "Revocar",
+    "revoked": "{{name}} ya no es instructor aquí.",
+    "saved": "Cursos guardados.",
+    "coursesTitle": "Cursos que imparte {{name}}",
+    "coursesIntro": "Los instructores imparten y editan solo los cursos elegidos aquí.",
+    "save": "Guardar cursos",
+    "cancel": "Cancelar",
+    "emptyTitle": "Aún no hay instructores",
+    "empty": "Invite a sus instructores. Imparten sus cursos, dirigen clases en vivo y, si lo aceptan, prestan su imagen para lecciones con avatar de IA.",
+    "errors": {
+      "notInstructor": "Esa persona no es instructor en su escuela."
+    }
+  },
+  "avatarConsent": {
+    "title": "Avatar de IA",
+    "description": "Su consentimiento para un avatar de IA con su imagen en {{school}}.",
+    "templateTitle": "Lo que usted acepta (versión {{version}})",
+    "terms": {
+      "school": "Su avatar solo lo usa {{school}}, nunca REOS ni otra escuela.",
+      "approve": "Solo aparece en lecciones que usted aprobó línea por línea.",
+      "vendor": "Lo crea el proveedor de video con IA de la escuela (HeyGen o Synthesia) a partir de su muestra, y se elimina allí cuando termina el consentimiento.",
+      "withdraw": "Puede retirarlo en cualquier momento. Su muestra se elimina de inmediato y la escuela tiene 30 días para despublicar o volver a grabar las lecciones que usan su avatar.",
+      "pay": "Cualquier pago por el uso de su imagen se acuerda con su escuela; REOS no lo fija."
+    },
+    "sampleTitle": "Su muestra de 2 minutos",
+    "sampleHint": "Grabe unos 2 minutos mirando a la cámara, con buena luz y hablando con naturalidad. MP4, MOV o WebM, hasta 500 MB.",
+    "sample": "Video de muestra",
+    "agree": "Acepto un avatar de IA con mi imagen en estos términos",
+    "give": "Otorgar consentimiento",
+    "replace": "Reemplazar muestra",
+    "withdraw": "Retirar consentimiento",
+    "given": "Gracias. Su consentimiento de avatar quedó registrado.",
+    "withdrawn": "Consentimiento de avatar retirado. Su muestra fue eliminada.",
+    "statusGiven": "Otorgó su consentimiento el {{date}} (versión {{version}}).",
+    "statusOld": "Los términos cambiaron desde que aceptó. Acepte de nuevo para que su avatar siga en uso.",
+    "statusWithdrawn": "Retiró su consentimiento el {{date}}. Las lecciones con su avatar se retiran antes del {{due}}.",
+    "statusEnded": "Su escuela dejó de usar su avatar el {{date}}.",
+    "statusNone": "No se crea ni se usa ningún avatar con su imagen hasta que acepte aquí.",
+    "mail": {
+      "withdrawnSubject": "{{name}} retiró su consentimiento de avatar",
+      "endedSubject": "El avatar de {{name}} ya no se puede usar",
+      "body": "Despublique o vuelva a grabar las lecciones que usan el avatar de {{name}} antes del {{date}}.",
+      "action": "Abrir instructores"
+    },
+    "errors": {
+      "notInstructor": "Solo los instructores de una escuela pueden otorgar el consentimiento de avatar.",
+      "notGiven": "No hay consentimiento de avatar que retirar."
     }
   }
 }
