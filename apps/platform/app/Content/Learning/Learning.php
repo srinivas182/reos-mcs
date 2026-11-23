@@ -55,7 +55,7 @@ final readonly class Learning
         return array_values(Course::query()
             ->where('status', CourseStatus::Live)
             ->forStates([$this->state($user)])
-            ->with(['approvals', 'lessons' => static fn ($q) => $q->select(['id', 'course_id', 'title', 'minutes', 'language', 'position'])])
+            ->with(['approvals', 'lessons' => static fn ($q) => $q->learnable()->select(['id', 'course_id', 'title', 'minutes', 'language', 'position'])])
             ->orderBy('title')
             ->get()
             ->map(static function (Course $course) use ($features, $state): array {
@@ -91,6 +91,7 @@ final readonly class Learning
     public function find(User $user, int $id): ?Lesson
     {
         return Lesson::query()
+            ->learnable()
             ->whereKey($id)
             ->whereHas('course', fn (Builder $course) => $course->where('status', CourseStatus::Live)->whereNull('deleted_at')->forStates([$this->state($user)]))
             ->first();
@@ -99,7 +100,7 @@ final readonly class Learning
     /** The course's first lesson is free; the rest need the course's feature in the person's state. */
     public function canOpen(User $user, Lesson $lesson): bool
     {
-        $first = Lesson::query()->where('course_id', $lesson->course_id)->orderBy('position')->orderBy('id')->value('id');
+        $first = Lesson::query()->learnable()->where('course_id', $lesson->course_id)->orderBy('position')->orderBy('id')->value('id');
 
         return $first === $lesson->id || $this->entitlements->has($user, Entitlements::courseFeature($lesson->course->type), $this->state($user));
     }
@@ -117,7 +118,7 @@ final readonly class Learning
         $video = $media->first(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Video);
         $captions = $media->first(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Captions);
         $vtt = $captions !== null ? $captions->transcript : $video?->transcript;
-        $siblings = array_values(array_map(static fn (mixed $id): int => is_numeric($id) ? (int) $id : 0, Lesson::query()->where('course_id', $lesson->course_id)->orderBy('position')->orderBy('id')->pluck('id')->all()));
+        $siblings = array_values(array_map(static fn (mixed $id): int => is_numeric($id) ? (int) $id : 0, Lesson::query()->learnable()->where('course_id', $lesson->course_id)->orderBy('position')->orderBy('id')->pluck('id')->all()));
         $at = array_search($lesson->id, $siblings, true);
 
         return [

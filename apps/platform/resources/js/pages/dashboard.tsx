@@ -7,6 +7,8 @@ import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
 import { ApprovalsCard } from '@/components/approvals/approvals-card';
 import type { ApprovalSummary } from '@/components/approvals/types';
+import { TeachingCard } from '@/components/builder/teaching-card';
+import type { Teaching } from '@/components/builder/teaching-card';
 import { SessionCard } from '@/components/sessions/session-card';
 import { TodayCard } from '@/components/today-card';
 import { activeMembership, roleName } from '@/lib/roles';
@@ -24,10 +26,12 @@ export default function Dashboard({
     today = null,
     ce = null,
     approvals = null,
+    teaching = null,
 }: {
     today?: CalendarDay | null;
     ce?: CeRequirement | null;
     approvals?: ApprovalSummary | null;
+    teaching?: Teaching | null;
 }) {
     const { t } = useTranslation();
     const { auth, sessions } = usePage().props;
@@ -57,6 +61,7 @@ export default function Dashboard({
                     </div>
                 ) : null}
                 {approvals ? <ApprovalsCard summary={approvals} /> : null}
+                {teaching ? <TeachingCard teaching={teaching} /> : null}
                 {today ? <TodayCard today={today} /> : null}
                 {sessions ? (
                     <section className="space-y-3">

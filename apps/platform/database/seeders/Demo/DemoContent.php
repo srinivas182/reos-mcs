@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Demo;
 
+use App\Content\Builder\LessonReview;
+use App\Content\Builder\SourceRole;
 use App\Content\CourseStatus;
 use App\Content\CourseType;
 use App\Content\Delivery;
@@ -12,6 +14,7 @@ use App\Content\MediaKind;
 use App\Content\MediaStatus;
 use App\Models\Course;
 use App\Models\CourseApproval;
+use App\Models\CourseModule;
 use App\Models\Lesson;
 use App\Models\Organisation;
 use App\Models\User;
@@ -53,6 +56,7 @@ final readonly class DemoContent
             "# Appointments\nWith written consent, the broker may appoint a different license holder to each party. "
             .'Appointed license holders may give opinions and advice to the party they were appointed to.');
 
+        $this->builderModule($principles);
         $contracts = $this->course('contracts-for-new-agents', 'Contracts for new agents', CourseType::Ce, 4, CourseStatus::Draft, is_int($school) ? $school : null);
         // Expires in 25 days: on the school dashboard's "Needs attention".
         $this->approval($contracts, Delivery::SelfPaced, 'TREC CE 30117', CourseApproval::APPROVED, '2024-12-15', now()->addDays(25)->toDateString());
@@ -89,6 +93,30 @@ final readonly class DemoContent
             'published_at' => $status === CourseStatus::Live ? now() : null,
             'deleted_at' => null,
         ]);
+    }
+
+    /**
+     * The course builder (A7.2, screen 43): the agency lessons sit in a module
+     * with its source material (a recorded class's captions, already read)
+     * and one hand-written lesson still in draft.
+     */
+    private function builderModule(Course $course): void
+    {
+        $module = CourseModule::query()->firstOrCreate(['course_id' => $course->id, 'title' => 'Agency in Texas'], ['position' => 1]);
+        Lesson::query()->where('course_id', $course->id)->whereNull('course_module_id')->update(['course_module_id' => $module->id]);
+
+        $path = 'tenants/'.($course->organisation_id ?? 0).'/courses/'.$course->id.'/sources/agency-class-2027-02-10.vtt';
+        LessonFiles::disk()->put($path, self::CAPTIONS);
+        $module->sources()->updateOrCreate(['original_name' => 'Agency class, Feb 10 (captions).vtt'], [
+            'role' => SourceRole::Captions, 'kind' => MediaKind::Captions, 'path' => $path, 'mime' => 'text/vtt', 'size' => strlen(self::CAPTIONS),
+            'status' => MediaStatus::Ready, 'scanned_at' => now(), 'transcript' => self::CAPTIONS, 'position' => 1, 'words' => 52,
+            'sections' => [['page' => null, 'text' => 'Welcome back. Today we talk about agency disclosure in Texas. Every license holder must explain who they represent. So before you talk about price or terms, hand them the IABS form. That is the Information About Brokerage Services notice.']],
+        ]);
+
+        $draft = Lesson::query()->firstOrCreate(['course_id' => $course->id, 'title' => '6.4 The IABS form, step by step'], [
+            'course_module_id' => $module->id, 'language' => 'en', 'position' => 4, 'review_status' => LessonReview::Draft,
+        ]);
+        $draft->forceFill(['course_module_id' => $module->id, 'review_status' => LessonReview::Draft])->save();
     }
 
     private function approval(Course $course, Delivery $delivery, ?string $number, string $status, ?string $approvedOn, ?string $expiresOn): void

@@ -8,6 +8,7 @@ import {
     Flag,
     GraduationCap,
     House,
+    Layers,
     LayoutGrid,
     Map as MapIcon,
     Megaphone,
@@ -46,6 +47,7 @@ import { index as people } from '@/routes/people';
 import { edit as profile } from '@/routes/profile';
 import { index as states } from '@/routes/states';
 import { index as tenantsIndex } from '@/routes/tenants';
+import { index as builderIndex } from '@/routes/builder';
 import { index as schoolApprovals } from '@/routes/school/approvals';
 import { index as schoolInstructors } from '@/routes/school/instructors';
 import type { RoleName } from '@/types/auth';
@@ -80,7 +82,9 @@ export type NavLabel =
     | 'connections'
     | 'liveClasses'
     | 'stateApprovals'
-    | 'instructors';
+    | 'instructors'
+    | 'courseBuilder'
+    | 'courseCatalogue';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -204,7 +208,8 @@ export function roleNavigation(
         instructor: [
             home,
             messages,
-            planned('courseBuilder'),
+            // The course builder (A7.2, screen 43).
+            item('courseBuilder', Layers, builderIndex(), '/course-builder'),
             planned('aiLessons'),
             planned('questionBank'),
             // Sessions and live classes (B6.3, flag `video_rooms`); the CE report follows.
@@ -219,7 +224,12 @@ export function roleNavigation(
             home,
             messages,
             announcements,
-            planned('courseCatalogue'),
+            item(
+                'courseCatalogue',
+                BookOpen,
+                builderIndex(),
+                '/course-builder',
+            ),
             // Course catalogue and state approvals (A7.1, screen 50).
             item(
                 'stateApprovals',

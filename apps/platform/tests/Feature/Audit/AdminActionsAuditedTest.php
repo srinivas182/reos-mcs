@@ -14,6 +14,7 @@ use App\Features\Rollouts;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Models\AuditEvent;
 use App\Models\Course;
+use App\Models\CourseModule;
 use App\Models\GatewaySetting;
 use App\Models\Invitation;
 use App\Models\Lesson;
@@ -85,6 +86,18 @@ function auditSchoolCourse(): array
     $course = Course::query()->create(['organisation_id' => $school->id, 'title' => 'Principles of Real Estate II', 'slug' => 'principles-ii', 'type' => 'qualifying', 'states' => ['TX'], 'hours' => 30]);
 
     return [$school, $paul, $course];
+}
+
+/** @return array{0: Organisation, 1: User, 2: Course, 3: User, 4: CourseModule, 5: Lesson} */
+function auditBuilder(): array
+{
+    [$school, $paul, $course] = auditSchoolCourse();
+    $rachel = User::factory()->withRole(Role::Instructor, $school)->create(['name' => 'Dr. Rachel Hughes']);
+    $course->instructors()->attach($rachel->id);
+    $module = CourseModule::query()->create(['course_id' => $course->id, 'title' => 'Agency', 'position' => 1]);
+    $lesson = Lesson::query()->create(['course_id' => $course->id, 'course_module_id' => $module->id, 'title' => 'Who you represent', 'position' => 1, 'body' => 'Explain who you represent.', 'review_status' => 'draft']);
+
+    return [$school, $paul, $course, $rachel, $module, $lesson];
 }
 
 /** @return array{0: Organisation, 1: User} */
@@ -547,6 +560,96 @@ function adminActions(): array
             $rachel = User::factory()->create();
 
             return auditCase($paul, 'POST', "/school/instructors/{$rachel->id}/restore", tenant: $school->id);
+        },
+        // The course builder (A7.2, screen 43): an instructor who teaches the course.
+        'builder.store' => function () {
+            [$school, , , $rachel] = auditBuilder();
+
+            return auditCase($rachel, 'POST', '/course-builder', ['title' => 'Legal Update I', 'type' => 'ce', 'delivery' => 'self_paced'], tenant: $school->id);
+        },
+        'builder.status' => function () {
+            [$school, $paul, $course] = auditBuilder();
+            $course->approvals()->create(['state_code' => 'TX', 'delivery' => 'self_paced', 'number' => 'TREC 0451', 'status' => 'approved']);
+
+            return auditCase($paul, 'PUT', "/course-builder/{$course->id}/status", ['status' => 'live'], tenant: $school->id);
+        },
+        'builder.settings' => function () {
+            [$school, , $course, $rachel] = auditBuilder();
+
+            return auditCase($rachel, 'PUT', "/course-builder/{$course->id}/settings", ['language' => 'both', 'lesson_minutes' => 10, 'presenter' => 'stock'], tenant: $school->id);
+        },
+        'builder.seat-time' => function () {
+            [$school, , $course, $rachel] = auditBuilder();
+
+            return auditCase($rachel, 'POST', "/course-builder/{$course->id}/seat-time", ['hours' => 32, 'reason' => 'New contract forms.'], tenant: $school->id);
+        },
+        'builder.modules.store' => function () {
+            [, , $course, $rachel] = auditBuilder();
+
+            return auditCase($rachel, 'POST', "/course-builder/{$course->id}/modules", ['title' => 'Agency']);
+        },
+        'builder.modules.update' => function () {
+            [, , , $rachel, $module] = auditBuilder();
+
+            return auditCase($rachel, 'PATCH', "/course-builder/modules/{$module->id}", ['title' => 'Agency in Texas']);
+        },
+        'builder.modules.destroy' => function () {
+            [, , , $rachel, $module] = auditBuilder();
+
+            return auditCase($rachel, 'DELETE', "/course-builder/modules/{$module->id}");
+        },
+        'builder.sources.store' => function () {
+            Storage::fake(config()->string('reos.content.disk'));
+            [$school, , , $rachel, $module] = auditBuilder();
+
+            return auditCase($rachel, 'POST', "/course-builder/modules/{$module->id}/sources", ['role' => 'script', 'name' => 'script.pdf', 'size' => 2048], tenant: $school->id);
+        },
+        'builder.sources.complete' => function () {
+            [$school, , , $rachel, $module] = auditBuilder();
+            Storage::fake(config()->string('reos.content.disk'));
+            $source = $module->sources()->create(['role' => 'captions', 'kind' => 'captions', 'path' => "tenants/{$school->id}/courses/x.vtt", 'original_name' => 'x.vtt', 'mime' => 'text/vtt', 'size' => 8, 'status' => 'awaiting_upload']);
+            LessonFiles::disk()->put($source->path, 'WEBVTT\n');
+
+            return auditCase($rachel, 'POST', "/course-builder/sources/{$source->id}/complete", tenant: $school->id);
+        },
+        'builder.sources.destroy' => function () {
+            Storage::fake(config()->string('reos.content.disk'));
+            [$school, , , $rachel, $module] = auditBuilder();
+            $source = $module->sources()->create(['role' => 'script', 'kind' => 'document', 'path' => "tenants/{$school->id}/courses/x.pdf", 'original_name' => 'x.pdf', 'mime' => 'application/pdf', 'size' => 8, 'status' => 'ready']);
+
+            return auditCase($rachel, 'DELETE', "/course-builder/sources/{$source->id}", tenant: $school->id);
+        },
+        'builder.lessons.store' => function () {
+            [, , , $rachel, $module] = auditBuilder();
+
+            return auditCase($rachel, 'POST', "/course-builder/modules/{$module->id}/lessons", ['title' => 'Who you represent']);
+        },
+        'builder.lessons.update' => function () {
+            [, , , $rachel, , $lesson] = auditBuilder();
+
+            return auditCase($rachel, 'PATCH', "/course-builder/lessons/{$lesson->id}", ['title' => 'Who you represent in Texas']);
+        },
+        'builder.lessons.move' => function () {
+            [$school, , $course, $rachel, $module, $lesson] = auditBuilder();
+            Lesson::query()->create(['course_id' => $course->id, 'course_module_id' => $module->id, 'title' => 'Second', 'position' => 2, 'review_status' => 'draft']);
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/move", ['direction' => 'down'], tenant: $school->id);
+        },
+        'builder.lessons.approve' => function () {
+            [$school, , , $rachel, , $lesson] = auditBuilder();
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/approve", tenant: $school->id);
+        },
+        'builder.lessons.destroy' => function () {
+            [, , , $rachel, , $lesson] = auditBuilder();
+
+            return auditCase($rachel, 'DELETE', "/course-builder/lessons/{$lesson->id}");
+        },
+        'builder.lessons.restore' => function () {
+            [, , , $rachel, , $lesson] = auditBuilder();
+            $lesson->delete();
+
+            return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/restore");
         },
         'plans.splits' => function () {
             $ops = auditOps();

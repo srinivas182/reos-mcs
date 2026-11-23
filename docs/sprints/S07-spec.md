@@ -117,6 +117,11 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 - **Seat-time changes go to the school for TREC:** changing minutes or hours on an approved course creates a change request for the school admin instead of editing the approval.
 - **Instructor dashboard (42):** reviews, questions, sessions, pass rate, and today's list. "Start live class" links to B6.3.
 - **Done when:** an instructor builds a module from source files (uploads, sees them read and indexed, arranges lessons), on the web.
+- **As built, A7.2** (ADR 0026):
+  - **Course builder** (`/course-builder`) for school admins (as their course catalog) and instructors (the courses they teach): a course list, and New course, which the school owns.
+  - **Screen 43** has the module list with status; each module's source material (scripts, slides, forms, recorded classes, captions) with a signed upload, virus scan and reading; "What AI will make" (minutes, lessons, check-ins, questions, flashcards, credits); the settings (language, minutes per lesson, a presenter with avatar consent); and the lessons with status (add, edit, order, approve hand-written ones, remove with Undo).
+  - **Rules:** a school's lessons reach learners only once approved. Seat-time changes on an approved course go to the school. Only the school admin publishes.
+  - **Screen 42, the instructor dashboard:** reviews, drafts, sessions this week, practice pass rate, today, and the most-missed topics.
 
 ### A7.3 AI lesson pipeline (Team A)
 

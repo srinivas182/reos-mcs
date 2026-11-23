@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Course $course
+ * @property-read Collection<int, ModuleSource> $sources
  */
 final class CourseModule extends Model
 {
@@ -33,6 +35,12 @@ final class CourseModule extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /** @return HasMany<ModuleSource, $this> */
+    public function sources(): HasMany
+    {
+        return $this->hasMany(ModuleSource::class)->orderBy('position')->orderBy('id');
     }
 
     /** @return HasMany<Lesson, $this> */
