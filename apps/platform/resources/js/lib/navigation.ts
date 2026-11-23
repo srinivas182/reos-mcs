@@ -29,6 +29,7 @@ import {
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
 import { index as brokerageIntegrationsIndex } from '@/routes/brokerage-integrations';
+import { index as contactsIndex } from '@/routes/contacts';
 import { index as agentsIndex } from '@/routes/agents';
 import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
@@ -73,6 +74,7 @@ export type NavLabel =
     | 'brandingAndDomain'
     | 'brokerageSettings'
     | 'brokerageIntegrations'
+    | 'contacts'
     | 'agents'
     | 'complianceAndAudit'
     | 'contentAndApprovals'
@@ -170,7 +172,7 @@ export function roleNavigation(
         agent: [
             home,
             messages,
-            planned('contacts'),
+            item('contacts', Users, contactsIndex(), '/contacts'),
             planned('deals'),
             planned('virtualBroker'),
             planned('contentStudio'),

@@ -1605,13 +1605,59 @@
         "/contacts": {
             "get": {
                 "operationId": "contacts.index",
-                "summary": "List your contacts, newest change first",
+                "description": "Every source in one list, newest change first: by tab (segment), tag\nor search, with the last touch and the AI next step while it's fresh,\nplus the count in each tab and your tags.",
+                "summary": "Your contacts (CRM hub, B8.3)",
                 "tags": [
                     "Contact"
                 ],
+                "parameters": [
+                    {
+                        "name": "segment",
+                        "in": "query",
+                        "description": "All, new, active, past or sphere.",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "all",
+                                "new",
+                                "active",
+                                "past",
+                                "sphere",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "One of the agent's tags.",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 60
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Name, email or phone.",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "maxLength": 100
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Array of `ContactResource`",
+                        "description": "Array of `ContactRowResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1620,12 +1666,31 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/ContactResource"
+                                                "$ref": "#/components/schemas/ContactRowResource"
                                             }
+                                        },
+                                        "counts": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "tags": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "minimum": 0
                                         }
                                     },
                                     "required": [
-                                        "data"
+                                        "data",
+                                        "counts",
+                                        "tags",
+                                        "total"
                                     ]
                                 }
                             }
@@ -1633,6 +1698,9 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -1870,7 +1938,7 @@
         "/contacts/{contact}": {
             "get": {
                 "operationId": "contacts.show",
-                "summary": "One contact: every source that knows them, and their notes, newest first",
+                "summary": "One contact: every source that knows them, notes (newest first), your\ntasks about them, recent sync activity, and the AI insight while it's\nfresh (null until you ask for one)",
                 "tags": [
                     "Contact"
                 ],
@@ -1935,11 +2003,126 @@
                                                     "at"
                                                 ]
                                             }
+                                        },
+                                        "tasks": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": {}
+                                            }
+                                        },
+                                        "activity": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "kind": {
+                                                        "type": "string"
+                                                    },
+                                                    "contact": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name"
+                                                        ]
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    },
+                                                    "source_name": {
+                                                        "type": "string"
+                                                    },
+                                                    "text": {
+                                                        "type": "string"
+                                                    },
+                                                    "occurred_at": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "kind",
+                                                    "contact",
+                                                    "source",
+                                                    "source_name",
+                                                    "text",
+                                                    "occurred_at"
+                                                ]
+                                            }
+                                        },
+                                        "insight": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "summary": {
+                                                    "type": "string"
+                                                },
+                                                "next_step": {
+                                                    "type": "string"
+                                                },
+                                                "why": {
+                                                    "type": "string"
+                                                },
+                                                "channel": {
+                                                    "type": "string"
+                                                },
+                                                "draft": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "engine": {
+                                                    "type": "string"
+                                                },
+                                                "generated_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "summary",
+                                                "next_step",
+                                                "why",
+                                                "channel",
+                                                "draft",
+                                                "engine",
+                                                "generated_at"
+                                            ]
+                                        },
+                                        "segment": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        },
+                                        "last_touch_at": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
                                         }
                                     },
                                     "required": [
                                         "data",
-                                        "notes"
+                                        "notes",
+                                        "tasks",
+                                        "activity",
+                                        "insight",
+                                        "segment",
+                                        "last_touch_at"
                                     ]
                                 }
                             }
@@ -2307,6 +2490,374 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contacts/today": {
+            "get": {
+                "operationId": "contacts.today",
+                "description": "The one contact most in need of a touch (an overdue task first), with\nthe AI next step and why, or null when there's none.",
+                "summary": "Do this now (Today)",
+                "tags": [
+                    "ContactWork"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "contact": {
+                                                    "type": "object",
+                                                    "additionalProperties": {}
+                                                },
+                                                "insight": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "summary": {
+                                                            "type": "string"
+                                                        },
+                                                        "next_step": {
+                                                            "type": "string"
+                                                        },
+                                                        "why": {
+                                                            "type": "string"
+                                                        },
+                                                        "channel": {
+                                                            "type": "string"
+                                                        },
+                                                        "draft": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "engine": {
+                                                            "type": "string"
+                                                        },
+                                                        "generated_at": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "summary",
+                                                        "next_step",
+                                                        "why",
+                                                        "channel",
+                                                        "draft",
+                                                        "engine",
+                                                        "generated_at"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "contact",
+                                                "insight"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contacts/{contact}/insight": {
+            "post": {
+                "operationId": "contacts.insight",
+                "description": "Written from the contact's notes, tasks and activity in every source,\nand kept until the contact changes. Free for agents; over the hourly\nAI limit you get 429.",
+                "summary": "AI summary and next step",
+                "tags": [
+                    "ContactWork"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "summary": {
+                                                    "type": "string"
+                                                },
+                                                "next_step": {
+                                                    "type": "string"
+                                                },
+                                                "why": {
+                                                    "type": "string"
+                                                },
+                                                "channel": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "call",
+                                                        "text",
+                                                        "email",
+                                                        "note"
+                                                    ]
+                                                },
+                                                "draft": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "engine": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "ai",
+                                                        "simulator"
+                                                    ]
+                                                },
+                                                "generated_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "summary",
+                                                "next_step",
+                                                "why",
+                                                "channel",
+                                                "draft",
+                                                "engine",
+                                                "generated_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contacts/{contact}/tasks": {
+            "post": {
+                "operationId": "contacts.tasks.store",
+                "description": "A to-do about the person, sent to the CRM that knows them and synced\nmost recently (`sent_to` is null when it stays in REOS).",
+                "summary": "Add a task",
+                "tags": [
+                    "ContactWork"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactTaskRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {}
+                                        },
+                                        "sent_to": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "sent_to"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/contacts/{contact}/touches": {
+            "post": {
+                "operationId": "contacts.touches.store",
+                "description": "You called or texted from your own phone: saved as a note and sent to\nevery connected CRM that knows the person.",
+                "summary": "Log a call or text",
+                "tags": [
+                    "ContactWork"
+                ],
+                "parameters": [
+                    {
+                        "name": "contact",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactTouchRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`ContactNoteResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/components/schemas/ContactNoteResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -15161,6 +15712,214 @@
                     "updated_at"
                 ],
                 "title": "ContactResource"
+            },
+            "ContactRowResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "last_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "emails": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "phones": {
+                        "type": "array",
+                        "description": "Phone numbers in E.164.",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "stage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "birthday": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "sources": {
+                        "type": "array",
+                        "description": "Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "source": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "synced_at": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "campaign": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "campaign_status": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                }
+                            },
+                            "required": [
+                                "source",
+                                "name",
+                                "synced_at",
+                                "campaign",
+                                "campaign_status"
+                            ]
+                        }
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "segment": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "enum": [
+                            "new",
+                            "active",
+                            "past",
+                            "sphere",
+                            null
+                        ]
+                    },
+                    "last_touch_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The last note or finished task, from any source."
+                    },
+                    "next_step": {
+                        "type": [
+                            "object",
+                            "null"
+                        ],
+                        "description": "The AI next step, while the contact hasn't changed since.",
+                        "properties": {
+                            "text": {
+                                "type": "string"
+                            },
+                            "why": {
+                                "type": "string"
+                            },
+                            "channel": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "text",
+                            "why",
+                            "channel"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "first_name",
+                    "last_name",
+                    "emails",
+                    "phones",
+                    "stage",
+                    "birthday",
+                    "tags",
+                    "sources",
+                    "updated_at",
+                    "segment",
+                    "last_touch_at",
+                    "next_step"
+                ],
+                "title": "ContactRowResource"
+            },
+            "ContactTaskRequest": {
+                "type": "object",
+                "description": "A task about a contact (B8.3): what, and on which day.",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 200
+                    },
+                    "due_date": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date",
+                        "description": "The day it's due, `YYYY-MM-DD`."
+                    }
+                },
+                "required": [
+                    "title"
+                ],
+                "title": "ContactTaskRequest"
+            },
+            "ContactTouchRequest": {
+                "type": "object",
+                "description": "\"I called\" or \"I texted\" from the agent's own phone (B8.3), logged to the CRMs.",
+                "properties": {
+                    "channel": {
+                        "type": "string",
+                        "enum": [
+                            "call",
+                            "text"
+                        ]
+                    },
+                    "body": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "What was texted.",
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "channel"
+                ],
+                "title": "ContactTouchRequest"
             },
             "DeviceResource": {
                 "type": "object",

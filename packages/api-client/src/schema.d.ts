@@ -405,7 +405,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List your contacts, newest change first */
+        /**
+         * Your contacts (CRM hub, B8.3)
+         * @description Every source in one list, newest change first: by tab (segment), tag
+         *     or search, with the last touch and the AI next step while it's fresh,
+         *     plus the count in each tab and your tags.
+         */
         get: operations["contacts.index"];
         put?: never;
         post?: never;
@@ -465,7 +470,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** One contact: every source that knows them, and their notes, newest first */
+        /**
+         * One contact: every source that knows them, notes (newest first), your
+         *     tasks about them, recent sync activity, and the AI insight while it's
+         *     fresh (null until you ask for one)
+         */
         get: operations["contacts.show"];
         put?: never;
         post?: never;
@@ -541,6 +550,91 @@ export interface paths {
         put?: never;
         /** "Not the same person": dismiss a suggested merge */
         post: operations["contacts.suggestions.dismiss"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Do this now (Today)
+         * @description The one contact most in need of a touch (an overdue task first), with
+         *     the AI next step and why, or null when there's none.
+         */
+        get: operations["contacts.today"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/{contact}/insight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * AI summary and next step
+         * @description Written from the contact's notes, tasks and activity in every source,
+         *     and kept until the contact changes. Free for agents; over the hourly
+         *     AI limit you get 429.
+         */
+        post: operations["contacts.insight"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/{contact}/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a task
+         * @description A to-do about the person, sent to the CRM that knows them and synced
+         *     most recently (`sent_to` is null when it stays in REOS).
+         */
+        post: operations["contacts.tasks.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/{contact}/touches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Log a call or text
+         * @description You called or texted from your own phone: saved as a note and sent to
+         *     every connected CRM that knows the person.
+         */
+        post: operations["contacts.touches.store"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2574,6 +2668,60 @@ export interface components {
             }[];
             updated_at: string | null;
         };
+        /** ContactRowResource */
+        ContactRowResource: {
+            id: string;
+            name: string;
+            first_name: string | null;
+            last_name: string | null;
+            emails: string[];
+            /** @description Phone numbers in E.164. */
+            phones: string[];
+            stage: string | null;
+            birthday: string | null;
+            tags: string[];
+            /** @description Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed. */
+            sources: {
+                source: string;
+                name: string;
+                synced_at: string | null;
+                campaign: string | null;
+                campaign_status: string | null;
+            }[];
+            updated_at: string | null;
+            /** @enum {string|null} */
+            segment: "new" | "active" | "past" | "sphere" | null;
+            /** @description The last note or finished task, from any source. */
+            last_touch_at: string | null;
+            /** @description The AI next step, while the contact hasn't changed since. */
+            next_step: {
+                text: string;
+                why: string;
+                channel: string;
+            } | null;
+        };
+        /**
+         * ContactTaskRequest
+         * @description A task about a contact (B8.3): what, and on which day.
+         */
+        ContactTaskRequest: {
+            title: string;
+            /**
+             * Format: date
+             * @description The day it's due, `YYYY-MM-DD`.
+             */
+            due_date?: string | null;
+        };
+        /**
+         * ContactTouchRequest
+         * @description "I called" or "I texted" from the agent's own phone (B8.3), logged to the CRMs.
+         */
+        ContactTouchRequest: {
+            /** @enum {string} */
+            channel: "call" | "text";
+            /** @description What was texted. */
+            body?: string | null;
+        };
         /** DeviceResource */
         DeviceResource: {
             id: number;
@@ -3396,6 +3544,9 @@ export type SchemaConsentPurpose = components['schemas']['ConsentPurpose'];
 export type SchemaConsentRequest = components['schemas']['ConsentRequest'];
 export type SchemaContactNoteResource = components['schemas']['ContactNoteResource'];
 export type SchemaContactResource = components['schemas']['ContactResource'];
+export type SchemaContactRowResource = components['schemas']['ContactRowResource'];
+export type SchemaContactTaskRequest = components['schemas']['ContactTaskRequest'];
+export type SchemaContactTouchRequest = components['schemas']['ContactTouchRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
@@ -4307,25 +4458,38 @@ export interface operations {
     };
     "contacts.index": {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description All, new, active, past or sphere. */
+                segment?: "all" | "new" | "active" | "past" | "sphere" | null;
+                /** @description One of the agent's tags. */
+                tag?: string | null;
+                /** @description Name, email or phone. */
+                q?: string | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Array of `ContactResource` */
+            /** @description Array of `ContactRowResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        data: components["schemas"]["ContactResource"][];
+                        data: components["schemas"]["ContactRowResource"][];
+                        counts: {
+                            [key: string]: number;
+                        };
+                        tags: string[];
+                        total: number;
                     };
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
         };
     };
     "contacts.activity": {
@@ -4471,6 +4635,32 @@ export interface operations {
                             sent_to: string[];
                             at: string | null;
                         }[];
+                        tasks: {
+                            [key: string]: unknown;
+                        }[];
+                        activity: {
+                            id: number;
+                            kind: string;
+                            contact: {
+                                id: string;
+                                name: string;
+                            };
+                            source: string;
+                            source_name: string;
+                            text: string;
+                            occurred_at: string;
+                        }[];
+                        insight: {
+                            summary: string;
+                            next_step: string;
+                            why: string;
+                            channel: string;
+                            draft: string | null;
+                            engine: string;
+                            generated_at: string;
+                        } | null;
+                        segment: string | null;
+                        last_touch_at: string | null;
                     };
                 };
             };
@@ -4667,6 +4857,185 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            contact: {
+                                [key: string]: unknown;
+                            };
+                            insight: {
+                                summary: string;
+                                next_step: string;
+                                why: string;
+                                channel: string;
+                                draft: string | null;
+                                engine: string;
+                                generated_at: string;
+                            };
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.insight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            summary: string;
+                            next_step: string;
+                            why: string;
+                            /** @enum {string} */
+                            channel: "call" | "text" | "email" | "note";
+                            draft: string | null;
+                            /** @enum {string} */
+                            engine: "ai" | "simulator";
+                            generated_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.tasks.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactTaskRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            [key: string]: unknown;
+                        };
+                        sent_to: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.touches.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContactTouchRequest"];
+            };
+        };
+        responses: {
+            /** @description `ContactNoteResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ContactNoteResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

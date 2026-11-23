@@ -20,6 +20,7 @@ use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
+use App\Http\Controllers\Crm\ContactsPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
@@ -116,6 +117,15 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::post('{connection}/sync', 'sync')->whereNumber('connection')->middleware('throttle:10,1,sync')->name('sync');
         Route::patch('{connection}', 'update')->whereNumber('connection')->middleware('throttle:30,1,update')->name('update');
         Route::delete('{connection}', 'destroy')->whereNumber('connection')->middleware('throttle:30,1,destroy')->name('destroy');
+    });
+
+    // Contacts, the CRM hub (B8.3, agent web screen 13): the agent's own contacts only.
+    Route::controller(ContactsPageController::class)->prefix('contacts')->name('contacts.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('{contact}/notes', 'note')->whereUuid('contact')->middleware('throttle:60,1,contacts-notes')->name('notes.store');
+        Route::post('{contact}/tasks', 'task')->whereUuid('contact')->middleware('throttle:60,1,contacts-tasks')->name('tasks.store');
+        Route::post('{contact}/insight', 'insight')->whereUuid('contact')->middleware('throttle:30,1,contacts-insight')->name('insight');
+        Route::post('{contact}/touches', 'touch')->whereUuid('contact')->middleware('throttle:60,1,contacts-touches')->name('touches.store');
     });
 
     // Plan and billing (B5.1, screen 29 and each role's equivalent) and checkout on reos.com (screen 3).

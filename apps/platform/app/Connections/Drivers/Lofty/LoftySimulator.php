@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\Lofty;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\Stores\ContactNoteStore;
@@ -26,7 +27,7 @@ use LogicException;
  * read like the real tool and written back with Lofty's own field names.
  * Any key of four or more characters connects.
  */
-final class LoftySimulator implements ConnectorDriver, ConnectsWithApiKey, CrmDriver
+final class LoftySimulator implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver
 {
     private const CONTAINER = 'lofty';
 
@@ -85,6 +86,13 @@ final class LoftySimulator implements ConnectorDriver, ConnectsWithApiKey, CrmDr
         $this->authorise($connection);
 
         return self::write($connection, 'notes', null, ['leadId' => $personId, 'content' => $body])->external_id;
+    }
+
+    public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string
+    {
+        $this->authorise($connection);
+
+        return self::write($connection, 'tasks', null, ['leadId' => $personId, 'content' => $title, 'deadline' => ($due ?? CarbonImmutable::now())->endOfDay()->utc()->getTimestampMs(), 'finishFlag' => false])->external_id;
     }
 
     public function setTaskDone(Connection $connection, string $token, string $taskId, bool $done): void

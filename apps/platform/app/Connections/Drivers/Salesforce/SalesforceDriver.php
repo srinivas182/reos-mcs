@@ -6,6 +6,7 @@ namespace App\Connections\Drivers\Salesforce;
 
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
+use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Crm\MapsStageFields;
 use App\Connections\Exceptions\AccessRevoked;
@@ -42,7 +43,7 @@ use Illuminate\Support\Facades\Http;
  * Salesforce answers each org at its own address (`instance_url`), which
  * REOS keeps with the access token as "<instance_url> <token>".
  */
-final readonly class SalesforceDriver implements ConnectorDriver, CrmDriver, MapsStageFields
+final readonly class SalesforceDriver implements ConnectorDriver, CreatesTasks, CrmDriver, MapsStageFields
 {
     public const INTEGRATION = 'salesforce';
 
@@ -197,6 +198,25 @@ final readonly class SalesforceDriver implements ConnectorDriver, CrmDriver, Map
         $this->json($this->http($token)->post($base.'/ContentDocumentLink', ['ContentDocumentId' => $id, 'LinkedEntityId' => $personId, 'ShareType' => 'V']));
 
         return $id;
+    }
+
+    /**
+     * A Task on the person (`WhoId`), owned by the person's owner so it comes
+     * back to the same agent (B8.2's owner rule).
+     */
+    public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string
+    {
+        [$instance] = self::split($token);
+        $base = $instance.'/services/data/'.self::VERSION.'/sobjects';
+        $object = str_starts_with($personId, '00Q') ? 'Lead' : 'Contact';
+        $person = $this->json($this->http($token)->get($base.'/'.$object.'/'.rawurlencode($personId), ['fields' => 'OwnerId']));
+        $task = $this->json($this->http($token)->post($base.'/Task', array_filter([
+            'WhoId' => $personId, 'Subject' => mb_substr($title, 0, 255), 'Status' => 'Not Started', 'ActivityDate' => $due?->toDateString(),
+            'OwnerId' => is_string($person['OwnerId'] ?? null) ? $person['OwnerId'] : null,
+        ], static fn (mixed $value): bool => $value !== null)));
+        $id = $task['id'] ?? null;
+
+        return is_string($id) ? $id : throw new VendorUnavailable('Salesforce returned no task id.');
     }
 
     public function setTaskDone(Connection $connection, string $token, string $taskId, bool $done): void

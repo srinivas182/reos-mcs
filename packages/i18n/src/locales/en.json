@@ -65,7 +65,8 @@
     "questionBank": "Question bank",
     "studyPlan": "Study plan",
     "practiceAndExams": "Practice and exams",
-    "brokerageIntegrations": "Integrations"
+    "brokerageIntegrations": "Integrations",
+    "contacts": "Contacts"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -5376,6 +5377,114 @@
       "sources": "Sources",
       "stage": "Stage",
       "campaign": "Smart campaign in {{source}}: {{name}} ({{status}})"
+    },
+    "hub": {
+      "title": "Contacts",
+      "description": "Work contacts from every connected CRM in one place.",
+      "search": "Search by name, email or phone",
+      "searchLabel": "Search contacts",
+      "segments": {
+        "all": "All",
+        "new": "New leads",
+        "active": "Active",
+        "past": "Past clients",
+        "sphere": "Sphere"
+      },
+      "tabs": "Contact groups",
+      "tabCount": "{{label}} ({{count}})",
+      "columns": {
+        "name": "Name",
+        "stage": "Stage",
+        "lastTouch": "Last touch",
+        "sources": "From",
+        "nextStep": "AI next step"
+      },
+      "noStage": "No stage",
+      "never": "Never",
+      "askAi": "Ask AI in the panel",
+      "empty": {
+        "title": "No contacts yet",
+        "body": "Connect a CRM or add your phone's contacts, and each person shows up here once.",
+        "action": "Connect a tool"
+      },
+      "emptyFilter": {
+        "title": "No one here",
+        "body": "No contacts match this tab or search."
+      },
+      "showing": "Showing {{shown}} of {{total}}",
+      "close": "Close contact",
+      "details": "Details",
+      "email": "Email",
+      "phone": "Phone",
+      "birthday": "Birthday",
+      "address": "Address",
+      "tasks": "Tasks",
+      "noTasks": "No tasks yet",
+      "noTasksBody": "Tasks you add here go to the CRM that knows this person.",
+      "addTask": "Add a task",
+      "taskLabel": "Task",
+      "dueLabel": "Due on (optional)",
+      "saveTask": "Save task",
+      "taskOpen": "Open",
+      "taskDone": "Done",
+      "dueOn": "Due {{date}}",
+      "activity": "Sync activity",
+      "noActivity": "Nothing synced yet",
+      "call": "Call",
+      "text": "Text",
+      "callTitle": "Call {{name}}",
+      "textTitle": "Text {{name}}",
+      "scanCall": "Scan with your phone to call from your own number.",
+      "scanText": "Scan with your phone to text from your own number. You can change the message there.",
+      "openHere": "Open on this device",
+      "logCall": "I called",
+      "logText": "I sent it",
+      "noPhone": "No phone number",
+      "messageLabel": "Message",
+      "ai": {
+        "summary": "AI summary",
+        "writing": "Writing…",
+        "free": "Free for agents",
+        "why": "Why",
+        "nextStep": "Next step",
+        "draft": "Suggested text",
+        "written": "Written by AI {{ago}}. Check it before you use it.",
+        "simulated": "Demo summary. AI isn't connected yet.",
+        "intro": "A short summary from every source, and the one thing to do next."
+      },
+      "taskSaved": "Task saved.",
+      "taskSent": "Task saved and sent to :tool.",
+      "touchLogged": "Logged and sent to your CRMs.",
+      "today": {
+        "title": "Do this now",
+        "open": "Open {{name}}",
+        "textNow": "Text from my phone",
+        "callNow": "Call",
+        "logged": "Logged in your CRMs"
+      },
+      "phoneEmpty": {
+        "title": "No contacts yet",
+        "body": "Connect a CRM or add your phone's contacts in Connections."
+      },
+      "taskSentTo": "Task saved and sent to {{tool}}."
+    },
+    "insight": {
+      "limit": "You've used AI a lot this hour. Please try again in a few minutes.",
+      "sim": {
+        "summary": ":name: :stage, from :sources. Notes so far: :count.",
+        "noStage": "no stage yet",
+        "lastNote": "Last note (:date): “:text”",
+        "dueTask": "This task was due :date.",
+        "neverTouched": "No touch yet",
+        "noTouch": "No touch in :days days",
+        "theySaid": "last note: “:text”",
+        "checkIn": "Check in with :name",
+        "draft": "Hi :name, it's :agent. Just checking in. Is there anything I can help you with this week?"
+      }
+    },
+    "touch": {
+      "called": "Called from my phone.",
+      "texted": "Texted from my phone: :body"
     }
   },
   "review": {

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Crm\ContactController;
+use App\Http\Controllers\Api\Crm\ContactWorkController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Learn\OfflineController;
@@ -218,6 +219,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('contacts/{contact}/notes', [ContactController::class, 'note'])->whereUuid('contact')->middleware('throttle:60,1,api-contacts-notes')->name('api.contacts.notes.store');
     Route::post('contacts/{contact}/merge', [ContactController::class, 'merge'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.merge');
     Route::post('contacts/{contact}/split', [ContactController::class, 'split'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.split');
+    // CRM hub (B8.3, ADR 0034): AI next step, tasks to the CRM, calls and texts logged.
+    Route::get('contacts/today', [ContactWorkController::class, 'today'])->middleware('throttle:30,1,api-contacts-today')->name('api.contacts.today');
+    Route::post('contacts/{contact}/insight', [ContactWorkController::class, 'insight'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-insight')->name('api.contacts.insight');
+    Route::post('contacts/{contact}/tasks', [ContactWorkController::class, 'task'])->whereUuid('contact')->middleware('throttle:60,1,api-contacts-tasks')->name('api.contacts.tasks.store');
+    Route::post('contacts/{contact}/touches', [ContactWorkController::class, 'touch'])->whereUuid('contact')->middleware('throttle:60,1,api-contacts-touches')->name('api.contacts.touches.store');
     Route::post('contacts/suggestions/{suggestion}/dismiss', [ContactController::class, 'dismiss'])->whereNumber('suggestion')->middleware('throttle:60,1,api-contacts-dismiss')->name('api.contacts.suggestions.dismiss');
     Route::get('connections', [ConnectionController::class, 'index'])->name('api.connections.index');
     Route::post('connections', [ConnectionController::class, 'store'])->middleware('throttle:sign-in')->name('api.connections.store');

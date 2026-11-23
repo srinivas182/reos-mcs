@@ -1,11 +1,12 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bell, BookOpen, MessageSquare, Palette, Video } from 'lucide-react-native';
+import { Bell, BookOpen, MessageSquare, Palette, Users, Video } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { TodayAgenda } from '@/features/calendar/TodayAgenda';
+import { TodayInsight } from '@/features/contacts/TodayInsight';
 import { CandidateToday } from '@/features/study/CandidateToday';
 import { TodayTodos } from '@/features/todos/TodayTodos';
 import { type CaptureMode, VoiceCaptureSheet } from '@/features/voice/VoiceCaptureSheet';
@@ -16,6 +17,7 @@ import { activeMembership } from '@/lib/roles';
 import { timeAgo } from '@/lib/time';
 import { useOpenTodos } from '@/lib/todos';
 import { useCandidateToday } from '@/lib/practice';
+import { useTodayInsight } from '@/lib/crm';
 import { useWhatsNew } from '@/lib/whatsNew';
 import { useAnnouncements, useInbox } from '@/lib/messages';
 import { nextSession, useSessions } from '@/lib/sessions';
@@ -49,6 +51,7 @@ export default function HomeScreen() {
   const candidate = role === 'candidate';
   // Today for candidates (screen 12, A8.3): readiness, Continue and today's plan.
   const { today: study } = useCandidateToday(candidate);
+  const { today: insight, reload: reloadInsight } = useTodayInsight(agent);
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
   const { capture } = useLocalSearchParams<{ capture?: string }>();
@@ -181,6 +184,9 @@ export default function HomeScreen() {
       {/* Learn (candidate screen 8, A5.3b): courses and search inside lessons; the Learn tab arrives with the tab bar. */}
       {study ? <CandidateToday today={study} /> : null}
       {learner ? <ListRow icon={BookOpen} tone="info" title={t('learn.title')} subtitle={t('learn.searchLabel')} onPress={() => router.push('/learn')} /> : null}
+      {/* Do this now (Agent App Journey screen 6, B8.3), and every contact. */}
+      {agent && insight ? <TodayInsight contact={insight.contact} insight={insight.insight} onDone={() => void reloadInsight()} /> : null}
+      {agent ? <ListRow icon={Users} tone="info" title={t('crm.hub.title')} subtitle={t('crm.hub.description')} onPress={() => router.push('/contacts')} /> : null}
       {agent ? <TodayAgenda /> : null}
       {agent ? <TodayTodos rows={todos.rows} onChanged={() => void todos.reload()} onAdd={() => setCapturing('voice')} /> : null}
       <VoiceCaptureSheet mode={capturing} onClose={closeCapture} onSaved={() => void todos.reload()} />

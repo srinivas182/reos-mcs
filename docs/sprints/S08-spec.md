@@ -215,6 +215,24 @@
   - upload, map the columns, preview the matches (merged on email or phone like any source), import;
   - the CSV is kept as a source named "CSV import, date", and can be undone.
 - **Done when:** an agent works all contacts in one list. James Miller sees Follow Up Boss, kvCORE, Lofty and phone contacts together, each person once, and adds a note that reaches every CRM that knows them.
+- **As built, B8.3a** (ADR 0034):
+  - **Web screen 13** (`/contacts`, agent sidebar "Contacts"):
+    - title, purpose line and search;
+    - tabs (All, New leads, Active, Past clients, Sphere, then the agent's tags) with counts;
+    - a table with name, stage, last touch, sources and AI next step;
+    - a contact panel with Call and Text (a QR code to scan with the agent's phone, or open on this device, then "I called" or "I sent it", logged as a note to the CRMs), the AI summary, details and sources, notes, tasks and sync activity.
+  - **Phone:**
+    - a Contacts list with search and tabs;
+    - the contact screen (14) gains Call and Text from the phone, the AI summary and tasks;
+    - Today shows "Do this now" (one person, one step, why, and the drafted text) and a Contacts row.
+  - **AI:**
+    - Claude on Bedrock, with the simulator until keys are set;
+    - free for agents, logged at 0 credits, within the hourly limit (429 over it);
+    - kept until the contact changes.
+  - **Tasks:**
+    - sent to the CRM that knows the person and synced most recently (Follow Up Boss, Lofty or Salesforce);
+    - BoldTrail-only people keep the task in REOS.
+  - **API:** `GET /contacts` gains `segment`, `tag` and `q` plus counts and tags. Also new: `GET /contacts/today`, `POST /contacts/{id}/insight`, `/tasks` and `/touches`.
 
 ## 4. Definition of done (whole sprint)
 

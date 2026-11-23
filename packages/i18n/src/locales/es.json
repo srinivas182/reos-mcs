@@ -65,7 +65,8 @@
     "questionBank": "Banco de preguntas",
     "studyPlan": "Plan de estudio",
     "practiceAndExams": "Práctica y exámenes",
-    "brokerageIntegrations": "Integraciones"
+    "brokerageIntegrations": "Integraciones",
+    "contacts": "Contactos"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -5376,6 +5377,114 @@
       "sources": "Orígenes",
       "stage": "Etapa",
       "campaign": "Campaña inteligente en {{source}}: {{name}} ({{status}})"
+    },
+    "hub": {
+      "title": "Contactos",
+      "description": "Trabaje los contactos de todos sus CRM conectados en un solo lugar.",
+      "search": "Buscar por nombre, correo o teléfono",
+      "searchLabel": "Buscar contactos",
+      "segments": {
+        "all": "Todos",
+        "new": "Clientes potenciales nuevos",
+        "active": "Activos",
+        "past": "Clientes anteriores",
+        "sphere": "Círculo cercano"
+      },
+      "tabs": "Grupos de contactos",
+      "tabCount": "{{label}} ({{count}})",
+      "columns": {
+        "name": "Nombre",
+        "stage": "Etapa",
+        "lastTouch": "Último contacto",
+        "sources": "Origen",
+        "nextStep": "Siguiente paso de IA"
+      },
+      "noStage": "Sin etapa",
+      "never": "Nunca",
+      "askAi": "Pídalo a la IA en el panel",
+      "empty": {
+        "title": "Todavía no tiene contactos",
+        "body": "Conecte un CRM o agregue los contactos de su teléfono, y cada persona aparecerá aquí una sola vez.",
+        "action": "Conectar una herramienta"
+      },
+      "emptyFilter": {
+        "title": "No hay nadie aquí",
+        "body": "Ningún contacto coincide con esta pestaña o búsqueda."
+      },
+      "showing": "Se muestran {{shown}} de {{total}}",
+      "close": "Cerrar contacto",
+      "details": "Datos",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "birthday": "Cumpleaños",
+      "address": "Dirección",
+      "tasks": "Tareas",
+      "noTasks": "Todavía no hay tareas",
+      "noTasksBody": "Las tareas que agregue aquí van al CRM que conoce a esta persona.",
+      "addTask": "Agregar una tarea",
+      "taskLabel": "Tarea",
+      "dueLabel": "Fecha límite (opcional)",
+      "saveTask": "Guardar tarea",
+      "taskOpen": "Pendiente",
+      "taskDone": "Hecha",
+      "dueOn": "Vence el {{date}}",
+      "activity": "Actividad de sincronización",
+      "noActivity": "Todavía no se ha sincronizado nada",
+      "call": "Llamar",
+      "text": "Enviar mensaje",
+      "callTitle": "Llamar a {{name}}",
+      "textTitle": "Enviar mensaje a {{name}}",
+      "scanCall": "Escanee con su teléfono para llamar desde su propio número.",
+      "scanText": "Escanee con su teléfono para enviar el mensaje desde su propio número. Ahí puede cambiar el texto.",
+      "openHere": "Abrir en este dispositivo",
+      "logCall": "Ya llamé",
+      "logText": "Ya lo envié",
+      "noPhone": "No tiene número de teléfono",
+      "messageLabel": "Mensaje",
+      "ai": {
+        "summary": "Resumen con IA",
+        "writing": "Escribiendo…",
+        "free": "Gratis para agentes",
+        "why": "Por qué",
+        "nextStep": "Siguiente paso",
+        "draft": "Mensaje sugerido",
+        "written": "Escrito por IA {{ago}}. Revíselo antes de usarlo.",
+        "simulated": "Resumen de demostración. La IA todavía no está conectada.",
+        "intro": "Un resumen breve de todas las fuentes y lo único que conviene hacer ahora."
+      },
+      "taskSaved": "Tarea guardada.",
+      "taskSent": "Tarea guardada y enviada a :tool.",
+      "touchLogged": "Registrado y enviado a sus CRM.",
+      "today": {
+        "title": "Haga esto ahora",
+        "open": "Abrir a {{name}}",
+        "textNow": "Enviar mensaje desde mi teléfono",
+        "callNow": "Llamar",
+        "logged": "Registrado en sus CRM"
+      },
+      "phoneEmpty": {
+        "title": "Todavía no tiene contactos",
+        "body": "Conecte un CRM o agregue los contactos de su teléfono en Conexiones."
+      },
+      "taskSentTo": "Tarea guardada y enviada a {{tool}}."
+    },
+    "insight": {
+      "limit": "Ha usado mucho la IA en esta hora. Inténtelo de nuevo en unos minutos.",
+      "sim": {
+        "summary": ":name: :stage, de :sources. Notas hasta ahora: :count.",
+        "noStage": "todavía sin etapa",
+        "lastNote": "Última nota (:date): “:text”",
+        "dueTask": "Esta tarea vencía el :date.",
+        "neverTouched": "Todavía sin contacto",
+        "noTouch": "Sin contacto en :days días",
+        "theySaid": "última nota: “:text”",
+        "checkIn": "Comuníquese con :name",
+        "draft": "Hola, :name. Le saluda :agent. Solo quería saber cómo está. ¿Hay algo en lo que pueda ayudarle esta semana?"
+      }
+    },
+    "touch": {
+      "called": "Llamé desde mi teléfono.",
+      "texted": "Mensaje enviado desde mi teléfono: :body"
     }
   },
   "review": {
@@ -5809,13 +5918,13 @@
     "unmatched_other": "{{count}} propietarios de registros no tienen cuenta en REOS, así que se omitieron sus registros: {{owners}}. Invítelos o cambie el propietario en su CRM.",
     "mapping": {
       "title": "Dónde guarda la etapa de cada persona",
-      "intro": "Elija los campos que REOS lee y actualiza para la etapa de un contacto y de un prospecto. Al guardar, empieza una nueva sincronización.",
+      "intro": "Elija los campos que REOS lee y actualiza para la etapa de un contacto y de un cliente potencial. Al guardar, empieza una nueva sincronización.",
       "common": "Usar la configuración habitual",
       "offline": "No podemos leer sus campos en este momento, así que solo se muestran los guardados.",
       "contact": "Campo de etapa del contacto",
-      "lead": "Campo de etapa del prospecto",
+      "lead": "Campo de etapa del cliente potencial",
       "none": "Ninguno",
-      "leads": "Incluir prospectos",
+      "leads": "Incluir clientes potenciales",
       "save": "Guardar asignación"
     },
     "allowed": "Ahora sus agentes pueden usar esta herramienta.",

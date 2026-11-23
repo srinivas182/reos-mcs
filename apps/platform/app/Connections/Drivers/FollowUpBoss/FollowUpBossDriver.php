@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\FollowUpBoss;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\Exceptions\VendorRateLimited;
@@ -36,7 +37,7 @@ use LogicException;
  * (signed with the system key) say when to sync; the 15-minute schedule is
  * the backstop.
  */
-final readonly class FollowUpBossDriver implements ConnectorDriver, ConnectsWithApiKey, CrmDriver, SubscribesToChanges
+final readonly class FollowUpBossDriver implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver, SubscribesToChanges
 {
     public const INTEGRATION = 'follow-up-boss';
 
@@ -176,6 +177,17 @@ final readonly class FollowUpBossDriver implements ConnectorDriver, ConnectsWith
         $id = $note['id'] ?? null;
 
         return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Follow Up Boss returned no note id.');
+    }
+
+    /** `POST /v1/tasks`: a follow-up for the person, due on a day. */
+    public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string
+    {
+        $task = $this->json($this->http($token)->post(self::BASE.'/tasks', array_filter([
+            'personId' => (int) $personId, 'name' => mb_substr($title, 0, 200), 'type' => 'Follow Up', 'dueDate' => $due?->toDateString(),
+        ], static fn (mixed $value): bool => $value !== null)));
+        $id = $task['id'] ?? null;
+
+        return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Follow Up Boss returned no task id.');
     }
 
     public function setTaskDone(Connection $connection, string $token, string $taskId, bool $done): void

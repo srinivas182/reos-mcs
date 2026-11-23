@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\Lofty;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Drivers\FollowUpBoss\WebhookTarget;
 use App\Connections\Exceptions\AccessRevoked;
@@ -44,7 +45,7 @@ use LogicException;
  * 15-minute schedule is the backstop. Every request asks for real HTTP error
  * statuses (`X-Error-Status: true`).
  */
-final readonly class LoftyDriver implements ConnectorDriver, ConnectsWithApiKey, CrmDriver, SubscribesToChanges
+final readonly class LoftyDriver implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver, SubscribesToChanges
 {
     public const INTEGRATION = 'lofty';
 
@@ -174,6 +175,21 @@ final readonly class LoftyDriver implements ConnectorDriver, ConnectsWithApiKey,
         $id = $note['noteId'] ?? null;
 
         return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Lofty returned no note id.');
+    }
+
+    /**
+     * `POST /v1.0/tasks`: Lofty needs a deadline (epoch milliseconds), so a
+     * task with no date is due at the end of today, for the agent.
+     */
+    public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string
+    {
+        $deadline = ($due ?? CarbonImmutable::now())->endOfDay()->utc();
+        $task = $this->json($this->http($token)->post(self::BASE.'/v1.0/tasks', [
+            'leadId' => (int) $personId, 'content' => mb_substr($title, 0, 2000), 'deadline' => $deadline->getTimestampMs(), 'type' => 'Other', 'assignedRole' => 'Agent',
+        ]));
+        $id = $task['taskId'] ?? null;
+
+        return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Lofty returned no task id.');
     }
 
     public function setTaskDone(Connection $connection, string $token, string $taskId, bool $done): void

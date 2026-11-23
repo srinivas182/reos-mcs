@@ -80,3 +80,80 @@ export async function sendPhoneContacts(records: PhoneRecord[]): Promise<number 
 
   return records.length;
 }
+
+/* The CRM hub (B8.3, ADR 0034): the list by tab or search, the AI next step, tasks and touches. */
+
+export type ContactRow = Schemas['ContactRowResource'];
+export type Insight = {
+  summary: string;
+  next_step: string;
+  why: string;
+  channel: 'call' | 'text' | 'email' | 'note';
+  draft: string | null;
+  engine: 'ai' | 'simulator';
+  generated_at: string;
+};
+export type Segment = 'all' | 'new' | 'active' | 'past' | 'sphere';
+export const SEGMENTS: Segment[] = ['all', 'new', 'active', 'past', 'sphere'];
+
+export function useContactList(segment: Segment, search: string) {
+  const { status } = useAuth();
+  const [rows, setRows] = useState<ContactRow[] | null>(null);
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  const load = useCallback(async () => {
+    if (status !== 'signedIn') return;
+    const q = search.trim();
+    const { data } = await api().GET('/contacts', { params: { query: { segment, ...(q === '' ? {} : { q }) } } });
+    setRows(data?.data ?? []);
+    setCounts(data?.counts ?? {});
+  }, [status, segment, search]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
+
+  return { rows, counts, reload: load };
+}
+
+/** Today's "do this now" (Agent App Journey screen 6), for agents only. */
+export function useTodayInsight(enabled: boolean) {
+  const { status } = useAuth();
+  const [today, setToday] = useState<{ contact: Contact; insight: Insight } | null>(null);
+
+  const load = useCallback(async () => {
+    if (status !== 'signedIn' || !enabled) return;
+    const { data } = await api().GET('/contacts/today');
+    setToday((data?.data as { contact: Contact; insight: Insight } | null | undefined) ?? null);
+  }, [status, enabled]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
+
+  return { today, reload: load };
+}
+
+export async function askInsight(contact: string): Promise<Insight | null> {
+  const { data } = await api().POST('/contacts/{contact}/insight', { params: { path: { contact } } });
+
+  return (data?.data as Insight | undefined) ?? null;
+}
+
+/** Logs a call or text made from the agent's own phone; it reaches every CRM that knows them. */
+export async function logTouch(contact: string, channel: 'call' | 'text', body: string | null = null): Promise<boolean> {
+  const { response } = await api().POST('/contacts/{contact}/touches', { params: { path: { contact } }, body: { channel, body } });
+
+  return response.ok;
+}
+
+/** `tel:` or `sms:` with the message, opened in the phone's own app. */
+export function reachUri(channel: 'call' | 'text', phone: string, body = ''): string {
+  if (channel === 'call') return `tel:${phone}`;
+
+  return body.trim() === '' ? `sms:${phone}` : `sms:${phone}?&body=${encodeURIComponent(body)}`;
+}
