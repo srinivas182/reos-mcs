@@ -1,8 +1,12 @@
 import type {
+    Cma,
     ListingRow,
     ListingsOverview,
+    ListingView,
     MemberRow,
+    PageSettings,
     PostDraft,
+    PublicAgentPage,
 } from './types';
 
 /** James Miller at HAR (journey cast), on the Simulator. */
@@ -117,6 +121,92 @@ export function draft(overrides: Partial<PostDraft> = {}): PostDraft {
         attribution: 'Listing courtesy of Lone Star Realty. Source: HAR MLS.',
         saved_at: null,
         sample: true,
+        ...overrides,
+    };
+}
+
+const view = (overrides: Partial<ListingView> = {}): ListingView => {
+    const {
+        role: _role,
+        can_post: _post,
+        open_house: _house,
+        ...rest
+    } = listing();
+
+    return { ...rest, ...overrides };
+};
+
+/** A CMA for 2418 Willow Bend Dr: Katy sales within a mile. */
+export function cma(overrides: Partial<Cma> = {}): Cma {
+    return {
+        subject: view(),
+        radius: 1,
+        months: 6,
+        comparables: [
+            {
+                listing: view({
+                    uuid: 'c1',
+                    address: '2502 Willow Bend Dr, Katy, TX 77494',
+                    status: 'closed',
+                    price: 472000,
+                    close_price: 463000,
+                    area: 2780,
+                    price_per_sqft: 167,
+                    days_on_market: 35,
+                    attribution:
+                        'Listing courtesy of Bayou City Homes. Source: HAR MLS.',
+                }),
+                distance: 0.1,
+                adjusted: 476000,
+            },
+            {
+                listing: view({
+                    uuid: 'c2',
+                    address: '2215 Lakeview Bend Dr, Katy, TX 77494',
+                    status: 'active',
+                    price: 499000,
+                    area: 2920,
+                    price_per_sqft: 171,
+                    days_on_market: 8,
+                    attribution:
+                        'Listing courtesy of Bayou City Homes. Source: HAR MLS.',
+                }),
+                distance: 0.3,
+                adjusted: 487000,
+            },
+        ],
+        sold: 4,
+        active: 2,
+        median_per_sqft: 168,
+        low: 468000,
+        high: 488000,
+        suggested: 478000,
+        sample: true,
+        ...overrides,
+    };
+}
+
+export const pageSettings = (
+    overrides: Partial<PageSettings> = {},
+): PageSettings => ({
+    handle: 'james-miller',
+    published: true,
+    bio: 'Katy homes, twelve years.',
+    url: 'https://reos.com/agent/james-miller',
+    ...overrides,
+});
+
+export function publicPage(
+    overrides: Partial<PublicAgentPage> = {},
+): PublicAgentPage {
+    return {
+        name: 'James Miller',
+        brokerage: 'Lone Star Realty',
+        licences: [{ state: 'TX', number: '0798765', type: 'sales_agent' }],
+        bio: 'Katy homes, twelve years.',
+        listings: [view()],
+        sample: true,
+        url: 'https://reos.com/agent/james-miller',
         ...overrides,
     };
 }

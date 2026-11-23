@@ -74,3 +74,44 @@ export type ListingsOverview = {
     sample: boolean;
     synced_at: string | null;
 };
+
+/** A listing as the listing service shows it for a CMA or a public page (no agent role). */
+export type ListingView = Omit<ListingRow, 'role' | 'can_post' | 'open_house'>;
+
+/** A CMA for one of the agent's listings (B10.2b). */
+export type Cma = {
+    subject: ListingView;
+    radius: number;
+    months: number;
+    comparables: {
+        listing: ListingView;
+        distance: number;
+        adjusted: number | null;
+    }[];
+    sold: number;
+    active: number;
+    median_per_sqft: number | null;
+    low: number | null;
+    high: number | null;
+    suggested: number | null;
+    sample: boolean;
+};
+
+/** The agent's public page settings (B10.2b). */
+export type PageSettings = {
+    handle: string;
+    published: boolean;
+    bio: string | null;
+    url: string;
+};
+
+/** What the public sees at /agent/{handle}. */
+export type PublicAgentPage = {
+    name: string;
+    brokerage: string | null;
+    licences: { state: string; number: string; type: string }[];
+    bio: string | null;
+    listings: ListingView[];
+    sample: boolean;
+    url: string;
+};

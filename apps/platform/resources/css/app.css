@@ -82,3 +82,10 @@
         outline-offset: var(--reos-focus-offset);
     }
 }
+
+/* Printed pages (a CMA, B10.2b) leave out the app's sidebar. */
+@media print {
+    [data-slot='sidebar'] {
+        display: none !important;
+    }
+}

@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { ListingCard } from '@/components/listings/listing-card';
 import { MemberCard } from '@/components/listings/member-card';
+import { PageCard } from '@/components/listings/page-card';
 import { PostDialog } from '@/components/listings/post-dialog';
 import type {
     ListingRow,
     ListingsOverview,
     MemberRow,
+    PageSettings,
     PostDraft,
 } from '@/components/listings/types';
 import { PageHeader } from '@/components/page-header';
@@ -18,7 +20,9 @@ import { toast } from 'sonner';
 import { getJson, postJson, putJson } from '@/lib/content';
 import { undoToast } from '@/lib/undo-toast';
 import { index as deals } from '@/routes/deals';
+import { cma } from '@/routes/deals/listings';
 import { confirm, decline, unlink } from '@/routes/deals/listings/members';
+import { update as pageUpdate } from '@/routes/deals/listings/page';
 import {
     show as postShow,
     update as postUpdate,
@@ -33,8 +37,10 @@ import { edit as profile } from '@/routes/profile';
  */
 export default function ListingsPage({
     listings,
+    page,
 }: {
     listings: ListingsOverview;
+    page: PageSettings;
 }) {
     const { t, i18n } = useTranslation();
     const [busy, setBusy] = useState(false);
@@ -57,6 +63,11 @@ export default function ListingsPage({
             setPost({ open: false, draft: null });
             setError(e instanceof Error ? e.message : String(e));
         }
+    };
+    const savePage = async (published: boolean, bio: string) => {
+        await putJson(pageUpdate().url, { published, bio });
+        router.reload({ only: ['page'] });
+        toast.success(t('listings.page.saved'));
     };
     const savePost = async (caption: string, photos: string[]) => {
         if (!post.draft) return;
@@ -226,10 +237,14 @@ export default function ListingsPage({
                                 <ListingCard
                                     listing={row}
                                     onPost={() => void openPost(row)}
+                                    cmaHref={cma(row.uuid).url}
                                 />
                             </li>
                         ))}
                     </ul>
+                ) : null}
+                {listings.linked.length > 0 ? (
+                    <PageCard page={page} onSave={savePage} />
                 ) : null}
             </div>
             <PostDialog

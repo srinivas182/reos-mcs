@@ -7725,6 +7725,68 @@
         "notYours": "Solo puede publicar sobre sus propios listados."
       },
       "share": "Compartir"
+    },
+    "cma": {
+      "open": "CMA",
+      "openFor": "CMA de {{address}}",
+      "title": "Análisis comparativo de mercado",
+      "description": "Casas vendidas y en venta cerca de {{address}}, con el precio por pie cuadrado de cada una aplicado a su tamaño.",
+      "back": "Mis listados",
+      "print": "Imprimir o guardar como PDF",
+      "radius": "A menos de",
+      "radiusOption": "{{miles}} mi",
+      "months": "Vendidas en los últimos",
+      "monthsOption": "{{count}} meses",
+      "suggested": "Rango sugerido",
+      "suggestedBody": "De {{sold}} ventas: la mitad central de sus precios ajustados al tamaño de esta casa.",
+      "suggestedAll": "De las {{count}} comparables (menos de 3 ventas).",
+      "median": "Precio mediano por pie²",
+      "comparables": "Comparables",
+      "soldActive": "{{sold}} vendidas, {{active}} en el mercado",
+      "columns": {
+        "address": "Dirección",
+        "status": "Estado",
+        "price": "Precio",
+        "area": "Pies²",
+        "perSqft": "$/pie²",
+        "adjusted": "Ajustado a esta casa",
+        "distance": "Distancia",
+        "days": "Días en el mercado"
+      },
+      "distance": "{{miles}} mi",
+      "subject": "Esta casa",
+      "empty": {
+        "title": "No hay comparables en esta zona",
+        "description": "Amplíe la distancia o el período."
+      },
+      "attributions": "Datos de listados del MLS. La correduría de cada listado aparece en su fila.",
+      "errors": {
+        "noLocation": "Este listado no tiene ubicación en el mapa del MLS, así que no hay con qué compararlo."
+      }
+    },
+    "page": {
+      "title": "Su página pública",
+      "description": "Su nombre, correduría, números de licencia y listados del MLS, según lo permite cada MLS.",
+      "publish": "Publicar mi página",
+      "published": "Publicada",
+      "hidden": "Sin publicar",
+      "bio": "Sobre usted",
+      "bioHint": "Una o dos frases para compradores y vendedores. Hasta 600 caracteres.",
+      "save": "Guardar",
+      "saved": "Página guardada",
+      "view": "Ver página",
+      "copy": "Copiar enlace",
+      "link": "La dirección de su página"
+    },
+    "public": {
+      "title": "{{name}}, agente de bienes raíces",
+      "listingsTitle": "Listados",
+      "noListings": "No hay listados para mostrar en este momento.",
+      "license": "Licencia de {{state}} n.º {{number}}",
+      "sampleNote": "Datos de muestra: estos listados son ficticios para la demostración de REOS.",
+      "cpn": "TREC Consumer Protection Notice",
+      "iabs": "Texas Real Estate Commission Information About Brokerage Services",
+      "metaDescription": "Listados de {{name}}{{brokerage}}. Datos de listados del MLS."
     }
   }
 }

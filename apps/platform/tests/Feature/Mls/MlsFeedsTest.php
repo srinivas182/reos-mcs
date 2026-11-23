@@ -106,7 +106,7 @@ describe('the MLS feeds (B10.1)', function () {
     it('replicate the Simulator\'s demo listings, members, offices and open houses, leaving off-market ones out', function () {
         $this->artisan('reos:mls:sync --now')->assertSuccessful();
 
-        expect(MlsListing::query()->where('integration', 'mls-har')->count())->toBe(6)
+        expect(MlsListing::query()->where('integration', 'mls-har')->count())->toBe(12)
             ->and(MlsListing::query()->where('listing_key', 'HAR-L7')->exists())->toBeFalse()
             ->and(MlsListing::query()->where('integration', 'mls-ntreis')->count())->toBe(2)
             ->and(MlsMember::query()->where('licence_digits', '798765')->sole()->name)->toBe('James Miller')
@@ -120,7 +120,7 @@ describe('the MLS feeds (B10.1)', function () {
 
         // The next run repeats only the last instant (upserts), and adds nothing.
         $this->artisan('reos:mls:sync --now --mls=mls-har')->assertSuccessful();
-        expect(MlsListing::query()->where('integration', 'mls-har')->count())->toBe(6);
+        expect(MlsListing::query()->where('integration', 'mls-har')->count())->toBe(12);
     });
 
     it('queue one job per MLS without --now', function () {
@@ -209,7 +209,7 @@ describe('the RESO Web API driver (B10.1, ADR 0042)', function () {
 
     it('never mixes sample data with real: switching from the Simulator purges it', function () {
         mlsSync('mls-har');
-        expect(MlsListing::query()->where('integration', 'mls-har')->count())->toBe(6);
+        expect(MlsListing::query()->where('integration', 'mls-har')->count())->toBe(12);
 
         mlsOn('mls-har', IntegrationMode::Sandbox, ['access_token' => 't']);
         fakeReso('api.bridgedataoutput.com', ['Property' => [[resoListing('R1', 'Active', '2026-11-22T10:00:00Z')]], 'keys' => [[['ListingKey' => 'R1']]]]);

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licence\PassesAndOffersController;
 use App\Http\Controllers\Api\Licence\SwitchController;
+use App\Http\Controllers\Api\Listings\CmaController;
 use App\Http\Controllers\Api\Listings\ListingPostController;
 use App\Http\Controllers\Api\Listings\ListingsController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
@@ -54,6 +55,7 @@ use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Licence\LicenceJourneyPageController;
 use App\Http\Controllers\Licence\PassesAndOffersPageController;
+use App\Http\Controllers\Listings\AgentPublicPageController;
 use App\Http\Controllers\Listings\ListingsPageController;
 use App\Http\Controllers\Mentors\MentorsPageController;
 use App\Http\Controllers\Messaging\AnnouncementController;
@@ -109,6 +111,8 @@ Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind',
 Route::get('groups/{group}', [ChallengePageController::class, 'group'])->whereUuid('group')->middleware('throttle:60,1,groups')->name('groups.show');
 // A challenge's share link (A9.3b): open to anyone; sign in to accept.
 Route::get('challenges/{challenge}', [ChallengePageController::class, 'show'])->whereUuid('challenge')->middleware('throttle:60,1,challenges')->name('challenges.show');
+// An agent's public page (B10.2b): their MLS listings with each MLS's rules applied.
+Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
 Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
 Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
@@ -171,6 +175,8 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::post('deals/listings/members/unlink', [ListingsController::class, 'unlink'])->middleware('throttle:20,1,listings-members')->name('deals.listings.members.unlink');
     Route::get('deals/listings/{listing}/post', [ListingPostController::class, 'show'])->whereUuid('listing')->name('deals.listings.post.show');
     Route::put('deals/listings/{listing}/post', [ListingPostController::class, 'update'])->whereUuid('listing')->middleware('throttle:30,1,listing-post')->name('deals.listings.post.update');
+    Route::get('deals/listings/{listing}/cma', [ListingsPageController::class, 'cma'])->whereUuid('listing')->middleware('throttle:30,1,listing-cma')->name('deals.listings.cma');
+    Route::put('deals/listings/page', [CmaController::class, 'updatePage'])->middleware('throttle:20,1,listing-page')->name('deals.listings.page.update');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,deals')->name('deals.store');
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.update');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.stage');

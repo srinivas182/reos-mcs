@@ -212,6 +212,15 @@
     - The photos the MLS allows; a suggested caption ("Just listed: …").
     - The attribution is always added and can't be edited. One post per listing, saved for the content studio (B11).
   - **Open houses** on the agent's REOS calendar as read-only showings that follow the MLS.
+- **As built, B10.2b** (ADR 0042 §14–15):
+  - **CMA** (web page from My listings, printable as PDF; phone screen):
+    - Sold and active comparables from the same MLS and property type within 0.5–5 miles and 3–12 months, nearest first.
+    - Each is adjusted to the subject's size by price per square foot. The suggested range is the middle half of adjusted sales; the median price per square foot is shown.
+    - Each comparable keeps its MLS attribution.
+  - **Public agent page** (`/agent/{handle}`, published from My listings on web and phone):
+    - Name, brokerage, license numbers, bio, and listings with the public rules applied: fresh only, consumer flags, no Texas sold prices, attribution.
+    - TREC's Consumer Protection Notice and IABS links. Sample data is marked and `noindex`.
+  - **Demo:** James Miller's page is published.
 - **Done when:** a listing post uses MLS photos within the licence terms. ✅ Met (B10.2a): `ListingServicesTest` saves a post with the agent's choice of the listing's MLS photos, refuses others, and caps a post at the MLS's limit and 10.
 
 ### B10.3 Lookups and OCR (Team B)

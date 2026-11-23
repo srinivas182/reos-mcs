@@ -1,6 +1,6 @@
 # ADR 0042: MLS feeds and listing rules
 
-- Status: Accepted (MLS feeds and My listings, B10.1; listing rules, posts and open houses, B10.2a)
+- Status: Accepted (MLS feeds and My listings, B10.1; listing rules, posts and open houses, B10.2a; CMAs and the public agent page, B10.2b)
 - Date: 2026-11-24 (Sprint 10; spec in docs/sprints/S10-spec.md)
 
 ## Context
@@ -71,10 +71,24 @@ Agents want their listings in REOS, so posts, CMAs, their public page and open h
     - The event is read-only in REOS and follows the MLS after each sync.
     - It is removed when the MLS cancels the open house or the agent unlinks.
 
+## Decision: CMAs and the public agent page (B10.2b)
+
+14. **CMA** for one of the agent's own listings:
+    - **Comparables:** sold (within 3, 6 or 12 months, where the MLS allows sold data in CMAs) and active or pending listings from the same MLS and of the same property type, within 0.5 to 5 miles. A bounding box finds candidates first; the great-circle distance decides. Nearest first, at most 25.
+    - **Adjustment:** each comparable's price per square foot is applied to the subject's size.
+    - **Range:** the 25th to 75th percentile of the adjusted sold prices (all comparables when fewer than three sold), with the median as the suggestion.
+    - **Export:** the CMA is a page that prints or saves as PDF; the app's shell is left out of print. Every comparable shows its MLS attribution.
+15. **Public agent page** at `/agent/{handle}`: off until the agent publishes it from My listings.
+    - **Content:** name, brokerage (from the MLS office), active license numbers, a short bio, and the agent's listings through the listing service for public display (fresh feeds only, the MLS's consumer flags, no sold prices in Texas, attribution on each).
+    - **TREC notices:** the page links TREC's Consumer Protection Notice and Information About Brokerage Services with the link text 22 TAC §531.18 and §531.20 require.
+    - **Handle:** taken from the agent's name (`james-miller`, then `james-miller-2`).
+    - **Sample data:** it is marked as sample and kept out of search engines (`noindex`).
+
 ## Consequences
 
 - B10.2's listing service, and through it posts, CMAs, agent pages and open houses, reads these tables. Display rules per MLS are added to the register's `mls` block and enforced there.
 - An MLS licence arriving is a mode switch in Settings › Integrations, not a release.
+- The IABS link points to TREC's form page. A brokerage's own completed IABS (which §531.20 expects) is a brokerage setting to add with the brokerage profile.
 - Feeds hold no contact details (no member emails or phones), so the MLS tables carry no personal data beyond names and licence numbers already public on TREC.
 
 ## Alternatives considered

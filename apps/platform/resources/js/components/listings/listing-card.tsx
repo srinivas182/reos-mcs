@@ -1,4 +1,11 @@
-import { BedDouble, CalendarDays, Home, Share2 } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import {
+    BedDouble,
+    CalendarDays,
+    ChartColumn,
+    Home,
+    Share2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import { money } from '@/lib/billing';
@@ -20,10 +27,16 @@ const TONES: Record<string, string> = {
 export function ListingCard({
     listing,
     onPost,
+    cmaHref,
+    hideRole = false,
 }: {
     listing: ListingRow;
     /** Opens the listing post (shown when the MLS allows a post). */
     onPost?: () => void;
+    /** The listing's CMA (B10.2b). */
+    cmaHref?: string;
+    /** On the public page: no "Listing agent". */
+    hideRole?: boolean;
 }) {
     const { t, i18n } = useTranslation();
     const dollars = (value: number) => money(value * 100, i18n.language);
@@ -96,9 +109,9 @@ export function ListingCard({
                     </p>
                 ) : null}
                 <p className="text-sm text-muted-foreground">
-                    {t(`listings.role.${listing.role}`)}
+                    {hideRole ? '' : t(`listings.role.${listing.role}`)}
                     {listing.listing_id
-                        ? ` · ${t('listings.mlsNumber', { mls: listing.short_name, id: listing.listing_id })}`
+                        ? `${hideRole ? '' : ' · '}${t('listings.mlsNumber', { mls: listing.short_name, id: listing.listing_id })}`
                         : ''}
                     {listing.days_on_market !== null
                         ? ` · ${t('listings.daysOnMarket', { count: listing.days_on_market })}`
@@ -118,18 +131,33 @@ export function ListingCard({
                         )}
                     </p>
                 ) : null}
-                {onPost && listing.can_post ? (
-                    <Button
-                        variant="outline"
-                        onClick={onPost}
-                        aria-label={t('listings.post.createFor', {
-                            address: listing.address,
-                        })}
-                    >
-                        <Share2 aria-hidden />
-                        {t('listings.post.create')}
-                    </Button>
-                ) : null}
+                <div className="flex flex-wrap gap-3">
+                    {onPost && listing.can_post ? (
+                        <Button
+                            variant="outline"
+                            onClick={onPost}
+                            aria-label={t('listings.post.createFor', {
+                                address: listing.address,
+                            })}
+                        >
+                            <Share2 aria-hidden />
+                            {t('listings.post.create')}
+                        </Button>
+                    ) : null}
+                    {cmaHref ? (
+                        <Button asChild variant="outline">
+                            <Link
+                                href={cmaHref}
+                                aria-label={t('listings.cma.openFor', {
+                                    address: listing.address,
+                                })}
+                            >
+                                <ChartColumn aria-hidden />
+                                {t('listings.cma.open')}
+                            </Link>
+                        </Button>
+                    ) : null}
+                </div>
             </div>
         </article>
     );

@@ -9273,6 +9273,704 @@
                 }
             }
         },
+        "/listings/{listing}/cma": {
+            "get": {
+                "operationId": "listings.cma",
+                "description": "Sold (within `months`) and active comparables from the same MLS within `radius` miles, nearest first; each one's price per square foot applied to my listing's size, and the range (25th to 75th percentile) from what sold.",
+                "summary": "A CMA for one of my listings",
+                "tags": [
+                    "Cma"
+                ],
+                "parameters": [
+                    {
+                        "name": "listing",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "radius",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "number",
+                                "null"
+                            ],
+                            "enum": [
+                                "0.5",
+                                "1",
+                                "2",
+                                "5",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "months",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "integer",
+                                "null"
+                            ],
+                            "enum": [
+                                "3",
+                                "6",
+                                "12",
+                                null
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "subject": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "mls": {
+                                                            "type": "string"
+                                                        },
+                                                        "short_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "listing_id": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "status": {
+                                                            "type": "string"
+                                                        },
+                                                        "address": {
+                                                            "type": "string"
+                                                        },
+                                                        "city": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "postal_code": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "price": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "close_price": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "close_date": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "beds": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "baths": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "area": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "price_per_sqft": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "photo": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "url": {
+                                                                    "type": "string"
+                                                                },
+                                                                "caption": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "url",
+                                                                "caption"
+                                                            ]
+                                                        },
+                                                        "photos": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "caption": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "url",
+                                                                    "caption"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "listed_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_on_market": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "office": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "latitude": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "longitude": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "attribution": {
+                                                            "type": "string"
+                                                        },
+                                                        "logo_url": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "sample": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "uuid",
+                                                        "mls",
+                                                        "short_name",
+                                                        "listing_id",
+                                                        "status",
+                                                        "address",
+                                                        "city",
+                                                        "postal_code",
+                                                        "price",
+                                                        "close_price",
+                                                        "close_date",
+                                                        "beds",
+                                                        "baths",
+                                                        "area",
+                                                        "price_per_sqft",
+                                                        "photo",
+                                                        "photos",
+                                                        "listed_on",
+                                                        "days_on_market",
+                                                        "office",
+                                                        "latitude",
+                                                        "longitude",
+                                                        "attribution",
+                                                        "logo_url",
+                                                        "sample"
+                                                    ]
+                                                },
+                                                "radius": {
+                                                    "type": "number"
+                                                },
+                                                "months": {
+                                                    "type": "integer"
+                                                },
+                                                "comparables": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "listing": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "uuid": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "mls": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "short_name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "listing_id": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "status": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "address": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "city": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "postal_code": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "price": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "close_price": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "close_date": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "beds": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "baths": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "area": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "price_per_sqft": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "photo": {
+                                                                        "type": [
+                                                                            "object",
+                                                                            "null"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "url": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "caption": {
+                                                                                "type": [
+                                                                                    "string",
+                                                                                    "null"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "url",
+                                                                            "caption"
+                                                                        ]
+                                                                    },
+                                                                    "photos": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "url": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "caption": {
+                                                                                    "type": [
+                                                                                        "string",
+                                                                                        "null"
+                                                                                    ]
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "url",
+                                                                                "caption"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "listed_on": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "days_on_market": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "office": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "latitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "longitude": {
+                                                                        "type": [
+                                                                            "number",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "attribution": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "logo_url": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "sample": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "uuid",
+                                                                    "mls",
+                                                                    "short_name",
+                                                                    "listing_id",
+                                                                    "status",
+                                                                    "address",
+                                                                    "city",
+                                                                    "postal_code",
+                                                                    "price",
+                                                                    "close_price",
+                                                                    "close_date",
+                                                                    "beds",
+                                                                    "baths",
+                                                                    "area",
+                                                                    "price_per_sqft",
+                                                                    "photo",
+                                                                    "photos",
+                                                                    "listed_on",
+                                                                    "days_on_market",
+                                                                    "office",
+                                                                    "latitude",
+                                                                    "longitude",
+                                                                    "attribution",
+                                                                    "logo_url",
+                                                                    "sample"
+                                                                ]
+                                                            },
+                                                            "distance": {
+                                                                "type": "number"
+                                                            },
+                                                            "adjusted": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "listing",
+                                                            "distance",
+                                                            "adjusted"
+                                                        ]
+                                                    }
+                                                },
+                                                "sold": {
+                                                    "type": "integer"
+                                                },
+                                                "active": {
+                                                    "type": "integer"
+                                                },
+                                                "median_per_sqft": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "low": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "high": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "suggested": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "subject",
+                                                "radius",
+                                                "months",
+                                                "comparables",
+                                                "sold",
+                                                "active",
+                                                "median_per_sqft",
+                                                "low",
+                                                "high",
+                                                "suggested",
+                                                "sample"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/listings/page": {
+            "get": {
+                "operationId": "listings.page",
+                "description": "Whether it's published, its address, and my short bio.",
+                "summary": "My public page",
+                "tags": [
+                    "Cma"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "handle": {
+                                                    "type": "string"
+                                                },
+                                                "published": {
+                                                    "type": "boolean"
+                                                },
+                                                "bio": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "handle",
+                                                "published",
+                                                "bio",
+                                                "url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "listings.page.update",
+                "description": "It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows.",
+                "summary": "Publish or hide my public page",
+                "tags": [
+                    "Cma"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AgentPageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "handle": {
+                                                    "type": "string"
+                                                },
+                                                "published": {
+                                                    "type": "boolean"
+                                                },
+                                                "bio": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "handle",
+                                                "published",
+                                                "bio",
+                                                "url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/practice/hub": {
             "get": {
                 "operationId": "practice.hub",
@@ -37090,6 +37788,26 @@
                     "number"
                 ],
                 "title": "AddLicenceRequest"
+            },
+            "AgentPageRequest": {
+                "type": "object",
+                "description": "The agent's public page: on or off, and a short bio (B10.2b).",
+                "properties": {
+                    "published": {
+                        "type": "boolean"
+                    },
+                    "bio": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 600
+                    }
+                },
+                "required": [
+                    "published"
+                ],
+                "title": "AgentPageRequest"
             },
             "AnswerQuestionRequest": {
                 "type": "object",

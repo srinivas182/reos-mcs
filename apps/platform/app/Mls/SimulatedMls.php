@@ -98,13 +98,13 @@ final readonly class SimulatedMls implements ResoSource
     }
 
     /**
-     * @param  array{0: string, 1: string, 2: string, 3: string, 4: int, 5: int, 6: float, 7: int, 8: int, 9: int|null, 10: string, 11: int}  $l
+     * @param  array{0: string, 1: string, 2: string, 3: string, 4: int, 5: int, 6: float, 7: int, 8: int, 9: int|null, 10: string, 11: int, 12: float, 13: float}  $l
      * @param  array{offices: array<int, array{0: string, 1: string}>, members: array<int, array{0: string, 1: string, 2: int}>}  $data
      * @return array<string, mixed>
      */
     private function listing(string $prefix, int $i, array $l, array $data, string $modified): array
     {
-        [$street, $city, $zip, $status, $price, $beds, $baths, $area, $agent, $coAgent, $type, $daysListed] = $l;
+        [$street, $city, $zip, $status, $price, $beds, $baths, $area, $agent, $coAgent, $type, $daysListed, $latitude, $longitude] = $l;
         $member = $data['members'][$agent];
         $office = $data['offices'][$member[2]];
         $photos = array_map(static fn (int $n): array => [
@@ -117,7 +117,8 @@ final readonly class SimulatedMls implements ResoSource
             'PropertyType' => 'Residential', 'PropertySubType' => $type, 'UnparsedAddress' => "{$street}, {$city}, TX {$zip}",
             'City' => $city, 'StateOrProvince' => 'TX', 'PostalCode' => $zip, 'ListPrice' => $price, 'OriginalListPrice' => $price,
             'ClosePrice' => $status === 'Closed' ? (int) round($price * 0.98, -3) : null,
-            'CloseDate' => $status === 'Closed' ? $this->today->subDays(45)->toDateString() : null,
+            'CloseDate' => $status === 'Closed' ? $this->today->subDays(max(1, $daysListed - 35))->toDateString() : null,
+            'Latitude' => $latitude, 'Longitude' => $longitude,
             'BedroomsTotal' => $beds, 'BathroomsTotalDecimal' => $baths, 'LivingArea' => $area, 'YearBuilt' => 2004 + $i,
             'ListAgentKey' => "{$prefix}-M{$agent}", 'ListAgentFullName' => $member[0],
             'CoListAgentKey' => $coAgent === null ? null : "{$prefix}-M{$coAgent}",
@@ -131,7 +132,8 @@ final readonly class SimulatedMls implements ResoSource
     /**
      * Demo data per dataset: offices [name, city]; members [name, TREC licence,
      * office]; listings [street, city, zip, StandardStatus, price, beds,
-     * baths, living area, list agent, co-list agent, sub-type, days listed];
+     * baths, living area, list agent, co-list agent, sub-type, days listed,
+     * latitude, longitude] (sold ones closed 35 days after listing);
      * open houses [listing, days ahead, start, end, type].
      */
     private const DATA = [
@@ -139,13 +141,20 @@ final readonly class SimulatedMls implements ResoSource
             'offices' => [1 => ['Lone Star Realty', 'Katy'], 2 => ['Bayou City Homes', 'Houston']],
             'members' => [1 => ['James Miller', '0798765', 1], 2 => ['Dana Brooks', '0711111', 1], 3 => ['Linda Park', '9012345', 1], 4 => ['Maria Lopez', '0722222', 2]],
             'listings' => [
-                1 => ['2418 Willow Bend Dr', 'Katy', '77494', 'Active', 489_000, 4, 3.0, 2850, 1, null, 'Single Family Residence', 12],
-                2 => ['1107 Cypress Glen Ct', 'Katy', '77450', 'Coming Soon', 365_000, 3, 2.0, 1940, 1, null, 'Single Family Residence', 2],
-                3 => ['5520 Heron Lake Ln', 'Houston', '77041', 'Pending', 412_500, 4, 2.5, 2410, 2, 1, 'Single Family Residence', 34],
-                4 => ['803 Magnolia Trace', 'Katy', '77449', 'Closed', 338_000, 3, 2.0, 1780, 1, null, 'Single Family Residence', 80],
-                5 => ['9150 Briar Forest Dr #12', 'Houston', '77063', 'Active', 275_000, 2, 2.0, 1320, 4, null, 'Condominium', 21],
-                6 => ['31 Sable Oak Ct', 'Fulshear', '77441', 'Active Under Contract', 615_000, 5, 4.0, 3720, 2, null, 'Single Family Residence', 18],
-                7 => ['4402 Pecan Hollow Dr', 'Katy', '77494', 'Withdrawn', 299_000, 3, 2.0, 1650, 1, null, 'Single Family Residence', 60],
+                1 => ['2418 Willow Bend Dr', 'Katy', '77494', 'Active', 489_000, 4, 3.0, 2850, 1, null, 'Single Family Residence', 12, 29.7858, -95.8245],
+                2 => ['1107 Cypress Glen Ct', 'Katy', '77450', 'Coming Soon', 365_000, 3, 2.0, 1940, 1, null, 'Single Family Residence', 2, 29.7702, -95.7489],
+                3 => ['5520 Heron Lake Ln', 'Houston', '77041', 'Pending', 412_500, 4, 2.5, 2410, 2, 1, 'Single Family Residence', 34, 29.8611, -95.5869],
+                4 => ['803 Magnolia Trace', 'Katy', '77449', 'Closed', 338_000, 3, 2.0, 1780, 1, null, 'Single Family Residence', 80, 29.8126, -95.802],
+                5 => ['9150 Briar Forest Dr #12', 'Houston', '77063', 'Active', 275_000, 2, 2.0, 1320, 4, null, 'Condominium', 21, 29.7488, -95.5228],
+                6 => ['31 Sable Oak Ct', 'Fulshear', '77441', 'Active Under Contract', 615_000, 5, 4.0, 3720, 2, null, 'Single Family Residence', 18, 29.693, -95.8977],
+                7 => ['4402 Pecan Hollow Dr', 'Katy', '77494', 'Withdrawn', 299_000, 3, 2.0, 1650, 1, null, 'Single Family Residence', 60, 29.7801, -95.8301],
+                // Comparables near Willow Bend for CMAs (B10.2b).
+                8 => ['2502 Willow Bend Dr', 'Katy', '77494', 'Closed', 472_000, 4, 3.0, 2780, 4, null, 'Single Family Residence', 70, 29.7866, -95.8231],
+                9 => ['2611 Spring Meadow Ln', 'Katy', '77494', 'Closed', 455_000, 4, 2.5, 2690, 4, null, 'Single Family Residence', 95, 29.7891, -95.8302],
+                10 => ['2207 Autumn Creek Dr', 'Katy', '77494', 'Closed', 512_000, 4, 3.5, 3010, 4, null, 'Single Family Residence', 120, 29.7812, -95.8189],
+                11 => ['2930 Elm Hollow Ct', 'Katy', '77494', 'Closed', 438_000, 3, 2.5, 2480, 4, null, 'Single Family Residence', 150, 29.7920, -95.8270],
+                12 => ['2215 Lakeview Bend Dr', 'Katy', '77494', 'Active', 499_000, 4, 3.0, 2920, 4, null, 'Single Family Residence', 8, 29.7839, -95.8211],
+                13 => ['2738 Prairie Grove Ln', 'Katy', '77494', 'Pending', 465_000, 4, 3.0, 2710, 4, null, 'Single Family Residence', 26, 29.7905, -95.8199],
             ],
             'open_houses' => [1 => [1, 3, '13:00', '16:00', 'Public'], 2 => [2, 5, '10:00', '12:00', 'Broker']],
         ],
@@ -153,8 +162,8 @@ final readonly class SimulatedMls implements ResoSource
             'offices' => [1 => ['Trinity Oak Realty', 'Dallas']],
             'members' => [1 => ['Grace Kim', '0733333', 1]],
             'listings' => [
-                1 => ['6120 Lakewood Blvd', 'Dallas', '75214', 'Active', 725_000, 4, 3.5, 3100, 1, null, 'Single Family Residence', 9],
-                2 => ['2207 Preston Ridge Dr', 'Frisco', '75034', 'Pending', 549_000, 4, 3.0, 2980, 1, null, 'Single Family Residence', 27],
+                1 => ['6120 Lakewood Blvd', 'Dallas', '75214', 'Active', 725_000, 4, 3.5, 3100, 1, null, 'Single Family Residence', 9, 32.816, -96.75],
+                2 => ['2207 Preston Ridge Dr', 'Frisco', '75034', 'Pending', 549_000, 4, 3.0, 2980, 1, null, 'Single Family Residence', 27, 33.121, -96.804],
             ],
             'open_houses' => [1 => [1, 4, '14:00', '16:00', 'Public']],
         ],
@@ -162,8 +171,8 @@ final readonly class SimulatedMls implements ResoSource
             'offices' => [1 => ['Hill Country Homes', 'Austin']],
             'members' => [1 => ['Tom Reyes', '0744444', 1]],
             'listings' => [
-                1 => ['1804 Barton Hills Dr', 'Austin', '78704', 'Active', 865_000, 3, 2.5, 2240, 1, null, 'Single Family Residence', 15],
-                2 => ['400 Rio Grande St #1508', 'Austin', '78701', 'Active', 499_000, 1, 1.0, 860, 1, null, 'Condominium', 40],
+                1 => ['1804 Barton Hills Dr', 'Austin', '78704', 'Active', 865_000, 3, 2.5, 2240, 1, null, 'Single Family Residence', 15, 30.256, -97.772],
+                2 => ['400 Rio Grande St #1508', 'Austin', '78701', 'Active', 499_000, 1, 1.0, 860, 1, null, 'Condominium', 40, 30.268, -97.749],
             ],
             'open_houses' => [],
         ],
@@ -171,8 +180,8 @@ final readonly class SimulatedMls implements ResoSource
             'offices' => [1 => ['Alamo Realty Group', 'San Antonio']],
             'members' => [1 => ['Sofia Garza', '0755555', 1]],
             'listings' => [
-                1 => ['322 King William St', 'San Antonio', '78204', 'Active', 590_000, 3, 2.0, 2050, 1, null, 'Single Family Residence', 6],
-                2 => ['15218 Stone Oak Pkwy', 'San Antonio', '78258', 'Coming Soon', 445_000, 4, 3.0, 2700, 1, null, 'Single Family Residence', 1],
+                1 => ['322 King William St', 'San Antonio', '78204', 'Active', 590_000, 3, 2.0, 2050, 1, null, 'Single Family Residence', 6, 29.414, -98.495],
+                2 => ['15218 Stone Oak Pkwy', 'San Antonio', '78258', 'Coming Soon', 445_000, 4, 3.0, 2700, 1, null, 'Single Family Residence', 1, 29.628, -98.476],
             ],
             'open_houses' => [],
         ],
