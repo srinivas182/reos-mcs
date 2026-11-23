@@ -77,7 +77,8 @@
     "recruiting": "Reclutamiento",
     "mentors": "Mentores",
     "goal": "Mi objetivo",
-    "plan": "Mi plan"
+    "plan": "Mi plan",
+    "ceWallet": "Cartera de CE"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -3561,7 +3562,8 @@
       "course_approvals": "Aprobaciones de cursos",
       "course_player": "Reproductor de cursos",
       "live_classes": "Clases en vivo",
-      "agent_modes": "Modos del agente"
+      "agent_modes": "Modos del agente",
+      "ce_wallet": "Cartera de CE"
     },
     "keys": {
       "licensing": {
@@ -3596,7 +3598,8 @@
         "first_renewal": "Primera renovación (SAE)",
         "no_repeat": "Cursos repetidos",
         "commission_meeting": "Crédito por reunión de la comisión (máximo)",
-        "deferral": "Aplazamiento de la CE"
+        "deferral": "Aplazamiento de la CE",
+        "renewal_steps": "Lista para renovar"
       },
       "advertising": {
         "license_holder_name": "Nombre del titular de la licencia",
@@ -3649,7 +3652,8 @@
         "first_renewal": "primera renovación",
         "no_repeat": "cursos repetidos",
         "commission_meeting": "crédito por reunión",
-        "deferral": "aplazamiento"
+        "deferral": "aplazamiento",
+        "renewal_steps": "lista para renovar"
       },
       "advertising": {
         "license_holder_name": "nombre del titular",
@@ -3694,7 +3698,74 @@
     "partHours": "{{done}} de {{hours}} h",
     "deferral": "¿Le falta tiempo? Puede pagar un cargo de aplazamiento de ${{fee}} y obtener {{days}} días más después de su fecha de renovación.",
     "sources": "Según {{sources}}.",
-    "whatYouNeed": "Lo que aún necesita"
+    "whatYouNeed": "Lo que aún necesita",
+    "wallet": {
+      "title": "Cartera de CE",
+      "description": "Cada hora de CE para su renovación, quién la reportó y lo que falta.",
+      "renewsOn": "Se renueva el {{date}}",
+      "daysLeft_one": "Queda {{count}} día",
+      "daysLeft_other": "Quedan {{count}} días",
+      "licence": "Licencia de {{state}} n.º {{number}}",
+      "hours": "{{done}} de {{required}} horas",
+      "required": "Cursos obligatorios",
+      "electives": "Optativos",
+      "completions": "Cursos completados en este periodo",
+      "emptyTitle": "Aún no tiene CE en este periodo",
+      "emptyBody": "Tome un curso de CE de REOS o agregue un certificado de otro proveedor.",
+      "status": {
+        "reos_reported": "Reportado por REOS",
+        "self_reported": "Reportado por usted",
+        "on_record": "En el registro de TREC"
+      },
+      "statusHint": {
+        "self_reported": "Ya cuenta para su renovación. REOS revisa el registro de TREC cada noche y lo marca como confirmado cuando aparece."
+      },
+      "trec": {
+        "title": "Registro de TREC",
+        "mce": {
+          "met": "TREC muestra su requisito de CE cumplido.",
+          "outstanding": "TREC muestra CE pendiente.",
+          "none": "TREC no muestra requisito de CE para esta licencia."
+        },
+        "education": {
+          "met": "TREC muestra su requisito de SAE cumplido.",
+          "outstanding": "TREC muestra SAE pendiente.",
+          "none": "TREC no muestra requisito de SAE."
+        },
+        "checked": "Revisado el {{date}}",
+        "unknown": "Aún no aparece en el archivo de TREC."
+      },
+      "addCertificate": "Agregar un certificado",
+      "buy": "Obtener cursos de CE",
+      "buyFrom": "Obtener cursos de CE · {{price}}",
+      "takeCe": "Tomar CE en Aprender",
+      "renew": {
+        "title": "Renueve su licencia",
+        "ready": "Su CE está completa. Así se renueva.",
+        "notReady": "Termine su CE primero y luego renueve con TREC.",
+        "expires": "Vence el {{date}}",
+        "renewed": "Ya renové con TREC",
+        "renewedDone": "Marcada como renovada",
+        "undoRenewed": "Deshacer",
+        "confirmed": "Renovada hasta el {{date}}",
+        "open": "Abrir",
+        "fees": "Las tarifas de renovación se pagan a TREC, no a REOS.",
+        "steps": "Lista para renovar",
+        "done": "Hecho",
+        "todo": "Pendiente"
+      },
+      "notify": {
+        "dueTitle": "CE vence en {{days}} días",
+        "dueBody": "Le faltan {{hours}} horas de CE antes de que su licencia se renueve el {{date}}.",
+        "readyTitle": "Lista para renovar",
+        "readyBody": "Su CE está completa. Renueve su licencia con TREC antes del {{date}}.",
+        "open": "Abrir mi cartera de CE"
+      },
+      "errors": {
+        "noRenewal": "Esta licencia aún no tiene fecha de renovación."
+      },
+      "hoursShort": "{{hours}} h"
+    }
   },
   "content": {
     "everyState": "Todos los estados",
@@ -5220,7 +5291,8 @@
       "pass_news": "Noticias de aprobación",
       "broker_offer": "Ofertas de corredores",
       "licence_found": "Licencia encontrada",
-      "morning_brief": "Resumen matutino"
+      "morning_brief": "Resumen matutino",
+      "ce_renewal": "Renovación de CE"
     },
     "digest": {
       "subject": {

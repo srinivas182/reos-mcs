@@ -3390,6 +3390,916 @@
                 }
             }
         },
+        "/me/ce": {
+            "get": {
+                "operationId": "me.ce.index",
+                "description": "Per licence: hours against the renewal (required and electives), the completions in the period and who reported them, TREC's own view, the renewal checklist and where to get the hours still missing.",
+                "summary": "My CE wallet",
+                "tags": [
+                    "CeWallet"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "licence": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "state_code": {
+                                                                "type": "string"
+                                                            },
+                                                            "state_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "number": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "expires_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "sponsor_name": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "state_code",
+                                                            "state_name",
+                                                            "number",
+                                                            "type",
+                                                            "status",
+                                                            "expires_on",
+                                                            "sponsor_name"
+                                                        ]
+                                                    },
+                                                    "ce": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "state": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "period_start": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "days_left": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "first_renewal": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "hours_required": {
+                                                                "type": "number"
+                                                            },
+                                                            "hours_done": {
+                                                                "type": "number"
+                                                            },
+                                                            "hours_left": {
+                                                                "type": "number"
+                                                            },
+                                                            "complete": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "parts": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "code": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "title": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "mandatory",
+                                                                                "broker_responsibility",
+                                                                                "qualifying",
+                                                                                "elective"
+                                                                            ]
+                                                                        },
+                                                                        "hours": {
+                                                                            "type": "number"
+                                                                        },
+                                                                        "hours_done": {
+                                                                            "type": "number"
+                                                                        },
+                                                                        "done": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "code",
+                                                                        "title",
+                                                                        "kind",
+                                                                        "hours",
+                                                                        "hours_done",
+                                                                        "done"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "deferral": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "fee_usd": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "days": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "fee_usd",
+                                                                    "days"
+                                                                ]
+                                                            },
+                                                            "sources": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "key": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "citation": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "url": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "effective_from": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "key",
+                                                                        "citation",
+                                                                        "url",
+                                                                        "effective_from"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "state",
+                                                            "due_on",
+                                                            "period_start",
+                                                            "days_left",
+                                                            "first_renewal",
+                                                            "hours_required",
+                                                            "hours_done",
+                                                            "hours_left",
+                                                            "complete",
+                                                            "parts",
+                                                            "deferral",
+                                                            "sources"
+                                                        ]
+                                                    },
+                                                    "completions": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "title": {
+                                                                    "type": "string"
+                                                                },
+                                                                "hours": {
+                                                                    "type": "number"
+                                                                },
+                                                                "completed_on": {
+                                                                    "type": "string"
+                                                                },
+                                                                "provider": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "course_code": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "status": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "reos_reported",
+                                                                        "self_reported",
+                                                                        "on_record"
+                                                                    ]
+                                                                },
+                                                                "certificate": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "title",
+                                                                "hours",
+                                                                "completed_on",
+                                                                "provider",
+                                                                "course_code",
+                                                                "status",
+                                                                "certificate"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "trec": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mce": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "met",
+                                                                    "outstanding",
+                                                                    "none",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "education": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "met",
+                                                                    "outstanding",
+                                                                    "none",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "checked_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mce",
+                                                            "education",
+                                                            "checked_at"
+                                                        ]
+                                                    },
+                                                    "renewal": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "due_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "ready": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "renewed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "confirmed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "renewed_until": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "steps": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "code": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "title": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "detail": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "url": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "done": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "code",
+                                                                        "title",
+                                                                        "detail",
+                                                                        "url",
+                                                                        "done"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "due_on",
+                                                            "ready",
+                                                            "renewed_at",
+                                                            "confirmed_at",
+                                                            "renewed_until",
+                                                            "steps"
+                                                        ]
+                                                    },
+                                                    "buy": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "price": {
+                                                                "type": "integer"
+                                                            },
+                                                            "product": {
+                                                                "type": "string"
+                                                            },
+                                                            "amount": {
+                                                                "type": "integer"
+                                                            },
+                                                            "interval": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "month",
+                                                                    "year",
+                                                                    "once"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "price",
+                                                            "product",
+                                                            "amount",
+                                                            "interval"
+                                                        ]
+                                                    },
+                                                    "unlocked": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "licence",
+                                                    "ce",
+                                                    "completions",
+                                                    "trec",
+                                                    "renewal",
+                                                    "buy",
+                                                    "unlocked"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/licences/{licence}/renewal": {
+            "put": {
+                "operationId": "me.licences.renewal",
+                "description": "The agent says they renewed (or takes it back); REOS confirms the new expiry on the regulator's record overnight.",
+                "summary": "Renewed with the regulator",
+                "tags": [
+                    "CeWallet"
+                ],
+                "parameters": [
+                    {
+                        "name": "licence",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RenewalRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "licence": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "state_code": {
+                                                            "type": "string"
+                                                        },
+                                                        "state_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "number": {
+                                                            "type": "string"
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        },
+                                                        "status": {
+                                                            "type": "string"
+                                                        },
+                                                        "expires_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "sponsor_name": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "state_code",
+                                                        "state_name",
+                                                        "number",
+                                                        "type",
+                                                        "status",
+                                                        "expires_on",
+                                                        "sponsor_name"
+                                                    ]
+                                                },
+                                                "ce": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "state": {
+                                                            "type": "string"
+                                                        },
+                                                        "due_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "period_start": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "days_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "first_renewal": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "hours_required": {
+                                                            "type": "number"
+                                                        },
+                                                        "hours_done": {
+                                                            "type": "number"
+                                                        },
+                                                        "hours_left": {
+                                                            "type": "number"
+                                                        },
+                                                        "complete": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "parts": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "code": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "mandatory",
+                                                                            "broker_responsibility",
+                                                                            "qualifying",
+                                                                            "elective"
+                                                                        ]
+                                                                    },
+                                                                    "hours": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "hours_done": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "code",
+                                                                    "title",
+                                                                    "kind",
+                                                                    "hours",
+                                                                    "hours_done",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "deferral": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "fee_usd": {
+                                                                    "type": "number"
+                                                                },
+                                                                "days": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "fee_usd",
+                                                                "days"
+                                                            ]
+                                                        },
+                                                        "sources": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "key": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "citation": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "effective_from": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "key",
+                                                                    "citation",
+                                                                    "url",
+                                                                    "effective_from"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "state",
+                                                        "due_on",
+                                                        "period_start",
+                                                        "days_left",
+                                                        "first_renewal",
+                                                        "hours_required",
+                                                        "hours_done",
+                                                        "hours_left",
+                                                        "complete",
+                                                        "parts",
+                                                        "deferral",
+                                                        "sources"
+                                                    ]
+                                                },
+                                                "completions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "hours": {
+                                                                "type": "number"
+                                                            },
+                                                            "completed_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "provider": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "course_code": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "reos_reported",
+                                                                    "self_reported",
+                                                                    "on_record"
+                                                                ]
+                                                            },
+                                                            "certificate": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "hours",
+                                                            "completed_on",
+                                                            "provider",
+                                                            "course_code",
+                                                            "status",
+                                                            "certificate"
+                                                        ]
+                                                    }
+                                                },
+                                                "trec": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "mce": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "enum": [
+                                                                "met",
+                                                                "outstanding",
+                                                                "none",
+                                                                null
+                                                            ]
+                                                        },
+                                                        "education": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "enum": [
+                                                                "met",
+                                                                "outstanding",
+                                                                "none",
+                                                                null
+                                                            ]
+                                                        },
+                                                        "checked_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "mce",
+                                                        "education",
+                                                        "checked_at"
+                                                    ]
+                                                },
+                                                "renewal": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "due_on": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ready": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "renewed_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "confirmed_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "renewed_until": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "steps": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "code": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "title": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "detail": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "code",
+                                                                    "title",
+                                                                    "detail",
+                                                                    "url",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "due_on",
+                                                        "ready",
+                                                        "renewed_at",
+                                                        "confirmed_at",
+                                                        "renewed_until",
+                                                        "steps"
+                                                    ]
+                                                },
+                                                "buy": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "price": {
+                                                            "type": "integer"
+                                                        },
+                                                        "product": {
+                                                            "type": "string"
+                                                        },
+                                                        "amount": {
+                                                            "type": "integer"
+                                                        },
+                                                        "interval": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "month",
+                                                                "year",
+                                                                "once"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "price",
+                                                        "product",
+                                                        "amount",
+                                                        "interval"
+                                                    ]
+                                                },
+                                                "unlocked": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "licence",
+                                                "ce",
+                                                "completions",
+                                                "trec",
+                                                "renewal",
+                                                "buy",
+                                                "unlocked"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/me/certificates/read": {
             "post": {
                 "operationId": "me.certificates.read",
@@ -43293,6 +44203,19 @@
                     "agreed"
                 ],
                 "title": "RecordingAnswerRequest"
+            },
+            "RenewalRequest": {
+                "type": "object",
+                "description": "\"I've renewed with TREC\" on the renewal checklist, or Undo (A11.2).",
+                "properties": {
+                    "renewed": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "renewed"
+                ],
+                "title": "RenewalRequest"
             },
             "ReportRequest": {
                 "type": "object",

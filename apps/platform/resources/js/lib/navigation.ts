@@ -42,6 +42,7 @@ import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
+import { index as ceWallet } from '@/routes/ce';
 import { index as practice, progress, readiness } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 import { index as announcementsIndex } from '@/routes/announcements';
@@ -101,6 +102,7 @@ export type NavLabel =
     | 'contentAndApprovals'
     | 'courses'
     | 'learnAndCe'
+    | 'ceWallet'
     | 'paymentGateways'
     | 'providerCategories'
     | 'aiAndCredits'
@@ -214,6 +216,8 @@ export function roleNavigation(
             planned('virtualBroker'),
             planned('contentStudio'),
             item('learnAndCe', GraduationCap, learn(), '/learn'),
+            // Hours against the renewal, certificates and renewing (A11.2).
+            item('ceWallet', Wallet, ceWallet(), '/ce'),
             // Mentors from the agent's own brokerage (A10.3c, f04).
             item('mentors', Users, mentorsIndex(), '/mentors'),
             planned('serviceProviders'),

@@ -29,6 +29,10 @@ final class TexasRules
 
     private const HANDBOOK = 'https://www.pearsonvue.com/content/dam/VUE/vue/en/documents/publications/094400.pdf';
 
+    private const RENEW_AGENT = 'https://www.trec.texas.gov/renew-license/real-estate-sales-agent';
+
+    private const REALM = 'https://aca-prod.accela.com/TREC/Default.aspx';
+
     public const CHECKED_ON = '2026-11-22';
 
     /** @return list<Seed> */
@@ -74,6 +78,8 @@ final class TexasRules
             $ce('ce.no_repeat', ['text' => 'No credit for taking the same course more than once in the license period.'], '22 TAC §535.92(h)'),
             $ce('ce.commission_meeting', ['number' => 4], '22 TAC §535.92(f)'),
             $ce('ce.deferral', ['fee_usd' => 200, 'days' => 60], 'TREC renewal requirements: CE deferral fee', self::RENEWAL),
+            // Renew your licence (A11.2, agent screen 106): the checklist and its links.
+            ['key' => 'ce.renewal_steps', 'value' => ['steps' => self::renewalSteps()], 'citation' => 'TREC: Renew your real estate sales agent license', 'source_url' => self::RENEW_AGENT, 'effective_from' => '2026-11-24'],
             ['key' => 'advertising.license_holder_name', 'value' => ['text' => 'Every advertisement shows the name of the license holder or team placing it, in a readily noticeable location.'], 'citation' => '22 TAC §535.155(a)(1)', 'source_url' => self::TAC_535_155, 'effective_from' => '2018-09-04'],
             ['key' => 'advertising.broker_name_size', 'value' => ['text' => "The broker's name is at least half the size of the largest contact information for any sales agent, associated broker or team name in the advertisement."], 'citation' => '22 TAC §535.155(a)(2)', 'source_url' => self::TAC_535_155, 'effective_from' => '2018-09-04'],
             ['key' => 'advertising.social_media', 'value' => ['text' => 'Social media, websites, email and texts are advertisements. The required information can be on the profile or a page linked directly from the post, if readily noticeable there.'], 'citation' => '22 TAC §535.155(b)(1), (c)', 'source_url' => self::TAC_535_155, 'effective_from' => '2018-09-04'],
@@ -98,6 +104,22 @@ final class TexasRules
             ['code' => 'exam', 'title' => 'Exam', 'detail' => 'After TREC reviews your education, it emails how to schedule the national and state portions with Pearson VUE. Both must be passed before the application expires.', 'url' => self::PEARSON_VUE],
             ['code' => 'sponsor', 'title' => 'Sponsoring broker', 'detail' => 'Your licence is issued inactive. A licensed broker sponsors you in REALM so you can practice.', 'url' => self::SALES_AGENT],
             ['code' => 'active', 'title' => 'Active licence', 'detail' => 'Once a broker sponsors you, your licence is active. Enter your licence number in REOS to switch to agent.', 'url' => 'https://www.trec.texas.gov/apps/license-holder-search/'],
+        ];
+    }
+
+    /**
+     * Renewing an active licence (A11.2): CE reported, a sponsoring broker,
+     * renew in REALM, then REOS confirms the new expiry on TREC's record.
+     *
+     * @return list<array{code: string, title: string, detail: string, url: string|null}>
+     */
+    public static function renewalSteps(): array
+    {
+        return [
+            ['code' => 'ce_reported', 'title' => 'CE reported', 'detail' => 'Finish your CE at least 10 days before your license expires, so the providers can report it to TREC in time. TREC also accepts a CE deferral fee.', 'url' => self::RENEWAL],
+            ['code' => 'sponsor', 'title' => 'Sponsoring broker', 'detail' => 'An active sales agent license needs a sponsoring broker on your TREC record.', 'url' => 'https://www.trec.texas.gov/apps/license-holder-search/'],
+            ['code' => 'renew', 'title' => 'Renew with TREC', 'detail' => 'TREC sends a renewal notice about 90 days before your license expires; renew in REALM once you have it. The renewal fee is paid to TREC, not REOS.', 'url' => self::REALM],
+            ['code' => 'confirm', 'title' => 'Confirmed', 'detail' => "REOS checks TREC's record each night and marks this done when your new expiry date appears.", 'url' => null],
         ];
     }
 

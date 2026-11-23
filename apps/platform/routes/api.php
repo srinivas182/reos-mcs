@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
+use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Certificates\CertificateController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
@@ -288,6 +289,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('settings', 'settings')->name('settings');
         Route::put('settings', 'update')->middleware('throttle:20,1,api-agent-brief')->name('update');
     });
+    // The CE wallet and renewal checklist (A11.2).
+    Route::get('me/ce', [CeWalletController::class, 'index'])->name('api.me.ce.index');
+    Route::put('me/licences/{licence}/renewal', [CeWalletController::class, 'renewal'])->whereNumber('licence')->middleware('throttle:20,1,api-ce-renewal')->name('api.me.licences.renewal');
     // Certificates for CE taken elsewhere (B10.3b): read by OCR, checked, saved.
     Route::post('me/certificates/read', [CertificateController::class, 'read'])->middleware('throttle:10,1,api-certificates-read')->name('api.me.certificates.read');
     Route::post('me/certificates', [CertificateController::class, 'store'])->middleware('throttle:20,1,api-certificates-store')->name('api.me.certificates.store');

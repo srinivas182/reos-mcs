@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
+use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
@@ -43,6 +44,7 @@ use App\Http\Controllers\Builder\LessonReviewController;
 use App\Http\Controllers\Builder\QuestionBankController;
 use App\Http\Controllers\Builder\StarterBankController;
 use App\Http\Controllers\Calendar\CalendarPageController;
+use App\Http\Controllers\Ce\CeWalletPageController;
 use App\Http\Controllers\Classes\ClassesPageController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
@@ -181,6 +183,9 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // The 90-day plan and weekly scorecard (A11.1b, screens 10 and 110).
     Route::get('agent/plan', [AgentSetupPageController::class, 'plan'])->name('agent.plan');
     Route::put('agent/plan/tasks/{code}', [TodayController::class, 'tick'])->where('code', '[a-z_]+')->middleware('throttle:60,1,agent-plan')->name('agent.plan.tick');
+    // The CE wallet and renewal checklist (A11.2, screens 103, 105, 106).
+    Route::get('ce', CeWalletPageController::class)->name('ce.index');
+    Route::put('ce/licences/{licence}/renewal', [CeWalletController::class, 'renewal'])->whereNumber('licence')->middleware('throttle:20,1,ce-renewal')->name('ce.renewal');
     // The morning brief: transcript, read aloud, settings (A11.1c, screen 184).
     Route::get('agent/brief', [AgentSetupPageController::class, 'brief'])->name('agent.brief');
     Route::put('agent/brief/settings', [BriefController::class, 'update'])->middleware('throttle:20,1,agent-brief')->name('agent.brief.settings');

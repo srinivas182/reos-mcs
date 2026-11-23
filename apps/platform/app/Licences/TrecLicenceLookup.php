@@ -37,6 +37,17 @@ final readonly class TrecLicenceLookup implements LicenceLookup
         return self::ID;
     }
 
+    /** The agent or broker row on TREC's nightly file for a licence number, active first. */
+    public static function record(string $number): ?RegulatorRecord
+    {
+        $digits = RegulatorFile::digits($number);
+
+        return $digits === '' ? null : RegulatorRecord::query()->where('authority', 'TREC')->where('kind', 'agents')->where('number_digits', $digits)
+            ->whereIn('licence_type', self::TYPES)->get()
+            ->sortBy(static fn (RegulatorRecord $r): int => ($r->active ? 0 : 10) + (int) array_search($r->licence_type, self::TYPES, true))
+            ->first();
+    }
+
     public function find(State $state, string $number, ?string $accountName): ?LicenceRecord
     {
         $digits = RegulatorFile::digits($number);
@@ -45,10 +56,7 @@ final readonly class TrecLicenceLookup implements LicenceLookup
             return null;
         }
 
-        $record = RegulatorRecord::query()->where('authority', 'TREC')->where('kind', 'agents')->where('number_digits', $digits)
-            ->whereIn('licence_type', self::TYPES)->get()
-            ->sortBy(static fn (RegulatorRecord $r): int => ($r->active ? 0 : 10) + (int) array_search($r->licence_type, self::TYPES, true))
-            ->first();
+        $record = self::record($number);
 
         if ($record === null) {
             return null;

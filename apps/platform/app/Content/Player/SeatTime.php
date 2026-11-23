@@ -409,7 +409,7 @@ final readonly class SeatTime
         if ($newlyComplete && in_array($course->type, [CourseType::Ce, CourseType::Qualifying], true)) {
             CeCompletion::query()->firstOrCreate(
                 ['user_id' => $user->id, 'title' => $course->title, 'source' => 'reos', 'completed_on' => now()->toDateString()],
-                ['state_code' => 'TX', 'hours' => number_format((float) ($course->hours ?? 0), 1, '.', ''), 'provider' => $course->owner->name ?? 'REOS', 'course_code' => null],
+                ['state_code' => 'TX', 'hours' => number_format((float) ($course->hours ?? 0), 1, '.', ''), 'provider' => $course->owner->name ?? 'REOS', 'course_code' => null, 'course_id' => $course->id],
             );
         }
     }
