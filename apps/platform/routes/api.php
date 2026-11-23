@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licence\PassesAndOffersController;
 use App\Http\Controllers\Api\Licence\SwitchController;
 use App\Http\Controllers\Api\Licences\LicenceController;
+use App\Http\Controllers\Api\Listings\ListingsController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
 use App\Http\Controllers\Api\Messaging\MessagesController as ApiMessagesController;
@@ -249,6 +250,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('switch', 'switch')->middleware('throttle:5,1,api-licence-switch')->name('switch');
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
+    // My listings (B10.1): MLS listings through the agent's confirmed member records.
+    Route::prefix('listings')->name('api.listings.')->controller(ListingsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('members', 'confirm')->middleware('throttle:20,1,api-listings-members')->name('members.confirm');
+        Route::post('members/decline', 'decline')->middleware('throttle:20,1,api-listings-members')->name('members.decline');
+        Route::post('members/unlink', 'unlink')->middleware('throttle:20,1,api-listings-members')->name('members.unlink');
+    });
     // After the exam (A10.3b): share the news, passes and congrats, and broker offers.
     Route::prefix('licence-journey')->name('api.licence.')->controller(PassesAndOffersController::class)->group(function () {
         Route::post('news', 'share')->middleware('throttle:5,1,api-licence-news')->name('news');

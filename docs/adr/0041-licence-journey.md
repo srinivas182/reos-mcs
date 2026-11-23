@@ -1,6 +1,6 @@
 # ADR 0041: The licence journey
 
-- Status: Accepted (tracker, booking and result, A10.3a; news and broker offers, A10.3b)
+- Status: Accepted (tracker, booking and result, A10.3a; news and broker offers, A10.3b; switching to agent and mentors, A10.3c)
 - Date: 2026-11-23 (Sprint 10; spec in docs/sprints/S10-spec.md)
 
 ## Context

@@ -1,5 +1,5 @@
-import { Head, router } from '@inertiajs/react';
-import { Handshake, Plus } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { Handshake, House, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DealBoardView } from '@/components/deals/deal-board';
@@ -34,6 +34,7 @@ import {
     store,
     update,
 } from '@/routes/deals';
+import { index as listingsIndex } from '@/routes/deals/listings';
 
 /**
  * Deals board (agent web screen 14, B9.1): every deal and deadline. Columns
@@ -136,12 +137,23 @@ export default function DealsPage({
                     title={t('deals.title')}
                     description={t('deals.description')}
                     actions={
-                        <Button
-                            onClick={() => setForm({ open: true, deal: null })}
-                        >
-                            <Plus aria-hidden />
-                            {t('deals.add')}
-                        </Button>
+                        <>
+                            {/* My listings sit beside deals (B10.1). */}
+                            <Button asChild variant="outline">
+                                <Link href={listingsIndex().url}>
+                                    <House aria-hidden />
+                                    {t('deals.listings')}
+                                </Link>
+                            </Button>
+                            <Button
+                                onClick={() =>
+                                    setForm({ open: true, deal: null })
+                                }
+                            >
+                                <Plus aria-hidden />
+                                {t('deals.add')}
+                            </Button>
+                        </>
                     }
                 />
                 {error && !form.open ? (

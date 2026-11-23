@@ -68,6 +68,10 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Kill switch | Interruptor de emergencia | |
 | Beta | Beta | |
 | Deals (tab) | Operaciones | A real estate transaction is an "operación" |
+| Listing (MLS) | Listado | "Mis listados" |
+| Listing agent / co-listing agent | Agente listador / agente colistador | |
+| Open house | Casa abierta | Broker open house: "casa abierta para agentes" |
+| Sample data | Datos de muestra | Simulator data shown to users |
 | Up to date | Al día | |
 | Designated broker | Bróker designado | TREC role |
 | Delegated supervisor | Supervisor delegado | TREC role |

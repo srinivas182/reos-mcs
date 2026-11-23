@@ -631,7 +631,8 @@
       "unexpected": "Algo salió mal durante la prueba. Ya se avisó al equipo.",
       "noAutomaticCheck": "Las claves parecen completas. La revisión automática llega con la construcción de esta conexión (sprint {{sprint}}).",
       "formatOnly": "Las direcciones parecen correctas. Se confirman cuando llegue el primer informe de error.",
-      "publicData": "Usa datos públicos, así que no hay claves que revisar."
+      "publicData": "Usa datos públicos, así que no hay claves que revisar.",
+      "mlsVendor": "Este MLS todavía no ha indicado su proveedor de datos, así que su conexión solo funciona con el Simulador."
     },
     "paused": {
       "title": "En pausa por fallas repetidas",
@@ -7064,7 +7065,8 @@
         "pending": "Buscando virus…",
         "infected": "Eliminado: se encontró un virus"
       }
-    }
+    },
+    "listings": "Mis listados"
   },
   "bookings": {
     "title": "Reservar un instructor",
@@ -7625,5 +7627,64 @@
     "emptyBody": "Cuando los mentores de {{brokerage}} abran su horario, aparecerán aquí.",
     "noBrokerage": "Únase a una correduría para ver sus mentores",
     "noBrokerageBody": "Los mentores son de su propia correduría. Los instructores del examen siguen disponibles para preguntas de CE."
+  },
+  "listings": {
+    "title": "Mis listados",
+    "description": "Sus listados del MLS en los que usted es el agente listador o colistador. Se actualizan cada 15 minutos.",
+    "deals": "Operaciones",
+    "sample": "Datos de muestra",
+    "sampleNote": "Estos listados son de muestra hasta que REOS tenga la licencia del MLS.",
+    "updated": "Actualizado {{time}}",
+    "found": {
+      "title": "¿Es usted?",
+      "description": "Encontramos este registro de miembro de {{mls}} con su número de licencia.",
+      "confirm": "Sí, soy yo",
+      "decline": "No soy yo",
+      "confirmed": "Vinculado a {{mls}}"
+    },
+    "linked": {
+      "title": "Sus membresías del MLS",
+      "unlink": "Desvincular",
+      "unlinked": "Desvinculado de {{mls}}",
+      "unlinkLabel": "Desvincular {{mls}}"
+    },
+    "noLicence": {
+      "title": "Agregue su licencia para ver sus listados",
+      "description": "REOS encuentra su membresía del MLS con su número de licencia de TREC.",
+      "action": "Agregar una licencia"
+    },
+    "notFound": {
+      "title": "Todavía no encontramos su membresía del MLS",
+      "description": "No hay un registro de miembro del MLS con su número de licencia. Los registros del MLS se actualizan a diario; vuelva a consultar mañana."
+    },
+    "empty": {
+      "title": "No tiene listados en este momento",
+      "description": "Los listados en los que usted es el agente listador o colistador aparecen aquí en un plazo de 15 minutos."
+    },
+    "status": {
+      "coming_soon": "Próximamente",
+      "active": "Activo",
+      "under_contract": "Bajo contrato",
+      "pending": "Pendiente",
+      "closed": "Vendido"
+    },
+    "role": {
+      "list": "Agente listador",
+      "co_list": "Agente colistador"
+    },
+    "beds": "{{count}} hab.",
+    "baths": "{{count}} baños",
+    "area": "{{area}} pies²",
+    "soldFor": "Vendido por {{price}}",
+    "mlsNumber": "{{mls}} n.º {{id}}",
+    "daysOnMarket_one": "{{count}} día en el mercado",
+    "daysOnMarket_other": "{{count}} días en el mercado",
+    "openHouse": "Casa abierta {{time}}",
+    "brokerOpen": "Casa abierta para agentes {{time}}",
+    "photo": "Foto de {{address}}",
+    "noPhoto": "Todavía no hay foto",
+    "errors": {
+      "notYours": "Ese registro de miembro del MLS no corresponde a su número de licencia."
+    }
   }
 }

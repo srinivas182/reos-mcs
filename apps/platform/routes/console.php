@@ -70,3 +70,5 @@ Schedule::command('reos:sessions:bookings')->everyMinute()->withoutOverlapping()
 Schedule::command('reos:licence:remind')->dailyAt('08:15')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // Licence numbers not active yet (A10.3c): checked each morning, after the regulator's nightly file.
 Schedule::command('reos:licence:watch')->dailyAt('07:40')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
+// MLS feeds (B10.1): listings replicated every 15 minutes, platform-wide.
+Schedule::command('reos:mls:sync')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();

@@ -18908,6 +18908,1270 @@
                 }
             }
         },
+        "/listings": {
+            "get": {
+                "operationId": "listings.index",
+                "description": "Listings from my confirmed MLS member records, on the market first; member records found by my licence that I haven't answered; and whether the MLS data is sample data (Simulator).",
+                "summary": "My listings",
+                "tags": [
+                    "Listings"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "licensed": {
+                                                    "type": "boolean"
+                                                },
+                                                "linked": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "candidates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "listings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "listing_id": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "close_price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "beds": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "baths": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "photo": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "caption": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "url",
+                                                                    "caption"
+                                                                ]
+                                                            },
+                                                            "photos": {
+                                                                "type": "integer"
+                                                            },
+                                                            "listed_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "days_on_market": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "open_house": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "starts_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "ends_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "starts_at",
+                                                                    "ends_at",
+                                                                    "kind"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "mls",
+                                                            "short_name",
+                                                            "listing_id",
+                                                            "status",
+                                                            "role",
+                                                            "address",
+                                                            "city",
+                                                            "price",
+                                                            "close_price",
+                                                            "beds",
+                                                            "baths",
+                                                            "area",
+                                                            "photo",
+                                                            "photos",
+                                                            "listed_on",
+                                                            "days_on_market",
+                                                            "office",
+                                                            "open_house"
+                                                        ]
+                                                    }
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                },
+                                                "synced_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "licensed",
+                                                "linked",
+                                                "candidates",
+                                                "listings",
+                                                "sample",
+                                                "synced_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/listings/members": {
+            "post": {
+                "operationId": "listings.members.confirm",
+                "description": "\"This is me\": one found by my licence number. Its listings become mine.",
+                "summary": "Confirm my MLS member record",
+                "tags": [
+                    "Listings"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MlsMemberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "licensed": {
+                                                    "type": "boolean"
+                                                },
+                                                "linked": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "candidates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "listings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "listing_id": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "close_price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "beds": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "baths": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "photo": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "caption": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "url",
+                                                                    "caption"
+                                                                ]
+                                                            },
+                                                            "photos": {
+                                                                "type": "integer"
+                                                            },
+                                                            "listed_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "days_on_market": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "open_house": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "starts_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "ends_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "starts_at",
+                                                                    "ends_at",
+                                                                    "kind"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "mls",
+                                                            "short_name",
+                                                            "listing_id",
+                                                            "status",
+                                                            "role",
+                                                            "address",
+                                                            "city",
+                                                            "price",
+                                                            "close_price",
+                                                            "beds",
+                                                            "baths",
+                                                            "area",
+                                                            "photo",
+                                                            "photos",
+                                                            "listed_on",
+                                                            "days_on_market",
+                                                            "office",
+                                                            "open_house"
+                                                        ]
+                                                    }
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                },
+                                                "synced_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "licensed",
+                                                "linked",
+                                                "candidates",
+                                                "listings",
+                                                "sample",
+                                                "synced_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/listings/members/decline": {
+            "post": {
+                "operationId": "listings.members.decline",
+                "description": "\"Not me\": REOS stops suggesting it.",
+                "summary": "Not my MLS member record",
+                "tags": [
+                    "Listings"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MlsMemberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "licensed": {
+                                                    "type": "boolean"
+                                                },
+                                                "linked": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "candidates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "listings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "listing_id": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "close_price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "beds": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "baths": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "photo": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "caption": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "url",
+                                                                    "caption"
+                                                                ]
+                                                            },
+                                                            "photos": {
+                                                                "type": "integer"
+                                                            },
+                                                            "listed_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "days_on_market": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "open_house": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "starts_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "ends_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "starts_at",
+                                                                    "ends_at",
+                                                                    "kind"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "mls",
+                                                            "short_name",
+                                                            "listing_id",
+                                                            "status",
+                                                            "role",
+                                                            "address",
+                                                            "city",
+                                                            "price",
+                                                            "close_price",
+                                                            "beds",
+                                                            "baths",
+                                                            "area",
+                                                            "photo",
+                                                            "photos",
+                                                            "listed_on",
+                                                            "days_on_market",
+                                                            "office",
+                                                            "open_house"
+                                                        ]
+                                                    }
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                },
+                                                "synced_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "licensed",
+                                                "linked",
+                                                "candidates",
+                                                "listings",
+                                                "sample",
+                                                "synced_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/listings/members/unlink": {
+            "post": {
+                "operationId": "listings.members.unlink",
+                "description": "Its listings leave My listings; confirming it again brings them back.",
+                "summary": "Unlink my MLS member record",
+                "tags": [
+                    "Listings"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MlsMemberRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "licensed": {
+                                                    "type": "boolean"
+                                                },
+                                                "linked": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "candidates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "member_key": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office_city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "mls",
+                                                            "short_name",
+                                                            "member_key",
+                                                            "name",
+                                                            "office",
+                                                            "office_city"
+                                                        ]
+                                                    }
+                                                },
+                                                "listings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "mls": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "listing_id": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "list",
+                                                                    "co_list"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "close_price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "beds": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "baths": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "area": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "photo": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "caption": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "url",
+                                                                    "caption"
+                                                                ]
+                                                            },
+                                                            "photos": {
+                                                                "type": "integer"
+                                                            },
+                                                            "listed_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "days_on_market": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "office": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "open_house": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "starts_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "ends_at": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "starts_at",
+                                                                    "ends_at",
+                                                                    "kind"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "mls",
+                                                            "short_name",
+                                                            "listing_id",
+                                                            "status",
+                                                            "role",
+                                                            "address",
+                                                            "city",
+                                                            "price",
+                                                            "close_price",
+                                                            "beds",
+                                                            "baths",
+                                                            "area",
+                                                            "photo",
+                                                            "photos",
+                                                            "listed_on",
+                                                            "days_on_market",
+                                                            "office",
+                                                            "open_house"
+                                                        ]
+                                                    }
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                },
+                                                "synced_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "licensed",
+                                                "linked",
+                                                "candidates",
+                                                "listings",
+                                                "sample",
+                                                "synced_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
         "/practice/math": {
             "get": {
                 "operationId": "practice.math.index",
@@ -37762,6 +39026,26 @@
                     "admin"
                 ],
                 "title": "MembershipResource"
+            },
+            "MlsMemberRequest": {
+                "type": "object",
+                "description": "An MLS member record, by its MLS (register id) and member key (B10.1).",
+                "properties": {
+                    "mls": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$",
+                        "maxLength": 64
+                    },
+                    "member_key": {
+                        "type": "string",
+                        "maxLength": 128
+                    }
+                },
+                "required": [
+                    "mls",
+                    "member_key"
+                ],
+                "title": "MlsMemberRequest"
             },
             "NotificationSettingsRequest": {
                 "type": "object",

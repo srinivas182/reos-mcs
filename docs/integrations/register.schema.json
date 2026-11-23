@@ -104,7 +104,18 @@
         "notes": { "type": "string" },
         "fallback": { "type": "string" },
         "sources": { "type": "array", "items": { "type": "string", "format": "uri" } },
-        "connection": { "$ref": "#/$defs/connection" }
+        "connection": { "$ref": "#/$defs/connection" },
+        "mls": {
+          "description": "MLS feeds (B10.1): the data vendor that delivers the RESO Web API feed and the dataset it serves. One driver reads every vendor; to_confirm runs on the Simulator only until the MLS names its vendor.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["vendor", "dataset", "short_name"],
+          "properties": {
+            "vendor": { "enum": ["bridge", "trestle", "mls_grid", "to_confirm"] },
+            "dataset": { "description": "Bridge dataset, Trestle feed or MLS Grid OriginatingSystemName.", "type": "string", "pattern": "^[a-z0-9_]+$" },
+            "short_name": { "description": "The MLS's name as shown beside its listings.", "type": "string", "minLength": 2 }
+          }
+        }
       },
       "allOf": [
         { "if": { "properties": { "kind": { "const": "integration" } } }, "then": { "properties": { "launch": { "enum": ["enabled", "beta", "coming_soon"] } } } },

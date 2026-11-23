@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Integrations;
 
+use App\Mls\MlsDefinition;
+
 /**
  * One service from the integrations register, as the product sees it.
  *
@@ -30,6 +32,7 @@ final readonly class IntegrationDefinition
         public AuthType $auth,
         public AccountScope $accounts,
         public array $fields,
+        public ?MlsDefinition $mls = null,
     ) {}
 
     /** Whether the super admin enters any keys for this service. */

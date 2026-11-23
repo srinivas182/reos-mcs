@@ -1274,12 +1274,12 @@ entries:
     sandbox: Bridge test dataset.
     credentials: platform
     connection:
-      auth: oauth2
+      auth: api_key
       accounts: platform
       fields:
-        - { key: server_url, kind: url }
-        - { key: client_id }
-        - { key: client_secret, secret: true }
+        - { key: server_url, kind: url, default: "https://api.bridgedataoutput.com/api/v2/OData/har" }
+        - { key: access_token, secret: true }
+    mls: { vendor: bridge, dataset: har, short_name: HAR }
     personal_data: false
     cost: MLS licence fees per feed type (IDX, VOW, back office) plus Bridge terms.
     notes: Delivered through the Bridge API (dataset `har`). Needs a licensed broker of record as sponsor. HAR and SABOR share listings with each other's subscribers (since May 2023).
@@ -1307,9 +1307,10 @@ entries:
       auth: oauth2
       accounts: platform
       fields:
-        - { key: server_url, kind: url }
+        - { key: server_url, kind: url, default: "https://api-trestle.corelogic.com/trestle/odata" }
         - { key: client_id }
         - { key: client_secret, secret: true }
+    mls: { vendor: trestle, dataset: ntreis, short_name: NTREIS }
     personal_data: false
     cost: MLS licence fees plus Trestle terms.
     notes: NTREIS presents Trestle (Cotality) as its Web API feed. Needs a broker sponsor.
@@ -1333,12 +1334,12 @@ entries:
     sandbox: On approval.
     credentials: platform
     connection:
-      auth: oauth2
+      auth: api_key
       accounts: platform
       fields:
-        - { key: server_url, kind: url }
-        - { key: client_id }
-        - { key: client_secret, secret: true }
+        - { key: server_url, kind: url, default: "https://api.mlsgrid.com/v2" }
+        - { key: access_token, secret: true }
+    mls: { vendor: mls_grid, dataset: actris, short_name: Unlock MLS }
     personal_data: false
     cost: Pricing given by MLS Grid after registration.
     notes: Register with MLS Grid first (Unlock MLS's admin tool), with at least one active Unlock subscriber signed up; then deliver through MLS Grid, Trestle or Bridge. Contact mlsdata@unlockmls.com.
@@ -1368,6 +1369,7 @@ entries:
         - { key: server_url, kind: url }
         - { key: client_id }
         - { key: client_secret, secret: true }
+    mls: { vendor: to_confirm, dataset: sabor, short_name: SABOR }
     personal_data: false
     cost: SABOR IDX data feed fee plus vendor terms.
     notes: Delivery vendor not published; confirm with SABOR's MLS department (SABOR runs connectMLS and publishes a third-party vendor agreement).

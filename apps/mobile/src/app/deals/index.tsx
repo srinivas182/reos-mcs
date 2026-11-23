@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { BellRing, Handshake } from 'lucide-react-native';
+import { BellRing, Handshake, House } from 'lucide-react-native';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -46,6 +46,8 @@ export default function PipelineScreen() {
             ))}
           </View>
           <ListRow icon={BellRing} tone="warning" title={t('deals.pipeline.alerts')} subtitle={t('deals.alerts.description')} onPress={() => router.push('/deals/alerts')} />
+          {/* My listings sit beside deals (B10.1). */}
+          <ListRow icon={House} tone="info" title={t('listings.title')} subtitle={t('listings.description')} onPress={() => router.push('/deals/listings')} />
           {pipeline.deals.length === 0 ? (
             <EmptyState icon={<Icon icon={Handshake} color="action" size={32} />} title={t('deals.emptyTitle')} description={t('deals.empty')} />
           ) : (

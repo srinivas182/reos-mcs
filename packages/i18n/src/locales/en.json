@@ -631,7 +631,8 @@
       "unexpected": "Something went wrong while testing. The team has been told.",
       "noAutomaticCheck": "Keys look complete. An automatic check comes with this connection's build (sprint {{sprint}}).",
       "formatOnly": "The addresses look right. They are confirmed when the first error report arrives.",
-      "publicData": "Uses public data, so there are no keys to check."
+      "publicData": "Uses public data, so there are no keys to check.",
+      "mlsVendor": "This MLS hasn't named its data vendor yet, so its feed runs on the Simulator only."
     },
     "paused": {
       "title": "Paused after repeated failures",
@@ -7064,7 +7065,8 @@
         "pending": "Checking for viruses…",
         "infected": "Removed: a virus was found"
       }
-    }
+    },
+    "listings": "My listings"
   },
   "bookings": {
     "title": "Book an instructor",
@@ -7625,5 +7627,64 @@
     "emptyBody": "When mentors at {{brokerage}} open their hours, they appear here.",
     "noBrokerage": "Join a brokerage to see its mentors",
     "noBrokerageBody": "Mentors come from your own brokerage. Exam instructors stay available for CE questions."
+  },
+  "listings": {
+    "title": "My listings",
+    "description": "Your MLS listings, where you're the listing or co-listing agent. Updated every 15 minutes.",
+    "deals": "Deals",
+    "sample": "Sample data",
+    "sampleNote": "These are sample listings until REOS's MLS feed is licensed.",
+    "updated": "Updated {{time}}",
+    "found": {
+      "title": "Is this you?",
+      "description": "We found this {{mls}} member record under your license number.",
+      "confirm": "Yes, this is me",
+      "decline": "Not me",
+      "confirmed": "Linked to {{mls}}"
+    },
+    "linked": {
+      "title": "Your MLS memberships",
+      "unlink": "Unlink",
+      "unlinked": "Unlinked from {{mls}}",
+      "unlinkLabel": "Unlink {{mls}}"
+    },
+    "noLicence": {
+      "title": "Add your license to see your listings",
+      "description": "REOS finds your MLS membership by your TREC license number.",
+      "action": "Add a license"
+    },
+    "notFound": {
+      "title": "No MLS membership found yet",
+      "description": "There's no MLS member record under your license number. MLS records update daily, so check again tomorrow."
+    },
+    "empty": {
+      "title": "No listings right now",
+      "description": "Listings where you're the listing or co-listing agent appear here within 15 minutes."
+    },
+    "status": {
+      "coming_soon": "Coming soon",
+      "active": "Active",
+      "under_contract": "Under contract",
+      "pending": "Pending",
+      "closed": "Sold"
+    },
+    "role": {
+      "list": "Listing agent",
+      "co_list": "Co-listing agent"
+    },
+    "beds": "{{count}} bd",
+    "baths": "{{count}} ba",
+    "area": "{{area}} sq ft",
+    "soldFor": "Sold for {{price}}",
+    "mlsNumber": "{{mls}} #{{id}}",
+    "daysOnMarket_one": "{{count}} day on market",
+    "daysOnMarket_other": "{{count}} days on market",
+    "openHouse": "Open house {{time}}",
+    "brokerOpen": "Broker open house {{time}}",
+    "photo": "Photo of {{address}}",
+    "noPhoto": "No photo yet",
+    "errors": {
+      "notYours": "That MLS member record isn't under your license number."
+    }
   }
 }

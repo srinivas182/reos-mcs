@@ -1,0 +1,56 @@
+/**
+ * My listings on the phone (B10.1, in Deals): MLS listings where the agent
+ * is the listing or co-listing agent, and the member record found by their
+ * license number to confirm.
+ */
+import type { paths } from '@reos/api-client';
+
+import { api } from '@/lib/api';
+
+type Got<P extends keyof paths> = paths[P] extends { get: { responses: { 200: { content: { 'application/json': infer B } } } } } ? B : never;
+
+export type ListingsOverview = Got<'/listings'>['data'];
+export type Listing = ListingsOverview['listings'][number];
+export type Member = ListingsOverview['candidates'][number];
+
+const fail = (error: unknown): never => {
+  const e = (error as { errors?: Record<string, string[]>; message?: string } | undefined) ?? {};
+  throw new Error(Object.values(e.errors ?? {})[0]?.[0] ?? e.message ?? 'error');
+};
+
+export async function loadListings(): Promise<ListingsOverview | null> {
+  const { data } = await api().GET('/listings');
+
+  return data?.data ?? null;
+}
+
+const body = (member: Member) => ({ mls: member.mls, member_key: member.member_key });
+
+/** "Yes, this is me". */
+export async function confirmMember(member: Member): Promise<ListingsOverview> {
+  const { data, error } = await api().POST('/listings/members', { body: body(member) });
+
+  return data ? data.data : fail(error);
+}
+
+/** "Not me". */
+export async function declineMember(member: Member): Promise<ListingsOverview> {
+  const { data, error } = await api().POST('/listings/members/decline', { body: body(member) });
+
+  return data ? data.data : fail(error);
+}
+
+export async function unlinkMember(member: Member): Promise<ListingsOverview> {
+  const { data, error } = await api().POST('/listings/members/unlink', { body: body(member) });
+
+  return data ? data.data : fail(error);
+}
+
+/** The headline figure: the price, or what it sold for. */
+export function priceText(listing: Listing, language: string, sold: (price: string) => string): string {
+  const dollars = (value: number) => new Intl.NumberFormat(language, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
+
+  if (listing.status === 'closed' && listing.close_price !== null) return sold(dollars(listing.close_price));
+
+  return listing.price === null ? '—' : dollars(listing.price);
+}
