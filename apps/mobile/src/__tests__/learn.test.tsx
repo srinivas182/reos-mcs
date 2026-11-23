@@ -56,6 +56,7 @@ const lesson: LearnLesson = {
   ],
   previous: null,
   next: 8,
+  player: { counted: 0, required: 1500, percent: 0, reason: null, checkin: null, completed: false, today_left: null },
 };
 
 beforeEach(() => {

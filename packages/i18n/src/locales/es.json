@@ -5495,5 +5495,49 @@
       "emptyTitle": "No hay reportes",
       "empty": "Cuando un estudiante reporte una pregunta, aparecerá aquí."
     }
+  },
+  "player": {
+    "speed": "Velocidad",
+    "captions": "Subtítulos",
+    "languages": {
+      "en": "Inglés",
+      "es": "Español"
+    },
+    "meter": {
+      "label": "Tiempo de asistencia",
+      "progress": "Tiempo de la lección registrado",
+      "done": "Lección completa. Su tiempo quedó registrado.",
+      "counted": "{{counted}} de {{required}} registrados",
+      "todayLeft": "Le quedan {{time}} hoy. Su estado limita cuánto tiempo de un curso cuenta cada día."
+    },
+    "reasons": {
+      "gap": "Estuvo ausente un rato, así que ese tiempo no contó. El tiempo vuelve a contar ahora.",
+      "paused": "En pausa. El tiempo solo cuenta mientras se reproduce el video.",
+      "hidden": "Esta pestaña no está al frente, así que el tiempo no cuenta. Regrese para continuar.",
+      "checkin_due": "Responda la verificación para que el tiempo siga contando.",
+      "daily_max": "Llegó al límite de hoy para este curso. El tiempo vuelve a contar mañana."
+    },
+    "errors": {
+      "heartbeat": "No pudimos conectar con REOS, así que el tiempo no cuenta. Revise su conexión.",
+      "checkin": "No pudimos enviar su respuesta. Inténtelo de nuevo."
+    },
+    "checkin": {
+      "title": "Verificación",
+      "presenceTitle": "¿Sigue ahí?",
+      "presenceBody": "Su estado nos pide comprobar que está viendo la lección. Elija el botón para continuar.",
+      "here": "Aquí estoy",
+      "answer": "Responder",
+      "right": "Correcto.",
+      "wrong": "No exactamente. Aun así, cuenta como presente.",
+      "source": "Fuente: {{source}}",
+      "continue": "Continuar"
+    },
+    "back10": "Retroceder 10 segundos",
+    "course": {
+      "label": "Progreso en {{title}}",
+      "percent": "{{percent}} % completado",
+      "done": "Curso completo",
+      "lessonDone": "Completada"
+    }
   }
 }

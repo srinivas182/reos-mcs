@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
+use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
@@ -169,6 +170,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('courses', 'courses')->name('courses');
         Route::get('search', 'search')->middleware('throttle:60,1,api-learn-search')->name('search');
         Route::get('lessons/{lesson}', 'lesson')->whereNumber('lesson')->name('lesson');
+    });
+    // The player's seat time and check-ins (A8.2).
+    // Learners' own progress, not admin actions: the controller checks learning.study.
+    Route::prefix('learn')->name('api.learn.')->controller(PlayerController::class)->group(function () {
+        Route::post('lessons/{lesson}/heartbeat', 'heartbeat')->whereNumber('lesson')->middleware('throttle:12,1,api-learn-heartbeat')->name('heartbeat');
+        Route::post('lessons/{lesson}/checkins', 'checkin')->whereNumber('lesson')->middleware('throttle:30,1,api-learn-checkin')->name('checkin');
     });
     Route::put('me/states/current', [CurrentStateController::class, 'update'])->middleware('throttle:30,1,api-me-states')->name('api.me.states.update');
 

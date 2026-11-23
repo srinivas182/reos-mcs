@@ -105,6 +105,15 @@
   - **Limits:** about 180 MB an hour of video. Downloads stop working when access ends, and expire after 30 days.
   - **Seat time offline:** recorded on the phone and sent when back online, then checked against the same rules (timestamps signed with a per-device key, never trusted alone).
 - **Done when:** seat time counts only when the rules are met. Tests cover paused, hidden, too fast, check-in missed, over the daily maximum, and offline replayed out of order.
+- **As built, A8.2a** (server and web player, ADR 0030):
+  - **Seat time** on the server: heartbeats every 15 seconds; only real time between beats of one viewing counts, at most 20 seconds a beat, so speed never adds time; reasons `gap`, `paused`, `hidden`, `checkin_due`, `daily_max`; every stretch logged.
+  - **Rules** from the approval in force (check-in minutes, presence share, maximum hours a day, on the learner's own day).
+  - **Check-ins:** approved AI check-ins, else every N minutes; a question when the lesson has approved ones, else "Are you still here?". The dialog can't be dismissed; a wrong answer shows why, with its source.
+  - **Completion** of lessons and courses; CE and qualifying courses write the CE completion.
+  - **Web player (screen 5):** Back 10 seconds, speed 0.75×–2×, captions in English or Spanish for AI lessons, the meter ("1 h 12 m of 2 h counted") with the reason in plain words. Quality is automatic (adaptive streaming).
+  - **Learn** shows each course's progress and each lesson's done mark; **refunds** read progress against the limit.
+  - **Report this question** is on the web too (`learn.questions.report`).
+  - **Moved:** the phone player, audio only and offline downloads are A8.2b; **Save as flashcard** moves to A9.2 with the deck.
 
 ### A8.3 Candidate start (Team A)
 

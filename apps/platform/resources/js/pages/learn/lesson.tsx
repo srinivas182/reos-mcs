@@ -1,12 +1,16 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Cue, LessonVideo } from '@/components/lesson-player';
 import { LessonPlayer } from '@/components/lesson-player';
 import { PageHeader } from '@/components/page-header';
+import { CheckinDialog } from '@/components/player/checkin-dialog';
+import { SeatMeter } from '@/components/player/seat-meter';
 import { Button } from '@/components/ui/button';
 import type { Language } from '@/lib/content';
+import type { PlayerState } from '@/lib/seat-time';
+import { useSeatTime } from '@/lib/seat-time';
 import { cn } from '@/lib/utils';
 import { index, lesson as openLesson } from '@/routes/learn';
 
@@ -26,6 +30,7 @@ type Lesson = {
     }[];
     video: LessonVideo | null;
     transcript: Cue[];
+    captions: Partial<Record<Language, Cue[]>> | null;
     previous: number | null;
     next: number | null;
 };
@@ -34,19 +39,25 @@ const anchor = (value: string) =>
     `h-${value.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
 
 /**
- * A lesson (A5.3b; the first shape of the course player, screen 5): video
- * with its synced transcript, slides page by page and the lesson text,
- * opened at the moment, page or heading a search result points to. The
- * full player (check-ins, progress, speed) arrives in Sprint 8.
+ * The course player (web journey screen 5; A5.3b, A8.2): video with its
+ * synced transcript, speed and captions, slides page by page and the lesson
+ * text, opened at the moment, page or heading a search result points to.
+ * Seat time counts while the video plays with the tab in front; check-ins
+ * stop the video until answered; the meter shows what has counted and why
+ * not when it didn't.
  */
 export default function LessonPage({
     lesson,
     at,
+    player,
 }: {
     lesson: Lesson;
     at: { page: number | null; seconds: number | null; heading: string | null };
+    player: PlayerState;
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const video = useRef<HTMLVideoElement>(null);
+    const seat = useSeatTime(lesson.id, player, video, lesson.video !== null);
     const target =
         at.page !== null
             ? lesson.documents.find((d) =>
@@ -104,12 +115,21 @@ export default function LessonPage({
                     }
                 />
 
+                <SeatMeter state={seat.state} failed={seat.failed} />
+                <CheckinDialog
+                    checkpoint={seat.state.checkin}
+                    onAnswer={seat.answer}
+                />
+
                 {lesson.video || lesson.transcript.length > 0 ? (
                     <LessonPlayer
                         video={lesson.video}
                         transcript={lesson.transcript}
+                        captions={lesson.captions}
+                        language={i18n.language.startsWith('es') ? 'es' : 'en'}
                         startAt={at.seconds}
                         title={lesson.title}
+                        videoRef={video}
                     />
                 ) : null}
 

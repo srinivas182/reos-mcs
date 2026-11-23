@@ -6,6 +6,8 @@ namespace App\Billing;
 
 use App\Billing\Gateways\Gateways;
 use App\Billing\Ledger\MoneyPostings;
+use App\Models\Course;
+use App\Models\CourseProgress;
 use App\Models\Order;
 use App\Models\Refund;
 use App\Models\User;
@@ -39,7 +41,10 @@ final readonly class Refunds
     /**
      * What the refund dialog shows: what's left to refund and the policy check.
      *
-     * @return array{mode: string, refundable: int, days: int, window_days: int, within_policy: bool}
+     * The course-progress check (A8.2): the most of any course the order
+     * unlocks that the buyer has done, against screen 66's limit.
+     *
+     * @return array{mode: string, refundable: int, days: int, window_days: int, within_policy: bool, progress_percent: int, max_progress_percent: int}
      */
     public function policy(Order $order): array
     {
@@ -47,14 +52,33 @@ final readonly class Refunds
         $settings = $this->settings->get();
         $window = $settings['window_days'];
 
+        $progress = $this->progress($order);
+
         return [
             // What screen 66 allows: full and partial, full only, or none.
             'mode' => $settings['mode'],
             'refundable' => $this->refundable($order),
             'days' => $days,
             'window_days' => $window,
-            'within_policy' => $order->paid_at !== null && $days <= $window,
+            'within_policy' => $order->paid_at !== null && $days <= $window && $progress <= $settings['max_progress_percent'],
+            'progress_percent' => $progress,
+            'max_progress_percent' => $settings['max_progress_percent'],
         ];
+    }
+
+    /** The most of any course this order unlocks that the buyer has done (0–100). */
+    public function progress(Order $order): int
+    {
+        $types = array_values(array_filter(array_map(static fn (string $f): ?string => str_starts_with($f, 'learn.') ? substr($f, 6) : null, $order->product->features ?? [])));
+
+        if ($order->user_id === null || $types === []) {
+            return 0;
+        }
+
+        $max = CourseProgress::query()->where('user_id', $order->user_id)
+            ->whereIn('course_id', Course::query()->whereIn('type', $types)->select('id'))->max('percent');
+
+        return is_numeric($max) ? (int) $max : 0;
     }
 
     public function refundable(Order $order): int

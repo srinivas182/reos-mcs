@@ -33,6 +33,8 @@ export type RefundableOrder = {
         days: number;
         window_days: number;
         within_policy: boolean;
+        progress_percent?: number;
+        max_progress_percent?: number;
     };
 };
 
