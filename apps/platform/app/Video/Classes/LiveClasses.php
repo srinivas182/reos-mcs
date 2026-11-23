@@ -32,7 +32,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * force makes it a CE class: its attendance rules (check interval and
  * share of seat time) are copied onto the class when it's scheduled.
  *
- * @phpstan-type ClassRow array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool}
+ * @phpstan-type ClassRow array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool, report: 'none'|'draft'|'sent', has_recording: bool}
  */
 final readonly class LiveClasses
 {
@@ -243,6 +243,14 @@ final readonly class LiveClasses
             'can_register' => $role === null && $open && ! $full,
             'full' => $full,
             'can_join' => $role !== null && $session->open(),
+            // The CE class report, for the host (A10.2c).
+            'report' => $role !== VideoSessionParticipant::HOST ? 'none' : match ($class->report_status) {
+                LiveClass::REPORT_DRAFT => 'draft',
+                LiveClass::REPORT_SENT => 'sent',
+                default => 'none',
+            },
+            // The recording, for the course's students once the class is over.
+            'has_recording' => $role !== null && $session->over() && ClassReports::hasRecording($session),
         ];
     }
 

@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 import { ClassCard } from './class-card';
+import { ClassReportView } from './class-report';
 import { ClassPanel } from './class-panel';
 import type { ClassActions } from './class-panel';
-import { classCourses, classLive, classRow } from './fixtures';
+import { classCourses, classLive, classReport, classRow } from './fixtures';
 import { ScheduleClassDialog } from './schedule-class-dialog';
 
 const meta = {
@@ -206,6 +207,81 @@ export const Schedule: Story = {
             courses={classCourses}
             lengths={[30, 45, 60, 90, 120, 180, 240]}
             onScheduled={() => undefined}
+        />
+    ),
+};
+
+/** After a CE class (i13): the instructor confirms CE. */
+export const ReportReady: Story = {
+    args: {
+        row: classRow({
+            me: 'host',
+            status: 'ended',
+            report: 'draft',
+            can_register: false,
+        }),
+    },
+};
+
+/** A registered student's past class with its recording. */
+export const WithRecording: Story = {
+    args: {
+        row: classRow({
+            me: 'registered',
+            status: 'ended',
+            has_recording: true,
+            can_register: false,
+        }),
+    },
+};
+
+/** The CE class report (i13): one borderline case to decide before sending. */
+export const Report: Story = {
+    render: () => (
+        <ClassReportView report={classReport()} onDecide={fn()} onSend={fn()} />
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(
+            canvas.getByRole('button', { name: 'Confirm and send to school' }),
+        ).toBeDisabled();
+        await expect(
+            canvas.getByText('Decide 1 borderline case before sending.'),
+        ).toBeInTheDocument();
+    },
+};
+
+/** Sent: what the school's admin sees. */
+export const ReportSent: Story = {
+    render: () => (
+        <ClassReportView
+            report={classReport({
+                status: 'sent',
+                can_decide: false,
+                can_send: false,
+                sent_by: 'Nelle Hart',
+                sent_at: '2026-11-24T19:05:00Z',
+                counts: {
+                    joined: 17,
+                    earned: 15,
+                    not_earned: 3,
+                    review: 1,
+                    undecided: 0,
+                },
+                students: classReport().students.map((s) =>
+                    s.outcome === 'review'
+                        ? {
+                              ...s,
+                              decision: 'accepted',
+                              decision_reason:
+                                  'Answered the last check in chat.',
+                              earned: true,
+                          }
+                        : s,
+                ),
+            })}
+            onDecide={fn()}
+            onSend={fn()}
         />
     ),
 };

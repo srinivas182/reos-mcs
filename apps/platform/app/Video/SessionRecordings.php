@@ -15,6 +15,7 @@ use App\Privacy\ConsentPurpose;
 use App\Services\Audit\AuditLogger;
 use App\Services\Content\LessonFiles;
 use App\Services\Privacy\Consents;
+use App\Video\Classes\ClassReports;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -56,6 +57,11 @@ final readonly class SessionRecordings
 
         if (! $session->open() || $this->current($session) !== null) {
             throw ValidationException::withMessages(['recording' => __('sessions.recording.errors.cannotAsk')]);
+        }
+
+        // A CE class records only when its approval allows it (A10.2c).
+        if (! app(ClassReports::class)->mayRecord($session)) {
+            throw ValidationException::withMessages(['recording' => __('classes.errors.noRecording')]);
         }
 
         $recording = $session->recordings()->create(['uuid' => (string) Str::uuid(), 'requested_by' => $host->id, 'status' => VideoRecording::ASKING]);

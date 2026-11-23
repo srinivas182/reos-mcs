@@ -49,6 +49,8 @@ enum NotificationKind: string
     case SignatureCompleted = 'signature_completed';
     /** A live class's attendance check is still unanswered (A10.2b). */
     case ClassCheck = 'class_check';
+    /** A CE class report is ready to confirm, or was sent to the school (A10.2c). */
+    case ClassReport = 'class_report';
 
     public const INBOX = 'inbox';
 
@@ -102,7 +104,7 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
+            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
             self::DealDeadline, self::SignatureCompleted => 'deals',

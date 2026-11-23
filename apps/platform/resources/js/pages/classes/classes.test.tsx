@@ -4,10 +4,12 @@ import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ClassPanel } from '@/components/classes/class-panel';
+import { ClassReportView } from '@/components/classes/class-report';
 import type { ClassActions } from '@/components/classes/class-panel';
 import {
     classCourses,
     classLive,
+    classReport,
     classRow,
 } from '@/components/classes/fixtures';
 import { i18n } from '@/lib/i18n';
@@ -259,5 +261,70 @@ describe('the class tools (A10.2b: L12 and i12)', () => {
             screen.getByRole('button', { name: 'Send a check now' }),
         );
         expect(actions.sendCheck).toHaveBeenCalled();
+    });
+});
+
+describe('the CE class report (A10.2c, i13)', () => {
+    it('decides a borderline case with a reason, then sends once all are decided', async () => {
+        const user = userEvent.setup();
+        const onDecide = vi.fn();
+        const onSend = vi.fn();
+        const { rerender } = render(
+            <ClassReportView
+                report={classReport()}
+                onDecide={onDecide}
+                onSend={onSend}
+            />,
+        );
+
+        expect(
+            screen.getByText(/90% of the class \(108 minutes\)/),
+        ).toBeInTheDocument();
+        expect(screen.getByText('Ben Ortiz')).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                '118 minutes present · 6 of 7 checks · Missed a check',
+            ),
+        ).toBeInTheDocument();
+        const accept = screen.getByRole('button', {
+            name: 'Accept: earned CE',
+        });
+        expect(accept).toBeDisabled();
+        await user.type(
+            screen.getByLabelText('Reason (kept with the report)'),
+            'Answered in chat; connection dropped.',
+        );
+        await user.click(accept);
+        expect(onDecide).toHaveBeenCalledWith(
+            31,
+            true,
+            'Answered in chat; connection dropped.',
+        );
+        expect(
+            screen.getByRole('button', { name: 'Confirm and send to school' }),
+        ).toBeDisabled();
+
+        rerender(
+            <I18nextProvider i18n={i18n}>
+                <ClassReportView
+                    report={classReport({
+                        can_send: true,
+                        counts: {
+                            joined: 17,
+                            earned: 15,
+                            not_earned: 3,
+                            review: 1,
+                            undecided: 0,
+                        },
+                    })}
+                    onDecide={onDecide}
+                    onSend={onSend}
+                />
+            </I18nextProvider>,
+        );
+        await user.click(
+            screen.getByRole('button', { name: 'Confirm and send to school' }),
+        );
+        expect(onSend).toHaveBeenCalled();
     });
 });

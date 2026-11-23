@@ -45,6 +45,14 @@ function addApproval(object $test, array $data = []): CourseApproval
 }
 
 describe('state approvals (screen 50)', function () {
+    it('says whether live classes of the course may be recorded (A10.2c)', function () {
+        $approval = addApproval($this, ['delivery' => 'live_online']);
+        expect($approval->records_live)->toBeFalse();
+
+        $this->patch("/school/approvals/{$approval->id}", ['records_live' => true])->assertSessionHasNoErrors()->assertRedirect();
+        expect($approval->refresh()->records_live)->toBeTrue();
+    });
+
     it('records an approval with the state\'s seat-time rules, audited', function () {
         $approval = addApproval($this);
 

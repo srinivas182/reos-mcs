@@ -12,6 +12,7 @@ use App\Models\ClassPoll;
 use App\Models\ClassQuestion;
 use App\Models\User;
 use App\Models\VideoSession;
+use App\Video\Classes\ClassReports;
 use App\Video\Classes\ClassRoom;
 use App\Video\Classes\LiveClasses;
 use App\Video\VideoSessions;
@@ -31,7 +32,7 @@ final class ClassesController extends Controller
      *
      * Instructors and mentors: their classes and the courses they can schedule for. Students: upcoming classes for their courses (optionally one course), then ones they registered for in the last 30 days.
      *
-     * @response array{data: list<array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool}>, can_schedule: bool, courses: list<array{id: int, title: string, ce: bool}>, lengths: list<int>}
+     * @response array{data: list<array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool, report: 'none'|'draft'|'sent', has_recording: bool}>, can_schedule: bool, courses: list<array{id: int, title: string, ce: bool}>, lengths: list<int>}
      */
     public function index(Request $request, #[CurrentUser] User $user, LiveClasses $classes, VideoSessions $sessions): JsonResponse
     {
@@ -54,7 +55,7 @@ final class ClassesController extends Controller
      *
      * @status 201
      *
-     * @response array{data: array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool}}
+     * @response array{data: array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool, report: 'none'|'draft'|'sent', has_recording: bool}}
      */
     public function store(ScheduleClassRequest $request, #[CurrentUser] User $user, LiveClasses $classes): JsonResponse
     {
@@ -68,7 +69,7 @@ final class ClassesController extends Controller
      *
      * Up to its capacity; reminders come an hour and 10 minutes before.
      *
-     * @response array{data: array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool}}
+     * @response array{data: array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool, report: 'none'|'draft'|'sent', has_recording: bool}}
      */
     public function register(VideoSession $session, #[CurrentUser] User $user, LiveClasses $classes): JsonResponse
     {
@@ -82,7 +83,7 @@ final class ClassesController extends Controller
      *
      * Until the class starts.
      *
-     * @response array{data: array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool}}
+     * @response array{data: array{id: string, title: string, agenda: string|null, course: array{id: int, title: string}, host: string, starts_at: string, ends_at: string, minutes: int, status: 'scheduled'|'live'|'ended'|'cancelled', ce: bool, ce_hours: float|null, checkin_minutes: int|null, registered: int, capacity: int, me: 'host'|'registered'|null, can_register: bool, full: bool, can_join: bool, report: 'none'|'draft'|'sent', has_recording: bool}}
      */
     public function unregister(VideoSession $session, #[CurrentUser] User $user, LiveClasses $classes): JsonResponse
     {
@@ -257,5 +258,51 @@ final class ClassesController extends Controller
         $room->answerCheck($session, $user, $check);
 
         return response()->json(['data' => $room->live($session, $user)]);
+    }
+
+    /**
+     * The CE class report.
+     *
+     * After a CE class: who joined, earned CE, didn't, and borderline cases to review, by the approval's rules. For the instructor, and the school's admins.
+     *
+     * @response array{data: array{class: array{id: string, title: string, course: string, starts_at: string, ends_at: string, minutes: int, approval: string|null, ce_hours: float|null}, rules: array{presence_percent: int, required_minutes: int, checkin_minutes: int, checks: int}, status: 'none'|'draft'|'sent', sent_at: string|null, sent_by: string|null, can_decide: bool, can_send: bool, counts: array{joined: int, earned: int, not_earned: int, review: int, undecided: int}, students: list<array{user_id: int, name: string, minutes_present: int, checks_answered: int, checks_total: int, outcome: 'earned'|'review'|'not_earned', reasons: list<string>, decision: 'accepted'|'rejected'|null, decision_reason: string|null, earned: bool}>}}
+     */
+    public function report(VideoSession $session, #[CurrentUser] User $user, ClassReports $reports): JsonResponse
+    {
+        return response()->json(['data' => $reports->report($session, $user)]);
+    }
+
+    /**
+     * Accept or reject a borderline case.
+     *
+     * With a reason; every decision is logged.
+     *
+     * @response array{data: array{class: array{id: string, title: string, course: string, starts_at: string, ends_at: string, minutes: int, approval: string|null, ce_hours: float|null}, rules: array{presence_percent: int, required_minutes: int, checkin_minutes: int, checks: int}, status: 'none'|'draft'|'sent', sent_at: string|null, sent_by: string|null, can_decide: bool, can_send: bool, counts: array{joined: int, earned: int, not_earned: int, review: int, undecided: int}, students: list<array{user_id: int, name: string, minutes_present: int, checks_answered: int, checks_total: int, outcome: 'earned'|'review'|'not_earned', reasons: list<string>, decision: 'accepted'|'rejected'|null, decision_reason: string|null, earned: bool}>}}
+     */
+    public function decide(Request $request, VideoSession $session, #[CurrentUser] User $user, ClassReports $reports): JsonResponse
+    {
+        // The reason is kept with the report.
+        $request->validate([
+            'user' => ['required', 'integer'],
+            'decision' => ['required', 'in:accepted,rejected'],
+            'reason' => ['required', 'string', 'min:3', 'max:500'],
+        ]);
+        $reports->decide($session, $user, $request->integer('user'), $request->string('decision')->toString() === 'accepted', $request->string('reason')->trim()->toString());
+
+        return response()->json(['data' => $reports->report($session, $user)]);
+    }
+
+    /**
+     * Confirm and send to school.
+     *
+     * Once every borderline case is decided; the school's admins are told.
+     *
+     * @response array{data: array{class: array{id: string, title: string, course: string, starts_at: string, ends_at: string, minutes: int, approval: string|null, ce_hours: float|null}, rules: array{presence_percent: int, required_minutes: int, checkin_minutes: int, checks: int}, status: 'none'|'draft'|'sent', sent_at: string|null, sent_by: string|null, can_decide: bool, can_send: bool, counts: array{joined: int, earned: int, not_earned: int, review: int, undecided: int}, students: list<array{user_id: int, name: string, minutes_present: int, checks_answered: int, checks_total: int, outcome: 'earned'|'review'|'not_earned', reasons: list<string>, decision: 'accepted'|'rejected'|null, decision_reason: string|null, earned: bool}>}}
+     */
+    public function sendReport(VideoSession $session, #[CurrentUser] User $user, ClassReports $reports): JsonResponse
+    {
+        $reports->send($session, $user);
+
+        return response()->json(['data' => $reports->report($session, $user)]);
     }
 }

@@ -1,5 +1,6 @@
 import type {
     ClassCourse,
+    ClassReport,
     ClassLive,
     LiveClassRow,
 } from '@/components/classes/types';
@@ -24,6 +25,8 @@ export const classRow = (over: Partial<LiveClassRow> = {}): LiveClassRow => ({
     can_register: true,
     full: false,
     can_join: false,
+    report: 'none',
+    has_recording: false,
     ...over,
 });
 
@@ -90,5 +93,69 @@ export const classLive = (over: Partial<ClassLive> = {}): ClassLive => ({
     check: null,
     checks: [],
     next_check_at: null,
+    ...over,
+});
+
+export const classReport = (over: Partial<ClassReport> = {}): ClassReport => ({
+    class: {
+        id: '6f9a1c2e-4b7d-4e1a-9c3f-2a8b5d6e7f01',
+        title: 'Contract update: live review',
+        course: 'Texas Contract Update',
+        starts_at: '2026-11-24T16:30:00Z',
+        ends_at: '2026-11-24T18:30:00Z',
+        minutes: 120,
+        approval: 'TX CE-7781',
+        ce_hours: 2,
+    },
+    rules: {
+        presence_percent: 90,
+        required_minutes: 108,
+        checkin_minutes: 15,
+        checks: 7,
+    },
+    status: 'draft',
+    sent_at: null,
+    sent_by: null,
+    can_decide: true,
+    can_send: false,
+    counts: { joined: 17, earned: 14, not_earned: 3, review: 1, undecided: 1 },
+    students: [
+        {
+            user_id: 31,
+            name: 'Ben Ortiz',
+            minutes_present: 118,
+            checks_answered: 6,
+            checks_total: 7,
+            outcome: 'review',
+            reasons: ['checks'],
+            decision: null,
+            decision_reason: null,
+            earned: false,
+        },
+        {
+            user_id: 32,
+            name: 'Dan Lee',
+            minutes_present: 30,
+            checks_answered: 1,
+            checks_total: 7,
+            outcome: 'not_earned',
+            reasons: ['seat_time', 'checks'],
+            decision: null,
+            decision_reason: null,
+            earned: false,
+        },
+        {
+            user_id: 30,
+            name: 'Ana Ruiz',
+            minutes_present: 120,
+            checks_answered: 7,
+            checks_total: 7,
+            outcome: 'earned',
+            reasons: [],
+            decision: null,
+            decision_reason: null,
+            earned: true,
+        },
+    ],
     ...over,
 });

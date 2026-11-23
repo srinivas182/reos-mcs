@@ -864,6 +864,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/classes/{session}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The CE class report
+         * @description After a CE class: who joined, earned CE, didn't, and borderline cases to review, by the approval's rules. For the instructor, and the school's admins.
+         */
+        get: operations["classes.report"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/report/decisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Accept or reject a borderline case
+         * @description With a reason; every decision is logged.
+         */
+        post: operations["classes.report.decide"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/report/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm and send to school
+         * @description Once every borderline case is decided; the school's admins are told.
+         */
+        post: operations["classes.report.send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/hub": {
         parameters: {
             query?: never;
@@ -6875,6 +6935,9 @@ export interface operations {
                             can_register: boolean;
                             full: boolean;
                             can_join: boolean;
+                            /** @enum {string} */
+                            report: "none" | "draft" | "sent";
+                            has_recording: boolean;
                         }[];
                         can_schedule: boolean;
                         courses: {
@@ -6933,6 +6996,9 @@ export interface operations {
                             can_register: boolean;
                             full: boolean;
                             can_join: boolean;
+                            /** @enum {string} */
+                            report: "none" | "draft" | "sent";
+                            has_recording: boolean;
                         };
                     };
                 };
@@ -6995,6 +7061,9 @@ export interface operations {
                             can_register: boolean;
                             full: boolean;
                             can_join: boolean;
+                            /** @enum {string} */
+                            report: "none" | "draft" | "sent";
+                            has_recording: boolean;
                         };
                     };
                 };
@@ -7057,6 +7126,9 @@ export interface operations {
                             can_register: boolean;
                             full: boolean;
                             can_join: boolean;
+                            /** @enum {string} */
+                            report: "none" | "draft" | "sent";
+                            has_recording: boolean;
                         };
                     };
                 };
@@ -8238,6 +8310,250 @@ export interface operations {
                                 of: number;
                             }[];
                             next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            class: {
+                                id: string;
+                                title: string;
+                                course: string;
+                                starts_at: string;
+                                ends_at: string;
+                                minutes: number;
+                                approval: string | null;
+                                ce_hours: number | null;
+                            };
+                            rules: {
+                                presence_percent: number;
+                                required_minutes: number;
+                                checkin_minutes: number;
+                                checks: number;
+                            };
+                            /** @enum {string} */
+                            status: "none" | "draft" | "sent";
+                            sent_at: string | null;
+                            sent_by: string | null;
+                            can_decide: boolean;
+                            can_send: boolean;
+                            counts: {
+                                joined: number;
+                                earned: number;
+                                not_earned: number;
+                                review: number;
+                                undecided: number;
+                            };
+                            students: {
+                                user_id: number;
+                                name: string;
+                                minutes_present: number;
+                                checks_answered: number;
+                                checks_total: number;
+                                /** @enum {string} */
+                                outcome: "earned" | "review" | "not_earned";
+                                reasons: string[];
+                                /** @enum {string|null} */
+                                decision: "accepted" | "rejected" | null;
+                                decision_reason: string | null;
+                                earned: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "classes.report.decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    user: number;
+                    /** @enum {string} */
+                    decision: "accepted" | "rejected";
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            class: {
+                                id: string;
+                                title: string;
+                                course: string;
+                                starts_at: string;
+                                ends_at: string;
+                                minutes: number;
+                                approval: string | null;
+                                ce_hours: number | null;
+                            };
+                            rules: {
+                                presence_percent: number;
+                                required_minutes: number;
+                                checkin_minutes: number;
+                                checks: number;
+                            };
+                            /** @enum {string} */
+                            status: "none" | "draft" | "sent";
+                            sent_at: string | null;
+                            sent_by: string | null;
+                            can_decide: boolean;
+                            can_send: boolean;
+                            counts: {
+                                joined: number;
+                                earned: number;
+                                not_earned: number;
+                                review: number;
+                                undecided: number;
+                            };
+                            students: {
+                                user_id: number;
+                                name: string;
+                                minutes_present: number;
+                                checks_answered: number;
+                                checks_total: number;
+                                /** @enum {string} */
+                                outcome: "earned" | "review" | "not_earned";
+                                reasons: string[];
+                                /** @enum {string|null} */
+                                decision: "accepted" | "rejected" | null;
+                                decision_reason: string | null;
+                                earned: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.report.send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            class: {
+                                id: string;
+                                title: string;
+                                course: string;
+                                starts_at: string;
+                                ends_at: string;
+                                minutes: number;
+                                approval: string | null;
+                                ce_hours: number | null;
+                            };
+                            rules: {
+                                presence_percent: number;
+                                required_minutes: number;
+                                checkin_minutes: number;
+                                checks: number;
+                            };
+                            /** @enum {string} */
+                            status: "none" | "draft" | "sent";
+                            sent_at: string | null;
+                            sent_by: string | null;
+                            can_decide: boolean;
+                            can_send: boolean;
+                            counts: {
+                                joined: number;
+                                earned: number;
+                                not_earned: number;
+                                review: number;
+                                undecided: number;
+                            };
+                            students: {
+                                user_id: number;
+                                name: string;
+                                minutes_present: number;
+                                checks_answered: number;
+                                checks_total: number;
+                                /** @enum {string} */
+                                outcome: "earned" | "review" | "not_earned";
+                                reasons: string[];
+                                /** @enum {string|null} */
+                                decision: "accepted" | "rejected" | null;
+                                decision_reason: string | null;
+                                earned: boolean;
+                            }[];
                         };
                     };
                 };

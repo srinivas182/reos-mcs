@@ -3677,6 +3677,17 @@
                                                     },
                                                     "can_join": {
                                                         "type": "boolean"
+                                                    },
+                                                    "report": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "none",
+                                                            "draft",
+                                                            "sent"
+                                                        ]
+                                                    },
+                                                    "has_recording": {
+                                                        "type": "boolean"
                                                     }
                                                 },
                                                 "required": [
@@ -3697,7 +3708,9 @@
                                                     "me",
                                                     "can_register",
                                                     "full",
-                                                    "can_join"
+                                                    "can_join",
+                                                    "report",
+                                                    "has_recording"
                                                 ]
                                             }
                                         },
@@ -3867,6 +3880,17 @@
                                                 },
                                                 "can_join": {
                                                     "type": "boolean"
+                                                },
+                                                "report": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "draft",
+                                                        "sent"
+                                                    ]
+                                                },
+                                                "has_recording": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
@@ -3887,7 +3911,9 @@
                                                 "me",
                                                 "can_register",
                                                 "full",
-                                                "can_join"
+                                                "can_join",
+                                                "report",
+                                                "has_recording"
                                             ]
                                         }
                                     },
@@ -4044,6 +4070,17 @@
                                                 },
                                                 "can_join": {
                                                     "type": "boolean"
+                                                },
+                                                "report": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "draft",
+                                                        "sent"
+                                                    ]
+                                                },
+                                                "has_recording": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
@@ -4064,7 +4101,9 @@
                                                 "me",
                                                 "can_register",
                                                 "full",
-                                                "can_join"
+                                                "can_join",
+                                                "report",
+                                                "has_recording"
                                             ]
                                         }
                                     },
@@ -4219,6 +4258,17 @@
                                                 },
                                                 "can_join": {
                                                     "type": "boolean"
+                                                },
+                                                "report": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "draft",
+                                                        "sent"
+                                                    ]
+                                                },
+                                                "has_recording": {
+                                                    "type": "boolean"
                                                 }
                                             },
                                             "required": [
@@ -4239,7 +4289,9 @@
                                                 "me",
                                                 "can_register",
                                                 "full",
-                                                "can_join"
+                                                "can_join",
+                                                "report",
+                                                "has_recording"
                                             ]
                                         }
                                     },
@@ -8316,6 +8368,829 @@
                                                 "check",
                                                 "checks",
                                                 "next_check_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/classes/{session}/report": {
+            "get": {
+                "operationId": "classes.report",
+                "description": "After a CE class: who joined, earned CE, didn't, and borderline cases to review, by the approval's rules. For the instructor, and the school's admins.",
+                "summary": "The CE class report",
+                "tags": [
+                    "Classes"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "class": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        },
+                                                        "course": {
+                                                            "type": "string"
+                                                        },
+                                                        "starts_at": {
+                                                            "type": "string"
+                                                        },
+                                                        "ends_at": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "approval": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ce_hours": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title",
+                                                        "course",
+                                                        "starts_at",
+                                                        "ends_at",
+                                                        "minutes",
+                                                        "approval",
+                                                        "ce_hours"
+                                                    ]
+                                                },
+                                                "rules": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "presence_percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "required_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "checkin_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "checks": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "presence_percent",
+                                                        "required_minutes",
+                                                        "checkin_minutes",
+                                                        "checks"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "draft",
+                                                        "sent"
+                                                    ]
+                                                },
+                                                "sent_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sent_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_decide": {
+                                                    "type": "boolean"
+                                                },
+                                                "can_send": {
+                                                    "type": "boolean"
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "joined": {
+                                                            "type": "integer"
+                                                        },
+                                                        "earned": {
+                                                            "type": "integer"
+                                                        },
+                                                        "not_earned": {
+                                                            "type": "integer"
+                                                        },
+                                                        "review": {
+                                                            "type": "integer"
+                                                        },
+                                                        "undecided": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "joined",
+                                                        "earned",
+                                                        "not_earned",
+                                                        "review",
+                                                        "undecided"
+                                                    ]
+                                                },
+                                                "students": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes_present": {
+                                                                "type": "integer"
+                                                            },
+                                                            "checks_answered": {
+                                                                "type": "integer"
+                                                            },
+                                                            "checks_total": {
+                                                                "type": "integer"
+                                                            },
+                                                            "outcome": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "earned",
+                                                                    "review",
+                                                                    "not_earned"
+                                                                ]
+                                                            },
+                                                            "reasons": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "decision": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "accepted",
+                                                                    "rejected",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "decision_reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "earned": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "user_id",
+                                                            "name",
+                                                            "minutes_present",
+                                                            "checks_answered",
+                                                            "checks_total",
+                                                            "outcome",
+                                                            "reasons",
+                                                            "decision",
+                                                            "decision_reason",
+                                                            "earned"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "class",
+                                                "rules",
+                                                "status",
+                                                "sent_at",
+                                                "sent_by",
+                                                "can_decide",
+                                                "can_send",
+                                                "counts",
+                                                "students"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/classes/{session}/report/decisions": {
+            "post": {
+                "operationId": "classes.report.decide",
+                "description": "With a reason; every decision is logged.",
+                "summary": "Accept or reject a borderline case",
+                "tags": [
+                    "Classes"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "user": {
+                                        "type": "integer"
+                                    },
+                                    "decision": {
+                                        "type": "string",
+                                        "enum": [
+                                            "accepted",
+                                            "rejected"
+                                        ]
+                                    },
+                                    "reason": {
+                                        "type": "string",
+                                        "minLength": 3,
+                                        "maxLength": 500
+                                    }
+                                },
+                                "required": [
+                                    "user",
+                                    "decision",
+                                    "reason"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "class": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        },
+                                                        "course": {
+                                                            "type": "string"
+                                                        },
+                                                        "starts_at": {
+                                                            "type": "string"
+                                                        },
+                                                        "ends_at": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "approval": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ce_hours": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title",
+                                                        "course",
+                                                        "starts_at",
+                                                        "ends_at",
+                                                        "minutes",
+                                                        "approval",
+                                                        "ce_hours"
+                                                    ]
+                                                },
+                                                "rules": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "presence_percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "required_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "checkin_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "checks": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "presence_percent",
+                                                        "required_minutes",
+                                                        "checkin_minutes",
+                                                        "checks"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "draft",
+                                                        "sent"
+                                                    ]
+                                                },
+                                                "sent_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sent_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_decide": {
+                                                    "type": "boolean"
+                                                },
+                                                "can_send": {
+                                                    "type": "boolean"
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "joined": {
+                                                            "type": "integer"
+                                                        },
+                                                        "earned": {
+                                                            "type": "integer"
+                                                        },
+                                                        "not_earned": {
+                                                            "type": "integer"
+                                                        },
+                                                        "review": {
+                                                            "type": "integer"
+                                                        },
+                                                        "undecided": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "joined",
+                                                        "earned",
+                                                        "not_earned",
+                                                        "review",
+                                                        "undecided"
+                                                    ]
+                                                },
+                                                "students": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes_present": {
+                                                                "type": "integer"
+                                                            },
+                                                            "checks_answered": {
+                                                                "type": "integer"
+                                                            },
+                                                            "checks_total": {
+                                                                "type": "integer"
+                                                            },
+                                                            "outcome": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "earned",
+                                                                    "review",
+                                                                    "not_earned"
+                                                                ]
+                                                            },
+                                                            "reasons": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "decision": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "accepted",
+                                                                    "rejected",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "decision_reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "earned": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "user_id",
+                                                            "name",
+                                                            "minutes_present",
+                                                            "checks_answered",
+                                                            "checks_total",
+                                                            "outcome",
+                                                            "reasons",
+                                                            "decision",
+                                                            "decision_reason",
+                                                            "earned"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "class",
+                                                "rules",
+                                                "status",
+                                                "sent_at",
+                                                "sent_by",
+                                                "can_decide",
+                                                "can_send",
+                                                "counts",
+                                                "students"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/classes/{session}/report/send": {
+            "post": {
+                "operationId": "classes.report.send",
+                "description": "Once every borderline case is decided; the school's admins are told.",
+                "summary": "Confirm and send to school",
+                "tags": [
+                    "Classes"
+                ],
+                "parameters": [
+                    {
+                        "name": "session",
+                        "in": "path",
+                        "required": true,
+                        "description": "The session UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "class": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        },
+                                                        "course": {
+                                                            "type": "string"
+                                                        },
+                                                        "starts_at": {
+                                                            "type": "string"
+                                                        },
+                                                        "ends_at": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "approval": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "ce_hours": {
+                                                            "type": [
+                                                                "number",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title",
+                                                        "course",
+                                                        "starts_at",
+                                                        "ends_at",
+                                                        "minutes",
+                                                        "approval",
+                                                        "ce_hours"
+                                                    ]
+                                                },
+                                                "rules": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "presence_percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "required_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "checkin_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "checks": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "presence_percent",
+                                                        "required_minutes",
+                                                        "checkin_minutes",
+                                                        "checks"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "draft",
+                                                        "sent"
+                                                    ]
+                                                },
+                                                "sent_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "sent_by": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_decide": {
+                                                    "type": "boolean"
+                                                },
+                                                "can_send": {
+                                                    "type": "boolean"
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "joined": {
+                                                            "type": "integer"
+                                                        },
+                                                        "earned": {
+                                                            "type": "integer"
+                                                        },
+                                                        "not_earned": {
+                                                            "type": "integer"
+                                                        },
+                                                        "review": {
+                                                            "type": "integer"
+                                                        },
+                                                        "undecided": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "joined",
+                                                        "earned",
+                                                        "not_earned",
+                                                        "review",
+                                                        "undecided"
+                                                    ]
+                                                },
+                                                "students": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "minutes_present": {
+                                                                "type": "integer"
+                                                            },
+                                                            "checks_answered": {
+                                                                "type": "integer"
+                                                            },
+                                                            "checks_total": {
+                                                                "type": "integer"
+                                                            },
+                                                            "outcome": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "earned",
+                                                                    "review",
+                                                                    "not_earned"
+                                                                ]
+                                                            },
+                                                            "reasons": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "decision": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "accepted",
+                                                                    "rejected",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "decision_reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "earned": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "user_id",
+                                                            "name",
+                                                            "minutes_present",
+                                                            "checks_answered",
+                                                            "checks_total",
+                                                            "outcome",
+                                                            "reasons",
+                                                            "decision",
+                                                            "decision_reason",
+                                                            "earned"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "class",
+                                                "rules",
+                                                "status",
+                                                "sent_at",
+                                                "sent_by",
+                                                "can_decide",
+                                                "can_send",
+                                                "counts",
+                                                "students"
                                             ]
                                         }
                                     },

@@ -1,9 +1,10 @@
 import { Link } from '@inertiajs/react';
-import { Award, Users } from 'lucide-react';
+import { Award, FileCheck, PlayCircle, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LiveClassRow } from '@/components/classes/types';
 import { SessionStatus } from '@/components/sessions/session-card';
 import { Button } from '@/components/ui/button';
+import { report as reportRoute } from '@/routes/classes';
 import { show } from '@/routes/sessions';
 
 /** "Tue, Nov 24 · 10:30 AM – 12:30 PM" in the viewer's language and zone. */
@@ -76,7 +77,8 @@ export function ClassCard({
                     <Button asChild>
                         <Link href={open}>{t('sessions.join')}</Link>
                     </Button>
-                ) : row.me !== null ? (
+                ) : row.me !== null &&
+                  !(row.has_recording && row.me !== 'host') ? (
                     <Button asChild variant="outline">
                         <Link
                             href={open}
@@ -85,6 +87,28 @@ export function ClassCard({
                             })}
                         >
                             {t('classes.open')}
+                        </Link>
+                    </Button>
+                ) : null}
+                {/* The CE class report, for the host after a CE class (A10.2c). */}
+                {row.me === 'host' && row.report !== 'none' ? (
+                    <Button
+                        asChild
+                        variant={row.report === 'draft' ? 'default' : 'outline'}
+                    >
+                        <Link href={reportRoute(row.id).url}>
+                            <FileCheck aria-hidden />
+                            {row.report === 'draft'
+                                ? t('classes.report.confirm')
+                                : t('classes.report.title')}
+                        </Link>
+                    </Button>
+                ) : null}
+                {row.has_recording && row.me !== 'host' ? (
+                    <Button asChild variant="outline">
+                        <Link href={open}>
+                            <PlayCircle aria-hidden />
+                            {t('classes.recording')}
                         </Link>
                     </Button>
                 ) : null}

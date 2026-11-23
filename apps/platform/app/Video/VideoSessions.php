@@ -16,6 +16,7 @@ use App\Models\VideoSessionParticipant;
 use App\Notifications\SessionBooked;
 use App\Notifications\SessionStarting;
 use App\Services\Authorization\Memberships;
+use App\Video\Classes\ClassReports;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
@@ -276,6 +277,8 @@ final readonly class VideoSessions
         }
 
         Realtime::send(new SessionEnded($session, $ids));
+        // A CE class's report is ready for the instructor (A10.2c).
+        app(ClassReports::class)->prepare($session);
     }
 
     /** Ends every session whose booked end has come (`reos:sessions:tick`, every minute). */

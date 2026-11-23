@@ -8,6 +8,7 @@ use App\Content\Delivery;
 use App\Enums\OrganisationType;
 use App\Features\Flags;
 use App\Integrations\IntegrationMode;
+use App\Models\AuditEvent;
 use App\Models\ClassCheck;
 use App\Models\Course;
 use App\Models\CourseApproval;
@@ -17,6 +18,7 @@ use App\Models\User;
 use App\Models\VideoSession;
 use App\Models\VideoSessionParticipant;
 use App\Notifications\ClassCheckReminder;
+use App\Notifications\ClassReportReady;
 use App\Notifications\SessionBooked;
 use App\Notifications\SessionStarting;
 use App\Services\Content\Courses;
@@ -197,5 +199,94 @@ describe('in class (A10.2b: L12 and i12)', function () {
     it('shows the class on the session for everyone in it', function () {
         $this->actingAs($this->ana)->getJson("/api/v1/sessions/{$this->class['id']}")->assertOk()
             ->assertJsonPath('class.course', 'Texas Contract Update')->assertJsonPath('class.ce', true)->assertJsonPath('class.registered', 2);
+    });
+});
+
+describe('the CE class report (A10.2c: i13)', function () {
+    beforeEach(function () {
+        $this->cara = User::factory()->withRole(Role::Candidate, Organisation::platform())->create(['name' => 'Cara Diaz']);
+        $this->dan = User::factory()->withRole(Role::Candidate, Organisation::platform())->create(['name' => 'Dan Lee']);
+        $this->paul = User::factory()->withRole(Role::SchoolAdmin, $this->school)->create(['name' => 'Paul Diaz']);
+        $this->class = scheduleClass($this);
+        $id = $this->class['id'];
+        foreach ([$this->ana, $this->ben, $this->cara, $this->dan] as $student) {
+            $this->actingAs($student)->postJson("/api/v1/classes/{$id}/registration")->assertOk();
+        }
+
+        // 10:30 to 12:30; 90% means 108 minutes. Cara never comes.
+        $this->travelTo(CarbonImmutable::parse('2026-11-23 10:30', 'America/Chicago'));
+        foreach ([$this->nelle, $this->ana, $this->ben, $this->dan] as $person) {
+            $this->actingAs($person)->postJson("/api/v1/sessions/{$id}/join")->assertOk();
+        }
+
+        // Two checks: Ana answers both, Ben only the first, Dan the first.
+        $this->travelTo(CarbonImmutable::parse('2026-11-23 10:45', 'America/Chicago'));
+        $this->artisan('reos:sessions:tick')->assertSuccessful();
+        $first = ClassCheck::query()->latest('id')->firstOrFail();
+        foreach ([$this->ana, $this->ben, $this->dan] as $student) {
+            $this->actingAs($student)->postJson("/api/v1/classes/{$id}/checks/{$first->id}/answer")->assertOk();
+        }
+        $this->travelTo(CarbonImmutable::parse('2026-11-23 11:00', 'America/Chicago'));
+        $this->actingAs($this->dan)->postJson("/api/v1/sessions/{$id}/leave")->assertOk();
+        $this->artisan('reos:sessions:tick')->assertSuccessful();
+        $second = ClassCheck::query()->latest('id')->firstOrFail();
+        $this->actingAs($this->ana)->postJson("/api/v1/classes/{$id}/checks/{$second->id}/answer")->assertOk();
+
+        // The class ends; checks at 11:15 onward aren't sent (no tick ran), so two in all.
+        $this->travelTo(CarbonImmutable::parse('2026-11-23 12:31', 'America/Chicago'));
+        $this->artisan('reos:sessions:tick')->assertSuccessful();
+    });
+
+    it('measures everyone against the approval when the class ends, and tells the instructor', function () {
+        Notification::assertSentTo($this->nelle, ClassReportReady::class, fn (ClassReportReady $n) => $n->change === ClassReportReady::READY);
+        $this->actingAs($this->nelle)->getJson('/api/v1/classes')->assertJsonPath('data.0.report', 'draft');
+
+        $report = $this->getJson("/api/v1/classes/{$this->class['id']}/report")->assertOk()
+            ->assertJsonPath('data.status', 'draft')->assertJsonPath('data.rules.required_minutes', 108)->assertJsonPath('data.rules.checks', 2)
+            ->assertJsonPath('data.class.approval', 'TX CE-7781')
+            ->assertJsonPath('data.counts', ['joined' => 3, 'earned' => 1, 'not_earned' => 2, 'review' => 1, 'undecided' => 1])
+            ->assertJsonPath('data.can_send', false)->json('data.students');
+
+        $by = collect($report)->keyBy('name');
+        expect($by['Ana Ruiz'])->toMatchArray(['outcome' => 'earned', 'minutes_present' => 120, 'checks_answered' => 2, 'checks_total' => 2])
+            ->and($by['Ben Ortiz'])->toMatchArray(['outcome' => 'review', 'reasons' => ['checks'], 'checks_answered' => 1])
+            ->and($by['Dan Lee'])->toMatchArray(['outcome' => 'not_earned', 'reasons' => ['seat_time', 'checks'], 'minutes_present' => 30])
+            ->and($by['Cara Diaz'])->toMatchArray(['outcome' => 'not_earned', 'reasons' => ['not_joined']])
+            // Borderline cases first.
+            ->and($report[0]['name'])->toBe('Ben Ortiz');
+    });
+
+    it('accepts or rejects borderline cases with a reason, audited, then confirms and sends to the school', function () {
+        $id = $this->class['id'];
+        $this->actingAs($this->nelle)->postJson("/api/v1/classes/{$id}/report/send")->assertUnprocessable()->assertJsonValidationErrors('report');
+        $this->postJson("/api/v1/classes/{$id}/report/decisions", ['user' => $this->dan->id, 'decision' => 'accepted', 'reason' => 'Left early'])->assertUnprocessable();
+        $this->postJson("/api/v1/classes/{$id}/report/decisions", ['user' => $this->ben->id, 'decision' => 'accepted'])->assertUnprocessable()->assertJsonValidationErrors('reason');
+
+        $this->postJson("/api/v1/classes/{$id}/report/decisions", ['user' => $this->ben->id, 'decision' => 'accepted', 'reason' => 'Answered the second check in chat; connection dropped.'])
+            ->assertOk()->assertJsonPath('data.counts.earned', 2)->assertJsonPath('data.counts.undecided', 0)->assertJsonPath('data.can_send', true);
+        $audit = AuditEvent::query()->where('action', 'class_report.decided')->sole();
+        expect($audit->properties)->toMatchArray(['student' => $this->ben->id, 'decision' => 'accepted', 'checks' => '1/2']);
+
+        $this->postJson("/api/v1/classes/{$id}/report/send")->assertOk()->assertJsonPath('data.status', 'sent')->assertJsonPath('data.sent_by', 'Nelle Hart')->assertJsonPath('data.can_decide', false);
+        expect(AuditEvent::query()->where('action', 'class_report.sent')->sole()->properties['earned'])->toEqualCanonicalizing([$this->ana->id, $this->ben->id]);
+        Notification::assertSentTo($this->paul, ClassReportReady::class, fn (ClassReportReady $n) => $n->change === ClassReportReady::SENT);
+
+        // Sent is final; the school's admin can open it; nobody else can.
+        $this->postJson("/api/v1/classes/{$id}/report/decisions", ['user' => $this->ben->id, 'decision' => 'rejected', 'reason' => 'Changed my mind'])->assertUnprocessable();
+        $this->actingAs($this->paul)->get("/classes/{$id}/report")->assertOk()
+            ->assertInertia(fn ($page) => $page->component('classes/report')->where('report.status', 'sent')->where('report.can_decide', false));
+        $this->actingAs($this->ana)->getJson("/api/v1/classes/{$id}/report")->assertNotFound();
+    });
+});
+
+describe('recording a live class (A10.2c)', function () {
+    it('records a CE class only when its approval allows it', function () {
+        $class = scheduleClass($this);
+        $this->travelTo(CarbonImmutable::parse('2026-11-23 10:30', 'America/Chicago'));
+        $this->actingAs($this->nelle)->postJson("/api/v1/sessions/{$class['id']}/join")->assertOk();
+
+        $this->postJson("/api/v1/sessions/{$class['id']}/recordings")->assertUnprocessable()->assertJsonValidationErrors('recording');
+        CourseApproval::query()->update(['records_live' => true]);
+        $this->postJson("/api/v1/sessions/{$class['id']}/recordings")->assertSuccessful();
     });
 });
