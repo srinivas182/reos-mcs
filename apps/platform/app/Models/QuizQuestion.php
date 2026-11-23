@@ -26,11 +26,13 @@ use Illuminate\Support\Carbon;
  * @property string|null $portion national or state
  * @property Carbon|null $retired_at
  * @property bool $in_free_quiz
+ * @property string|null $key REOS's own seeded questions (A8.3)
+ * @property bool $in_diagnostic In the Texas diagnostic (A8.3)
  */
 final class QuizQuestion extends Model
 {
     /** @var list<string> */
-    protected $fillable = ['state_code', 'topic', 'content', 'correct_option', 'source', 'is_sample', 'in_free_quiz', 'organisation_id', 'course_id', 'review_item_id', 'difficulty', 'portion', 'retired_at'];
+    protected $fillable = ['state_code', 'topic', 'content', 'correct_option', 'source', 'is_sample', 'in_free_quiz', 'organisation_id', 'course_id', 'review_item_id', 'difficulty', 'portion', 'retired_at', 'key', 'in_diagnostic'];
 
     /**
      * The question in one language (English if that language is missing).
@@ -51,6 +53,7 @@ final class QuizQuestion extends Model
             'correct_option' => 'integer',
             'is_sample' => 'boolean',
             'in_free_quiz' => 'boolean',
+            'in_diagnostic' => 'boolean',
             'retired_at' => 'datetime',
         ];
     }

@@ -161,8 +161,21 @@ function xsrf(): string {
 
 /** A JSON request to REOS from the page (uploads), with the session's CSRF token. */
 export async function postJson<T>(url: string, body: unknown = {}): Promise<T> {
+    return sendJson<T>('POST', url, body);
+}
+
+/** PUT JSON to a REOS route (a test answer, A8.3). */
+export async function putJson<T>(url: string, body: unknown = {}): Promise<T> {
+    return sendJson<T>('PUT', url, body);
+}
+
+async function sendJson<T>(
+    method: 'POST' | 'PUT',
+    url: string,
+    body: unknown,
+): Promise<T> {
     const response = await fetch(url, {
-        method: 'POST',
+        method,
         credentials: 'same-origin',
         headers: {
             Accept: 'application/json',

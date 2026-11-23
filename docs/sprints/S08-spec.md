@@ -144,6 +144,15 @@
   - the reminder at their time.
   - Agents keep their Today (B4); the screen is shared but per role.
 - **Done when:** a candidate gets a plan from the diagnostic. They take it, see the plan on Today and on their calendar, and the first lesson opens from Continue.
+- **As built, A8.3a** (diagnostic, readiness, study plan and Today; ADR 0032):
+  - **Diagnostic:** REOS's 50 Texas questions in English and Spanish, each with its source; 45 minutes on the server's clock; answers saved on every tap; scored as it stood when time runs out.
+  - **Topic quizzes:** 10 questions with why after each answer. The plan's practice tasks and readiness use them.
+  - **Report** (phone 43, web 8): score against the 70% pass line, the change since last time, topics weakest first with their exam weight, next steps, and every answer with why and its source.
+  - **Study plan:** day one is the diagnostic; every day after holds exactly the minutes chosen, with weak-topic quizzes, the next lessons, and review days. Missed quizzes move into the next three days; the exam date never moves. It is rebuilt on a missed day, a new exam month or minutes, and every test.
+  - **Calendar:** the next 14 days are study blocks at the reminder time, on the calendar chosen in Connections, moved in place on each rebuild.
+  - **Web:** dashboard for candidates (screen 4); Study plan (screen 6: week view by type, drag or menu to move a task, weekly goal, catch-up rule, change exam month, minutes and reminder); Practice and exams (hub, test with timer, flag and question map, report). Sidebar items Study plan and Practice and exams.
+  - **Phone:** Today for candidates (screen 12: readiness ring, days to exam, streak, Continue at its second, today's tasks with why); Practice tests (39); the test (40–42: countdown, flag, navigator, review before submit); results (43). The Ask bar opens search in the person's lessons until the AI study mate exists.
+  - **Next, A8.3b:** packages on reos.com with "Have a code?".
 
 ### B8.1 Lofty (Team B)
 
@@ -209,8 +218,9 @@
 - **ADRs:**
   - 0030 seat time and the player;
   - 0031 lesson review and question bank;
-  - 0032 Lofty and Salesforce;
-  - 0033 CRM hub and AI next steps.
+  - 0032 the diagnostic, readiness and the study plan;
+  - 0033 Lofty and Salesforce;
+  - 0034 CRM hub and AI next steps.
 
 ## 5. Risks
 

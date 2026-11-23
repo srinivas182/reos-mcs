@@ -62,7 +62,9 @@
     "courseBuilder": "Creador de cursos",
     "courseCatalogue": "Catálogo de cursos",
     "aiLessons": "Lecciones con IA",
-    "questionBank": "Banco de preguntas"
+    "questionBank": "Banco de preguntas",
+    "studyPlan": "Plan de estudio",
+    "practiceAndExams": "Práctica y exámenes"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2750,7 +2752,8 @@
       "session": "Sesión",
       "ce": "Educación continua (CE)",
       "todo": "Tarea",
-      "event": "Evento"
+      "event": "Evento",
+      "study": "Estudio"
     },
     "fields": {
       "title": "Qué",
@@ -5592,6 +5595,158 @@
         "out_of_date": "Está desactualizada",
         "other": "Otra cosa"
       }
+    }
+  },
+  "practice": {
+    "title": "Práctica y exámenes",
+    "description": "Descubra dónde está y practique lo que más le ayuda.",
+    "start": "Empezar",
+    "carryOn": "Continuar",
+    "startTopic": "Empezar el cuestionario de {{topic}}",
+    "carryOnTopic": "Continuar con el cuestionario de {{topic}}",
+    "seeResults": "Ver resultados",
+    "best": "Mejor {{best}} %",
+    "scores": "Mejor {{best}} % · último {{last}} %",
+    "questions_one": "{{count}} pregunta",
+    "questions_other": "{{count}} preguntas",
+    "topicQuizzes": "Cuestionarios por tema",
+    "topicQuiz": "Cuestionario de {{topic}}",
+    "diagnostic": {
+      "title": "Diagnóstico de Texas",
+      "description": "{{questions}} preguntas sobre el temario del examen de Texas en {{minutes}} minutos. Verá sus resultados al final, primero los temas más débiles, y su plan de estudio se basa en ellos.",
+      "start": "Empezar el diagnóstico",
+      "again": "Hacerlo de nuevo"
+    },
+    "topics": {
+      "agency": "Agencia",
+      "contracts": "Contratos",
+      "ownership": "Propiedad",
+      "finance": "Financiamiento",
+      "math": "Matemáticas de bienes raíces",
+      "state_rules": "Reglas de Texas"
+    },
+    "modes": {
+      "exam": "resultados al final",
+      "practice": "explicación después de cada respuesta"
+    },
+    "readiness": {
+      "title": "Preparación",
+      "label": "Preparación {{percent}} %",
+      "unknown": "Aún no se conoce su preparación. Haga el diagnóstico para saberlo.",
+      "notYet": "Sin evaluar",
+      "byTopic": "Preparación por tema",
+      "takeDiagnostic": "Haga el diagnóstico para ver cómo va en cada tema."
+    },
+    "test": {
+      "rules": "{{count}} preguntas, {{mode}}. Cada respuesta se guarda al instante.",
+      "timeLeft": "Quedan {{time}}",
+      "review": "Revisar y enviar",
+      "reviewTitle": "Revise antes de enviar",
+      "counter": "Pregunta {{n}} de {{total}}",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "flag": "Marcar para revisar",
+      "unflag": "Quitar marca",
+      "map": "Preguntas",
+      "mapItem": "Pregunta {{n}}, {{state}}",
+      "answered": "respondida",
+      "blank": "sin responder",
+      "flagged": "marcada",
+      "blanks_one": "{{count}} pregunta no está respondida.",
+      "blanks_other": "{{count}} preguntas no están respondidas.",
+      "allAnswered": "Todas las preguntas están respondidas.",
+      "firstBlank": "Ir a la primera sin responder",
+      "submit": "Enviar prueba",
+      "submitAnyway": "Enviar de todos modos",
+      "wrong": "No exactamente. La respuesta es: {{answer}}",
+      "openMap": "Pregunta {{n}} de {{total}}. Abrir la lista de preguntas"
+    },
+    "results": {
+      "title": "Sus resultados",
+      "purpose": "Su puntuación y de dónde viene.",
+      "diagnosticPurpose": "Su punto de partida. Su plan de estudio ahora empieza por sus temas más débiles.",
+      "score": "Puntuación",
+      "right": "Respuestas correctas",
+      "time": "Tiempo",
+      "above": "En la línea de aprobación del {{line}} % o por encima",
+      "below": "Por debajo de la línea de aprobación del {{line}} %",
+      "change": "{{change}} puntos desde la última vez",
+      "byTopic": "Por tema, primero los más débiles",
+      "weight_one": "{{count}} pregunta en el temario del examen",
+      "weight_other": "{{count}} preguntas en el temario del examen",
+      "next": "A continuación, su plan dedica más tiempo a {{topics}}.",
+      "fixWeakest": "Reforzar mis temas débiles",
+      "seePlan": "Ver mi plan de estudio",
+      "review": "Revise sus respuestas",
+      "gotRight": "Correcta",
+      "gotWrong": "Incorrecta",
+      "blank": "Sin responder",
+      "yours": "Su respuesta: {{answer}}",
+      "rightAnswer": "Respuesta correcta: {{answer}}"
+    },
+    "tasks": {
+      "diagnostic": "Hacer el diagnóstico de Texas",
+      "practice": "Cuestionario de {{topic}}",
+      "review": "Repaso: cuestionario de {{topic}}",
+      "lesson": "Lección",
+      "minutes_one": "{{count}} min",
+      "minutes_other": "{{count}} min",
+      "done": "Hecho"
+    },
+    "why": {
+      "next": "Lo siguiente en su curso",
+      "weak": "Uno de sus temas más débiles",
+      "review": "Día de repaso",
+      "catch_up": "Para ponerse al día por un día perdido",
+      "baseline": "Muestra desde dónde empieza"
+    },
+    "today": {
+      "summary": "Su progreso",
+      "daysToExam_one": "Falta {{count}} día para su examen ({{date}})",
+      "daysToExam_other": "Faltan {{count}} días para su examen ({{date}})",
+      "streak_one": "Racha de {{count}} día",
+      "streak_other": "Racha de {{count}} días",
+      "continue": "Continuar: {{title}}",
+      "plan_one": "Plan de hoy · {{count}} minuto",
+      "plan_other": "Plan de hoy · {{count}} minutos",
+      "behind": "Sus lecciones necesitan unas {{hours}} horas más de las que su plan tiene antes del examen. Agregar 10 minutos al día ayudaría. La fecha de su examen no cambia.",
+      "rest": "No hay nada planeado hoy. Descanse, o practique un tema si lo desea.",
+      "daysShort_one": "Falta {{count}} día para su examen",
+      "daysShort_other": "Faltan {{count}} días para su examen",
+      "focus": "{{topic}} es donde más puede avanzar.",
+      "onTrack": "Va por buen camino. Siga así.",
+      "continueLabel": "CONTINUAR",
+      "ask": "Pregunte sobre sus cursos"
+    },
+    "plan": {
+      "title": "Plan de estudio",
+      "description": "Su semana, basada en la fecha de su examen, sus minutos al día y sus resultados.",
+      "previousWeek": "Semana anterior",
+      "nextWeek": "Semana siguiente",
+      "goal_one": "Meta semanal: {{count}} minuto",
+      "goal_other": "Meta semanal: {{count}} minutos",
+      "catchUp": "Si pierde un día, sus cuestionarios se reparten en los tres días siguientes, dentro de sus minutos. La fecha de su examen nunca cambia.",
+      "onCalendar": "Las próximas dos semanas están en su calendario ({{calendar}}).",
+      "reosCalendar": "Las próximas dos semanas están en su calendario de REOS.",
+      "connect": "Agregar su calendario de Google u Outlook",
+      "moveTo": "Mover {{task}} a",
+      "moved": "Tarea movida.",
+      "examMonth": "Mes del examen",
+      "minutes": "Minutos al día",
+      "reminder": "Recordatorio diario",
+      "rebuild": "Guardar y rehacer el plan",
+      "rebuilt": "Su plan de estudio se rehízo."
+    },
+    "calendar": {
+      "title": "Estudio: {{minutes}} min",
+      "description": "Su plan de estudio de REOS para hoy."
+    },
+    "errors": {
+      "noQuestions": "Todavía no hay suficientes preguntas para esta prueba.",
+      "ended": "Esta prueba terminó.",
+      "notInTest": "Esa pregunta no está en esta prueba.",
+      "stillOpen": "Esta prueba sigue abierta.",
+      "save": "Su respuesta no se guardó. Revise su conexión y elíjala de nuevo."
     }
   }
 }

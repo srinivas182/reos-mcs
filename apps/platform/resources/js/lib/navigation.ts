@@ -2,6 +2,7 @@ import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import {
     BookOpen,
+    CalendarDays,
     Building2,
     CreditCard,
     FileBadge,
@@ -20,6 +21,7 @@ import {
     ListChecks,
     Sparkles,
     Tag,
+    Target,
     Users,
     Video,
     Wallet,
@@ -31,6 +33,8 @@ import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
+import { index as practice } from '@/routes/practice';
+import { show as studyPlan } from '@/routes/study-plan';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as messagesIndex } from '@/routes/messages';
 import { index as sessionsIndex } from '@/routes/sessions';
@@ -89,7 +93,9 @@ export type NavLabel =
     | 'courseBuilder'
     | 'courseCatalogue'
     | 'aiLessons'
-    | 'questionBank';
+    | 'questionBank'
+    | 'studyPlan'
+    | 'practiceAndExams';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -151,8 +157,8 @@ export function roleNavigation(
             home,
             messages,
             item('courses', BookOpen, learn(), '/learn'),
-            planned('studyPlan'),
-            planned('practiceAndExams'),
+            item('studyPlan', CalendarDays, studyPlan(), '/study-plan'),
+            item('practiceAndExams', Target, practice(), '/practice'),
             planned('readiness'),
             planned('ask'),
             planned('instructors'),

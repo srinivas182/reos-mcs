@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react-native';
-import { BookOpen, CalendarDays, CalendarPlus, Home, Lock, SquareCheck, TriangleAlert, Users, Video } from 'lucide-react-native';
+import { BookOpen, CalendarDays, CalendarPlus, GraduationCap, Home, Lock, SquareCheck, TriangleAlert, Users, Video } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +19,8 @@ const ICONS: Record<CalendarKind, LucideIcon> = {
   ce: BookOpen,
   todo: SquareCheck,
   event: CalendarDays,
+  // A study block from the candidate's plan (A8.3).
+  study: GraduationCap,
 };
 
 const TONES: Partial<Record<CalendarKind, Tone>> = { deadline: 'danger', showing: 'success', ce: 'warning' };

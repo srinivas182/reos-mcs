@@ -10,6 +10,7 @@ use App\Enums\OnboardingPath;
 use App\Models\Organisation;
 use App\Models\State;
 use App\Models\User;
+use App\Practice\StudyPlans;
 use App\Services\Authorization\Memberships;
 use Illuminate\Support\Carbon;
 
@@ -21,7 +22,7 @@ use Illuminate\Support\Carbon;
  */
 final readonly class Onboarding
 {
-    public function __construct(private Memberships $memberships) {}
+    public function __construct(private Memberships $memberships, private StudyPlans $plans) {}
 
     /**
      * @param  array{path?: OnboardingPath|null, state?: State|null, exam_month?: Carbon|null, minutes_per_day?: int|null, locale?: Locale|null, reminder_time?: string|null, complete?: bool}  $choices
@@ -56,6 +57,12 @@ final readonly class Onboarding
 
         if ($user->onboarding_path === OnboardingPath::BecomeAgent->value) {
             $this->becomeCandidate($user);
+
+            // The study plan (A8.3) follows the exam month, minutes a day and reminder time.
+            $changed = array_intersect(['exam_month', 'minutes_per_day', 'reminder_time'], array_keys($user->getChanges()));
+            if ($user->onboarded_at !== null && ($changed !== [] || $this->plans->active($user) === null)) {
+                $this->plans->rebuild($user, $this->plans->active($user) === null ? 'setup' : (in_array('exam_month', $changed, true) ? 'exam_date' : 'minutes'));
+            }
         }
 
         return $user;

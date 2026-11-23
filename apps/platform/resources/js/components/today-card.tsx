@@ -5,6 +5,7 @@ import {
     BookOpen,
     CalendarDays,
     CalendarPlus,
+    GraduationCap,
     Home,
     Lock,
     RefreshCw,
@@ -37,6 +38,8 @@ const ICONS: Record<CalendarKind, LucideIcon> = {
     ce: BookOpen,
     todo: SquareCheck,
     event: CalendarDays,
+    // A study block from the candidate's plan (A8.3).
+    study: GraduationCap,
 };
 
 /**

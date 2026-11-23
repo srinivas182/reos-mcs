@@ -36,7 +36,7 @@ final class CalendarEventResource extends JsonResource
             /** Null for an event from a calendar shared as busy only. */
             'title' => $event->title,
             /**
-             * @var 'appointment'|'showing'|'deadline'|'session'|'ce'|'todo'|'event'
+             * @var 'appointment'|'showing'|'deadline'|'session'|'ce'|'todo'|'event'|'study'
              */
             'kind' => $event->kind,
             'starts_at' => $event->starts_at->toIso8601String(),

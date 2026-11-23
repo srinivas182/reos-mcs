@@ -62,7 +62,9 @@
     "courseBuilder": "Course builder",
     "courseCatalogue": "Course catalog",
     "aiLessons": "AI lessons",
-    "questionBank": "Question bank"
+    "questionBank": "Question bank",
+    "studyPlan": "Study plan",
+    "practiceAndExams": "Practice and exams"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2750,7 +2752,8 @@
       "session": "Session",
       "ce": "CE",
       "todo": "To-do",
-      "event": "Event"
+      "event": "Event",
+      "study": "Study"
     },
     "fields": {
       "title": "What",
@@ -5592,6 +5595,158 @@
         "out_of_date": "It's out of date",
         "other": "Something else"
       }
+    }
+  },
+  "practice": {
+    "title": "Practice and exams",
+    "description": "Find out where you stand, then practice what helps most.",
+    "start": "Start",
+    "carryOn": "Carry on",
+    "startTopic": "Start the {{topic}} quiz",
+    "carryOnTopic": "Carry on with the {{topic}} quiz",
+    "seeResults": "See results",
+    "best": "Best {{best}}%",
+    "scores": "Best {{best}}% · last {{last}}%",
+    "questions_one": "{{count}} question",
+    "questions_other": "{{count}} questions",
+    "topicQuizzes": "Topic quizzes",
+    "topicQuiz": "{{topic}} quiz",
+    "diagnostic": {
+      "title": "Texas diagnostic",
+      "description": "{{questions}} questions across the Texas exam outline in {{minutes}} minutes. You'll see your results at the end, weakest topics first, and your study plan follows from them.",
+      "start": "Start the diagnostic",
+      "again": "Take it again"
+    },
+    "topics": {
+      "agency": "Agency",
+      "contracts": "Contracts",
+      "ownership": "Property ownership",
+      "finance": "Finance",
+      "math": "Real estate math",
+      "state_rules": "Texas rules"
+    },
+    "modes": {
+      "exam": "results at the end",
+      "practice": "why after each answer"
+    },
+    "readiness": {
+      "title": "Readiness",
+      "label": "Readiness {{percent}}%",
+      "unknown": "Readiness not known yet. Take the diagnostic to find out.",
+      "notYet": "Not tested yet",
+      "byTopic": "Readiness by topic",
+      "takeDiagnostic": "Take the diagnostic to see where you stand in each topic."
+    },
+    "test": {
+      "rules": "{{count}} questions, {{mode}}. Every answer is saved as you go.",
+      "timeLeft": "{{time}} left",
+      "review": "Review and submit",
+      "reviewTitle": "Review before you submit",
+      "counter": "Question {{n}} of {{total}}",
+      "previous": "Previous",
+      "next": "Next",
+      "flag": "Flag for review",
+      "unflag": "Remove flag",
+      "map": "Questions",
+      "mapItem": "Question {{n}}, {{state}}",
+      "answered": "answered",
+      "blank": "not answered",
+      "flagged": "flagged",
+      "blanks_one": "{{count}} question is not answered.",
+      "blanks_other": "{{count}} questions are not answered.",
+      "allAnswered": "Every question is answered.",
+      "firstBlank": "Go to the first blank",
+      "submit": "Submit test",
+      "submitAnyway": "Submit anyway",
+      "wrong": "Not quite. The answer is: {{answer}}",
+      "openMap": "Question {{n}} of {{total}}. Open the question list"
+    },
+    "results": {
+      "title": "Your results",
+      "purpose": "Your score and where it came from.",
+      "diagnosticPurpose": "Your starting point. Your study plan now begins with your weakest topics.",
+      "score": "Score",
+      "right": "Right answers",
+      "time": "Time",
+      "above": "At or above the {{line}}% pass line",
+      "below": "Below the {{line}}% pass line",
+      "change": "{{change}} points since last time",
+      "byTopic": "By topic, weakest first",
+      "weight_one": "{{count}} question on the exam outline",
+      "weight_other": "{{count}} questions on the exam outline",
+      "next": "Next, your plan spends extra time on {{topics}}.",
+      "fixWeakest": "Fix my weakest topics",
+      "seePlan": "See my study plan",
+      "review": "Review your answers",
+      "gotRight": "Right",
+      "gotWrong": "Wrong",
+      "blank": "Not answered",
+      "yours": "Your answer: {{answer}}",
+      "rightAnswer": "Right answer: {{answer}}"
+    },
+    "tasks": {
+      "diagnostic": "Take the Texas diagnostic",
+      "practice": "{{topic}} quiz",
+      "review": "Review: {{topic}} quiz",
+      "lesson": "Lesson",
+      "minutes_one": "{{count}} min",
+      "minutes_other": "{{count}} min",
+      "done": "Done"
+    },
+    "why": {
+      "next": "Next in your course",
+      "weak": "One of your weaker topics",
+      "review": "Review day",
+      "catch_up": "Catching up from a missed day",
+      "baseline": "Shows where you're starting from"
+    },
+    "today": {
+      "summary": "Your progress",
+      "daysToExam_one": "{{count}} day to your exam ({{date}})",
+      "daysToExam_other": "{{count}} days to your exam ({{date}})",
+      "streak_one": "{{count}}-day streak",
+      "streak_other": "{{count}}-day streak",
+      "continue": "Continue: {{title}}",
+      "plan_one": "Today's plan · {{count}} minute",
+      "plan_other": "Today's plan · {{count}} minutes",
+      "behind": "Your lessons need about {{hours}} more hours than your plan has before the exam. Adding 10 minutes a day would help. Your exam date stays the same.",
+      "rest": "Nothing planned today. Rest, or practice a topic if you like.",
+      "daysShort_one": "{{count}} day to your exam",
+      "daysShort_other": "{{count}} days to your exam",
+      "focus": "{{topic}} is your fastest win.",
+      "onTrack": "You're on track. Keep going.",
+      "continueLabel": "CONTINUE",
+      "ask": "Ask about your courses"
+    },
+    "plan": {
+      "title": "Study plan",
+      "description": "Your week, built from your exam date, your minutes a day and your results.",
+      "previousWeek": "Previous week",
+      "nextWeek": "Next week",
+      "goal_one": "Weekly goal: {{count}} minute",
+      "goal_other": "Weekly goal: {{count}} minutes",
+      "catchUp": "Miss a day and its quizzes are spread over the next three days, within your minutes. Your exam date never moves.",
+      "onCalendar": "The next two weeks are on your calendar ({{calendar}}).",
+      "reosCalendar": "The next two weeks are on your REOS calendar.",
+      "connect": "Add your Google or Outlook calendar",
+      "moveTo": "Move {{task}} to",
+      "moved": "Task moved.",
+      "examMonth": "Exam month",
+      "minutes": "Minutes a day",
+      "reminder": "Daily reminder",
+      "rebuild": "Save and rebuild plan",
+      "rebuilt": "Your study plan was rebuilt."
+    },
+    "calendar": {
+      "title": "Study: {{minutes}} min",
+      "description": "Your REOS study plan for today."
+    },
+    "errors": {
+      "noQuestions": "There aren't enough questions for this test yet.",
+      "ended": "This test has ended.",
+      "notInTest": "That question isn't in this test.",
+      "stillOpen": "This test is still open.",
+      "save": "Your answer wasn't saved. Check your connection and choose it again."
     }
   }
 }

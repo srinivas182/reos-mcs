@@ -11,6 +11,8 @@ import { TeachingCard } from '@/components/builder/teaching-card';
 import type { Teaching } from '@/components/builder/teaching-card';
 import { SessionCard } from '@/components/sessions/session-card';
 import { TodayCard } from '@/components/today-card';
+import { CandidateToday } from '@/components/practice/candidate-today';
+import type { StudyToday } from '@/components/practice/types';
 import { activeMembership, roleName } from '@/lib/roles';
 import { index as sessionsIndex } from '@/routes/sessions';
 import type { CeRequirement } from '@/types';
@@ -19,7 +21,8 @@ import type { CalendarDay } from '@/types/calendar';
 /**
  * Each role's dashboard (web journey screens 4, 12, 24, 30, 42, 49, 54, 58)
  * is built in that role's sprint. Agents (screen 12) have their CE hours
- * (A5.2) and today's calendar (B4.1). Until the other cards arrive: the journey's greeting and an honest
+ * (A5.2) and today's calendar (B4.1); candidates (screen 4) their readiness,
+ * streak, exam date, Continue and today's plan (A8.3). Until the other cards arrive: the journey's greeting and an honest
  * note instead of placeholder boxes.
  */
 export default function Dashboard({
@@ -27,11 +30,13 @@ export default function Dashboard({
     ce = null,
     approvals = null,
     teaching = null,
+    study = null,
 }: {
     today?: CalendarDay | null;
     ce?: CeRequirement | null;
     approvals?: ApprovalSummary | null;
     teaching?: Teaching | null;
+    study?: StudyToday | null;
 }) {
     const { t } = useTranslation();
     const { auth, sessions } = usePage().props;
@@ -62,6 +67,7 @@ export default function Dashboard({
                 ) : null}
                 {approvals ? <ApprovalsCard summary={approvals} /> : null}
                 {teaching ? <TeachingCard teaching={teaching} /> : null}
+                {study ? <CandidateToday study={study} /> : null}
                 {today ? <TodayCard today={today} /> : null}
                 {sessions ? (
                     <section className="space-y-3">
@@ -88,11 +94,13 @@ export default function Dashboard({
                         )}
                     </section>
                 ) : null}
-                <EmptyState
-                    icon={LayoutDashboard}
-                    title={t('dashboard.comingTitle')}
-                    description={t('dashboard.comingDescription')}
-                />
+                {study ? null : (
+                    <EmptyState
+                        icon={LayoutDashboard}
+                        title={t('dashboard.comingTitle')}
+                        description={t('dashboard.comingDescription')}
+                    />
+                )}
             </div>
         </>
     );

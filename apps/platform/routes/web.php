@@ -3,6 +3,7 @@
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
+use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
 use App\Http\Controllers\Auth\SocialSignInController;
@@ -40,6 +41,8 @@ use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\Payouts\EarningsController;
 use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
+use App\Http\Controllers\Practice\PracticePageController;
+use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
 use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
 use App\Http\Controllers\Sessions\SessionsController;
@@ -126,6 +129,20 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::middleware('can:learning.study')->controller(LearnController::class)->prefix('learn')->name('learn.')->group(function () {
         Route::get('/', 'index')->middleware('throttle:60,1,learn')->name('index');
         Route::get('lessons/{lesson}', 'lesson')->whereNumber('lesson')->name('lesson');
+    });
+    // Practice and exams, and the study plan (A8.3): candidates' own, not admin actions.
+    Route::controller(PracticePageController::class)->prefix('practice')->name('practice.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('tests', 'start')->middleware('throttle:30,1,practice-start')->name('start');
+        Route::get('attempts/{attempt}', 'attempt')->whereNumber('attempt')->name('attempt');
+        Route::post('attempts/{attempt}/submit', 'submit')->whereNumber('attempt')->middleware('throttle:30,1,practice-submit')->name('submit');
+        Route::get('attempts/{attempt}/results', 'results')->whereNumber('attempt')->name('results');
+    });
+    Route::put('practice/attempts/{attempt}/answers/{question}', [ApiPracticeController::class, 'answer'])->whereNumber(['attempt', 'question'])->middleware('throttle:240,1,practice-answer')->name('practice.answer');
+    Route::controller(StudyPlanController::class)->prefix('study-plan')->name('study-plan.')->group(function () {
+        Route::get('/', 'show')->name('show');
+        Route::put('tasks/{task}', 'move')->whereNumber('task')->middleware('throttle:60,1,study-plan-move')->name('move');
+        Route::put('settings', 'settings')->middleware('throttle:20,1,study-plan-settings')->name('settings');
     });
     // The player's seat time and check-ins (A8.2).
     // Learners' own progress, not admin actions: the controller checks learning.study.
