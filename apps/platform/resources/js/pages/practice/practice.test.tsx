@@ -369,10 +369,7 @@ describe('drills and fix plans (screens 38, 46 and 47, A9.2b)', () => {
             '/practice/attempts/14/questions/103/hint',
             expect.objectContaining({ method: 'POST' }),
         );
-        expect(
-            await screen.findByText(/Not this one:/),
-        ).toBeInTheDocument();
+        expect(await screen.findByText(/Not this one:/)).toBeInTheDocument();
         expect(screen.getAllByRole('radio')[3]).toBeDisabled();
     });
 });
-
