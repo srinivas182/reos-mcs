@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\Learn;
 
 use App\Content\Learning\Learning;
+use App\Content\Player\AskInstructor;
 use App\Content\Player\SeatTime;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Learn\AskInstructorRequest;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -60,6 +62,23 @@ final class PlayerController extends Controller
         $data = $request->validate(['key' => ['required', 'string', 'max:40'], 'choice' => ['nullable', 'integer', 'min:0', 'max:5']]);
 
         return response()->json($seatTime->answer($user, $found, (string) $data['key'], is_numeric($data['choice'] ?? null) ? (int) $data['choice'] : null, $user->locale->value));
+    }
+
+    /**
+     * Ask the instructor (Interrupt and ask).
+     *
+     * Mid-lesson: an answer from this course only, with where it comes from;
+     * `simpler`, `spanish` or `quiz` build on the previous answer. Says so
+     * when the course doesn't cover it. One AI credit when Claude answers
+     * (402 with none left); candidates' come from their sponsor.
+     *
+     * @response array{answer: string, sources: list<array{lesson_id: int, lesson: string, seconds: int|null, page: int|null, heading: string|null, text: string}>, quiz: array{prompt: string, options: list<string>, correct: int, explanation: string}|null, engine: 'ai'|'simulator'|'none', found: bool}
+     */
+    public function ask(AskInstructorRequest $request, int $lesson, #[CurrentUser] User $user, Learning $learning, AskInstructor $instructor): JsonResponse
+    {
+        $found = $this->open($lesson, $user, $learning);
+
+        return response()->json($instructor->ask($user, $found, $request->question(), $request->mode(), $request->previous(), $learning->state($user)));
     }
 
     private function open(int $lesson, User $user, Learning $learning): Lesson

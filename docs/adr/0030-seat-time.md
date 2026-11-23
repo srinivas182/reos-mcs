@@ -37,6 +37,20 @@ TREC and other state regulators approve CE and qualifying courses for a number o
     - stops at the next unanswered check-in until its answer (by time), and at the daily maximum on the learner's own day;
     - logs every event with its reason (`overlap`, `checkin_due`, `daily_max`, `invalid`, `checkin`).
 
+11. **Playback quality on the phone (Sprint 8 wrap-up, candidate screen 26).**
+    - Each HLS lesson also carries the same stream capped at 720p, 540p and 360p. Mux reads `max_resolution` from inside the signed token, not the URL, so each cap has its own token.
+    - The phone picks a stream by its settings (`lib/playback.ts`, kept on that phone):
+      - the learner's chosen quality, if any;
+      - otherwise Auto on Wi-Fi;
+      - otherwise, on mobile data, 360p with data saver (on by default) or 540p without it.
+    - The playback settings sheet holds Quality, Data saver, Speed, Captions and Audio only, each with rough data use per hour. The web keeps Auto (adaptive).
+12. **Interrupt and ask (candidate screen 9, agent screen 94).** Asking pauses the video at the second. `AskInstructor`:
+    - searches **this course only** (`KnowledgeSearch` with a course filter), matching any of the question's words, best first, plus meaning search when embeddings exist;
+    - passes up to five passages to Claude as numbered sources, with the question as data. Claude must cite the sources it used, and must say when they don't cover the question instead of answering from general knowledge;
+    - lets the learner follow up with Explain simpler, En español or Quiz me (one multiple-choice question, checked on the screen), then Resume, or Play from the cited second.
+    - **Cost:** one AI credit per answer Claude writes (candidates' credits come from their sponsor, as for every AI action), with 402 when none are left. The simulator answers in the course's own words and costs nothing. When nothing matches, REOS says so and charges nothing.
+    - Seat time doesn't count while paused, as always. "Ask a human tutor" waits for the tutor marketplace.
+
 ## Consequences
 
 - Seat time can't be inflated from the client; the worst a tampered client can do is claim 20 seconds of every 15–20 that really passed while the page was open.

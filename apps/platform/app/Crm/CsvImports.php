@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Crm;
 
+use App\Content\Scanning\FileScanner;
+use App\Content\Scanning\ScanResult;
 use App\Jobs\ImportContactsCsv;
 use App\Models\Connection;
 use App\Models\ContactImport;
@@ -21,7 +23,8 @@ use SplFileObject;
  * preview who is new and who joins a contact already there (on email or
  * phone, like any source), then import. The rows become a source named
  * "CSV import, date" that can be undone: people only the CSV knew go, and
- * the others lose only the CSV's link.
+ * the others lose only the CSV's link. Every file is virus-scanned before
+ * it's read, and deleted once imported.
  *
  * @phpstan-type Preview array{new: int, merged: int, skipped: int, samples: list<array{row: int, name: string, email: string|null, phone: string|null, outcome: string, joins: string|null}>}
  */
@@ -41,7 +44,7 @@ final readonly class CsvImports
         'birthday' => ['birthday', 'birth date', 'date of birth', 'dob'],
     ];
 
-    public function __construct(private Contacts $contacts) {}
+    public function __construct(private Contacts $contacts, private FileScanner $scanner) {}
 
     /** Reads the header and counts the rows; guesses the mapping. */
     public function upload(User $agent, UploadedFile $file): ContactImport
@@ -52,6 +55,8 @@ final readonly class CsvImports
         if ($path === false) {
             throw ValidationException::withMessages(['file' => __('crm.import.errors.unreadable')]);
         }
+
+        $this->scan($path);
 
         $headers = null;
         $rows = 0;
@@ -298,6 +303,28 @@ final readonly class CsvImports
         $first = array_shift($parts);
 
         return [$first, $parts === [] ? null : implode(' ', $parts)];
+    }
+
+    /** Infected, or no scanner to ask: the file goes and the upload is refused. */
+    private function scan(string $path): void
+    {
+        $disk = Storage::disk('local');
+        $stream = $disk->readStream($path);
+        $result = ScanResult::Unavailable;
+
+        if (is_resource($stream)) {
+            try {
+                $result = $this->scanner->scan($stream);
+            } finally {
+                fclose($stream);
+            }
+        }
+
+        if ($result !== ScanResult::Clean) {
+            $disk->delete($path);
+
+            throw ValidationException::withMessages(['file' => __($result === ScanResult::Infected ? 'crm.import.errors.infected' : 'crm.import.errors.scanner')]);
+        }
     }
 
     private function discard(ContactImport $import): void

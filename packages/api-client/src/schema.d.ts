@@ -1682,6 +1682,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/learn/lessons/{lesson}/ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask the instructor (Interrupt and ask)
+         * @description Mid-lesson: an answer from this course only, with where it comes from;
+         *     `simpler`, `spanish` or `quiz` build on the previous answer. Says so
+         *     when the course doesn't cover it. One AI credit when Claude answers
+         *     (402 with none left); candidates' come from their sponsor.
+         */
+        post: operations["learn.ask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/study": {
         parameters: {
             query?: never;
@@ -2458,6 +2481,22 @@ export interface components {
             preview: {
                 code: string;
             } | null;
+        };
+        /**
+         * AskInstructorRequest
+         * @description A question asked mid-lesson (Interrupt and ask).
+         */
+        AskInstructorRequest: {
+            question: string;
+            /**
+             * @description ask, simpler, spanish or quiz.
+             * @enum {string|null}
+             */
+            mode?: "ask" | "simpler" | "spanish" | "quiz" | null;
+            /** @description The answer being explained again (simpler, spanish). */
+            previous?: string | null;
+            /** @description Where the video was paused, in seconds. */
+            at?: number | null;
         };
         /**
          * BrokerRole
@@ -3598,6 +3637,7 @@ export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest']
 export type SchemaAddContactRequest = components['schemas']['AddContactRequest'];
 export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
 export type SchemaCalendarEventResource = components['schemas']['CalendarEventResource'];
 export type SchemaCalendarMode = components['schemas']['CalendarMode'];
@@ -5697,6 +5737,9 @@ export interface operations {
                                 url: string;
                                 duration: number | null;
                                 poster: string | null;
+                                qualities: {
+                                    [key: string]: string;
+                                };
                             } | null;
                             transcript: {
                                 seconds: number;
@@ -7177,6 +7220,9 @@ export interface operations {
                                     url: string;
                                     duration: number | null;
                                     poster: string | null;
+                                    qualities: {
+                                        [key: string]: string;
+                                    };
                                 } | null;
                                 transcript: {
                                     seconds: number;
@@ -7631,6 +7677,64 @@ export interface operations {
                             completed: boolean;
                             today_left: number | null;
                         };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AskInstructorRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        answer: string;
+                        sources: {
+                            lesson_id: number;
+                            lesson: string;
+                            seconds: number | null;
+                            page: number | null;
+                            heading: string | null;
+                            text: string;
+                        }[];
+                        quiz: {
+                            prompt: string;
+                            options: string[];
+                            correct: number;
+                            explanation: string;
+                        } | null;
+                        /** @enum {string} */
+                        engine: "ai" | "simulator" | "none";
+                        found: boolean;
                     };
                 };
             };

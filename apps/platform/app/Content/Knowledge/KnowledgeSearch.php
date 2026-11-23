@@ -35,9 +35,10 @@ final readonly class KnowledgeSearch
 
     /**
      * @param  list<string>|null  $states  null: every state (admin preview)
+     * @param  int|null  $courseId  only this course (Ask the instructor, mid-lesson)
      * @return list<SearchHit>
      */
-    public function search(string $query, ?array $states, ?string $language = null, int $limit = 10, bool $liveOnly = true): array
+    public function search(string $query, ?array $states, ?string $language = null, int $limit = 10, bool $liveOnly = true, ?int $courseId = null): array
     {
         $query = trim(mb_substr($query, 0, 300));
 
@@ -46,8 +47,8 @@ final readonly class KnowledgeSearch
         }
 
         $pgsql = DB::getDriverName() === 'pgsql';
-        $keyword = $pgsql ? $this->keyword($query, $states, $language, $liveOnly) : $this->like($query, $states, $language, $liveOnly);
-        $meaning = $pgsql ? $this->meaning($query, $states, $language, $liveOnly) : [];
+        $keyword = $pgsql ? $this->keyword($query, $states, $language, $liveOnly, $courseId) : $this->like($query, $states, $language, $liveOnly, $courseId);
+        $meaning = $pgsql ? $this->meaning($query, $states, $language, $liveOnly, $courseId) : [];
 
         $scores = [];
 
@@ -94,7 +95,7 @@ final readonly class KnowledgeSearch
      * @param  list<string>|null  $states
      * @return Builder<KbPassage>
      */
-    private function scope(?array $states, ?string $language, bool $liveOnly): Builder
+    private function scope(?array $states, ?string $language, bool $liveOnly, ?int $courseId = null): Builder
     {
         return KbPassage::query()
             ->join('courses', 'courses.id', '=', 'kb_passages.course_id')
@@ -105,20 +106,21 @@ final readonly class KnowledgeSearch
                 // A school's lessons reach learners only once approved (A7.2).
                 ->where(static fn (Builder $r) => $r->whereNull('lessons.review_status')->orWhere('lessons.review_status', LessonReview::Approved->value)))
             ->when($states !== null, static fn (Builder $q) => $q->forStates($states ?? []))
-            ->when($language !== null, static fn (Builder $q) => $q->where('kb_passages.language', $language));
+            ->when($language !== null, static fn (Builder $q) => $q->where('kb_passages.language', $language))
+            ->when($courseId !== null, static fn (Builder $q) => $q->where('kb_passages.course_id', $courseId));
     }
 
     /**
      * @param  list<string>|null  $states
      * @return list<int>
      */
-    private function keyword(string $query, ?array $states, ?string $language, bool $liveOnly): array
+    private function keyword(string $query, ?array $states, ?string $language, bool $liveOnly, ?int $courseId = null): array
     {
         $match = "(kb_passages.language = 'es' AND kb_passages.search @@ websearch_to_tsquery('spanish', ?))
             OR (kb_passages.language <> 'es' AND kb_passages.search @@ websearch_to_tsquery('english', ?))";
         $rank = "ts_rank_cd(kb_passages.search, CASE WHEN kb_passages.language = 'es' THEN websearch_to_tsquery('spanish', ?) ELSE websearch_to_tsquery('english', ?) END)";
 
-        return self::ids($this->scope($states, $language, $liveOnly)
+        return self::ids($this->scope($states, $language, $liveOnly, $courseId)
             ->whereRaw("({$match})", [$query, $query])
             ->orderByRaw("{$rank} DESC", [$query, $query])
             ->orderBy('kb_passages.id')
@@ -130,7 +132,7 @@ final readonly class KnowledgeSearch
      * @param  list<string>|null  $states
      * @return list<int>
      */
-    private function meaning(string $query, ?array $states, ?string $language, bool $liveOnly): array
+    private function meaning(string $query, ?array $states, ?string $language, bool $liveOnly, ?int $courseId = null): array
     {
         $embedder = $this->embedders->embedder();
 
@@ -147,7 +149,7 @@ final readonly class KnowledgeSearch
             return [];
         }
 
-        return DB::transaction(function () use ($vector, $states, $language, $liveOnly): array {
+        return DB::transaction(function () use ($vector, $states, $language, $liveOnly, $courseId): array {
             // pgvector 0.8+: keep scanning the index until enough rows pass the filters.
             if (self::iterativeScans()) {
                 DB::statement('SET LOCAL hnsw.iterative_scan = relaxed_order');
@@ -155,7 +157,7 @@ final readonly class KnowledgeSearch
 
             DB::statement('SET LOCAL hnsw.ef_search = 100');
 
-            return self::ids($this->scope($states, $language, $liveOnly)
+            return self::ids($this->scope($states, $language, $liveOnly, $courseId)
                 ->whereNotNull('kb_passages.embedding')
                 ->whereRaw('(kb_passages.embedding <=> CAST(? AS vector)) < ?', [$vector, self::MAX_DISTANCE])
                 ->orderByRaw('kb_passages.embedding <=> CAST(? AS vector)', [$vector])
@@ -178,7 +180,7 @@ final readonly class KnowledgeSearch
      * @param  list<string>|null  $states
      * @return list<int>
      */
-    private function like(string $query, ?array $states, ?string $language, bool $liveOnly): array
+    private function like(string $query, ?array $states, ?string $language, bool $liveOnly, ?int $courseId = null): array
     {
         $words = self::words($query);
 
@@ -186,7 +188,7 @@ final readonly class KnowledgeSearch
             return [];
         }
 
-        $scope = $this->scope($states, $language, $liveOnly);
+        $scope = $this->scope($states, $language, $liveOnly, $courseId);
 
         foreach ($words as $word) {
             $scope->where('kb_passages.content', 'like', '%'.addcslashes($word, '%_\\').'%');
@@ -256,7 +258,7 @@ final readonly class KnowledgeSearch
     }
 
     /** @return list<string> */
-    private static function words(string $query): array
+    public static function words(string $query): array
     {
         $words = preg_split('/[^\p{L}\p{N}]+/u', mb_strtolower($query)) ?: [];
 

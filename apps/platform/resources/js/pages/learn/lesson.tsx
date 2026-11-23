@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { Cue, LessonVideo } from '@/components/lesson-player';
 import { LessonPlayer } from '@/components/lesson-player';
 import { PageHeader } from '@/components/page-header';
+import { AskInstructor } from '@/components/player/ask-instructor';
 import { CheckinDialog } from '@/components/player/checkin-dialog';
 import { SeatMeter } from '@/components/player/seat-meter';
 import { Button } from '@/components/ui/button';
@@ -132,6 +133,8 @@ export default function LessonPage({
                         videoRef={video}
                     />
                 ) : null}
+
+                <AskInstructor lessonId={lesson.id} videoRef={video} />
 
                 {lesson.documents.map((document) => (
                     <section

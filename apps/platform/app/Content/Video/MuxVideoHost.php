@@ -78,10 +78,16 @@ final readonly class MuxVideoHost implements VideoHost
      * A signed playback token (RS256, the signing key from Settings ›
      * Integrations): `v` for video, `t` for thumbnails. Short-lived.
      */
-    public function token(string $playbackId, string $audience, int $minutes = 360): string
+    /**
+     * A signed playback token. Playback modifiers such as `max_resolution`
+     * go in the token, not the URL (Mux signed playback).
+     *
+     * @param  array<string, string>  $modifiers
+     */
+    public function token(string $playbackId, string $audience, int $minutes = 360, array $modifiers = []): string
     {
         return JWT::encode(
-            ['sub' => $playbackId, 'aud' => $audience, 'exp' => now()->addMinutes($minutes)->getTimestamp()],
+            [...$modifiers, 'sub' => $playbackId, 'aud' => $audience, 'exp' => now()->addMinutes($minutes)->getTimestamp()],
             $this->keys->privateKeyPem(),
             'RS256',
             $this->keys->signingKeyId,
