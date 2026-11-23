@@ -623,6 +623,12 @@ function adminActions(): array
 
             return auditCase($paul, 'PUT', "/school/instructors/{$rachel->id}/twins", ['heygen' => 'twin_01'], tenant: $school->id);
         },
+        // School: 1-on-1 session price limits (A10.2d).
+        'school.instructors.session-limits' => function () {
+            [$school, $paul] = auditSchoolCourse();
+
+            return auditCase($paul, 'PUT', '/school/instructors/session-limits', ['max_30_cents' => 4000, 'max_60_cents' => null], tenant: $school->id);
+        },
         'school.instructors.revoke' => function () {
             [$school, $paul] = auditSchoolCourse();
             $rachel = User::factory()->withRole(Role::Instructor, $school)->create();

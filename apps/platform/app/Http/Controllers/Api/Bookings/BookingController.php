@@ -156,27 +156,27 @@ final class BookingController extends Controller
     /**
      * My hours and prices.
      *
-     * The instructor's or mentor's offer, or null before they set one.
+     * The instructor's or mentor's offer, or null before they set one, and the most their school allows (cents; null is no limit).
      *
-     * @response array{data: array{bio: string|null, languages: list<'en'|'es'>, topics: list<string>, hours: array<string, list<list<string>>>, timezone: string, price_30_cents: int, price_60_cents: int, active: bool}|null}
+     * @response array{data: array{bio: string|null, languages: list<'en'|'es'>, topics: list<string>, hours: array<string, list<list<string>>>, timezone: string, price_30_cents: int, price_60_cents: int, active: bool}|null, limits: array{max_30_cents: int|null, max_60_cents: int|null}}
      */
-    public function offer(#[CurrentUser] User $user, VideoSessions $sessions): JsonResponse
+    public function offer(#[CurrentUser] User $user, VideoSessions $sessions, SessionBookings $bookings): JsonResponse
     {
         abort_unless($sessions->canHost($user), 403);
 
-        return response()->json(['data' => self::offerRow(SessionOffer::query()->where('user_id', $user->id)->first())]);
+        return response()->json(['data' => self::offerRow(SessionOffer::query()->where('user_id', $user->id)->first()), 'limits' => $bookings->limitsFor($user)]);
     }
 
     /**
      * Save my hours and prices.
      *
-     * @response array{data: array{bio: string|null, languages: list<'en'|'es'>, topics: list<string>, hours: array<string, list<list<string>>>, timezone: string, price_30_cents: int, price_60_cents: int, active: bool}|null}
+     * @response array{data: array{bio: string|null, languages: list<'en'|'es'>, topics: list<string>, hours: array<string, list<list<string>>>, timezone: string, price_30_cents: int, price_60_cents: int, active: bool}|null, limits: array{max_30_cents: int|null, max_60_cents: int|null}}
      */
     public function saveOffer(SessionOfferRequest $request, #[CurrentUser] User $user, VideoSessions $sessions, SessionBookings $bookings): JsonResponse
     {
         abort_unless($sessions->canHost($user), 403);
 
-        return response()->json(['data' => self::offerRow($bookings->saveOffer($user, $request->values()))]);
+        return response()->json(['data' => self::offerRow($bookings->saveOffer($user, $request->values())), 'limits' => $bookings->limitsFor($user)]);
     }
 
     /** @return array{bio: string|null, languages: list<'en'|'es'>, topics: list<string>, hours: array<string, list<list<string>>>, timezone: string, price_30_cents: int, price_60_cents: int, active: bool}|null */

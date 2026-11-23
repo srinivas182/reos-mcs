@@ -13,6 +13,7 @@ use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Tenancy\Invitations;
+use App\Sessions\SessionBookings;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -37,6 +38,8 @@ final class InstructorsController extends Controller
             'courses' => Course::query()->where('organisation_id', $school->id)->orderBy('title')->get(['id', 'title'])
                 ->map(static fn (Course $c): array => ['id' => $c->id, 'title' => $c->title])->all(),
             'invite' => $invitations->options($school),
+            // The most its instructors may charge for 1-on-1 sessions (A10.2d, decision 3).
+            'session_limits' => SessionBookings::limitsOf($school),
         ]);
     }
 
@@ -60,6 +63,20 @@ final class InstructorsController extends Controller
         ], $user);
 
         return back()->with('success', __('instructors.saved'));
+    }
+
+    /** The school's limit on 1-on-1 session prices (A10.2d): prices above it come down at once. */
+    public function sessionLimits(Request $request, #[CurrentUser] User $user, ActiveRole $roles, SessionBookings $bookings): RedirectResponse
+    {
+        // Cents; empty means no limit.
+        $data = $request->validate([
+            'max_30_cents' => ['present', 'nullable', 'integer', 'min:0', 'max:100000'],
+            'max_60_cents' => ['present', 'nullable', 'integer', 'min:0', 'max:100000'],
+        ]);
+        $cents = static fn (mixed $v): ?int => is_numeric($v) ? (int) $v : null;
+        $lowered = $bookings->setLimits($this->school($user, $roles), $cents($data['max_30_cents'] ?? null), $cents($data['max_60_cents'] ?? null), $user);
+
+        return back()->with('success', __($lowered === 1 ? 'instructors.sessionLimits.saved_one' : 'instructors.sessionLimits.saved_other', ['count' => $lowered]));
     }
 
     public function revoke(User $instructor, #[CurrentUser] User $user, ActiveRole $roles, SchoolInstructors $instructors): RedirectResponse

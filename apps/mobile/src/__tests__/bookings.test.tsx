@@ -3,6 +3,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
 
 import InstructorScreen from '@/app/bookings/[id]';
+import HoursScreen from '@/app/bookings/hours';
 import BookingsScreen from '@/app/bookings/index';
 import { i18n } from '@/lib/i18n';
 import { ToastProvider } from '@/ui';
@@ -67,5 +68,15 @@ describe('Book an instructor on the phone (candidate screen 18, A10.2a)', () => 
     expect(mockApi.POST).toHaveBeenCalledWith('/bookings', { body: { instructor: 12, starts_at: '2026-11-24T19:00:00Z', minutes: 60, topic: 'Proration math' } });
     expect(jest.requireMock<{ openBrowserAsync: jest.Mock }>('expo-web-browser').openBrowserAsync).toHaveBeenCalledWith('https://reos.com/checkout/9?booking=x');
     expect(router.replace).toHaveBeenCalledWith('/bookings');
+  });
+});
+
+describe('Hours and prices on the phone (instructor i14, A10.2d)', () => {
+  it("shows the school's price limit beside each price", async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: null, limits: { max_30_cents: null, max_60_cents: 7500 } }));
+    await render(wrap(<HoursScreen />));
+
+    expect(await screen.findByText('Your school allows at most $75.')).toBeTruthy();
+    expect(screen.queryAllByText(/Your school allows at most/)).toHaveLength(1);
   });
 });

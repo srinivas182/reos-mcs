@@ -219,4 +219,30 @@ describe('Avatar consent (A7.1b)', () => {
             expect.anything(),
         );
     });
+
+    it('sets the most instructors may charge for 1-on-1 sessions (A10.2d)', async () => {
+        const user = userEvent.setup();
+        render(
+            <Instructors
+                school={{ name: 'Texas Realty School' }}
+                instructors={instructors}
+                courses={schoolCourses}
+                invite={inviteOptions()}
+                session_limits={{ max_30_cents: null, max_60_cents: 9000 }}
+            />,
+        );
+
+        expect(screen.getByLabelText('Most for 60 minutes ($)')).toHaveValue(
+            90,
+        );
+        await user.type(screen.getByLabelText('Most for 30 minutes ($)'), '40');
+        await user.clear(screen.getByLabelText('Most for 60 minutes ($)'));
+        await user.click(screen.getByRole('button', { name: 'Save limits' }));
+
+        expect(router.put).toHaveBeenCalledWith(
+            '/school/instructors/session-limits',
+            { max_30_cents: 4000, max_60_cents: null },
+            expect.anything(),
+        );
+    });
 });

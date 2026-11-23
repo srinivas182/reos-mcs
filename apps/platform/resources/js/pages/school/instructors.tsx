@@ -5,6 +5,10 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { CoursesDialog } from '@/components/instructors/courses-dialog';
 import { InstructorsTable } from '@/components/instructors/instructors-table';
+import {
+    type SessionLimits,
+    SessionLimitsCard,
+} from '@/components/instructors/session-limits';
 import { TwinsDialog } from '@/components/instructors/twins-dialog';
 import type { InstructorRow } from '@/components/instructors/types';
 import { InviteSheet } from '@/components/invite-sheet';
@@ -21,11 +25,14 @@ export default function Instructors({
     instructors,
     courses,
     invite,
+    session_limits = { max_30_cents: null, max_60_cents: null },
 }: {
     school: { name: string };
     instructors: InstructorRow[];
     courses: { id: number; title: string }[];
     invite: InviteOptions;
+    /** The most instructors may charge for 1-on-1 sessions (A10.2d). */
+    session_limits?: SessionLimits;
 }) {
     const { t } = useTranslation();
     const [inviting, setInviting] = useState(false);
@@ -61,6 +68,7 @@ export default function Instructors({
                         onTwins={setTwins}
                     />
                 )}
+                <SessionLimitsCard limits={session_limits} />
             </div>
             <InviteSheet
                 open={inviting}

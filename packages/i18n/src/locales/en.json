@@ -2269,7 +2269,8 @@
         "course.exam_success_installed": "Installed the Exam success course for review",
         "study_group.created": "Made a class study group",
         "class_report.decided": "Class report decision",
-        "class_report.sent": "Class report sent to school"
+        "class_report.sent": "Class report sent to school",
+        "school.session_limits_changed": "Session price limits changed"
       }
     }
   },
@@ -5274,6 +5275,16 @@
       "heygen": "HeyGen avatar id",
       "synthesia": "Synthesia avatar id",
       "save": "Save avatar ids"
+    },
+    "sessionLimits": {
+      "title": "1-on-1 session prices",
+      "description": "The most your instructors and mentors may charge students. Prices above a new limit come down at once.",
+      "max": "Most for {{count}} minutes ($)",
+      "none": "No limit",
+      "save": "Save limits",
+      "saved_one": "Limits saved. :count price was lowered.",
+      "saved_other": "Limits saved. :count prices were lowered.",
+      "current": "Limit: {{price}}"
     }
   },
   "avatarConsent": {
@@ -7050,7 +7061,9 @@
       "topics": "What you help with (separated by commas)",
       "bio": "About you",
       "save": "Save",
-      "saved": "Saved."
+      "saved": "Saved.",
+      "overLimit": "Your school allows at most :price.",
+      "limitHint": "Your school allows at most {{price}}."
     },
     "days": {
       "mon": "Monday",

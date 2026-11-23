@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
+import { money } from '@/lib/billing';
 import { putJson } from '@/lib/content';
 import { save } from '@/routes/bookings/hours';
 
@@ -33,10 +34,13 @@ const blank = (): SessionOfferValues => ({
  */
 export default function HoursPage({
     offer,
+    limits = { max_30_cents: null, max_60_cents: null },
 }: {
     offer: SessionOfferValues | null;
+    /** The most the school allows, in cents (A10.2d); null is no limit. */
+    limits?: { max_30_cents: number | null; max_60_cents: number | null };
 }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [values, setValues] = useState<SessionOfferValues>(offer ?? blank());
     const [topics, setTopics] = useState((offer?.topics ?? []).join(', '));
     const [error, setError] = useState<string | null>(null);
@@ -91,30 +95,64 @@ export default function HoursPage({
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                     {(['price_30_cents', 'price_60_cents'] as const).map(
-                        (key) => (
-                            <div key={key} className="grid gap-2">
-                                <Label htmlFor={key}>
-                                    {t('bookings.hours.price', {
-                                        count:
-                                            key === 'price_30_cents' ? 30 : 60,
-                                    })}
-                                </Label>
-                                <Input
-                                    id={key}
-                                    type="number"
-                                    min={0}
-                                    step={1}
-                                    value={values[key] / 100}
-                                    onChange={(e) =>
-                                        set({
-                                            [key]: Math.round(
-                                                Number(e.target.value) * 100,
-                                            ),
-                                        } as Partial<SessionOfferValues>)
-                                    }
-                                />
-                            </div>
-                        ),
+                        (key) => {
+                            const max =
+                                limits[
+                                    key === 'price_30_cents'
+                                        ? 'max_30_cents'
+                                        : 'max_60_cents'
+                                ];
+
+                            return (
+                                <div key={key} className="grid gap-2">
+                                    <Label htmlFor={key}>
+                                        {t('bookings.hours.price', {
+                                            count:
+                                                key === 'price_30_cents'
+                                                    ? 30
+                                                    : 60,
+                                        })}
+                                    </Label>
+                                    <Input
+                                        id={key}
+                                        type="number"
+                                        min={0}
+                                        max={
+                                            max === null ? undefined : max / 100
+                                        }
+                                        step={1}
+                                        aria-describedby={
+                                            max === null
+                                                ? undefined
+                                                : `${key}-limit`
+                                        }
+                                        value={values[key] / 100}
+                                        onChange={(e) =>
+                                            set({
+                                                [key]: Math.round(
+                                                    Number(e.target.value) *
+                                                        100,
+                                                ),
+                                            } as Partial<SessionOfferValues>)
+                                        }
+                                    />
+                                    {/* The school's limit (A10.2d, decision 3). */}
+                                    {max !== null ? (
+                                        <p
+                                            id={`${key}-limit`}
+                                            className="text-sm text-muted-foreground"
+                                        >
+                                            {t('bookings.hours.limitHint', {
+                                                price: money(
+                                                    max,
+                                                    i18n.language,
+                                                ),
+                                            })}
+                                        </p>
+                                    ) : null}
+                                </div>
+                            );
+                        },
                     )}
                 </div>
                 <p className="text-sm text-muted-foreground">

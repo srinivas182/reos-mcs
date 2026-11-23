@@ -342,6 +342,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.m
 // Instructors (A7.1b, school admin screen 52): courses they teach, avatar consent, Revoke with Undo.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage', 'throttle:60,1,instructors'])->prefix('school/instructors')->name('school.instructors.')->group(function () {
     Route::get('/', [SchoolInstructorsController::class, 'index'])->withoutMiddleware('throttle:60,1,instructors')->name('index');
+    Route::put('session-limits', [SchoolInstructorsController::class, 'sessionLimits'])->name('session-limits');
     Route::put('{instructor}/courses', [SchoolInstructorsController::class, 'courses'])->whereNumber('instructor')->name('courses');
     Route::put('{instructor}/twins', [SchoolInstructorsController::class, 'twins'])->whereNumber('instructor')->name('twins');
     Route::delete('{instructor}', [SchoolInstructorsController::class, 'revoke'])->whereNumber('instructor')->name('revoke');

@@ -5,9 +5,11 @@ declare(strict_types=1);
 use App\Authorization\Role;
 use App\Enums\OrganisationType;
 use App\Features\Flags;
+use App\Models\AuditEvent;
 use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\PayoutLine;
+use App\Models\Price;
 use App\Models\SessionBooking;
 use App\Models\Todo;
 use App\Models\User;
@@ -101,7 +103,7 @@ describe('booking a session (A10.2a, the done-when)', function () {
         $booking = SessionBooking::query()->sole();
         expect($booking->status)->toBe('confirmed')->and($booking->video_session_id)->not->toBeNull()
             ->and(Order::query()->sole()->amount_cents)->toBe(3500)
-            ->and(PayoutLine::query()->where('payee_id', $this->nelle->id)->value('amount_cents'))->toBe(3150);
+            ->and(PayoutLine::query()->where('payee_type', 'user')->where('payee_id', $this->nelle->id)->value('amount_cents'))->toBe(3150);
     });
 
     it('releases a hold whose payment never came', function () {
@@ -140,5 +142,27 @@ describe('booking a session (A10.2a, the done-when)', function () {
         $this->actingAs($this->ana)->putJson('/api/v1/bookings/offer', ['languages' => ['en'], 'topics' => [], 'hours' => [], 'timezone' => 'America/Chicago', 'price_30_cents' => 0, 'price_60_cents' => 0, 'active' => true])->assertForbidden();
         $this->actingAs($this->nelle)->putJson('/api/v1/bookings/offer', ['languages' => ['en'], 'topics' => [], 'hours' => ['mon' => [['13:15', '12:00']]], 'timezone' => 'America/Chicago', 'price_30_cents' => 0, 'price_60_cents' => 0, 'active' => true])
             ->assertUnprocessable()->assertJsonValidationErrors('hours');
+    });
+});
+
+describe('the school\'s price limit (A10.2d, decision 3)', function () {
+    it('lowers prices above a new limit at once, audited, and refuses prices over it', function () {
+        nelleOffers($this, 3500, 9000);
+        $paul = User::factory()->withTwoFactor()->withRole(Role::SchoolAdmin, $this->school)->create(['name' => 'Paul Diaz']);
+
+        $this->actingAs($paul)->get('/school/instructors')->assertOk()
+            ->assertInertia(fn ($page) => $page->where('session_limits', ['max_30_cents' => null, 'max_60_cents' => null]));
+        $this->put('/school/instructors/session-limits', ['max_30_cents' => null, 'max_60_cents' => 7500])->assertSessionHasNoErrors()->assertRedirect();
+
+        $this->actingAs($this->nelle)->getJson('/api/v1/bookings/offer')->assertOk()
+            ->assertJsonPath('data.price_30_cents', 3500)->assertJsonPath('data.price_60_cents', 7500)
+            ->assertJsonPath('limits', ['max_30_cents' => null, 'max_60_cents' => 7500]);
+        expect(Price::query()->whereHas('product', fn ($q) => $q->where('key', "session-{$this->nelle->id}-60"))->value('amount_cents'))->toBe(7500);
+        expect(AuditEvent::query()->where('action', 'school.session_limits_changed')->sole()->properties)->toMatchArray(['max_60_cents' => 7500, 'offers_lowered' => 1]);
+
+        $this->putJson('/api/v1/bookings/offer', [
+            'bio' => null, 'languages' => ['en'], 'topics' => [], 'hours' => ['mon' => [['13:00', '17:00']]],
+            'timezone' => 'America/Chicago', 'price_30_cents' => 3500, 'price_60_cents' => 8000, 'active' => true,
+        ])->assertUnprocessable()->assertJsonValidationErrors(['price_60_cents' => 'Your school allows at most $75.']);
     });
 });
