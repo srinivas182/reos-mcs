@@ -14,3 +14,20 @@ type Story = StoryObj<typeof meta>;
 
 /** James Miller's Google Calendar: 248 events synced, last 3 months. */
 export const Calendar: Story = {};
+
+/** James Miller's own dotloop (B9.2): his loops and his team's, both syncing. */
+export const Dotloop: Story = {
+    args: {
+        connection: calendarConnection({
+            id: 9,
+            integration: 'dotloop',
+            integration_name: 'dotloop',
+            streams: [{ key: 'deals', direction: 'read', records: 2 }],
+            calendars: null,
+            profiles: [
+                { id: '4711', name: 'Individual', chosen: true },
+                { id: '4712', name: 'Lone Star Team', chosen: false },
+            ],
+        }),
+    },
+};

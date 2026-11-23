@@ -1505,7 +1505,11 @@
       "title": "{{tool}} está conectado",
       "body": "Elegimos la configuración que usan la mayoría de los agentes. No necesita cambiar nada.",
       "streams": {
-        "events": "Eventos del calendario"
+        "events": "Eventos del calendario",
+        "people": "Contactos",
+        "notes": "Notas",
+        "tasks": "Tareas",
+        "deals": "Operaciones y fechas clave"
       },
       "directions": {
         "read": "REOS lee",
@@ -1654,6 +1658,12 @@
         "commission": "Comisión",
         "tool": "Herramienta"
       }
+    },
+    "profiles": {
+      "title": "Perfiles",
+      "intro": "Elija de quién son los loops que llegan a REOS: los suyos, los de un equipo o ambos.",
+      "atLeastOne": "Elija al menos un perfil.",
+      "saved": "Perfiles guardados. Sus loops se están sincronizando de nuevo."
     }
   },
   "catalogue": {
@@ -6680,7 +6690,10 @@
     "keyHint": "Su administrador de {{tool}} lo encuentra en la configuración de la cuenta. REOS lo usa para leer las transacciones de sus agentes; nunca las cambia.",
     "deals": "Operaciones abiertas",
     "dealCounts": "{{count}} · {{due}} fechas límite esta semana",
-    "dealsPrivacy": "Usted ve solo cantidades y fechas límite. Cada agente ve sus propias operaciones; los documentos se quedan con ellos."
+    "dealsPrivacy": "Usted ve solo cantidades y fechas límite. Cada agente ve sus propias operaciones; los documentos se quedan con ellos.",
+    "accessKeyLabel": "Clave de acceso de {{tool}}",
+    "secretLabel": "Secreto de acceso de {{tool}}",
+    "accessKeyHint": "Un usuario bróker o administrador de {{tool}} crea la clave y el secreto en Mi cuenta › Claves de API. REOS los usa para leer las ventas y los listados de sus agentes; nunca los cambia."
   },
   "deals": {
     "title": "Operaciones",
@@ -6708,7 +6721,9 @@
       "both": "Ambas partes"
     },
     "errors": {
-      "readOnly": "Esta operación viene de su herramienta de transacciones. Cámbiela allí."
+      "readOnly": "Esta operación viene de su herramienta de transacciones. Cámbiela allí.",
+      "noProfiles": "Solo dotloop tiene perfiles para elegir.",
+      "unknownProfile": "Ese perfil no está en su cuenta de dotloop. Sincronice e intente de nuevo."
     },
     "mail": {
       "soon": ":date en 3 días",

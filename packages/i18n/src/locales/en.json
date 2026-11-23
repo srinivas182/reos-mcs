@@ -1505,7 +1505,11 @@
       "title": "{{tool}} is connected",
       "body": "We picked the settings most agents use. You don't need to change anything.",
       "streams": {
-        "events": "Calendar events"
+        "events": "Calendar events",
+        "people": "Contacts",
+        "notes": "Notes",
+        "tasks": "Tasks",
+        "deals": "Deals and key dates"
       },
       "directions": {
         "read": "REOS reads",
@@ -1654,6 +1658,12 @@
         "commission": "Commission",
         "tool": "Tool"
       }
+    },
+    "profiles": {
+      "title": "Profiles",
+      "intro": "Choose whose loops come into REOS: your own, a team's, or both.",
+      "atLeastOne": "Choose at least one profile.",
+      "saved": "Profiles saved. Your loops are syncing again."
     }
   },
   "catalogue": {
@@ -6680,7 +6690,10 @@
     "keyHint": "Your {{tool}} administrator finds it in the account settings. REOS uses it to read your agents' transactions; it never changes them.",
     "deals": "Open deals",
     "dealCounts": "{{count}} · {{due}} deadlines this week",
-    "dealsPrivacy": "You see counts and deadlines only. Each agent sees their own deals; documents stay with them."
+    "dealsPrivacy": "You see counts and deadlines only. Each agent sees their own deals; documents stay with them.",
+    "accessKeyLabel": "{{tool}} access key",
+    "secretLabel": "{{tool}} access secret",
+    "accessKeyHint": "A {{tool}} broker or admin user creates the key and secret under My Account › API keys. REOS uses them to read your agents' sales and listings; it never changes them."
   },
   "deals": {
     "title": "Deals",
@@ -6708,7 +6721,9 @@
       "both": "Both sides"
     },
     "errors": {
-      "readOnly": "This deal comes from your transaction tool. Change it there."
+      "readOnly": "This deal comes from your transaction tool. Change it there.",
+      "noProfiles": "Only dotloop has profiles to choose.",
+      "unknownProfile": "That profile isn't on your dotloop account. Sync, then try again."
     },
     "mail": {
       "soon": ":date in 3 days",

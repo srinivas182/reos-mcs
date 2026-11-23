@@ -7,6 +7,8 @@ namespace App\Http\Resources\Connections;
 use App\Connections\Calendar\CalendarChoices;
 use App\Connections\ConnectionStatus;
 use App\Connections\ConnectorRegistry;
+use App\Connections\Drivers\Dotloop\DotloopDriver;
+use App\Connections\Drivers\Dotloop\DotloopProfiles;
 use App\Integrations\Catalogue;
 use App\Models\Connection;
 use Illuminate\Http\Request;
@@ -50,6 +52,18 @@ final class ConnectionResource extends JsonResource
         ], CalendarChoices::known($connection));
     }
 
+    /** @return list<array{id: string, name: string, chosen: bool}>|null */
+    private static function profiles(Connection $connection): ?array
+    {
+        if ($connection->integration_id !== DotloopDriver::INTEGRATION) {
+            return null;
+        }
+
+        $chosen = DotloopProfiles::chosen($connection);
+
+        return array_map(static fn (array $p): array => [...$p, 'chosen' => in_array($p['id'], $chosen, true)], DotloopProfiles::known($connection));
+    }
+
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
@@ -85,7 +99,7 @@ final class ConnectionResource extends JsonResource
             /**
              * What syncs: each stream, which way, and how many records came over.
              *
-             * @var list<array{key: 'events', direction: 'read'|'write'|'both', records: int}>
+             * @var list<array{key: 'events'|'people'|'notes'|'tasks'|'deals', direction: 'read'|'write'|'both', records: int}>
              */
             'streams' => self::streams($connection),
             /**
@@ -94,6 +108,12 @@ final class ConnectionResource extends JsonResource
              * @var list<array{id: string, name: string, primary: bool, writable: bool, mode: 'full'|'busy'|'off', write: bool}>|null
              */
             'calendars' => self::calendars($connection),
+            /**
+             * dotloop only: each profile (the agent's own, a team's) and whether its loops sync.
+             *
+             * @var list<array{id: string, name: string, chosen: bool}>|null
+             */
+            'profiles' => self::profiles($connection),
         ];
     }
 }

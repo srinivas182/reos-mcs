@@ -22655,7 +22655,13 @@
                             "properties": {
                                 "key": {
                                     "type": "string",
-                                    "const": "events"
+                                    "enum": [
+                                        "events",
+                                        "people",
+                                        "notes",
+                                        "tasks",
+                                        "deals"
+                                    ]
                                 },
                                 "direction": {
                                     "type": "string",
@@ -22718,6 +22724,32 @@
                                 "write"
                             ]
                         }
+                    },
+                    "profiles": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "description": "dotloop only: each profile (the agent's own, a team's) and whether its loops sync.",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "chosen": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "id",
+                                "name",
+                                "chosen"
+                            ]
+                        }
                     }
                 },
                 "required": [
@@ -22735,7 +22767,8 @@
                     "problem_since",
                     "connected_at",
                     "streams",
-                    "calendars"
+                    "calendars",
+                    "profiles"
                 ],
                 "title": "ConnectionResource"
             },
@@ -25296,7 +25329,9 @@
                             "boldtrail",
                             "lofty",
                             "salesforce",
-                            "lone-wolf"
+                            "lone-wolf",
+                            "dotloop",
+                            "skyslope"
                         ]
                     },
                     "history": {
@@ -25619,6 +25654,14 @@
                         ],
                         "description": "Calendars only: where events made in REOS go, or an empty string to keep them in REOS.",
                         "maxLength": 255
+                    },
+                    "profiles": {
+                        "type": "array",
+                        "description": "dotloop only: the profiles whose loops sync (at least one).",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 64
+                        }
                     }
                 },
                 "title": "UpdateConnectionRequest"

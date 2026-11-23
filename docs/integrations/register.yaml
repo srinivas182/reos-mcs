@@ -1012,13 +1012,13 @@ entries:
       apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
       status: not_started
     sandbox: Partner sandbox on approval.
-    credentials: tenant
+    credentials: both
     connection:
       auth: api_key
       accounts: tenant
       fields:
-        - { key: api_key }
-        - { key: api_secret, secret: true }
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Partner terms on application.
 

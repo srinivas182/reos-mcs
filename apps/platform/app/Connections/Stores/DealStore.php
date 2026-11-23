@@ -125,13 +125,13 @@ final readonly class DealStore implements StreamStore
         return $out;
     }
 
-    /** @return list<array{kind: string, label: string|null, due_on: string, external_id: string|null}> */
+    /** @return list<array{kind: string, label: string|null, due_on: string, external_id: string|null, done: bool}> */
     private static function dates(mixed $value): array
     {
         $out = [];
         foreach (is_array($value) ? $value : [] as $d) {
             if (is_array($d) && is_string($d['kind'] ?? null) && is_string($d['due_on'] ?? null)) {
-                $out[] = ['kind' => $d['kind'], 'label' => self::text($d['label'] ?? null), 'due_on' => $d['due_on'], 'external_id' => self::text($d['external_id'] ?? null)];
+                $out[] = ['kind' => $d['kind'], 'label' => self::text($d['label'] ?? null), 'due_on' => $d['due_on'], 'external_id' => self::text($d['external_id'] ?? null), 'done' => ($d['done'] ?? false) === true];
             }
         }
 

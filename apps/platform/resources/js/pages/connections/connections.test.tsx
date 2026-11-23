@@ -213,6 +213,56 @@ describe('Connections page (web journey screen 19)', () => {
         );
     });
 
+    it("chooses which dotloop profiles' loops sync (B9.2)", async () => {
+        render(
+            <Connections
+                tools={tools}
+                connections={[
+                    calendarConnection({
+                        id: 9,
+                        integration: 'dotloop',
+                        integration_name: 'dotloop',
+                        streams: [
+                            { key: 'deals', direction: 'read', records: 2 },
+                        ],
+                        calendars: null,
+                        profiles: [
+                            { id: '4711', name: 'Individual', chosen: true },
+                            {
+                                id: '4712',
+                                name: 'Lone Star Team',
+                                chosen: true,
+                            },
+                        ],
+                    }),
+                ]}
+            />,
+        );
+
+        await userEvent.click(
+            screen.getByRole('button', { name: 'Manage dotloop' }),
+        );
+        const dialog = within(screen.getByRole('dialog'));
+        const team = dialog.getByRole('switch', { name: 'Lone Star Team' });
+        expect(team).toBeChecked();
+        await userEvent.click(team);
+        await userEvent.click(dialog.getByRole('button', { name: 'Save' }));
+        expect(router.patch).toHaveBeenCalledWith(
+            '/connections/9',
+            { profiles: ['4711'] },
+            expect.anything(),
+        );
+
+        // At least one profile stays on.
+        await userEvent.click(
+            dialog.getByRole('switch', { name: 'Individual' }),
+        );
+        expect(
+            dialog.getByText('Choose at least one profile.'),
+        ).toBeInTheDocument();
+        expect(dialog.getByRole('button', { name: 'Save' })).toBeDisabled();
+    });
+
     it('explains an empty catalogue and offers Request a tool', () => {
         render(<Connections tools={[]} connections={[]} />);
 

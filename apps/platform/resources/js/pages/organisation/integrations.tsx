@@ -35,7 +35,7 @@ type Tool = {
     allowed: boolean;
     may_hide: boolean;
     agents_connected: number;
-    connects_with: 'api_key' | 'sign_in';
+    connects_with: 'api_key' | 'key_and_secret' | 'sign_in';
     account: {
         connection: number;
         label: string | null;
@@ -253,7 +253,7 @@ function OwnAccount({ tool, fields }: { tool: Tool; fields: Fields | null }) {
                         </Button>
                     </div>
                 ) : tool.action === 'connect' &&
-                  tool.connects_with === 'api_key' ? (
+                  tool.connects_with !== 'sign_in' ? (
                     <KeyForm tool={tool} />
                 ) : tool.action === 'connect' ? (
                     <Button asChild>
@@ -488,10 +488,15 @@ function MappingForm({
     );
 }
 
-/** Connect a tool with the brokerage's own ID (Lone Wolf's client ID, B9.1b), checked with the tool at once. */
+/**
+ * Connect a tool with the brokerage's own ID (Lone Wolf's client ID, B9.1b)
+ * or key and secret (SkySlope's access key, B9.2), checked with the tool at once.
+ */
 function KeyForm({ tool }: { tool: Tool }) {
     const { t } = useTranslation();
+    const paired = tool.connects_with === 'key_and_secret';
     const [key, setKey] = useState('');
+    const [secret, setSecret] = useState('');
     const [error, setError] = useState<string | undefined>(undefined);
     const [busy, setBusy] = useState(false);
 
@@ -503,11 +508,17 @@ function KeyForm({ tool }: { tool: Tool }) {
                 setBusy(true);
                 router.post(
                     connectKey(tool.id).url,
-                    { api_key: key },
+                    paired
+                        ? { api_key: key, api_secret: secret }
+                        : { api_key: key },
                     {
                         preserveScroll: true,
-                        onSuccess: () => setKey(''),
-                        onError: (errors) => setError(errors.api_key),
+                        onSuccess: () => {
+                            setKey('');
+                            setSecret('');
+                        },
+                        onError: (errors) =>
+                            setError(errors.api_key ?? errors.api_secret),
                         onFinish: () => setBusy(false),
                     },
                 );
@@ -515,7 +526,12 @@ function KeyForm({ tool }: { tool: Tool }) {
         >
             <div className="grid gap-2">
                 <Label htmlFor={`key-${tool.id}`}>
-                    {t('brokerageIntegrations.keyLabel', { tool: tool.name })}
+                    {t(
+                        paired
+                            ? 'brokerageIntegrations.accessKeyLabel'
+                            : 'brokerageIntegrations.keyLabel',
+                        { tool: tool.name },
+                    )}
                 </Label>
                 <Input
                     id={`key-${tool.id}`}
@@ -524,15 +540,44 @@ function KeyForm({ tool }: { tool: Tool }) {
                     onChange={(e) => setKey(e.target.value)}
                     aria-describedby={`key-${tool.id}-hint`}
                 />
+                {paired ? (
+                    <>
+                        <Label htmlFor={`secret-${tool.id}`}>
+                            {t('brokerageIntegrations.secretLabel', {
+                                tool: tool.name,
+                            })}
+                        </Label>
+                        <Input
+                            id={`secret-${tool.id}`}
+                            type="password"
+                            value={secret}
+                            autoComplete="off"
+                            onChange={(e) => setSecret(e.target.value)}
+                            aria-describedby={`key-${tool.id}-hint`}
+                        />
+                    </>
+                ) : null}
                 <p
                     id={`key-${tool.id}-hint`}
                     className="text-sm text-muted-foreground"
                 >
-                    {t('brokerageIntegrations.keyHint', { tool: tool.name })}
+                    {t(
+                        paired
+                            ? 'brokerageIntegrations.accessKeyHint'
+                            : 'brokerageIntegrations.keyHint',
+                        { tool: tool.name },
+                    )}
                 </p>
                 <InputError message={error} />
             </div>
-            <Button type="submit" disabled={busy || key.trim().length < 4}>
+            <Button
+                type="submit"
+                disabled={
+                    busy ||
+                    key.trim().length < 4 ||
+                    (paired && secret.trim().length < 4)
+                }
+            >
                 {t('brokerageIntegrations.connect', { tool: tool.name })}
             </Button>
         </form>

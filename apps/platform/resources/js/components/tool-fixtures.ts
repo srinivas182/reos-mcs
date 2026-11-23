@@ -64,5 +64,6 @@ export const calendarConnection = (
             write: false,
         },
     ],
+    profiles: null,
     ...overrides,
 });

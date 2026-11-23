@@ -103,6 +103,35 @@ final readonly class Connections
         return true;
     }
 
+    /**
+     * dotloop (B9.2): the profiles whose loops sync. A change starts over:
+     * the deals from profiles no longer chosen go, with their to-dos, and
+     * the chosen ones sync again.
+     *
+     * @param  list<string>  $profiles
+     */
+    public function chooseProfiles(Connection $connection, array $profiles): Connection
+    {
+        sort($profiles);
+        $before = $connection->settings['profiles'] ?? null;
+
+        if ($before !== null) {
+            sort($before);
+        }
+
+        if ($before !== $profiles) {
+            if ($this->registry->supports($connection->integration_id)) {
+                foreach ($this->registry->driver($connection->integration_id, $connection->mode)->streams() as $store) {
+                    app($store)->forget($connection);
+                }
+            }
+            $connection->forceFill(['settings' => [...$connection->settings, 'profiles' => $profiles], 'cursors' => []])->save();
+            $this->syncNow($connection);
+        }
+
+        return $connection;
+    }
+
     /** How far back it syncs. A change starts over from there. */
     public function changeHistory(Connection $connection, HistoryRange $history): Connection
     {

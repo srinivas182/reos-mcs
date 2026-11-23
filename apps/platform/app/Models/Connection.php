@@ -33,7 +33,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $access_token
  * @property string|null $refresh_token
  * @property Carbon|null $token_expires_at
- * @property array{history?: string, calendars?: array<string, string>, write_calendar?: string|null, default_for_new?: bool} $settings
+ * @property array{history?: string, calendars?: array<string, string>, write_calendar?: string|null, default_for_new?: bool, profiles?: list<string>} $settings
  * @property array<string, string> $cursors
  * @property array<string, mixed> $meta
  * @property Carbon|null $last_synced_at

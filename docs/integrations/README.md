@@ -139,7 +139,7 @@ What users see in **Connections** on day one. Every row is also a back-office ca
 | --- | --- | --- | --- | --- | --- |
 | [Lone Wolf Transactions](#lone-wolf) | Enabled | B9.1 · S9 | REOS or customer | Yes | Not started |
 | [dotloop](#dotloop) | Enabled | B9.2 · S9 | Customer's own account | Yes | Not started |
-| [SkySlope](#skyslope) | Enabled | B9.2 · S9 | Customer's own account | Yes | Not started |
+| [SkySlope](#skyslope) | Enabled | B9.2 · S9 | REOS or customer | Yes | Not started |
 | [Open to Close](#open-to-close) | Coming soon | B9.1 · S9 | Customer's own account | Yes | Not started |
 | [Paperless Pipeline](#paperless-pipeline) | Coming soon | B9.1 · S9 | Customer's own account | Yes | Not started |
 | [ListedKit](#listedkit) | Coming soon | B9.1 · S9 | Customer's own account | Yes | Not started |
@@ -742,7 +742,7 @@ Files, documents and deadlines.
 - **Owner:** Client + Mayura
 - **Access:** Partner application, about 6 weeks; needed by S9 (29 Mar 2027); apply by 18 Dec 2026. Status: Not started.
 - **Sandbox:** Partner sandbox on approval.
-- **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Credentials:** REOS or customer · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Partner terms on application.
 
 ### Open to Close
