@@ -166,6 +166,12 @@
   - polling every 15 minutes, plus Lofty's webhooks if the account allows them (confirmed against the test account).
 - **Simulator** on demo data. The register entry is rewritten (restoring what B7.3 overwrote).
 - **Done when:** the same as Follow Up Boss. A note written in REOS appears in Lofty, and one written in Lofty appears in REOS.
+- **As built, B8.1** (ADR 0033):
+  - **Connect:** the agent's own key (`Authorization: token …`); the consent screen says where it is in Lofty.
+  - **Read:** leads paged and kept when changed since the last mark (Lofty has no changed-since filter); notes and tasks of changed leads.
+  - **Write:** notes, task finish or unfinish (v2), and stage and tags. `X-Error-Status: true` on every request.
+  - **Webhooks:** lists 2, 9 and 10 to a per-connection signed address (Lofty doesn't sign deliveries); they only queue a sync and record deleted leads. The 15-minute poll is the backstop.
+  - **Register** entry rewritten. The simulator uses Lofty's field names.
 
 ### B8.2 Salesforce (Team B)
 

@@ -1073,32 +1073,17 @@
       "name": "Lofty",
       "kind": "integration",
       "category": "crm",
-      "purpose": "Two-way contacts, notes and tasks.",
+      "purpose": "Two-way leads, notes and tasks; stage and tags written back.",
       "launch": "enabled",
       "build_sprint": 8,
       "owner": "client_with_mayura",
       "access_status": "not_started",
       "personal_data": true,
-      "sandbox": "Partner sandbox on approval.",
+      "sandbox": "A Lofty test account's API key (Settings › Integrations › API).",
       "connection": {
-        "auth": "oauth2",
+        "auth": "api_key",
         "accounts": "user",
-        "fields": [
-          {
-            "key": "client_id",
-            "secret": false,
-            "required": true,
-            "kind": "text",
-            "default": null
-          },
-          {
-            "key": "client_secret",
-            "secret": true,
-            "required": true,
-            "kind": "text",
-            "default": null
-          }
-        ]
+        "fields": []
       }
     },
     {

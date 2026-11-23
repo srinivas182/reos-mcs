@@ -17,6 +17,7 @@ export const tool = (
     accounts: 'user',
     consent: null,
     connects_with: 'sign_in',
+    key_hint: null,
     ...overrides,
 });
 

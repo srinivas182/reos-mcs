@@ -878,26 +878,33 @@ entries:
     name: Lofty
     kind: integration
     category: crm
-    purpose: Two-way contacts, notes and tasks.
+    purpose: Two-way leads, notes and tasks; stage and tags written back.
     launch: enabled
     build: { sprint: 8, item: B8.1 }
     owner: client_with_mayura
     access:
-      route: partner_application
-      lead_time_weeks: 6
+      route: self_serve
+      lead_time_weeks: 0
       needed_by_sprint: 8
-      apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
       status: not_started
-    sandbox: Partner sandbox on approval.
+    sandbox: A Lofty test account's API key (Settings › Integrations › API).
     credentials: tenant
     connection:
-      auth: oauth2
+      auth: api_key
       accounts: user
-      fields:
-        - { key: client_id }
-        - { key: client_secret, secret: true }
+      fields: []
     personal_data: true
-    cost: Partner terms on application.
+    cost: Free API; agents use their own Lofty plan.
+    notes: >-
+      B8.1 (ADR 0033): each agent connects with their own Lofty API key, sent as Authorization: token ...; every
+      request sends X-Error-Status: true. Base https://api.lofty.com. REOS reads GET /v1.0/leads (limit 100, offset;
+      no changed-since filter, so a sync pages the leads and keeps those with lastUpdateTime after the last mark), then
+      GET /v1.0/notes?leadId= and GET /v1.0/tasks?leadId= for changed leads. Writes POST /v1.0/notes (leadId, content,
+      isPin), POST /v2.0/tasks/{id}/finish or /unfinish, and PUT /v1.0/leads/{id} (stage, tags). Webhooks: POST
+      /v1.0/webhook for lists 2 (lead info), 9 (notes) and 10 (tasks), HTTPS callback with a per-connection signed
+      address (Lofty doesn't sign deliveries); Lofty-Webhook-Id de-duplicates; deliveries only queue a sync, and the
+      15-minute schedule is the backstop. Confirm webhook availability, the subscription id field and rate limits
+      against the test account before Live.
     fallback: CSV import.
 
   - id: salesforce

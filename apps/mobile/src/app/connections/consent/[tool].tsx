@@ -109,7 +109,7 @@ export default function ConsentScreen() {
       {item.connects_with === "api_key" ? (
         <TextField
           label={t("connections.consent.keyLabel", { tool: item.name })}
-          hint={t("connections.consent.keyHint", { tool: item.name })}
+          hint={item.key_hint ?? t("connections.consent.keyHint", { tool: item.name })}
           value={apiKey}
           onChangeText={setApiKey}
           secureTextEntry
