@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Practice;
 
 use App\Enums\QuizTopic;
+use App\Models\LicenceJourney;
 use App\Models\ReadinessSnapshot;
 use App\Models\SpeedRound;
 use App\Models\TestAttempt;
@@ -146,6 +147,13 @@ final readonly class Readiness
     /** Days until the exam: the middle of the exam month the person chose (null without one). */
     public static function examOn(User $user): ?CarbonImmutable
     {
+        // The booked date (A10.3a), else the middle of the month chosen at sign-up.
+        $booked = LicenceJourney::query()->where('user_id', $user->id)->first()?->exam_on;
+
+        if ($booked !== null) {
+            return $booked->startOfDay();
+        }
+
         return $user->exam_month === null ? null : CarbonImmutable::parse($user->exam_month)->startOfMonth()->addDays(14);
     }
 

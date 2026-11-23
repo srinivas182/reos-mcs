@@ -16,7 +16,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import type { Course, RuleRow, RuleValue } from '@/lib/state-rules';
+import type { Course, RuleRow, RuleValue, Step } from '@/lib/state-rules';
 import { discard, draft } from '@/routes/states/rules';
 
 const ROLES = [
@@ -53,6 +53,9 @@ export function RuleEditorDialog({ state, rule, courses, onClose }: Props) {
     const set = (patch: Partial<RuleValue>) =>
         setValue((current) => ({ ...current, ...patch }));
     const list = (value.courses ?? []) as Course[];
+    const steps = value.steps ?? [];
+    const setStep = (i: number, patch: Partial<Step>) =>
+        set({ steps: steps.map((s, j) => (j === i ? { ...s, ...patch } : s)) });
     const firstError = (prefix: string) =>
         Object.entries(errors).find(([key]) => key.startsWith(prefix))?.[1];
 
@@ -216,6 +219,124 @@ export function RuleEditorDialog({ state, rule, courses, onClose }: Props) {
                                 {t('stateRules.edit.addCourse')}
                             </Button>
                             <InputError message={firstError('value.courses')} />
+                        </fieldset>
+                    ) : null}
+
+                    {/* The licence journey's steps (A10.3a, screen 16). */}
+                    {rule.type === 'steps' ? (
+                        <fieldset className="space-y-4">
+                            <legend className="text-sm font-medium">
+                                {t('stateRules.edit.steps')}
+                            </legend>
+                            {steps.map((step, i) => (
+                                <div
+                                    key={i}
+                                    className="space-y-2 rounded-reos-md border border-border p-3"
+                                >
+                                    <div className="flex items-end gap-2">
+                                        <div className="grid flex-1 gap-2">
+                                            <Label htmlFor={`step-title-${i}`}>
+                                                {t('stateRules.edit.stepTitle')}{' '}
+                                                {i + 1}
+                                            </Label>
+                                            <Input
+                                                id={`step-title-${i}`}
+                                                value={step.title}
+                                                maxLength={120}
+                                                onChange={(e) =>
+                                                    setStep(i, {
+                                                        title: e.target.value,
+                                                        code:
+                                                            step.code ||
+                                                            e.target.value
+                                                                .toLowerCase()
+                                                                .replace(
+                                                                    /[^a-z0-9]+/g,
+                                                                    '_',
+                                                                )
+                                                                .replace(
+                                                                    /^_|_$/g,
+                                                                    '',
+                                                                ),
+                                                    })
+                                                }
+                                            />
+                                        </div>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            size="icon"
+                                            aria-label={t(
+                                                'stateRules.edit.removeStep',
+                                                {
+                                                    number: i + 1,
+                                                },
+                                            )}
+                                            onClick={() =>
+                                                set({
+                                                    steps: steps.filter(
+                                                        (_, j) => j !== i,
+                                                    ),
+                                                })
+                                            }
+                                        >
+                                            <Trash2 aria-hidden />
+                                        </Button>
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor={`step-detail-${i}`}>
+                                            {t('stateRules.edit.stepDetail')}
+                                        </Label>
+                                        <Textarea
+                                            id={`step-detail-${i}`}
+                                            rows={2}
+                                            maxLength={600}
+                                            value={step.detail}
+                                            onChange={(e) =>
+                                                setStep(i, {
+                                                    detail: e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                    <div className="grid gap-2">
+                                        <Label htmlFor={`step-url-${i}`}>
+                                            {t('stateRules.edit.stepUrl')}
+                                        </Label>
+                                        <Input
+                                            id={`step-url-${i}`}
+                                            type="url"
+                                            value={step.url ?? ''}
+                                            onChange={(e) =>
+                                                setStep(i, {
+                                                    url: e.target.value || null,
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() =>
+                                    set({
+                                        steps: [
+                                            ...steps,
+                                            {
+                                                code: '',
+                                                title: '',
+                                                detail: '',
+                                                url: null,
+                                            },
+                                        ],
+                                    })
+                                }
+                            >
+                                <Plus aria-hidden />
+                                {t('stateRules.edit.addStep')}
+                            </Button>
+                            <InputError message={firstError('value.steps')} />
                         </fieldset>
                     ) : null}
 

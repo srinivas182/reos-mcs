@@ -25,6 +25,8 @@ final class TexasRules
 
     private const TAC_535_65 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-535-65';
 
+    private const HANDBOOK = 'https://www.pearsonvue.com/content/dam/VUE/vue/en/documents/publications/094400.pdf';
+
     public const CHECKED_ON = '2026-11-22';
 
     /** @return list<Seed> */
@@ -46,6 +48,10 @@ final class TexasRules
             ]], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
             ['key' => 'licensing.minimum_age', 'value' => ['number' => 18], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
             ['key' => 'exam.vendor', 'value' => ['text' => 'Pearson VUE'], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
+            ['key' => 'licensing.steps', 'value' => ['steps' => self::steps()], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
+            ['key' => 'licensing.application_months', 'value' => ['number' => 12], 'citation' => 'TREC: "Your application expires one year from the date it is filed."', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
+            ['key' => 'exam.attempts', 'value' => ['number' => 3], 'citation' => 'Pearson VUE Texas candidate handbook: three attempts to pass both portions before the application expires; then 30 more hours of qualifying education (60 if both portions failed)', 'source_url' => self::HANDBOOK, 'effective_from' => '2023-08-29'],
+            ['key' => 'exam.day_rules', 'value' => ['text' => 'Bring two current IDs with your signature; the first must be government-issued with your photo, and the names must match your registration exactly. Arrive 30 minutes early. No phones, watches, wallets or bags in the testing room. A hand-held financial calculator without letters is allowed; the centre doesn\'t provide one.'], 'citation' => 'Pearson VUE Texas candidate handbook: identification, arrival and personal items', 'source_url' => self::HANDBOOK, 'effective_from' => '2023-08-29'],
             ...self::exam(),
             $ce('ce.period_months', ['number' => 24], '22 TAC §535.92(a); TREC renewal requirements', self::RENEWAL),
             $ce('ce.hours', ['number' => 18], '22 TAC §535.92(a)'),
@@ -69,6 +75,23 @@ final class TexasRules
             // Classroom delivery: present for the hours credited, no daily segment over 12 hours, a makeup only after two-thirds attended, within 90 days.
             ['key' => 'courses.seat_time', 'value' => ['max_hours_per_day' => 12, 'presence_percent' => 100, 'makeup_min_percent' => 67, 'makeup_days' => 90], 'citation' => '22 TAC §535.65(g)(1)(B)(ii), (iv) and (g)(1)(D)', 'source_url' => self::TAC_535_65, 'effective_from' => '2023-06-11'],
             ['key' => 'brokerage.sponsorship', 'value' => ['text' => 'A sales agent must be sponsored by a licensed broker to perform any act of real estate services.'], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
+        ];
+    }
+
+    /**
+     * The steps to an active Texas sales agent licence (TREC), in order.
+     *
+     * @return list<array{code: string, title: string, detail: string, url: string}>
+     */
+    public static function steps(): array
+    {
+        return [
+            ['code' => 'education', 'title' => 'Qualifying education', 'detail' => 'Finish the six 30-hour qualifying courses (180 hours) with an approved provider. Create your REALM account first and give the provider your pre-licence education number.', 'url' => self::SALES_AGENT],
+            ['code' => 'application', 'title' => 'Application', 'detail' => 'Apply online in REALM (Sales Agent Application) and upload your course completions. The application expires one year from the date you file it.', 'url' => 'https://www.trec.texas.gov/article/realm-portal-real-estate-applicants'],
+            ['code' => 'fingerprints', 'title' => 'Fingerprints', 'detail' => 'When your application is In Review, TREC emails how to schedule fingerprints with IdentoGO. You need to pass the background check before a licence is issued.', 'url' => self::SALES_AGENT],
+            ['code' => 'exam', 'title' => 'Exam', 'detail' => 'After TREC reviews your education, it emails how to schedule the national and state portions with Pearson VUE. Both must be passed before the application expires.', 'url' => self::PEARSON_VUE],
+            ['code' => 'sponsor', 'title' => 'Sponsoring broker', 'detail' => 'Your licence is issued inactive. A licensed broker sponsors you in REALM so you can practice.', 'url' => self::SALES_AGENT],
+            ['code' => 'active', 'title' => 'Active licence', 'detail' => 'Once a broker sponsors you, your licence is active. Enter your licence number in REOS to switch to agent.', 'url' => 'https://www.trec.texas.gov/apps/license-holder-search/'],
         ];
     }
 

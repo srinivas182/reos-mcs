@@ -72,7 +72,8 @@
     "progress": "Weekly progress",
     "deals": "Deals",
     "ask": "Ask",
-    "studentQuestions": "Student questions"
+    "studentQuestions": "Student questions",
+    "licenceJourney": "Licence journey"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -3178,18 +3179,32 @@
       "months_one": "{{count}} month",
       "months_other": "{{count}} months",
       "years_one": "{{count}} year",
-      "years_other": "{{count}} years"
+      "years_other": "{{count}} years",
+      "questions_one": "{{count}} question",
+      "questions_other": "{{count}} questions",
+      "minutes_one": "{{count}} minute",
+      "minutes_other": "{{count}} minutes",
+      "correct_one": "{{count}} correct",
+      "correct_other": "{{count}} correct",
+      "attempts_one": "{{count}} attempt",
+      "attempts_other": "{{count}} attempts"
     },
     "unitNames": {
       "hours": "hours",
       "months": "months",
-      "years": "years"
+      "years": "years",
+      "questions": "questions",
+      "minutes": "minutes",
+      "correct": "correct",
+      "attempts": "attempts"
     },
     "values": {
       "roleCourse": "{{hours}} hours for: {{roles}}",
       "firstRenewal": "{{hours}} qualifying (SAE) hours, plus {{count}} required courses",
       "feeDays": "${{fee}} fee for {{days}} more days",
-      "seatTime": "Up to {{max}} hours a day · present for {{presence}}% of credited hours · makeup after {{makeup}}% attended, within {{days}} days"
+      "seatTime": "Up to {{max}} hours a day · present for {{presence}}% of credited hours · makeup after {{makeup}}% attended, within {{days}} days",
+      "steps_one": "{{count}} step: {{titles}}",
+      "steps_other": "{{count}} steps: {{titles}}"
     },
     "edit": {
       "button": "Edit",
@@ -3217,7 +3232,13 @@
       "maxHoursPerDay": "Most hours in one day",
       "presencePercent": "Present for (% of credited hours)",
       "makeupMinPercent": "Makeup allowed after attending (%)",
-      "makeupDays": "Makeup within (days)"
+      "makeupDays": "Makeup within (days)",
+      "steps": "Steps",
+      "stepTitle": "Step",
+      "stepDetail": "What to do",
+      "stepUrl": "Official page (https)",
+      "removeStep": "Remove step {{number}}",
+      "addStep": "Add a step"
     },
     "errors": {
       "unknown": "That isn't a rule REOS knows.",
@@ -3241,10 +3262,26 @@
       "licensing": {
         "qualifying_hours": "Qualifying education",
         "qualifying_courses": "Qualifying courses",
-        "minimum_age": "Minimum age"
+        "minimum_age": "Minimum age",
+        "steps": "Licence steps",
+        "application_months": "Application window"
       },
       "exam": {
-        "vendor": "Exam vendor"
+        "vendor": "Exam vendor",
+        "attempts": "Exam attempts",
+        "day_rules": "Exam-day rules",
+        "national": {
+          "questions": "National: questions",
+          "scored": "National: scored questions",
+          "minutes": "National: time",
+          "pass": "National: passing score"
+        },
+        "state": {
+          "questions": "State: questions",
+          "scored": "State: scored questions",
+          "minutes": "State: time",
+          "pass": "State: passing score"
+        }
       },
       "ce": {
         "period_months": "Renewal period",
@@ -3273,10 +3310,26 @@
       "licensing": {
         "qualifying_hours": "Qualifying hours",
         "qualifying_courses": "qualifying courses",
-        "minimum_age": "minimum age"
+        "minimum_age": "minimum age",
+        "steps": "licence steps",
+        "application_months": "application window"
       },
       "exam": {
-        "vendor": "exam vendor"
+        "vendor": "exam vendor",
+        "attempts": "exam attempts",
+        "day_rules": "exam-day rules",
+        "national": {
+          "questions": "national questions",
+          "scored": "national scored questions",
+          "minutes": "national time",
+          "pass": "national passing score"
+        },
+        "state": {
+          "questions": "state questions",
+          "scored": "state scored questions",
+          "minutes": "state time",
+          "pass": "state passing score"
+        }
       },
       "ce": {
         "period_months": "renewal period",
@@ -4847,7 +4900,8 @@
       "student_question": "Student questions",
       "instructor_answer": "Answers from your instructor",
       "class_check": "Attendance checks",
-      "class_report": "CE class reports"
+      "class_report": "CE class reports",
+      "exam_reminder": "Exam reminders"
     },
     "digest": {
       "subject": {
@@ -7256,5 +7310,128 @@
       }
     },
     "recording": "Watch the recording"
+  },
+  "licence": {
+    "title": "Licence journey",
+    "purpose": "Every {{state}} step to an active licence, and your exam.",
+    "steps": "{{state}} steps",
+    "stepNumber": "{{number}}. {{title}}",
+    "doneOn": "Done {{date}}",
+    "doneAuto": "Done {{date}}: both exam portions passed",
+    "doneOnLabel": "Done on",
+    "markDone": "Mark done",
+    "undo": "Not done yet",
+    "whatToDo": "What to do",
+    "openLink": "What to do for {{title}} (opens the official page)",
+    "window": {
+      "title": "Your application window",
+      "left_one": "{{count}} day left, until {{date}}",
+      "left_other": "{{count}} days left, until {{date}}",
+      "used": "Application window used",
+      "filed": "Filed {{date}}. Everything, including passing both exam portions, must be done within {{months}} months.",
+      "notFiled": "When you file your application, mark it done. You then have {{months}} months to finish every step."
+    },
+    "portions": {
+      "national": "National portion",
+      "state": "State portion"
+    },
+    "book": {
+      "ready": "You're ready to book",
+      "notYet": "Almost ready to book",
+      "unknown": "Not known yet",
+      "simulations": "Simulations passed",
+      "simulationsValue": "{{count}} of {{needed}}",
+      "readyBody": "Both portions are above the line and your recent simulations passed. Book with {{vendor}} on their site, then enter the date here.",
+      "notYetBody": "Book when both portions reach {{line}}% and you've passed {{needed}} recent simulations.",
+      "button": "Book with {{vendor}}",
+      "seeReadiness": "See what's left",
+      "dateTitle": "Your exam date",
+      "booked_one": "Exam {{date}}: {{count}} day to go",
+      "booked_other": "Exam {{date}}: {{count}} days to go",
+      "date": "Date",
+      "time": "Time",
+      "centre": "Test centre",
+      "dateHint": "From your confirmation. Your study plan and reminders follow it.",
+      "save": "Save exam date"
+    },
+    "kit": {
+      "title": "Exam-day kit",
+      "purpose": "Arrive calm and prepared.",
+      "noDate": "Set your exam date first.",
+      "arrive": "Arrive 30 minutes early.",
+      "directions": "Directions",
+      "checklist": "Checklist",
+      "items": {
+        "id": "Two current IDs with your signature",
+        "confirmation": "Exam confirmation",
+        "final_simulation": "A final simulation the day before",
+        "flashcards": "A last pass through your flashcards",
+        "sleep": "A good night's sleep"
+      },
+      "rules": "{{vendor}} rules",
+      "readiness": "Your readiness: national {{national}}%, state {{state}}%."
+    },
+    "calm": {
+      "title": "Two-minute calm-down",
+      "body": "Breathe in for 4, hold for 4, out for 6. Your device reads it aloud if it can.",
+      "start": "Start",
+      "stop": "Stop",
+      "in": "Breathe in",
+      "hold": "Hold",
+      "out": "Breathe out",
+      "left": "{{time}} left"
+    },
+    "result": {
+      "title": "Enter your result",
+      "purpose": "Tell REOS how it went, so your next step is ready.",
+      "prompt": "How did your exam go?",
+      "notYet": "You can enter your result after your exam date.",
+      "answers": {
+        "passed": "Passed",
+        "failed": "Didn't pass",
+        "skipped": "Didn't take it this time"
+      },
+      "kept": "{{portion}}: passed and kept.",
+      "weakTitle": "Weak areas on your score report (optional)",
+      "weakHint": "Only used to build your retake plan.",
+      "save": "Save result"
+    },
+    "retake": {
+      "title": "Your retake plan",
+      "body": "Your passed portion is kept. Retake: {{portions}}. Start with these areas:",
+      "attemptsLeft_one": "{{portion}}: {{count}} attempt left.",
+      "attemptsLeft_other": "{{portion}}: {{count}} attempts left.",
+      "moreEducation": "You've used every attempt. More qualifying education is needed before you can test again.",
+      "start": "Start"
+    },
+    "passed": {
+      "title": "You passed both portions",
+      "body": "Next: a sponsoring broker, then your active licence."
+    },
+    "errors": {
+      "step": "That step isn't part of this state's journey.",
+      "future": "Choose today or an earlier date.",
+      "past": "Choose today or a later date.",
+      "afterWindow": "That's after your application window closes.",
+      "item": "That isn't on the checklist.",
+      "notYet": "You can enter your result after your exam date.",
+      "nothing": "Choose a result for a portion you haven't passed yet."
+    },
+    "mail": {
+      "week": {
+        "title": "Your exam is in a week: :date",
+        "body": "Keep to your plan. Book a final simulation for the day before."
+      },
+      "day": {
+        "title": "Your exam is tomorrow: :date",
+        "body": "Check your exam-day kit: IDs, confirmation and the way to :centre."
+      },
+      "result": {
+        "title": "How did your exam go?",
+        "body": "Enter your result so your next step is ready."
+      },
+      "open": "Open your licence journey"
+    },
+    "today": "Your steps to a licence, and your exam."
   }
 }

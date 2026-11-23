@@ -1,0 +1,100 @@
+import type { Journey } from '@/components/licence/types';
+
+/** Ana's journey: education done, application filed, exam booked (realistic Texas content). */
+export const journey = (over: Partial<Journey> = {}): Journey => ({
+    state: { code: 'TX', name: 'Texas' },
+    steps: [
+        {
+            code: 'education',
+            title: 'Qualifying education',
+            detail: 'Finish the six 30-hour qualifying courses (180 hours) with an approved provider.',
+            url: 'https://www.trec.texas.gov/become-licensed/sales-agent',
+            done_on: '2026-10-02',
+            auto: false,
+        },
+        {
+            code: 'application',
+            title: 'Application',
+            detail: 'Apply online in REALM and upload your course completions. The application expires one year from the date you file it.',
+            url: 'https://www.trec.texas.gov/article/realm-portal-real-estate-applicants',
+            done_on: '2026-11-02',
+            auto: false,
+        },
+        {
+            code: 'fingerprints',
+            title: 'Fingerprints',
+            detail: 'When your application is In Review, TREC emails how to schedule fingerprints with IdentoGO.',
+            url: 'https://www.trec.texas.gov/become-licensed/sales-agent',
+            done_on: null,
+            auto: false,
+        },
+        {
+            code: 'exam',
+            title: 'Exam',
+            detail: 'Schedule the national and state portions with Pearson VUE.',
+            url: 'https://www.pearsonvue.com/us/en/tx/realestate.html',
+            done_on: null,
+            auto: false,
+        },
+        {
+            code: 'sponsor',
+            title: 'Sponsoring broker',
+            detail: 'A licensed broker sponsors you in REALM so you can practice.',
+            url: 'https://www.trec.texas.gov/become-licensed/sales-agent',
+            done_on: null,
+            auto: false,
+        },
+        {
+            code: 'active',
+            title: 'Active licence',
+            detail: 'Enter your licence number in REOS to switch to agent.',
+            url: 'https://www.trec.texas.gov/apps/license-holder-search/',
+            done_on: null,
+            auto: false,
+        },
+    ],
+    window: {
+        filed_on: '2026-11-02',
+        ends_on: '2027-11-02',
+        days_left: 344,
+        months: 12,
+    },
+    readiness: {
+        percent: 91,
+        national: 93,
+        state: 91,
+        line: 90,
+        ready: true,
+        simulations: 2,
+        needed: 2,
+    },
+    exam: {
+        vendor: 'Pearson VUE',
+        book_url: 'https://www.pearsonvue.com/us/en/tx/realestate.html',
+        on: '2026-12-14',
+        time: '08:30',
+        centre: 'Pearson VUE, 9800 Richmond Ave, Houston',
+        days_to: 21,
+        directions_url:
+            'https://www.google.com/maps/search/?api=1&query=Pearson%20VUE%2C%209800%20Richmond%20Ave%2C%20Houston',
+    },
+    kit: {
+        items: [
+            { key: 'id', done: true },
+            { key: 'confirmation', done: false },
+            { key: 'final_simulation', done: false },
+            { key: 'flashcards', done: false },
+            { key: 'sleep', done: false },
+        ],
+        rules: 'Bring two current IDs with your signature; the first must be government-issued with your photo. Arrive 30 minutes early.',
+    },
+    results: {
+        national: { passed: null, attempts: 0, failed: 0, on: null },
+        state: { passed: null, attempts: 0, failed: 0, on: null },
+        can_enter: false,
+        attempts_allowed: 3,
+        passed_both: false,
+    },
+    retake: null,
+    ...over,
+});
