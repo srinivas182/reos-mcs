@@ -3637,7 +3637,8 @@
       "wrong": "No exactamente.",
       "demo": "Respuesta de demostración: la IA todavía no está conectada, así que son las palabras del propio curso.",
       "notCovered": "No se trata en este curso"
-    }
+    },
+    "liveClasses": "Clases en vivo de este curso"
   },
   "billing": {
     "errors": {
@@ -4841,7 +4842,8 @@
       "deal_deadline": "Fechas límite de operaciones",
       "signature_completed": "Documentos firmados",
       "student_question": "Preguntas de estudiantes",
-      "instructor_answer": "Respuestas de su instructor"
+      "instructor_answer": "Respuestas de su instructor",
+      "class_check": "Verificaciones de asistencia"
     },
     "digest": {
       "subject": {
@@ -7063,5 +7065,125 @@
       "label": "Tarea {{n}}",
       "due": "Fecha de la tarea {{n}}"
     }
+  },
+  "classes": {
+    "title": "Clases en vivo",
+    "purpose": "Repasos en vivo con sus instructores para sus cursos. Inscríbase y entre desde Hoy cuando empiece.",
+    "purposeHost": "Su semana de clases en vivo, con inscripciones y CE. Los estudiantes se inscriben desde su curso.",
+    "allSessions": "Todas las sesiones",
+    "empty": "Aún no hay clases en vivo",
+    "emptyBody": "Cuando sus instructores programen repasos en vivo para sus cursos, aparecerán aquí para inscribirse.",
+    "emptyHost": "No hay clases programadas",
+    "emptyHostBody": "Programe una clase en vivo para un curso que enseña. Los estudiantes del curso pueden inscribirse enseguida.",
+    "noCourses": "Podrá programar clases cuando enseñe un curso publicado.",
+    "groups": {
+      "thisWeek": "Esta semana",
+      "nextWeek": "La próxima semana",
+      "later": "Más adelante",
+      "past": "Anteriores"
+    },
+    "with": "Con {{name}}",
+    "registered_one": "{{count}} de {{capacity}} inscrito",
+    "registered_other": "{{count}} de {{capacity}} inscritos",
+    "ce": "CE",
+    "ceHours_one": "{{count}} hora de CE",
+    "ceHours_other": "{{count}} horas de CE",
+    "open": "Abrir",
+    "openLabel": "Abrir {{title}}",
+    "register": "Inscribirse",
+    "unregister": "Cancelar inscripción",
+    "unregistered": "Se canceló la inscripción a “{{title}}”",
+    "full": "Llena",
+    "schedule": {
+      "title": "Programar una clase",
+      "description": "Los estudiantes del curso pueden inscribirse. Las horas están en su zona horaria.",
+      "course": "Curso",
+      "ceNote": "Clase de CE: las verificaciones de asistencia siguen la aprobación del curso, y usted confirma después quién obtuvo el CE.",
+      "noCeNote": "No hay aprobación de CE para entrega en vivo, así que es una clase de repaso sin verificaciones de asistencia.",
+      "name": "Nombre de la clase",
+      "namePlaceholder": "Actualización de contratos: repaso en vivo",
+      "capacity": "Lugares",
+      "submit": "Programar clase"
+    },
+    "panel": "Herramientas de la clase",
+    "viewers_one": "{{count}} viendo",
+    "viewers_other": "{{count}} viendo",
+    "raiseHand": "Levantar la mano",
+    "lowerHand": "Bajar la mano",
+    "onStage": "El instructor le dio la palabra. Puede encender su micrófono y su cámara.",
+    "check": {
+      "title": "Verificación de asistencia",
+      "body": "Responda antes de las {{time}} para conservar su crédito de CE.",
+      "here": "Estoy aquí",
+      "answered": "Quedó presente en esta verificación."
+    },
+    "tabs": {
+      "questions": "Preguntas",
+      "poll": "Encuesta",
+      "chat": "Chat",
+      "hands": "Manos ({{number}})",
+      "attendance": "Asistencia"
+    },
+    "ask": {
+      "label": "Pregunte al instructor",
+      "send": "Preguntar",
+      "empty": "Aún no hay preguntas. Haga una, o dé me gusta a la de un compañero para subirla.",
+      "emptyHost": "Las preguntas de los estudiantes aparecen aquí, primero las que más gustan.",
+      "you": "Usted",
+      "answered": "Respondida",
+      "likes_one": "{{count}} me gusta",
+      "likes_other": "{{count}} me gusta",
+      "like_one": "Me gusta ({{count}} me gusta)",
+      "like_other": "Me gusta ({{count}} me gusta)",
+      "markAnswered": "Marcar respondida",
+      "reopen": "Reabrir",
+      "likeSr": "Me gusta"
+    },
+    "poll": {
+      "question": "Pregunta",
+      "option": "Respuesta {{number}}",
+      "addOption": "Agregar una respuesta",
+      "launch": "Lanzar encuesta",
+      "none": "No hay encuesta en este momento.",
+      "closed": "Cerrada",
+      "close": "Cerrar encuesta",
+      "yours": "su respuesta",
+      "share": "{{share}} % ({{votes}})"
+    },
+    "chat": {
+      "empty": "Aún no hay mensajes.",
+      "label": "Escriba a la clase",
+      "send": "Enviar"
+    },
+    "hands": {
+      "none": "No hay manos levantadas.",
+      "speaking": "hablando",
+      "bringOn": "Dar la palabra",
+      "takeOff": "Quitar la palabra"
+    },
+    "attendance": {
+      "next": "Próxima verificación automática a las {{time}}.",
+      "noMore": "No hay más verificaciones automáticas antes del final.",
+      "notCe": "No es una clase de CE: las verificaciones son opcionales.",
+      "send": "Enviar una verificación ahora",
+      "row": "{{time}}: {{answered}} de {{of}} respondieron"
+    },
+    "errors": {
+      "course": "Elija un curso publicado que usted enseñe.",
+      "full": "Esta clase está llena.",
+      "started": "La clase ya empezó, así que la inscripción no se puede cancelar.",
+      "pollClosed": "Esta encuesta está cerrada.",
+      "voted": "Ya respondió esta encuesta.",
+      "studentsOnly": "Solo los estudiantes pueden hacer eso.",
+      "checkOpen": "Ya hay una verificación de asistencia abierta.",
+      "checkClosed": "Esta verificación de asistencia ya cerró."
+    },
+    "mail": {
+      "check": {
+        "title": "Verificación de asistencia en “:title”",
+        "body": "Responda “Estoy aquí” en los próximos :minutes minutos para conservar su crédito de CE."
+      }
+    },
+    "scheduleOnWeb": "Programe las clases en la web, desde Clases en vivo."
   }
 }

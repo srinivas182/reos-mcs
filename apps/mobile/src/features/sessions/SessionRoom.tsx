@@ -12,6 +12,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
+import { LiveClassPanel } from '@/features/classes/ClassPanel';
 import { RecordingBanner } from '@/features/sessions/Recording';
 import { activeRecording, askToRecord, clock, type RoomConnection, type Session } from '@/lib/sessions';
 import { Button, Callout, initialsOf, Text } from '@/ui';
@@ -122,6 +123,8 @@ export function SessionRoom({
           <NameTiles session={session} me={me} />
         </>
       )}
+      {/* A live class (A10.2b): questions, poll, chat, hands and attendance under the video. */}
+      {session.class ? <LiveClassPanel sessionId={session.id} me={me} /> : null}
       <View style={styles.actions}>
         <Button variant="secondary" label={t('sessions.room.leave')} onPress={onLeave} />
         {session.me === 'host' && recording === null ? (

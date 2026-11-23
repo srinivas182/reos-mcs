@@ -12,6 +12,7 @@ import { Track } from 'livekit-client';
 import { Circle, Clock, PenLine, Video } from 'lucide-react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { LiveClassPanel } from '@/components/classes/class-panel';
 import type { RoomConnection, Session } from '@/components/sessions/types';
 import {
     type BoardChannel,
@@ -288,32 +289,51 @@ export function SessionRoom({
                 ) : null}
             </div>
 
-            {connection.simulated || !connection.url || !connection.token ? (
-                view === 'board' ? (
-                    <Suspense fallback={<BoardLoading />}>
-                        <Whiteboard sessionId={session.id} channel={null} />
-                    </Suspense>
-                ) : (
-                    <SimulatedStage session={session} me={me} />
-                )
-            ) : (
-                <LiveKitRoom
-                    serverUrl={connection.url}
-                    token={connection.token}
-                    connect
-                    audio
-                    video
-                    data-lk-theme="default"
-                    onDisconnected={() => onLeave('left')}
-                >
-                    {view === 'board' ? (
-                        <LiveBoard sessionId={session.id} />
+            <div
+                className={cn(
+                    session.class
+                        ? 'grid gap-4 lg:grid-cols-[minmax(0,1fr)_24rem]'
+                        : undefined,
+                )}
+            >
+                <div className="min-w-0">
+                    {connection.simulated ||
+                    !connection.url ||
+                    !connection.token ? (
+                        view === 'board' ? (
+                            <Suspense fallback={<BoardLoading />}>
+                                <Whiteboard
+                                    sessionId={session.id}
+                                    channel={null}
+                                />
+                            </Suspense>
+                        ) : (
+                            <SimulatedStage session={session} me={me} />
+                        )
                     ) : (
-                        <Stage />
+                        <LiveKitRoom
+                            serverUrl={connection.url}
+                            token={connection.token}
+                            connect
+                            audio
+                            video
+                            data-lk-theme="default"
+                            onDisconnected={() => onLeave('left')}
+                        >
+                            {view === 'board' ? (
+                                <LiveBoard sessionId={session.id} />
+                            ) : (
+                                <Stage />
+                            )}
+                            <RoomAudioRenderer />
+                        </LiveKitRoom>
                     )}
-                    <RoomAudioRenderer />
-                </LiveKitRoom>
-            )}
+                </div>
+                {/* A live class (A10.2b): questions, poll, chat, hands and attendance beside the video. */}
+                {session.class ? (
+                    <LiveClassPanel sessionId={session.id} me={me} />
+                ) : null}
+            </div>
         </section>
     );
 }

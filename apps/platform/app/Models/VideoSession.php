@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * A session in a video room (B6.3, ADR 0024): a 1-on-1 session or a live
@@ -40,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection<int, VideoSessionParticipant> $participants
  * @property-read Collection<int, VideoSessionShare> $shares
  * @property-read Collection<int, VideoRecording> $recordings
+ * @property-read LiveClass|null $liveClass
  */
 final class VideoSession extends Model
 {
@@ -98,6 +100,16 @@ final class VideoSession extends Model
     public function recordings(): HasMany
     {
         return $this->hasMany(VideoRecording::class);
+    }
+
+    /**
+     * The class details when it's a live class (A10.2b).
+     *
+     * @return HasOne<LiveClass, $this>
+     */
+    public function liveClass(): HasOne
+    {
+        return $this->hasOne(LiveClass::class);
     }
 
     /** The LiveKit room name. */

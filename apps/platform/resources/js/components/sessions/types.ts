@@ -28,6 +28,13 @@ export type Session = {
     shares: Share[];
     /** Recordings (B6.3c), latest first. */
     recordings: Recording[];
+    /** A live class (A10.2b): its course, CE and registrations. */
+    class?: {
+        course: string;
+        ce: boolean;
+        registered: number;
+        capacity: number;
+    } | null;
 };
 
 export type Recording = {

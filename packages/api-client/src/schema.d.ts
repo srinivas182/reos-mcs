@@ -585,6 +585,285 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Live classes
+         * @description Instructors and mentors: their classes and the courses they can schedule for. Students: upcoming classes for their courses (optionally one course), then ones they registered for in the last 30 days.
+         */
+        get: operations["classes.index"];
+        put?: never;
+        /**
+         * Schedule a live class
+         * @description A course with a live delivery approval in force makes it a CE class, with the approval's attendance checks.
+         */
+        post: operations["classes.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/registration": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register for a class
+         * @description Up to its capacity; reminders come an hour and 10 minutes before.
+         */
+        post: operations["classes.register"];
+        /**
+         * Cancel my registration
+         * @description Until the class starts.
+         */
+        delete: operations["classes.unregister"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The class right now
+         * @description Viewers, polls, questions (most liked first), chat and the open attendance check; for the host also raised hands and every check's answers. Fetch again on `class.changed`.
+         */
+        get: operations["classes.live"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/hand": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Raise or lower my hand */
+        post: operations["classes.hand"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Bring a student on, or take them off
+         * @description On stage they may speak and show video (host only).
+         */
+        post: operations["classes.stage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/polls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Launch a poll
+         * @description Closes the one before (host only).
+         */
+        post: operations["classes.polls"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/polls/{poll}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Close a poll
+         * @description Everyone sees the results.
+         */
+        post: operations["classes.polls.close"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/polls/{poll}/votes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Answer a poll
+         * @description Once; the results appear.
+         */
+        post: operations["classes.polls.vote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask the instructor
+         * @description The question joins the instructor's queue; classmates' likes move it up.
+         */
+        post: operations["classes.questions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/questions/{question}/like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Like a question, or take the like back */
+        post: operations["classes.questions.like"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/questions/{question}/answered": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mark a question answered
+         * @description Host only.
+         */
+        post: operations["classes.questions.answered"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Say something in the chat */
+        post: operations["classes.messages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/checks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send an attendance check now
+         * @description Host only; open for three minutes. CE classes also send them on the approval's interval.
+         */
+        post: operations["classes.checks"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{session}/checks/{check}/answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Answer an attendance check
+         * @description "I'm here", while it's open.
+         */
+        post: operations["classes.checks.answer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/hub": {
         parameters: {
             query?: never;
@@ -3803,6 +4082,15 @@ export interface components {
             /** @description One of the person's live states, for example `TX`. */
             state: string;
         };
+        /**
+         * ClassPollRequest
+         * @description Launch a poll in a live class (A10.2b, instructor i12).
+         */
+        ClassPollRequest: {
+            question: string;
+            /** @description Two to five answers. */
+            options: string[];
+        };
         /** ConnectionResource */
         ConnectionResource: {
             id: number;
@@ -4611,6 +4899,25 @@ export interface components {
             source?: "typed" | "voice" | "crm";
         };
         /**
+         * ScheduleClassRequest
+         * @description Schedule a live class (A10.2b, instructor i11; web w505).
+         */
+        ScheduleClassRequest: {
+            /** @description A course you teach or your school owns (from `courses`). */
+            course_id: number;
+            title: string;
+            agenda?: string | null;
+            /**
+             * Format: date-time
+             * @description The start (ISO 8601).
+             */
+            starts_at: string;
+            /** @description Length in minutes: 30, 45, 60, 90, 120, 180 or 240. */
+            minutes: number;
+            /** @description Most students who can register (1–100). */
+            capacity: number;
+        };
+        /**
          * ScheduleSessionRequest
          * @description Scheduling a 1-on-1 session or a live class (B6.3).
          */
@@ -4927,6 +5234,7 @@ export type SchemaCatalogueItemResource = components['schemas']['CatalogueItemRe
 export type SchemaCatalogueStatus = components['schemas']['CatalogueStatus'];
 export type SchemaCheckLicenceRequest = components['schemas']['CheckLicenceRequest'];
 export type SchemaChooseStateRequest = components['schemas']['ChooseStateRequest'];
+export type SchemaClassPollRequest = components['schemas']['ClassPollRequest'];
 export type SchemaConnectionResource = components['schemas']['ConnectionResource'];
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
 export type SchemaConsentPurpose = components['schemas']['ConsentPurpose'];
@@ -4976,6 +5284,7 @@ export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveFlashcardRequest = components['schemas']['SaveFlashcardRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
+export type SchemaScheduleClassRequest = components['schemas']['ScheduleClassRequest'];
 export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessionRequest'];
 export type SchemaSendForSignatureRequest = components['schemas']['SendForSignatureRequest'];
 export type SchemaSendMessageRequest = components['schemas']['SendMessageRequest'];
@@ -6511,6 +6820,1430 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.index": {
+        parameters: {
+            query?: {
+                course?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            agenda: string | null;
+                            course: {
+                                id: number;
+                                title: string;
+                            };
+                            host: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            /** @enum {string} */
+                            status: "scheduled" | "live" | "ended" | "cancelled";
+                            ce: boolean;
+                            ce_hours: number | null;
+                            checkin_minutes: number | null;
+                            registered: number;
+                            capacity: number;
+                            /** @enum {string|null} */
+                            me: "host" | "registered" | null;
+                            can_register: boolean;
+                            full: boolean;
+                            can_join: boolean;
+                        }[];
+                        can_schedule: boolean;
+                        courses: {
+                            id: number;
+                            title: string;
+                            ce: boolean;
+                        }[];
+                        lengths: number[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "classes.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ScheduleClassRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            agenda: string | null;
+                            course: {
+                                id: number;
+                                title: string;
+                            };
+                            host: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            /** @enum {string} */
+                            status: "scheduled" | "live" | "ended" | "cancelled";
+                            ce: boolean;
+                            ce_hours: number | null;
+                            checkin_minutes: number | null;
+                            registered: number;
+                            capacity: number;
+                            /** @enum {string|null} */
+                            me: "host" | "registered" | null;
+                            can_register: boolean;
+                            full: boolean;
+                            can_join: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            agenda: string | null;
+                            course: {
+                                id: number;
+                                title: string;
+                            };
+                            host: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            /** @enum {string} */
+                            status: "scheduled" | "live" | "ended" | "cancelled";
+                            ce: boolean;
+                            ce_hours: number | null;
+                            checkin_minutes: number | null;
+                            registered: number;
+                            capacity: number;
+                            /** @enum {string|null} */
+                            me: "host" | "registered" | null;
+                            can_register: boolean;
+                            full: boolean;
+                            can_join: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.unregister": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            agenda: string | null;
+                            course: {
+                                id: number;
+                                title: string;
+                            };
+                            host: string;
+                            starts_at: string;
+                            ends_at: string;
+                            minutes: number;
+                            /** @enum {string} */
+                            status: "scheduled" | "live" | "ended" | "cancelled";
+                            ce: boolean;
+                            ce_hours: number | null;
+                            checkin_minutes: number | null;
+                            registered: number;
+                            capacity: number;
+                            /** @enum {string|null} */
+                            me: "host" | "registered" | null;
+                            can_register: boolean;
+                            full: boolean;
+                            can_join: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.live": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.hand": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    raised: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    user: number;
+                    on: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.polls": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClassPollRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.polls.close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The poll ID */
+                poll: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.polls.vote": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The poll ID */
+                poll: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    option: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.questions.like": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The question ID */
+                question: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    like: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.questions.answered": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The question ID */
+                question: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    answered: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.checks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "classes.checks.answer": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The session UUID */
+                session: string;
+                /** @description The check ID */
+                check: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ce: boolean;
+                            viewers: number;
+                            me: {
+                                /** @enum {string} */
+                                role: "host" | "guest";
+                                hand: boolean;
+                                on_stage: boolean;
+                            };
+                            hands: {
+                                id: number;
+                                name: string;
+                                since: string | null;
+                                on_stage: boolean;
+                            }[];
+                            polls: {
+                                id: number;
+                                question: string;
+                                options: {
+                                    label: string;
+                                    votes: number | null;
+                                }[];
+                                total: number | null;
+                                my_vote: number | null;
+                                closed: boolean;
+                            }[];
+                            questions: {
+                                id: number;
+                                body: string;
+                                by: string;
+                                likes: number;
+                                liked: boolean;
+                                mine: boolean;
+                                answered: boolean;
+                            }[];
+                            messages: {
+                                id: number;
+                                by: string;
+                                body: string;
+                                at: string;
+                                mine: boolean;
+                            }[];
+                            check: {
+                                id: number;
+                                closes_at: string;
+                                answered: boolean;
+                            } | null;
+                            checks: {
+                                id: number;
+                                opens_at: string;
+                                closes_at: string;
+                                answered: number;
+                                of: number;
+                            }[];
+                            next_check_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -12323,6 +14056,12 @@ export interface operations {
                                 waiting: string[];
                                 my_answer: boolean | null;
                             }[];
+                            class: {
+                                course: string;
+                                ce: boolean;
+                                registered: number;
+                                capacity: number;
+                            } | null;
                         }[];
                         can_host: boolean;
                         contacts: {
@@ -12423,6 +14162,12 @@ export interface operations {
                             waiting: string[];
                             my_answer: boolean | null;
                         }[];
+                        class: {
+                            course: string;
+                            ce: boolean;
+                            registered: number;
+                            capacity: number;
+                        } | null;
                     };
                 };
             };
@@ -12526,6 +14271,12 @@ export interface operations {
                             waiting: string[];
                             my_answer: boolean | null;
                         }[];
+                        class: {
+                            course: string;
+                            ce: boolean;
+                            registered: number;
+                            capacity: number;
+                        } | null;
                     };
                 };
             };
@@ -12658,6 +14409,12 @@ export interface operations {
                             waiting: string[];
                             my_answer: boolean | null;
                         }[];
+                        class: {
+                            course: string;
+                            ce: boolean;
+                            registered: number;
+                            capacity: number;
+                        } | null;
                     };
                 };
             };
@@ -12761,6 +14518,12 @@ export interface operations {
                             waiting: string[];
                             my_answer: boolean | null;
                         }[];
+                        class: {
+                            course: string;
+                            ce: boolean;
+                            registered: number;
+                            capacity: number;
+                        } | null;
                     };
                 };
             };
@@ -12868,6 +14631,12 @@ export interface operations {
                             waiting: string[];
                             my_answer: boolean | null;
                         }[];
+                        class: {
+                            course: string;
+                            ce: boolean;
+                            registered: number;
+                            capacity: number;
+                        } | null;
                     };
                 };
             };

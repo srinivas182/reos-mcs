@@ -47,6 +47,8 @@ enum NotificationKind: string
     case InstructorAnswer = 'instructor_answer';
     /** Everyone signed an envelope sent from a deal (B9.3). */
     case SignatureCompleted = 'signature_completed';
+    /** A live class's attendance check is still unanswered (A10.2b). */
+    case ClassCheck = 'class_check';
 
     public const INBOX = 'inbox';
 
@@ -78,7 +80,7 @@ enum NotificationKind: string
     /** Arrives even in quiet hours (security, money that failed, things happening now). */
     public function urgent(): bool
     {
-        return in_array($this, [self::NewDevice, self::AccountDeletion, self::PaymentFailed, self::SupportAccess, self::IntegrationPaused, self::FlagRolledBack, self::SessionStarting], true);
+        return in_array($this, [self::NewDevice, self::AccountDeletion, self::PaymentFailed, self::SupportAccess, self::IntegrationPaused, self::FlagRolledBack, self::SessionStarting, self::ClassCheck], true);
     }
 
     /** Security and account messages can't be turned off. */
@@ -100,7 +102,7 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
+            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
             self::DealDeadline, self::SignatureCompleted => 'deals',

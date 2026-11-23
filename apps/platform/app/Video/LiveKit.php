@@ -55,7 +55,7 @@ final readonly class LiveKit
      *
      * @return array{url: string, token: string}|null
      */
-    public function join(VideoSession $session, User $user, string $role): ?array
+    public function join(VideoSession $session, User $user, string $role, bool $onStage = false): ?array
     {
         $keys = $this->keys();
 
@@ -77,14 +77,38 @@ final readonly class LiveKit
                 'room' => $session->room(),
                 'roomJoin' => true,
                 'canSubscribe' => true,
-                // In a live class only the host is on camera (speakers arrive with B6.3b).
-                'canPublish' => $host || $session->kind === VideoSession::ONE_ON_ONE,
+                // In a live class only the host, and students the host brought on (A10.2b), may speak.
+                'canPublish' => $host || $onStage || $session->kind === VideoSession::ONE_ON_ONE,
                 'canPublishData' => true,
                 'roomAdmin' => $host,
             ],
         ], $keys['api_secret'], 'HS256');
 
         return ['url' => $keys['server_url'], 'token' => $token];
+    }
+
+    /**
+     * Lets a live class student speak and show video, or stops them
+     * (A10.2b: the host brings someone with a raised hand on).
+     */
+    public function setSpeaker(VideoSession $session, User $user, bool $speaker): void
+    {
+        $keys = $this->keys();
+
+        if ($keys === null) {
+            return;
+        }
+
+        try {
+            $this->twirp($keys, 'livekit.RoomService/UpdateParticipant', [
+                'room' => $session->room(),
+                'identity' => 'user-'.$user->id,
+                'permission' => ['canSubscribe' => true, 'canPublish' => $speaker, 'canPublishData' => true],
+            ], ['room' => $session->room(), 'roomAdmin' => true]);
+        } catch (Throwable $e) {
+            // Not in the room right now: the permission applies when they join.
+            report($e);
+        }
     }
 
     /** Closes the room for everyone (the booked end, or the host ended it). */
@@ -198,7 +222,7 @@ final readonly class LiveKit
     /**
      * @param  array{server_url: string, api_key: string, api_secret: string}  $keys
      * @param  array<string, mixed>  $body
-     * @param  array<string, bool>  $grant
+     * @param  array<string, bool|string>  $grant
      * @return array<string, mixed>
      */
     private function twirp(array $keys, string $method, array $body, array $grant): array
