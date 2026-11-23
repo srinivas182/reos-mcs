@@ -95,3 +95,15 @@ describe('deals on the phone (Agent App screens 9 and 10, B9.1)', () => {
     expect(jest.requireMock<{ openBrowserAsync: jest.Mock }>('expo-web-browser').openBrowserAsync).toHaveBeenCalledWith(oak.external_url);
   });
 });
+
+describe('Connections › Transactions (screen 17, B9.1b)', () => {
+  it('lists deals from the tools with stage, documents complete, next deadline and commission', async () => {
+    const TransactionsScreen = jest.requireActual<{ default: () => React.JSX.Element }>('@/app/connections/transactions').default;
+    mockApi.GET.mockResolvedValue(ok({ data: [oak] }));
+    await render(wrap(<TransactionsScreen />));
+
+    expect(await screen.findByText('9 Oak Ct')).toBeTruthy();
+    expect(screen.getByText(/Under contract · 1 of 2 documents/)).toBeTruthy();
+    expect(screen.getByText('Read only: changes are made in the transaction tool.')).toBeTruthy();
+  });
+});

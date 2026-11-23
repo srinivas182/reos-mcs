@@ -7,6 +7,8 @@ namespace App\Crm;
 use App\Catalogue\CatalogueStatus;
 use App\Connections\ConnectorRegistry;
 use App\Connections\Crm\MapsStageFields;
+use App\Connections\Drivers\LoneWolf\LoneWolfDriver;
+use App\Connections\Drivers\Salesforce\SalesforceDriver;
 use App\Connections\Drivers\Salesforce\SalesforceRecords;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\Exceptions\VendorRateLimited;
@@ -15,6 +17,8 @@ use App\Integrations\AccountScope;
 use App\Integrations\IntegrationMode;
 use App\Models\Connection;
 use App\Models\ContactLink;
+use App\Models\Deal;
+use App\Models\DealDate;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Audit\AuditLogger;
@@ -33,7 +37,7 @@ use Illuminate\Validation\ValidationException;
  * REOS hasn't released. For a brokerage CRM: counts and sync health, never
  * its agents' contacts, and the stage field mapping.
  *
- * @phpstan-type Row array{id: string, name: string, category: string, status: string, accounts: string, action: string, allowed: bool, may_hide: bool, agents_connected: int, account: array{connection: int, label: string|null, status: string, last_synced_at: string|null, people: int, agents: int, unmatched_owners: list<string>, mapping: array{contact_stage: string|null, lead_stage: string, leads: bool}|null}|null}
+ * @phpstan-type Row array{id: string, name: string, category: string, status: string, accounts: string, action: string, allowed: bool, may_hide: bool, agents_connected: int, connects_with: string, account: array{connection: int, label: string|null, status: string, last_synced_at: string|null, people: int, deals: array{count: int, due_week: int}|null, agents: int, unmatched_owners: list<string>, mapping: array{contact_stage: string|null, lead_stage: string, leads: bool}|null}|null}
  */
 final readonly class BrokerageIntegrations
 {
@@ -69,6 +73,8 @@ final readonly class BrokerageIntegrations
                 'accounts' => $definition->accounts->value, 'action' => $action,
                 'allowed' => ! in_array($definition->id, $hidden, true), 'may_hide' => $this->catalogue->mayHide($definition->id),
                 'agents_connected' => is_numeric($count) ? (int) $count : 0,
+                // Lone Wolf (B9.1b): the brokerage's client ID, not a sign-in page.
+                'connects_with' => ConnectorRegistry::usesApiKey($definition->id) ? 'api_key' : 'sign_in',
                 'account' => $definition->accounts === AccountScope::Tenant && $connection instanceof Connection ? $this->account($connection) : null,
             ];
         }
@@ -139,19 +145,27 @@ final readonly class BrokerageIntegrations
         $this->connections->syncNow($connection);
     }
 
-    /** @return array{connection: int, label: string|null, status: string, last_synced_at: string|null, people: int, agents: int, unmatched_owners: list<string>, mapping: array{contact_stage: string|null, lead_stage: string, leads: bool}|null} */
+    /** @return array{connection: int, label: string|null, status: string, last_synced_at: string|null, people: int, deals: array{count: int, due_week: int}|null, agents: int, unmatched_owners: list<string>, mapping: array{contact_stage: string|null, lead_stage: string, leads: bool}|null} */
     private function account(Connection $connection): array
     {
         $links = ContactLink::query()->where('connection_id', $connection->id);
-        $agents = (clone $links)->distinct()->count('owner_key');
+        $deals = Deal::query()->where('connection_id', $connection->id);
+        $dealTool = $connection->integration_id === LoneWolfDriver::INTEGRATION;
+        $agents = $dealTool ? (clone $deals)->distinct()->count('user_id') : (clone $links)->distinct()->count('owner_key');
 
         return [
             'connection' => $connection->id, 'label' => $connection->account_label, 'status' => $connection->status->value,
             'last_synced_at' => $connection->last_synced_at?->toIso8601String(),
-            // Counts only: the broker never sees the agents' contacts.
-            'people' => $links->count(), 'agents' => $agents,
+            // Counts only: the broker never sees the agents' contacts, or their deals' documents.
+            'people' => $links->count(),
+            'deals' => $dealTool ? [
+                'count' => (clone $deals)->whereIn('stage', ['active', 'under_contract'])->count(),
+                'due_week' => DealDate::query()->whereNull('done_at')->whereBetween('due_on', [now()->toDateString(), now()->addDays(7)->toDateString()])
+                    ->whereIn('deal_id', (clone $deals)->whereIn('stage', ['active', 'under_contract'])->select('id'))->count(),
+            ] : null,
+            'agents' => $agents,
             'unmatched_owners' => array_values(array_filter((array) ($connection->meta['unmatched_owners'] ?? []), is_string(...))),
-            'mapping' => ConnectorRegistry::ownsPerRecord($connection->integration_id) ? SalesforceRecords::mapping($connection->meta) : null,
+            'mapping' => $connection->integration_id === SalesforceDriver::INTEGRATION ? SalesforceRecords::mapping($connection->meta) : null,
         ];
     }
 }

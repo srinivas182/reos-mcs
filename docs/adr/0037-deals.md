@@ -1,6 +1,6 @@
 # ADR 0037: Deals from transaction tools
 
-- Status: Accepted (the deals model, REOS deals, deadlines and screens, B9.1a)
+- Status: Accepted (the deals model, REOS deals, deadlines and screens, B9.1a; Lone Wolf Transact, B9.1b)
 - Date: 2026-11-23 (Sprint 9; spec in docs/sprints/S09-spec.md)
 
 ## Context
@@ -40,6 +40,26 @@ Decision 3 settled how REOS treats deals from a tool: they're read-only, and cha
    - **phone Deals pipeline** (Agent App screen 9): under contract, active clients, pending commission (the commission on deals under contract) and closed this year;
    - **phone Deal alerts** (screen 10): deadlines in the next 14 days and missing documents;
    - **one deal** on the phone.
+
+## Decision (Lone Wolf Transact, B9.1b)
+
+7. **The connection.** Transact's API signs in with OAuth 2 client credentials: REOS's partner client id and secret, plus the subscription key on every request, scoped to one Lone Wolf client by `lwt_client_id`.
+   - So a brokerage connects once on Brokerage integrations (screen 40) by entering its **Lone Wolf client ID**, which is checked with Lone Wolf at once.
+   - The partner keys live in Settings › Integrations (register: `client_id`, `client_secret`, `api_key` for the subscription key).
+   - Screen 40 gains a "connect with the brokerage's ID" form for such tools, which SkySlope's brokerage keys will reuse (B9.2).
+   - Tokens are cached until just before they expire.
+8. **Read:** every 15 minutes, with no webhooks in Transact's published API.
+   - The client's users come first, then each user's transactions with their contacts, documents and offers, one user per page.
+   - A transaction goes to the brokerage agent whose email matches the Transact user's (`RecordOwners`, as for Salesforce). The rest are counted and listed on screen 40.
+   - Anything gone from Transact by the end of a full pass is removed, with its to-dos.
+9. **Mapping** (`LoneWolfRecords`):
+   - **Fields:** address, `asking`, `listingExpiration`, and the accepted offer's `purchasePrice`, `closingDate`, `finalWalkthroughDate` and `possessionDate`; contacts' names, roles, email and phone; the document list.
+   - **Texas contract dates** (option period, financing, survey and the rest) come from the transaction's key dates when Transact carries them.
+   - **Codes to confirm:** Transact marks its `type`, `phase` and `contactType` codes "needs documentation". The maps follow the partner documentation's order and are confirmed in the partner sandbox before going live.
+   - **Write:** read-only (decision 3); document upload follows with B9.3 where the partner terms allow it.
+10. **Who sees what:**
+    - **The broker** sees counts only on screen 40: open deals and deadlines this week, never documents.
+    - **Each agent** sees their own deals on the board and in Connections › Transactions (Connections screen 17): stage, documents complete, next deadline and commission, read-only and opened in Transact.
 
 ## Consequences
 

@@ -23,6 +23,7 @@ use App\Models\Connection;
 use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\GatewaySetting;
+use App\Models\IntegrationSetting;
 use App\Models\Invitation;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
@@ -457,6 +458,12 @@ function adminActions(): array
             [$lone, $linda] = auditBrokerage();
 
             return auditCase($linda, 'PUT', '/organisation/integrations/tools/follow-up-boss', ['allowed' => false], tenant: $lone->id);
+        },
+        'brokerage-integrations.key' => function () {
+            [$lone, $linda] = auditBrokerage();
+            IntegrationSetting::query()->firstOrCreate(['integration_id' => 'lone-wolf'], ['mode' => IntegrationMode::Simulator]);
+
+            return auditCase($linda, 'POST', '/organisation/integrations/tools/lone-wolf/key', ['api_key' => '7f3a2c1e-58a4-4c7d-9e2f-5b1a6c8d9e0f'], tenant: $lone->id);
         },
         'brokerage-integrations.mapping' => function () {
             [$lone, $linda] = auditBrokerage();

@@ -262,6 +262,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('deals', [DealController::class, 'index'])->name('api.deals.index');
     Route::get('deals/pipeline', [DealController::class, 'pipeline'])->name('api.deals.pipeline');
     Route::get('deals/alerts', [DealController::class, 'alerts'])->name('api.deals.alerts');
+    Route::get('deals/transactions', [DealController::class, 'transactions'])->name('api.deals.transactions');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,api-deals')->name('api.deals.store');
     Route::get('deals/{deal}', [DealController::class, 'show'])->whereUuid('deal')->name('api.deals.show');
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,api-deals')->name('api.deals.update');

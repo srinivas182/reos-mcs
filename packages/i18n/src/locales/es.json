@@ -1474,14 +1474,18 @@
         "write_notes": "Agregar las notas que usted escriba en REOS",
         "write_tasks": "Marcar como terminadas las tareas que usted termine en REOS",
         "write_stage": "Actualizar la etapa de un contacto cuando usted la cambie en REOS",
-        "read_campaigns": "Ver la campaña inteligente de cada contacto y su estado"
+        "read_campaigns": "Ver la campaña inteligente de cada contacto y su estado",
+        "read_deals": "Ver sus transacciones: propiedad, partes, etapa y fechas clave",
+        "read_documents": "Ver qué documentos tiene cada transacción"
       },
       "never": {
         "delete_yours": "Nunca eliminará los eventos que usted creó en su calendario",
         "email": "Nunca enviará correos a sus invitados a menos que usted lo pida",
         "delete_people": "Nunca eliminar sus contactos",
         "send_messages": "Nunca enviar mensajes de texto ni correos electrónicos a sus contactos",
-        "change_campaigns": "Nunca iniciar, detener ni cambiar sus campañas inteligentes"
+        "change_campaigns": "Nunca iniciar, detener ni cambiar sus campañas inteligentes",
+        "change_deals": "Cambiar una transacción o sus fechas",
+        "delete_documents": "Eliminar o reemplazar documentos"
       },
       "footer": "Puede desconectarla en cualquier momento desde Conexiones. Sus datos siguen siendo suyos.",
       "continue": "Continuar a {{tool}}",
@@ -1493,7 +1497,8 @@
       "keyHints": {
         "lofty": "En Lofty: Settings › Integrations › API. Cree una clave y cópiela aquí.",
         "boldtrail": "En kvCORE: Lead Engine › Lead Dropbox, luego copie el token de la API.",
-        "follow-up-boss": "En Follow Up Boss: Admin › API."
+        "follow-up-boss": "En Follow Up Boss: Admin › API.",
+        "lone-wolf": "Su administrador de Lone Wolf encuentra el ID de cliente en la configuración de la cuenta."
       }
     },
     "connected": {
@@ -1634,6 +1639,21 @@
       "notSame": "No es la misma persona",
       "merged": "Se combinó a {{name}}.",
       "undo": "Deshacer"
+    },
+    "transactions": {
+      "title": "Transacciones",
+      "description": "Cada operación de sus herramientas de transacciones: etapa, documentos completos, siguiente fecha límite y comisión.",
+      "readOnly": "Solo lectura: los cambios se hacen en la herramienta de transacciones.",
+      "emptyTitle": "Aún no hay transacciones",
+      "empty": "Cuando su agencia conecte Lone Wolf, o usted conecte dotloop, sus operaciones aparecerán aquí.",
+      "columns": {
+        "deal": "Operación",
+        "stage": "Etapa",
+        "documents": "Documentos",
+        "next": "Siguiente fecha límite",
+        "commission": "Comisión",
+        "tool": "Herramienta"
+      }
     }
   },
   "catalogue": {
@@ -6654,7 +6674,13 @@
     "errors": {
       "mayNotHide": "Esta herramienta no se puede ocultar.",
       "unknownField": "Elija un campo que exista en su CRM."
-    }
+    },
+    "connected": "Conectado. Las operaciones se sincronizan ahora y cada 15 minutos.",
+    "keyLabel": "Su ID de cliente de {{tool}}",
+    "keyHint": "Su administrador de {{tool}} lo encuentra en la configuración de la cuenta. REOS lo usa para leer las transacciones de sus agentes; nunca las cambia.",
+    "deals": "Operaciones abiertas",
+    "dealCounts": "{{count}} · {{due}} fechas límite esta semana",
+    "dealsPrivacy": "Usted ve solo cantidades y fechas límite. Cada agente ve sus propias operaciones; los documentos se quedan con ellos."
   },
   "deals": {
     "title": "Operaciones",

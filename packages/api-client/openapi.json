@@ -5200,6 +5200,157 @@
                 }
             }
         },
+        "/deals/transactions": {
+            "get": {
+                "operationId": "deals.transactions",
+                "description": "Connections \u203a Transactions (screen 17): each deal's stage, documents complete, next deadline and commission. Read only.",
+                "summary": "Transactions from my tools",
+                "tags": [
+                    "Deal"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "uuid": {
+                                                        "type": "string"
+                                                    },
+                                                    "property": {
+                                                        "type": "string"
+                                                    },
+                                                    "city": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "side": {
+                                                        "type": "string"
+                                                    },
+                                                    "stage": {
+                                                        "type": "string"
+                                                    },
+                                                    "price": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "commission": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "source": {
+                                                        "type": "string"
+                                                    },
+                                                    "read_only": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "external_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "next": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "days": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "kind",
+                                                            "name",
+                                                            "due_on",
+                                                            "days",
+                                                            "done"
+                                                        ]
+                                                    },
+                                                    "documents": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "complete": {
+                                                                "type": "integer"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer"
+                                                            },
+                                                            "missing": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "complete",
+                                                            "total",
+                                                            "missing"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "uuid",
+                                                    "property",
+                                                    "city",
+                                                    "side",
+                                                    "stage",
+                                                    "price",
+                                                    "commission",
+                                                    "source",
+                                                    "read_only",
+                                                    "external_url",
+                                                    "next",
+                                                    "documents"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/deals/{deal}": {
             "get": {
                 "operationId": "deals.show",
@@ -22311,7 +22462,9 @@
                                         "write_notes",
                                         "write_tasks",
                                         "write_stage",
-                                        "read_campaigns"
+                                        "read_campaigns",
+                                        "read_deals",
+                                        "read_documents"
                                     ]
                                 }
                             },
@@ -22324,7 +22477,9 @@
                                         "email",
                                         "delete_people",
                                         "send_messages",
-                                        "change_campaigns"
+                                        "change_campaigns",
+                                        "change_deals",
+                                        "delete_documents"
                                     ]
                                 }
                             }
@@ -25140,7 +25295,8 @@
                             "follow-up-boss",
                             "boldtrail",
                             "lofty",
-                            "salesforce"
+                            "salesforce",
+                            "lone-wolf"
                         ]
                     },
                     "history": {

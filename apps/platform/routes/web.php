@@ -142,6 +142,7 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
 
     // Deals board (B9.1, agent web screen 14): the agent's own deals.
     Route::get('deals', [DealsPageController::class, 'index'])->name('deals.index');
+    Route::get('connections/transactions', [DealsPageController::class, 'transactions'])->name('connections.transactions');
     Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,deals')->name('deals.store');
     Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.update');
     Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.stage');
@@ -287,6 +288,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     ->controller(BrokerageIntegrationsController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::put('tools/{tool}', 'allow')->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1,brokerage-integrations-allow')->name('allow');
+        Route::post('tools/{tool}/key', 'connectKey')->where('tool', '[a-z0-9-]+')->middleware('throttle:10,1,brokerage-integrations-key')->name('key');
         Route::put('connections/{connection}/mapping', 'mapping')->whereNumber('connection')->middleware('throttle:20,1,brokerage-integrations-map')->name('mapping');
     });
 // Brokerage settings (A4.2b, broker screen 41): domain, brand, people and plan.

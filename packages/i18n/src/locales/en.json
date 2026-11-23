@@ -1474,14 +1474,18 @@
         "write_notes": "Add the notes you write in REOS",
         "write_tasks": "Mark tasks done when you finish them in REOS",
         "write_stage": "Update a contact's stage when you change it in REOS",
-        "read_campaigns": "See each contact's smart campaign and its status"
+        "read_campaigns": "See each contact's smart campaign and its status",
+        "read_deals": "See your transactions: property, parties, stage and key dates",
+        "read_documents": "See which documents each transaction has"
       },
       "never": {
         "delete_yours": "Never delete events you made in your calendar",
         "email": "Never email your guests unless you ask",
         "delete_people": "Never delete your contacts",
         "send_messages": "Never text or email your contacts",
-        "change_campaigns": "Never start, stop or change your smart campaigns"
+        "change_campaigns": "Never start, stop or change your smart campaigns",
+        "change_deals": "Change a transaction or its dates",
+        "delete_documents": "Delete or replace documents"
       },
       "footer": "Disconnect any time from Connections. Your data stays yours.",
       "continue": "Continue to {{tool}}",
@@ -1493,7 +1497,8 @@
       "keyHints": {
         "lofty": "In Lofty: Settings › Integrations › API. Create a key and copy it here.",
         "boldtrail": "In kvCORE: Lead Engine › Lead Dropbox, then copy the API token.",
-        "follow-up-boss": "In Follow Up Boss: Admin › API."
+        "follow-up-boss": "In Follow Up Boss: Admin › API.",
+        "lone-wolf": "Your Lone Wolf administrator finds the client ID in the account settings."
       }
     },
     "connected": {
@@ -1634,6 +1639,21 @@
       "notSame": "Not the same",
       "merged": "Merged {{name}}.",
       "undo": "Undo"
+    },
+    "transactions": {
+      "title": "Transactions",
+      "description": "Each deal from your transaction tools: stage, documents complete, next deadline and commission.",
+      "readOnly": "Read only: changes are made in the transaction tool.",
+      "emptyTitle": "No transactions yet",
+      "empty": "When your brokerage connects Lone Wolf, or you connect dotloop, your deals show here.",
+      "columns": {
+        "deal": "Deal",
+        "stage": "Stage",
+        "documents": "Documents",
+        "next": "Next deadline",
+        "commission": "Commission",
+        "tool": "Tool"
+      }
     }
   },
   "catalogue": {
@@ -6654,7 +6674,13 @@
     "errors": {
       "mayNotHide": "This tool can't be hidden.",
       "unknownField": "Pick a field your CRM has."
-    }
+    },
+    "connected": "Connected. Deals sync now, and every 15 minutes.",
+    "keyLabel": "Your {{tool}} client ID",
+    "keyHint": "Your {{tool}} administrator finds it in the account settings. REOS uses it to read your agents' transactions; it never changes them.",
+    "deals": "Open deals",
+    "dealCounts": "{{count}} · {{due}} deadlines this week",
+    "dealsPrivacy": "You see counts and deadlines only. Each agent sees their own deals; documents stay with them."
   },
   "deals": {
     "title": "Deals",

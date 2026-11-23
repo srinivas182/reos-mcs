@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Organisation;
 
+use App\Connections\ConnectorRegistry;
+use App\Connections\HistoryRange;
 use App\Crm\BrokerageIntegrations;
 use App\Enums\OrganisationType;
 use App\Http\Controllers\Controller;
@@ -14,8 +16,11 @@ use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Catalogue\IntegrationCatalogue;
+use App\Services\Connections\ConnectionAuthorizer;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -60,6 +65,25 @@ final class BrokerageIntegrationsController extends Controller
         $integrations->map($found, $request->mapping(), $user);
 
         return back()->with('success', __('brokerageIntegrations.mapped'));
+    }
+
+    /**
+     * Connect a tool the brokerage reaches with its own ID or key (Lone
+     * Wolf's client ID, B9.1b): checked with the tool at once, then synced.
+     */
+    public function connectKey(Request $request, string $tool, #[CurrentUser] User $user, ActiveRole $roles, ConnectionAuthorizer $authorizer, IntegrationCatalogue $catalogue): RedirectResponse
+    {
+        $brokerage = $this->brokerage($user, $roles);
+        $key = $request->validate(['api_key' => ['required', 'string', 'min:4', 'max:200']])['api_key'];
+        abort_unless(ConnectorRegistry::usesApiKey($tool) && ConnectorRegistry::ownsPerRecord($tool) && $catalogue->canConnect($user, $tool), 404);
+
+        $result = $authorizer->connectWithKey($user, $tool, Connection::OWNER_ORGANISATION, $brokerage->id, is_string($key) ? $key : '', HistoryRange::DEFAULT);
+
+        if ($result['connection'] === null) {
+            throw ValidationException::withMessages(['api_key' => __((string) $result['reason'])]);
+        }
+
+        return back()->with('success', __('brokerageIntegrations.connected'));
     }
 
     private function brokerage(User $user, ActiveRole $roles): Organisation

@@ -1,14 +1,21 @@
 import { Head, router, useForm } from '@inertiajs/react';
 import { Building2, RefreshCw } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CatalogueStatusBadge } from '@/components/catalogue-status-badge';
 import { PageHeader } from '@/components/page-header';
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { timeAgo } from '@/lib/time-ago';
 import { nativeSelect } from '@/lib/tenants';
-import { allow, mapping as saveMapping } from '@/routes/brokerage-integrations';
+import {
+    allow,
+    key as connectKey,
+    mapping as saveMapping,
+} from '@/routes/brokerage-integrations';
 import { connect, destroy, interest, sync } from '@/routes/connections';
 import type { CatalogueStatus } from '@/types';
 
@@ -28,12 +35,14 @@ type Tool = {
     allowed: boolean;
     may_hide: boolean;
     agents_connected: number;
+    connects_with: 'api_key' | 'sign_in';
     account: {
         connection: number;
         label: string | null;
         status: string;
         last_synced_at: string | null;
         people: number;
+        deals: { count: number; due_week: number } | null;
         agents: number;
         unmatched_owners: string[];
         mapping: Mapping | null;
@@ -243,6 +252,9 @@ function OwnAccount({ tool, fields }: { tool: Tool; fields: Fields | null }) {
                             {t('brokerageIntegrations.disconnect')}
                         </Button>
                     </div>
+                ) : tool.action === 'connect' &&
+                  tool.connects_with === 'api_key' ? (
+                    <KeyForm tool={tool} />
                 ) : tool.action === 'connect' ? (
                     <Button asChild>
                         <a href={connect(tool.id).url}>
@@ -289,14 +301,28 @@ function OwnAccount({ tool, fields }: { tool: Tool; fields: Fields | null }) {
                                     : t('brokerageIntegrations.notYet')}
                             </dd>
                         </div>
-                        <div>
-                            <dt className="text-sm text-muted-foreground">
-                                {t('brokerageIntegrations.people')}
-                            </dt>
-                            <dd className="font-medium tabular-nums">
-                                {account.people}
-                            </dd>
-                        </div>
+                        {account.deals ? (
+                            <div>
+                                <dt className="text-sm text-muted-foreground">
+                                    {t('brokerageIntegrations.deals')}
+                                </dt>
+                                <dd className="font-medium tabular-nums">
+                                    {t('brokerageIntegrations.dealCounts', {
+                                        count: account.deals.count,
+                                        due: account.deals.due_week,
+                                    })}
+                                </dd>
+                            </div>
+                        ) : (
+                            <div>
+                                <dt className="text-sm text-muted-foreground">
+                                    {t('brokerageIntegrations.people')}
+                                </dt>
+                                <dd className="font-medium tabular-nums">
+                                    {account.people}
+                                </dd>
+                            </div>
+                        )}
                         <div>
                             <dt className="text-sm text-muted-foreground">
                                 {t('brokerageIntegrations.agentsWith')}
@@ -307,7 +333,9 @@ function OwnAccount({ tool, fields }: { tool: Tool; fields: Fields | null }) {
                         </div>
                     </dl>
                     <p className="text-sm text-muted-foreground">
-                        {t('brokerageIntegrations.privacy')}
+                        {account.deals
+                            ? t('brokerageIntegrations.dealsPrivacy')
+                            : t('brokerageIntegrations.privacy')}
                     </p>
                     {account.unmatched_owners.length > 0 ? (
                         <p className="rounded-reos-md bg-reos-tone-warning-bg p-3 text-body text-reos-tone-warning-fg">
@@ -455,6 +483,57 @@ function MappingForm({
             </div>
             <Button type="submit" disabled={form.processing}>
                 {t('brokerageIntegrations.mapping.save')}
+            </Button>
+        </form>
+    );
+}
+
+/** Connect a tool with the brokerage's own ID (Lone Wolf's client ID, B9.1b), checked with the tool at once. */
+function KeyForm({ tool }: { tool: Tool }) {
+    const { t } = useTranslation();
+    const [key, setKey] = useState('');
+    const [error, setError] = useState<string | undefined>(undefined);
+    const [busy, setBusy] = useState(false);
+
+    return (
+        <form
+            className="flex flex-wrap items-end gap-3"
+            onSubmit={(e) => {
+                e.preventDefault();
+                setBusy(true);
+                router.post(
+                    connectKey(tool.id).url,
+                    { api_key: key },
+                    {
+                        preserveScroll: true,
+                        onSuccess: () => setKey(''),
+                        onError: (errors) => setError(errors.api_key),
+                        onFinish: () => setBusy(false),
+                    },
+                );
+            }}
+        >
+            <div className="grid gap-2">
+                <Label htmlFor={`key-${tool.id}`}>
+                    {t('brokerageIntegrations.keyLabel', { tool: tool.name })}
+                </Label>
+                <Input
+                    id={`key-${tool.id}`}
+                    value={key}
+                    autoComplete="off"
+                    onChange={(e) => setKey(e.target.value)}
+                    aria-describedby={`key-${tool.id}-hint`}
+                />
+                <p
+                    id={`key-${tool.id}-hint`}
+                    className="text-sm text-muted-foreground"
+                >
+                    {t('brokerageIntegrations.keyHint', { tool: tool.name })}
+                </p>
+                <InputError message={error} />
+            </div>
+            <Button type="submit" disabled={busy || key.trim().length < 4}>
+                {t('brokerageIntegrations.connect', { tool: tool.name })}
             </Button>
         </form>
     );

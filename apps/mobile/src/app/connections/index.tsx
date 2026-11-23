@@ -1,10 +1,12 @@
 import { router } from "expo-router";
-import { Database, History, Plug, Plus, Smartphone } from "lucide-react-native";
+import { Database, FileCheck2, History, Plug, Plus, Smartphone } from "lucide-react-native";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
 
+import { useAuth } from "@/lib/auth";
 import { useContacts } from "@/lib/crm";
+import { activeMembership } from "@/lib/roles";
 import {
   type Connection,
   LIBRARY_GROUPS,
@@ -50,6 +52,10 @@ export default function ConnectionsHub() {
     items?.find((item) => item.id === connection.integration)?.group ?? "more";
   const add = () => router.push("/connections/add");
   const { phoneOn } = useContacts();
+  const { user } = useAuth();
+  // Deals from transaction tools (Connections screen 17, B9.1b).
+  const role = activeMembership(user)?.role;
+  const dealsRole = role === "agent" || role === "broker";
 
   return (
     <Screen>
@@ -159,6 +165,13 @@ export default function ConnectionsHub() {
             title={t("crm.crms.title")}
             onPress={() => router.push("/connections/crms")}
           />
+          {dealsRole ? (
+            <MenuRow
+              icon={FileCheck2}
+              title={t("connections.transactions.title")}
+              onPress={() => router.push("/connections/transactions")}
+            />
+          ) : null}
         </MenuGroup>
       </View>
     </Screen>

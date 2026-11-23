@@ -12,6 +12,8 @@ use App\Connections\Drivers\GoogleCalendar\GoogleCalendarDriver;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarSimulator;
 use App\Connections\Drivers\Lofty\LoftyDriver;
 use App\Connections\Drivers\Lofty\LoftySimulator;
+use App\Connections\Drivers\LoneWolf\LoneWolfDriver;
+use App\Connections\Drivers\LoneWolf\LoneWolfSimulator;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarDriver;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarSimulator;
 use App\Connections\Drivers\Salesforce\SalesforceDriver;
@@ -43,13 +45,14 @@ final readonly class ConnectorRegistry
         BoldTrailDriver::INTEGRATION => BoldTrailSimulator::class,
         LoftyDriver::INTEGRATION => LoftySimulator::class,
         SalesforceDriver::INTEGRATION => SalesforceSimulator::class,
+        LoneWolfDriver::INTEGRATION => LoneWolfSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
-    private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION, LoftyDriver::INTEGRATION];
+    private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION, LoftyDriver::INTEGRATION, LoneWolfDriver::INTEGRATION];
 
     /** Organisation tools whose records each have an owner, matched to an agent by email (B8.2). */
-    private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION];
+    private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION, LoneWolfDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -69,6 +72,7 @@ final readonly class ConnectorRegistry
         BoldTrailDriver::INTEGRATION => BoldTrailDriver::CONSENT,
         LoftyDriver::INTEGRATION => LoftyDriver::CONSENT,
         SalesforceDriver::INTEGRATION => SalesforceDriver::CONSENT,
+        LoneWolfDriver::INTEGRATION => LoneWolfDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -79,6 +83,7 @@ final readonly class ConnectorRegistry
         BoldTrailDriver::INTEGRATION => BoldTrailDriver::STREAMS,
         LoftyDriver::INTEGRATION => LoftyDriver::STREAMS,
         SalesforceDriver::INTEGRATION => SalesforceDriver::STREAMS,
+        LoneWolfDriver::INTEGRATION => LoneWolfDriver::STREAMS,
     ];
 
     /**
@@ -183,6 +188,7 @@ final readonly class ConnectorRegistry
             BoldTrailDriver::INTEGRATION => new BoldTrailDriver($value('server_url')),
             LoftyDriver::INTEGRATION => new LoftyDriver,
             SalesforceDriver::INTEGRATION => new SalesforceDriver($value('client_id'), $value('client_secret'), $value('server_url')),
+            LoneWolfDriver::INTEGRATION => new LoneWolfDriver($value('client_id'), $value('client_secret'), $value('api_key'), $value('server_url')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
     }

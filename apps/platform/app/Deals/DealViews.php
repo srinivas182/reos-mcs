@@ -100,6 +100,21 @@ final readonly class DealViews
         return ['deadlines' => $deadlines, 'missing' => $missing];
     }
 
+    /**
+     * Connections › Transactions (screen 17): each deal from a tool with its
+     * stage, documents complete, next deadline and commission. Read only.
+     *
+     * @return list<Card>
+     */
+    public function transactions(User $user): array
+    {
+        $deals = Deal::query()->where('user_id', $user->id)->where('source', '!=', 'reos')->whereIn('stage', ['active', 'under_contract', 'closed'])->with('dates')->orderBy('property')->get();
+        $cards = array_values($deals->map(fn (Deal $d): array => $this->card($d, $user))->all());
+        usort($cards, static fn (array $a, array $b): int => [array_search($a['stage'], ['under_contract', 'active', 'closed'], true), $a['next']['due_on'] ?? '9999'] <=> [array_search($b['stage'], ['under_contract', 'active', 'closed'], true), $b['next']['due_on'] ?? '9999']);
+
+        return $cards;
+    }
+
     /** @return Full */
     public function show(Deal $deal, User $user): array
     {
