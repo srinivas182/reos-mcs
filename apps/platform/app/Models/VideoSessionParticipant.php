@@ -19,6 +19,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property CarbonImmutable|null $last_joined_at
  * @property int $joins
  * @property bool $in_room In the room right now (B6.3c)
+ * @property CarbonImmutable|null $hand_raised_at A live class guest raised their hand (A10.2b)
+ * @property bool $on_stage The host brought them on: they may speak and show video
+ * @property int $seconds_present Seat time: seconds in the room between the booked start and end
  * @property-read User $user
  * @property-read VideoSession $session
  */
@@ -30,11 +33,11 @@ final class VideoSessionParticipant extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['video_session_id', 'user_id', 'role', 'first_joined_at', 'last_joined_at', 'joins', 'in_room'];
+    protected $fillable = ['video_session_id', 'user_id', 'role', 'first_joined_at', 'last_joined_at', 'joins', 'in_room', 'hand_raised_at', 'on_stage', 'seconds_present'];
 
     protected function casts(): array
     {
-        return ['first_joined_at' => 'datetime', 'last_joined_at' => 'datetime', 'joins' => 'integer', 'in_room' => 'boolean'];
+        return ['first_joined_at' => 'datetime', 'last_joined_at' => 'datetime', 'joins' => 'integer', 'in_room' => 'boolean', 'hand_raised_at' => 'datetime', 'on_stage' => 'boolean', 'seconds_present' => 'integer'];
     }
 
     /** @return BelongsTo<User, $this> */

@@ -199,6 +199,8 @@ final readonly class VideoSessions
         }
 
         $now = now();
+        // Back in after a dropped connection: count the time until now first.
+        $this->countPresence($session, $participant);
         $participant->forceFill([
             'first_joined_at' => $participant->first_joined_at ?? $now,
             'last_joined_at' => $now,
@@ -210,7 +212,7 @@ final readonly class VideoSessions
             $session->forceFill(['status' => VideoSession::LIVE, 'started_at' => $now])->save();
         }
 
-        $room = $this->livekit->join($session, $user, $participant->role);
+        $room = $this->livekit->join($session, $user, $participant->role, $participant->on_stage);
 
         return [
             'simulated' => $room === null,
@@ -223,7 +225,28 @@ final readonly class VideoSessions
     /** Someone left the room (their Leave, or LiveKit says they're gone). */
     public function leave(VideoSession $session, User $user): void
     {
-        $this->ensureParticipant($session, $user)->forceFill(['in_room' => false])->save();
+        $participant = $this->ensureParticipant($session, $user);
+        $this->countPresence($session, $participant);
+        $participant->forceFill(['in_room' => false])->save();
+    }
+
+    /**
+     * Seat time (A10.2b): adds the time since the person last came in,
+     * counted only between the booked start and end.
+     */
+    public function countPresence(VideoSession $session, VideoSessionParticipant $participant): void
+    {
+        if (! $participant->in_room || $participant->last_joined_at === null) {
+            return;
+        }
+
+        $from = $participant->last_joined_at->max($session->starts_at);
+        $to = now()->toImmutable()->min($session->ends_at);
+        $seconds = (int) $from->diffInSeconds($to, false);
+
+        if ($seconds > 0) {
+            $participant->forceFill(['seconds_present' => $participant->seconds_present + $seconds, 'last_joined_at' => now()])->save();
+        }
     }
 
     /** The host ends it early, or the booked end arrives. */
@@ -240,7 +263,11 @@ final readonly class VideoSessions
         $session->forceFill(['status' => VideoSession::ENDED, 'ended_at' => now()])->save();
         // Recording stops with the room (B6.3c); nobody is in it any more.
         app(SessionRecordings::class)->sessionEnded($session);
-        $session->participants()->update(['in_room' => false]);
+        foreach ($session->participants()->where('in_room', true)->get() as $participant) {
+            $this->countPresence($session, $participant);
+        }
+
+        $session->participants()->update(['in_room' => false, 'hand_raised_at' => null]);
         $this->livekit->close($session);
         $ids = [];
 

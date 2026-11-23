@@ -3637,7 +3637,8 @@
       "wrong": "Not quite.",
       "demo": "Demo answer: AI isn't connected yet, so this is the course's own words.",
       "notCovered": "Not covered in this course"
-    }
+    },
+    "liveClasses": "Live classes for this course"
   },
   "billing": {
     "errors": {
@@ -4841,7 +4842,8 @@
       "deal_deadline": "Deal deadlines",
       "signature_completed": "Signed documents",
       "student_question": "Student questions",
-      "instructor_answer": "Answers from your instructor"
+      "instructor_answer": "Answers from your instructor",
+      "class_check": "Attendance checks"
     },
     "digest": {
       "subject": {
@@ -7063,5 +7065,125 @@
       "label": "Task {{n}}",
       "due": "Due date for task {{n}}"
     }
+  },
+  "classes": {
+    "title": "Live classes",
+    "purpose": "Live reviews with your instructors for your courses. Register, then join from Today when it starts.",
+    "purposeHost": "Your week of live classes, with registrations and CE. Students register from their course.",
+    "allSessions": "All sessions",
+    "empty": "No live classes yet",
+    "emptyBody": "When your instructors schedule live reviews for your courses, they appear here to register.",
+    "emptyHost": "No classes scheduled",
+    "emptyHostBody": "Schedule a live class for a course you teach. Students of the course can register right away.",
+    "noCourses": "You can schedule classes once you teach a live course.",
+    "groups": {
+      "thisWeek": "This week",
+      "nextWeek": "Next week",
+      "later": "Later",
+      "past": "Past"
+    },
+    "with": "With {{name}}",
+    "registered_one": "{{count}} of {{capacity}} registered",
+    "registered_other": "{{count}} of {{capacity}} registered",
+    "ce": "CE",
+    "ceHours_one": "{{count}} CE hour",
+    "ceHours_other": "{{count}} CE hours",
+    "open": "Open",
+    "openLabel": "Open {{title}}",
+    "register": "Register",
+    "unregister": "Cancel registration",
+    "unregistered": "Registration for “{{title}}” cancelled",
+    "full": "Full",
+    "schedule": {
+      "title": "Schedule a class",
+      "description": "Students of the course can register. Times are in your time zone.",
+      "course": "Course",
+      "ceNote": "CE class: attendance checks follow the course's approval, and you confirm who earned CE afterward.",
+      "noCeNote": "No CE approval for live delivery, so this is a review class without attendance checks.",
+      "name": "Class name",
+      "namePlaceholder": "Contract update: live review",
+      "capacity": "Seats",
+      "submit": "Schedule class"
+    },
+    "panel": "Class tools",
+    "viewers_one": "{{count}} watching",
+    "viewers_other": "{{count}} watching",
+    "raiseHand": "Raise hand",
+    "lowerHand": "Lower hand",
+    "onStage": "The instructor brought you on. You can turn on your microphone and camera.",
+    "check": {
+      "title": "Attendance check",
+      "body": "Answer before {{time}} to keep your CE credit.",
+      "here": "I'm here",
+      "answered": "You're marked present for this check."
+    },
+    "tabs": {
+      "questions": "Questions",
+      "poll": "Poll",
+      "chat": "Chat",
+      "hands": "Hands ({{number}})",
+      "attendance": "Attendance"
+    },
+    "ask": {
+      "label": "Ask the instructor",
+      "send": "Ask",
+      "empty": "No questions yet. Ask one, or like a classmate's to move it up.",
+      "emptyHost": "Students' questions appear here, most liked first.",
+      "you": "You",
+      "answered": "Answered",
+      "likes_one": "{{count}} like",
+      "likes_other": "{{count}} likes",
+      "like_one": "Like ({{count}} like)",
+      "like_other": "Like ({{count}} likes)",
+      "markAnswered": "Mark answered",
+      "reopen": "Reopen",
+      "likeSr": "Like"
+    },
+    "poll": {
+      "question": "Question",
+      "option": "Answer {{number}}",
+      "addOption": "Add an answer",
+      "launch": "Launch poll",
+      "none": "No poll right now.",
+      "closed": "Closed",
+      "close": "Close poll",
+      "yours": "your answer",
+      "share": "{{share}}% ({{votes}})"
+    },
+    "chat": {
+      "empty": "No messages yet.",
+      "label": "Message the class",
+      "send": "Send"
+    },
+    "hands": {
+      "none": "No raised hands.",
+      "speaking": "speaking",
+      "bringOn": "Bring on",
+      "takeOff": "Take off"
+    },
+    "attendance": {
+      "next": "Next automatic check at {{time}}.",
+      "noMore": "No more automatic checks before the end.",
+      "notCe": "Not a CE class: checks are optional.",
+      "send": "Send a check now",
+      "row": "{{time}}: {{answered}} of {{of}} answered"
+    },
+    "errors": {
+      "course": "Choose a live course you teach.",
+      "full": "This class is full.",
+      "started": "The class has started, so the registration can't be cancelled.",
+      "pollClosed": "This poll is closed.",
+      "voted": "You've already answered this poll.",
+      "studentsOnly": "Only students can do that.",
+      "checkOpen": "An attendance check is already open.",
+      "checkClosed": "This attendance check has closed."
+    },
+    "mail": {
+      "check": {
+        "title": "Attendance check in “:title”",
+        "body": "Answer “I'm here” in the next :minutes minutes to keep your CE credit."
+      }
+    },
+    "scheduleOnWeb": "Schedule classes on the web, from Live classes."
   }
 }

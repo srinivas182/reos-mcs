@@ -1,12 +1,13 @@
 import type { TFunction } from 'i18next';
 import { router } from 'expo-router';
-import { BookOpen, Download, FileText, Lock, Presentation, Search, Video } from 'lucide-react-native';
+import { BookOpen, Download, FileText, Lock, Presentation, Search, Users, Video } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { marks, searchLessons, type SearchHit, useLearnCourses, where } from '@/lib/learn';
+import { useSessions } from '@/lib/sessions';
 import { Button, Card, EmptyState, Icon, ListRow, Screen, SectionTitle, Text, TextField, TitleBar } from '@/ui';
 
 const icons = { text: FileText, slide: Presentation, transcript: Video };
@@ -19,6 +20,7 @@ const icons = { text: FileText, slide: Presentation, transcript: Video };
 export default function Learn() {
   const { t } = useTranslation();
   const { courses, state } = useLearnCourses();
+  const { list: sessions } = useSessions();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchHit[] | null>(null);
   const [searched, setSearched] = useState('');
@@ -104,6 +106,10 @@ export default function Learn() {
               onPress={() => (lesson.locked ? router.push('/membership') : router.push({ pathname: '/learn/[id]', params: { id: String(lesson.id) } }))}
             />
           ))}
+          {/* The course's live classes (A10.2b, L12), once video rooms are on. */}
+          {sessions !== null ? (
+            <ListRow icon={Users} tone="info" title={t('learn.liveClasses')} onPress={() => router.push({ pathname: '/classes', params: { course: String(course.id) } })} />
+          ) : null}
         </View>
       ))}
     </Screen>

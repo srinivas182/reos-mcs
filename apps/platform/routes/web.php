@@ -3,6 +3,7 @@
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
+use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Builder\LessonReviewController;
 use App\Http\Controllers\Builder\QuestionBankController;
 use App\Http\Controllers\Builder\StarterBankController;
 use App\Http\Controllers\Calendar\CalendarPageController;
+use App\Http\Controllers\Classes\ClassesPageController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\DocuSignSimulatorController;
@@ -440,6 +442,28 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->pref
     Route::post('{booking}/rating', [BookingController::class, 'rate'])->whereUuid('booking')->middleware('throttle:10,1,bookings-rate')->name('rating');
     Route::get('{booking}/tasks', [BookingController::class, 'suggestedTasks'])->whereUuid('booking')->name('tasks');
     Route::post('{booking}/tasks', [BookingController::class, 'sendTasks'])->whereUuid('booking')->middleware('throttle:10,1,bookings-tasks')->name('tasks.send');
+});
+
+// Live classes (A10.2b): the schedule page, and the same JSON actions as the API for the web's room.
+Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->prefix('classes')->name('classes.')->group(function () {
+    Route::get('/', [ClassesPageController::class, 'index'])->name('index');
+    Route::controller(ClassesController::class)->group(function () {
+        Route::post('/', 'store')->middleware('throttle:20,1,classes-schedule')->name('store');
+        Route::post('{session}/registration', 'register')->whereUuid('session')->middleware('throttle:20,1,classes-register')->name('register');
+        Route::delete('{session}/registration', 'unregister')->whereUuid('session')->middleware('throttle:20,1,classes-register')->name('unregister');
+        Route::get('{session}/live', 'live')->whereUuid('session')->middleware('throttle:120,1,classes-live')->name('live');
+        Route::post('{session}/hand', 'hand')->whereUuid('session')->middleware('throttle:30,1,classes-hand')->name('hand');
+        Route::post('{session}/stage', 'stage')->whereUuid('session')->middleware('throttle:60,1,classes-stage')->name('stage');
+        Route::post('{session}/polls', 'poll')->whereUuid('session')->middleware('throttle:20,1,classes-poll')->name('polls');
+        Route::post('{session}/polls/{poll}/close', 'closePoll')->whereUuid('session')->whereNumber('poll')->middleware('throttle:20,1,classes-poll')->name('polls.close');
+        Route::post('{session}/polls/{poll}/votes', 'vote')->whereUuid('session')->whereNumber('poll')->middleware('throttle:30,1,classes-vote')->name('polls.vote');
+        Route::post('{session}/questions', 'ask')->whereUuid('session')->middleware('throttle:10,1,classes-ask')->name('questions');
+        Route::post('{session}/questions/{question}/like', 'like')->whereUuid('session')->whereNumber('question')->middleware('throttle:60,1,classes-like')->name('questions.like');
+        Route::post('{session}/questions/{question}/answered', 'answered')->whereUuid('session')->whereNumber('question')->middleware('throttle:60,1,classes-answered')->name('questions.answered');
+        Route::post('{session}/messages', 'chat')->whereUuid('session')->middleware('throttle:30,1,classes-chat')->name('messages');
+        Route::post('{session}/checks', 'check')->whereUuid('session')->middleware('throttle:10,1,classes-check')->name('checks');
+        Route::post('{session}/checks/{check}/answer', 'answerCheck')->whereUuid('session')->whereNumber('check')->middleware('throttle:30,1,classes-check-answer')->name('checks.answer');
+    });
 });
 
 // Video sessions (B6.3): behind the `video_rooms` flag while it rolls out.

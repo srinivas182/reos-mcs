@@ -186,6 +186,10 @@ export default function HomeScreen() {
       {learner ? <ListRow icon={BookOpen} tone="info" title={t('learn.title')} subtitle={t('learn.searchLabel')} onPress={() => router.push('/learn')} /> : null}
       {/* Do this now (Agent App Journey screen 6, B8.3), and every contact. */}
       {agent && insight ? <TodayInsight contact={insight.contact} insight={insight.insight} onDone={() => void reloadInsight()} /> : null}
+      {/* Live classes (A10.2b): for candidates their courses' classes (L12); for instructors their week (i11). */}
+      {sessions !== null && (candidate || role === 'instructor') ? (
+        <ListRow icon={Users} tone="info" title={t('classes.title')} subtitle={role === 'instructor' ? t('classes.purposeHost') : t('classes.purpose')} onPress={() => router.push('/classes')} />
+      ) : null}
       {/* Book an instructor (candidate screen 18) and, for instructors and mentors, their booked sessions (A10.2a). */}
       {candidate || role === 'instructor' || role === 'mentor' ? <ListRow icon={GraduationCap} tone="info" title={t('bookings.title')} subtitle={t('bookings.purpose')} onPress={() => router.push('/bookings')} /> : null}
       {/* Student questions (instructor screen i09, A10.1b). */}

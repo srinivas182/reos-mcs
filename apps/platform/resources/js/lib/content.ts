@@ -164,6 +164,19 @@ export async function postJson<T>(url: string, body: unknown = {}): Promise<T> {
     return sendJson<T>('POST', url, body);
 }
 
+/** GET JSON from a REOS route from the page (a live class's state, A10.2b). */
+export async function getJson<T>(url: string): Promise<T> {
+    const response = await fetch(url, {
+        credentials: 'same-origin',
+        headers: {
+            Accept: 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+    });
+
+    return answer<T>(response);
+}
+
 /** PUT JSON to a REOS route (a test answer, A8.3). */
 export async function putJson<T>(url: string, body: unknown = {}): Promise<T> {
     return sendJson<T>('PUT', url, body);

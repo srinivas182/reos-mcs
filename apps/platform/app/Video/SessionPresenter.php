@@ -13,7 +13,7 @@ use App\Models\VideoSessionShare;
 /**
  * A session as the web and the app show it (B6.3).
  *
- * @phpstan-type SessionData array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<ShareData>, recordings: list<RecordingData>}
+ * @phpstan-type SessionData array{id: string, kind: 'one_on_one'|'live_class', title: string, agenda: string|null, starts_at: string, ends_at: string, join_opens_at: string, status: 'scheduled'|'live'|'ended'|'cancelled', host: array{id: int, name: string}, people: list<array{id: int, name: string, role: 'host'|'guest', joined: bool}>, me: 'host'|'guest', can_join: bool, notes: string|null, notes_updated_at: string|null, notes_updated_by: string|null, whiteboard: array{image_url: string|null, updated_at: string|null}, shares: list<ShareData>, recordings: list<RecordingData>, class: array{course: string, ce: bool, registered: int, capacity: int}|null}
  *
  * @phpstan-import-type ShareData from SessionShares
  * @phpstan-import-type RecordingData from SessionRecordings
@@ -63,6 +63,13 @@ final class SessionPresenter
             // Lessons and practice questions the host shared (B6.3b), oldest first.
             'shares' => array_values($session->shares()->with('user')->orderBy('id')->get()->map(static fn (VideoSessionShare $share): array => SessionShares::present($share, app()->getLocale()))->all()),
             // Recordings (B6.3c), latest first; deleted ones are gone.
+            // A live class (A10.2b): its course, CE and registrations.
+            'class' => $session->liveClass === null ? null : [
+                'course' => $session->liveClass->course->title,
+                'ce' => $session->liveClass->ce(),
+                'registered' => $session->participants->where('role', VideoSessionParticipant::GUEST)->count(),
+                'capacity' => $session->liveClass->capacity,
+            ],
             'recordings' => array_values($session->recordings()->where('status', '!=', VideoRecording::DELETED)->latest('id')->get()->map(static fn (VideoRecording $recording): array => app(SessionRecordings::class)->present($recording, $viewer))->all()),
         ];
     }

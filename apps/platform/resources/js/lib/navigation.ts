@@ -44,7 +44,6 @@ import { index as practice, progress, readiness } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as messagesIndex } from '@/routes/messages';
-import { index as sessionsIndex } from '@/routes/sessions';
 import { index as billingIndex } from '@/routes/billing';
 import { index as gateways } from '@/routes/gateways';
 import { index as plans } from '@/routes/plans';
@@ -55,6 +54,7 @@ import { index as earnings } from '@/routes/earnings';
 import { index as featuresIndex } from '@/routes/features';
 import { index as askIndex } from '@/routes/ask';
 import { index as bookingsIndex } from '@/routes/bookings';
+import { index as classesIndex } from '@/routes/classes';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -183,6 +183,10 @@ export function roleNavigation(
             item('progress', CalendarCheck, progress(), '/practice/progress'),
             // Ask, the study mate (A10.1).
             item('ask', MessageCircleQuestion, askIndex(), '/ask'),
+            // Live classes for my courses (A10.2b, L12), with video sessions (flag `video_rooms`).
+            ...(options.sessions
+                ? [item('liveClasses', Video, classesIndex(), '/classes')]
+                : []),
             // Book an instructor (A10.2a, screen 18).
             item('instructors', GraduationCap, bookingsIndex(), '/bookings'),
             planned('licenceJourney'),
@@ -259,9 +263,9 @@ export function roleNavigation(
                 questionsIndex(),
                 '/question-bank',
             ),
-            // Sessions and live classes (B6.3, flag `video_rooms`); the CE report follows.
+            // Live classes (A10.2b, w505 and i11), with all sessions a click away (B6.3, flag `video_rooms`).
             options.sessions
-                ? item('liveClasses', Video, sessionsIndex(), '/sessions')
+                ? item('liveClasses', Video, classesIndex(), '/classes')
                 : planned('liveClasses'),
             planned('students'),
             planned('questions'),

@@ -38,6 +38,7 @@ const session = (over: Partial<Session> = {}): Session => ({
   notes: null,
   notes_updated_at: null,
   notes_updated_by: null,
+  class: null,
   whiteboard: { image_url: null, updated_at: null },
   shares: [],
   recordings: [],

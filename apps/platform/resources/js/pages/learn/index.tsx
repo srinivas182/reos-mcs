@@ -1,5 +1,5 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
-import { BookOpen, CheckCircle2, Search } from 'lucide-react';
+import { BookOpen, CheckCircle2, Search, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { KnowledgeResults } from '@/components/knowledge-results';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { CourseType, Language, SearchHit } from '@/lib/content';
+import { index as classesIndex } from '@/routes/classes';
 import { index, lesson as openLesson } from '@/routes/learn';
 
 type Course = {
@@ -59,7 +60,7 @@ export default function Learn({
     };
 }) {
     const { t } = useTranslation();
-    const { region } = usePage().props;
+    const { region, sessions } = usePage().props;
     const state = region?.name ?? '';
 
     return (
@@ -241,6 +242,21 @@ export default function Learn({
                                             </li>
                                         ))}
                                     </ul>
+                                    {/* The course's live classes (A10.2b, L12), once video rooms are on. */}
+                                    {sessions !== null ? (
+                                        <Link
+                                            href={classesIndex({
+                                                query: { course: course.id },
+                                            })}
+                                            className="inline-flex min-h-12 items-center gap-2 font-medium text-primary underline-offset-4 hover:underline"
+                                        >
+                                            <Users
+                                                aria-hidden
+                                                className="size-5"
+                                            />
+                                            {t('learn.liveClasses')}
+                                        </Link>
+                                    ) : null}
                                 </article>
                             ))}
                         </div>

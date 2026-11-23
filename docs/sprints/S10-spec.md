@@ -95,6 +95,19 @@
   - **Paying:** included sessions are confirmed at once; paid ones are held 30 minutes while the student pays at checkout, then confirmed into a LiveKit session.
   - **Rules:** free cancellation until 24 hours before (refunded), the instructor may cancel any time (refunded); an instructor who hasn't joined 10 minutes in means an automatic full refund; the room ends at the booked time.
   - **After:** rate once; the instructor sends follow-up tasks (suggested from the notes) to the student's to-dos.
+- **As built, A10.2b** (ADR 0040 §8–13):
+  - **Live classes** (web sidebar for candidates and instructors; phone from Today and from each course in Learn):
+    - Instructors see this week, next week, later and past, with registrations, seats and CE hours, and schedule a class on the web: course, time, length and seats.
+    - A course with a live approval makes it a CE class with that approval's check interval and seat-time share.
+  - **Register** up to the capacity; cancel until the start with Undo; reminders an hour and 10 minutes before.
+  - **In class:**
+    - viewers, Raise hand (the host brings a student on, so LiveKit lets them speak), questions with likes to the host's queue (Mark answered), polls (results after answering), and chat;
+    - for the host, hands and attendance.
+  - **Attendance checks:**
+    - In a CE class a check opens on the approval's interval; the host can also send one.
+    - Each stays open 3 minutes, and a student who joined and hasn't answered gets one reminder.
+    - Seat time is counted from joins and leaves inside the booked time.
+  - **Next (A10.2c):** the CE class report, borderline cases, Confirm and send to school, audited decisions, and recordings going to the course when the approval allows.
 
 ### A10.3 Licence journey (Team A)
 
