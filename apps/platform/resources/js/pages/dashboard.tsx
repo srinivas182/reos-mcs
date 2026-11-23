@@ -1,7 +1,9 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { LayoutDashboard } from 'lucide-react';
 import { firstName } from '@/lib/person-name';
 import { useTranslation } from 'react-i18next';
+import { ModeCard } from '@/components/agents/mode-card';
+import type { ModeState } from '@/components/agents/types';
 import { CeHoursTile } from '@/components/ce-requirement';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
@@ -14,6 +16,10 @@ import { TodayCard } from '@/components/today-card';
 import { CandidateToday } from '@/components/practice/candidate-today';
 import type { StudyToday } from '@/components/practice/types';
 import { activeMembership, roleName } from '@/lib/roles';
+import { postJson, putJson } from '@/lib/content';
+import { setup as agentSetup } from '@/routes/agent';
+import { goal as goalRoute, snooze as snoozeRoute } from '@/routes/agent/mode';
+import { edit as editGoal } from '@/routes/goal';
 import { index as sessionsIndex } from '@/routes/sessions';
 import type { CeRequirement } from '@/types';
 import type { CalendarDay } from '@/types/calendar';
@@ -31,12 +37,14 @@ export default function Dashboard({
     approvals = null,
     teaching = null,
     study = null,
+    mode = null,
 }: {
     today?: CalendarDay | null;
     ce?: CeRequirement | null;
     approvals?: ApprovalSummary | null;
     teaching?: Teaching | null;
     study?: StudyToday | null;
+    mode?: ModeState | null;
 }) {
     const { t } = useTranslation();
     const { auth, sessions } = usePage().props;
@@ -60,6 +68,24 @@ export default function Dashboard({
                             : undefined
                     }
                 />
+                {mode ? (
+                    <ModeCard
+                        mode={mode}
+                        goalHref={editGoal().url}
+                        setupHref={agentSetup().url}
+                        onSwitch={(goal) =>
+                            void putJson(goalRoute().url, {
+                                goal,
+                                reason: 'suggested',
+                            }).then(() => router.reload({ only: ['mode'] }))
+                        }
+                        onSnooze={() =>
+                            void postJson(snoozeRoute().url).then(() =>
+                                router.reload({ only: ['mode'] }),
+                            )
+                        }
+                    />
+                ) : null}
                 {ce ? (
                     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                         <CeHoursTile ce={ce} />

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Agents\AgentModes;
 use App\Authorization\Role;
 use App\Content\Approvals\CourseApprovals;
 use App\Content\Builder\InstructorDashboard;
@@ -52,6 +53,8 @@ final class DashboardController extends Controller
             'today' => $agent ? [...$calendar->window($user, $from, $to), 'date' => $from->toDateString(), 'timezone' => $from->tzName] : null,
             /** CE hours for the licence in the state in use (A5.2, the dashboard's CE tile). */
             'ce' => $agent ? $this->ce($user, $states, $requirements) : null,
+            // The agent's mode, or "Pick your goal", and any suggested switch (A11.1a).
+            'mode' => $agent ? app(AgentModes::class)->show($user) : null,
             /** Course approvals in force and what needs attention (school admins, screen 49, A7.1). */
             'approvals' => $school === null ? null : $approvals->summary($school),
             /** Readiness, streak, exam date, Continue and today's plan (candidates, screen 4, A8.3). */

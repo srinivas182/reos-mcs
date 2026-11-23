@@ -15,4 +15,6 @@ enum RuleTopic: string
     case Forms = 'forms';
     /** How approved courses are delivered: seat time and attendance (A7.1). */
     case Courses = 'courses';
+    /** Agent modes (A11.1a): when REOS suggests Grow, Lead, and unlocks Own. */
+    case Agents = 'agents';
 }

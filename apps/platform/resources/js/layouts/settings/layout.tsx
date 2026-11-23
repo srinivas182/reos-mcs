@@ -9,6 +9,7 @@ import { activeMembership } from '@/lib/roles';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editAvatar } from '@/routes/avatar';
 import { index as billing } from '@/routes/billing';
+import { edit as editGoal } from '@/routes/goal';
 import { edit } from '@/routes/profile';
 import { edit as editSecurity } from '@/routes/security';
 
@@ -22,6 +23,8 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const { auth } = usePage().props;
     // Instructors at a school give or withdraw avatar consent here (A7.1b).
     const instructor = activeMembership(auth.roles)?.role === 'instructor';
+    // Agents change their goal (mode) and flags here (A11.1a, screen 146).
+    const agent = activeMembership(auth.roles)?.role === 'agent';
 
     return (
         <div className="space-y-6 px-4 py-6 md:px-8">
@@ -34,6 +37,9 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                 label={t('nav.settings')}
                 tabs={[
                     { title: t('nav.profile'), href: edit() },
+                    ...(agent
+                        ? [{ title: t('nav.goal'), href: editGoal() }]
+                        : []),
                     { title: t('nav.security'), href: editSecurity() },
                     { title: t('nav.privacy'), href: editPrivacy() },
                     {

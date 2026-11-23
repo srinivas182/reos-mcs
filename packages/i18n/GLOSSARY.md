@@ -72,6 +72,8 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Listing agent / co-listing agent | Agente listador / agente colistador | |
 | Open house | Casa abierta | Broker open house: "casa abierta para agentes" |
 | Sample data | Datos de muestra | Simulator data shown to users |
+| Agent modes: Launch, Grow, Lead, Own | Arranque, Crecer, Liderar, Propietario | "Modo Arranque" |
+| My goal | Mi objetivo | |
 | Up to date | Al día | |
 | Designated broker | Bróker designado | TREC role |
 | Delegated supervisor | Supervisor delegado | TREC role |

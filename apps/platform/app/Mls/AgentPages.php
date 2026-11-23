@@ -102,10 +102,14 @@ final readonly class AgentPages
         return AgentPage::query()->firstOrCreate(['user_id' => $user->id], ['handle' => $this->handleFor($user), 'published' => false]);
     }
 
+    /** Paths under /agent that aren't public pages. */
+    public const RESERVED = ['setup', 'mode'];
+
     /** "james-miller", or "james-miller-2" when that's taken. */
     private function handleFor(User $user): string
     {
         $base = Str::limit(Str::slug($user->name ?? ''), 60, '') ?: 'agent';
+        $base = in_array($base, self::RESERVED, true) ? "{$base}-agent" : $base;
         $handle = $base;
 
         for ($n = 2; AgentPage::query()->where('handle', $handle)->exists(); $n++) {
