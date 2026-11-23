@@ -1,9 +1,10 @@
 import { router } from "expo-router";
-import { Plug, Plus } from "lucide-react-native";
+import { History, Plug, Plus, Smartphone } from "lucide-react-native";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { StyleSheet } from "react-native-unistyles";
 
+import { useContacts } from "@/lib/crm";
 import {
   type Connection,
   LIBRARY_GROUPS,
@@ -21,6 +22,8 @@ import {
   Eyebrow,
   Icon,
   IconButton,
+  MenuGroup,
+  MenuRow,
   Screen,
   TitleBar,
   ToolRow,
@@ -36,6 +39,7 @@ const stateTone = {
 /**
  * Connections: one place (Connections and Sync journey, screen 12). Every
  * connected tool grouped by type, with its status and last sync. "+" adds one.
+ * Contacts (B7.1): phone contacts and Sync activity (screen 23).
  * Also where `reos://connections` lands after a tool's sign-in.
  */
 export default function ConnectionsHub() {
@@ -45,6 +49,7 @@ export default function ConnectionsHub() {
   const groupOf = (connection: Connection) =>
     items?.find((item) => item.id === connection.integration)?.group ?? "more";
   const add = () => router.push("/connections/add");
+  const { phoneOn } = useContacts();
 
   return (
     <Screen>
@@ -130,6 +135,27 @@ export default function ConnectionsHub() {
           </View>
         );
       })}
+
+      <View style={styles.group}>
+        <Eyebrow>{t("connections.contacts.title")}</Eyebrow>
+        <MenuGroup>
+          <MenuRow
+            icon={Smartphone}
+            title={t("connections.contacts.phone")}
+            value={
+              phoneOn
+                ? t("connections.contacts.phoneOn")
+                : t("connections.contacts.phoneOff")
+            }
+            onPress={() => router.push("/connections/phone")}
+          />
+          <MenuRow
+            icon={History}
+            title={t("connections.contacts.activity")}
+            onPress={() => router.push("/connections/activity")}
+          />
+        </MenuGroup>
+      </View>
     </Screen>
   );
 }

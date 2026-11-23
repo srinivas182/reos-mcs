@@ -1546,6 +1546,42 @@
       "reads": "What REOS reads",
       "readsBody": "Your events and free time, so Today plans around your meetings.",
       "saved": "Saved. Syncing your calendars now."
+    },
+    "contacts": {
+      "title": "Contacts",
+      "activity": "Sync activity",
+      "activityDetail": "What changed in your contacts, and where",
+      "phone": "Phone contacts",
+      "phoneOff": "Not added",
+      "phoneOn": "Added"
+    },
+    "phone": {
+      "title": "Phone contacts",
+      "intro": "Add the people in your phone's contacts to REOS, so each person shows up once with what your CRMs know about them.",
+      "never": "REOS reads names, emails, phone numbers and birthdays. It never changes or deletes anything on your phone.",
+      "match": "People are matched on email or phone number, never on a name alone.",
+      "add": "Add phone contacts",
+      "again": "Add them again",
+      "adding": "Adding…",
+      "added_one": "{{count}} contact added from your phone.",
+      "added_other": "{{count}} contacts added from your phone.",
+      "denied": "REOS can't see your contacts. Allow Contacts for REOS in your phone's Settings.",
+      "failed": "The contacts couldn't be added. Try again.",
+      "stop": "Stop using phone contacts",
+      "stopBody": "Contacts that only came from your phone are removed from REOS. Your phone isn't changed.",
+      "stopped": "Phone contacts removed from REOS.",
+      "keep": "Keep them"
+    },
+    "activity": {
+      "title": "Sync activity",
+      "empty": "Nothing yet",
+      "emptyBody": "When your CRMs or phone contacts change a contact, it shows here in plain words.",
+      "duplicates": "Possible duplicates",
+      "sameName": "{{a}} and {{b}} have the same name but no shared email or phone.",
+      "merge": "Merge",
+      "notSame": "Not the same",
+      "merged": "Merged {{name}}.",
+      "undo": "Undo"
     }
   },
   "catalogue": {
@@ -2030,7 +2066,9 @@
         "module.source_started": "Module source upload started",
         "module.generated": "Generated AI lessons",
         "lesson.regenerated": "Generated a lesson again",
-        "avatar.twins_recorded": "Recorded avatar ids"
+        "avatar.twins_recorded": "Recorded avatar ids",
+        "contact.merged": "Merged two contacts",
+        "contact.split": "Split a merged contact"
       }
     }
   },
@@ -5231,6 +5269,30 @@
       "close": "Close",
       "regenerate": "Generate again",
       "view": "View draft"
+    }
+  },
+  "crm": {
+    "sources": {
+      "phone": "Phone contacts"
+    },
+    "fields": {
+      "first_name": "first name",
+      "last_name": "last name",
+      "stage": "stage",
+      "birthday": "birthday"
+    },
+    "activity": {
+      "created": ":source added :name.",
+      "linked": ":source matched :name to a contact you already had.",
+      "changed": ":source changed the :field of :name to “:value”. The earlier value from :previousSource was “:previous”.",
+      "kept": ":source had an older :field for :name (“:previous”), so the newer “:value” was kept.",
+      "removed": ":name was removed in :source. The contact stays in REOS.",
+      "merged": ":other was merged into :name.",
+      "split": ":other was split from :name again."
+    },
+    "errors": {
+      "merge": "These two contacts can't be merged.",
+      "split": "This contact wasn't merged, so it can't be split."
     }
   }
 }

@@ -14,6 +14,7 @@ use Database\Seeders\Demo\DemoBilling;
 use Database\Seeders\Demo\DemoCatalogue;
 use Database\Seeders\Demo\DemoConnections;
 use Database\Seeders\Demo\DemoConsents;
+use Database\Seeders\Demo\DemoContacts;
 use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
@@ -95,6 +96,8 @@ final class DemoSeeder extends Seeder
         app(DemoMessages::class)->seed();
         // Sessions with Dr. Rachel Hughes and Dana Brooks (B6.3).
         app(DemoSessions::class)->seed();
+        // James Miller's contacts from his CRM and phone, each person once (B7.1).
+        app(DemoContacts::class)->seed();
     }
 
     private function organisation(string $name): Organisation

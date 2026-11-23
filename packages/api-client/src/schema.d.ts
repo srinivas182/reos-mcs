@@ -394,6 +394,117 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List your contacts, newest change first */
+        get: operations["contacts.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Sync activity (screen 23)
+         * @description What changed in your contacts and where it came from, newest first, and
+         *     possible duplicates to merge.
+         */
+        get: operations["contacts.activity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/phone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add your phone's contacts
+         * @description Read on the phone, with your permission, in batches of up to 500. They
+         *     are matched like any other source and never written back to the phone.
+         */
+        post: operations["contacts.phone"];
+        /** Stop using your phone's contacts: they are removed from REOS unless another source also has them */
+        delete: operations["contacts.phone.forget"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/{contact}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Merge another contact into this one. Every source link is kept, and the merge can be split again */
+        post: operations["contacts.merge"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/{contact}/split": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo a merge: the contact that was merged in comes back on its own */
+        post: operations["contacts.split"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/suggestions/{suggestion}/dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** "Not the same person": dismiss a suggested merge */
+        post: operations["contacts.suggestions.dismiss"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/states": {
         parameters: {
             query?: never;
@@ -2079,6 +2190,26 @@ export interface components {
             granted: boolean;
             subject?: string | null;
         };
+        /** ContactResource */
+        ContactResource: {
+            id: string;
+            name: string;
+            first_name: string | null;
+            last_name: string | null;
+            emails: string[];
+            /** @description Phone numbers in E.164. */
+            phones: string[];
+            stage: string | null;
+            birthday: string | null;
+            tags: string[];
+            /** @description Where this person comes from. */
+            sources: {
+                source: string;
+                name: string;
+                synced_at: string | null;
+            }[];
+            updated_at: string | null;
+        };
         /** DeviceResource */
         DeviceResource: {
             id: number;
@@ -2422,6 +2553,21 @@ export interface components {
              * @description When it was said, if not just now (a capture queued while offline).
              */
             said_at?: string | null;
+        };
+        /**
+         * PhoneContactsRequest
+         * @description A batch of the phone's contacts, read on the phone with permission (B7.1).
+         */
+        PhoneContactsRequest: {
+            contacts: {
+                id: string;
+                first_name?: string | null;
+                last_name?: string | null;
+                emails?: string[] | null;
+                phones?: string[] | null;
+                /** Format: date */
+                birthday?: string | null;
+            }[];
         };
         /** PhoneStartRequest */
         PhoneStartRequest: {
@@ -2882,6 +3028,7 @@ export type SchemaConnectionResource = components['schemas']['ConnectionResource
 export type SchemaConnectionStatus = components['schemas']['ConnectionStatus'];
 export type SchemaConsentPurpose = components['schemas']['ConsentPurpose'];
 export type SchemaConsentRequest = components['schemas']['ConsentRequest'];
+export type SchemaContactResource = components['schemas']['ContactResource'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
@@ -2902,6 +3049,7 @@ export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest']
 export type SchemaOnboardingResource = components['schemas']['OnboardingResource'];
 export type SchemaOrganisationType = components['schemas']['OrganisationType'];
 export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest'];
+export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
@@ -3775,6 +3923,260 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of `ContactResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ContactResource"][];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "contacts.activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            contact: {
+                                id: string;
+                                name: string;
+                            };
+                            source: string;
+                            source_name: string;
+                            text: string;
+                            occurred_at: string;
+                        }[];
+                        suggestions: {
+                            id: number;
+                            contact: {
+                                id: string;
+                                name: string;
+                            };
+                            other: {
+                                id: string;
+                                name: string;
+                            };
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "contacts.phone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PhoneContactsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        received: number;
+                        contacts: number;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.phone.forget": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    other: string;
+                };
+            };
+        };
+        responses: {
+            /** @description `ContactResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ContactResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.split": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contact: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ContactResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ContactResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.suggestions.dismiss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                suggestion: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {
