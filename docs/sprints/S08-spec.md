@@ -189,6 +189,13 @@
 - **Field mapping on screen 40:** common real-estate setups (standard objects plus custom fields such as `Stage__c`), saved per brokerage.
 - **Simulator** on demo data.
 - **Done when:** the same as Follow Up Boss.
+- **As built, B8.2** (ADR 0033):
+  - **Connect:** OAuth 2 web server flow with PKCE (`api refresh_token`), brokerage-owned. The org's instance address is kept with the session; `userinfo` gives the org id. Organisation managers now see Connect, not "Ask your broker", for tools a brokerage connects once.
+  - **Read:** SOQL on `SystemModstamp` for Contact, Lead (unless the brokerage turns leads off), Task and ContentNote, paged with `nextRecordsUrl`, one mark per object; deletions from `/sobjects/{object}/deleted/`.
+  - **Owners:** each record goes to the REOS agent in the brokerage whose email matches `Owner.Email` (any case). Records whose owner has no REOS account are skipped and their owners listed on screen 40 (up to 50). Notes and tasks follow the person's owner.
+  - **Write:** notes as ContentNote plus ContentDocumentLink, task status, and the stage only to the field the brokerage mapped.
+  - **Screen 40, Brokerage integrations** (`/organisation/integrations`, broker sidebar "Integrations"): title, purpose line; brokerage accounts with Connect, Sync now, Disconnect, last sync, people and agents counts (never names) and unmatched owners; the stage mapping (Contact field, Lead field, include leads, "Use the usual setup" for `Stage__c`), checked against the org's describe; then every tool for agents with REOS's status, an "Agents may use" switch (hide only; tools everyone needs can't be hidden) and agents connected. Allow, hide and mapping changes are audited.
+  - **Simulator** on demo data (James, Maria, and a record whose owner has no account). Change Data Capture stays for later.
 
 ### B8.3 CRM hub (Team B)
 

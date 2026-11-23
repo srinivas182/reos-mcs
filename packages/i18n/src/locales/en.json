@@ -64,7 +64,8 @@
     "aiLessons": "AI lessons",
     "questionBank": "Question bank",
     "studyPlan": "Study plan",
-    "practiceAndExams": "Practice and exams"
+    "practiceAndExams": "Practice and exams",
+    "brokerageIntegrations": "Integrations"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2130,7 +2131,10 @@
         "question.kept": "Kept a reported question",
         "lesson.suggestion_made": "Asked for a suggested rewrite",
         "lesson.line_commented": "Commented on a lesson line",
-        "lesson.line_rerecord": "Marked a lesson line to record again"
+        "lesson.line_rerecord": "Marked a lesson line to record again",
+        "organisation.integration_allowed": "Allowed an integration for agents",
+        "organisation.integration_hidden": "Hid an integration from agents",
+        "organisation.crm_mapping_updated": "Changed the CRM stage mapping"
       }
     }
   },
@@ -5775,6 +5779,51 @@
       "notInTest": "That question isn't in this test.",
       "stillOpen": "This test is still open.",
       "save": "Your answer wasn't saved. Check your connection and choose it again."
+    }
+  },
+  "brokerageIntegrations": {
+    "title": "Integrations",
+    "description": "Accounts {{brokerage}} connects once for everyone, and the tools your agents may use.",
+    "ownTitle": "Brokerage accounts",
+    "ownIntro": "Connect these once. REOS matches each record to the agent who owns it, by email.",
+    "agentsTitle": "Tools for your agents",
+    "columns": {
+      "tool": "Tool",
+      "status": "Status",
+      "allowed": "Agents may use",
+      "agents": "Agents connected",
+      "actions": "Actions"
+    },
+    "allow": "Agents may use {{tool}}",
+    "notify": "Notify me",
+    "connect": "Connect {{tool}}",
+    "syncNow": "Sync now",
+    "disconnect": "Disconnect",
+    "account": "Account",
+    "lastSync": "Last synced",
+    "notYet": "Not yet",
+    "people": "People synced",
+    "agentsWith": "Agents with people",
+    "privacy": "You see counts only. Each agent's people stay private to that agent.",
+    "unmatched_one": "{{count}} record owner has no REOS account, so their records were skipped: {{owners}}. Invite them, or change the owner in your CRM.",
+    "unmatched_other": "{{count}} record owners have no REOS account, so their records were skipped: {{owners}}. Invite them, or change the owner in your CRM.",
+    "mapping": {
+      "title": "Where you keep a person's stage",
+      "intro": "Pick the fields REOS reads and updates for a contact's and a lead's stage. A new sync starts when you save.",
+      "common": "Use the usual setup",
+      "offline": "We can't read your fields right now, so only the saved ones are shown.",
+      "contact": "Contact stage field",
+      "lead": "Lead stage field",
+      "none": "None",
+      "leads": "Include leads",
+      "save": "Save mapping"
+    },
+    "allowed": "Agents may now use this tool.",
+    "hidden": "This tool is now hidden from your agents.",
+    "mapped": "Mapping saved. A new sync has started.",
+    "errors": {
+      "mayNotHide": "This tool can't be hidden.",
+      "unknownField": "Pick a field your CRM has."
     }
   }
 }

@@ -1091,13 +1091,13 @@
       "name": "Salesforce",
       "kind": "integration",
       "category": "crm",
-      "purpose": "Contacts, leads, tasks and activities for brokerages on Salesforce.",
+      "purpose": "Contacts, leads, tasks and notes for brokerages on Salesforce; each agent sees the records they own.",
       "launch": "enabled",
       "build_sprint": 8,
       "owner": "mayura",
       "access_status": "not_started",
       "personal_data": true,
-      "sandbox": "Free Developer Edition org.",
+      "sandbox": "Free Developer Edition org, with REOS's connected app installed.",
       "connection": {
         "auth": "oauth2",
         "accounts": "tenant",
@@ -1115,6 +1115,13 @@
             "required": true,
             "kind": "text",
             "default": null
+          },
+          {
+            "key": "server_url",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "https://login.salesforce.com"
           }
         ]
       }

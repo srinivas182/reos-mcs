@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Connections;
 
 use App\Http\Controllers\Controller;
 use App\Integrations\Catalogue;
+use App\Models\Connection;
 use App\Models\OAuthAuthorization;
 use App\Services\Connections\ConnectionAuthorizer;
 use Illuminate\Http\RedirectResponse;
@@ -53,7 +54,9 @@ final class OAuthCallbackController extends Controller
                 : __('connections.outcome.'.$result['outcome'], ['tool' => $name]).' '.__($result['reason']),
         ]);
 
-        // Also kept in the session for anything that needs the outcome itself.
-        return to_route('connections.index')->with('connection', [...$summary, 'name' => $name]);
+        // Also kept in the session for anything that needs the outcome itself. A brokerage's own account goes back to screen 40.
+        $brokerage = ($result['connection']->owner_type ?? $authorization->owner_type ?? null) === Connection::OWNER_ORGANISATION;
+
+        return to_route($brokerage ? 'brokerage-integrations.index' : 'connections.index')->with('connection', [...$summary, 'name' => $name]);
     }
 }

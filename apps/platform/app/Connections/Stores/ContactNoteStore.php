@@ -6,6 +6,7 @@ namespace App\Connections\Stores;
 
 use App\Connections\StreamStore;
 use App\Crm\Contacts;
+use App\Crm\RecordOwners;
 use App\Models\Connection;
 use App\Models\ContactNote;
 use Carbon\CarbonImmutable;
@@ -38,7 +39,12 @@ final readonly class ContactNoteStore implements StreamStore
                 continue;
             }
 
-            $contact = $this->contacts->forPerson($connection, $person);
+            // A brokerage's CRM (B8.2): only notes on people already given to an agent.
+            $link = RecordOwners::perRecord($connection) ? RecordOwners::linkFor($connection, $person) : null;
+            if (RecordOwners::perRecord($connection) && $link === null) {
+                continue;
+            }
+            $contact = $link !== null ? $this->contacts->contactOf($link) : $this->contacts->forPerson($connection, $person);
             $note = ContactNote::withTrashed()->firstOrNew(['source' => $source, 'external_id' => $id, 'contact_id' => $contact->id]);
             $note->fill(['body' => mb_substr($body, 0, 20000), 'remote_updated_at' => is_string($record['updated_at'] ?? null) ? CarbonImmutable::parse($record['updated_at']) : null]);
 

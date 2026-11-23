@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\Catalogue;
 
+use App\Authorization\Permission;
 use App\Catalogue\CatalogueStatus;
 use App\Catalogue\LibraryGroup;
 use App\Connections\ConnectorRegistry;
@@ -122,6 +123,7 @@ final readonly class IntegrationCatalogue
         $state = app(PersonStates::class)->current($user);
         $hidden = $membership === null ? [] : $this->hiddenBy($membership->organisation);
         $brokerage = $this->brokerageOf($membership?->organisation);
+        $manages = $membership !== null && $user->can(Permission::OrganisationManage->value);
         $interests = IntegrationInterest::query()->where('user_id', $user->id)->pluck('kind', 'integration_id')->all();
         $connected = Connection::query()->where('owner_type', Connection::OWNER_USER)->where('owner_id', $user->id)
             ->selectRaw('integration_id, count(*) as total')->groupBy('integration_id')->pluck('total', 'integration_id')->all();
@@ -137,8 +139,8 @@ final readonly class IntegrationCatalogue
 
             [$shown, $action] = $this->forPerson($definition, $status, $setting, $membership?->organisation->id);
 
-            // A brokerage connects these once for everyone: its agents ask their broker.
-            if ($definition->accounts === AccountScope::Tenant && $brokerage !== null && ! in_array($shown, [CatalogueStatus::Paused, CatalogueStatus::Retired], true)) {
+            // A brokerage connects these once for everyone: its agents ask their broker; the broker connects (screen 40, B8.2).
+            if ($definition->accounts === AccountScope::Tenant && $brokerage !== null && ! $manages && ! in_array($shown, [CatalogueStatus::Paused, CatalogueStatus::Retired], true)) {
                 $action = self::ACTION_ASK_BROKER;
             }
 
@@ -350,6 +352,31 @@ final readonly class IntegrationCatalogue
                 default => [$status, self::ACTION_CONNECT],
             },
         };
+    }
+
+    /**
+     * What REOS offers for a tool to an organisation, before its own hiding
+     * (Brokerage integrations, screen 40): the status shown and the action.
+     *
+     * @return array{0: CatalogueStatus, 1: string}
+     */
+    public function offerFor(IntegrationDefinition $definition, ?int $organisationId): array
+    {
+        $setting = $this->setting($definition->id);
+
+        return $this->forPerson($definition, $this->status($definition, $setting), $setting, $organisationId);
+    }
+
+    /** Whether an organisation may hide this tool from its people (the super admin's switch). */
+    public function mayHide(string $integrationId): bool
+    {
+        return $this->setting($integrationId)->tenants_may_hide;
+    }
+
+    /** @return list<string> the tools an organisation hides from its people */
+    public function hiddenFor(Organisation $organisation): array
+    {
+        return $this->hiddenBy($organisation);
     }
 
     /** Database counts arrive as int or numeric string depending on the driver. */
