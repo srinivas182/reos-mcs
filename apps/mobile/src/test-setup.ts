@@ -223,3 +223,42 @@ jest.mock('@livekit/react-native', () => ({
   isTrackReference: () => false,
 }));
 jest.mock('livekit-client', () => ({ Track: { Source: { Camera: 'camera', ScreenShare: 'screen_share' } } }));
+
+// Hands-free mode (A9.3): the phone's voice speaks at once and calls onDone;
+// the lock-screen playlist records what it's asked to do. Tests read `__spoken`.
+jest.mock('expo-speech', () => {
+  const spoken: string[] = [];
+
+  return {
+    __spoken: spoken,
+    speak: jest.fn((text: string, options?: { onDone?: () => void }) => {
+      spoken.push(text);
+      setTimeout(() => options?.onDone?.(), 0);
+    }),
+    stop: jest.fn(async () => undefined),
+  };
+});
+jest.mock('expo-audio', () => {
+  const listeners: Record<string, ((payload: unknown) => void) | undefined> = {};
+  const playlist = {
+    addListener: jest.fn((name: string, handler: (payload: unknown) => void) => {
+      listeners[name] = handler;
+
+      return { remove: () => delete listeners[name] };
+    }),
+    setActiveForLockScreen: jest.fn(),
+    updateLockScreenMetadata: jest.fn(),
+    clearLockScreenControls: jest.fn(),
+    play: jest.fn(),
+    pause: jest.fn(),
+    skipTo: jest.fn(),
+    destroy: jest.fn(),
+  };
+
+  return {
+    __playlist: playlist,
+    __emit: (name: string, payload: unknown) => listeners[name]?.(payload),
+    createAudioPlaylist: jest.fn(() => playlist),
+    setAudioModeAsync: jest.fn(async () => undefined),
+  };
+});

@@ -49,8 +49,8 @@
       [
         "expo-speech-recognition",
         {
-          "microphonePermission": "REOS uses the microphone in video sessions with your instructor or mentor, and when you hold the mic to add a to-do.",
-          "speechRecognitionPermission": "REOS turns what you say into a to-do. Nothing is saved until you check it and tap Save.",
+          "microphonePermission": "REOS uses the microphone in video sessions with your instructor or mentor, when you hold the mic to add a to-do, and to hear your answers in the hands-free voice quiz.",
+          "speechRecognitionPermission": "REOS turns what you say into a to-do or a quiz answer, on your phone. Nothing is saved until you check it, and no audio leaves your phone.",
           "androidSpeechServicePackages": [
             "com.google.android.googlequicksearchbox"
           ]
@@ -71,7 +71,16 @@
           "cameraPermission": "REOS uses the camera in video sessions with your instructor or mentor. You can turn it off at any time in the session.",
           "microphonePermission": "REOS uses the microphone in video sessions with your instructor or mentor, and when you hold the mic to add a to-do."
         }
-      ]
+      ],
+      [
+        "expo-audio",
+        {
+          "enableBackgroundPlayback": true,
+          "enableBackgroundRecording": true,
+          "microphonePermission": "REOS uses the microphone in video sessions with your instructor or mentor, when you hold the mic to add a to-do, and to hear your answers in the hands-free voice quiz."
+        }
+      ],
+      "./plugins/with-quiz-shortcut"
     ],
     "experiments": {
       "typedRoutes": true,

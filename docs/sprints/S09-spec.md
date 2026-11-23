@@ -173,6 +173,12 @@
   - a weekly leaderboard of questions answered and accuracy, first names only;
   - a group member's challenge goes to the whole group;
   - a school can create a group for a class.
+- **As built, A9.3a** (ADR 0036):
+  - **Hands-free mode** (phone screen 51): a smart drill read aloud. The candidate answers by voice (letter, ordinal, true or false, or the option's words) with spoken feedback and why, and says Repeat, Skip or Stop in English or Spanish.
+  - **Privacy:** speech is recognized on the device; on a phone that can't do that, the big buttons answer.
+  - **Locked screen:** a lock-screen "now playing" session keeps it going, with play or pause to repeat and next to skip.
+  - **Ways in:** the practice hub, the "Quiz me" quick action, "Hey Siri, quiz me with REOS" (App Shortcut, iOS 18+) and the Android App Action.
+  - **Driving:** none of it is offered for driving.
 - **Done when:** the voice quiz works on the lock screen, and a challenge sent by link is answered by a second candidate with the same questions.
 
 ### B9.1 Lone Wolf (Team B)
