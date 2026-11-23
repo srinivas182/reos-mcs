@@ -1,5 +1,6 @@
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Layers } from 'lucide-react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AiPlan } from '@/components/builder/ai-plan';
 import { BuilderSettingsCard } from '@/components/builder/builder-settings';
@@ -24,7 +25,8 @@ import { index, status } from '@/routes/builder';
 /**
  * Course builder (instructor web screen 43, A7.2): the module list with
  * status, the module's source material, what AI will make, the settings and
- * the lessons with their status. Nothing is published without approval;
+ * the lessons with their status; Generate module drafts AI lessons
+ * (A7.3) and the page checks on them while they're made. Nothing is published without approval;
  * seat-time changes go to the school for TREC.
  */
 export default function CourseBuilderCourse({
@@ -34,6 +36,7 @@ export default function CourseBuilderCourse({
     settings,
     presenters,
     roles,
+    vendor_live,
 }: {
     course: BuilderCourse;
     modules: ModuleRow[];
@@ -41,8 +44,26 @@ export default function CourseBuilderCourse({
     settings: BuilderSettings;
     presenters: { value: string; label: string }[];
     roles: RoleRule[];
+    vendor_live: boolean;
+    vendors: string[];
 }) {
     const { t } = useTranslation();
+    const generating =
+        module?.lessons.some((l) => l.status === 'generating') ?? false;
+
+    // While AI lessons are being made, check every 15 seconds (A7.3).
+    useEffect(() => {
+        if (!generating) {
+            return;
+        }
+
+        const timer = window.setInterval(
+            () => router.reload({ only: ['module', 'modules'] }),
+            15000,
+        );
+
+        return () => window.clearInterval(timer);
+    }, [generating]);
 
     return (
         <>
@@ -122,7 +143,12 @@ export default function CourseBuilderCourse({
                                 roles={roles}
                             />
                             <div className="grid gap-6 xl:grid-cols-2">
-                                <AiPlan plan={module.plan} />
+                                <AiPlan
+                                    moduleId={module.id}
+                                    plan={module.plan}
+                                    generating={generating}
+                                    vendorLive={vendor_live}
+                                />
                                 <BuilderSettingsCard
                                     courseId={course.id}
                                     settings={settings}

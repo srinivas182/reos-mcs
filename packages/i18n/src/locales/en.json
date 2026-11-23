@@ -518,7 +518,12 @@
       "api_token": "API token",
       "zone_id": "Zone ID",
       "cname_target": "CNAME target",
-      "sns_topic_arn": "SNS topic ARN (bounces and complaints)"
+      "sns_topic_arn": "SNS topic ARN (bounces and complaints)",
+      "stock_avatar": "Stock avatar",
+      "stock_avatar_id": "Stock avatar ID",
+      "background": "Background",
+      "voice_id_en": "English voice ID",
+      "voice_id_es": "Spanish voice ID"
     },
     "checks": {
       "test": "Test connection",
@@ -2022,7 +2027,10 @@
         "lesson.approved": "Lesson approved",
         "course.builder_changed": "Course builder settings changed",
         "course.seat_time_asked": "Seat-time change asked",
-        "module.source_started": "Module source upload started"
+        "module.source_started": "Module source upload started",
+        "module.generated": "Generated AI lessons",
+        "lesson.regenerated": "Generated a lesson again",
+        "avatar.twins_recorded": "Recorded avatar ids"
       }
     }
   },
@@ -4955,7 +4963,16 @@
     "emptyTitle": "No instructors yet",
     "empty": "Invite your instructors. They teach your courses, host live classes and, if they agree, lend their likeness to AI avatar lessons.",
     "errors": {
-      "notInstructor": "That person isn't an instructor at your school."
+      "notInstructor": "That person isn't an instructor at your school.",
+      "noConsent": "This instructor's avatar consent isn't in force."
+    },
+    "twins": {
+      "open": "Avatar ids",
+      "title": "Avatar ids for {{name}}",
+      "intro": "Make the instructor's avatar in HeyGen's or Synthesia's studio from their consented sample, then add its id here. It's used only while their consent is in force.",
+      "heygen": "HeyGen avatar id",
+      "synthesia": "Synthesia avatar id",
+      "save": "Save avatar ids"
     }
   },
   "avatarConsent": {
@@ -5076,7 +5093,12 @@
       "credits": "{{credits}} credits to generate",
       "nothing": "Upload material and it will be read first.",
       "waiting_one": "{{count}} file is still being read.",
-      "waiting_other": "{{count}} files are still being read."
+      "waiting_other": "{{count}} files are still being read.",
+      "left": "The school has {{credits}} credits.",
+      "simulated": "HeyGen and Synthesia aren't connected yet, so the videos will be placeholders.",
+      "short": "Not enough credits. Ask REOS to add credits to the school's plan.",
+      "generate": "Generate module",
+      "generating": "Generating…"
     },
     "settings": {
       "title": "Settings",
@@ -5090,7 +5112,12 @@
       "presenter": "Presenter",
       "stock": "A stock presenter",
       "presenterHint": "Instructors appear here once they've given avatar consent to the school.",
-      "save": "Save settings"
+      "save": "Save settings",
+      "vendor": "Avatar videos by",
+      "vendors": {
+        "heygen": "HeyGen",
+        "synthesia": "Synthesia"
+      }
     },
     "saved": "Settings saved.",
     "lessons": {
@@ -5139,7 +5166,12 @@
       "presenter": "That presenter can't be used: pick a stock presenter or an instructor whose avatar consent is in force.",
       "notDraft": "Only a draft lesson can be approved here.",
       "empty": "Add the lesson's text before approving it.",
-      "noSchool": "This course has no school to ask."
+      "noSchool": "This course has no school to ask.",
+      "generating": "Lessons are already being generated here. Wait until they're ready.",
+      "noSources": "Add source material first: AI lessons are written only from it.",
+      "credits": "This needs :credits credits and the school has :left. Ask REOS to add credits to the school's plan.",
+      "notAi": "This lesson wasn't made with AI.",
+      "noTwin": "This instructor's avatar isn't set up at the vendor yet. Add its id on Instructors."
     },
     "dashboard": {
       "title": "Your teaching",
@@ -5155,6 +5187,50 @@
       "missedLine": "{{topic}}: {{missed}} of {{answered}} answers wrong",
       "noMissed": "Not enough practice answers yet.",
       "open": "Course builder"
+    },
+    "ai": {
+      "part": "Part :n",
+      "generating": "Lessons being generated: :count. Each one appears here when it's ready for review.",
+      "regenerating": "Generating a new version. The earlier one is kept.",
+      "failed": {
+        "draft": "The script couldn't be written. Try again in a few minutes.",
+        "render": "The video couldn't be made. Try again, or pick the other vendor in Settings.",
+        "timeout": "The video took more than a day, so it was stopped. Try again.",
+        "copy": "The finished video couldn't be copied into REOS. Try again."
+      },
+      "statuses": {
+        "drafting": "Writing",
+        "flagged": "Needs a fix",
+        "rendering": "Making videos",
+        "ready": "Ready for review",
+        "failed": "Failed"
+      },
+      "version_one": "Version {{version}}",
+      "version_other": "Version {{version}} of {{count}}",
+      "versionShort": "Version {{version}}",
+      "flagsShort_one": "{{count}} flag",
+      "flagsShort_other": "{{count}} flags",
+      "credits": "{{credits}} credits",
+      "flagged_one": "{{count}} line needs a fix, so no videos were made. Change the source and generate again, or fix it in the review.",
+      "flagged_other": "{{count}} lines need a fix, so no videos were made. Change the source and generate again, or fix them in the review.",
+      "videos": "Videos",
+      "renders": {
+        "queued": "Waiting",
+        "rendering": "Rendering",
+        "ready": "Ready",
+        "failed": "Failed"
+      },
+      "simulated": "A placeholder: the vendor isn't connected yet.",
+      "script": "Script",
+      "source": "Source",
+      "page": "{{source}}, page {{page}}",
+      "review": "Waiting for review: {{checkins}} check-ins, {{questions}} questions and {{flashcards}} flashcards.",
+      "title": "AI lesson",
+      "intro": "Every line comes from your sources. Nothing reaches learners until you approve it.",
+      "loading": "Loading…",
+      "close": "Close",
+      "regenerate": "Generate again",
+      "view": "View draft"
     }
   }
 }

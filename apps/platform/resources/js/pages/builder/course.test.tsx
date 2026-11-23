@@ -5,12 +5,17 @@ import { I18nextProvider } from 'react-i18next';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     course,
+    lessonDraft,
     module,
     modules,
     roles,
     settings,
     teaching,
 } from '@/components/builder/fixtures';
+import {
+    LessonDraftDialog,
+    LessonDraftView,
+} from '@/components/builder/lesson-draft';
 import { TeachingCard } from '@/components/builder/teaching-card';
 import { i18n } from '@/lib/i18n';
 import CourseBuilderCourse from '@/pages/builder/course';
@@ -43,6 +48,8 @@ const page = () =>
             settings={settings}
             presenters={[]}
             roles={roles}
+            vendor_live={false}
+            vendors={['heygen', 'synthesia']}
         />,
     );
 
@@ -126,6 +133,113 @@ describe('Course builder (screen 43, A7.2)', () => {
             { hours: 32, reason: 'New 2027 contract forms.' },
             expect.anything(),
         );
+    });
+
+    it('generates a module from its sources, charged to the school (A7.3)', async () => {
+        const user = userEvent.setup();
+        page();
+
+        expect(
+            screen.getByText('The school has 5,000 credits.'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/so the videos will be placeholders/),
+        ).toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', { name: 'Generate module' }),
+        );
+        expect(router.post).toHaveBeenCalledWith(
+            '/course-builder/modules/1/generate',
+            {},
+            expect.anything(),
+        );
+        expect(
+            screen.getByRole('button', {
+                name: 'View draft: Disclosing who you represent',
+            }),
+        ).toBeInTheDocument();
+        // AI lessons are approved in the review (A8.1), not here.
+        expect(
+            screen.queryByRole('button', {
+                name: 'Approve: Disclosing who you represent',
+            }),
+        ).toBeNull();
+    });
+
+    it('stops Generate when the school is short of credits, and checks while lessons are made', () => {
+        vi.useFakeTimers();
+        render(
+            <CourseBuilderCourse
+                course={course}
+                modules={modules}
+                module={{
+                    ...module,
+                    plan: { ...module.plan, credits_left: 100 },
+                    lessons: [{ ...module.lessons[0], status: 'generating' }],
+                }}
+                settings={settings}
+                presenters={[]}
+                roles={roles}
+                vendor_live
+                vendors={['heygen', 'synthesia']}
+            />,
+        );
+
+        expect(
+            screen.getByRole('button', { name: 'Generating…' }),
+        ).toBeDisabled();
+        expect(screen.getByText(/Not enough credits/)).toBeInTheDocument();
+        vi.advanceTimersByTime(15000);
+        expect(router.reload).toHaveBeenCalledWith({
+            only: ['module', 'modules'],
+        });
+        vi.useRealTimers();
+    });
+
+    it("shows a draft in both languages with each line's source and its flags", () => {
+        render(<LessonDraftView draft={lessonDraft} />);
+
+        const rows = screen.getAllByRole('row');
+        expect(within(rows[1]).getByText(/usted le dice/)).toBeInTheDocument();
+        expect(
+            within(rows[1]).getByText('Agency module script.pdf, page 3'),
+        ).toBeInTheDocument();
+        expect(within(rows[3]).getAllByText(/Promises a result/)).toHaveLength(
+            2,
+        );
+        expect(screen.getByText(/2 lines need a fix/)).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Waiting for review: 2 check-ins, 5 questions and 8 flashcards.',
+            ),
+        ).toBeInTheDocument();
+    });
+
+    it('opens a draft and generates it again', async () => {
+        const user = userEvent.setup();
+        vi.stubGlobal(
+            'fetch',
+            vi.fn(async () => ({
+                ok: true,
+                json: async () => ({ data: lessonDraft }),
+            })),
+        );
+        render(<LessonDraftDialog lessonId={23} onClose={() => {}} />);
+
+        expect(
+            await screen.findByRole('heading', {
+                name: 'Disclosing who you represent',
+            }),
+        ).toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', { name: 'Generate again' }),
+        );
+        expect(router.post).toHaveBeenCalledWith(
+            '/course-builder/lessons/23/regenerate',
+            {},
+            expect.anything(),
+        );
+        vi.unstubAllGlobals();
     });
 
     it('lists the courses to build, with an empty state', () => {

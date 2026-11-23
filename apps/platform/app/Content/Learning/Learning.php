@@ -108,16 +108,18 @@ final readonly class Learning
     /**
      * The lesson to read and watch: its text by heading, slides and documents
      * page by page, the video (Mux with a signed token, or the original file)
-     * and its captions with timings.
+     * and its captions with timings. An AI lesson (A7.3) has a video in each
+     * language: the learner gets theirs, with captions in their language.
      *
      * @return array<string, mixed>
      */
-    public function lesson(Lesson $lesson): array
+    public function lesson(Lesson $lesson, string $language = 'en'): array
     {
         $media = $lesson->media()->where('status', MediaStatus::Ready)->get();
-        $video = $media->first(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Video);
+        $videos = $media->filter(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Video);
+        $video = $videos->first(static fn (LessonMedia $m): bool => $m->language === $language) ?? $videos->first();
         $captions = $media->first(static fn (LessonMedia $m): bool => $m->kind === MediaKind::Captions);
-        $vtt = $captions !== null ? $captions->transcript : $video?->transcript;
+        $vtt = $video?->captions[$language] ?? ($captions !== null ? $captions->transcript : $video?->transcript);
         $siblings = array_values(array_map(static fn (mixed $id): int => is_numeric($id) ? (int) $id : 0, Lesson::query()->learnable()->where('course_id', $lesson->course_id)->orderBy('position')->orderBy('id')->pluck('id')->all()));
         $at = array_search($lesson->id, $siblings, true);
 

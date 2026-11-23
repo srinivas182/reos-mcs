@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { CoursesDialog } from '@/components/instructors/courses-dialog';
 import { InstructorsTable } from '@/components/instructors/instructors-table';
+import { TwinsDialog } from '@/components/instructors/twins-dialog';
 import type { InstructorRow } from '@/components/instructors/types';
 import { InviteSheet } from '@/components/invite-sheet';
 import { PageHeader } from '@/components/page-header';
@@ -29,6 +30,7 @@ export default function Instructors({
     const { t } = useTranslation();
     const [inviting, setInviting] = useState(false);
     const [editing, setEditing] = useState<InstructorRow | null>(null);
+    const [twins, setTwins] = useState<InstructorRow | null>(null);
     const inviteButton = (
         <Button onClick={() => setInviting(true)}>
             <MailPlus aria-hidden className="size-5" />
@@ -56,6 +58,7 @@ export default function Instructors({
                     <InstructorsTable
                         instructors={instructors}
                         onEdit={setEditing}
+                        onTwins={setTwins}
                     />
                 )}
             </div>
@@ -71,6 +74,7 @@ export default function Instructors({
                 courses={courses}
                 onClose={() => setEditing(null)}
             />
+            <TwinsDialog instructor={twins} onClose={() => setTwins(null)} />
         </>
     );
 }

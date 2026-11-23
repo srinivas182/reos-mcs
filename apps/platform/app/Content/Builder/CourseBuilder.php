@@ -6,7 +6,9 @@ namespace App\Content\Builder;
 
 use App\Authorization\Membership;
 use App\Authorization\Role;
+use App\Content\Approvals\CourseApprovals;
 use App\Content\Avatars\AvatarConsents;
+use App\Content\Avatars\AvatarVideos;
 use App\Content\Delivery;
 use App\Content\MediaStatus;
 use App\Jobs\IngestLesson;
@@ -105,13 +107,13 @@ final readonly class CourseBuilder
         });
     }
 
-    /** @return array{language: string, lesson_minutes: int, presenter: string} */
+    /** @return array{language: string, lesson_minutes: int, presenter: string, vendor: string} */
     public static function defaults(): array
     {
-        return ['language' => 'both', 'lesson_minutes' => 10, 'presenter' => 'stock'];
+        return ['language' => 'both', 'lesson_minutes' => 10, 'presenter' => 'stock', 'vendor' => 'heygen'];
     }
 
-    /** @return array{language: string, lesson_minutes: int, presenter: string} */
+    /** @return array{language: string, lesson_minutes: int, presenter: string, vendor: string} */
     public function settings(Course $course): array
     {
         $saved = $course->builder ?? [];
@@ -121,15 +123,16 @@ final readonly class CourseBuilder
             'language' => is_string($saved['language'] ?? null) ? $saved['language'] : $defaults['language'],
             'lesson_minutes' => is_int($saved['lesson_minutes'] ?? null) ? $saved['lesson_minutes'] : $defaults['lesson_minutes'],
             'presenter' => is_string($saved['presenter'] ?? null) ? $saved['presenter'] : $defaults['presenter'],
+            'vendor' => is_string($saved['vendor'] ?? null) && in_array($saved['vendor'], AvatarVideos::VENDORS, true) ? $saved['vendor'] : $defaults['vendor'],
         ];
     }
 
     /**
      * Saves the builder settings: language (decision 4: both voices), lesson
-     * length and presenter (an instructor whose avatar consent is in force, or
-     * a stock presenter).
+     * length, presenter (an instructor whose avatar consent is in force, or
+     * a stock presenter) and avatar vendor (HeyGen or Synthesia, A7.3).
      *
-     * @param  array{language: string, lesson_minutes: int, presenter: string}  $settings
+     * @param  array{language: string, lesson_minutes: int, presenter: string, vendor: string}  $settings
      */
     public function saveSettings(Course $course, array $settings, User $actor): void
     {
@@ -257,6 +260,14 @@ final readonly class CourseBuilder
 
         Notification::send($this->memberships->holdersIn(Role::SchoolAdmin, $school), new SeatTimeChangeAsked($course, $actor, $hours, $reason));
         $this->audit->record('course.seat_time_asked', Courses::AUDIT_SUBJECT, (string) $course->id, ['from' => $course->hours, 'to' => $hours, 'reason' => $reason], $actor, $school->id);
+    }
+
+    /** How often learners check in (minutes): the approval's seat-time rule in force, else REOS's default. */
+    public function checkinMinutes(Course $course): int
+    {
+        $approval = $course->approvals->first(static fn ($a): bool => $a->valid());
+
+        return $approval === null ? CourseApprovals::CHECKIN_MINUTES : ($approval->checkin_minutes ?? CourseApprovals::CHECKIN_MINUTES);
     }
 
     /** Whether the course's hours are set by an approval (so instructors ask the school instead). */

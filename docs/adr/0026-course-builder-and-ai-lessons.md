@@ -37,7 +37,37 @@ The A5.3 content library already handles uploads safely (signed upload links, si
    - the three most-missed topics. A7.3 drafts a lesson from them.
 9. **Every change is audited** with the school as the tenant: modules, sources, lessons (added, moved, approved, removed), builder settings and seat-time requests.
 
+### AI lesson pipeline (A7.3)
+
+10. **One pipeline, four steps** (`App\Content\Ai\LessonPipeline`).
+    - **Generate module** splits the module's read passages into lessons of the course's length, never splitting a passage. Each lesson gets a new **version** (`lesson_versions`) that keeps the passages it was written from.
+    - **Draft** (queued) writes the script, translates it, runs the legal checks and queues the review items.
+    - **Render** sends the script to the course's vendor once per spoken language.
+    - **Check** runs every two minutes (`reos:lessons:renders`). It copies each finished video into REOS's storage and video pipeline, then deletes the vendor's copy.
+11. **Writing from the sources only.** Claude on Bedrock writes the script; the Bedrock client is shared with voice to-dos (`App\Services\Ai\Bedrock`).
+    - Claude answers through a forced tool with a fixed shape, and `Drafts::clean` checks it like any input. A line, question or flashcard that doesn't cite a real passage is dropped.
+    - The passages go in `<source>` tags as data, never as instructions.
+    - Each stored line keeps the file name and page it came from.
+    - Without Bedrock keys, a simulator builds the lesson from the sources' own sentences and marks the Spanish `[ES]`. Demos and tests need no AI.
+12. **Spanish line by line.** Every English text (title, lines, check-ins, questions with their options, flashcards) is translated in one call and must come back one for one. The prompt carries the REOS glossary's term table and asks for formal "usted".
+13. **Legal checks before rendering.** The A5.3b rules run on every line in both languages (`ContentChecks::rulesBrokenBy`). A flagged line stops the version (`flagged`): no video is made, and the lesson goes to review.
+14. **Credits are the school's.** The cost is minutes × voices × screen 69's `ai_lesson_minute`.
+    - It's checked against the school's credit pool before generating, and charged once per version after drafting (`AiCredits::chargeSchool`).
+    - The use is logged under the person who asked. Instructors are never charged.
+15. **Avatar vendors behind one driver** (`AvatarVideo`: HeyGen, Synthesia and the simulator, decision 1).
+    - The school picks the vendor per course on screen 43, and its keys are set in Settings › Integrations. Without keys the simulator copies a six-second placeholder.
+    - The presenter is the vendor's stock avatar or an instructor's digital twin.
+    - A twin is made in the vendor's studio from the consented sample, and its id is recorded on screen 52 (`avatar_consents.vendor_avatars`). It's used only while the consent is in force, which is checked again at each generation.
+    - Polling, not webhooks: both vendors' callbacks are unsigned or optional, and a two-minute check is simpler to secure. A render still not done after a day fails.
+16. **Captions in both languages for each video.**
+    - The script's lines are aligned one for one across languages. Each video gets WebVTT in both languages, timed in proportion to each line's length over the video's real length; the vendors report the length, not each line's timing.
+    - The captions are kept on the video (`lesson_media.captions`), and Mux's own captions don't replace them.
+    - Learners get the video and captions in their language (`Learning::lesson($lesson, $language)`), and both videos are indexed for search.
+17. **Versions are kept.** Generating again makes version n+1; earlier scripts and review items stay. When the new version's videos are in, they replace the old version's videos.
+18. **Review items** (`review_items`): check-ins at the approval's interval, multiple-choice questions with their source and topic, and flashcards, each in English and Spanish with status `to_review`. Approving, editing and rejecting them is A8.1.
+
 ## Consequences
 
-- A7.3 renders and drafts into these modules. Its lessons arrive as `generating`, then `in_review`.
+- A7.3 renders and drafts into these modules. Its lessons arrive as `generating`, then `in_review` (or `in_review` with a flagged version that has no videos).
+- The vendors' field names were written against their public API docs. They are confirmed in each vendor's sandbox before Live (register notes).
 - A8.1 adds line-by-line review, versions, and the question bank on top of `in_review`.

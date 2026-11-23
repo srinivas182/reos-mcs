@@ -68,6 +68,6 @@ final class LearnController extends Controller
             return response()->json(['message' => __('billing.membershipRequired'), 'membership_required' => true], 402);
         }
 
-        return response()->json(['data' => $learning->lesson($found)]);
+        return response()->json(['data' => $learning->lesson($found, $user->locale->value)]);
     }
 }

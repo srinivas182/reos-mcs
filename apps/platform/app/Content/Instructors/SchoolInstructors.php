@@ -59,6 +59,7 @@ final readonly class SchoolInstructors
                     'status' => $avatar?->status,
                     'given_at' => $avatar?->given_at?->toIso8601String(),
                     'lessons_due_by' => $avatar?->lessons_due_by?->toDateString(),
+                    'twins' => ['heygen' => $avatar?->vendor_avatars['heygen'] ?? null, 'synthesia' => $avatar?->vendor_avatars['synthesia'] ?? null],
                 ],
                 // Ratings and session prices arrive with reviews and the marketplace.
                 'rating' => null,
@@ -70,7 +71,7 @@ final readonly class SchoolInstructors
             ->filter(static fn (Invitation $i): bool => $i->role === Role::Instructor)
             ->map(static fn (Invitation $i): array => [
                 'id' => -$i->id, 'name' => $i->name ?? (string) ($i->email ?? $i->phone), 'email' => $i->email, 'status' => 'invited',
-                'courses' => [], 'approvals' => 0, 'avatar' => ['status' => null, 'given_at' => null, 'lessons_due_by' => null], 'rating' => null, 'price' => null,
+                'courses' => [], 'approvals' => 0, 'avatar' => ['status' => null, 'given_at' => null, 'lessons_due_by' => null, 'twins' => ['heygen' => null, 'synthesia' => null]], 'rating' => null, 'price' => null,
             ]);
 
         return [...array_values($rows->all()), ...array_values($invited->all())];
@@ -96,6 +97,27 @@ final readonly class SchoolInstructors
 
             $this->audit->record('instructor.courses_changed', self::AUDIT_SUBJECT, (string) $instructor->id, ['courses' => $own], $actor, $school->id);
         });
+    }
+
+    /**
+     * Records the instructor's digital twin at each avatar vendor (A7.3): made
+     * in the vendor's studio from the consented sample, used only while the
+     * consent is in force.
+     *
+     * @param  array{heygen: string|null, synthesia: string|null}  $twins
+     */
+    public function recordTwins(Organisation $school, User $instructor, array $twins, User $actor): void
+    {
+        $this->ensureInstructor($school, $instructor);
+        $consent = $this->avatars->for($instructor, $school);
+
+        if ($consent === null || ! $this->avatars->usable($instructor, $school)) {
+            throw ValidationException::withMessages(['twins' => __('instructors.errors.noConsent')]);
+        }
+
+        $kept = array_filter($twins, static fn (?string $id): bool => $id !== null && $id !== '');
+        $consent->forceFill(['vendor_avatars' => $kept === [] ? null : $kept])->save();
+        $this->audit->record('avatar.twins_recorded', self::AUDIT_SUBJECT, (string) $instructor->id, ['vendors' => array_keys($kept)], $actor, $school->id);
     }
 
     /** Ends the instructor role at the school; the avatar can't be used from now. */

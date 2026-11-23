@@ -91,6 +91,40 @@ describe('Instructors (screen 52, A7.1b)', () => {
         );
     });
 
+    it("records an instructor's avatar ids, only once consent is given (A7.3)", async () => {
+        const user = userEvent.setup();
+        render(
+            <Instructors
+                school={{ name: 'Texas Realty School' }}
+                instructors={instructors}
+                courses={schoolCourses}
+                invite={inviteOptions()}
+            />,
+        );
+
+        expect(
+            screen.queryByRole('button', { name: /Avatar ids: Marcus/ }),
+        ).toBeNull();
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Avatar ids: Dr. Rachel Hughes',
+            }),
+        );
+        await user.type(
+            screen.getByLabelText('HeyGen avatar id'),
+            'twin_rachel_01',
+        );
+        await user.click(
+            screen.getByRole('button', { name: 'Save avatar ids' }),
+        );
+
+        expect(router.put).toHaveBeenCalledWith(
+            '/school/instructors/7/twins',
+            { heygen: 'twin_rachel_01', synthesia: null },
+            expect.anything(),
+        );
+    });
+
     it('revokes with Undo instead of a confirmation', async () => {
         const user = userEvent.setup();
         render(

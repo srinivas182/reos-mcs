@@ -11,13 +11,13 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 |  | Count |
 | --- | --- |
 | Integrations users connect (catalogue) | 44 (29 enabled, 1 beta, 14 coming soon at the pilot) |
-| Platform services REOS runs on | 18 |
+| Platform services REOS runs on | 19 |
 | Vendor accounts | 7 |
 | Outside approvals | 2 |
 | Access approved | 1 |
 | Filed and waiting | 0 |
 | Blocked | 0 |
-| Not started | 65 |
+| Not started | 66 |
 | Already past their apply-by date on 21 Nov 2026 | **1** |
 
 ## Action list: file in this order
@@ -65,11 +65,12 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 8 Feb 2027 | [AWS organisation](#aws-organisation) | Client | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [Expo push notifications (APNs, FCM)](#expo-push) | Mayura | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
 | 8 Feb 2027 | [LiveKit Cloud](#livekit) | Mayura | Self-serve | 1 wk | S6 (15 Feb 2027) | Not started |
-| 8 Feb 2027 | [Synthesia (AI avatar lessons; HeyGen fallback)](#synthesia) | Client | Agreement | 3 wk | S7 (1 Mar 2027) | Not started |
+| 8 Feb 2027 | [Synthesia (AI avatar lessons)](#synthesia) | Client | Agreement | 3 wk | S7 (1 Mar 2027) | Not started |
 | 15 Feb 2027 | [BoldTrail BackOffice](#boldtrail-backoffice) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
 | 15 Feb 2027 | [ListedKit](#listedkit) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
 | 15 Feb 2027 | [Open to Close](#open-to-close) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
 | 15 Feb 2027 | [Paperless Pipeline](#paperless-pipeline) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
+| 22 Feb 2027 | [HeyGen (AI avatar lessons)](#heygen) | Client | Self-serve | 1 wk | S7 (1 Mar 2027) | Not started |
 | 1 Mar 2027 | [LinkedIn](#linkedin) | Client + Mayura | Partner application | 8 wk | S11 (26 Apr 2027) | Not started |
 | 15 Mar 2027 | [NMLS Consumer Access](#nmls-lookup) | Mayura | Agreement | 4 wk | S10 (12 Apr 2027) | Not started |
 | 15 Mar 2027 | [Instagram and Facebook](#meta) | Client + Mayura | Vendor review | 6 wk | S11 (26 Apr 2027) | Not started |
@@ -221,7 +222,8 @@ Services REOS runs on. Users never connect these themselves, so they have no cat
 | [Twilio SMS](#twilio-sms) | SMS alerts and codes, with quiet hours. | Client | S6 (15 Feb 2027) | Not started |
 | [LiveKit Cloud](#livekit) | Mentor sessions and live classes (rooms, whiteboard, consented recording). | Mayura | S6 (15 Feb 2027) | Not started |
 | [Mux Video](#mux) | Lesson video streaming and offline download. | Mayura | S5 (1 Feb 2027) | Not started |
-| [Synthesia (AI avatar lessons; HeyGen fallback)](#synthesia) | Render AI avatar lesson videos from approved scripts. | Client | S7 (1 Mar 2027) | Not started |
+| [Synthesia (AI avatar lessons)](#synthesia) | Render AI avatar lesson videos from approved scripts, in English and Spanish. | Client | S7 (1 Mar 2027) | Not started |
+| [HeyGen (AI avatar lessons)](#heygen) | Render AI avatar lesson videos from approved scripts, in English and Spanish. | Client | S7 (1 Mar 2027) | Not started |
 | [Claude on Amazon Bedrock](#aws-bedrock-claude) | AI answers with sources, course drafting, contract review, role-play; first used to turn spoken notes into to-dos (B4.3). | Client | S4 (18 Jan 2027) | Not started |
 | [Amazon Titan Text Embeddings V2 on Bedrock](#aws-bedrock-embeddings) | Search course content by meaning (knowledge base passages, 1,024 dimensions in pgvector). | Client | S5 (1 Feb 2027) | Not started |
 | [Amazon Textract](#aws-textract) | Read uploaded CE certificates and licences. | Client | S10 (12 Apr 2027) | Not started |
@@ -572,20 +574,35 @@ Lesson video streaming and offline download.
 - **Cost:** Per minute encoded, stored and delivered.
 - **Notes:** Lessons upload to S3 first; Mux copies each video from a short-lived signed link, plays it with signed playback (the signing key) and writes captions in the lesson's language. The webhook (/webhooks/mux, signed with the webhook secret) says when a video and its captions are ready; the captions become searchable passages. Off: the original file plays from S3.
 
-### Synthesia (AI avatar lessons; HeyGen fallback)
+### Synthesia (AI avatar lessons)
 <a id="synthesia"></a>
 
 **Platform service** · AI · built in A7.3 (sprint 7)
 
-Render AI avatar lesson videos from approved scripts.
+Render AI avatar lesson videos from approved scripts, in English and Spanish.
 
 - **Owner:** Client
 - **Access:** Agreement, about 3 weeks; needed by S7 (1 Mar 2027); apply by 8 Feb 2027. Status: Not started.
-- **Sandbox:** Trial workspace; API needs an Enterprise plan.
+- **Sandbox:** Trial workspace; the API needs a plan with API access (test videos are watermarked and free).
 - **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
-- **Cost:** Enterprise plan (quote).
-- **Notes:** Instructor avatar consent template must be signed before any instructor likeness is used.
-- **Fallback:** HeyGen API; human-recorded video if TREC approval of avatar courses is delayed.
+- **Cost:** Plan with API access (Creator or Enterprise).
+- **Notes:** A7.3 renders each lesson twice (English and Spanish, decision of 23 November 2026) with POST /v2/videos and polls GET /v2/videos/{id} every two minutes (reos:lessons:renders) until it's complete, then copies the download into REOS's storage and video pipeline, then deletes Synthesia's copy (DELETE /v2/videos/{id}). Test keys make free, watermarked test videos. Spanish uses scriptLanguage es-MX. Confirm the request and response fields against the sandbox before switching to Live. An instructor's own avatar is made in Synthesia's studio from the consented sample and its id recorded on screen 52; it is never used without consent in force.
+- **Fallback:** HeyGen; human-recorded video if TREC approval of avatar courses is delayed.
+
+### HeyGen (AI avatar lessons)
+<a id="heygen"></a>
+
+**Platform service** · AI · built in A7.3 (sprint 7)
+
+Render AI avatar lesson videos from approved scripts, in English and Spanish.
+
+- **Owner:** Client
+- **Access:** Self-serve, about 1 week; needed by S7 (1 Mar 2027); apply by 22 Feb 2027. Status: Not started.
+- **Sandbox:** Buy a small amount of API credits (pay as you go; no plan needed).
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Cost:** About $0.60 to $7.20 per video minute depending on the avatar engine; digital twins about $2 each to create.
+- **Notes:** A7.3 renders each lesson twice (English and Spanish, with that language's voice id) with POST /v2/video/generate and polls GET /v1/video_status.get every two minutes until completed. It then copies the video into REOS's storage and video pipeline and deletes HeyGen's copy (DELETE /v1/video.delete). HeyGen also has a newer v3 video API, so confirm the status and delete endpoints and their fields against the sandbox before switching to Live. An instructor's digital twin is made from the consented sample and its avatar id recorded on screen 52.
+- **Fallback:** Synthesia; human-recorded video.
 
 ### Claude on Amazon Bedrock
 <a id="aws-bedrock-claude"></a>

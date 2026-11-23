@@ -55,3 +55,4 @@ Schedule::command('reos:sessions:tick')->everyMinute()->withoutOverlapping()->on
 Schedule::command('reos:recordings:prune')->dailyAt('04:15')->onOneServer();
 // Course approvals (A7.1): reminders before expiry, and expiries.
 Schedule::command('reos:approvals:check')->dailyAt('07:05')->timezone('America/Chicago')->onOneServer();
+Schedule::command('reos:lessons:renders')->everyTwoMinutes()->withoutOverlapping()->onOneServer();

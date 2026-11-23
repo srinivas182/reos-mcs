@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property int $lesson_id
  * @property MediaKind $kind
+ * @property string|null $language The spoken language of an AI lesson video (A7.3)
  * @property string $path
  * @property string $original_name
  * @property string $mime
@@ -29,6 +30,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $duration_seconds
  * @property int|null $pages
  * @property string|null $transcript Captions (WebVTT): a captions file, or the video host's
+ * @property array<string, string>|null $captions An AI lesson video's captions (WebVTT) by language, timed to it
  * @property list<array{page: int|null, text: string}>|null $sections Words on each page (slides and documents)
  * @property Carbon|null $scanned_at
  * @property Carbon|null $created_at
@@ -41,12 +43,12 @@ final class LessonMedia extends Model
 
     protected $fillable = [
         'lesson_id', 'kind', 'path', 'original_name', 'mime', 'size', 'status', 'failure', 'mux_asset_id', 'mux_playback_id',
-        'duration_seconds', 'pages', 'transcript', 'sections', 'scanned_at',
+        'duration_seconds', 'pages', 'transcript', 'sections', 'scanned_at', 'language', 'captions',
     ];
 
     protected $attributes = ['status' => 'awaiting_upload'];
 
-    protected $hidden = ['transcript', 'sections'];
+    protected $hidden = ['transcript', 'sections', 'captions'];
 
     protected function casts(): array
     {
@@ -57,6 +59,7 @@ final class LessonMedia extends Model
             'duration_seconds' => 'integer',
             'pages' => 'integer',
             'sections' => 'array',
+            'captions' => 'array',
             'scanned_at' => 'datetime',
         ];
     }

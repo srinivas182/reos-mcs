@@ -518,7 +518,12 @@
       "api_token": "Token de API",
       "zone_id": "ID de la zona",
       "cname_target": "Destino CNAME",
-      "sns_topic_arn": "ARN del tema de SNS (rebotes y quejas)"
+      "sns_topic_arn": "ARN del tema de SNS (rebotes y quejas)",
+      "stock_avatar": "Avatar genérico",
+      "stock_avatar_id": "ID del avatar genérico",
+      "background": "Fondo",
+      "voice_id_en": "ID de la voz en inglés",
+      "voice_id_es": "ID de la voz en español"
     },
     "checks": {
       "test": "Probar conexión",
@@ -2022,7 +2027,10 @@
         "lesson.approved": "Lección aprobada",
         "course.builder_changed": "Configuración del creador de cursos modificada",
         "course.seat_time_asked": "Cambio de tiempo de clase solicitado",
-        "module.source_started": "Carga de material fuente iniciada"
+        "module.source_started": "Carga de material fuente iniciada",
+        "module.generated": "Generó lecciones con IA",
+        "lesson.regenerated": "Generó de nuevo una lección",
+        "avatar.twins_recorded": "Registró identificadores de avatar"
       }
     }
   },
@@ -4955,7 +4963,16 @@
     "emptyTitle": "Aún no hay instructores",
     "empty": "Invite a sus instructores. Imparten sus cursos, dirigen clases en vivo y, si lo aceptan, prestan su imagen para lecciones con avatar de IA.",
     "errors": {
-      "notInstructor": "Esa persona no es instructor en su escuela."
+      "notInstructor": "Esa persona no es instructor en su escuela.",
+      "noConsent": "El consentimiento de avatar de este instructor no está vigente."
+    },
+    "twins": {
+      "open": "Identificadores de avatar",
+      "title": "Identificadores de avatar de {{name}}",
+      "intro": "Cree el avatar del instructor en el estudio de HeyGen o Synthesia a partir de la muestra que autorizó y luego agregue aquí su identificador. Solo se usa mientras su consentimiento esté vigente.",
+      "heygen": "Identificador de avatar de HeyGen",
+      "synthesia": "Identificador de avatar de Synthesia",
+      "save": "Guardar identificadores de avatar"
     }
   },
   "avatarConsent": {
@@ -5076,7 +5093,12 @@
       "credits": "{{credits}} créditos para generar",
       "nothing": "Suba material y primero se leerá.",
       "waiting_one": "{{count}} archivo todavía se está leyendo.",
-      "waiting_other": "{{count}} archivos todavía se están leyendo."
+      "waiting_other": "{{count}} archivos todavía se están leyendo.",
+      "left": "La escuela tiene {{credits}} créditos.",
+      "simulated": "HeyGen y Synthesia aún no están conectados, así que los videos serán de prueba.",
+      "short": "No hay suficientes créditos. Pida a REOS que agregue créditos al plan de la escuela.",
+      "generate": "Generar módulo",
+      "generating": "Generando…"
     },
     "settings": {
       "title": "Configuración",
@@ -5090,7 +5112,12 @@
       "presenter": "Presentador",
       "stock": "Un presentador genérico",
       "presenterHint": "Los instructores aparecen aquí una vez que otorgaron su consentimiento de avatar a la escuela.",
-      "save": "Guardar configuración"
+      "save": "Guardar configuración",
+      "vendor": "Videos de avatar con",
+      "vendors": {
+        "heygen": "HeyGen",
+        "synthesia": "Synthesia"
+      }
     },
     "saved": "Configuración guardada.",
     "lessons": {
@@ -5139,7 +5166,12 @@
       "presenter": "Ese presentador no se puede usar: elija uno genérico o un instructor con consentimiento de avatar vigente.",
       "notDraft": "Solo una lección en borrador puede aprobarse aquí.",
       "empty": "Agregue el texto de la lección antes de aprobarla.",
-      "noSchool": "Este curso no tiene una escuela a la cual solicitar."
+      "noSchool": "Este curso no tiene una escuela a la cual solicitar.",
+      "generating": "Ya se están generando lecciones aquí. Espere a que estén listas.",
+      "noSources": "Primero agregue material de origen: las lecciones con IA se escriben solo a partir de él.",
+      "credits": "Esto necesita :credits créditos y la escuela tiene :left. Pida a REOS que agregue créditos al plan de la escuela.",
+      "notAi": "Esta lección no se creó con IA.",
+      "noTwin": "El avatar de este instructor aún no está configurado en el proveedor. Agregue su identificador en Instructores."
     },
     "dashboard": {
       "title": "Su enseñanza",
@@ -5155,6 +5187,50 @@
       "missedLine": "{{topic}}: {{missed}} de {{answered}} respuestas incorrectas",
       "noMissed": "Aún no hay suficientes respuestas de práctica.",
       "open": "Creador de cursos"
+    },
+    "ai": {
+      "part": "Parte :n",
+      "generating": "Lecciones en preparación: :count. Cada una aparecerá aquí cuando esté lista para revisión.",
+      "regenerating": "Se está generando una nueva versión. La anterior se conserva.",
+      "failed": {
+        "draft": "No se pudo escribir el guion. Vuelva a intentarlo en unos minutos.",
+        "render": "No se pudo crear el video. Vuelva a intentarlo o elija el otro proveedor en Configuración.",
+        "timeout": "El video tardó más de un día, así que se detuvo. Vuelva a intentarlo.",
+        "copy": "No se pudo copiar el video terminado a REOS. Vuelva a intentarlo."
+      },
+      "statuses": {
+        "drafting": "Escribiendo",
+        "flagged": "Necesita una corrección",
+        "rendering": "Creando videos",
+        "ready": "Lista para revisión",
+        "failed": "Falló"
+      },
+      "version_one": "Versión {{version}}",
+      "version_other": "Versión {{version}} de {{count}}",
+      "versionShort": "Versión {{version}}",
+      "flagsShort_one": "{{count}} alerta",
+      "flagsShort_other": "{{count}} alertas",
+      "credits": "{{credits}} créditos",
+      "flagged_one": "{{count}} línea necesita una corrección, así que no se crearon videos. Cambie el material de origen y genere de nuevo, o corríjala en la revisión.",
+      "flagged_other": "{{count}} líneas necesitan una corrección, así que no se crearon videos. Cambie el material de origen y genere de nuevo, o corríjalas en la revisión.",
+      "videos": "Videos",
+      "renders": {
+        "queued": "En espera",
+        "rendering": "En proceso",
+        "ready": "Listo",
+        "failed": "Falló"
+      },
+      "simulated": "De prueba: el proveedor aún no está conectado.",
+      "script": "Guion",
+      "source": "Origen",
+      "page": "{{source}}, página {{page}}",
+      "review": "En espera de revisión: {{checkins}} verificaciones, {{questions}} preguntas y {{flashcards}} tarjetas de estudio.",
+      "title": "Lección con IA",
+      "intro": "Cada línea proviene de su material de origen. Nada llega a los estudiantes hasta que usted lo apruebe.",
+      "loading": "Cargando…",
+      "close": "Cerrar",
+      "regenerate": "Generar de nuevo",
+      "view": "Ver borrador"
     }
   }
 }

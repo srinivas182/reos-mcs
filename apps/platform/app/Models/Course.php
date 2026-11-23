@@ -34,7 +34,7 @@ use Illuminate\Support\Carbon;
  * @property list<string>|null $states Null: every state
  * @property string|null $hours
  * @property list<array{key: string, by: int, at: string}>|null $cleared_flags Legal flags a reviewer checked
- * @property array{language?: string, lesson_minutes?: int, presenter?: string}|null $builder Course builder settings (A7.2)
+ * @property array{language?: string, lesson_minutes?: int, presenter?: string, vendor?: string}|null $builder Course builder settings (A7.2; vendor A7.3)
  * @property CourseStatus $status
  * @property string|null $status_note
  * @property int|null $reviewed_by

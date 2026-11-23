@@ -3,10 +3,13 @@
 declare(strict_types=1);
 
 use App\Authorization\Role;
+use App\Billing\Ledger\Ledger;
 use App\Billing\Plans;
 use App\Billing\PriceInterval;
 use App\Billing\ProductStatus;
 use App\Billing\SponsorCodes;
+use App\Content\Ai\LessonPipeline;
+use App\Content\Avatars\AvatarConsents;
 use App\Content\MediaKind;
 use App\Enums\OrganisationType;
 use App\Features\Flags;
@@ -28,6 +31,7 @@ use App\Models\ProviderCategory;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
+use App\Privacy\ConsentMethod;
 use App\Services\Ai\AiSettings;
 use App\Services\Content\Courses;
 use App\Services\Content\LessonFiles;
@@ -96,6 +100,22 @@ function auditBuilder(): array
     $course->instructors()->attach($rachel->id);
     $module = CourseModule::query()->create(['course_id' => $course->id, 'title' => 'Agency', 'position' => 1]);
     $lesson = Lesson::query()->create(['course_id' => $course->id, 'course_module_id' => $module->id, 'title' => 'Who you represent', 'position' => 1, 'body' => 'Explain who you represent.', 'review_status' => 'draft']);
+
+    return [$school, $paul, $course, $rachel, $module, $lesson];
+}
+
+/** A builder module with source material and a school with credits, for AI lessons (A7.3). */
+function auditAiModule(): array
+{
+    Storage::fake(config()->string('reos.content.disk'));
+    [$school, $paul, $course, $rachel, $module, $lesson] = auditBuilder();
+    $module->sources()->create([
+        'role' => 'script', 'kind' => 'document', 'path' => "tenants/{$school->id}/courses/{$course->id}/sources/a.pdf", 'original_name' => 'Agency script.pdf',
+        'mime' => 'application/pdf', 'size' => 100, 'status' => 'ready', 'scanned_at' => now(), 'position' => 1, 'words' => 20,
+        'sections' => [['page' => 1, 'text' => 'In Texas, a license holder tells each party who they represent at the first substantive contact.']],
+    ]);
+    $ledger = app(Ledger::class);
+    $ledger->post('pool_funded', [[$ledger->platform('credits_sold'), -500], [$ledger->organisation($school, 'credits'), 500]], 'organisation', (string) $school->id);
 
     return [$school, $paul, $course, $rachel, $module, $lesson];
 }
@@ -549,6 +569,13 @@ function adminActions(): array
 
             return auditCase($paul, 'PUT', "/school/instructors/{$rachel->id}/courses", ['courses' => [$course->id]], tenant: $school->id);
         },
+        'school.instructors.twins' => function () {
+            [$school, $paul] = auditSchoolCourse();
+            $rachel = User::factory()->withRole(Role::Instructor, $school)->create();
+            app(Tenancy::class)->run($school->id, fn () => app(AvatarConsents::class)->give($rachel, $school, UploadedFile::fake()->create('sample.mp4', 4_000, 'video/mp4'), ConsentMethod::Web));
+
+            return auditCase($paul, 'PUT', "/school/instructors/{$rachel->id}/twins", ['heygen' => 'twin_01'], tenant: $school->id);
+        },
         'school.instructors.revoke' => function () {
             [$school, $paul] = auditSchoolCourse();
             $rachel = User::factory()->withRole(Role::Instructor, $school)->create();
@@ -634,6 +661,19 @@ function adminActions(): array
             Lesson::query()->create(['course_id' => $course->id, 'course_module_id' => $module->id, 'title' => 'Second', 'position' => 2, 'review_status' => 'draft']);
 
             return auditCase($rachel, 'POST', "/course-builder/lessons/{$lesson->id}/move", ['direction' => 'down'], tenant: $school->id);
+        },
+        // AI lessons (A7.3): generate a module, generate a lesson again.
+        'builder.modules.generate' => function () {
+            [$school, , , $rachel, $module] = auditAiModule();
+
+            return auditCase($rachel, 'POST', "/course-builder/modules/{$module->id}/generate", tenant: $school->id);
+        },
+        'builder.lessons.regenerate' => function () {
+            [$school, , $course, $rachel, $module] = auditAiModule();
+            app(LessonPipeline::class)->generate($course, $module, 15, $rachel);
+            app(LessonPipeline::class)->checkRenders();
+
+            return auditCase($rachel, 'POST', '/course-builder/lessons/'.$module->lessons()->whereHas('versions')->sole()->id.'/regenerate', tenant: $school->id);
         },
         'builder.lessons.approve' => function () {
             [$school, , , $rachel, , $lesson] = auditBuilder();

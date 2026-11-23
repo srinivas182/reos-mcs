@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Database\Seeders\Demo;
 
+use App\Billing\Ledger\Ledger;
+use App\Content\Ai\LessonPipeline;
 use App\Content\Builder\LessonReview;
 use App\Content\Builder\SourceRole;
 use App\Content\CourseStatus;
@@ -16,6 +18,7 @@ use App\Models\Course;
 use App\Models\CourseApproval;
 use App\Models\CourseModule;
 use App\Models\Lesson;
+use App\Models\LessonVersion;
 use App\Models\Organisation;
 use App\Models\User;
 use App\Services\Content\LessonFiles;
@@ -35,7 +38,7 @@ final readonly class DemoContent
         ."00:04:05.000 --> 00:04:12.000\nSo before you talk about price or terms, hand them the IABS form.\n\n"
         ."00:04:12.500 --> 00:04:18.000\nThat is the Information About Brokerage Services notice.\n";
 
-    public function __construct(private Ingestion $ingestion) {}
+    public function __construct(private Ingestion $ingestion, private LessonPipeline $pipeline, private Ledger $ledger) {}
 
     public function seed(): void
     {
@@ -117,6 +120,42 @@ final readonly class DemoContent
             'course_module_id' => $module->id, 'language' => 'en', 'position' => 4, 'review_status' => LessonReview::Draft,
         ]);
         $draft->forceFill(['course_module_id' => $module->id, 'review_status' => LessonReview::Draft])->save();
+
+        $this->aiLesson($course, $module);
+    }
+
+    /**
+     * The school's AI credits and one AI lesson made end to end from the
+     * module's captions (A7.3), with the simulators: the script with its
+     * sources in English and Spanish, two placeholder videos with captions,
+     * and its check-ins, questions and flashcards waiting for review.
+     */
+    private function aiLesson(Course $course, CourseModule $module): void
+    {
+        $school = $course->owner;
+        $author = $course->instructors()->first() ?? User::query()->where('email', 'like', '%@%')->orderBy('id')->first();
+
+        if ($school === null || $author === null) {
+            return;
+        }
+
+        if (! $this->ledger->posted('pool_funded', 'demo', 'school-credits-'.$school->id)) {
+            $this->ledger->post('pool_funded', [[$this->ledger->platform('credits_sold'), -5000], [$this->ledger->organisation($school, 'credits'), 5000]], 'demo', 'school-credits-'.$school->id, 'Demo credits');
+        }
+
+        if (LessonVersion::query()->whereIn('lesson_id', $module->lessons()->pluck('id'))->exists()) {
+            return;
+        }
+
+        $queue = config('queue.default');
+        config(['queue.default' => 'sync']);
+
+        try {
+            $this->pipeline->generate($course, $module, 15, $author);
+            $this->pipeline->checkRenders();
+        } finally {
+            config(['queue.default' => $queue]);
+        }
     }
 
     private function approval(Course $course, Delivery $delivery, ?string $number, string $status, ?string $approvedOn, ?string $expiresOn): void

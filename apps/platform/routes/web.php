@@ -194,6 +194,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.m
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage', 'throttle:60,1,instructors'])->prefix('school/instructors')->name('school.instructors.')->group(function () {
     Route::get('/', [SchoolInstructorsController::class, 'index'])->withoutMiddleware('throttle:60,1,instructors')->name('index');
     Route::put('{instructor}/courses', [SchoolInstructorsController::class, 'courses'])->whereNumber('instructor')->name('courses');
+    Route::put('{instructor}/twins', [SchoolInstructorsController::class, 'twins'])->whereNumber('instructor')->name('twins');
     Route::delete('{instructor}', [SchoolInstructorsController::class, 'revoke'])->whereNumber('instructor')->name('revoke');
     Route::post('{instructor}/restore', [SchoolInstructorsController::class, 'restore'])->whereNumber('instructor')->name('restore');
 });
@@ -203,6 +204,7 @@ Route::get('avatar-samples/{consent}', [AvatarController::class, 'sample'])->whe
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:learning.teach'])->name('builder.')->group(function () {
     Route::get('course-builder', [CourseBuilderController::class, 'index'])->name('index');
     Route::get('course-builder/{course}', [CourseBuilderController::class, 'show'])->whereNumber('course')->name('show');
+    Route::get('course-builder/lessons/{lesson}/draft', [CourseBuilderController::class, 'draft'])->whereNumber('lesson')->name('lessons.draft');
     Route::middleware('throttle:120,1,builder')->group(function () {
         Route::post('course-builder', [CourseBuilderController::class, 'store'])->name('store');
         Route::put('course-builder/{course}/status', [CourseBuilderController::class, 'status'])->whereNumber('course')->name('status');
@@ -220,6 +222,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:learning.
         Route::post('course-builder/lessons/{lesson}/approve', [CourseBuilderController::class, 'approveLesson'])->whereNumber('lesson')->name('lessons.approve');
         Route::delete('course-builder/lessons/{lesson}', [CourseBuilderController::class, 'removeLesson'])->whereNumber('lesson')->name('lessons.destroy');
         Route::post('course-builder/lessons/{lesson}/restore', [CourseBuilderController::class, 'restoreLesson'])->whereNumber('lesson')->name('lessons.restore');
+        // AI lessons (A7.3): generate a module, generate a lesson again.
+        Route::post('course-builder/modules/{module}/generate', [CourseBuilderController::class, 'generate'])->whereNumber('module')->middleware('throttle:6,1,ai-lessons')->name('modules.generate');
+        Route::post('course-builder/lessons/{lesson}/regenerate', [CourseBuilderController::class, 'regenerate'])->whereNumber('lesson')->middleware('throttle:6,1,ai-lessons')->name('lessons.regenerate');
     });
 });
 // Earnings (B5.2b): instructors and mentors.

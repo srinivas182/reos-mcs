@@ -34,7 +34,8 @@ final class FetchVideoCaptions implements ShouldQueue
         $media = LessonMedia::query()->find($this->mediaId);
         $mux = $videos->mux();
 
-        if ($media === null || $mux === null || $media->mux_playback_id === null) {
+        // AI lesson videos (A7.3) keep the captions written from their script.
+        if ($media === null || $mux === null || $media->mux_playback_id === null || $media->captions !== null) {
             return;
         }
 
