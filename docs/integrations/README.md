@@ -669,9 +669,10 @@ Two-way contacts, notes and tasks.
 
 - **Owner:** Client + Mayura
 - **Access:** Partner application, about 8 weeks; needed by S7 (1 Mar 2027); apply by 18 Dec 2026. Status: Not started.
-- **Sandbox:** Partner sandbox on approval.
+- **Sandbox:** A test account's API token (Lead Engine › Lead Dropbox) and Developer Portal access.
 - **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Partner terms on application.
+- **Notes:** B7.3 (ADR 0029): each agent connects with their own kvCORE API token (Bearer). REOS polls every 15 minutes (no webhooks): GET /contacts (paged, newest first), GET /contact/{id}/notes for contacts that changed, GET /tasks; writes PUT /contact/{id} (status), POST /contact/{id}/action/note and PUT /task/{id} (complete). Smart campaign status is read from the contact and shown, never changed. Confirm paths and fields against the V2 API when the test token arrives.
 - **Fallback:** CSV import.
 
 ### Lofty
@@ -683,9 +684,10 @@ Two-way contacts, notes and tasks.
 
 - **Owner:** Client + Mayura
 - **Access:** Partner application, about 6 weeks; needed by S8 (15 Mar 2027); apply by 18 Dec 2026. Status: Not started.
-- **Sandbox:** Partner sandbox on approval.
+- **Sandbox:** A test account's API token (Lead Engine › Lead Dropbox) and Developer Portal access.
 - **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Partner terms on application.
+- **Notes:** B7.3 (ADR 0029): each agent connects with their own kvCORE API token (Bearer). REOS polls every 15 minutes (no webhooks): GET /contacts (paged, newest first), GET /contact/{id}/notes for contacts that changed, GET /tasks; writes PUT /contact/{id} (status), POST /contact/{id}/action/note and PUT /task/{id} (complete). Smart campaign status is read from the contact and shown, never changed. Confirm paths and fields against the V2 API when the test token arrives.
 - **Fallback:** CSV import.
 
 ### Salesforce

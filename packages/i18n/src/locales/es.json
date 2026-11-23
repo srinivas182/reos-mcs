@@ -1440,13 +1440,15 @@
         "read_people": "Ver sus contactos, notas y tareas",
         "write_notes": "Agregar las notas que usted escriba en REOS",
         "write_tasks": "Marcar como terminadas las tareas que usted termine en REOS",
-        "write_stage": "Actualizar la etapa de un contacto cuando usted la cambie en REOS"
+        "write_stage": "Actualizar la etapa de un contacto cuando usted la cambie en REOS",
+        "read_campaigns": "Ver la campaña inteligente de cada contacto y su estado"
       },
       "never": {
         "delete_yours": "Nunca eliminará los eventos que usted creó en su calendario",
         "email": "Nunca enviará correos a sus invitados a menos que usted lo pida",
         "delete_people": "Nunca eliminar sus contactos",
-        "send_messages": "Nunca enviar mensajes de texto ni correos electrónicos a sus contactos"
+        "send_messages": "Nunca enviar mensajes de texto ni correos electrónicos a sus contactos",
+        "change_campaigns": "Nunca iniciar, detener ni cambiar sus campañas inteligentes"
       },
       "footer": "Puede desconectarla en cualquier momento desde Conexiones. Sus datos siguen siendo suyos.",
       "continue": "Continuar a {{tool}}",
@@ -5317,7 +5319,8 @@
       "from": "De {{source}}",
       "sentTo": "Enviada a {{tools}}",
       "sources": "Orígenes",
-      "stage": "Etapa"
+      "stage": "Etapa",
+      "campaign": "Campaña inteligente en {{source}}: {{name}} ({{status}})"
     }
   }
 }

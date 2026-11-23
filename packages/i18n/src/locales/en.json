@@ -1440,13 +1440,15 @@
         "read_people": "See your contacts, notes and tasks",
         "write_notes": "Add the notes you write in REOS",
         "write_tasks": "Mark tasks done when you finish them in REOS",
-        "write_stage": "Update a contact's stage when you change it in REOS"
+        "write_stage": "Update a contact's stage when you change it in REOS",
+        "read_campaigns": "See each contact's smart campaign and its status"
       },
       "never": {
         "delete_yours": "Never delete events you made in your calendar",
         "email": "Never email your guests unless you ask",
         "delete_people": "Never delete your contacts",
-        "send_messages": "Never text or email your contacts"
+        "send_messages": "Never text or email your contacts",
+        "change_campaigns": "Never start, stop or change your smart campaigns"
       },
       "footer": "Disconnect any time from Connections. Your data stays yours.",
       "continue": "Continue to {{tool}}",
@@ -5317,7 +5319,8 @@
       "from": "From {{source}}",
       "sentTo": "Sent to {{tools}}",
       "sources": "Sources",
-      "stage": "Stage"
+      "stage": "Stage",
+      "campaign": "Smart campaign in {{source}}: {{name}} ({{status}})"
     }
   }
 }

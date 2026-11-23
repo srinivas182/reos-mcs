@@ -1053,24 +1053,17 @@
       "owner": "client_with_mayura",
       "access_status": "not_started",
       "personal_data": true,
-      "sandbox": "Partner sandbox on approval.",
+      "sandbox": "A test account's API token (Lead Engine › Lead Dropbox) and Developer Portal access.",
       "connection": {
-        "auth": "oauth2",
+        "auth": "api_key",
         "accounts": "user",
         "fields": [
           {
-            "key": "client_id",
+            "key": "server_url",
             "secret": false,
             "required": true,
             "kind": "text",
-            "default": null
-          },
-          {
-            "key": "client_secret",
-            "secret": true,
-            "required": true,
-            "kind": "text",
-            "default": null
+            "default": "https://api.kvcore.com/v2/public"
           }
         ]
       }
@@ -1086,24 +1079,17 @@
       "owner": "client_with_mayura",
       "access_status": "not_started",
       "personal_data": true,
-      "sandbox": "Partner sandbox on approval.",
+      "sandbox": "A test account's API token (Lead Engine › Lead Dropbox) and Developer Portal access.",
       "connection": {
-        "auth": "oauth2",
+        "auth": "api_key",
         "accounts": "user",
         "fields": [
           {
-            "key": "client_id",
+            "key": "server_url",
             "secret": false,
             "required": true,
             "kind": "text",
-            "default": null
-          },
-          {
-            "key": "client_secret",
-            "secret": true,
-            "required": true,
-            "kind": "text",
-            "default": null
+            "default": "https://api.kvcore.com/v2/public"
           }
         ]
       }

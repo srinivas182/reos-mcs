@@ -20,15 +20,16 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $remote_updated_at
  * @property Carbon|null $synced_at
  * @property string|null $echo_hash
+ * @property array{campaign?: string, campaign_status?: string}|null $details Shown, never changed (B7.3: kvCORE's smart campaign)
  * @property-read Contact $contact
  */
 final class ContactLink extends Model
 {
-    protected $fillable = ['contact_id', 'owner_key', 'source', 'connection_id', 'external_id', 'remote_updated_at', 'synced_at', 'echo_hash'];
+    protected $fillable = ['contact_id', 'owner_key', 'source', 'connection_id', 'external_id', 'remote_updated_at', 'synced_at', 'echo_hash', 'details'];
 
     protected function casts(): array
     {
-        return ['remote_updated_at' => 'datetime', 'synced_at' => 'datetime'];
+        return ['remote_updated_at' => 'datetime', 'synced_at' => 'datetime', 'details' => 'array'];
     }
 
     /** @return BelongsTo<Contact, $this> */

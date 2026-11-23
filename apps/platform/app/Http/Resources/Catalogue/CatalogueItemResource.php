@@ -63,7 +63,7 @@ final class CatalogueItemResource extends JsonResource
             /**
              * For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet).
              *
-             * @var array{can: list<'read_events'|'write_events'|'change_alerts'|'read_people'|'write_notes'|'write_tasks'|'write_stage'>, never: list<'delete_yours'|'email'|'delete_people'|'send_messages'>}|null
+             * @var array{can: list<'read_events'|'write_events'|'change_alerts'|'read_people'|'write_notes'|'write_tasks'|'write_stage'|'read_campaigns'>, never: list<'delete_yours'|'email'|'delete_people'|'send_messages'|'change_campaigns'>}|null
              */
             'consent' => ConnectorRegistry::consent($definition->id),
             /**

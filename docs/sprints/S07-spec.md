@@ -214,6 +214,16 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 - Two-way contacts, notes and tasks where the V2 API allows; smart campaign status is read-only on the contact.
 - Polling on a cursor, since there are no webhooks for partners until approved.
 - **Done when:** the same as Follow Up Boss: a note written in REOS appears in BoldTrail.
+- **As built, B7.3** (ADR 0029):
+  - **Connecting:** each agent connects with their own kvCORE API token; the register entry changes from OAuth to `api_key`.
+  - **Polling every 15 minutes:**
+    - Contacts are read newest first and stop at the last mark.
+    - Notes are read for contacts that changed.
+    - Tasks are read in pages.
+  - **Write-back:** notes, task completion and stage (as kvCORE's status number) go back.
+  - **Smart campaigns:** the campaign and its status are shown on the contact and never changed.
+  - **One person, all sources:** the same people from kvCORE and Follow Up Boss are kept once, with both links.
+  - **Simulator** on demo data, used until the test token arrives.
 
 ## 4. Definition of done (whole sprint)
 

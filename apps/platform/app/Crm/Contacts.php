@@ -42,7 +42,8 @@ use Illuminate\Validation\ValidationException;
  *     stage?: string|null,
  *     birthday?: string|null,
  *     tags?: list<string>,
- *     updated_at?: string|null
+ *     updated_at?: string|null,
+ *     details?: array{campaign?: string, campaign_status?: string}
  * }
  */
 final readonly class Contacts
@@ -71,8 +72,9 @@ final readonly class Contacts
         $clean = self::clean($record);
         $key = self::ownerKey($ownerType, $ownerId);
         $at = self::time($record['updated_at'] ?? null);
+        $details = isset($record['details']) && $record['details'] !== [] ? $record['details'] : null;
 
-        return DB::transaction(function () use ($ownerType, $ownerId, $source, $connection, $clean, $key, $at): Contact {
+        return DB::transaction(function () use ($ownerType, $ownerId, $source, $connection, $clean, $key, $at, $details): Contact {
             $link = ContactLink::query()->where('owner_key', $key)->where('source', $source)->where('external_id', $clean['external_id'])->lockForUpdate()->first();
 
             // REOS's own write coming back: nothing changed.
@@ -95,7 +97,7 @@ final readonly class Contacts
                     $this->log($contact, 'linked', $source, [], $at);
                 }
 
-                $link->forceFill(['synced_at' => now(), 'remote_updated_at' => $at, 'echo_hash' => null, 'connection_id' => $connection === null ? $link->connection_id : $connection->id])->save();
+                $link->forceFill(['synced_at' => now(), 'remote_updated_at' => $at, 'echo_hash' => null, 'connection_id' => $connection === null ? $link->connection_id : $connection->id, 'details' => $details ?? $link->details])->save();
                 $this->apply($contact, $clean, $source, $at, false);
 
                 return $contact;
@@ -109,7 +111,7 @@ final readonly class Contacts
 
             ContactLink::query()->create([
                 'contact_id' => $contact->id, 'owner_key' => $key, 'source' => $source, 'connection_id' => $connection?->id,
-                'external_id' => $clean['external_id'], 'remote_updated_at' => $at, 'synced_at' => now(),
+                'external_id' => $clean['external_id'], 'remote_updated_at' => $at, 'synced_at' => now(), 'details' => $details,
             ]);
             $this->apply($contact, $clean, $source, $at, $created);
             $this->log($contact, $created ? 'created' : 'linked', $source, [], $at);

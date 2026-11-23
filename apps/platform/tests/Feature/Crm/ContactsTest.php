@@ -62,8 +62,8 @@ describe('one person, all sources (the B7.1 done-when)', function () {
 
         $this->getJson('/api/v1/contacts')->assertOk()->assertJsonCount(3, 'data')
             ->assertJsonFragment(['sources' => [
-                ['source' => 'follow-up-boss', 'name' => 'Follow Up Boss', 'synced_at' => $contacts[0]->links->firstWhere('source', 'follow-up-boss')->synced_at?->toIso8601String()],
-                ['source' => 'phone', 'name' => 'Phone contacts', 'synced_at' => $contacts[0]->links->firstWhere('source', 'phone')->synced_at?->toIso8601String()],
+                ['source' => 'follow-up-boss', 'name' => 'Follow Up Boss', 'synced_at' => $contacts[0]->links->firstWhere('source', 'follow-up-boss')->synced_at?->toIso8601String(), 'campaign' => null, 'campaign_status' => null],
+                ['source' => 'phone', 'name' => 'Phone contacts', 'synced_at' => $contacts[0]->links->firstWhere('source', 'phone')->synced_at?->toIso8601String(), 'campaign' => null, 'campaign_status' => null],
             ]]);
     });
 
