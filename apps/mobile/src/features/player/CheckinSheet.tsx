@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { CheckinResult, PlayerState, ReportReason } from '@/lib/player';
 import { reportQuestion } from '@/lib/player';
 import { Button, Callout, OptionGroup, PillGroup, Sheet, Text } from '@/ui';
+import { SaveFlashcard } from '@/features/practice/SaveFlashcard';
 
 type Checkpoint = NonNullable<PlayerState['checkin']>;
 
@@ -109,6 +110,7 @@ function Body({
             body={[result.explanation, result.source ? t('player.checkin.source', { source: result.source }) : null].filter(Boolean).join('\n')}
             live
           />
+          {result.explanation ? <SaveFlashcard source="checkin" front={question.prompt} back={result.explanation} /> : null}
           {online && !reported ? (
             reporting ? (
               <>

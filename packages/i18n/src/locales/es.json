@@ -6229,7 +6229,9 @@
         "check": "Vea cómo le iría en el examen real.",
         "map": "Su probabilidad de aprobar cada parte.",
         "math_weak": "Matemáticas es uno de sus temas más débiles: practíquelo paso a paso.",
-        "math": "Matemáticas de bienes raíces, paso a paso, con números nuevos."
+        "math": "Matemáticas de bienes raíces, paso a paso, con números nuevos.",
+        "due": "Tarjetas pendientes: dos minutos las mantienen frescas.",
+        "quick": "60 segundos de memoria rápida."
       },
       "modes": {
         "diagnostic": "Diagnóstico",
@@ -6238,7 +6240,10 @@
         "fix": "Mejorar mi tema más débil",
         "simulation": "Simulacro completo",
         "readiness": "Preparación",
-        "math": "Laboratorio de matemáticas"
+        "math": "Laboratorio de matemáticas",
+        "flashcards": "Tarjetas de estudio",
+        "speed": "Ronda rápida",
+        "flashcardsDue": "Tarjetas de estudio ({{count}} pendientes)"
       }
     },
     "math": {
@@ -6353,6 +6358,58 @@
         "interest": "El interés del primer mes",
         "interestHint": "Multiplique el préstamo por la tasa anual y divida entre 12."
       }
+    },
+    "flashcards": {
+      "title": "Tarjetas de estudio",
+      "description": "Repasos espaciados de dos minutos. Las tarjetas que falla vuelven antes.",
+      "topicTitle": "Tarjetas de {{topic}}",
+      "due_one": "{{count}} tarjeta pendiente",
+      "due_other": "{{count}} tarjetas pendientes",
+      "newLeft_one": "{{count}} tarjeta nueva hoy",
+      "newLeft_other": "{{count}} tarjetas nuevas hoy",
+      "start": "Empezar un repaso de 2 minutos",
+      "counter": "Tarjeta {{n}} · faltan {{left}}",
+      "timeLeft": "Quedan {{time}}",
+      "show": "Ver la respuesta",
+      "front": "Pregunta",
+      "back": "Respuesta",
+      "again": "Otra vez",
+      "hard": "Difícil",
+      "good": "La sé",
+      "againHint": "Vuelve en 10 minutos",
+      "doneTitle": "Repaso terminado",
+      "doneBody_one": "Repasó {{count}} tarjeta.",
+      "doneBody_other": "Repasó {{count}} tarjetas.",
+      "another": "Otro repaso",
+      "emptyTitle": "No hay tarjetas pendientes",
+      "empty": "Guarde tarjetas de las preguntas de repaso, de Pregunte y de la revisión de respuestas, o termine lecciones con tarjetas. Aparecen aquí cuando les toca.",
+      "save": "Guardar como tarjeta",
+      "saved": "Se guardó en sus tarjetas.",
+      "offline": "Sin conexión: sus repasos se guardan en este teléfono y se sincronizan al volver a conectarse.",
+      "pending_one": "{{count}} repaso por sincronizar",
+      "pending_other": "{{count}} repasos por sincronizar"
+    },
+    "speed": {
+      "title": "Ronda rápida",
+      "description": "60 segundos de verdadero o falso. ¿Es esta la respuesta correcta?",
+      "best": "Mejor puntaje: {{score}}",
+      "noBest": "Aún no tiene mejor puntaje",
+      "start": "Empezar",
+      "score": "Puntaje: {{score}}",
+      "true": "Verdadero",
+      "false": "Falso",
+      "proposed": "Respuesta: {{answer}}",
+      "timeLeft_one": "Queda {{count}} segundo",
+      "timeLeft_other": "Quedan {{count}} segundos",
+      "right": "Correcto",
+      "wrong": "Incorrecto",
+      "doneTitle": "Se acabó el tiempo",
+      "doneBody": "{{score}} correctas de {{answered}}.",
+      "record": "¡Nuevo mejor puntaje!",
+      "misses_one": "{{count}} error guardado en sus tarjetas.",
+      "misses_other": "{{count}} errores guardados en sus tarjetas.",
+      "again": "Jugar otra vez",
+      "cardBack": "Respuesta: :answer. :why"
     }
   },
   "brokerageIntegrations": {

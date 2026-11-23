@@ -234,12 +234,15 @@ export type Coach = {
             | 'plan'
             | 'drill'
             | 'fix'
+            | 'flashcards'
+            | 'speed'
             | 'math'
             | 'simulation'
             | 'readiness';
         why: string;
         topic: Topic | null;
         plan_id: number | null;
+        count: number | null;
     }[];
 };
 
@@ -294,4 +297,49 @@ export type MathCheck = {
     hint: string | null;
     answer: string | null;
     solved: boolean;
+};
+
+/** A card in the deck (screen 31, A9.2d), with its FSRS schedule. */
+export type Flashcard = {
+    id: number;
+    source: string;
+    topic: Topic | null;
+    front: string;
+    back: string;
+    new: boolean;
+    due_at: string | null;
+    reps: number;
+    lapses: number;
+    stability: number | null;
+    difficulty: number | null;
+    last_reviewed_at: string | null;
+};
+
+export type Deck = {
+    due: number;
+    new_left: number;
+    total: number;
+    cards: Flashcard[];
+};
+
+/** A speed round (screen 50, A9.2d). */
+export type SpeedRoundData = {
+    id: number;
+    seconds: number;
+    best: number | null;
+    statements: {
+        id: number;
+        prompt: string;
+        answer: string;
+        truth: boolean;
+        topic: string;
+    }[];
+};
+
+export type SpeedResult = {
+    score: number;
+    answered: number;
+    best: number;
+    record: boolean;
+    misses: number;
 };

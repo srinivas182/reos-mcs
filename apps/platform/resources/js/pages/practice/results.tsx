@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
 import { PortionScores } from '@/components/practice/portion-scores';
 import { TopicBars } from '@/components/practice/readiness-ring';
+import { SaveFlashcard } from '@/components/practice/save-flashcard';
 import type { ReadinessSummary, Results } from '@/components/practice/types';
 import { countdown } from '@/components/practice/types';
 import { Button } from '@/components/ui/button';
@@ -255,6 +256,12 @@ export default function ResultsPage({
                                             </Link>
                                         </Button>
                                     ) : null}
+                                    <SaveFlashcard
+                                        source="review"
+                                        front={q.prompt}
+                                        back={`${q.options[q.right] ?? ''}. ${q.explanation}`}
+                                        questionId={q.id}
+                                    />
                                     {!q.correct && q.math ? (
                                         <Button variant="outline" asChild>
                                             <Link

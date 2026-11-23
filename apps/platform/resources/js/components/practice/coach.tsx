@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
     attempt as openAttempt,
+    flashcards,
     math as mathLab,
     readiness,
+    speed,
     start,
 } from '@/routes/practice';
 import { show as showPlan, store as storePlan } from '@/routes/practice/plans';
@@ -40,6 +42,10 @@ export function CoachPanel({ coach }: { coach: Coach }) {
                 return router.post(storePlan().url, { topic: item.topic });
             case 'math':
                 return router.visit(mathLab().url);
+            case 'flashcards':
+                return router.visit(flashcards().url);
+            case 'speed':
+                return router.visit(speed().url);
             case 'simulation':
                 return document
                     .getElementById('simulations')
@@ -109,13 +115,18 @@ export function CoachPanel({ coach }: { coach: Coach }) {
                                       done: p.done,
                                       steps: p.steps,
                                   })
-                                : item.mode === 'fix' && item.topic
-                                  ? t('practice.fix.start', {
-                                        topic: t(
-                                            `practice.topics.${item.topic}`,
-                                        ),
+                                : item.mode === 'flashcards' &&
+                                    item.count !== null
+                                  ? t('practice.coach.modes.flashcardsDue', {
+                                        count: item.count,
                                     })
-                                  : t(`practice.coach.modes.${item.mode}`);
+                                  : item.mode === 'fix' && item.topic
+                                    ? t('practice.fix.start', {
+                                          topic: t(
+                                              `practice.topics.${item.topic}`,
+                                          ),
+                                      })
+                                    : t(`practice.coach.modes.${item.mode}`);
 
                         return (
                             <li

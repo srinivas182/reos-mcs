@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SaveFlashcard } from '@/components/practice/save-flashcard';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -170,6 +171,13 @@ function Body({
                         </p>
                     ) : null}
                 </div>
+            ) : null}
+            {result?.explanation ? (
+                <SaveFlashcard
+                    source="checkin"
+                    front={question.prompt}
+                    back={result.explanation}
+                />
             ) : null}
             {result ? <Report question={question.id} /> : null}
             {error ? (

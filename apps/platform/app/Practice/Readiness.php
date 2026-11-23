@@ -6,6 +6,7 @@ namespace App\Practice;
 
 use App\Enums\QuizTopic;
 use App\Models\ReadinessSnapshot;
+use App\Models\SpeedRound;
 use App\Models\TestAttempt;
 use App\Models\User;
 use App\Services\States\PersonStates;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\DB;
  * passing each exam portion on a new set of questions.
  *
  * Each topic's answers over the last 120 days count, older ones less (a
- * three-week half-life). A topic's ability is a Beta estimate of its share
+ * three-week half-life); speed-round answers count a quarter as much. A topic's ability is a Beta estimate of its share
  * right (one right and one wrong assumed, so a few answers mean little). A
  * portion's expected share is the outline-weighted mix of its topics, and
  * the pass chance is the chance of reaching the portion's pass mark over its
@@ -209,6 +210,20 @@ final readonly class Readiness
                     $topics[$topic]['c'] += $w * $score['correct'];
                     $topics[$topic]['n'] += $w * $score['total'];
                     $topics[$topic]['answers'] += $score['total'];
+                }
+            }
+        }
+
+        // Speed rounds count lightly (A9.2d): a quarter of a test answer each.
+        $rounds = SpeedRound::query()->where('user_id', $user->id)->whereNotNull('finished_at')->where('finished_at', '>=', $now->subDays(self::WINDOW_DAYS))->latest('finished_at')->limit(30)->get(['finished_at', 'by_topic']);
+        foreach ($rounds as $round) {
+            $age = max(0.0, (float) CarbonImmutable::parse($round->finished_at)->diffInSeconds($now)) / 86400;
+            $w = SpeedRounds::WEIGHT * 0.5 ** ($age / self::HALF_LIFE);
+
+            foreach ($round->by_topic ?? [] as $topic => $score) {
+                if (isset($topics[$topic])) {
+                    $topics[$topic]['c'] += $w * $score['correct'];
+                    $topics[$topic]['n'] += $w * $score['total'];
                 }
             }
         }

@@ -91,8 +91,10 @@ export async function continuePlan(plan: number): Promise<PlanNext | null> {
 }
 
 /** Where a fix plan's next step goes: the lesson at its second, the step's test, or the plan's misses. */
-export function openStep(plan: number, next: PlanNext) {
-  if (next.lesson) {
+export function openStep(plan: number, next: PlanNext, topic: string | null = null) {
+  if (next.kind === 'flashcards') {
+    router.push({ pathname: '/practice/flashcards', params: topic ? { topic } : {} });
+  } else if (next.lesson) {
     router.push({ pathname: '/learn/[id]', params: { id: String(next.lesson.id), ...(next.lesson.seconds !== null ? { t: String(next.lesson.seconds) } : {}) } });
   } else if (next.attempt_id !== null) {
     router.push({ pathname: '/practice/[id]', params: { id: String(next.attempt_id) } });

@@ -8,10 +8,12 @@ use App\Http\Controllers\Controller;
 use App\Models\TestAttempt;
 use App\Models\User;
 use App\Practice\DiagnosticBank;
+use App\Practice\Flashcards\Flashcards;
 use App\Practice\MathLab\MathLab;
 use App\Practice\PracticeAccess;
 use App\Practice\PracticeCoach;
 use App\Practice\Readiness;
+use App\Practice\SpeedRounds;
 use App\Practice\Tests;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
@@ -81,6 +83,24 @@ final class PracticePageController extends Controller
         $kind = $request->query('kind');
 
         return Inertia::render('practice/math', ['kinds' => $lab->menu($user), 'problem' => is_string($kind) && in_array($kind, $lab->kinds(), true) ? $lab->problem($kind)->toArray() : null]);
+    }
+
+    /** Flashcards on the web (the phone's screen 31, A9.2d); `topic` keeps to one topic (a fix plan's step). */
+    public function flashcards(Request $request, #[CurrentUser] User $user, PracticeAccess $access, Flashcards $cards): Response
+    {
+        $access->allow($user);
+        $topic = $request->query('topic');
+        $topic = is_string($topic) && array_key_exists($topic, DiagnosticBank::WEIGHTS) ? $topic : null;
+
+        return Inertia::render('practice/flashcards', ['deck' => $cards->deck($user, $user->locale->value, $topic), 'topic' => $topic]);
+    }
+
+    /** The speed round on the web (the phone's screen 50, A9.2d). */
+    public function speed(#[CurrentUser] User $user, PracticeAccess $access, SpeedRounds $rounds): Response
+    {
+        $access->allow($user);
+
+        return Inertia::render('practice/speed', ['best' => $rounds->best($user)]);
     }
 
     public function results(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests, Readiness $readiness): Response|RedirectResponse

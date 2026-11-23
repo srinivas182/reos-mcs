@@ -7,6 +7,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { api } from '@/lib/api';
 import { Button, Callout, Card, OptionGroup, Text, TextField } from '@/ui';
+import { SaveFlashcard } from '@/features/practice/SaveFlashcard';
 
 export type Answer = paths['/learn/lessons/{lesson}/ask']['post']['responses'][200]['content']['application/json'];
 type Mode = 'ask' | 'simpler' | 'spanish' | 'quiz';
@@ -79,6 +80,7 @@ export function AskInstructor({ lesson, pause, resume }: Props) {
             </Text>
           ) : null}
           <Text>{answer.answer}</Text>
+          {answer.found ? <SaveFlashcard source="ask" front={asked} back={answer.answer} /> : null}
           {answer.engine === 'simulator' ? (
             <Text tone="muted" variant="caption">
               {t('learn.ask.demo')}

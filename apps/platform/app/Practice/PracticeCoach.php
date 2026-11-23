@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Practice;
 
+use App\Models\Flashcard;
 use App\Models\TestAttempt;
 use App\Models\TopicPlan;
 use App\Models\User;
@@ -17,17 +18,17 @@ use App\Models\User;
  * - The smart drill on the three weakest topics (15 questions, misses
  *   included), refreshed after every session.
  * - Fix the weakest topic, when it's below the pass line and has no plan.
- * - Math lab: right after, when math is among the weakest; otherwise
- *   before the readiness map.
+ * - Flashcards due (A9.2d); math lab here when math is among the weakest.
+ * - The speed round (A9.2d), then math lab otherwise.
  * - A full simulation: first when readiness is 80% or more (rehearse before
  *   booking), otherwise after practice once readiness reaches 60% or the
  *   exam is 45 days away.
  * - The readiness map.
  *
- * Flashcards, the speed round, hands-free and challenges join
+ * Hands-free and challenges join
  * the ranking as they arrive (A9.2c to A9.3).
  *
- * @phpstan-type Suggestion array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'math'|'simulation'|'readiness', why: string, topic: string|null, plan_id: int|null}
+ * @phpstan-type Suggestion array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'flashcards'|'speed'|'math'|'simulation'|'readiness', why: string, topic: string|null, plan_id: int|null, count: int|null}
  */
 final readonly class PracticeCoach
 {
@@ -48,30 +49,35 @@ final readonly class PracticeCoach
         $ranked = [];
 
         if (! $diagnostic) {
-            $ranked[] = ['mode' => 'diagnostic', 'why' => 'baseline', 'topic' => null, 'plan_id' => null];
+            $ranked[] = ['mode' => 'diagnostic', 'why' => 'baseline', 'topic' => null, 'plan_id' => null, 'count' => null];
         }
-        $simulation = ['mode' => 'simulation', 'why' => $percent >= 80 ? 'rehearse' : ($days !== null && $days <= 45 ? 'exam_soon' : 'check'), 'topic' => null, 'plan_id' => null];
+        $simulation = ['mode' => 'simulation', 'why' => $percent >= 80 ? 'rehearse' : ($days !== null && $days <= 45 ? 'exam_soon' : 'check'), 'topic' => null, 'plan_id' => null, 'count' => null];
         if ($diagnostic && $percent >= 80) {
             $ranked[] = $simulation;
         }
         foreach ($plans as $plan) {
-            $ranked[] = ['mode' => 'plan', 'why' => 'carry_on', 'topic' => $plan->topic, 'plan_id' => $plan->id];
+            $ranked[] = ['mode' => 'plan', 'why' => 'carry_on', 'topic' => $plan->topic, 'plan_id' => $plan->id, 'count' => null];
         }
-        $ranked[] = ['mode' => 'drill', 'why' => 'weakest', 'topic' => null, 'plan_id' => null];
+        $ranked[] = ['mode' => 'drill', 'why' => 'weakest', 'topic' => null, 'plan_id' => null, 'count' => null];
         if ($weakest !== null && ! $plans->contains('topic', $weakest)) {
-            $ranked[] = ['mode' => 'fix', 'why' => 'weakest', 'topic' => $weakest, 'plan_id' => null];
+            $ranked[] = ['mode' => 'fix', 'why' => 'weakest', 'topic' => $weakest, 'plan_id' => null, 'count' => null];
+        }
+        $due = Flashcard::query()->where('user_id', $user->id)->where('reps', '>', 0)->where('due_at', '<=', now())->count();
+        if ($due > 0) {
+            $ranked[] = ['mode' => 'flashcards', 'why' => 'due', 'topic' => null, 'plan_id' => null, 'count' => $due];
         }
         $mathWeak = in_array('math', array_slice($readiness['weakest'], 0, Drills::TOPICS), true);
         if ($mathWeak) {
-            $ranked[] = ['mode' => 'math', 'why' => 'math_weak', 'topic' => 'math', 'plan_id' => null];
+            $ranked[] = ['mode' => 'math', 'why' => 'math_weak', 'topic' => 'math', 'plan_id' => null, 'count' => null];
+        }
+        $ranked[] = ['mode' => 'speed', 'why' => 'quick', 'topic' => null, 'plan_id' => null, 'count' => null];
+        if (! $mathWeak) {
+            $ranked[] = ['mode' => 'math', 'why' => 'math', 'topic' => 'math', 'plan_id' => null, 'count' => null];
         }
         if ($diagnostic && $percent < 80 && ($percent >= 60 || ($days !== null && $days <= 45))) {
             $ranked[] = $simulation;
         }
-        if (! $mathWeak) {
-            $ranked[] = ['mode' => 'math', 'why' => 'math', 'topic' => 'math', 'plan_id' => null];
-        }
-        $ranked[] = ['mode' => 'readiness', 'why' => 'map', 'topic' => null, 'plan_id' => null];
+        $ranked[] = ['mode' => 'readiness', 'why' => 'map', 'topic' => null, 'plan_id' => null, 'count' => null];
         $open = TestAttempt::query()->where('user_id', $user->id)->where('kind', TestAttempt::DRILL)->whereNull('topic')->whereNull('submitted_at')->value('id');
 
         return [

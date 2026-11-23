@@ -8,6 +8,7 @@ import {
 import type { RefObject } from 'react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { SaveFlashcard } from '@/components/practice/save-flashcard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
@@ -162,6 +163,13 @@ export function AskInstructor({ lessonId, videoRef, send }: Props) {
                     <p className="text-body whitespace-pre-line">
                         {answer.answer}
                     </p>
+                    {answer.found ? (
+                        <SaveFlashcard
+                            source="ask"
+                            front={asked}
+                            back={answer.answer}
+                        />
+                    ) : null}
                     {answer.engine === 'simulator' ? (
                         <p className="text-sm text-muted-foreground">
                             {t('learn.ask.demo')}

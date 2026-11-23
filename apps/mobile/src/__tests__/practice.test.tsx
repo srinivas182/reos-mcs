@@ -115,9 +115,9 @@ const coach: Coach = {
   drill: { topics: ['finance', 'math', 'state_rules'], questions: 15, misses: 4, open: null },
   plans: [{ id: 31, topic: 'finance', done: 2, steps: 5 }],
   ranked: [
-    { mode: 'plan', why: 'carry_on', topic: 'finance', plan_id: 31 },
-    { mode: 'drill', why: 'weakest', topic: null, plan_id: null },
-    { mode: 'readiness', why: 'map', topic: null, plan_id: null },
+    { mode: 'plan', why: 'carry_on', topic: 'finance', plan_id: 31, count: null },
+    { mode: 'drill', why: 'weakest', topic: null, plan_id: null, count: null },
+    { mode: 'readiness', why: 'map', topic: null, plan_id: null, count: null },
   ],
 };
 /** The hub loads its tests and its ranking. */

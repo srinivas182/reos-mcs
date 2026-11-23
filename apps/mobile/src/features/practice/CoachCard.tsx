@@ -1,13 +1,13 @@
 import { router } from 'expo-router';
 import type { LucideIcon } from 'lucide-react-native';
-import { ClipboardCheck, Dumbbell, Gauge, GraduationCap, Sigma, Target, Wrench } from 'lucide-react-native';
+import { ClipboardCheck, Dumbbell, Gauge, GraduationCap, Layers, Sigma, Target, Timer, Wrench } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { asTopic, type Coach, startPlan, startTest } from '@/lib/practice';
 import { Button, Card, ListRow, SectionTitle, Text } from '@/ui';
 
-const icons: Record<string, LucideIcon> = { diagnostic: ClipboardCheck, plan: Wrench, drill: Dumbbell, fix: Target, math: Sigma, simulation: GraduationCap, readiness: Gauge };
+const icons: Record<string, LucideIcon> = { diagnostic: ClipboardCheck, plan: Wrench, drill: Dumbbell, fix: Target, flashcards: Layers, speed: Timer, math: Sigma, simulation: GraduationCap, readiness: Gauge };
 
 /**
  * The top of the practice hub (candidate screen 38, A9.2b): the smart drill
@@ -54,6 +54,12 @@ export function CoachCard({ coach, onSimulation }: { coach: Coach; onSimulation:
       case 'math':
         router.push('/practice/math');
         break;
+      case 'flashcards':
+        router.push('/practice/flashcards');
+        break;
+      case 'speed':
+        router.push('/practice/speed');
+        break;
       case 'simulation':
         onSimulation();
         break;
@@ -65,6 +71,7 @@ export function CoachCard({ coach, onSimulation }: { coach: Coach; onSimulation:
     const plan = coach.plans.find((p) => p.id === item.plan_id);
     if (item.mode === 'plan' && plan) return t('practice.fix.carryOn', { topic: name(plan.topic), done: plan.done, steps: plan.steps });
     if (item.mode === 'fix' && item.topic) return t('practice.fix.start', { topic: name(item.topic) });
+    if (item.mode === 'flashcards' && item.count !== null) return t('practice.coach.modes.flashcardsDue', { count: item.count });
 
     return t(`practice.coach.modes.${item.mode}`);
   };
