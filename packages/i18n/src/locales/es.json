@@ -58,7 +58,9 @@
     "liveClasses": "Clases en vivo",
     "stateApprovals": "Aprobaciones estatales",
     "instructors": "Instructores",
-    "avatar": "Avatar de IA"
+    "avatar": "Avatar de IA",
+    "courseBuilder": "Creador de cursos",
+    "courseCatalogue": "Catálogo de cursos"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2013,7 +2015,14 @@
         "avatar.consent_ended": "Uso del avatar terminado",
         "instructor.courses_changed": "Cursos del instructor modificados",
         "instructor.revoked": "Instructor revocado",
-        "instructor.restored": "Instructor restablecido"
+        "instructor.restored": "Instructor restablecido",
+        "module.source_added": "Material fuente agregado al módulo",
+        "module.source_removed": "Material fuente eliminado del módulo",
+        "lesson.moved": "Lección movida",
+        "lesson.approved": "Lección aprobada",
+        "course.builder_changed": "Configuración del creador de cursos modificada",
+        "course.seat_time_asked": "Cambio de tiempo de clase solicitado",
+        "module.source_started": "Carga de material fuente iniciada"
       }
     }
   },
@@ -4547,7 +4556,7 @@
       "announcement": "Anuncios",
       "session_starting": "Sesión por comenzar",
       "session_booked": "Sesiones programadas o canceladas",
-      "approval_expiring": "Aprobaciones de cursos por vencer",
+      "approval_expiring": "Aprobaciones de cursos y tiempo de clase",
       "avatar_consent_ended": "Consentimiento de avatar terminado"
     },
     "digest": {
@@ -4983,6 +4992,169 @@
     "errors": {
       "notInstructor": "Solo los instructores de una escuela pueden otorgar el consentimiento de avatar.",
       "notGiven": "No hay consentimiento de avatar que retirar."
+    }
+  },
+  "builder": {
+    "title": "Creador de cursos",
+    "description": "Convierta material fuente en lecciones. Nada llega a los estudiantes hasta que se aprueba.",
+    "new": "Nuevo curso",
+    "newTitle": "Nuevo curso",
+    "fields": {
+      "title": "Título del curso",
+      "type": "Tipo",
+      "delivery": "Modalidad",
+      "hours": "Horas"
+    },
+    "create": "Crear curso",
+    "cancel": "Cancelar",
+    "emptyTitle": "Aún no hay cursos para crear",
+    "empty": "Cree un curso, o pida a su escuela que le asigne uno que imparte.",
+    "modulesCount_one": "{{count}} módulo",
+    "modulesCount_other": "{{count}} módulos",
+    "lessonsCount_one": "{{count}} lección",
+    "lessonsCount_other": "{{count}} lecciones",
+    "back": "Creador de cursos",
+    "courseDescription": "Suba material, genere un módulo y revise lecciones.",
+    "modules": "Módulos",
+    "addModule": "Agregar módulo",
+    "moduleTitle": "Título del módulo",
+    "renameModule": "Cambiar nombre del módulo",
+    "removeModule": "Quitar módulo",
+    "noModulesTitle": "Comience con un módulo",
+    "noModules": "Un módulo agrupa lecciones de un tema, creadas a partir de su propio material fuente.",
+    "moduleStatus": {
+      "empty": "Aún sin material",
+      "sources": "Material listo",
+      "reading": "Leyendo material",
+      "draft": "Lecciones en borrador",
+      "generating": "Generando",
+      "in_review": "En espera de revisión",
+      "approved": "Aprobado"
+    },
+    "sources": {
+      "title": "Material fuente",
+      "intro": "Guiones, diapositivas, formularios y clases grabadas. Los archivos van directo al almacenamiento, se revisan contra virus y luego se leen.",
+      "role": "Qué es",
+      "roles": {
+        "script": "Guion",
+        "slides": "Diapositivas",
+        "form": "Formulario",
+        "recording": "Clase grabada",
+        "captions": "Subtítulos de una grabación"
+      },
+      "upload": "Subir material",
+      "accepts": "{{types}}, hasta {{size}} MB",
+      "emptyTitle": "Aún sin material",
+      "empty": "Suba el guion, las diapositivas o una clase grabada de la que enseña este módulo.",
+      "read": "Leído: {{words}} palabras",
+      "readPages": "Leído: {{pages}} páginas, {{words}} palabras",
+      "recordingReady": "Lista. Agregue su archivo de subtítulos para que se lean sus palabras.",
+      "statuses": {
+        "awaiting_upload": "Subiendo",
+        "processing": "Revisando y leyendo",
+        "ready": "Listo",
+        "rejected": "Rechazado",
+        "failed": "No se pudo leer"
+      },
+      "remove": "Quitar",
+      "removeLabel": "Quitar {{name}}",
+      "uploadFailed": "La carga no terminó. Inténtelo de nuevo."
+    },
+    "plan": {
+      "title": "Lo que creará la IA",
+      "intro": "A partir del material leído, en inglés y español, para que lo revise línea por línea antes de publicar.",
+      "minutes_one": "Aproximadamente {{count}} minuto de enseñanza",
+      "minutes_other": "Aproximadamente {{count}} minutos de enseñanza",
+      "lessons_one": "{{count}} lección",
+      "lessons_other": "{{count}} lecciones",
+      "checkins_one": "{{count}} verificación",
+      "checkins_other": "{{count}} verificaciones",
+      "questions_one": "{{count}} pregunta",
+      "questions_other": "{{count}} preguntas",
+      "flashcards_one": "{{count}} tarjeta de estudio",
+      "flashcards_other": "{{count}} tarjetas de estudio",
+      "credits": "{{credits}} créditos para generar",
+      "nothing": "Suba material y primero se leerá.",
+      "waiting_one": "{{count}} archivo todavía se está leyendo.",
+      "waiting_other": "{{count}} archivos todavía se están leyendo."
+    },
+    "settings": {
+      "title": "Configuración",
+      "language": "Idioma",
+      "languages": {
+        "both": "Inglés y español",
+        "en": "Inglés",
+        "es": "Español"
+      },
+      "lessonMinutes": "Minutos por lección",
+      "presenter": "Presentador",
+      "stock": "Un presentador genérico",
+      "presenterHint": "Los instructores aparecen aquí una vez que otorgaron su consentimiento de avatar a la escuela.",
+      "save": "Guardar configuración"
+    },
+    "saved": "Configuración guardada.",
+    "lessons": {
+      "title": "Lecciones",
+      "add": "Agregar lección",
+      "lessonTitle": "Título de la lección",
+      "emptyTitle": "Aún no hay lecciones",
+      "empty": "Escriba una lección usted mismo, o genere el módulo a partir de su material.",
+      "edit": "Editar",
+      "approve": "Aprobar",
+      "up": "Subir",
+      "down": "Bajar",
+      "remove": "Quitar",
+      "removed": "Lección quitada.",
+      "body": "Texto de la lección",
+      "bodyHint": "Comience una línea con \"# \" para un encabezado.",
+      "minutes": "Minutos",
+      "save": "Guardar lección",
+      "statuses": {
+        "draft": "Borrador",
+        "generating": "Generando",
+        "in_review": "En espera de revisión",
+        "approved": "Aprobada"
+      }
+    },
+    "lessonApproved": "Lección aprobada. Los estudiantes la ven cuando el curso está publicado.",
+    "publish": "Publicar curso",
+    "unpublish": "Ocultar curso",
+    "statuses": {
+      "draft": "Borrador",
+      "in_review": "En revisión",
+      "live": "Publicado",
+      "hidden": "Oculto"
+    },
+    "seatTime": {
+      "locked": "{{hours}} horas, fijadas por la aprobación {{number}}. Los cambios de tiempo de clase van a su escuela para TREC.",
+      "ask": "Solicitar cambio de horas",
+      "hours": "Nuevas horas",
+      "reason": "Motivo",
+      "send": "Enviar a la escuela",
+      "sent": "Enviado a los administradores de su escuela.",
+      "mailSubject": "{{name}} solicita cambiar {{course}} a {{hours}} horas",
+      "mailNext": "Las horas de un curso aprobado las fija el regulador. Presente el cambio ante TREC y luego regístrelo en la aprobación."
+    },
+    "errors": {
+      "presenter": "Ese presentador no se puede usar: elija uno genérico o un instructor con consentimiento de avatar vigente.",
+      "notDraft": "Solo una lección en borrador puede aprobarse aquí.",
+      "empty": "Agregue el texto de la lección antes de aprobarla.",
+      "noSchool": "Este curso no tiene una escuela a la cual solicitar."
+    },
+    "dashboard": {
+      "title": "Su enseñanza",
+      "reviews": "Lecciones por revisar",
+      "drafts": "Borradores",
+      "sessions": "Sesiones esta semana",
+      "passRate": "Tasa de aprobación en práctica",
+      "rating": "Calificación",
+      "noData": "Aún no",
+      "today": "Hoy",
+      "nothingToday": "No hay sesiones hoy.",
+      "missed": "Temas más fallados (últimos 30 días)",
+      "missedLine": "{{topic}}: {{missed}} de {{answered}} respuestas incorrectas",
+      "noMissed": "Aún no hay suficientes respuestas de práctica.",
+      "open": "Creador de cursos"
     }
   }
 }

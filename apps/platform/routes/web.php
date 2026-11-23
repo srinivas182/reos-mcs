@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\TestIdentityProviderController;
 use App\Http\Controllers\Billing\BillingController;
 use App\Http\Controllers\Billing\CheckoutController;
 use App\Http\Controllers\BrandLogoController;
+use App\Http\Controllers\Builder\CourseBuilderController;
 use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
@@ -198,6 +199,29 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.m
 });
 // The instructor's avatar sample, through a signed link (A7.1b).
 Route::get('avatar-samples/{consent}', [AvatarController::class, 'sample'])->whereUuid('consent')->middleware(['signed', 'throttle:60,1,avatar-sample'])->name('avatar.sample');
+// The course builder (A7.2, instructor screen 43): school admins and the instructors who teach each course.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:learning.teach'])->name('builder.')->group(function () {
+    Route::get('course-builder', [CourseBuilderController::class, 'index'])->name('index');
+    Route::get('course-builder/{course}', [CourseBuilderController::class, 'show'])->whereNumber('course')->name('show');
+    Route::middleware('throttle:120,1,builder')->group(function () {
+        Route::post('course-builder', [CourseBuilderController::class, 'store'])->name('store');
+        Route::put('course-builder/{course}/status', [CourseBuilderController::class, 'status'])->whereNumber('course')->name('status');
+        Route::put('course-builder/{course}/settings', [CourseBuilderController::class, 'settings'])->whereNumber('course')->name('settings');
+        Route::post('course-builder/{course}/seat-time', [CourseBuilderController::class, 'seatTime'])->whereNumber('course')->middleware('throttle:5,1,seat-time')->name('seat-time');
+        Route::post('course-builder/{course}/modules', [CourseBuilderController::class, 'addModule'])->whereNumber('course')->name('modules.store');
+        Route::patch('course-builder/modules/{module}', [CourseBuilderController::class, 'renameModule'])->whereNumber('module')->name('modules.update');
+        Route::delete('course-builder/modules/{module}', [CourseBuilderController::class, 'removeModule'])->whereNumber('module')->name('modules.destroy');
+        Route::post('course-builder/modules/{module}/sources', [CourseBuilderController::class, 'beginSource'])->whereNumber('module')->name('sources.store');
+        Route::post('course-builder/sources/{source}/complete', [CourseBuilderController::class, 'completeSource'])->whereNumber('source')->name('sources.complete');
+        Route::delete('course-builder/sources/{source}', [CourseBuilderController::class, 'removeSource'])->whereNumber('source')->name('sources.destroy');
+        Route::post('course-builder/modules/{module}/lessons', [CourseBuilderController::class, 'addLesson'])->whereNumber('module')->name('lessons.store');
+        Route::patch('course-builder/lessons/{lesson}', [CourseBuilderController::class, 'updateLesson'])->whereNumber('lesson')->name('lessons.update');
+        Route::post('course-builder/lessons/{lesson}/move', [CourseBuilderController::class, 'moveLesson'])->whereNumber('lesson')->name('lessons.move');
+        Route::post('course-builder/lessons/{lesson}/approve', [CourseBuilderController::class, 'approveLesson'])->whereNumber('lesson')->name('lessons.approve');
+        Route::delete('course-builder/lessons/{lesson}', [CourseBuilderController::class, 'removeLesson'])->whereNumber('lesson')->name('lessons.destroy');
+        Route::post('course-builder/lessons/{lesson}/restore', [CourseBuilderController::class, 'restoreLesson'])->whereNumber('lesson')->name('lessons.restore');
+    });
+});
 // Earnings (B5.2b): instructors and mentors.
 // Messages (B6.1): behind the `messages` flag (screen 70) while it rolls out.
 Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix('messages')->name('messages.')->group(function () {

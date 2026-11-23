@@ -87,8 +87,9 @@ final readonly class LessonFiles
             throw ValidationException::withMessages(['size' => __('content.files.errors.size', ['size' => (int) round($kind->maxBytes() / 1024 / 1024).' MB'])]);
         }
 
-        // REOS content lives under platform/; school content (Sprint 7) under tenants/<id>/.
-        $path = 'platform/lessons/'.$lesson->id.'/'.Str::uuid7()->toString().'.'.$extension;
+        // REOS content lives under platform/; a school's (A7.2) under tenants/<id>/.
+        $owner = $lesson->course->organisation_id;
+        $path = ($owner === null ? 'platform' : 'tenants/'.$owner).'/lessons/'.$lesson->id.'/'.Str::uuid7()->toString().'.'.$extension;
 
         $media = LessonMedia::query()->create([
             'lesson_id' => $lesson->id,

@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Content\Builder\LessonReview;
 use App\Content\IngestStatus;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $body Plain text; lines starting with "# " are headings
  * @property int|null $minutes
  * @property IngestStatus $ingest_status
+ * @property LessonReview|null $review_status Null for REOS library lessons
  * @property Carbon|null $ingested_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -41,9 +45,21 @@ final class Lesson extends Model
 
     public const LANGUAGES = ['en', 'es'];
 
-    protected $fillable = ['course_id', 'course_module_id', 'title', 'position', 'language', 'body', 'minutes', 'ingest_status', 'ingested_at'];
+    protected $fillable = ['course_id', 'course_module_id', 'title', 'position', 'language', 'body', 'minutes', 'ingest_status', 'ingested_at', 'review_status'];
 
     protected $attributes = ['language' => 'en', 'ingest_status' => 'pending'];
+
+    /**
+     * Lessons learners may see: REOS library lessons, and a school's lessons
+     * once approved (A7.2).
+     *
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function learnable(Builder $query): void
+    {
+        $query->where(static fn (Builder $q) => $q->whereNull('review_status')->orWhere('review_status', LessonReview::Approved->value));
+    }
 
     protected function casts(): array
     {
@@ -52,6 +68,7 @@ final class Lesson extends Model
             'minutes' => 'integer',
             'ingest_status' => IngestStatus::class,
             'ingested_at' => 'datetime',
+            'review_status' => LessonReview::class,
         ];
     }
 

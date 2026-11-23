@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Content\Knowledge;
 
+use App\Content\Builder\LessonReview;
 use App\Content\CourseStatus;
 use App\Models\KbPassage;
 use Illuminate\Database\Eloquent\Builder;
@@ -100,7 +101,9 @@ final readonly class KnowledgeSearch
             ->join('lessons', 'lessons.id', '=', 'kb_passages.lesson_id')
             ->whereNull('courses.deleted_at')
             ->whereNull('lessons.deleted_at')
-            ->when($liveOnly, static fn (Builder $q) => $q->where('courses.status', CourseStatus::Live->value))
+            ->when($liveOnly, static fn (Builder $q) => $q->where('courses.status', CourseStatus::Live->value)
+                // A school's lessons reach learners only once approved (A7.2).
+                ->where(static fn (Builder $r) => $r->whereNull('lessons.review_status')->orWhere('lessons.review_status', LessonReview::Approved->value)))
             ->when($states !== null, static fn (Builder $q) => $q->forStates($states ?? []))
             ->when($language !== null, static fn (Builder $q) => $q->where('kb_passages.language', $language));
     }

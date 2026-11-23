@@ -58,7 +58,9 @@
     "liveClasses": "Live classes",
     "stateApprovals": "State approvals",
     "instructors": "Instructors",
-    "avatar": "AI avatar"
+    "avatar": "AI avatar",
+    "courseBuilder": "Course builder",
+    "courseCatalogue": "Course catalog"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2013,7 +2015,14 @@
         "avatar.consent_ended": "Avatar use ended",
         "instructor.courses_changed": "Instructor courses changed",
         "instructor.revoked": "Instructor revoked",
-        "instructor.restored": "Instructor restored"
+        "instructor.restored": "Instructor restored",
+        "module.source_added": "Module source added",
+        "module.source_removed": "Module source removed",
+        "lesson.moved": "Lesson moved",
+        "lesson.approved": "Lesson approved",
+        "course.builder_changed": "Course builder settings changed",
+        "course.seat_time_asked": "Seat-time change asked",
+        "module.source_started": "Module source upload started"
       }
     }
   },
@@ -4547,7 +4556,7 @@
       "announcement": "Announcements",
       "session_starting": "Session starting",
       "session_booked": "Sessions booked or cancelled",
-      "approval_expiring": "Course approvals expiring",
+      "approval_expiring": "Course approvals and seat time",
       "avatar_consent_ended": "Avatar consent ended"
     },
     "digest": {
@@ -4983,6 +4992,169 @@
     "errors": {
       "notInstructor": "Only instructors at a school can give avatar consent.",
       "notGiven": "There is no avatar consent to withdraw."
+    }
+  },
+  "builder": {
+    "title": "Course builder",
+    "description": "Turn source material into lessons. Nothing reaches learners until it's approved.",
+    "new": "New course",
+    "newTitle": "New course",
+    "fields": {
+      "title": "Course title",
+      "type": "Type",
+      "delivery": "Delivery",
+      "hours": "Hours"
+    },
+    "create": "Create course",
+    "cancel": "Cancel",
+    "emptyTitle": "No courses to build yet",
+    "empty": "Create a course, or ask your school to assign you one you teach.",
+    "modulesCount_one": "{{count}} module",
+    "modulesCount_other": "{{count}} modules",
+    "lessonsCount_one": "{{count}} lesson",
+    "lessonsCount_other": "{{count}} lessons",
+    "back": "Course builder",
+    "courseDescription": "Upload material, generate a module, review lessons.",
+    "modules": "Modules",
+    "addModule": "Add module",
+    "moduleTitle": "Module title",
+    "renameModule": "Rename module",
+    "removeModule": "Remove module",
+    "noModulesTitle": "Start with a module",
+    "noModules": "A module groups lessons around one topic, built from its own source material.",
+    "moduleStatus": {
+      "empty": "No material yet",
+      "sources": "Material ready",
+      "reading": "Reading material",
+      "draft": "Lessons in draft",
+      "generating": "Generating",
+      "in_review": "Waiting for review",
+      "approved": "Approved"
+    },
+    "sources": {
+      "title": "Source material",
+      "intro": "Scripts, slides, forms and recorded classes. Files go straight to storage, are checked for viruses, then read.",
+      "role": "What it is",
+      "roles": {
+        "script": "Script",
+        "slides": "Slides",
+        "form": "Form",
+        "recording": "Recorded class",
+        "captions": "Captions for a recording"
+      },
+      "upload": "Upload material",
+      "accepts": "{{types}}, up to {{size}} MB",
+      "emptyTitle": "No material yet",
+      "empty": "Upload the script, slides or a recorded class this module teaches from.",
+      "read": "Read: {{words}} words",
+      "readPages": "Read: {{pages}} pages, {{words}} words",
+      "recordingReady": "Ready. Add its captions file to have its words read.",
+      "statuses": {
+        "awaiting_upload": "Uploading",
+        "processing": "Checking and reading",
+        "ready": "Ready",
+        "rejected": "Refused",
+        "failed": "Couldn't be read"
+      },
+      "remove": "Remove",
+      "removeLabel": "Remove {{name}}",
+      "uploadFailed": "The upload didn't finish. Try again."
+    },
+    "plan": {
+      "title": "What AI will make",
+      "intro": "From the material that's been read, in English and Spanish, for you to review line by line before anything is published.",
+      "minutes_one": "About {{count}} minute of teaching",
+      "minutes_other": "About {{count}} minutes of teaching",
+      "lessons_one": "{{count}} lesson",
+      "lessons_other": "{{count}} lessons",
+      "checkins_one": "{{count}} check-in",
+      "checkins_other": "{{count}} check-ins",
+      "questions_one": "{{count}} question",
+      "questions_other": "{{count}} questions",
+      "flashcards_one": "{{count}} flashcard",
+      "flashcards_other": "{{count}} flashcards",
+      "credits": "{{credits}} credits to generate",
+      "nothing": "Upload material and it will be read first.",
+      "waiting_one": "{{count}} file is still being read.",
+      "waiting_other": "{{count}} files are still being read."
+    },
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "languages": {
+        "both": "English and Spanish",
+        "en": "English",
+        "es": "Spanish"
+      },
+      "lessonMinutes": "Minutes per lesson",
+      "presenter": "Presenter",
+      "stock": "A stock presenter",
+      "presenterHint": "Instructors appear here once they've given avatar consent to the school.",
+      "save": "Save settings"
+    },
+    "saved": "Settings saved.",
+    "lessons": {
+      "title": "Lessons",
+      "add": "Add lesson",
+      "lessonTitle": "Lesson title",
+      "emptyTitle": "No lessons yet",
+      "empty": "Write a lesson yourself, or generate the module from its material.",
+      "edit": "Edit",
+      "approve": "Approve",
+      "up": "Move up",
+      "down": "Move down",
+      "remove": "Remove",
+      "removed": "Lesson removed.",
+      "body": "Lesson text",
+      "bodyHint": "Start a line with \"# \" for a heading.",
+      "minutes": "Minutes",
+      "save": "Save lesson",
+      "statuses": {
+        "draft": "Draft",
+        "generating": "Generating",
+        "in_review": "Waiting for review",
+        "approved": "Approved"
+      }
+    },
+    "lessonApproved": "Lesson approved. Learners see it once the course is live.",
+    "publish": "Publish course",
+    "unpublish": "Hide course",
+    "statuses": {
+      "draft": "Draft",
+      "in_review": "In review",
+      "live": "Live",
+      "hidden": "Hidden"
+    },
+    "seatTime": {
+      "locked": "{{hours}} hours, set by approval {{number}}. Seat-time changes go to your school for TREC.",
+      "ask": "Ask to change hours",
+      "hours": "New hours",
+      "reason": "Why",
+      "send": "Send to the school",
+      "sent": "Sent to your school's admins.",
+      "mailSubject": "{{name}} asks to change {{course}} to {{hours}} hours",
+      "mailNext": "Hours on an approved course are the regulator's. File the change with TREC, then record it on the approval."
+    },
+    "errors": {
+      "presenter": "That presenter can't be used: pick a stock presenter or an instructor whose avatar consent is in force.",
+      "notDraft": "Only a draft lesson can be approved here.",
+      "empty": "Add the lesson's text before approving it.",
+      "noSchool": "This course has no school to ask."
+    },
+    "dashboard": {
+      "title": "Your teaching",
+      "reviews": "Lessons to review",
+      "drafts": "Drafts",
+      "sessions": "Sessions this week",
+      "passRate": "Practice pass rate",
+      "rating": "Rating",
+      "noData": "Not yet",
+      "today": "Today",
+      "nothingToday": "No sessions today.",
+      "missed": "Most-missed topics (last 30 days)",
+      "missedLine": "{{topic}}: {{missed}} of {{answered}} answers wrong",
+      "noMissed": "Not enough practice answers yet.",
+      "open": "Course builder"
     }
   }
 }
