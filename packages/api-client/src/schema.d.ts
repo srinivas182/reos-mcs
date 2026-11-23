@@ -830,6 +830,115 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The Deals board
+         * @description Open deals by stage (and closed ones from the last 90 days), each with its next deadline.
+         */
+        get: operations["deals.index"];
+        put?: never;
+        /**
+         * Track a deal in REOS
+         * @description Every key date becomes a to-do on that day, on the calendar.
+         */
+        post: operations["deals.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/pipeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The deals pipeline
+         * @description Under contract, active clients and pending commission (phone screen 9).
+         */
+        get: operations["deals.pipeline"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Deal alerts
+         * @description Deadlines in the next two weeks, and deals missing documents (phone screen 10).
+         */
+        get: operations["deals.alerts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{deal}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A deal
+         * @description Parties, documents and key dates.
+         */
+        get: operations["deals.show"];
+        /**
+         * Change a REOS deal
+         * @description Deals from a tool are changed in the tool.
+         */
+        put: operations["deals.update"];
+        post?: never;
+        /** Delete a REOS deal, with its dates' to-dos */
+        delete: operations["deals.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{deal}/stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Move a REOS deal to another stage
+         * @description Dragging on the board (decision 3: REOS deals only).
+         */
+        put: operations["deals.stage"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/earnings": {
         parameters: {
             query?: never;
@@ -3430,6 +3539,35 @@ export interface components {
             body?: string | null;
         };
         /**
+         * DealRequest
+         * @description A deal the agent tracks in REOS (B9.1): property, side, stage, price, commission, parties and key dates.
+         */
+        DealRequest: {
+            property: string;
+            city?: string | null;
+            /** @enum {string} */
+            side: "buy" | "sell" | "lease" | "both";
+            /** @enum {string} */
+            stage: "active" | "under_contract" | "closed" | "cancelled";
+            price?: number | null;
+            commission?: number | null;
+            parties: {
+                name: string;
+                role: string;
+                /** Format: email */
+                email?: string | null;
+                phone?: string | null;
+            }[];
+            dates: {
+                /** @enum {string} */
+                kind: "option_period" | "financing" | "appraisal" | "inspection" | "survey" | "title_commitment" | "closing" | "other";
+                label?: string | null;
+                /** Format: date */
+                due_on: string;
+                done?: boolean;
+            }[];
+        };
+        /**
          * DefaultCrmRequest
          * @description Where new contacts go (screen 24): one of your CRMs, or none (they stay in REOS).
          */
@@ -4312,6 +4450,7 @@ export type SchemaContactResource = components['schemas']['ContactResource'];
 export type SchemaContactRowResource = components['schemas']['ContactRowResource'];
 export type SchemaContactTaskRequest = components['schemas']['ContactTaskRequest'];
 export type SchemaContactTouchRequest = components['schemas']['ContactTouchRequest'];
+export type SchemaDealRequest = components['schemas']['DealRequest'];
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
@@ -6271,6 +6410,601 @@ export interface operations {
                             code: string;
                             name: string;
                         }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            active: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                                city: string | null;
+                                side: string;
+                                stage: string;
+                                price: number | null;
+                                commission: string | null;
+                                source: string;
+                                read_only: boolean;
+                                external_url: string | null;
+                                next: {
+                                    id: number;
+                                    kind: string;
+                                    name: string;
+                                    due_on: string;
+                                    days: number;
+                                    done: boolean;
+                                } | null;
+                                documents: {
+                                    complete: number;
+                                    total: number;
+                                    missing: number;
+                                };
+                            }[];
+                            under_contract: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                                city: string | null;
+                                side: string;
+                                stage: string;
+                                price: number | null;
+                                commission: string | null;
+                                source: string;
+                                read_only: boolean;
+                                external_url: string | null;
+                                next: {
+                                    id: number;
+                                    kind: string;
+                                    name: string;
+                                    due_on: string;
+                                    days: number;
+                                    done: boolean;
+                                } | null;
+                                documents: {
+                                    complete: number;
+                                    total: number;
+                                    missing: number;
+                                };
+                            }[];
+                            closed: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                                city: string | null;
+                                side: string;
+                                stage: string;
+                                price: number | null;
+                                commission: string | null;
+                                source: string;
+                                read_only: boolean;
+                                external_url: string | null;
+                                next: {
+                                    id: number;
+                                    kind: string;
+                                    name: string;
+                                    due_on: string;
+                                    days: number;
+                                    done: boolean;
+                                } | null;
+                                documents: {
+                                    complete: number;
+                                    total: number;
+                                    missing: number;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "deals.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DealRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            property: string;
+                            city: string | null;
+                            side: string;
+                            stage: string;
+                            price: number | null;
+                            commission: string | null;
+                            source: string;
+                            read_only: boolean;
+                            external_url: string | null;
+                            next: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            } | null;
+                            documents: {
+                                complete: number;
+                                total: number;
+                                missing: number;
+                            };
+                            parties: {
+                                name: string;
+                                role: string;
+                                email: string | null;
+                                phone: string | null;
+                            }[];
+                            files: {
+                                name: string;
+                                status: string;
+                                url: string | null;
+                            }[];
+                            dates: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.pipeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            under_contract: number;
+                            active: number;
+                            pending_commission: string;
+                            closed_this_year: number;
+                            deals: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                                city: string | null;
+                                side: string;
+                                stage: string;
+                                price: number | null;
+                                commission: string | null;
+                                source: string;
+                                read_only: boolean;
+                                external_url: string | null;
+                                next: {
+                                    id: number;
+                                    kind: string;
+                                    name: string;
+                                    due_on: string;
+                                    days: number;
+                                    done: boolean;
+                                } | null;
+                                documents: {
+                                    complete: number;
+                                    total: number;
+                                    missing: number;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "deals.alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            deadlines: {
+                                deal: {
+                                    id: number;
+                                    uuid: string;
+                                    property: string;
+                                    city: string | null;
+                                    side: string;
+                                    stage: string;
+                                    price: number | null;
+                                    commission: string | null;
+                                    source: string;
+                                    read_only: boolean;
+                                    external_url: string | null;
+                                    next: {
+                                        id: number;
+                                        kind: string;
+                                        name: string;
+                                        due_on: string;
+                                        days: number;
+                                        done: boolean;
+                                    } | null;
+                                    documents: {
+                                        complete: number;
+                                        total: number;
+                                        missing: number;
+                                    };
+                                };
+                                date: {
+                                    id: number;
+                                    kind: string;
+                                    name: string;
+                                    due_on: string;
+                                    days: number;
+                                    done: boolean;
+                                };
+                            }[];
+                            missing: {
+                                deal: {
+                                    id: number;
+                                    uuid: string;
+                                    property: string;
+                                    city: string | null;
+                                    side: string;
+                                    stage: string;
+                                    price: number | null;
+                                    commission: string | null;
+                                    source: string;
+                                    read_only: boolean;
+                                    external_url: string | null;
+                                    next: {
+                                        id: number;
+                                        kind: string;
+                                        name: string;
+                                        due_on: string;
+                                        days: number;
+                                        done: boolean;
+                                    } | null;
+                                    documents: {
+                                        complete: number;
+                                        total: number;
+                                        missing: number;
+                                    };
+                                };
+                                documents: string[];
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "deals.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            property: string;
+                            city: string | null;
+                            side: string;
+                            stage: string;
+                            price: number | null;
+                            commission: string | null;
+                            source: string;
+                            read_only: boolean;
+                            external_url: string | null;
+                            next: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            } | null;
+                            documents: {
+                                complete: number;
+                                total: number;
+                                missing: number;
+                            };
+                            parties: {
+                                name: string;
+                                role: string;
+                                email: string | null;
+                                phone: string | null;
+                            }[];
+                            files: {
+                                name: string;
+                                status: string;
+                                url: string | null;
+                            }[];
+                            dates: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "deals.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DealRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            property: string;
+                            city: string | null;
+                            side: string;
+                            stage: string;
+                            price: number | null;
+                            commission: string | null;
+                            source: string;
+                            read_only: boolean;
+                            external_url: string | null;
+                            next: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            } | null;
+                            documents: {
+                                complete: number;
+                                total: number;
+                                missing: number;
+                            };
+                            parties: {
+                                name: string;
+                                role: string;
+                                email: string | null;
+                                phone: string | null;
+                            }[];
+                            files: {
+                                name: string;
+                                status: string;
+                                url: string | null;
+                            }[];
+                            dates: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example This deal comes from your transaction tool. Change it there.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "deals.stage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                deal: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    stage: "active" | "under_contract" | "closed" | "cancelled";
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            property: string;
+                            city: string | null;
+                            side: string;
+                            stage: string;
+                            price: number | null;
+                            commission: string | null;
+                            source: string;
+                            read_only: boolean;
+                            external_url: string | null;
+                            next: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            } | null;
+                            documents: {
+                                complete: number;
+                                total: number;
+                                missing: number;
+                            };
+                        };
                     };
                 };
             };

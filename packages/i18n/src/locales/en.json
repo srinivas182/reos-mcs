@@ -69,7 +69,8 @@
     "contacts": "Contacts",
     "readiness": "Readiness",
     "students": "Students",
-    "progress": "Weekly progress"
+    "progress": "Weekly progress",
+    "deals": "Deals"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -4685,7 +4686,8 @@
       "organisation": "Your organization",
       "tools": "Tools and integrations",
       "billing": "Billing",
-      "account": "Account and security"
+      "account": "Account and security",
+      "deals": "Deals"
     },
     "names": {
       "new_device": "New device sign-in",
@@ -4711,7 +4713,8 @@
       "avatar_consent_ended": "Avatar consent ended",
       "content_review": "Lesson and question reviews",
       "weekly_report": "Weekly progress report",
-      "challenge": "Challenges"
+      "challenge": "Challenges",
+      "deal_deadline": "Deal deadlines"
     },
     "digest": {
       "subject": {
@@ -6651,6 +6654,116 @@
     "errors": {
       "mayNotHide": "This tool can't be hidden.",
       "unknownField": "Pick a field your CRM has."
+    }
+  },
+  "deals": {
+    "title": "Deals",
+    "description": "Every deal and deadline, from your transaction tools and the ones you track here.",
+    "kinds": {
+      "option_period": "Option period ends",
+      "financing": "Financing deadline",
+      "appraisal": "Appraisal due",
+      "inspection": "Inspection",
+      "survey": "Survey due",
+      "title_commitment": "Title commitment due",
+      "closing": "Closing",
+      "other": "Key date"
+    },
+    "stages": {
+      "active": "Active",
+      "under_contract": "Under contract",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    },
+    "sides": {
+      "buy": "Buyer",
+      "sell": "Seller",
+      "lease": "Lease",
+      "both": "Both sides"
+    },
+    "errors": {
+      "readOnly": "This deal comes from your transaction tool. Change it there."
+    },
+    "mail": {
+      "soon": ":date in 3 days",
+      "tomorrow": ":date tomorrow",
+      "body": ":property: check what's needed before the deadline.",
+      "open": "Open the deal"
+    },
+    "next": "Next: {{name}}, {{date}}",
+    "noNext": "No deadline coming up",
+    "days_zero": "today",
+    "days_one": "tomorrow",
+    "days_other": "in {{count}} days",
+    "documents": "{{complete}} of {{total}} documents",
+    "missingDocs_one": "{{count}} document missing",
+    "missingDocs_other": "{{count}} documents missing",
+    "from": "From {{tool}}",
+    "tracked": "Tracked in REOS",
+    "readOnly": "Read only: changes are made in {{tool}}.",
+    "openIn": "Open in {{tool}}",
+    "add": "Add a deal",
+    "edit": "Edit",
+    "save": "Save the deal",
+    "delete": "Delete the deal",
+    "deleted": "Deal deleted.",
+    "undo": "Undo",
+    "fields": {
+      "property": "Property address",
+      "city": "City",
+      "side": "Side",
+      "stage": "Stage",
+      "price": "Price",
+      "commission": "Your commission",
+      "parties": "Parties",
+      "dates": "Key dates",
+      "name": "Name",
+      "role": "Role",
+      "email": "Email",
+      "phone": "Phone",
+      "kind": "Date",
+      "label": "Label",
+      "dueOn": "Due on",
+      "addParty": "Add a party",
+      "addDate": "Add a key date",
+      "remove": "Remove"
+    },
+    "parties": "Parties",
+    "dates": "Key dates",
+    "files": "Documents",
+    "fileStatus": {
+      "complete": "Complete",
+      "missing": "Missing",
+      "pending": "Waiting"
+    },
+    "moveTo": "Move to {{stage}}",
+    "price": "Price {{price}}",
+    "commission": "Commission {{amount}}",
+    "emptyTitle": "No deals yet",
+    "empty": "Connect your transaction tool in Connections, or add a deal you're tracking yourself.",
+    "emptyColumn": "Nothing here",
+    "pipeline": {
+      "title": "Deals pipeline",
+      "description": "What's under contract, your active clients and pending commission.",
+      "underContract": "Under contract",
+      "active": "Active clients",
+      "pending": "Pending commission",
+      "closedYear": "Closed this year",
+      "alerts": "Deal alerts"
+    },
+    "alerts": {
+      "title": "Deal alerts",
+      "description": "Deadlines in the next two weeks and documents still missing.",
+      "deadlines": "Deadlines",
+      "missing": "Missing documents",
+      "none": "Nothing due in the next two weeks.",
+      "noMissing": "No documents missing."
+    },
+    "today": {
+      "title": "Deals",
+      "summary_one": "{{count}} under contract · next: {{next}}",
+      "summary_other": "{{count}} under contract · next: {{next}}",
+      "nothing": "{{count}} under contract"
     }
   }
 }

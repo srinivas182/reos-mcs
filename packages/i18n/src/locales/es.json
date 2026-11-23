@@ -69,7 +69,8 @@
     "contacts": "Contactos",
     "readiness": "Preparación",
     "students": "Estudiantes",
-    "progress": "Progreso semanal"
+    "progress": "Progreso semanal",
+    "deals": "Operaciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -4685,7 +4686,8 @@
       "organisation": "Su organización",
       "tools": "Herramientas e integraciones",
       "billing": "Facturación",
-      "account": "Cuenta y seguridad"
+      "account": "Cuenta y seguridad",
+      "deals": "Operaciones"
     },
     "names": {
       "new_device": "Inicio de sesión en un dispositivo nuevo",
@@ -4711,7 +4713,8 @@
       "avatar_consent_ended": "Consentimiento de avatar terminado",
       "content_review": "Revisiones de lecciones y preguntas",
       "weekly_report": "Informe de progreso semanal",
-      "challenge": "Desafíos"
+      "challenge": "Desafíos",
+      "deal_deadline": "Fechas límite de operaciones"
     },
     "digest": {
       "subject": {
@@ -6651,6 +6654,116 @@
     "errors": {
       "mayNotHide": "Esta herramienta no se puede ocultar.",
       "unknownField": "Elija un campo que exista en su CRM."
+    }
+  },
+  "deals": {
+    "title": "Operaciones",
+    "description": "Cada operación y fecha límite, de sus herramientas de transacciones y las que sigue aquí.",
+    "kinds": {
+      "option_period": "Termina el periodo de opción",
+      "financing": "Fecha límite de financiamiento",
+      "appraisal": "Vence el avalúo",
+      "inspection": "Inspección",
+      "survey": "Vence el levantamiento topográfico",
+      "title_commitment": "Vence el compromiso de título",
+      "closing": "Cierre",
+      "other": "Fecha clave"
+    },
+    "stages": {
+      "active": "Activas",
+      "under_contract": "Bajo contrato",
+      "closed": "Cerradas",
+      "cancelled": "Canceladas"
+    },
+    "sides": {
+      "buy": "Comprador",
+      "sell": "Vendedor",
+      "lease": "Arrendamiento",
+      "both": "Ambas partes"
+    },
+    "errors": {
+      "readOnly": "Esta operación viene de su herramienta de transacciones. Cámbiela allí."
+    },
+    "mail": {
+      "soon": ":date en 3 días",
+      "tomorrow": ":date mañana",
+      "body": ":property: revise lo que se necesita antes de la fecha límite.",
+      "open": "Abrir la operación"
+    },
+    "next": "Siguiente: {{name}}, {{date}}",
+    "noNext": "No hay fechas límite próximas",
+    "days_zero": "hoy",
+    "days_one": "mañana",
+    "days_other": "en {{count}} días",
+    "documents": "{{complete}} de {{total}} documentos",
+    "missingDocs_one": "Falta {{count}} documento",
+    "missingDocs_other": "Faltan {{count}} documentos",
+    "from": "De {{tool}}",
+    "tracked": "Seguida en REOS",
+    "readOnly": "Solo lectura: los cambios se hacen en {{tool}}.",
+    "openIn": "Abrir en {{tool}}",
+    "add": "Agregar una operación",
+    "edit": "Editar",
+    "save": "Guardar la operación",
+    "delete": "Eliminar la operación",
+    "deleted": "Operación eliminada.",
+    "undo": "Deshacer",
+    "fields": {
+      "property": "Dirección de la propiedad",
+      "city": "Ciudad",
+      "side": "Parte",
+      "stage": "Etapa",
+      "price": "Precio",
+      "commission": "Su comisión",
+      "parties": "Partes",
+      "dates": "Fechas clave",
+      "name": "Nombre",
+      "role": "Función",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "kind": "Fecha",
+      "label": "Etiqueta",
+      "dueOn": "Vence el",
+      "addParty": "Agregar una parte",
+      "addDate": "Agregar una fecha clave",
+      "remove": "Quitar"
+    },
+    "parties": "Partes",
+    "dates": "Fechas clave",
+    "files": "Documentos",
+    "fileStatus": {
+      "complete": "Completo",
+      "missing": "Falta",
+      "pending": "En espera"
+    },
+    "moveTo": "Mover a {{stage}}",
+    "price": "Precio {{price}}",
+    "commission": "Comisión {{amount}}",
+    "emptyTitle": "Aún no hay operaciones",
+    "empty": "Conecte su herramienta de transacciones en Conexiones, o agregue una operación que siga usted mismo.",
+    "emptyColumn": "Nada aquí",
+    "pipeline": {
+      "title": "Operaciones en curso",
+      "description": "Lo que está bajo contrato, sus clientes activos y la comisión pendiente.",
+      "underContract": "Bajo contrato",
+      "active": "Clientes activos",
+      "pending": "Comisión pendiente",
+      "closedYear": "Cerradas este año",
+      "alerts": "Alertas de operaciones"
+    },
+    "alerts": {
+      "title": "Alertas de operaciones",
+      "description": "Fechas límite de las próximas dos semanas y documentos que aún faltan.",
+      "deadlines": "Fechas límite",
+      "missing": "Documentos faltantes",
+      "none": "Nada vence en las próximas dos semanas.",
+      "noMissing": "No falta ningún documento."
+    },
+    "today": {
+      "title": "Operaciones",
+      "summary_one": "{{count}} bajo contrato · siguiente: {{next}}",
+      "summary_other": "{{count}} bajo contrato · siguiente: {{next}}",
+      "nothing": "{{count}} bajo contrato"
     }
   }
 }

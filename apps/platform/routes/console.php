@@ -61,3 +61,5 @@ Schedule::command('reos:lessons:renders')->everyTwoMinutes()->withoutOverlapping
 Schedule::command('reos:readiness:nightly')->dailyAt('00:10')->timezone(StudyPlans::TIMEZONE)->withoutOverlapping()->onOneServer();
 // Weekly progress reports (A9.2e), Sunday evening on candidates' time.
 Schedule::command('reos:reports:weekly')->weeklyOn(0, '17:45')->timezone(StudyPlans::TIMEZONE)->withoutOverlapping()->onOneServer();
+// Deal key dates 72 and 24 hours away (B9.1): checked hourly.
+Schedule::command('reos:deals:deadlines')->hourlyAt(5)->withoutOverlapping()->onOneServer();

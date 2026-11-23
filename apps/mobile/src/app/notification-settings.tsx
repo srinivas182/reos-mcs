@@ -11,7 +11,7 @@ import { Button, Callout, Eyebrow, MenuGroup, Screen, SwitchRow, Text, TextField
 /** The API takes `channels.{kind}.{channel}`; its generated type flattens the keyed object to arrays. */
 const channelChange = (kind: string, channel: string, on: boolean) => ({ [kind]: { [channel]: on } }) as unknown as boolean[][];
 
-const GROUPS = ['messages', 'learning', 'organisation', 'tools', 'billing', 'account'] as const;
+const GROUPS = ['messages', 'learning', 'deals', 'organisation', 'tools', 'billing', 'account'] as const;
 
 /**
  * Me › Notifications (B6.2): push on this phone (B6.2b), quiet hours in the
