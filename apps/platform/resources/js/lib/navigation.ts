@@ -58,6 +58,7 @@ import { index as askIndex } from '@/routes/ask';
 import { index as bookingsIndex } from '@/routes/bookings';
 import { index as classesIndex } from '@/routes/classes';
 import { show as licenceJourney } from '@/routes/licence';
+import { index as mentorsIndex } from '@/routes/mentors';
 import { index as recruitingIndex } from '@/routes/recruiting';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
@@ -81,6 +82,7 @@ export type NavLabel =
     | 'studentQuestions'
     | 'licenceJourney'
     | 'recruiting'
+    | 'mentors'
     | 'deals'
     | 'dashboard'
     | 'overview'
@@ -212,6 +214,8 @@ export function roleNavigation(
             planned('virtualBroker'),
             planned('contentStudio'),
             item('learnAndCe', GraduationCap, learn(), '/learn'),
+            // Mentors from the agent's own brokerage (A10.3c, f04).
+            item('mentors', Users, mentorsIndex(), '/mentors'),
             planned('serviceProviders'),
             planned('goalsAndRewards'),
             item('connections', Plug, connections()),

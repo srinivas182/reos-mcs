@@ -131,3 +131,27 @@ export function todayIso(): string {
 
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
+
+/** Switching to agent (A10.3c, f03 and 20). */
+export type SwitchState = {
+    number: string | null;
+    check:
+        | 'verified'
+        | 'inactive'
+        | 'name_mismatch'
+        | 'not_found'
+        | 'no_lookup'
+        | null;
+    checked_at: string | null;
+    watching: boolean;
+    record: {
+        name: string;
+        type: string;
+        status: string;
+        licensed_on: string | null;
+        sponsor: string | null;
+    } | null;
+    can_switch: boolean;
+    broker: { id: string; name: string } | null;
+    switched: boolean;
+};

@@ -74,7 +74,8 @@
     "ask": "Ask",
     "studentQuestions": "Student questions",
     "licenceJourney": "Licence journey",
-    "recruiting": "Recruiting"
+    "recruiting": "Recruiting",
+    "mentors": "Mentors"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2275,7 +2276,8 @@
         "school.session_limits_changed": "Session price limits changed",
         "recruiting.offer_made": "Broker offer made",
         "recruiting.offer_changed": "Broker offer changed",
-        "recruiting.offer_withdrawn": "Broker offer withdrawn"
+        "recruiting.offer_withdrawn": "Broker offer withdrawn",
+        "licence.switched_to_agent": "Switched to agent"
       }
     }
   },
@@ -4907,7 +4909,8 @@
       "class_report": "CE class reports",
       "exam_reminder": "Exam reminders",
       "pass_news": "Passing news",
-      "broker_offer": "Broker offers"
+      "broker_offer": "Broker offers",
+      "licence_found": "Licence found"
     },
     "digest": {
       "subject": {
@@ -7533,6 +7536,56 @@
         "open": "Open REOS"
       },
       "purposeShort": "Offers from brokerages in your state, best fit first: an office in your city, their mentors’ rating, then the terms."
+    },
+    "switch": {
+      "title": "Enter your licence number",
+      "purpose": "Switch to agent in seconds, on the same account. REOS checks TREC's public record; no upload needed.",
+      "cta": "I'm licensed",
+      "number": "TREC licence number",
+      "check": "Check",
+      "found": "Active licence found",
+      "types": {
+        "sales_agent": "Sales agent",
+        "broker": "Broker"
+      },
+      "issued": "Issued {{date}}",
+      "sponsor": "Sponsored by {{name}}",
+      "changes": {
+        "account": "Same account: you sign in the same way.",
+        "progress": "Your progress, certificates and history stay.",
+        "mentors": "Mentors from your brokerage, bookable for 1-on-1 sessions."
+      },
+      "ways": "Three ways in",
+      "broker": "Your broker's seat",
+      "join": "Join {{name}}",
+      "noBroker": "Accept a broker offer first.",
+      "association": "Association code",
+      "code": "Code",
+      "useCode": "Use code",
+      "alone": "Continue on your own",
+      "continue": "Continue",
+      "results": {
+        "inactive": "Your licence isn't active yet",
+        "not_found": "Not on TREC's record yet",
+        "name_mismatch": "Found under another name",
+        "no_lookup": "We can't check this state yet"
+      },
+      "watching": "REOS checks every morning and tells you as soon as it's active.",
+      "mismatchBody": "TREC has it under {{name}}. The name must match your account; contact support if it's yours.",
+      "noLookupBody": "Add your licence from your profile, and a reviewer will check it.",
+      "done": "You're an agent now",
+      "mentors": "See your mentors",
+      "errors": {
+        "done": "You've already switched to agent.",
+        "notActive": "Your licence needs to be active on TREC's record, in your name.",
+        "noBroker": "Accept a broker offer first, or choose another way in.",
+        "code": "Enter your association's code."
+      },
+      "mail": {
+        "title": "Your licence is active",
+        "body": "TREC shows licence :number as active. Switch to agent in REOS.",
+        "open": "Switch to agent"
+      }
     }
   },
   "recruiting": {
@@ -7562,5 +7615,15 @@
     },
     "contact": "{{email}} · {{phone}}",
     "sent": "Offer sent."
+  },
+  "mentors": {
+    "title": "Your mentors",
+    "purpose": "Mentors from {{brokerage}}. Book a 1-on-1 session.",
+    "purposeNone": "Mentors from your brokerage, once you join one.",
+    "instructors": "Exam instructors",
+    "empty": "No mentors taking bookings yet",
+    "emptyBody": "When mentors at {{brokerage}} open their hours, they appear here.",
+    "noBrokerage": "Join a brokerage to see its mentors",
+    "noBrokerageBody": "Mentors come from your own brokerage. Exam instructors stay available for CE questions."
   }
 }

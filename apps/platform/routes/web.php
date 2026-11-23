@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licence\LicenceJourneyController;
 use App\Http\Controllers\Api\Licence\PassesAndOffersController;
+use App\Http\Controllers\Api\Licence\SwitchController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
@@ -51,6 +52,7 @@ use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\Licence\LicenceJourneyPageController;
 use App\Http\Controllers\Licence\PassesAndOffersPageController;
+use App\Http\Controllers\Mentors\MentorsPageController;
 use App\Http\Controllers\Messaging\AnnouncementController;
 use App\Http\Controllers\Messaging\AttachmentController;
 use App\Http\Controllers\Messaging\MessagesController;
@@ -200,6 +202,8 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::get('orders/{order}/return', 'complete')->middleware('throttle:30,1,checkout-return')->name('complete');
     });
 
+    // Your mentors (A10.3c, f04): the new agent's own brokerage's mentors.
+    Route::get('mentors', [MentorsPageController::class, 'mentors'])->name('mentors.index');
     // The licence journey (A10.3a, screens 16, 15, 14 and 19): the learner's own pages and JSON actions (studying is checked in the controller).
     Route::prefix('licence-journey')->name('licence.')->group(function () {
         Route::get('/', [LicenceJourneyPageController::class, 'show'])->name('show');
@@ -211,6 +215,10 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
             Route::put('kit/{item}', 'kit')->where('item', '[a-z_]+')->middleware('throttle:60,1,licence-kit')->name('kit');
             Route::post('results', 'result')->middleware('throttle:10,1,licence-result')->name('results');
         });
+        // Switching to agent (A10.3c, f03 and 20).
+        Route::get('licence', [MentorsPageController::class, 'licence'])->name('licence');
+        Route::post('licence/check', [SwitchController::class, 'check'])->middleware('throttle:10,1,licence-check')->name('licence.check');
+        Route::post('licence/switch', [SwitchController::class, 'switch'])->middleware('throttle:5,1,licence-switch')->name('licence.switch');
         // After the exam (A10.3b): passes (f06) and broker offers (17), and the same JSON actions as the API.
         Route::get('passes', [PassesAndOffersPageController::class, 'passes'])->name('passes');
         Route::get('offers', [PassesAndOffersPageController::class, 'offers'])->name('offers');

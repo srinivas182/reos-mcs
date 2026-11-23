@@ -15,6 +15,8 @@ export type Journey = Got<'/licence-journey'>['data'];
 export type PassFeed = Got<'/licence-journey/passes'>['data'];
 export type CandidateOffers = Got<'/licence-journey/offers'>['data'];
 export type Offer = CandidateOffers['offers'][number];
+export type SwitchState = Got<'/licence-journey/licence'>['data'];
+export type MentorList = Got<'/mentors'>['data'];
 export type Portion = 'national' | 'state';
 export const TOPICS = ['agency', 'contracts', 'ownership', 'finance', 'math', 'state_rules'] as const;
 export type Topic = (typeof TOPICS)[number];
@@ -127,4 +129,30 @@ export async function answerOffer(offer: string, accept: boolean): Promise<Candi
     : await api().POST('/licence-journey/offers/{offer}/decline', { params: { path: { offer } } });
 
   return data ? data.data : fail(error);
+}
+
+/** Switching to agent (A10.3c, f03 and 20). */
+export async function loadSwitch(): Promise<SwitchState | null> {
+  const { data } = await api().GET('/licence-journey/licence');
+
+  return data?.data ?? null;
+}
+
+export async function checkLicence(number: string): Promise<SwitchState> {
+  const { data, error } = await api().POST('/licence-journey/licence/check', { body: { number } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function switchToAgent(path: 'broker' | 'association' | 'alone', code: string | null): Promise<string> {
+  const { data, error } = await api().POST('/licence-journey/licence/switch', { body: { path, code } });
+
+  return data ? data.organisation : fail(error);
+}
+
+/** Your mentors (f04): the agent's own brokerage's mentors. */
+export async function loadMentors(): Promise<MentorList | null> {
+  const { data } = await api().GET('/mentors');
+
+  return data?.data ?? null;
 }

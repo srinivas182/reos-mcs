@@ -3826,6 +3826,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/licence-journey/licence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My licence and switching to agent
+         * @description The number entered, what the regulator's record says, whether REOS is checking daily, and the brokerage whose offer I accepted.
+         */
+        get: operations["licence.licence.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/licence/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check my licence number
+         * @description Against the regulator's record; it must be active and in my name. If it isn't active yet, REOS checks daily and tells me.
+         */
+        post: operations["licence.licence.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/licence-journey/licence/switch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Switch to agent
+         * @description Same account. One way in: `broker` (the brokerage whose offer I accepted), `association` (a sponsor's code) or `alone`.
+         */
+        post: operations["licence.licence.switch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My mentors
+         * @description Mentors of my own brokerage who take 1-on-1 bookings, with rating, languages and next free hour.
+         */
+        get: operations["mentors"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/phone": {
         parameters: {
             query?: never;
@@ -17230,6 +17310,208 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "licence.licence.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            number: string | null;
+                            /** @enum {string|null} */
+                            check: "verified" | "inactive" | "name_mismatch" | "not_found" | "no_lookup" | null;
+                            checked_at: string | null;
+                            watching: boolean;
+                            record: {
+                                name: string;
+                                type: string;
+                                status: string;
+                                licensed_on: string | null;
+                                sponsor: string | null;
+                            } | null;
+                            can_switch: boolean;
+                            broker: {
+                                id: string;
+                                name: string;
+                            } | null;
+                            switched: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "licence.licence.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    number: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            number: string | null;
+                            /** @enum {string|null} */
+                            check: "verified" | "inactive" | "name_mismatch" | "not_found" | "no_lookup" | null;
+                            checked_at: string | null;
+                            watching: boolean;
+                            record: {
+                                name: string;
+                                type: string;
+                                status: string;
+                                licensed_on: string | null;
+                                sponsor: string | null;
+                            } | null;
+                            can_switch: boolean;
+                            broker: {
+                                id: string;
+                                name: string;
+                            } | null;
+                            switched: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "licence.licence.switch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    path: "broker" | "association" | "alone";
+                    code?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            number: string | null;
+                            /** @enum {string|null} */
+                            check: "verified" | "inactive" | "name_mismatch" | "not_found" | "no_lookup" | null;
+                            checked_at: string | null;
+                            watching: boolean;
+                            record: {
+                                name: string;
+                                type: string;
+                                status: string;
+                                licensed_on: string | null;
+                                sponsor: string | null;
+                            } | null;
+                            can_switch: boolean;
+                            broker: {
+                                id: string;
+                                name: string;
+                            } | null;
+                            switched: boolean;
+                        };
+                        organisation: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    mentors: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string | null;
+                            mentors: {
+                                id: number;
+                                user_id: number;
+                                name: string;
+                                school: string | null;
+                                bio: string | null;
+                                languages: string[];
+                                topics: string[];
+                                price_30: number;
+                                price_60: number;
+                                rating: number | null;
+                                ratings: number;
+                                next_slot: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "me.texts.phone": {

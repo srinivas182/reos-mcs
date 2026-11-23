@@ -74,7 +74,8 @@
     "ask": "Preguntar",
     "studentQuestions": "Preguntas de estudiantes",
     "licenceJourney": "Camino a la licencia",
-    "recruiting": "Reclutamiento"
+    "recruiting": "Reclutamiento",
+    "mentors": "Mentores"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2275,7 +2276,8 @@
         "school.session_limits_changed": "Límites de precios de sesiones cambiados",
         "recruiting.offer_made": "Oferta de correduría hecha",
         "recruiting.offer_changed": "Oferta de correduría cambiada",
-        "recruiting.offer_withdrawn": "Oferta de correduría retirada"
+        "recruiting.offer_withdrawn": "Oferta de correduría retirada",
+        "licence.switched_to_agent": "Se cambió a agente"
       }
     }
   },
@@ -4907,7 +4909,8 @@
       "class_report": "Informes de CE de clases",
       "exam_reminder": "Recordatorios del examen",
       "pass_news": "Noticias de aprobación",
-      "broker_offer": "Ofertas de corredores"
+      "broker_offer": "Ofertas de corredores",
+      "licence_found": "Licencia encontrada"
     },
     "digest": {
       "subject": {
@@ -7533,6 +7536,56 @@
         "open": "Abrir REOS"
       },
       "purposeShort": "Ofertas de corredurías de su estado, primero las que mejor encajan: una oficina en su ciudad, la calificación de sus mentores y luego las condiciones."
+    },
+    "switch": {
+      "title": "Ingrese su número de licencia",
+      "purpose": "Cámbiese a agente en segundos, en la misma cuenta. REOS revisa el registro público de TREC; no necesita subir nada.",
+      "cta": "Ya tengo licencia",
+      "number": "Número de licencia de TREC",
+      "check": "Revisar",
+      "found": "Licencia activa encontrada",
+      "types": {
+        "sales_agent": "Agente de ventas",
+        "broker": "Corredor"
+      },
+      "issued": "Emitida el {{date}}",
+      "sponsor": "Patrocinada por {{name}}",
+      "changes": {
+        "account": "La misma cuenta: inicia sesión igual.",
+        "progress": "Su avance, certificados e historial se conservan.",
+        "mentors": "Mentores de su correduría, para sesiones individuales."
+      },
+      "ways": "Tres formas de empezar",
+      "broker": "Un lugar con su corredor",
+      "join": "Unirse a {{name}}",
+      "noBroker": "Primero acepte una oferta de corredor.",
+      "association": "Código de asociación",
+      "code": "Código",
+      "useCode": "Usar código",
+      "alone": "Seguir por su cuenta",
+      "continue": "Continuar",
+      "results": {
+        "inactive": "Su licencia aún no está activa",
+        "not_found": "Aún no aparece en el registro de TREC",
+        "name_mismatch": "Aparece con otro nombre",
+        "no_lookup": "Aún no podemos revisar este estado"
+      },
+      "watching": "REOS revisa cada mañana y le avisa en cuanto esté activa.",
+      "mismatchBody": "TREC la tiene a nombre de {{name}}. El nombre debe coincidir con su cuenta; comuníquese con soporte si es suya.",
+      "noLookupBody": "Agregue su licencia desde su perfil y una persona la revisará.",
+      "done": "Ya es agente",
+      "mentors": "Ver sus mentores",
+      "errors": {
+        "done": "Ya se cambió a agente.",
+        "notActive": "Su licencia debe estar activa en el registro de TREC, a su nombre.",
+        "noBroker": "Primero acepte una oferta de corredor, o elija otra forma de empezar.",
+        "code": "Ingrese el código de su asociación."
+      },
+      "mail": {
+        "title": "Su licencia está activa",
+        "body": "TREC muestra la licencia :number como activa. Cámbiese a agente en REOS.",
+        "open": "Cambiarse a agente"
+      }
     }
   },
   "recruiting": {
@@ -7562,5 +7615,15 @@
     },
     "contact": "{{email}} · {{phone}}",
     "sent": "Oferta enviada."
+  },
+  "mentors": {
+    "title": "Sus mentores",
+    "purpose": "Mentores de {{brokerage}}. Reserve una sesión individual.",
+    "purposeNone": "Mentores de su correduría, cuando se una a una.",
+    "instructors": "Instructores del examen",
+    "empty": "Aún no hay mentores aceptando reservas",
+    "emptyBody": "Cuando los mentores de {{brokerage}} abran su horario, aparecerán aquí.",
+    "noBrokerage": "Únase a una correduría para ver sus mentores",
+    "noBrokerageBody": "Los mentores son de su propia correduría. Los instructores del examen siguen disponibles para preguntas de CE."
   }
 }
