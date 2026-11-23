@@ -40,6 +40,7 @@ final readonly class ContactStore implements StreamStore
                 'birthday' => self::text($record['birthday'] ?? null),
                 'tags' => self::texts($record['tags'] ?? null),
                 'updated_at' => self::text($record['updated_at'] ?? null),
+                'details' => self::details($record['details'] ?? null),
             ]);
             $written++;
         }
@@ -64,6 +65,20 @@ final readonly class ContactStore implements StreamStore
     public function count(Connection $connection): int
     {
         return ContactLink::query()->where('connection_id', $connection->id)->count();
+    }
+
+    /** @return array{campaign?: string, campaign_status?: string} */
+    private static function details(mixed $value): array
+    {
+        $details = [];
+
+        foreach (['campaign', 'campaign_status'] as $key) {
+            if (is_array($value) && is_string($value[$key] ?? null) && $value[$key] !== '') {
+                $details[$key] = mb_substr($value[$key], 0, 120);
+            }
+        }
+
+        return $details;
     }
 
     private static function text(mixed $value): ?string

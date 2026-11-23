@@ -2120,8 +2120,8 @@ export interface components {
             accounts: string;
             /** @description For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet). */
             consent: {
-                can: ("read_events" | "write_events" | "change_alerts" | "read_people" | "write_notes" | "write_tasks" | "write_stage")[];
-                never: ("delete_yours" | "email" | "delete_people" | "send_messages")[];
+                can: ("read_events" | "write_events" | "change_alerts" | "read_people" | "write_notes" | "write_tasks" | "write_stage" | "read_campaigns")[];
+                never: ("delete_yours" | "email" | "delete_people" | "send_messages" | "change_campaigns")[];
             } | null;
             /**
              * @description How it's connected: the tool's own sign-in page, or the person's API key (B7.2).
@@ -2259,11 +2259,13 @@ export interface components {
             stage: string | null;
             birthday: string | null;
             tags: string[];
-            /** @description Where this person comes from. */
+            /** @description Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed. */
             sources: {
                 source: string;
                 name: string;
                 synced_at: string | null;
+                campaign: string | null;
+                campaign_status: string | null;
             }[];
             updated_at: string | null;
         };
@@ -2880,7 +2882,7 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss";
+            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail";
             history?: components["schemas"]["HistoryRange"] | null;
             /** @description Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API. */
             api_key?: string | null;

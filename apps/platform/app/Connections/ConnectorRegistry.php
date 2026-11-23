@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Connections;
 
+use App\Connections\Drivers\BoldTrail\BoldTrailDriver;
+use App\Connections\Drivers\BoldTrail\BoldTrailSimulator;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossDriver;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossSimulator;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarDriver;
@@ -34,10 +36,11 @@ final readonly class ConnectorRegistry
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarSimulator::class,
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarSimulator::class,
         FollowUpBossDriver::INTEGRATION => FollowUpBossSimulator::class,
+        BoldTrailDriver::INTEGRATION => BoldTrailSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
-    private const API_KEYS = [FollowUpBossDriver::INTEGRATION];
+    private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -54,6 +57,7 @@ final readonly class ConnectorRegistry
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::CONSENT,
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::CONSENT,
         FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::CONSENT,
+        BoldTrailDriver::INTEGRATION => BoldTrailDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -61,6 +65,7 @@ final readonly class ConnectorRegistry
         GoogleCalendarDriver::INTEGRATION => GoogleCalendarDriver::STREAMS,
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::STREAMS,
         FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::STREAMS,
+        BoldTrailDriver::INTEGRATION => BoldTrailDriver::STREAMS,
     ];
 
     /**
@@ -156,6 +161,7 @@ final readonly class ConnectorRegistry
             GoogleCalendarDriver::INTEGRATION => new GoogleCalendarDriver($value('client_id'), $value('client_secret')),
             OutlookCalendarDriver::INTEGRATION => new OutlookCalendarDriver($value('client_id'), $value('client_secret')),
             FollowUpBossDriver::INTEGRATION => new FollowUpBossDriver($value('system_name'), $value('system_key')),
+            BoldTrailDriver::INTEGRATION => new BoldTrailDriver($value('server_url')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
     }

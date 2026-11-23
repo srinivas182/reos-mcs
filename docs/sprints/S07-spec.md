@@ -214,6 +214,16 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 - Two-way contacts, notes and tasks where the V2 API allows; smart campaign status is read-only on the contact.
 - Polling on a cursor, since there are no webhooks for partners until approved.
 - **Done when:** the same as Follow Up Boss: a note written in REOS appears in BoldTrail.
+- **As built, B7.3** (ADR 0029):
+  - **Connecting:** each agent connects with their own kvCORE API token; the register entry changes from OAuth to `api_key`.
+  - **Polling every 15 minutes:**
+    - Contacts are read newest first and stop at the last mark.
+    - Notes are read for contacts that changed.
+    - Tasks are read in pages.
+  - **Write-back:** notes, task completion and stage (as kvCORE's status number) go back.
+  - **Smart campaigns:** the campaign and its status are shown on the contact and never changed.
+  - **One person, all sources:** the same people from kvCORE and Follow Up Boss are kept once, with both links.
+  - **Simulator** on demo data, used until the test token arrives.
 
 ## 4. Definition of done (whole sprint)
 
@@ -251,6 +261,41 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 2. **Usability check 1 environment:** a **small private preview environment** (P7.0 below), seeded with the journey personas, behind email one-time codes (Cloudflare Access), on the simulators. AWS staging stays at the end.
 3. **Course ownership:** **the school** owns what it builds (content, files, passages under `tenants/<id>/`), and only it sells those courses. The REOS library stays separate.
 4. **Spanish in AI lessons:** **always both voices.** Every lesson is rendered twice, an English-voiced and a Spanish-voiced video from the line-by-line translated script, each with captions in both languages. The credit cost shown before rendering covers both.
+
+## 7. Wrap-up (23 November 2026)
+
+Every sub-sprint merged with green CI, in order:
+- P7.0 (#74), A7.1a (#75), A7.1b (#76), A7.2 (#77), A7.3 (#78);
+- B7.1 (#79), B7.2 (#80), B7.3 (this PR).
+
+| Definition of done | Status |
+| --- | --- |
+| Own PR per sub-sprint, green CI, merged in order | Done |
+| Screens match the journeys, English and Spanish | Done. Web screens 42, 43, 49, 50 and 52 and the phone's Connections, Phone contacts, Sync activity (23) and contact (14) screens were compared with the journeys in each PR. Every string is in both languages, and the CI check enforces it. |
+| `/api/v1`, documented, api-client regenerated, Pest feature tests | Done |
+| Security: a school sees only its own courses, files, students and approvals | `CourseApprovalsTest`, `CourseBuilderTest`, and `SprintSevenSecurityTest` (new at the wrap-up: another school can't open, generate or regenerate) |
+| Security: instructors edit only their courses | `CourseBuilderTest` |
+| Security: nothing renders without avatar consent; withdrawal flags lessons | `InstructorsAndAvatarTest`, `AiLessonPipelineTest` (twin only while consent is in force) |
+| Security: AI drafts use only the course's sources | `SprintSevenSecurityTest` (new at the wrap-up) |
+| Security: contacts visible only to their owner | `ContactsTest` (people and row-level security for brokerages) |
+| Security: CRM keys in the vault, never shown again | `SprintSevenSecurityTest` (new at the wrap-up) |
+| Security: webhooks signed and idempotent | `FollowUpBossTest` (kvCORE has no webhooks) |
+| Usability check 1 | **Waiting on pilot users.** The preview server (P7.0) and the kit (`docs/usability/check-1.md`) are ready; it runs when Nelle's pilot users and the preview server, DNS and Cloudflare arrive. |
+| ADRs | 0025, 0026, 0027, and 0028 (Follow Up Boss) and 0029 (kvCORE), added during the sprint |
+
+**Waiting on the client, all set in Settings › Integrations:**
+- HeyGen credits and/or Synthesia API access, plus a stock avatar and the voices;
+- the instructor avatar consent template signed off by counsel;
+- the Follow Up Boss system name and key;
+- a kvCORE test token;
+- the preview server, DNS and Cloudflare;
+- carried from Sprint 6: Twilio 10DLC, SES and SNS, LiveKit, the egress key, and the Apple and Firebase push keys.
+
+**Carried to Sprint 8:**
+- A8.1, the line-by-line review of AI lessons (screens 44–45) and the question bank. It uses `review_items` and lesson versions, and adds state-rule citations per line.
+- The default CRM for new contacts (screen 24).
+- Brokerage contact screens.
+- Course progress in refunds.
 
 ## Sources
 

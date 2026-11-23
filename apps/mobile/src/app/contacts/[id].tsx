@@ -90,6 +90,17 @@ export default function ContactScreen() {
             <Chip key={s.source} label={s.name} tone="neutral" />
           ))}
         </View>
+        {contact.sources
+          .filter((s) => s.campaign)
+          .map((s) => (
+            <Text key={`campaign-${s.source}`}>
+              {t("crm.contact.campaign", {
+                source: s.name,
+                name: s.campaign,
+                status: s.campaign_status ?? "",
+              })}
+            </Text>
+          ))}
         {contact.stage ? (
           <Text>{`${t("crm.contact.stage")}: ${contact.stage}`}</Text>
         ) : null}

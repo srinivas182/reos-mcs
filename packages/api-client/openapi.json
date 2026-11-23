@@ -11829,7 +11829,8 @@
                                         "read_people",
                                         "write_notes",
                                         "write_tasks",
-                                        "write_stage"
+                                        "write_stage",
+                                        "read_campaigns"
                                     ]
                                 }
                             },
@@ -11841,7 +11842,8 @@
                                         "delete_yours",
                                         "email",
                                         "delete_people",
-                                        "send_messages"
+                                        "send_messages",
+                                        "change_campaigns"
                                     ]
                                 }
                             }
@@ -12234,7 +12236,7 @@
                     },
                     "sources": {
                         "type": "array",
-                        "description": "Where this person comes from.",
+                        "description": "Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed.",
                         "items": {
                             "type": "object",
                             "properties": {
@@ -12249,12 +12251,26 @@
                                         "string",
                                         "null"
                                     ]
+                                },
+                                "campaign": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
+                                },
+                                "campaign_status": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ]
                                 }
                             },
                             "required": [
                                 "source",
                                 "name",
-                                "synced_at"
+                                "synced_at",
+                                "campaign",
+                                "campaign_status"
                             ]
                         }
                     },
@@ -14105,7 +14121,8 @@
                         "enum": [
                             "google-calendar",
                             "outlook-calendar",
-                            "follow-up-boss"
+                            "follow-up-boss",
+                            "boldtrail"
                         ]
                     },
                     "history": {

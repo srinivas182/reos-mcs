@@ -40,10 +40,13 @@ final class ContactResource extends JsonResource
             /**
              * Where this person comes from.
              *
-             * @var list<array{source: string, name: string, synced_at: string|null}>
+             * Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed.
+             *
+             * @var list<array{source: string, name: string, synced_at: string|null, campaign: string|null, campaign_status: string|null}>
              */
             'sources' => $contact->links->map(static fn (ContactLink $l): array => [
                 'source' => $l->source, 'name' => $sources->name($l->source), 'synced_at' => $l->synced_at?->toIso8601String(),
+                'campaign' => $l->details['campaign'] ?? null, 'campaign_status' => $l->details['campaign_status'] ?? null,
             ])->values()->all(),
             'updated_at' => $contact->updated_at?->toIso8601String(),
         ];
