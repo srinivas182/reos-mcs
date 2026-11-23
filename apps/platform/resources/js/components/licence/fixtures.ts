@@ -1,4 +1,4 @@
-import type { Journey } from '@/components/licence/types';
+import type { Journey, OfferRow, PassFeed } from '@/components/licence/types';
 
 /** Ana's journey: education done, application filed, exam booked (realistic Texas content). */
 export const journey = (over: Partial<Journey> = {}): Journey => ({
@@ -96,5 +96,56 @@ export const journey = (over: Partial<Journey> = {}): Journey => ({
         passed_both: false,
     },
     retake: null,
+    news: null,
+    offers: { opted_in: false, city: null, open: 0 },
+    ...over,
+});
+
+export const offer = (over: Partial<OfferRow> = {}): OfferRow => ({
+    id: '3f2b1c0d-9e8f-4a7b-8c6d-5e4f3a2b1c0d',
+    brokerage: 'Gulf Coast Homes',
+    office_city: 'Katy',
+    split_percent: 70,
+    monthly_fee_cents: 9900,
+    fees: '$500 a year for E&O',
+    training: 'Weekly contract classes for new agents',
+    mentoring: true,
+    message: 'We would love to have you on the Katy team.',
+    status: 'open',
+    rating: 4.8,
+    ratings: 23,
+    fit: true,
+    contact: null,
+    ...over,
+});
+
+export const passFeed = (over: Partial<PassFeed> = {}): PassFeed => ({
+    week: 14,
+    state: 'Texas',
+    readiness: 86,
+    passes: [
+        {
+            id: 7,
+            first_name: 'Jordan',
+            city: 'Katy',
+            state: 'Texas',
+            tip: 'Do the math lab every day for the last two weeks.',
+            on: '2026-11-22T21:00:00Z',
+            congrats: 12,
+            sent: false,
+            mine: false,
+        },
+        {
+            id: 6,
+            first_name: 'Priya',
+            city: null,
+            state: 'Texas',
+            tip: null,
+            on: '2026-11-21T18:30:00Z',
+            congrats: 4,
+            sent: true,
+            mine: false,
+        },
+    ],
     ...over,
 });

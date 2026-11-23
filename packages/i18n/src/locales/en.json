@@ -73,7 +73,8 @@
     "deals": "Deals",
     "ask": "Ask",
     "studentQuestions": "Student questions",
-    "licenceJourney": "Licence journey"
+    "licenceJourney": "Licence journey",
+    "recruiting": "Recruiting"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2271,7 +2272,10 @@
         "study_group.created": "Made a class study group",
         "class_report.decided": "Class report decision",
         "class_report.sent": "Class report sent to school",
-        "school.session_limits_changed": "Session price limits changed"
+        "school.session_limits_changed": "Session price limits changed",
+        "recruiting.offer_made": "Broker offer made",
+        "recruiting.offer_changed": "Broker offer changed",
+        "recruiting.offer_withdrawn": "Broker offer withdrawn"
       }
     }
   },
@@ -4901,7 +4905,9 @@
       "instructor_answer": "Answers from your instructor",
       "class_check": "Attendance checks",
       "class_report": "CE class reports",
-      "exam_reminder": "Exam reminders"
+      "exam_reminder": "Exam reminders",
+      "pass_news": "Passing news",
+      "broker_offer": "Broker offers"
     },
     "digest": {
       "subject": {
@@ -7432,6 +7438,129 @@
       },
       "open": "Open your licence journey"
     },
-    "today": "Your steps to a licence, and your exam."
+    "today": "Your steps to a licence, and your exam.",
+    "news": {
+      "title": "Share your news",
+      "body": "Tell the people you choose. Only your first name and city are shown, never your scores.",
+      "group": "My study group",
+      "groupHint": "They get a notification now.",
+      "school": "My school",
+      "schoolHint": "Your instructors and school are told now.",
+      "state": "{{state}} candidates on REOS",
+      "stateHint": "Shown in Passes with your first name and city.",
+      "city": "City (optional)",
+      "tip": "A tip for others (optional)",
+      "tipPlaceholder": "What helped you most?",
+      "share": "Share",
+      "notNow": "Not now",
+      "shared": "Shared. Congratulations!",
+      "skipped": "Nothing was shared.",
+      "passes": {
+        "title": "Passes",
+        "purpose": "Real wins from {{state}} candidates who chose to share.",
+        "week_one": "{{count}} person passed in {{state}} this week",
+        "week_other": "{{count}} people passed in {{state}} this week",
+        "line": "{{name}} passed the {{state}} exam!",
+        "lineCity": "{{name}} from {{city}} passed the {{state}} exam!",
+        "you": "You",
+        "congrats_one": "{{count}} congrats",
+        "congrats_other": "{{count}} congrats",
+        "send": "Send congrats",
+        "sent": "Congrats sent",
+        "messageLabel": "Your message to {{name}}",
+        "defaultMessage": "Congratulations, {{name}}!",
+        "simulation": "Take a simulation",
+        "readiness": "Your readiness: {{percent}}%",
+        "empty": "No passes shared yet",
+        "emptyBody": "When candidates in your state or study group share their pass, it shows here. You can mute these in notification settings.",
+        "see": "See who passed"
+      },
+      "errors": {
+        "nobody": "Choose who hears, or choose Not now.",
+        "notPassed": "Share your news once you've passed both portions.",
+        "sent": "You've already sent congrats."
+      },
+      "mail": {
+        "passed": ":name passed the :state exam!",
+        "passedCity": ":name from :city passed the :state exam!",
+        "congrats": ":name sent you congrats",
+        "open": "Open REOS"
+      }
+    },
+    "offers": {
+      "title": "Broker offers",
+      "purpose": "Offers from brokerages in {{state}}, best fit first: an office in your city, their mentors' rating, then the terms.",
+      "optIn": "Get offers from brokerages",
+      "optInHint": "Brokerages in {{state}} see your first name, city and progress. Your contact details are shared only with a brokerage whose offer you accept.",
+      "city": "City you want to work in",
+      "save": "Save",
+      "open_one": "{{count}} offer waiting",
+      "open_other": "{{count}} offers waiting",
+      "see": "See offers",
+      "split": "{{percent}}% to you",
+      "fee": "{{fee}} a month",
+      "noFee": "No monthly fee",
+      "office": "Office in {{city}}",
+      "fit": "In your city",
+      "mentoring": "Mentoring",
+      "training": "Training",
+      "rating": "Mentors rated {{rating}} ({{count}})",
+      "noRating": "No ratings yet",
+      "accept": "Accept",
+      "decline": "Decline",
+      "acceptedNote": "Accepted. {{brokerage}} has your contact details and will reach out.",
+      "declined": "Offer declined",
+      "empty": "No offers yet",
+      "emptyBody": "Brokerages in your state can now see that you're looking. Offers arrive here and in your notifications.",
+      "off": "You're not getting offers",
+      "offBody": "Turn on offers to let brokerages in your state reach you.",
+      "statuses": {
+        "open": "Open",
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "withdrawn": "Withdrawn"
+      },
+      "errors": {
+        "city": "Tell us the city you want to work in.",
+        "answered": "This offer has already been answered."
+      },
+      "mail": {
+        "offer": ":brokerage made you an offer",
+        "offerBody": ":split% to you, office in :city.",
+        "accepted": ":name accepted your offer",
+        "acceptedBody": "Email: :email. Phone: :phone.",
+        "declined": ":name declined your offer",
+        "open": "Open REOS"
+      },
+      "purposeShort": "Offers from brokerages in your state, best fit first: an office in your city, their mentors’ rating, then the terms."
+    }
+  },
+  "recruiting": {
+    "title": "Recruiting",
+    "purpose": "Candidates in {{states}} who asked for offers. You see their first name, city and progress; contact details come when they accept your offer.",
+    "empty": "No candidates looking yet",
+    "emptyBody": "Candidates who turn on broker offers in your states appear here.",
+    "stages": {
+      "studying": "Studying",
+      "exam_booked": "Exam booked",
+      "passed": "Passed the exam"
+    },
+    "makeOffer": "Make an offer",
+    "changeOffer": "Change offer",
+    "withdraw": "Withdraw",
+    "withdrawn": "Offer withdrawn",
+    "form": {
+      "title": "Offer to {{name}}",
+      "office": "Office city",
+      "split": "Agent's split (%)",
+      "fee": "Monthly fee ($)",
+      "fees": "Other fees",
+      "training": "Training",
+      "mentoring": "Mentoring for new agents",
+      "message": "Message",
+      "send": "Send offer"
+    },
+    "contact": "{{email}} · {{phone}}",
+    "sent": "Offer sent."
   }
 }

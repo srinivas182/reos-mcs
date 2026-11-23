@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Licences\Journey;
 
 use App\Enums\QuizTopic;
+use App\Models\BrokerOffer;
 use App\Models\LicenceJourney;
 use App\Models\State;
 use App\Models\StateRule;
@@ -37,7 +38,7 @@ use Illuminate\Validation\ValidationException;
  *   then readiness) and the attempts left before more education.
  *
  * @phpstan-type Portion array{passed: bool|null, attempts: int, failed: int, on: string|null}
- * @phpstan-type JourneyData array{state: array{code: string, name: string}, steps: list<array{code: string, title: string, detail: string, url: string|null, done_on: string|null, auto: bool}>, window: array{filed_on: string|null, ends_on: string|null, days_left: int|null, months: int}, readiness: array{percent: int|null, national: int|null, state: int|null, line: int, ready: bool, simulations: int, needed: int}, exam: array{vendor: string|null, book_url: string|null, on: string|null, time: string|null, centre: string|null, days_to: int|null, directions_url: string|null}, kit: array{items: list<array{key: string, done: bool}>, rules: string|null}, results: array{national: Portion, state: Portion, can_enter: bool, attempts_allowed: int, passed_both: bool}, retake: array{portions: list<string>, topics: list<string>, more_education: bool, attempts_left: array<string, int>}|null}
+ * @phpstan-type JourneyData array{state: array{code: string, name: string}, steps: list<array{code: string, title: string, detail: string, url: string|null, done_on: string|null, auto: bool}>, window: array{filed_on: string|null, ends_on: string|null, days_left: int|null, months: int}, readiness: array{percent: int|null, national: int|null, state: int|null, line: int, ready: bool, simulations: int, needed: int}, exam: array{vendor: string|null, book_url: string|null, on: string|null, time: string|null, centre: string|null, days_to: int|null, directions_url: string|null}, kit: array{items: list<array{key: string, done: bool}>, rules: string|null}, results: array{national: Portion, state: Portion, can_enter: bool, attempts_allowed: int, passed_both: bool}, retake: array{portions: list<string>, topics: list<string>, more_education: bool, attempts_left: array<string, int>}|null, news: 'prompt'|'shared'|'skipped'|null, offers: array{opted_in: bool, city: string|null, open: int}}
  */
 final readonly class LicenceJourneys
 {
@@ -125,6 +126,14 @@ final readonly class LicenceJourneys
                 'passed_both' => $passedBoth,
             ],
             'retake' => $this->retake($user, $journey, $results, $this->attemptsAllowed($rules)),
+            // After passing: share the news (f05), until shared or "Not now" (A10.3b).
+            'news' => $passedBoth ? ($journey->news === 'shared' ? 'shared' : ($journey->news === 'skipped' ? 'skipped' : 'prompt')) : null,
+            // Broker offers (screen 17): opted in, and how many are waiting.
+            'offers' => [
+                'opted_in' => $journey->offers_opt_in,
+                'city' => $journey->offers_city,
+                'open' => BrokerOffer::query()->where('candidate_id', $user->id)->where('status', BrokerOffer::OPEN)->count(),
+            ],
         ];
     }
 
@@ -211,13 +220,14 @@ final readonly class LicenceJourneys
 
         $attempts = $journey->attempts;
         $entered = false;
+        $day = $journey->exam_on->toDateString();
 
         foreach (self::PORTIONS as $portion) {
             if ($passed[$portion] === null || $results[$portion]['passed'] === true) {
                 continue;
             }
 
-            $attempts[] = ['portion' => $portion, 'passed' => $passed[$portion], 'on' => $journey->exam_on->toDateString()];
+            $attempts[] = ['portion' => $portion, 'passed' => $passed[$portion], 'on' => $day];
             $entered = true;
         }
 
@@ -226,7 +236,10 @@ final readonly class LicenceJourneys
         }
 
         $failed = in_array(false, array_values($passed), true);
+        $after = $this->results($journey->forceFill(['attempts' => $attempts]));
         $journey->forceFill([
+            // Both portions passed: the day it happened (A10.3b's passes).
+            'passed_on' => $after['national']['passed'] === true && $after['state']['passed'] === true ? $day : null,
             'attempts' => $attempts,
             'weak_topics' => $failed ? array_values(array_intersect(array_keys(DiagnosticBank::WEIGHTS), $weakTopics)) : [],
             // A missed portion is retaken on a new date.

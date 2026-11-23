@@ -19,6 +19,7 @@ use App\Features\Rollouts;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Integrations\IntegrationMode;
 use App\Models\AuditEvent;
+use App\Models\BrokerOffer;
 use App\Models\Connection;
 use App\Models\Course;
 use App\Models\CourseModule;
@@ -28,6 +29,7 @@ use App\Models\Invitation;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
 use App\Models\LessonVersion;
+use App\Models\LicenceJourney;
 use App\Models\MessageReport;
 use App\Models\Order;
 use App\Models\Organisation;
@@ -622,6 +624,22 @@ function adminActions(): array
             app(Tenancy::class)->run($school->id, fn () => app(AvatarConsents::class)->give($rachel, $school, UploadedFile::fake()->create('sample.mp4', 4_000, 'video/mp4'), ConsentMethod::Web));
 
             return auditCase($paul, 'PUT', "/school/instructors/{$rachel->id}/twins", ['heygen' => 'twin_01'], tenant: $school->id);
+        },
+        // Recruiting: broker offers to candidates who opted in (A10.3b).
+        'recruiting.offer' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $lone->forceFill(['states' => ['TX']])->save();
+            $ana = User::factory()->withRole(Role::Candidate, Organisation::platform())->create();
+            LicenceJourney::query()->create(['user_id' => $ana->id, 'state_code' => 'TX', 'steps' => [], 'kit' => [], 'attempts' => [], 'weak_topics' => [], 'reminded' => [], 'offers_opt_in' => true, 'offers_city' => 'Katy']);
+
+            return auditCase($linda, 'PUT', "/recruiting/candidates/{$ana->id}/offer", ['office_city' => 'Katy', 'split_percent' => 70, 'monthly_fee_cents' => 0, 'mentoring' => true], tenant: $lone->id);
+        },
+        'recruiting.withdraw' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $ana = User::factory()->withRole(Role::Candidate, Organisation::platform())->create();
+            $offer = BrokerOffer::query()->create(['uuid' => (string) Str::uuid(), 'brokerage_id' => $lone->id, 'candidate_id' => $ana->id, 'office_city' => 'Katy', 'split_percent' => 70, 'monthly_fee_cents' => 0, 'mentoring' => true, 'status' => 'open']);
+
+            return auditCase($linda, 'POST', "/recruiting/offers/{$offer->uuid}/withdraw", tenant: $lone->id);
         },
         // School: 1-on-1 session price limits (A10.2d).
         'school.instructors.session-limits' => function () {

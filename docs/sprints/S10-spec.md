@@ -158,6 +158,16 @@
   - **Screen 62:**
     - New rules: licence steps (with their own editor), application window, exam attempts and exam-day rules.
     - The exam-format rules now have labels.
+- **As built, A10.3b** (ADR 0041 §7–9):
+  - **Share your news** after passing (web and phone):
+    - The candidate chooses study group, school (both told now) and state candidates (in Passes).
+    - It shows a first name, city and optional tip, never scores. **Not now** shares nothing.
+  - **Passes** (f06): shared passes from the state and study group, this week's count, Send congrats (once each, the passer is told), a simulation and the candidate's readiness. They can be muted in notification settings.
+  - **Broker offers:**
+    - Candidates opt in from the tracker with a city.
+    - **Recruiting** (broker web sidebar) lists them by first name, city and stage. A brokerage makes, changes or withdraws an offer: office, split, fees, training, mentoring, message (audited).
+    - Offers are ranked by fit (office in their city), mentors' rating and terms.
+    - **Accept** shares the candidate's name, email and phone with that brokerage only; **Decline** hides the offer.
 - **Done when:** a candidate becomes an agent on the same account.
 
 ### B10.1 MLS feeds (Team B)

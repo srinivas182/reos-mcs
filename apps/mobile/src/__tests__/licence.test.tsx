@@ -3,6 +3,8 @@ import { router } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
 
 import ExamDayScreen from '@/app/licence-journey/exam-day';
+import OffersScreen from '@/app/licence-journey/offers';
+import PassesScreen from '@/app/licence-journey/passes';
 import LicenceJourneyScreen from '@/app/licence-journey/index';
 import ResultScreen from '@/app/licence-journey/result';
 import { i18n } from '@/lib/i18n';
@@ -39,6 +41,8 @@ const journey = (over: Partial<Journey> = {}): Journey => ({
   kit: { items: [{ key: 'id', done: false }, { key: 'confirmation', done: false }, { key: 'final_simulation', done: false }, { key: 'flashcards', done: false }, { key: 'sleep', done: false }], rules: 'Bring two current IDs with your signature.' },
   results: { national: { passed: null, attempts: 0, failed: 0, on: null }, state: { passed: null, attempts: 0, failed: 0, on: null }, can_enter: false, attempts_allowed: 3, passed_both: false },
   retake: null,
+  news: null,
+  offers: { opted_in: false, city: null, open: 0 },
   ...over,
 });
 
@@ -95,5 +99,53 @@ describe('Licence journey on the phone (A10.3a: screens 16, 15, 14, 19)', () => 
 
     expect(mockApi.POST).toHaveBeenCalledWith('/licence-journey/results', { body: { national: true, state: false, weak_topics: ['state_rules'] } });
     expect(router.replace).toHaveBeenCalledWith('/licence-journey');
+  });
+});
+
+describe('After the exam on the phone (A10.3b: f05, f06, 17)', () => {
+  it('shares the news with the people chosen', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: journey({ news: 'prompt', results: { ...journey().results, passed_both: true } }) }));
+    mockApi.POST.mockResolvedValue(ok({ data: { shared: true } }));
+    await render(wrap(<LicenceJourneyScreen />));
+
+    await fireEvent(await screen.findByLabelText('My school'), 'valueChange', false);
+    await fireEvent.press(screen.getByRole('button', { name: 'Share' }));
+    expect(mockApi.POST).toHaveBeenCalledWith('/licence-journey/news', { body: { to_group: true, to_school: false, to_state: true, city: null, tip: null } });
+  });
+
+  it('opts in to broker offers with a city', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: journey() }));
+    mockApi.PUT.mockResolvedValue(ok({ data: { opted_in: true, city: 'Katy', offers: [] } }));
+    await render(wrap(<LicenceJourneyScreen />));
+
+    await fireEvent(await screen.findByLabelText('Get offers from brokerages'), 'valueChange', true);
+    await fireEvent.changeText(screen.getByLabelText('City you want to work in'), 'Katy');
+    await fireEvent.press(screen.getByRole('button', { name: 'Save' }));
+    expect(mockApi.PUT).toHaveBeenCalledWith('/licence-journey/offers/opt-in', { body: { on: true, city: 'Katy' } });
+  });
+
+  it('sends congrats on a pass', async () => {
+    const feed = { week: 14, state: 'Texas', readiness: 86, passes: [{ id: 7, first_name: 'Jordan', city: 'Katy', state: 'Texas', tip: 'Math lab daily.', on: '2026-11-22T21:00:00Z', congrats: 12, sent: false, mine: false }] };
+    mockApi.GET.mockResolvedValue(ok({ data: feed }));
+    mockApi.POST.mockResolvedValue(ok({ data: { ...feed, passes: [{ ...feed.passes[0], sent: true, congrats: 13 }] } }));
+    await render(wrap(<PassesScreen />));
+
+    expect(await screen.findByText('Jordan from Katy passed the Texas exam!')).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: 'Send congrats' }));
+    await fireEvent.press(screen.getByRole('button', { name: 'Send congrats' }));
+    expect(mockApi.POST).toHaveBeenCalledWith('/licence-journey/passes/{pass}/congrats', { params: { path: { pass: 7 } }, body: { message: 'Congratulations, Jordan!' } });
+    expect(await screen.findByText('Congrats sent')).toBeTruthy();
+  });
+
+  it('accepts a broker offer', async () => {
+    const offer = { id: 'o-1', brokerage: 'Gulf Coast Homes', office_city: 'Katy', split_percent: 70, monthly_fee_cents: 9900, fees: null, training: null, mentoring: true, message: null, status: 'open', rating: 4.8, ratings: 23, fit: true, contact: null };
+    mockApi.GET.mockResolvedValue(ok({ data: { opted_in: true, city: 'Katy', offers: [offer] } }));
+    mockApi.POST.mockResolvedValue(ok({ data: { opted_in: true, city: 'Katy', offers: [{ ...offer, status: 'accepted' }] } }));
+    await render(wrap(<OffersScreen />));
+
+    expect(await screen.findByText('70% to you')).toBeTruthy();
+    await fireEvent.press(screen.getByRole('button', { name: 'Accept' }));
+    expect(mockApi.POST).toHaveBeenCalledWith('/licence-journey/offers/{offer}/accept', { params: { path: { offer: 'o-1' } } });
+    expect(await screen.findByText(/Gulf Coast Homes has your contact details/)).toBeTruthy();
   });
 });

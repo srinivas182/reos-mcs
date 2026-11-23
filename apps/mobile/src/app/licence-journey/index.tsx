@@ -6,7 +6,8 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
-import { checkStep, dayText, type Journey, setExam, useJourney } from '@/lib/licence';
+import { ShareNews, OffersOptIn } from '@/features/licence/ShareNews';
+import { checkStep, dayText, type Journey, optInOffers, reloadJourney, setExam, shareNews, skipNews, useJourney } from '@/lib/licence';
 import { asTopic, startPlan } from '@/lib/practice';
 import { Button, Callout, Card, Icon, Screen, SectionTitle, Text, TextField, TitleBar } from '@/ui';
 
@@ -100,6 +101,16 @@ export default function LicenceJourneyScreen() {
         </Card>
       ) : null}
 
+      {/* After passing: share the news (f05, A10.3b). */}
+      {journey.news === 'prompt' ? (
+        <ShareNews
+          state={journey.state.name}
+          city={journey.offers.city}
+          onShare={(choice) => void run(async () => (await shareNews(choice), await reloadJourney()))}
+          onSkip={() => void run(async () => (await skipNews(), await reloadJourney()))}
+        />
+      ) : null}
+
       {journey.results.passed_both ? (
         <Callout tone="success" title={t('licence.passed.title')} body={t('licence.passed.body')} />
       ) : (
@@ -123,6 +134,16 @@ export default function LicenceJourneyScreen() {
           {exam.on ? <Button variant="secondary" icon={Luggage} label={t('licence.kit.title')} onPress={() => router.push('/licence-journey/exam-day')} /> : null}
         </Card>
       )}
+
+      {/* Broker offers (screen 17) and passes (f06), A10.3b. */}
+      <OffersOptIn
+        key={`${String(journey.offers.opted_in)}-${journey.offers.city ?? ''}`}
+        state={journey.state.name}
+        offers={journey.offers}
+        onSave={(on, city) => void run(async () => (await optInOffers(on, city), await reloadJourney()))}
+        onSee={() => router.push('/licence-journey/offers')}
+      />
+      <Button variant="secondary" label={t('licence.news.passes.see')} onPress={() => router.push('/licence-journey/passes')} />
 
       <SectionTitle>{t('licence.steps', { state: journey.state.name })}</SectionTitle>
       {journey.steps.map((step, i) => {

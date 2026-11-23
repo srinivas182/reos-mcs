@@ -53,6 +53,10 @@ enum NotificationKind: string
     case ClassReport = 'class_report';
     /** The licence exam: a week and a day before, then enter the result (A10.3a). */
     case ExamReminder = 'exam_reminder';
+    /** Someone in the study group or school passed, or congrats on your pass (A10.3b). */
+    case PassNews = 'pass_news';
+    /** A brokerage's offer, or a candidate's answer to one (A10.3b). */
+    case BrokerOffer = 'broker_offer';
 
     public const INBOX = 'inbox';
 
@@ -106,7 +110,7 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
+            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
             self::DealDeadline, self::SignatureCompleted => 'deals',

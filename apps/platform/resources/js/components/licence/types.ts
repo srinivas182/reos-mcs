@@ -64,6 +64,54 @@ export type Journey = {
         more_education: boolean;
         attempts_left: Partial<Record<Portion, number>>;
     } | null;
+    /** After passing: share the news (f05) until shared or skipped (A10.3b). */
+    news: 'prompt' | 'shared' | 'skipped' | null;
+    /** Broker offers (screen 17). */
+    offers: { opted_in: boolean; city: string | null; open: number };
+};
+
+/** A pass someone shared (f06). */
+export type PassRow = {
+    id: number;
+    first_name: string;
+    city: string | null;
+    state: string;
+    tip: string | null;
+    on: string;
+    congrats: number;
+    sent: boolean;
+    mine: boolean;
+};
+
+export type PassFeed = {
+    week: number;
+    state: string;
+    readiness: number | null;
+    passes: PassRow[];
+};
+
+/** A brokerage's offer (screen 17; recruiting). */
+export type OfferRow = {
+    id: string;
+    brokerage: string;
+    office_city: string;
+    split_percent: number;
+    monthly_fee_cents: number;
+    fees: string | null;
+    training: string | null;
+    mentoring: boolean;
+    message: string | null;
+    status: 'open' | 'accepted' | 'declined' | 'withdrawn';
+    rating: number | null;
+    ratings: number;
+    fit: boolean;
+    contact: { name: string; email: string; phone: string | null } | null;
+};
+
+export type CandidateOffers = {
+    opted_in: boolean;
+    city: string | null;
+    offers: OfferRow[];
 };
 
 /** A day such as "Mon, Dec 14" from "2026-12-14", whatever the viewer's zone. */
