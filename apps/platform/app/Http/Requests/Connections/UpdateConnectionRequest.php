@@ -31,6 +31,13 @@ final class UpdateConnectionRequest extends FormRequest
             'calendars.*' => [Rule::enum(CalendarMode::class)],
             /** Calendars only: where events made in REOS go, or an empty string to keep them in REOS. */
             'write_calendar' => ['sometimes', 'nullable', 'string', 'max:255'],
+            /**
+             * dotloop only: the profiles whose loops sync (at least one).
+             *
+             * @var list<string>
+             */
+            'profiles' => ['sometimes', 'array', 'min:1', 'max:50'],
+            'profiles.*' => ['string', 'max:64'],
         ];
     }
 
@@ -39,7 +46,7 @@ final class UpdateConnectionRequest extends FormRequest
     {
         return [
             function (Validator $validator): void {
-                if (! $this->has('history') && ! $this->choosesCalendars()) {
+                if (! $this->has('history') && ! $this->choosesCalendars() && ! $this->has('profiles')) {
                     $validator->errors()->add('history', __('validation.required', ['attribute' => 'history']));
                 }
             },
@@ -49,6 +56,16 @@ final class UpdateConnectionRequest extends FormRequest
     public function history(): ?HistoryRange
     {
         return $this->filled('history') ? HistoryRange::from($this->string('history')->toString()) : null;
+    }
+
+    /** @return list<string>|null the chosen dotloop profiles, or null to leave them */
+    public function profiles(): ?array
+    {
+        if (! $this->has('profiles')) {
+            return null;
+        }
+
+        return array_values(array_unique(array_filter((array) $this->input('profiles', []), is_string(...))));
     }
 
     public function choosesCalendars(): bool

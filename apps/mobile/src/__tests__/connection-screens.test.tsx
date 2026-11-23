@@ -43,6 +43,7 @@ const calendar: Connection = {
     { id: 'personal', name: 'Personal', primary: false, writable: true, mode: 'off', write: false },
     { id: 'holidays', name: 'Holidays in United States', primary: false, writable: false, mode: 'off', write: false },
   ],
+  profiles: null,
 };
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PATCH: jest.fn(), DELETE: jest.fn() };
@@ -221,6 +222,34 @@ describe('Consent, then connected with smart defaults (screens 5–7)', () => {
     );
     expect(mockData.reloadConnections).toHaveBeenCalled();
     await waitFor(() => expect(screen.getByText('Saved. Syncing your calendars now.')).toBeOnTheScreen());
+  });
+
+  it("chooses which dotloop profiles' loops sync (B9.2)", async () => {
+    mockParams.id = '9';
+    mockData.connections = [
+      {
+        ...calendar,
+        id: 9,
+        integration: 'dotloop',
+        integration_name: 'dotloop',
+        streams: [{ key: 'deals', direction: 'read', records: 2 }],
+        calendars: null,
+        profiles: [
+          { id: '4711', name: 'Individual', chosen: true },
+          { id: '4712', name: 'Lone Star Team', chosen: true },
+        ],
+      },
+    ];
+    await renderScreen(<SyncSettings />);
+
+    expect(screen.getByText('Deals and key dates')).toBeOnTheScreen();
+    await fireEvent(screen.getByRole('switch', { name: 'Lone Star Team' }), 'valueChange', false);
+    await fireEvent.press(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() =>
+      expect(mockApi.PATCH).toHaveBeenCalledWith('/connections/{connection}', { params: { path: { connection: 9 } }, body: { profiles: ['4711'] } }),
+    );
+    await waitFor(() => expect(screen.getByText('Profiles saved. Your loops are syncing again.')).toBeOnTheScreen());
   });
 
   it('shows why REOS refused a choice', async () => {

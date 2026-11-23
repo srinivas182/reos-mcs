@@ -61,6 +61,21 @@ Decision 3 settled how REOS treats deals from a tool: they're read-only, and cha
     - **The broker** sees counts only on screen 40: open deals and deadlines this week, never documents.
     - **Each agent** sees their own deals on the board and in Connections › Transactions (Connections screen 17): stage, documents complete, next deadline and commission, read-only and opened in Transact.
 
+## Decision (dotloop and SkySlope, B9.2)
+
+11. **dotloop is the agent's own.** dotloop accounts belong to people, so each agent connects with dotloop's OAuth sign-in (Public API v2; REOS's `client_id` and `client_secret` in Settings › Integrations). Its deals belong to the person who connected; no email matching.
+12. **Profiles.** A dotloop account can hold several profiles (the agent's own, a team's, an office's).
+    - Every profile syncs until the agent chooses some, in the connection's settings (`profiles` on `PATCH /api/v1/connections/{id}`, both web and phone).
+    - Changing the choice removes the connection's deals and their to-dos and syncs again from the start: REOS doesn't record which profile a loop came from, and a clean resync is simple and correct.
+13. **dotloop's webhooks.** One subscription per chosen profile for loop and participant events.
+    - Each subscription gets a signing key REOS derives from the app key and the connection, never stored; deliveries are checked with HMAC-SHA1 over "timestamp.body", refused when older than five minutes, and deduplicated by event id.
+    - The address carries a sealed connection id, as for Follow Up Boss. A delivery queues a sync, and the 15-minute poll stays as the backstop.
+14. **dotloop mapping** (`DotloopRecords`): status → stage (sold or leased → closed, archived → cancelled); transaction type → side; named contract dates → key dates (any "option" date → option period); task-list items with a due date → dated to-dos with their done state; participants; folders' documents.
+15. **SkySlope is the brokerage's.** A broker or admin user's access key and secret reach every file, so the brokerage connects once on screen 40 with both (stored together, encrypted, as the connection's token).
+    - REOS logs in with its own client ID and secret, signed with HMAC-SHA256 over "clientID:clientSecret:timestamp" using the user's secret, and caches the two-hour session.
+    - Sales and listings changed since the last pass are read every 15 minutes (`earliestDate`, `latestDate`), 10 a page, and matched to agents by the file's email (`RecordOwners`).
+    - SkySlope's published API has no checklist, document list or webhooks, so the deal carries its escrow closing and listing expiry dates and no documents until B9.3.
+
 ## Consequences
 
 - Every tool driver only has to normalise its transactions into the `receive` record. Deadlines, to-dos, pushes and screens come for free.

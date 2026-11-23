@@ -158,6 +158,37 @@ describe('Brokerage integrations (screen 40)', () => {
         ).toHaveAttribute('href', '/connections/salesforce/connect');
     });
 
+    it("connects SkySlope with the brokerage's access key and secret (B9.2)", async () => {
+        const ss: Props['tools'][number] = {
+            ...salesforce,
+            id: 'skyslope',
+            name: 'SkySlope',
+            category: 'transactions',
+            connects_with: 'key_and_secret',
+            account: null,
+        };
+        const user = userEvent.setup();
+        render(<BrokerageIntegrations {...props} tools={[ss]} />);
+        const connect = screen.getByRole('button', {
+            name: 'Connect SkySlope',
+        });
+        await user.type(
+            screen.getByLabelText('SkySlope access key'),
+            'AKIA-demo-1',
+        );
+        expect(connect).toBeDisabled();
+        await user.type(
+            screen.getByLabelText('SkySlope access secret'),
+            'shh-secret',
+        );
+        await user.click(connect);
+        expect(router.post).toHaveBeenCalledWith(
+            '/organisation/integrations/tools/skyslope/key',
+            { api_key: 'AKIA-demo-1', api_secret: 'shh-secret' },
+            expect.anything(),
+        );
+    });
+
     it("connects Lone Wolf with the brokerage's client ID, and shows deal counts only", async () => {
         const lw: Props['tools'][number] = {
             ...salesforce,

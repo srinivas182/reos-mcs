@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Services\Connections;
 
 use App\Connections\ConnectorRegistry;
+use App\Connections\Drivers\Dotloop\DotloopDriver;
+use App\Connections\Drivers\Dotloop\DotloopProfiles;
 use App\Http\Requests\Connections\UpdateConnectionRequest;
 use App\Models\Connection;
 use App\Models\User;
@@ -30,6 +32,19 @@ final readonly class ConnectionSettings
             }
 
             $this->calendars->choose($connection, $request->calendarModes(), $request->writeCalendar());
+        }
+
+        $profiles = $request->profiles();
+
+        if ($profiles !== null) {
+            if ($connection->integration_id !== DotloopDriver::INTEGRATION) {
+                throw ValidationException::withMessages(['profiles' => __('deals.errors.noProfiles')]);
+            }
+            if (array_diff($profiles, array_column(DotloopProfiles::known($connection), 'id')) !== []) {
+                throw ValidationException::withMessages(['profiles' => __('deals.errors.unknownProfile')]);
+            }
+
+            $this->connections->chooseProfiles($connection, $profiles);
         }
 
         $history = $request->history();

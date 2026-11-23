@@ -241,6 +241,14 @@
   - **Read:** listings and sales, their key dates, checklist status and the document list, by polling every 15 minutes.
   - **Write:** the signed document, if the API allows it on the client's plan; otherwise read-only.
 - **Done when:** the same as Lone Wolf, for both tools.
+- **As built, B9.2** (ADR 0037 §11–15):
+  - **dotloop:** the agent connects their own dotloop from Connections (OAuth, about 12-hour tokens with refresh). Every profile's loops sync until the agent chooses profiles in Manage (web) or What to sync (phone); a change removes the deals from profiles no longer chosen and syncs again.
+  - **dotloop mapping:** the loop's details become the deal (address, price, commission, status, transaction type); closing, inspection, option period and other contract dates become key dates; task-list items with a due date become dated to-dos, done when they're done in dotloop; participants and the folders' documents come too.
+  - **dotloop live updates:** a subscription per chosen profile, each delivery signed with a key REOS derives per connection (HMAC-SHA1 over timestamp and body), refused when older than five minutes, and handled once; the 15-minute poll is the backstop.
+  - **SkySlope:** the brokerage connects once on screen 40 with a broker or admin user's access key and secret; REOS signs the login with HMAC-SHA256 and its own client ID and secret (Settings › Integrations) and reuses the two-hour session. Sales and listings changed since the last pass are read every 15 minutes and go to the agent whose email the file carries; others are listed for the broker.
+  - **Not available in SkySlope's published API:** checklist status, the document list and webhooks. Escrow closing and listing expiry are the key dates; documents arrive with B9.3.
+  - **Write:** read-only for both until B9.3 adds the signed document.
+  - **To confirm in the partner sandboxes:** dotloop's detail field names for Texas contract dates and its webhook timestamp unit; SkySlope's status names.
 
 ### B9.3 DocuSign (Team B)
 

@@ -13,6 +13,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import {
     Select,
     SelectContent,
@@ -54,6 +55,7 @@ export function ManageConnectionDialog({
     const [history, setHistory] = useState<History | null>(null);
     const [modes, setModes] = useState<Record<string, Mode>>({});
     const [write, setWrite] = useState<string | null>(null);
+    const [picked, setPicked] = useState<string[] | null>(null);
     const [confirming, setConfirming] = useState(false);
 
     if (connection === null) {
@@ -75,11 +77,18 @@ export function ManageConnectionDialog({
         : NOWHERE;
     const calendarsChanged =
         Object.keys(modes).length > 0 || writeTo !== savedWrite;
-    const changed = chosen !== connection.history || calendarsChanged;
+    // dotloop (B9.2): whose loops come over — the agent's own, a team's, or both.
+    const profiles = connection.profiles ?? null;
+    const profilesOn =
+        picked ?? (profiles ?? []).filter((p) => p.chosen).map((p) => p.id);
+    const profilesChanged = picked !== null;
+    const changed =
+        chosen !== connection.history || calendarsChanged || profilesChanged;
     const close = () => {
         setHistory(null);
         setModes({});
         setWrite(null);
+        setPicked(null);
         setConfirming(false);
         onClose();
     };
@@ -94,6 +103,7 @@ export function ManageConnectionDialog({
                           write_calendar: writeTo === NOWHERE ? '' : writeTo,
                       }
                     : {}),
+                ...(profilesChanged ? { profiles: profilesOn } : {}),
             },
             { preserveScroll: true, onSuccess: close },
         );
@@ -269,6 +279,62 @@ export function ManageConnectionDialog({
                             </section>
                         ) : null}
 
+                        {profiles && profiles.length > 0 ? (
+                            <section
+                                aria-labelledby="manage-profiles"
+                                className="grid gap-3"
+                            >
+                                <div>
+                                    <h3
+                                        id="manage-profiles"
+                                        className="font-semibold"
+                                    >
+                                        {t('connections.profiles.title')}
+                                    </h3>
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('connections.profiles.intro')}
+                                    </p>
+                                </div>
+                                {profiles.map((profile) => (
+                                    <div
+                                        key={profile.id}
+                                        className="flex min-h-12 items-center justify-between gap-3"
+                                    >
+                                        <Label
+                                            htmlFor={`profile-${profile.id}`}
+                                        >
+                                            {profile.name}
+                                        </Label>
+                                        <Switch
+                                            id={`profile-${profile.id}`}
+                                            checked={profilesOn.includes(
+                                                profile.id,
+                                            )}
+                                            onCheckedChange={(on) =>
+                                                setPicked(
+                                                    on
+                                                        ? [
+                                                              ...profilesOn,
+                                                              profile.id,
+                                                          ]
+                                                        : profilesOn.filter(
+                                                              (id) =>
+                                                                  id !==
+                                                                  profile.id,
+                                                          ),
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                ))}
+                                {profilesOn.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('connections.profiles.atLeastOne')}
+                                    </p>
+                                ) : null}
+                            </section>
+                        ) : null}
+
                         <PillGroup
                             label={t('connections.settings.howFar')}
                             value={chosen}
@@ -306,7 +372,14 @@ export function ManageConnectionDialog({
                                     <RefreshCw aria-hidden className="size-5" />
                                     {t('connections.detail.syncNow')}
                                 </Button>
-                                <Button disabled={!changed} onClick={save}>
+                                <Button
+                                    disabled={
+                                        !changed ||
+                                        (profiles !== null &&
+                                            profilesOn.length === 0)
+                                    }
+                                    onClick={save}
+                                >
                                     {t('connections.settings.save')}
                                 </Button>
                             </div>

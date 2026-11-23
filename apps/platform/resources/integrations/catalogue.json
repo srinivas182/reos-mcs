@@ -1216,14 +1216,14 @@
         "accounts": "tenant",
         "fields": [
           {
-            "key": "api_key",
+            "key": "client_id",
             "secret": false,
             "required": true,
             "kind": "text",
             "default": null
           },
           {
-            "key": "api_secret",
+            "key": "client_secret",
             "secret": true,
             "required": true,
             "kind": "text",

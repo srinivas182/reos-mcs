@@ -3430,8 +3430,8 @@ export interface components {
             connected_at: string | null;
             /** @description What syncs: each stream, which way, and how many records came over. */
             streams: {
-                /** @constant */
-                key: "events";
+                /** @enum {string} */
+                key: "events" | "people" | "notes" | "tasks" | "deals";
                 /** @enum {string} */
                 direction: "read" | "write" | "both";
                 records: number;
@@ -3445,6 +3445,12 @@ export interface components {
                 /** @enum {string} */
                 mode: "full" | "busy" | "off";
                 write: boolean;
+            }[] | null;
+            /** @description dotloop only: each profile (the agent's own, a team's) and whether its loops sync. */
+            profiles: {
+                id: string;
+                name: string;
+                chosen: boolean;
             }[] | null;
         };
         /**
@@ -4256,7 +4262,7 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce" | "lone-wolf";
+            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce" | "lone-wolf" | "dotloop" | "skyslope";
             history?: components["schemas"]["HistoryRange"] | null;
             /** @description Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API. */
             api_key?: string | null;
@@ -4363,6 +4369,8 @@ export interface components {
             };
             /** @description Calendars only: where events made in REOS go, or an empty string to keep them in REOS. */
             write_calendar?: string | null;
+            /** @description dotloop only: the profiles whose loops sync (at least one). */
+            profiles?: string[];
         };
         /** WaitlistRequest */
         WaitlistRequest: {

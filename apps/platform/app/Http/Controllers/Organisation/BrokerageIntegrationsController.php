@@ -74,8 +74,13 @@ final class BrokerageIntegrationsController extends Controller
     public function connectKey(Request $request, string $tool, #[CurrentUser] User $user, ActiveRole $roles, ConnectionAuthorizer $authorizer, IntegrationCatalogue $catalogue): RedirectResponse
     {
         $brokerage = $this->brokerage($user, $roles);
-        $key = $request->validate(['api_key' => ['required', 'string', 'min:4', 'max:200']])['api_key'];
         abort_unless(ConnectorRegistry::usesApiKey($tool) && ConnectorRegistry::ownsPerRecord($tool) && $catalogue->canConnect($user, $tool), 404);
+        $secret = ConnectorRegistry::usesKeyAndSecret($tool);
+        $input = $request->validate([
+            'api_key' => ['required', 'string', 'min:4', 'max:200', ...($secret ? ['not_regex:/:/'] : [])],
+            'api_secret' => [$secret ? 'required' : 'prohibited', 'string', 'min:4', 'max:200'],
+        ]);
+        $key = $secret && is_string($input['api_key']) && is_string($input['api_secret']) ? $input['api_key'].':'.$input['api_secret'] : $input['api_key'];
 
         $result = $authorizer->connectWithKey($user, $tool, Connection::OWNER_ORGANISATION, $brokerage->id, is_string($key) ? $key : '', HistoryRange::DEFAULT);
 

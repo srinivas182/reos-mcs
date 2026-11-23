@@ -37,7 +37,7 @@ use Illuminate\Validation\ValidationException;
  * REOS hasn't released. For a brokerage CRM: counts and sync health, never
  * its agents' contacts, and the stage field mapping.
  *
- * @phpstan-type Row array{id: string, name: string, category: string, status: string, accounts: string, action: string, allowed: bool, may_hide: bool, agents_connected: int, connects_with: string, account: array{connection: int, label: string|null, status: string, last_synced_at: string|null, people: int, deals: array{count: int, due_week: int}|null, agents: int, unmatched_owners: list<string>, mapping: array{contact_stage: string|null, lead_stage: string, leads: bool}|null}|null}
+ * @phpstan-type Row array{id: string, name: string, category: string, status: string, accounts: string, action: string, allowed: bool, may_hide: bool, agents_connected: int, connects_with: 'sign_in'|'api_key'|'key_and_secret', account: array{connection: int, label: string|null, status: string, last_synced_at: string|null, people: int, deals: array{count: int, due_week: int}|null, agents: int, unmatched_owners: list<string>, mapping: array{contact_stage: string|null, lead_stage: string, leads: bool}|null}|null}
  */
 final readonly class BrokerageIntegrations
 {
@@ -74,7 +74,11 @@ final readonly class BrokerageIntegrations
                 'allowed' => ! in_array($definition->id, $hidden, true), 'may_hide' => $this->catalogue->mayHide($definition->id),
                 'agents_connected' => is_numeric($count) ? (int) $count : 0,
                 // Lone Wolf (B9.1b): the brokerage's client ID, not a sign-in page.
-                'connects_with' => ConnectorRegistry::usesApiKey($definition->id) ? 'api_key' : 'sign_in',
+                'connects_with' => match (true) {
+                    ConnectorRegistry::usesKeyAndSecret($definition->id) => 'key_and_secret',
+                    ConnectorRegistry::usesApiKey($definition->id) => 'api_key',
+                    default => 'sign_in',
+                },
                 'account' => $definition->accounts === AccountScope::Tenant && $connection instanceof Connection ? $this->account($connection) : null,
             ];
         }

@@ -16,6 +16,7 @@ import {
   OptionGroup,
   PillGroup,
   Screen,
+  SwitchRow,
   Text,
   TitleBar,
   useUndoToast,
@@ -43,6 +44,7 @@ export default function SyncSettings() {
   const [history, setHistory] = useState<History | null>(null);
   const [modes, setModes] = useState<Record<string, Mode>>({});
   const [write, setWrite] = useState<string | null>(null);
+  const [picked, setPicked] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
 
@@ -60,6 +62,11 @@ export default function SyncSettings() {
   );
   const calendarsChanged =
     Object.keys(modes).length > 0 || writeTo !== savedWrite;
+  // dotloop (B9.2): whose loops come over — the agent's own, a team's, or both.
+  const profiles = connection.profiles ?? null;
+  const profilesOn =
+    picked ?? (profiles ?? []).filter((p) => p.chosen).map((p) => p.id);
+  const profilesChanged = picked !== null;
 
   const save = async () => {
     setBusy(true);
@@ -67,7 +74,10 @@ export default function SyncSettings() {
     const { response, error } = await api().PATCH("/connections/{connection}", {
       params: { path: { connection: connection.id } },
       body: {
-        ...(history !== null || !calendarsChanged ? { history: chosen } : {}),
+        ...(history !== null || (!calendarsChanged && !profilesChanged)
+          ? { history: chosen }
+          : {}),
+        ...(profilesChanged ? { profiles: profilesOn } : {}),
         ...(calendarsChanged
           ? {
               calendars: modes,
@@ -87,7 +97,9 @@ export default function SyncSettings() {
         message: t(
           calendarsChanged
             ? "connections.calendars.saved"
-            : "connections.settings.saved",
+            : profilesChanged
+              ? "connections.profiles.saved"
+              : "connections.settings.saved",
         ),
       });
       router.back();
@@ -105,6 +117,7 @@ export default function SyncSettings() {
           <Button
             label={t("connections.settings.save")}
             loading={busy}
+            disabled={profiles !== null && profilesOn.length === 0}
             fullWidth
             onPress={() => void save()}
           />
@@ -189,6 +202,32 @@ export default function SyncSettings() {
 
           <Eyebrow>{t("connections.calendars.reads")}</Eyebrow>
           <Text tone="muted">{t("connections.calendars.readsBody")}</Text>
+        </>
+      ) : null}
+
+      {profiles && profiles.length > 0 ? (
+        <>
+          <Eyebrow>{t("connections.profiles.title")}</Eyebrow>
+          <Text tone="muted">{t("connections.profiles.intro")}</Text>
+          <Card>
+            {profiles.map((profile) => (
+              <SwitchRow
+                key={profile.id}
+                label={profile.name}
+                value={profilesOn.includes(profile.id)}
+                onValueChange={(on) =>
+                  setPicked(
+                    on
+                      ? [...profilesOn, profile.id]
+                      : profilesOn.filter((id) => id !== profile.id),
+                  )
+                }
+              />
+            ))}
+          </Card>
+          {profilesOn.length === 0 ? (
+            <Text tone="muted">{t("connections.profiles.atLeastOne")}</Text>
+          ) : null}
         </>
       ) : null}
 

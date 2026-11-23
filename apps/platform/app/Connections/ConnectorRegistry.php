@@ -6,6 +6,8 @@ namespace App\Connections;
 
 use App\Connections\Drivers\BoldTrail\BoldTrailDriver;
 use App\Connections\Drivers\BoldTrail\BoldTrailSimulator;
+use App\Connections\Drivers\Dotloop\DotloopDriver;
+use App\Connections\Drivers\Dotloop\DotloopSimulator;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossDriver;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossSimulator;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarDriver;
@@ -18,6 +20,8 @@ use App\Connections\Drivers\OutlookCalendar\OutlookCalendarDriver;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarSimulator;
 use App\Connections\Drivers\Salesforce\SalesforceDriver;
 use App\Connections\Drivers\Salesforce\SalesforceSimulator;
+use App\Connections\Drivers\SkySlope\SkySlopeDriver;
+use App\Connections\Drivers\SkySlope\SkySlopeSimulator;
 use App\Integrations\Catalogue;
 use App\Integrations\CredentialEnvironment;
 use App\Integrations\Credentials\CredentialVault;
@@ -46,13 +50,18 @@ final readonly class ConnectorRegistry
         LoftyDriver::INTEGRATION => LoftySimulator::class,
         SalesforceDriver::INTEGRATION => SalesforceSimulator::class,
         LoneWolfDriver::INTEGRATION => LoneWolfSimulator::class,
+        DotloopDriver::INTEGRATION => DotloopSimulator::class,
+        SkySlopeDriver::INTEGRATION => SkySlopeSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
-    private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION, LoftyDriver::INTEGRATION, LoneWolfDriver::INTEGRATION];
+    private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION, LoftyDriver::INTEGRATION, LoneWolfDriver::INTEGRATION, SkySlopeDriver::INTEGRATION];
+
+    /** API-key tools that also need a secret, sent as "key:secret" (SkySlope, B9.2). */
+    private const KEY_AND_SECRET = [SkySlopeDriver::INTEGRATION];
 
     /** Organisation tools whose records each have an owner, matched to an agent by email (B8.2). */
-    private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION, LoneWolfDriver::INTEGRATION];
+    private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION, LoneWolfDriver::INTEGRATION, SkySlopeDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -73,6 +82,8 @@ final readonly class ConnectorRegistry
         LoftyDriver::INTEGRATION => LoftyDriver::CONSENT,
         SalesforceDriver::INTEGRATION => SalesforceDriver::CONSENT,
         LoneWolfDriver::INTEGRATION => LoneWolfDriver::CONSENT,
+        DotloopDriver::INTEGRATION => DotloopDriver::CONSENT,
+        SkySlopeDriver::INTEGRATION => SkySlopeDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -84,6 +95,8 @@ final readonly class ConnectorRegistry
         LoftyDriver::INTEGRATION => LoftyDriver::STREAMS,
         SalesforceDriver::INTEGRATION => SalesforceDriver::STREAMS,
         LoneWolfDriver::INTEGRATION => LoneWolfDriver::STREAMS,
+        DotloopDriver::INTEGRATION => DotloopDriver::STREAMS,
+        SkySlopeDriver::INTEGRATION => SkySlopeDriver::STREAMS,
     ];
 
     /**
@@ -110,6 +123,11 @@ final readonly class ConnectorRegistry
     public static function usesApiKey(string $integrationId): bool
     {
         return in_array($integrationId, self::API_KEYS, true);
+    }
+
+    public static function usesKeyAndSecret(string $integrationId): bool
+    {
+        return in_array($integrationId, self::KEY_AND_SECRET, true);
     }
 
     /** A brokerage tool whose records belong to the agents who own them (B8.2). */
@@ -188,6 +206,8 @@ final readonly class ConnectorRegistry
             BoldTrailDriver::INTEGRATION => new BoldTrailDriver($value('server_url')),
             LoftyDriver::INTEGRATION => new LoftyDriver,
             SalesforceDriver::INTEGRATION => new SalesforceDriver($value('client_id'), $value('client_secret'), $value('server_url')),
+            DotloopDriver::INTEGRATION => new DotloopDriver($value('client_id'), $value('client_secret')),
+            SkySlopeDriver::INTEGRATION => new SkySlopeDriver($value('client_id'), $value('client_secret'), $value('server_url')),
             LoneWolfDriver::INTEGRATION => new LoneWolfDriver($value('client_id'), $value('client_secret'), $value('api_key'), $value('server_url')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
