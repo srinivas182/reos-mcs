@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ActiveRoleController;
 use App\Http\Controllers\Api\Agents\ModeController;
+use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
@@ -271,6 +272,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/', 'goal')->middleware('throttle:30,1,api-agent-mode')->name('goal');
         Route::put('flags', 'flags')->middleware('throttle:30,1,api-agent-mode')->name('flags');
         Route::post('snooze', 'snooze')->middleware('throttle:10,1,api-agent-mode')->name('snooze');
+    });
+    // Today, the 90-day plan and the weekly scorecard (A11.1b).
+    Route::prefix('agent')->name('api.agent.')->controller(TodayController::class)->group(function () {
+        Route::get('today', 'today')->name('today');
+        Route::get('plan', 'plan')->name('plan');
+        Route::put('plan/tasks/{code}', 'tick')->where('code', '[a-z_]+')->middleware('throttle:60,1,api-agent-plan')->name('plan.tick');
+        Route::post('plan/promise', 'promise')->middleware('throttle:10,1,api-agent-plan')->name('plan.promise');
+        Route::get('scorecard', 'scorecard')->name('scorecard');
     });
     // Certificates for CE taken elsewhere (B10.3b): read by OCR, checked, saved.
     Route::post('me/certificates/read', [CertificateController::class, 'read'])->middleware('throttle:10,1,api-certificates-read')->name('api.me.certificates.read');

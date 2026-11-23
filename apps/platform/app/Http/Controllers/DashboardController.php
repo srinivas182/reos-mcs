@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Agents\AgentModes;
+use App\Agents\AgentToday;
 use App\Authorization\Role;
 use App\Content\Approvals\CourseApprovals;
 use App\Content\Builder\InstructorDashboard;
@@ -55,6 +56,8 @@ final class DashboardController extends Controller
             'ce' => $agent ? $this->ce($user, $states, $requirements) : null,
             // The agent's mode, or "Pick your goal", and any suggested switch (A11.1a).
             'mode' => $agent ? app(AgentModes::class)->show($user) : null,
+            // Today as one ranked list, the mode's stats and day one (A11.1b).
+            'agentToday' => $agent ? app(AgentToday::class)->for($user, $from, $to) : null,
             /** Course approvals in force and what needs attention (school admins, screen 49, A7.1). */
             'approvals' => $school === null ? null : $approvals->summary($school),
             /** Readiness, streak, exam date, Continue and today's plan (candidates, screen 4, A8.3). */

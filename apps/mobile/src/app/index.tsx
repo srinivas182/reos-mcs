@@ -5,13 +5,14 @@ import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import { AgentToday } from '@/features/agent/AgentToday';
 import { ModeCard } from '@/features/agent/ModeCard';
 import { TodayAgenda } from '@/features/calendar/TodayAgenda';
 import { TodayInsight } from '@/features/contacts/TodayInsight';
 import { CandidateToday } from '@/features/study/CandidateToday';
 import { TodayTodos } from '@/features/todos/TodayTodos';
 import { type CaptureMode, VoiceCaptureSheet } from '@/features/voice/VoiceCaptureSheet';
-import { useMode } from '@/lib/agent';
+import { useAgentToday, useMode } from '@/lib/agent';
 import { fetchHealth, type Health } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
 import { toolInitials, useConnections } from '@/lib/connections';
@@ -55,6 +56,8 @@ export default function HomeScreen() {
   const { today: study } = useCandidateToday(candidate);
   const { today: insight, reload: reloadInsight } = useTodayInsight(agent);
   const mode = useMode(agent);
+  // Today as one ranked list, the mode's stats and day one (A11.1b).
+  const agentToday = useAgentToday(agent);
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [attempt, setAttempt] = useState(0);
   const { capture } = useLocalSearchParams<{ capture?: string }>();
@@ -190,6 +193,7 @@ export default function HomeScreen() {
       {/* Do this now (Agent App Journey screen 6, B8.3), and every contact. */}
       {/* The agent's mode, "Pick your goal", or a suggested switch (A11.1a). */}
       {agent && mode.mode ? <ModeCard mode={mode.mode} onChange={mode.setMode} /> : null}
+      {agent && agentToday.today ? <AgentToday today={agentToday.today} onChanged={() => void agentToday.reload()} /> : null}
       {agent && insight ? <TodayInsight contact={insight.contact} insight={insight.insight} onDone={() => void reloadInsight()} /> : null}
       {/* The licence journey (A10.3a, screen 16): steps, window, exam date, result. */}
       {candidate ? <ListRow icon={Milestone} tone="info" title={t('licence.title')} subtitle={t('licence.today')} onPress={() => router.push('/licence-journey')} /> : null}

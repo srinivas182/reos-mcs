@@ -76,7 +76,8 @@
     "licenceJourney": "Camino a la licencia",
     "recruiting": "Reclutamiento",
     "mentors": "Mentores",
-    "goal": "Mi objetivo"
+    "goal": "Mi objetivo",
+    "plan": "Mi plan"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2784,6 +2785,135 @@
         "ownLocked": "Propietario se desbloquea después de los años con licencia que TREC exige para un bróker, o con una licencia de bróker."
       },
       "save": "Guardar"
+    },
+    "plan": {
+      "title": "Mi plan de 90 días",
+      "description": "Trece semanas hacia su objetivo. Marque las tareas a medida que avanza; REOS marca algunas por usted.",
+      "week": "Semana {{week}} de {{weeks}}",
+      "progress": "{{done}} de {{total}} tareas hechas",
+      "phase": "Fase: {{phase}}",
+      "phasesLabel": "Fases del plan",
+      "phaseWeeks": "Semanas {{from}}–{{to}}",
+      "thisWeek": "Esta semana",
+      "targets": "Metas semanales",
+      "auto": "REOS marca esto cuando sucede",
+      "repeats": "Cada semana",
+      "open": "Abrir",
+      "done": "Hecho",
+      "undo": "Deshacer",
+      "ticked": "Marcada como hecha",
+      "unticked": "Marcada como no hecha",
+      "emptyTitle": "No queda nada esta semana",
+      "emptyBody": "Todas las tareas de esta semana están hechas. Las de la próxima semana aparecen el lunes.",
+      "promise": {
+        "title": "La Promesa del Primer Cierre",
+        "body": "Siga el plan durante 90 días y REOS lo acompaña hasta su primer cierre.",
+        "action": "Me comprometo",
+        "made": "Promesa hecha. Lo acompañamos hasta su primer cierre."
+      },
+      "tasks": {
+        "connect_tools": "Conecte sus herramientas",
+        "import_contacts": "Importe sus contactos (20 o más)",
+        "announce_licence": "Anuncie su nueva licencia",
+        "first_ce_lesson": "Tome su primera lección de CE",
+        "call_sphere": "Llame a 10 personas que conoce",
+        "ask_referrals": "Pida referidos a 3 personas",
+        "mentor_checkin": "Hable con su mentor",
+        "book_consultation": "Programe una consulta con un comprador o vendedor",
+        "listing_presentation": "Prepare una presentación para captar una propiedad",
+        "review_contract": "Revise un contrato con su corredor",
+        "plan_closing": "Planifique su primer cierre",
+        "pipeline_review": "Revise su cartera de negocios",
+        "past_client_touch": "Contacte a 5 clientes anteriores",
+        "anniversary_touch": "Envíe notas de aniversario de compra",
+        "map_your_hours": "Revise en qué usa sus horas",
+        "write_role": "Escriba la descripción de su primer puesto",
+        "interview_candidates": "Entreviste a candidatos",
+        "team_huddle": "Haga la reunión semanal del equipo",
+        "choose_model": "Elija su modelo de corretaje",
+        "broker_course": "Comience los cursos para la licencia de corredor",
+        "business_plan": "Escriba su plan de negocios",
+        "comp_plan": "Diseñe su plan de comisiones",
+        "broker_licence": "Solicite su licencia de corredor",
+        "go_live_checklist": "Complete la lista para comenzar a operar"
+      },
+      "phases": {
+        "setup": "Preparación",
+        "conversations": "Conversaciones",
+        "appointments": "Citas",
+        "contract": "Primer contrato",
+        "pipeline": "Cartera",
+        "referrals": "Referidos",
+        "repeat": "Clientes que regresan",
+        "capacity": "Capacidad",
+        "first_hire": "Primera contratación",
+        "team": "Ritmo del equipo",
+        "model": "Modelo",
+        "business_plan": "Plan de negocios",
+        "launch": "Lanzamiento"
+      },
+      "errors": {
+        "task": "Esa tarea no está en el plan de esta semana."
+      }
+    },
+    "today": {
+      "title": "Hoy",
+      "more_one": "{{count}} más",
+      "more_other": "{{count}} más",
+      "emptyTitle": "No tiene pendientes hoy",
+      "emptyBody": "Nada vence, no hay citas ni tareas del plan. Buen momento para llamar a alguien que conoce.",
+      "busy": "Ocupado",
+      "planSource": "Plan de 90 días",
+      "from": "De {{source}}",
+      "allDay": "Hoy",
+      "markDone": "Marcar como hecho",
+      "done": "Hecho",
+      "reasons": {
+        "overdue": "Vencido",
+        "deadline": "Fecha límite",
+        "appointment": "Cita",
+        "follow_up": "Seguimiento",
+        "plan": "Plan"
+      },
+      "stats": {
+        "week": "Semana del plan",
+        "conversations": "Conversaciones esta semana",
+        "appointments": "Citas esta semana",
+        "pipeline": "Cartera",
+        "under_contract": "Bajo contrato",
+        "hot_today": "Lo necesitan hoy",
+        "closings_12m": "Cierres en 12 meses"
+      },
+      "statOf": "{{value}} de {{target}}",
+      "dayOne": {
+        "title": "Su primer día",
+        "body": "Tres pasos rápidos y Hoy se llena con su trabajo.",
+        "minutes": "{{minutes}} min",
+        "steps": {
+          "import_contacts": "Importe sus contactos",
+          "announce_licence": "Anuncie su licencia",
+          "connect_tools": "Conecte su CRM, calendario y correo"
+        }
+      }
+    },
+    "scorecard": {
+      "title": "Resultados de esta semana",
+      "weekOf": "Semana del {{date}}",
+      "metrics": {
+        "conversations": "Conversaciones",
+        "appointments": "Citas",
+        "clients": "Clientes activos",
+        "ce_hours": "Horas de CE"
+      },
+      "value": "{{done}} de {{target}}",
+      "fixTitle": "Una cosa por mejorar",
+      "onTrack": "Va bien en todos los números esta semana.",
+      "fix": {
+        "conversations": "Las conversaciones van atrasadas. Reserve una hora para llamar a personas que conoce.",
+        "appointments": "Las citas van atrasadas. En cada conversación, pida un momento para reunirse.",
+        "clients": "Pocos clientes activos. Dé seguimiento a todas las personas que conoció este mes.",
+        "ce_hours": "Aún no tiene CE esta semana. Una lección corta lo mantiene al día."
+      }
     }
   },
   "invitePage": {
