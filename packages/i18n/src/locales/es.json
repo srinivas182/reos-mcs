@@ -5943,7 +5943,12 @@
       "submit": "Enviar prueba",
       "submitAnyway": "Enviar de todos modos",
       "wrong": "No exactamente. La respuesta es: {{answer}}",
-      "openMap": "Pregunta {{n}} de {{total}}. Abrir la lista de preguntas"
+      "openMap": "Pregunta {{n}} de {{total}}. Abrir la lista de preguntas",
+      "section": "{{portion}}, parte {{n}} de {{of}} · {{count}} preguntas · {{mode}}",
+      "pause": "Pausar",
+      "resume": "Reanudar",
+      "pausedNote": "En pausa. El tiempo se detuvo. Reanude para continuar.",
+      "nextPortion": "Terminar y empezar la siguiente parte"
     },
     "results": {
       "title": "Sus resultados",
@@ -5966,7 +5971,19 @@
       "gotWrong": "Incorrecta",
       "blank": "Sin responder",
       "yours": "Su respuesta: {{answer}}",
-      "rightAnswer": "Respuesta correcta: {{answer}}"
+      "rightAnswer": "Respuesta correcta: {{answer}}",
+      "portions": "Por parte",
+      "portionScore": "{{correct}} de {{total}}",
+      "portionPassed": "Aprobada: se necesitaban {{pass}}.",
+      "portionShort": "Le faltaron {{short}} de las {{pass}} necesarias.",
+      "portionChange": "{{previous}}% la vez anterior, {{now}}% ahora",
+      "timingSlow": "Usted tardó {{seconds}} segundos por pregunta; el examen real permite unos {{pace}}. Practique responder más rápido.",
+      "timingOk": "Usted tardó {{seconds}} segundos por pregunta, dentro de los {{pace}} que permite el examen real.",
+      "pretest": "Pregunta de prueba: se hizo, pero no se califica.",
+      "watch": "Ver la explicación",
+      "similar": "Pregunta similar",
+      "noSimilar": "Todavía no hay una pregunta similar.",
+      "showAnswer": "Ver la respuesta"
     },
     "tasks": {
       "diagnostic": "Hacer el diagnóstico de Texas",
@@ -6030,7 +6047,50 @@
       "ended": "Esta prueba terminó.",
       "notInTest": "Esa pregunta no está en esta prueba.",
       "stillOpen": "Esta prueba sigue abierta.",
-      "save": "Su respuesta no se guardó. Revise su conexión y elíjala de nuevo."
+      "save": "Su respuesta no se guardó. Revise su conexión y elíjala de nuevo.",
+      "noPause": "Solo se puede pausar un examen en modo práctica.",
+      "paused": "Este examen está en pausa. Reanúdelo para responder."
+    },
+    "portions": {
+      "title": "Simulacros de examen",
+      "national": {
+        "title": "Parte nacional"
+      },
+      "state": {
+        "title": "Parte de Texas"
+      },
+      "simulation": {
+        "title": "Simulacro completo"
+      }
+    },
+    "intro": {
+      "format": "{{questions}} preguntas · {{minutes}} minutos",
+      "pass": {
+        "national": "Para aprobar: 56 de las 80 preguntas calificadas, como en el examen real.",
+        "state": "Para aprobar: 28 de las 40 preguntas calificadas, como en el examen real.",
+        "both": "Para aprobar: 56 de 80 en la parte nacional y 28 de 40 en la parte de Texas."
+      },
+      "portions": "Primero la parte nacional y luego la de Texas, cada una con su propio tiempo. La parte de Texas empieza cuando usted termina la nacional o se acaba su tiempo.",
+      "tools": "Marque cualquier pregunta para volver a ella, use la calculadora y revise antes de entregar.",
+      "pretest": "Algunas preguntas son de prueba y no se califican, como en el examen real. Usted no sabrá cuáles son.",
+      "modeLabel": "¿Cómo quiere tomarlo?",
+      "exam": "Modo examen",
+      "examHint": "Como el examen real: resultados al final, sin pausa.",
+      "practice": "Modo práctica",
+      "practiceHint": "Vea por qué después de cada respuesta y haga una pausa cuando lo necesite.",
+      "start": "Empezar examen"
+    },
+    "calculator": {
+      "title": "Calculadora",
+      "error": "Error",
+      "mc": "Borrar memoria",
+      "mr": "Recuperar memoria",
+      "mPlus": "Sumar a la memoria",
+      "mMinus": "Restar de la memoria",
+      "clear": "Borrar",
+      "percent": "Porcentaje",
+      "equals": "Igual",
+      "point": "Punto decimal"
     }
   },
   "brokerageIntegrations": {

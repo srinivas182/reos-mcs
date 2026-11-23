@@ -5943,7 +5943,12 @@
       "submit": "Submit test",
       "submitAnyway": "Submit anyway",
       "wrong": "Not quite. The answer is: {{answer}}",
-      "openMap": "Question {{n}} of {{total}}. Open the question list"
+      "openMap": "Question {{n}} of {{total}}. Open the question list",
+      "section": "{{portion}}, part {{n}} of {{of}} · {{count}} questions · {{mode}}",
+      "pause": "Pause",
+      "resume": "Resume",
+      "pausedNote": "Paused. The clock has stopped. Resume to carry on.",
+      "nextPortion": "Finish and start the next portion"
     },
     "results": {
       "title": "Your results",
@@ -5966,7 +5971,19 @@
       "gotWrong": "Wrong",
       "blank": "Not answered",
       "yours": "Your answer: {{answer}}",
-      "rightAnswer": "Right answer: {{answer}}"
+      "rightAnswer": "Right answer: {{answer}}",
+      "portions": "By portion",
+      "portionScore": "{{correct}} of {{total}}",
+      "portionPassed": "Passed: {{pass}} needed.",
+      "portionShort": "{{short}} short of the {{pass}} needed.",
+      "portionChange": "{{previous}}% last time, {{now}}% now",
+      "timingSlow": "You took {{seconds}} seconds a question; the real exam allows about {{pace}}. Practise answering faster.",
+      "timingOk": "You took {{seconds}} seconds a question, within the {{pace}} the real exam allows.",
+      "pretest": "Pretest item: asked, not scored.",
+      "watch": "Watch the explanation",
+      "similar": "Similar question",
+      "noSimilar": "No similar question yet.",
+      "showAnswer": "Show the answer"
     },
     "tasks": {
       "diagnostic": "Take the Texas diagnostic",
@@ -6030,7 +6047,50 @@
       "ended": "This test has ended.",
       "notInTest": "That question isn't in this test.",
       "stillOpen": "This test is still open.",
-      "save": "Your answer wasn't saved. Check your connection and choose it again."
+      "save": "Your answer wasn't saved. Check your connection and choose it again.",
+      "noPause": "Only a practice-mode test can be paused.",
+      "paused": "This test is paused. Resume to answer."
+    },
+    "portions": {
+      "title": "Exam simulations",
+      "national": {
+        "title": "National portion"
+      },
+      "state": {
+        "title": "Texas portion"
+      },
+      "simulation": {
+        "title": "Full simulation"
+      }
+    },
+    "intro": {
+      "format": "{{questions}} questions · {{minutes}} minutes",
+      "pass": {
+        "national": "Pass mark: 56 of the 80 scored questions, as on the real exam.",
+        "state": "Pass mark: 28 of the 40 scored questions, as on the real exam.",
+        "both": "Pass marks: 56 of 80 on the National portion and 28 of 40 on the Texas portion."
+      },
+      "portions": "National first, then Texas, each on its own clock. The Texas portion starts when you finish National or its time runs out.",
+      "tools": "Flag any question to come back to it, use the calculator, and review before you submit.",
+      "pretest": "A few questions are unscored pretest items, as on the real exam. You won't know which.",
+      "modeLabel": "How do you want to take it?",
+      "exam": "Exam mode",
+      "examHint": "Like the real test: results at the end, no pause.",
+      "practice": "Practice mode",
+      "practiceHint": "See why after each answer, and pause when you need to.",
+      "start": "Start test"
+    },
+    "calculator": {
+      "title": "Calculator",
+      "error": "Error",
+      "mc": "Clear memory",
+      "mr": "Recall memory",
+      "mPlus": "Add to memory",
+      "mMinus": "Subtract from memory",
+      "clear": "Clear",
+      "percent": "Percent",
+      "equals": "Equals",
+      "point": "Decimal point"
     }
   },
   "brokerageIntegrations": {

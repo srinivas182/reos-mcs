@@ -1,10 +1,11 @@
 import { Head, router } from '@inertiajs/react';
-import { ArrowLeft, ArrowRight, Flag } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Flag, Pause, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '@/components/page-header';
+import { Calculator } from '@/components/practice/calculator';
 import type { Attempt, TestQuestion } from '@/components/practice/types';
-import { countdown } from '@/components/practice/types';
+import { countdown, isExam } from '@/components/practice/types';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -14,9 +15,13 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { putJson } from '@/lib/content';
+import { postJson, putJson } from '@/lib/content';
 import { cn } from '@/lib/utils';
-import { answer as answerRoute, submit } from '@/routes/practice';
+import {
+    answer as answerRoute,
+    pause as pauseRoute,
+    submit,
+} from '@/routes/practice';
 
 /**
  * A test (candidate web screen 7, A8.3): the timer on the server's clock,
@@ -24,7 +29,10 @@ import { answer as answerRoute, submit } from '@/routes/practice';
  * with answered and flagged. Every click is saved at once. Review before
  * submitting warns once about blanks; when time runs out the test submits
  * itself. Exam mode (the diagnostic) shows no feedback until the report;
- * practice mode (topic quizzes) shows why after each answer.
+ * practice mode (topic quizzes) shows why after each answer. A9.1: the
+ * National and Texas portions and the full simulation, one timed portion
+ * at a time ("National portion, 1 of 2"), the calculator, and Pause in
+ * practice mode; submitting a simulation's first portion starts the next.
  */
 export default function TestPage({ attempt }: { attempt: Attempt }) {
     const { t } = useTranslation();
@@ -38,6 +46,7 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
         ),
     );
     const [left, setLeft] = useState(attempt.seconds_left);
+    const [paused, setPaused] = useState(attempt.paused);
     const [reviewing, setReviewing] = useState(false);
     const [error, setError] = useState(false);
     const submitted = useRef(false);
@@ -46,11 +55,30 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
     const title =
         attempt.kind === 'diagnostic'
             ? t('practice.diagnostic.title')
-            : t('practice.topicQuiz', {
-                  topic: attempt.topic
-                      ? t(`practice.topics.${attempt.topic}`)
-                      : '',
-              });
+            : attempt.kind === 'topic'
+              ? t('practice.topicQuiz', {
+                    topic: attempt.topic
+                        ? t(`practice.topics.${attempt.topic}`)
+                        : '',
+                })
+              : t(
+                    `practice.portions.${isExam(attempt.kind) ? attempt.kind : 'simulation'}.title`,
+                );
+    const last =
+        attempt.section === null ||
+        attempt.section.index === attempt.section.of;
+
+    const togglePause = async () => {
+        try {
+            const next = await postJson<{
+                data: { paused: boolean; seconds_left: number | null };
+            }>(pauseRoute(attempt.id).url, { paused: !paused });
+            setPaused(next.data.paused);
+            setLeft(next.data.seconds_left);
+        } catch {
+            setError(true);
+        }
+    };
 
     const finish = () => {
         if (submitted.current) return;
@@ -60,14 +88,14 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
 
     // The server's clock decides; this only shows it and submits at zero.
     useEffect(() => {
-        if (left === null) return;
+        if (left === null || paused) return;
         const timer = window.setInterval(
             () => setLeft((s) => (s === null ? s : Math.max(0, s - 1))),
             1000,
         );
 
         return () => window.clearInterval(timer);
-    }, [left === null]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [left === null, paused]); // eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         if (left === 0) finish();
@@ -105,10 +133,22 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
             <div className="space-y-6 px-4 py-6 md:px-8">
                 <PageHeader
                     title={title}
-                    description={t('practice.test.rules', {
-                        count: attempt.total,
-                        mode: t(`practice.modes.${attempt.mode}`),
-                    })}
+                    description={
+                        attempt.section
+                            ? t('practice.test.section', {
+                                  portion: t(
+                                      `practice.portions.${attempt.section.portion}.title`,
+                                  ),
+                                  n: attempt.section.index,
+                                  of: attempt.section.of,
+                                  count: attempt.total,
+                                  mode: t(`practice.modes.${attempt.mode}`),
+                              })
+                            : t('practice.test.rules', {
+                                  count: attempt.total,
+                                  mode: t(`practice.modes.${attempt.mode}`),
+                              })
+                    }
                     actions={
                         <>
                             {left !== null ? (
@@ -128,6 +168,22 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
                                     {countdown(left)}
                                 </p>
                             ) : null}
+                            {attempt.mode === 'practice' && left !== null ? (
+                                <Button
+                                    variant="outline"
+                                    onClick={() => void togglePause()}
+                                >
+                                    {paused ? (
+                                        <Play aria-hidden />
+                                    ) : (
+                                        <Pause aria-hidden />
+                                    )}
+                                    {paused
+                                        ? t('practice.test.resume')
+                                        : t('practice.test.pause')}
+                                </Button>
+                            ) : null}
+                            {attempt.kind !== 'topic' ? <Calculator /> : null}
                             <Button
                                 variant="outline"
                                 onClick={() => setReviewing(true)}
@@ -156,9 +212,17 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
                         >
                             {question.prompt}
                         </h2>
+                        {paused ? (
+                            <p
+                                role="status"
+                                className="rounded-reos-md bg-muted p-3 text-body"
+                            >
+                                {t('practice.test.pausedNote')}
+                            </p>
+                        ) : null}
                         <fieldset
                             className="space-y-2"
-                            disabled={question.feedback !== null}
+                            disabled={question.feedback !== null || paused}
                         >
                             <legend className="sr-only">
                                 {question.prompt}
@@ -304,9 +368,11 @@ export default function TestPage({ attempt }: { attempt: Attempt }) {
                             </Button>
                         ) : null}
                         <Button onClick={finish}>
-                            {blanks > 0
-                                ? t('practice.test.submitAnyway')
-                                : t('practice.test.submit')}
+                            {!last
+                                ? t('practice.test.nextPortion')
+                                : blanks > 0
+                                  ? t('practice.test.submitAnyway')
+                                  : t('practice.test.submit')}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

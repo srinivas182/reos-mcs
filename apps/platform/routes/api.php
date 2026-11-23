@@ -190,6 +190,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('practice/attempts/{attempt}/answers/{question}', 'answer')->whereNumber(['attempt', 'question'])->middleware('throttle:240,1,api-practice-answer')->name('answer');
         Route::post('practice/attempts/{attempt}/submit', 'submit')->whereNumber('attempt')->middleware('throttle:30,1,api-practice-submit')->name('submit');
         Route::get('practice/attempts/{attempt}/results', 'results')->whereNumber('attempt')->name('results');
+        Route::post('practice/attempts/{attempt}/pause', 'pause')->whereNumber('attempt')->middleware('throttle:60,1,api-practice-pause')->name('pause');
+        Route::post('practice/attempts/{attempt}/finish', 'finish')->whereNumber('attempt')->middleware('throttle:30,1,api-practice-finish')->name('finish');
+        Route::get('practice/attempts/{attempt}/similar/{question}', 'similar')->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,api-practice-similar')->name('similar');
     });
     // Lessons saved on the phone (A8.2b): the learner's own downloads, not admin actions.
     Route::prefix('learn')->name('api.learn.downloads.')->controller(OfflineController::class)->group(function () {

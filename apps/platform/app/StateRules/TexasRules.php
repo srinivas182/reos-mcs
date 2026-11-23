@@ -21,6 +21,8 @@ final class TexasRules
 
     private const SALES_AGENT = 'https://www.trec.texas.gov/become-licensed/sales-agent';
 
+    private const PEARSON_VUE = 'https://www.pearsonvue.com/us/en/tx/realestate.html';
+
     private const TAC_535_65 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-535-65';
 
     public const CHECKED_ON = '2026-11-22';
@@ -44,6 +46,7 @@ final class TexasRules
             ]], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
             ['key' => 'licensing.minimum_age', 'value' => ['number' => 18], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
             ['key' => 'exam.vendor', 'value' => ['text' => 'Pearson VUE'], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
+            ...self::exam(),
             $ce('ce.period_months', ['number' => 24], '22 TAC §535.92(a); TREC renewal requirements', self::RENEWAL),
             $ce('ce.hours', ['number' => 18], '22 TAC §535.92(a)'),
             $ce('ce.mandatory_courses', ['courses' => [
@@ -67,5 +70,27 @@ final class TexasRules
             ['key' => 'courses.seat_time', 'value' => ['max_hours_per_day' => 12, 'presence_percent' => 100, 'makeup_min_percent' => 67, 'makeup_days' => 90], 'citation' => '22 TAC §535.65(g)(1)(B)(ii), (iv) and (g)(1)(D)', 'source_url' => self::TAC_535_65, 'effective_from' => '2023-06-11'],
             ['key' => 'brokerage.sponsorship', 'value' => ['text' => 'A sales agent must be sponsored by a licensed broker to perform any act of real estate services.'], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
         ];
+    }
+
+    /**
+     * The sales agent exam (Pearson VUE Texas candidate handbook): National
+     * 85 items (80 scored) in 150 minutes, pass at 56; Texas 50 items (40
+     * scored) in 90 minutes, pass at 28.
+     *
+     * @return list<Seed>
+     */
+    private static function exam(): array
+    {
+        $values = [
+            'exam.national.questions' => 85, 'exam.national.scored' => 80, 'exam.national.minutes' => 150, 'exam.national.pass' => 56,
+            'exam.state.questions' => 50, 'exam.state.scored' => 40, 'exam.state.minutes' => 90, 'exam.state.pass' => 28,
+        ];
+        $seeds = [];
+
+        foreach ($values as $key => $number) {
+            $seeds[] = ['key' => $key, 'value' => ['number' => $number], 'citation' => 'Pearson VUE: Texas Real Estate candidate handbook (sales agent exam)', 'source_url' => self::PEARSON_VUE, 'effective_from' => '2023-08-29'];
+        }
+
+        return $seeds;
     }
 }

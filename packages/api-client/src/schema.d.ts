@@ -1735,16 +1735,20 @@ export interface paths {
         };
         /**
          * The practice hub
-         * @description The diagnostic and a quiz per topic, each with the best and last score
+         * @description The diagnostic, the National and state portion tests, the full
+         *     simulation and a quiz per topic, each with the best and last score
          *     and any attempt still open.
          */
         get: operations["practice.index"];
         put?: never;
         /**
          * Start a test
-         * @description The diagnostic (50 questions, 45 minutes, results at the end) or a
-         *     topic quiz (10 questions, why after each answer). An attempt of the
-         *     same kind still open is returned instead.
+         * @description The diagnostic (50 questions, 45 minutes, results at the end), a
+         *     topic quiz (10 questions, why after each answer), or (A9.1) the
+         *     National or state portion test or the full simulation in the state's
+         *     real format, in `exam` mode (feedback at the end, no pause) or
+         *     `practice` mode. An attempt of the same kind still open is returned
+         *     instead.
          */
         post: operations["practice.store"];
         delete?: never;
@@ -1829,6 +1833,68 @@ export interface paths {
          *     while the test is still open.
          */
         get: operations["practice.results"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Pause or resume
+         * @description Practice mode only: the clock stops while paused. 422 in exam mode.
+         */
+        post: operations["practice.pause"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}/finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Finish this portion
+         * @description In a simulation, the next portion starts now with its own clock; the
+         *     last portion submits the test (then `submitted` is true).
+         */
+        post: operations["practice.finish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/attempts/{attempt}/similar/{question}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A similar question
+         * @description One more on the same topic, not in this test, with its answer and why
+         *     (answer review). `data` is null when there's none.
+         */
+        get: operations["practice.similar"];
         put?: never;
         post?: never;
         delete?: never;
@@ -7832,7 +7898,7 @@ export interface operations {
                     "application/json": {
                         data: {
                             /** @enum {string} */
-                            kind: "diagnostic" | "topic";
+                            kind: "diagnostic" | "topic" | "national" | "state" | "simulation";
                             topic: string | null;
                             questions: number;
                             minutes: number | null;
@@ -7858,9 +7924,11 @@ export interface operations {
             content: {
                 "application/json": {
                     /** @enum {string} */
-                    kind: "diagnostic" | "topic";
+                    kind: "diagnostic" | "topic" | "national" | "state" | "simulation";
                     /** @enum {string|null} */
                     topic?: "agency" | "contracts" | "ownership" | "finance" | "math" | "state_rules" | null;
+                    /** @enum {string|null} */
+                    mode?: "exam" | "practice" | null;
                 };
             };
         };
@@ -7882,6 +7950,14 @@ export interface operations {
                             ends_at: string | null;
                             seconds_left: number | null;
                             submitted: boolean;
+                            paused: boolean;
+                            section: {
+                                index: number;
+                                of: number;
+                                portion: string;
+                                minutes: number;
+                                questions: number;
+                            } | null;
                             questions: {
                                 id: number;
                                 n: number;
@@ -7945,6 +8021,14 @@ export interface operations {
                             ends_at: string | null;
                             seconds_left: number | null;
                             submitted: boolean;
+                            paused: boolean;
+                            section: {
+                                index: number;
+                                of: number;
+                                portion: string;
+                                minutes: number;
+                                questions: number;
+                            } | null;
                             questions: {
                                 id: number;
                                 n: number;
@@ -8046,12 +8130,29 @@ export interface operations {
                         data: {
                             id: number;
                             kind: string;
+                            mode: string;
                             score: number;
                             correct: number;
                             total: number;
                             pass_line: number;
+                            passed: boolean | null;
                             previous: number | null;
                             seconds: number;
+                            portions: {
+                                portion: string;
+                                correct: number;
+                                total: number;
+                                pass: number;
+                                passed: boolean;
+                                percent: number;
+                                previous: number | null;
+                                seconds: number;
+                                pace: number;
+                            }[];
+                            timing: {
+                                seconds_per_question: number;
+                                pace: number;
+                            } | null;
                             topics: {
                                 topic: string;
                                 correct: number;
@@ -8065,13 +8166,19 @@ export interface operations {
                                 id: number;
                                 n: number;
                                 topic: string;
+                                portion: string;
                                 prompt: string;
                                 options: string[];
                                 choice: number | null;
                                 right: number;
                                 correct: boolean;
+                                scored: boolean;
                                 explanation: string;
                                 source: string;
+                                lesson: {
+                                    id: number;
+                                    seconds: number | null;
+                                } | null;
                             }[];
                         };
                     };
@@ -8112,12 +8219,29 @@ export interface operations {
                         data: {
                             id: number;
                             kind: string;
+                            mode: string;
                             score: number;
                             correct: number;
                             total: number;
                             pass_line: number;
+                            passed: boolean | null;
                             previous: number | null;
                             seconds: number;
+                            portions: {
+                                portion: string;
+                                correct: number;
+                                total: number;
+                                pass: number;
+                                passed: boolean;
+                                percent: number;
+                                previous: number | null;
+                                seconds: number;
+                                pace: number;
+                            }[];
+                            timing: {
+                                seconds_per_question: number;
+                                pace: number;
+                            } | null;
                             topics: {
                                 topic: string;
                                 correct: number;
@@ -8131,13 +8255,19 @@ export interface operations {
                                 id: number;
                                 n: number;
                                 topic: string;
+                                portion: string;
                                 prompt: string;
                                 options: string[];
                                 choice: number | null;
                                 right: number;
                                 correct: boolean;
+                                scored: boolean;
                                 explanation: string;
                                 source: string;
+                                lesson: {
+                                    id: number;
+                                    seconds: number | null;
+                                } | null;
                             }[];
                         };
                     };
@@ -8155,6 +8285,213 @@ export interface operations {
                          * @description Error overview.
                          * @example This test is still open.
                          */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    paused: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            mode: string;
+                            topic: string | null;
+                            total: number;
+                            answered: number;
+                            started_at: string;
+                            ends_at: string | null;
+                            seconds_left: number | null;
+                            submitted: boolean;
+                            paused: boolean;
+                            section: {
+                                index: number;
+                                of: number;
+                                portion: string;
+                                minutes: number;
+                                questions: number;
+                            } | null;
+                            questions: {
+                                id: number;
+                                n: number;
+                                topic: string;
+                                prompt: string;
+                                options: string[];
+                                choice: number | null;
+                                flagged: boolean;
+                                feedback: {
+                                    correct: boolean;
+                                    right: number;
+                                    explanation: string;
+                                    source: string;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            kind: string;
+                            mode: string;
+                            topic: string | null;
+                            total: number;
+                            answered: number;
+                            started_at: string;
+                            ends_at: string | null;
+                            seconds_left: number | null;
+                            submitted: boolean;
+                            paused: boolean;
+                            section: {
+                                index: number;
+                                of: number;
+                                portion: string;
+                                minutes: number;
+                                questions: number;
+                            } | null;
+                            questions: {
+                                id: number;
+                                n: number;
+                                topic: string;
+                                prompt: string;
+                                options: string[];
+                                choice: number | null;
+                                flagged: boolean;
+                                feedback: {
+                                    correct: boolean;
+                                    right: number;
+                                    explanation: string;
+                                    source: string;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "practice.similar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+                question: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            topic: string;
+                            prompt: string;
+                            options: string[];
+                            right: number;
+                            explanation: string;
+                            source: string;
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example This test is still open.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
                         message: string;
                     };
                 };

@@ -25,9 +25,18 @@ export type TestQuestion = {
     feedback: Feedback | null;
 };
 
+export type TestKind =
+    | 'diagnostic'
+    | 'topic'
+    | 'national'
+    | 'state'
+    | 'simulation';
+
+export type Portion = 'national' | 'state';
+
 export type Attempt = {
     id: number;
-    kind: 'diagnostic' | 'topic';
+    kind: TestKind;
     mode: 'exam' | 'practice';
     topic: Topic | null;
     total: number;
@@ -36,6 +45,15 @@ export type Attempt = {
     ends_at: string | null;
     seconds_left: number | null;
     submitted: boolean;
+    paused: boolean;
+    /** The portion being taken (A9.1): its number, of how many, and its format. */
+    section: {
+        index: number;
+        of: number;
+        portion: Portion;
+        minutes: number;
+        questions: number;
+    } | null;
     questions: TestQuestion[];
 };
 
@@ -47,15 +65,33 @@ export type TopicScore = {
     weight: number;
 };
 
+export type PortionScore = {
+    portion: Portion;
+    correct: number;
+    total: number;
+    pass: number;
+    passed: boolean;
+    percent: number;
+    previous: number | null;
+    seconds: number;
+    /** Seconds per question the real exam allows. */
+    pace: number;
+};
+
 export type Results = {
     id: number;
-    kind: 'diagnostic' | 'topic';
+    kind: TestKind;
+    mode: 'exam' | 'practice';
     score: number;
     correct: number;
     total: number;
     pass_line: number;
+    /** Both portions passed (portion tests and simulations only). */
+    passed: boolean | null;
     previous: number | null;
     seconds: number;
+    portions: PortionScore[];
+    timing: { seconds_per_question: number; pace: number } | null;
     topics: TopicScore[];
     weakest: Topic[];
     strongest: Topic[];
@@ -63,13 +99,17 @@ export type Results = {
         id: number;
         n: number;
         topic: Topic;
+        portion: Portion;
         prompt: string;
         options: string[];
         choice: number | null;
         right: number;
         correct: boolean;
+        /** False for a pretest item: asked, not scored. */
+        scored: boolean;
         explanation: string;
         source: string;
+        lesson: { id: number; seconds: number | null } | null;
     }[];
 };
 
@@ -81,7 +121,7 @@ export type ReadinessSummary = {
 };
 
 export type HubTest = {
-    kind: 'diagnostic' | 'topic';
+    kind: TestKind;
     topic: Topic | null;
     questions: number;
     minutes: number | null;
@@ -131,4 +171,11 @@ export function countdown(seconds: number): string {
     const r = String(s % 60).padStart(2, '0');
 
     return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${r}` : `${m}:${r}`;
+}
+
+/** The three exam tests (A9.1). */
+export type ExamKind = 'national' | 'state' | 'simulation';
+
+export function isExam(kind: TestKind): kind is ExamKind {
+    return kind === 'national' || kind === 'state' || kind === 'simulation';
 }

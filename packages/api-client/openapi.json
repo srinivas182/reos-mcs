@@ -9520,7 +9520,7 @@
         "/practice/tests": {
             "get": {
                 "operationId": "practice.index",
-                "description": "The diagnostic and a quiz per topic, each with the best and last score\nand any attempt still open.",
+                "description": "The diagnostic, the National and state portion tests, the full\nsimulation and a quiz per topic, each with the best and last score\nand any attempt still open.",
                 "summary": "The practice hub",
                 "tags": [
                     "Practice"
@@ -9542,7 +9542,10 @@
                                                         "type": "string",
                                                         "enum": [
                                                             "diagnostic",
-                                                            "topic"
+                                                            "topic",
+                                                            "national",
+                                                            "state",
+                                                            "simulation"
                                                         ]
                                                     },
                                                     "topic": {
@@ -9612,7 +9615,7 @@
             },
             "post": {
                 "operationId": "practice.store",
-                "description": "The diagnostic (50 questions, 45 minutes, results at the end) or a\ntopic quiz (10 questions, why after each answer). An attempt of the\nsame kind still open is returned instead.",
+                "description": "The diagnostic (50 questions, 45 minutes, results at the end), a\ntopic quiz (10 questions, why after each answer), or (A9.1) the\nNational or state portion test or the full simulation in the state's\nreal format, in `exam` mode (feedback at the end, no pause) or\n`practice` mode. An attempt of the same kind still open is returned\ninstead.",
                 "summary": "Start a test",
                 "tags": [
                     "Practice"
@@ -9628,7 +9631,10 @@
                                         "type": "string",
                                         "enum": [
                                             "diagnostic",
-                                            "topic"
+                                            "topic",
+                                            "national",
+                                            "state",
+                                            "simulation"
                                         ]
                                     },
                                     "topic": {
@@ -9643,6 +9649,17 @@
                                             "finance",
                                             "math",
                                             "state_rules",
+                                            null
+                                        ]
+                                    },
+                                    "mode": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "enum": [
+                                            "exam",
+                                            "practice",
                                             null
                                         ]
                                     }
@@ -9703,6 +9720,39 @@
                                                 },
                                                 "submitted": {
                                                     "type": "boolean"
+                                                },
+                                                "paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "section": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "index": {
+                                                            "type": "integer"
+                                                        },
+                                                        "of": {
+                                                            "type": "integer"
+                                                        },
+                                                        "portion": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "index",
+                                                        "of",
+                                                        "portion",
+                                                        "minutes",
+                                                        "questions"
+                                                    ]
                                                 },
                                                 "questions": {
                                                     "type": "array",
@@ -9787,6 +9837,8 @@
                                                 "ends_at",
                                                 "seconds_left",
                                                 "submitted",
+                                                "paused",
+                                                "section",
                                                 "questions"
                                             ]
                                         }
@@ -9894,6 +9946,39 @@
                                                 "submitted": {
                                                     "type": "boolean"
                                                 },
+                                                "paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "section": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "index": {
+                                                            "type": "integer"
+                                                        },
+                                                        "of": {
+                                                            "type": "integer"
+                                                        },
+                                                        "portion": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "index",
+                                                        "of",
+                                                        "portion",
+                                                        "minutes",
+                                                        "questions"
+                                                    ]
+                                                },
                                                 "questions": {
                                                     "type": "array",
                                                     "items": {
@@ -9977,6 +10062,8 @@
                                                 "ends_at",
                                                 "seconds_left",
                                                 "submitted",
+                                                "paused",
+                                                "section",
                                                 "questions"
                                             ]
                                         }
@@ -10189,6 +10276,9 @@
                                                 "kind": {
                                                     "type": "string"
                                                 },
+                                                "mode": {
+                                                    "type": "string"
+                                                },
                                                 "score": {
                                                     "type": "integer"
                                                 },
@@ -10201,6 +10291,12 @@
                                                 "pass_line": {
                                                     "type": "integer"
                                                 },
+                                                "passed": {
+                                                    "type": [
+                                                        "boolean",
+                                                        "null"
+                                                    ]
+                                                },
                                                 "previous": {
                                                     "type": [
                                                         "integer",
@@ -10209,6 +10305,73 @@
                                                 },
                                                 "seconds": {
                                                     "type": "integer"
+                                                },
+                                                "portions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "portion": {
+                                                                "type": "string"
+                                                            },
+                                                            "correct": {
+                                                                "type": "integer"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer"
+                                                            },
+                                                            "pass": {
+                                                                "type": "integer"
+                                                            },
+                                                            "passed": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "percent": {
+                                                                "type": "integer"
+                                                            },
+                                                            "previous": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "seconds": {
+                                                                "type": "integer"
+                                                            },
+                                                            "pace": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "portion",
+                                                            "correct",
+                                                            "total",
+                                                            "pass",
+                                                            "passed",
+                                                            "percent",
+                                                            "previous",
+                                                            "seconds",
+                                                            "pace"
+                                                        ]
+                                                    }
+                                                },
+                                                "timing": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "seconds_per_question": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pace": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "seconds_per_question",
+                                                        "pace"
+                                                    ]
                                                 },
                                                 "topics": {
                                                     "type": "array",
@@ -10266,6 +10429,9 @@
                                                             "topic": {
                                                                 "type": "string"
                                                             },
+                                                            "portion": {
+                                                                "type": "string"
+                                                            },
                                                             "prompt": {
                                                                 "type": "string"
                                                             },
@@ -10287,24 +10453,51 @@
                                                             "correct": {
                                                                 "type": "boolean"
                                                             },
+                                                            "scored": {
+                                                                "type": "boolean"
+                                                            },
                                                             "explanation": {
                                                                 "type": "string"
                                                             },
                                                             "source": {
                                                                 "type": "string"
+                                                            },
+                                                            "lesson": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "seconds": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "seconds"
+                                                                ]
                                                             }
                                                         },
                                                         "required": [
                                                             "id",
                                                             "n",
                                                             "topic",
+                                                            "portion",
                                                             "prompt",
                                                             "options",
                                                             "choice",
                                                             "right",
                                                             "correct",
+                                                            "scored",
                                                             "explanation",
-                                                            "source"
+                                                            "source",
+                                                            "lesson"
                                                         ]
                                                     }
                                                 }
@@ -10312,12 +10505,16 @@
                                             "required": [
                                                 "id",
                                                 "kind",
+                                                "mode",
                                                 "score",
                                                 "correct",
                                                 "total",
                                                 "pass_line",
+                                                "passed",
                                                 "previous",
                                                 "seconds",
+                                                "portions",
+                                                "timing",
                                                 "topics",
                                                 "weakest",
                                                 "strongest",
@@ -10392,6 +10589,9 @@
                                                 "kind": {
                                                     "type": "string"
                                                 },
+                                                "mode": {
+                                                    "type": "string"
+                                                },
                                                 "score": {
                                                     "type": "integer"
                                                 },
@@ -10404,6 +10604,12 @@
                                                 "pass_line": {
                                                     "type": "integer"
                                                 },
+                                                "passed": {
+                                                    "type": [
+                                                        "boolean",
+                                                        "null"
+                                                    ]
+                                                },
                                                 "previous": {
                                                     "type": [
                                                         "integer",
@@ -10412,6 +10618,73 @@
                                                 },
                                                 "seconds": {
                                                     "type": "integer"
+                                                },
+                                                "portions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "portion": {
+                                                                "type": "string"
+                                                            },
+                                                            "correct": {
+                                                                "type": "integer"
+                                                            },
+                                                            "total": {
+                                                                "type": "integer"
+                                                            },
+                                                            "pass": {
+                                                                "type": "integer"
+                                                            },
+                                                            "passed": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "percent": {
+                                                                "type": "integer"
+                                                            },
+                                                            "previous": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "seconds": {
+                                                                "type": "integer"
+                                                            },
+                                                            "pace": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "portion",
+                                                            "correct",
+                                                            "total",
+                                                            "pass",
+                                                            "passed",
+                                                            "percent",
+                                                            "previous",
+                                                            "seconds",
+                                                            "pace"
+                                                        ]
+                                                    }
+                                                },
+                                                "timing": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "seconds_per_question": {
+                                                            "type": "integer"
+                                                        },
+                                                        "pace": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "seconds_per_question",
+                                                        "pace"
+                                                    ]
                                                 },
                                                 "topics": {
                                                     "type": "array",
@@ -10469,6 +10742,9 @@
                                                             "topic": {
                                                                 "type": "string"
                                                             },
+                                                            "portion": {
+                                                                "type": "string"
+                                                            },
                                                             "prompt": {
                                                                 "type": "string"
                                                             },
@@ -10490,24 +10766,51 @@
                                                             "correct": {
                                                                 "type": "boolean"
                                                             },
+                                                            "scored": {
+                                                                "type": "boolean"
+                                                            },
                                                             "explanation": {
                                                                 "type": "string"
                                                             },
                                                             "source": {
                                                                 "type": "string"
+                                                            },
+                                                            "lesson": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "seconds": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "seconds"
+                                                                ]
                                                             }
                                                         },
                                                         "required": [
                                                             "id",
                                                             "n",
                                                             "topic",
+                                                            "portion",
                                                             "prompt",
                                                             "options",
                                                             "choice",
                                                             "right",
                                                             "correct",
+                                                            "scored",
                                                             "explanation",
-                                                            "source"
+                                                            "source",
+                                                            "lesson"
                                                         ]
                                                     }
                                                 }
@@ -10515,12 +10818,16 @@
                                             "required": [
                                                 "id",
                                                 "kind",
+                                                "mode",
                                                 "score",
                                                 "correct",
                                                 "total",
                                                 "pass_line",
+                                                "passed",
                                                 "previous",
                                                 "seconds",
+                                                "portions",
+                                                "timing",
                                                 "topics",
                                                 "weakest",
                                                 "strongest",
@@ -10548,6 +10855,601 @@
                                             "examples": [
                                                 "This test is still open."
                                             ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/attempts/{attempt}/pause": {
+            "post": {
+                "operationId": "practice.pause",
+                "description": "Practice mode only: the clock stops while paused. 422 in exam mode.",
+                "summary": "Pause or resume",
+                "tags": [
+                    "Practice"
+                ],
+                "parameters": [
+                    {
+                        "name": "attempt",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "paused": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "paused"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "kind": {
+                                                    "type": "string"
+                                                },
+                                                "mode": {
+                                                    "type": "string"
+                                                },
+                                                "topic": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "answered": {
+                                                    "type": "integer"
+                                                },
+                                                "started_at": {
+                                                    "type": "string"
+                                                },
+                                                "ends_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "seconds_left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "submitted": {
+                                                    "type": "boolean"
+                                                },
+                                                "paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "section": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "index": {
+                                                            "type": "integer"
+                                                        },
+                                                        "of": {
+                                                            "type": "integer"
+                                                        },
+                                                        "portion": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "index",
+                                                        "of",
+                                                        "portion",
+                                                        "minutes",
+                                                        "questions"
+                                                    ]
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "n": {
+                                                                "type": "integer"
+                                                            },
+                                                            "topic": {
+                                                                "type": "string"
+                                                            },
+                                                            "prompt": {
+                                                                "type": "string"
+                                                            },
+                                                            "options": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "choice": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "flagged": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "feedback": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "correct": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "right": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "explanation": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "source": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "correct",
+                                                                    "right",
+                                                                    "explanation",
+                                                                    "source"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "n",
+                                                            "topic",
+                                                            "prompt",
+                                                            "options",
+                                                            "choice",
+                                                            "flagged",
+                                                            "feedback"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "kind",
+                                                "mode",
+                                                "topic",
+                                                "total",
+                                                "answered",
+                                                "started_at",
+                                                "ends_at",
+                                                "seconds_left",
+                                                "submitted",
+                                                "paused",
+                                                "section",
+                                                "questions"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/attempts/{attempt}/finish": {
+            "post": {
+                "operationId": "practice.finish",
+                "description": "In a simulation, the next portion starts now with its own clock; the\nlast portion submits the test (then `submitted` is true).",
+                "summary": "Finish this portion",
+                "tags": [
+                    "Practice"
+                ],
+                "parameters": [
+                    {
+                        "name": "attempt",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "kind": {
+                                                    "type": "string"
+                                                },
+                                                "mode": {
+                                                    "type": "string"
+                                                },
+                                                "topic": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "answered": {
+                                                    "type": "integer"
+                                                },
+                                                "started_at": {
+                                                    "type": "string"
+                                                },
+                                                "ends_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "seconds_left": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "submitted": {
+                                                    "type": "boolean"
+                                                },
+                                                "paused": {
+                                                    "type": "boolean"
+                                                },
+                                                "section": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "index": {
+                                                            "type": "integer"
+                                                        },
+                                                        "of": {
+                                                            "type": "integer"
+                                                        },
+                                                        "portion": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "index",
+                                                        "of",
+                                                        "portion",
+                                                        "minutes",
+                                                        "questions"
+                                                    ]
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "n": {
+                                                                "type": "integer"
+                                                            },
+                                                            "topic": {
+                                                                "type": "string"
+                                                            },
+                                                            "prompt": {
+                                                                "type": "string"
+                                                            },
+                                                            "options": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "choice": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "flagged": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "feedback": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "correct": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "right": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "explanation": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "source": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "correct",
+                                                                    "right",
+                                                                    "explanation",
+                                                                    "source"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "n",
+                                                            "topic",
+                                                            "prompt",
+                                                            "options",
+                                                            "choice",
+                                                            "flagged",
+                                                            "feedback"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "kind",
+                                                "mode",
+                                                "topic",
+                                                "total",
+                                                "answered",
+                                                "started_at",
+                                                "ends_at",
+                                                "seconds_left",
+                                                "submitted",
+                                                "paused",
+                                                "section",
+                                                "questions"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/attempts/{attempt}/similar/{question}": {
+            "get": {
+                "operationId": "practice.similar",
+                "description": "One more on the same topic, not in this test, with its answer and why\n(answer review). `data` is null when there's none.",
+                "summary": "A similar question",
+                "tags": [
+                    "Practice"
+                ],
+                "parameters": [
+                    {
+                        "name": "attempt",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "question",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "prompt": {
+                                                    "type": "string"
+                                                },
+                                                "options": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "right": {
+                                                    "type": "integer"
+                                                },
+                                                "explanation": {
+                                                    "type": "string"
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "topic",
+                                                "prompt",
+                                                "options",
+                                                "right",
+                                                "explanation",
+                                                "source"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                "This test is still open."
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
                                         }
                                     },
                                     "required": [

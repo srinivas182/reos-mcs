@@ -36,10 +36,11 @@ final class PracticePageController extends Controller
     {
         $access->allow($user);
         $data = $request->validate([
-            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC])],
+            'kind' => ['required', Rule::in([TestAttempt::DIAGNOSTIC, TestAttempt::TOPIC, ...TestAttempt::PORTION_KINDS])],
             'topic' => ['required_if:kind,topic', 'nullable', Rule::in(array_keys(DiagnosticBank::WEIGHTS))],
+            'mode' => ['nullable', Rule::in(['exam', 'practice'])],
         ]);
-        $attempt = $tests->start($user, (string) $data['kind'], $data['kind'] === TestAttempt::TOPIC && is_string($data['topic'] ?? null) ? $data['topic'] : null);
+        $attempt = $tests->start($user, (string) $data['kind'], $data['kind'] === TestAttempt::TOPIC && is_string($data['topic'] ?? null) ? $data['topic'] : null, is_string($data['mode'] ?? null) ? $data['mode'] : null);
 
         return to_route('practice.attempt', $attempt->id);
     }
@@ -57,9 +58,10 @@ final class PracticePageController extends Controller
 
     public function submit(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests): RedirectResponse
     {
-        $tests->submit($access->attempt($user, $attempt));
+        // A simulation's first portion moves on to the next; the last one submits (A9.1).
+        $found = $tests->finish($access->attempt($user, $attempt));
 
-        return to_route('practice.results', $attempt);
+        return $found->submitted_at === null ? to_route('practice.attempt', $attempt) : to_route('practice.results', $attempt);
     }
 
     public function results(int $attempt, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests, Readiness $readiness): Response|RedirectResponse

@@ -165,6 +165,9 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::get('attempts/{attempt}/results', 'results')->whereNumber('attempt')->name('results');
     });
     Route::put('practice/attempts/{attempt}/answers/{question}', [ApiPracticeController::class, 'answer'])->whereNumber(['attempt', 'question'])->middleware('throttle:240,1,practice-answer')->name('practice.answer');
+    Route::post('practice/attempts/{attempt}/pause', [ApiPracticeController::class, 'pause'])->whereNumber('attempt')->middleware('throttle:60,1,practice-pause')->name('practice.pause');
+    Route::post('practice/attempts/{attempt}/finish', [ApiPracticeController::class, 'finish'])->whereNumber('attempt')->middleware('throttle:30,1,practice-finish')->name('practice.finish');
+    Route::get('practice/attempts/{attempt}/similar/{question}', [ApiPracticeController::class, 'similar'])->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,practice-similar')->name('practice.similar');
     Route::controller(StudyPlanController::class)->prefix('study-plan')->name('study-plan.')->group(function () {
         Route::get('/', 'show')->name('show');
         Route::put('tasks/{task}', 'move')->whereNumber('task')->middleware('throttle:60,1,study-plan-move')->name('move');

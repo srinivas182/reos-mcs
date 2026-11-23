@@ -177,7 +177,7 @@ describe('State rules screen (web journey screen 62)', function () {
             ->component('admin/states/rules')
             ->where('state.name', 'Texas')
             ->where('topics', ['licensing', 'exam', 'ce', 'advertising', 'brokerage', 'forms', 'courses'])
-            ->where('liveFeatures', ['ce_card', 'course_approvals'])
+            ->where('liveFeatures', ['ce_card', 'course_approvals', 'test_prep'])
             ->where('rules', fn ($rules) => ($hours = collect($rules)->firstWhere('key', 'ce.hours'))
                 && $hours['current']['value'] === ['number' => 18]
                 && $hours['current']['citation'] === '22 TAC §535.92(a)'
