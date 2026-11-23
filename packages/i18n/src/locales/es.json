@@ -6481,6 +6481,46 @@
           "weakest": "Tema más débil"
         }
       }
+    },
+    "handsFree": {
+      "title": "Modo manos libres",
+      "description": "Estudie sin mirar la pantalla: al caminar, en el gimnasio o mientras hace tareas de la casa. Cada pregunta se lee en voz alta; diga su respuesta y escuche por qué.",
+      "notDriving": "No es para manejar",
+      "notDrivingBody": "Mantenga la vista y la atención en el camino. El modo manos libres es para caminar, el gimnasio y las tareas de la casa, nunca mientras maneja.",
+      "howTitle": "Cómo funciona",
+      "how": "Diga la letra (\"B\"), las palabras de la respuesta, o \"verdadero\" o \"falso\". Diga \"Repetir\" para escuchar de nuevo la pregunta, \"Siguiente\" para pasar a la próxima o \"Parar\" para terminar.",
+      "buttons": "Con la pantalla bloqueada o con audífonos: reproducir o pausar repite la pregunta, y siguiente la salta.",
+      "privacy": "Su voz se reconoce en su teléfono. Ningún audio sale de él.",
+      "start": "Empezar el cuestionario por voz",
+      "again": "Empezar otro",
+      "progress": "Pregunta {{n}} de {{total}} · {{score}} correctas",
+      "listening": "Escuchando…",
+      "speaking": "Leyendo la pregunta…",
+      "checking": "Revisando su respuesta…",
+      "tapAnswer": "Toque su respuesta",
+      "heard": "Se escuchó: “{{text}}”",
+      "noVoice": "Este teléfono no puede reconocer la voz en el dispositivo, así que responda con los botones. La pregunta se sigue leyendo en voz alta.",
+      "notSaved": "Su respuesta no se guardó. Inténtelo de nuevo.",
+      "repeat": "Repetir",
+      "skip": "Saltar",
+      "stop": "Parar",
+      "score": "{{correct}} de {{total}} correctas",
+      "stopped": "Cuestionario detenido",
+      "lockTitle": "Cuestionario por voz de REOS · pregunta {{n}} de {{total}}",
+      "shortcut": "Hágame preguntas",
+      "shortcutSubtitle": "Cuestionario por voz manos libres",
+      "say": {
+        "question": "Pregunta {{n}} de {{total}}.",
+        "option": "{{letter}}: {{option}}.",
+        "yourAnswer": "¿Su respuesta?",
+        "right": "Correcto.",
+        "wrong": "No exactamente. La respuesta es {{answer}}",
+        "unclear": "Disculpe, no le entendí. Diga A, B, C o D, o diga Repetir.",
+        "notSaved": "Esa respuesta no se guardó. Por favor, dígala de nuevo.",
+        "done": "Listo. Acertó {{correct}} de {{total}}.",
+        "stopped": "Cuestionario detenido."
+      },
+      "hub": "El cuestionario en voz alta; responda con la voz. No es para manejar."
     }
   },
   "brokerageIntegrations": {

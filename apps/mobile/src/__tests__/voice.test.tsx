@@ -328,6 +328,7 @@ describe('The "Add a to-do" home-screen shortcut (B4.3b)', () => {
     await rerender({ signedIn: true });
     expect(QuickActions.setItems).toHaveBeenLastCalledWith([
       { id: 'reos.voice', title: 'Add a to-do', subtitle: 'Say it, REOS saves it', icon: 'symbol:mic.fill', params: { href: '/voice' } },
+      { id: 'reos.quiz', title: 'Quiz me', subtitle: 'Hands-free voice quiz', icon: 'symbol:headphones', params: { href: '/practice/hands-free' } },
     ]);
   });
 });

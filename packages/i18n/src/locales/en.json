@@ -6481,6 +6481,46 @@
           "weakest": "Weakest topic"
         }
       }
+    },
+    "handsFree": {
+      "title": "Hands-free mode",
+      "description": "Study without looking at the screen: on a walk, at the gym or doing chores. Each question is read aloud; say your answer and hear why.",
+      "notDriving": "Not for driving",
+      "notDrivingBody": "Keep your eyes and mind on the road. Hands-free mode is for walks, the gym and chores, never while you drive.",
+      "howTitle": "How it works",
+      "how": "Say the letter (\"B\"), the answer's words, or \"true\" or \"false\". Say \"Repeat\" to hear the question again, \"Skip\" to move on, or \"Stop\" to finish.",
+      "buttons": "With the screen locked or with headphones: play or pause repeats the question, and next skips it.",
+      "privacy": "Your speech is recognized on your phone. No audio leaves it.",
+      "start": "Start the voice quiz",
+      "again": "Start another",
+      "progress": "Question {{n}} of {{total}} · {{score}} right",
+      "listening": "Listening…",
+      "speaking": "Reading the question…",
+      "checking": "Checking your answer…",
+      "tapAnswer": "Tap your answer",
+      "heard": "Heard: “{{text}}”",
+      "noVoice": "This phone can't recognize speech on the device, so answer with the buttons. The question is still read aloud.",
+      "notSaved": "Your answer wasn't saved. Try again.",
+      "repeat": "Repeat",
+      "skip": "Skip",
+      "stop": "Stop",
+      "score": "{{correct}} of {{total}} right",
+      "stopped": "Quiz stopped",
+      "lockTitle": "REOS voice quiz · question {{n}} of {{total}}",
+      "shortcut": "Quiz me",
+      "shortcutSubtitle": "Hands-free voice quiz",
+      "say": {
+        "question": "Question {{n}} of {{total}}.",
+        "option": "{{letter}}: {{option}}.",
+        "yourAnswer": "Your answer?",
+        "right": "Right.",
+        "wrong": "Not quite. The answer is {{answer}}",
+        "unclear": "Sorry, I didn't catch that. Say A, B, C or D, or say Repeat.",
+        "notSaved": "That answer wasn't saved. Please say it again.",
+        "done": "Done. You got {{correct}} of {{total}} right.",
+        "stopped": "Quiz stopped."
+      },
+      "hub": "The quiz read aloud; answer by voice. Not for driving."
     }
   },
   "brokerageIntegrations": {
