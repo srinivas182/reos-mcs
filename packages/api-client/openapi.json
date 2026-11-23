@@ -12401,6 +12401,120 @@
                 }
             }
         },
+        "/practice/attempts/{attempt}/why/{question}": {
+            "get": {
+                "operationId": "practice.why",
+                "description": "Where to ask the instructor why the right answer is right: the\nlesson that teaches the question (at its second, when known) and the\nquestion to ask, ready to send. `data` is null when no lesson the\ncandidate can open covers it. 409 while the test is still open.",
+                "summary": "Ask why",
+                "tags": [
+                    "Practice"
+                ],
+                "parameters": [
+                    {
+                        "name": "attempt",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "question",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "lesson_id": {
+                                                    "type": "integer"
+                                                },
+                                                "seconds": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "question": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "lesson_id",
+                                                "seconds",
+                                                "question"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                "This test is still open."
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/push-devices": {
             "post": {
                 "operationId": "me.push-devices.store",
@@ -12773,6 +12887,276 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/reports/weekly": {
+            "get": {
+                "operationId": "practice.reports.show",
+                "description": "Time studied with minutes per day against the plan, questions\nanswered, flashcards reviewed, the readiness change, lessons finished\nand course hours, the weakest topic and the streak, for the week\nholding `week` (this week by default), and how it's shared.",
+                "summary": "My week",
+                "tags": [
+                    "Report"
+                ],
+                "parameters": [
+                    {
+                        "name": "week",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "report": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "week_start": {
+                                                            "type": "string"
+                                                        },
+                                                        "week_end": {
+                                                            "type": "string"
+                                                        },
+                                                        "first_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "goal_minutes": {
+                                                            "type": "integer"
+                                                        },
+                                                        "per_day": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "cards": {
+                                                            "type": "integer"
+                                                        },
+                                                        "readiness": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "now": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "before": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "change": {
+                                                                    "type": [
+                                                                        "integer",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "now",
+                                                                "before",
+                                                                "change"
+                                                            ]
+                                                        },
+                                                        "lessons": {
+                                                            "type": "integer"
+                                                        },
+                                                        "hours": {
+                                                            "type": "number"
+                                                        },
+                                                        "weakest": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "streak": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "week_start",
+                                                        "week_end",
+                                                        "first_name",
+                                                        "minutes",
+                                                        "goal_minutes",
+                                                        "per_day",
+                                                        "questions",
+                                                        "cards",
+                                                        "readiness",
+                                                        "lessons",
+                                                        "hours",
+                                                        "weakest",
+                                                        "streak"
+                                                    ]
+                                                },
+                                                "shares": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "school": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "can_share_school": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "link": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "school",
+                                                        "can_share_school",
+                                                        "link"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "report",
+                                                "shares"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/practice/reports/weekly/share": {
+            "post": {
+                "operationId": "practice.reports.share",
+                "description": "With my school (they see it only once shared), or as a link for a\nstudy buddy (first name only, for 14 days).",
+                "summary": "Share my week",
+                "tags": [
+                    "Report"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "with": {
+                                        "type": "string",
+                                        "enum": [
+                                            "school",
+                                            "link"
+                                        ]
+                                    },
+                                    "week": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date"
+                                    }
+                                },
+                                "required": [
+                                    "with"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "school": {
+                                                    "type": "boolean"
+                                                },
+                                                "can_share_school": {
+                                                    "type": "boolean"
+                                                },
+                                                "link": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "school",
+                                                "can_share_school",
+                                                "link"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"

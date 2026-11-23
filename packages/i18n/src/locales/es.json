@@ -67,7 +67,9 @@
     "practiceAndExams": "Práctica y exámenes",
     "brokerageIntegrations": "Integraciones",
     "contacts": "Contactos",
-    "readiness": "Preparación"
+    "readiness": "Preparación",
+    "students": "Estudiantes",
+    "progress": "Progreso semanal"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -4705,7 +4707,8 @@
       "session_booked": "Sesiones programadas o canceladas",
       "approval_expiring": "Aprobaciones de cursos y tiempo de clase",
       "avatar_consent_ended": "Consentimiento de avatar terminado",
-      "content_review": "Revisiones de lecciones y preguntas"
+      "content_review": "Revisiones de lecciones y preguntas",
+      "weekly_report": "Informe de progreso semanal"
     },
     "digest": {
       "subject": {
@@ -6007,7 +6010,10 @@
       "watch": "Ver la explicación",
       "similar": "Pregunta similar",
       "noSimilar": "Todavía no hay una pregunta similar.",
-      "showAnswer": "Ver la respuesta"
+      "showAnswer": "Ver la respuesta",
+      "whyQuestion": "Pregunta: :question ¿Por qué “:answer” es la respuesta correcta?",
+      "askWhy": "Preguntar por qué",
+      "noWhy": "Todavía no hay una lección disponible para usted que cubra esta pregunta."
     },
     "tasks": {
       "diagnostic": "Hacer el diagnóstico de Texas",
@@ -6410,6 +6416,66 @@
       "misses_other": "{{count}} errores guardados en sus tarjetas.",
       "again": "Jugar otra vez",
       "cardBack": "Respuesta: :answer. :why"
+    },
+    "reports": {
+      "title": "Progreso semanal",
+      "description": "Su semana de un vistazo: tiempo de estudio, preguntas respondidas y cómo cambió su preparación.",
+      "week": "Del {{start}} al {{end}}",
+      "previous": "Semana anterior",
+      "next": "Semana siguiente",
+      "minutes": "Tiempo de estudio",
+      "minutesValue_one": "{{count}} minuto",
+      "minutesValue_other": "{{count}} minutos",
+      "goal": "Plan: {{minutes}} minutos",
+      "perDay": "Minutos por día",
+      "day": "{{day}}: {{minutes}} min",
+      "questions": "Preguntas respondidas",
+      "cards": "Tarjetas repasadas",
+      "readiness": "Preparación",
+      "readinessChange": "{{percent}}% ({{change}} esta semana)",
+      "readinessNow": "{{percent}}%",
+      "notYet": "Aún no se conoce",
+      "lessons": "Lecciones terminadas",
+      "hours": "Horas de curso",
+      "hoursValue": "{{hours}} h",
+      "weakest": "Tema más débil",
+      "none": "Ninguno",
+      "streak": "Racha",
+      "streakValue_one": "{{count}} día",
+      "streakValue_other": "{{count}} días",
+      "shareTitle": "Compartir",
+      "shareBody": "Su escuela ve su informe solo si usted lo comparte. Un enlace para un compañero de estudio muestra solo su nombre de pila y funciona durante 14 días.",
+      "shareSchool": "Compartir con mi escuela",
+      "sharedSchool": "Compartido con su escuela",
+      "shareLink": "Crear un enlace para un compañero de estudio",
+      "copy": "Copiar el enlace",
+      "copied": "Enlace copiado.",
+      "errors": {
+        "noSchool": "Usted no estudia por medio de una escuela, así que no hay escuela con quien compartir."
+      },
+      "mail": {
+        "title": "Su semana en resumen",
+        "body": ":minutes minutos de estudio, :questions preguntas respondidas, una racha de :streak días.",
+        "readiness": "Preparación: :percent%.",
+        "readinessChange": "Preparación: :percent% (:change esta semana).",
+        "open": "Ver su semana"
+      },
+      "sharedTitle": "La semana de {{name}}",
+      "sharedBody": "Un informe de progreso semanal compartido desde REOS.",
+      "students": {
+        "title": "Estudiantes",
+        "description": "Los informes de progreso semanal que sus candidatos compartieron con ustedes.",
+        "emptyTitle": "Aún no hay informes compartidos",
+        "empty": "Cuando un candidato comparte su informe semanal con la escuela, aparece aquí.",
+        "columns": {
+          "name": "Candidato",
+          "week": "Semana",
+          "minutes": "Minutos",
+          "questions": "Preguntas",
+          "readiness": "Preparación",
+          "weakest": "Tema más débil"
+        }
+      }
     }
   },
   "brokerageIntegrations": {

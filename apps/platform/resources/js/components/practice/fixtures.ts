@@ -6,9 +6,11 @@ import type {
     MathKind,
     MathProblem,
     ReadinessMap,
+    ReportShares,
     Results,
     StudyToday,
     TopicPlan,
+    WeeklyReport,
 } from './types';
 
 export const studyToday: StudyToday = {
@@ -550,4 +552,27 @@ export const deck: Deck = {
             last_reviewed_at: '2026-11-21T15:00:00Z',
         },
     ],
+};
+
+/** Sofia's week (screen 55, A9.2e): 70 of 140 planned minutes, readiness up 4. */
+export const weeklyReport: WeeklyReport = {
+    week_start: '2026-11-16',
+    week_end: '2026-11-22',
+    first_name: 'Sofia',
+    minutes: 70,
+    goal_minutes: 140,
+    per_day: [25, 0, 20, 0, 15, 10, 0],
+    questions: 42,
+    cards: 18,
+    readiness: { now: 68, before: 64, change: 4 },
+    lessons: 3,
+    hours: 1.2,
+    weakest: 'finance',
+    streak: 4,
+};
+
+export const reportShares: ReportShares = {
+    school: false,
+    can_share_school: true,
+    link: null,
 };

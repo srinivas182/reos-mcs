@@ -2063,6 +2063,29 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/practice/attempts/{attempt}/why/{question}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ask why
+         * @description Where to ask the instructor why the right answer is right: the
+         *     lesson that teaches the question (at its second, when known) and the
+         *     question to ask, ready to send. `data` is null when no lesson the
+         *     candidate can open covers it. 409 while the test is still open.
+         */
+        get: operations["practice.why"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/push-devices": {
         parameters: {
             query?: never;
@@ -2144,6 +2167,50 @@ export interface paths {
         get: operations["practice.readiness"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/reports/weekly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My week
+         * @description Time studied with minutes per day against the plan, questions
+         *     answered, flashcards reviewed, the readiness change, lessons finished
+         *     and course hours, the weakest topic and the streak, for the week
+         *     holding `week` (this week by default), and how it's shared.
+         */
+        get: operations["practice.reports.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/practice/reports/weekly/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Share my week
+         * @description With my school (they see it only once shared), or as a link for a
+         *     study buddy (first name only, for 14 days).
+         */
+        post: operations["practice.reports.share"];
         delete?: never;
         options?: never;
         head?: never;
@@ -9202,6 +9269,62 @@ export interface operations {
             };
         };
     };
+    "practice.why": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                attempt: number;
+                question: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            lesson_id: number;
+                            seconds: number | null;
+                            question: string;
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example This test is still open.
+                         */
+                        message: string;
+                    };
+                };
+            };
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "me.push-devices.store": {
         parameters: {
             query?: never;
@@ -9368,6 +9491,104 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "practice.reports.show": {
+        parameters: {
+            query?: {
+                week?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            report: {
+                                week_start: string;
+                                week_end: string;
+                                first_name: string;
+                                minutes: number;
+                                goal_minutes: number;
+                                per_day: number[];
+                                questions: number;
+                                cards: number;
+                                readiness: {
+                                    now: number | null;
+                                    before: number | null;
+                                    change: number | null;
+                                };
+                                lessons: number;
+                                hours: number;
+                                weakest: string | null;
+                                streak: number;
+                            };
+                            shares: {
+                                school: boolean;
+                                can_share_school: boolean;
+                                link: string | null;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "practice.reports.share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    with: "school" | "link";
+                    /** Format: date */
+                    week?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            school: boolean;
+                            can_share_school: boolean;
+                            link: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
     };
     "sessions.index": {

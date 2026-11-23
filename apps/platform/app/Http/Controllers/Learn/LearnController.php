@@ -52,6 +52,8 @@ final class LearnController extends Controller
             'page' => ['nullable', 'integer', 'min:1', 'max:5000'],
             't' => ['nullable', 'integer', 'min:0', 'max:86400'],
             'heading' => ['nullable', 'string', 'max:200'],
+            // Ask why (A9.2e): a question for Ask the instructor, asked on opening.
+            'ask' => ['nullable', 'string', 'max:400'],
         ]);
 
         if (! $learning->canOpen($user, $found)) {
@@ -66,6 +68,7 @@ final class LearnController extends Controller
                 'page' => isset($at['page']) && is_numeric($at['page']) ? (int) $at['page'] : null,
                 'seconds' => isset($at['t']) && is_numeric($at['t']) ? (int) $at['t'] : null,
                 'heading' => is_string($at['heading'] ?? null) ? $at['heading'] : null,
+                'ask' => is_string($at['ask'] ?? null) ? $at['ask'] : null,
             ],
         ]);
     }

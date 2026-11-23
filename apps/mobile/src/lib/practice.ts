@@ -30,6 +30,8 @@ export type MathKind = Got<'/practice/math'>['data'][number];
 export type MathCheck = Posted<'/practice/math/check'>['data'];
 export type MathProblem = Posted<'/practice/math/problems'>['data'];
 export type ExamKind = 'national' | 'state' | 'simulation';
+export type WeeklyProgress = Got<'/practice/reports/weekly'>['data'];
+export type ReportShares = Posted<'/practice/reports/weekly/share'>['data'];
 export const isExam = (kind: string): kind is ExamKind => kind === 'national' || kind === 'state' || kind === 'simulation';
 
 export const TOPICS: Topic[] = ['agency', 'contracts', 'ownership', 'finance', 'math', 'state_rules'];
@@ -101,6 +103,27 @@ export function openStep(plan: number, next: PlanNext, topic: string | null = nu
   } else {
     router.push({ pathname: '/practice/fix/[id]', params: { id: String(plan), misses: '1' } });
   }
+}
+
+/** Ask why (screen 45, A9.2e): the lesson that teaches a question, and the question to ask there; null if none. */
+export async function askWhy(attempt: number, question: number): Promise<Got<'/practice/attempts/{attempt}/why/{question}'>['data']> {
+  const { data } = await api().GET('/practice/attempts/{attempt}/why/{question}', { params: { path: { attempt, question } } });
+
+  return data?.data ?? null;
+}
+
+/** Weekly progress (screen 55, A9.2e): the week holding `week` (this week by default), and how it's shared. */
+export async function loadWeeklyProgress(week?: string): Promise<WeeklyProgress | null> {
+  const { data } = await api().GET('/practice/reports/weekly', { params: { query: week ? { week } : {} } });
+
+  return data?.data ?? null;
+}
+
+/** Share a week with the school, or as a first-name link for a study buddy (14 days). */
+export async function shareWeek(withWho: 'school' | 'link', week: string): Promise<ReportShares | null> {
+  const { data } = await api().POST('/practice/reports/weekly/share', { body: { with: withWho, week } });
+
+  return data?.data ?? null;
 }
 
 /** Math lab (screen 48, A9.2c): the kinds with how many solved. */

@@ -1,6 +1,6 @@
 import type { paths } from '@reos/api-client';
 import { Languages, MessageCircleQuestion, Play, Sparkles, Wand2 } from 'lucide-react-native';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
@@ -18,6 +18,8 @@ type Props = {
   pause: () => number | null;
   /** Plays again, from a second when given. */
   resume: (seconds?: number) => void;
+  /** Ask why (A9.2e): a question asked as soon as the lesson opens. */
+  initial?: string | null;
 };
 
 /** "4:05". */
@@ -30,9 +32,9 @@ function clock(seconds: number): string {
  * the lesson at the second; the answer comes from this course only, with
  * where it's from; then Explain simpler, En español, Quiz me, or Resume.
  */
-export function AskInstructor({ lesson, pause, resume }: Props) {
+export function AskInstructor({ lesson, pause, resume, initial = null }: Props) {
   const { t } = useTranslation();
-  const [question, setQuestion] = useState('');
+  const [question, setQuestion] = useState(initial ?? '');
   const [asked, setAsked] = useState('');
   const [answer, setAnswer] = useState<Answer | null>(null);
   const [busy, setBusy] = useState(false);
@@ -66,6 +68,17 @@ export function AskInstructor({ lesson, pause, resume }: Props) {
     setQuestion('');
     resume(seconds);
   };
+
+
+  // Ask why: asked once, on opening.
+  const asking = useRef(false);
+  useEffect(() => {
+    if (!initial || asking.current) return;
+    asking.current = true;
+    const timer = setTimeout(() => void run('ask', initial), 0);
+
+    return () => clearTimeout(timer);
+  }, [initial]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Card>

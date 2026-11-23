@@ -15,6 +15,8 @@ use App\Practice\PracticeCoach;
 use App\Practice\Readiness;
 use App\Practice\SpeedRounds;
 use App\Practice\Tests;
+use App\Practice\WeeklyReports;
+use Carbon\CarbonImmutable;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -93,6 +95,16 @@ final class PracticePageController extends Controller
         $topic = is_string($topic) && array_key_exists($topic, DiagnosticBank::WEIGHTS) ? $topic : null;
 
         return Inertia::render('practice/flashcards', ['deck' => $cards->deck($user, $user->locale->value, $topic), 'topic' => $topic]);
+    }
+
+    /** The weekly progress report on the web (the phone's screen 55, A9.2e); `week` picks the week. */
+    public function progress(Request $request, #[CurrentUser] User $user, PracticeAccess $access, WeeklyReports $reports): Response
+    {
+        $access->allow($user);
+        $week = $request->query('week');
+        $monday = WeeklyReports::weekOf(is_string($week) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $week) === 1 ? CarbonImmutable::parse($week) : null);
+
+        return Inertia::render('practice/progress', ['report' => $reports->for($user, $monday), 'shares' => $reports->shares($user, $monday), 'this_week' => WeeklyReports::weekOf()->toDateString()]);
     }
 
     /** The speed round on the web (the phone's screen 50, A9.2d). */

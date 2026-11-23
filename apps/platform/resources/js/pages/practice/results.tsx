@@ -1,7 +1,8 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
     ArrowLeft,
     CheckCircle2,
+    MessageCircleQuestion,
     PlayCircle,
     Shuffle,
     Sigma,
@@ -22,6 +23,7 @@ import {
     index as practiceIndex,
     math as mathLab,
     similar as similarRoute,
+    why as whyRoute,
 } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 
@@ -50,6 +52,39 @@ export default function ResultsPage({
 }) {
     const { t } = useTranslation();
     const passed = results.passed ?? results.score >= results.pass_line;
+    const [noWhy, setNoWhy] = useState<Record<number, boolean>>({});
+    // Ask why (A9.2e): the lesson that teaches it, with the question asked.
+    const askWhy = async (id: number) => {
+        const response = await fetch(
+            whyRoute({ attempt: results.id, question: id }).url,
+            {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            },
+        );
+        const body = (await response.json().catch(() => ({ data: null }))) as {
+            data: {
+                lesson_id: number;
+                seconds: number | null;
+                question: string;
+            } | null;
+        };
+        if (!body.data) {
+            setNoWhy((all) => ({ ...all, [id]: true }));
+
+            return;
+        }
+        router.visit(
+            openLesson(body.data.lesson_id, {
+                query: {
+                    ask: body.data.question,
+                    ...(body.data.seconds !== null
+                        ? { t: body.data.seconds }
+                        : {}),
+                },
+            }).url,
+        );
+    };
     const [similar, setSimilar] = useState<
         Record<number, SimilarQuestion | null>
     >({});
@@ -262,6 +297,22 @@ export default function ResultsPage({
                                         back={`${q.options[q.right] ?? ''}. ${q.explanation}`}
                                         questionId={q.id}
                                     />
+                                    {!q.correct && !noWhy[q.id] ? (
+                                        <Button
+                                            variant="outline"
+                                            onClick={() => void askWhy(q.id)}
+                                        >
+                                            <MessageCircleQuestion
+                                                aria-hidden
+                                            />
+                                            {t('practice.results.askWhy')}
+                                        </Button>
+                                    ) : null}
+                                    {noWhy[q.id] ? (
+                                        <p className="text-sm text-muted-foreground">
+                                            {t('practice.results.noWhy')}
+                                        </p>
+                                    ) : null}
                                     {!q.correct && q.math ? (
                                         <Button variant="outline" asChild>
                                             <Link
