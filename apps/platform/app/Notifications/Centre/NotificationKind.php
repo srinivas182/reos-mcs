@@ -39,6 +39,8 @@ enum NotificationKind: string
     case WeeklyReport = 'weekly_report';
     /** A challenge's result, or one sent to the candidate's study group (A9.3). */
     case Challenge = 'challenge';
+    /** A deal's key date is 72 or 24 hours away (B9.1). */
+    case DealDeadline = 'deal_deadline';
 
     public const INBOX = 'inbox';
 
@@ -95,6 +97,7 @@ enum NotificationKind: string
             self::SessionBooked, self::SessionStarting, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
+            self::DealDeadline => 'deals',
         };
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 use App\Connections\ConnectorRegistry;
+use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Learn\PlayerController;
 use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Connections\SimulatorSignInController;
 use App\Http\Controllers\Crm\ContactImportsController;
 use App\Http\Controllers\Crm\ContactsPageController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Deals\DealsPageController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
 use App\Http\Controllers\LegalController;
@@ -137,6 +139,13 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::patch('{connection}', 'update')->whereNumber('connection')->middleware('throttle:30,1,update')->name('update');
         Route::delete('{connection}', 'destroy')->whereNumber('connection')->middleware('throttle:30,1,destroy')->name('destroy');
     });
+
+    // Deals board (B9.1, agent web screen 14): the agent's own deals.
+    Route::get('deals', [DealsPageController::class, 'index'])->name('deals.index');
+    Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,deals')->name('deals.store');
+    Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.update');
+    Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,deals')->name('deals.stage');
+    Route::delete('deals/{deal}', [DealController::class, 'destroy'])->whereUuid('deal')->middleware('throttle:30,1,deals')->name('deals.destroy');
 
     // Contacts, the CRM hub (B8.3, agent web screen 13): the agent's own contacts only.
     Route::controller(ContactsPageController::class)->prefix('contacts')->name('contacts.')->group(function () {

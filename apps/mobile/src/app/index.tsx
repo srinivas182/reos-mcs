@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bell, BookOpen, MessageSquare, Palette, Users, Video } from 'lucide-react-native';
+import { Bell, BookOpen, Handshake, MessageSquare, Palette, Users, Video } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -187,6 +187,7 @@ export default function HomeScreen() {
       {/* Do this now (Agent App Journey screen 6, B8.3), and every contact. */}
       {agent && insight ? <TodayInsight contact={insight.contact} insight={insight.insight} onDone={() => void reloadInsight()} /> : null}
       {agent ? <ListRow icon={Users} tone="info" title={t('crm.hub.title')} subtitle={t('crm.hub.description')} onPress={() => router.push('/contacts')} /> : null}
+      {agent ? <ListRow icon={Handshake} tone="info" title={t('deals.pipeline.title')} subtitle={t('deals.pipeline.description')} onPress={() => router.push('/deals')} /> : null}
       {agent ? <TodayAgenda /> : null}
       {agent ? <TodayTodos rows={todos.rows} onChanged={() => void todos.reload()} onAdd={() => setCapturing('voice')} /> : null}
       <VoiceCaptureSheet mode={capturing} onClose={closeCapture} onSaved={() => void todos.reload()} />

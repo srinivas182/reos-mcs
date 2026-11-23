@@ -4014,6 +4014,1996 @@
                 }
             }
         },
+        "/deals": {
+            "get": {
+                "operationId": "deals.index",
+                "description": "Open deals by stage (and closed ones from the last 90 days), each with its next deadline.",
+                "summary": "The Deals board",
+                "tags": [
+                    "Deal"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "active": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "side": {
+                                                                "type": "string"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "commission": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "read_only": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "external_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "next": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "days": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "kind",
+                                                                    "name",
+                                                                    "due_on",
+                                                                    "days",
+                                                                    "done"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "complete": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "total": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "missing": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "complete",
+                                                                    "total",
+                                                                    "missing"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "uuid",
+                                                            "property",
+                                                            "city",
+                                                            "side",
+                                                            "stage",
+                                                            "price",
+                                                            "commission",
+                                                            "source",
+                                                            "read_only",
+                                                            "external_url",
+                                                            "next",
+                                                            "documents"
+                                                        ]
+                                                    }
+                                                },
+                                                "under_contract": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "side": {
+                                                                "type": "string"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "commission": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "read_only": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "external_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "next": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "days": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "kind",
+                                                                    "name",
+                                                                    "due_on",
+                                                                    "days",
+                                                                    "done"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "complete": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "total": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "missing": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "complete",
+                                                                    "total",
+                                                                    "missing"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "uuid",
+                                                            "property",
+                                                            "city",
+                                                            "side",
+                                                            "stage",
+                                                            "price",
+                                                            "commission",
+                                                            "source",
+                                                            "read_only",
+                                                            "external_url",
+                                                            "next",
+                                                            "documents"
+                                                        ]
+                                                    }
+                                                },
+                                                "closed": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "side": {
+                                                                "type": "string"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "commission": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "read_only": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "external_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "next": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "days": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "kind",
+                                                                    "name",
+                                                                    "due_on",
+                                                                    "days",
+                                                                    "done"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "complete": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "total": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "missing": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "complete",
+                                                                    "total",
+                                                                    "missing"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "uuid",
+                                                            "property",
+                                                            "city",
+                                                            "side",
+                                                            "stage",
+                                                            "price",
+                                                            "commission",
+                                                            "source",
+                                                            "read_only",
+                                                            "external_url",
+                                                            "next",
+                                                            "documents"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "active",
+                                                "under_contract",
+                                                "closed"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "deals.store",
+                "description": "Every key date becomes a to-do on that day, on the calendar.",
+                "summary": "Track a deal in REOS",
+                "tags": [
+                    "Deal"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DealRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "property": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "side": {
+                                                    "type": "string"
+                                                },
+                                                "stage": {
+                                                    "type": "string"
+                                                },
+                                                "price": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "commission": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "read_only": {
+                                                    "type": "boolean"
+                                                },
+                                                "external_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "kind": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "due_on": {
+                                                            "type": "string"
+                                                        },
+                                                        "days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "done": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "kind",
+                                                        "name",
+                                                        "due_on",
+                                                        "days",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "documents": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "complete": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        },
+                                                        "missing": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "complete",
+                                                        "total",
+                                                        "missing"
+                                                    ]
+                                                },
+                                                "parties": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            },
+                                                            "email": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "phone": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "role",
+                                                            "email",
+                                                            "phone"
+                                                        ]
+                                                    }
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "status",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "dates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "days": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "kind",
+                                                            "name",
+                                                            "due_on",
+                                                            "days",
+                                                            "done"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "uuid",
+                                                "property",
+                                                "city",
+                                                "side",
+                                                "stage",
+                                                "price",
+                                                "commission",
+                                                "source",
+                                                "read_only",
+                                                "external_url",
+                                                "next",
+                                                "documents",
+                                                "parties",
+                                                "files",
+                                                "dates"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/deals/pipeline": {
+            "get": {
+                "operationId": "deals.pipeline",
+                "description": "Under contract, active clients and pending commission (phone screen 9).",
+                "summary": "The deals pipeline",
+                "tags": [
+                    "Deal"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "under_contract": {
+                                                    "type": "integer"
+                                                },
+                                                "active": {
+                                                    "type": "integer"
+                                                },
+                                                "pending_commission": {
+                                                    "type": "string"
+                                                },
+                                                "closed_this_year": {
+                                                    "type": "integer"
+                                                },
+                                                "deals": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "side": {
+                                                                "type": "string"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "price": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "commission": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "source": {
+                                                                "type": "string"
+                                                            },
+                                                            "read_only": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "external_url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "next": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "days": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "kind",
+                                                                    "name",
+                                                                    "due_on",
+                                                                    "days",
+                                                                    "done"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "complete": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "total": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "missing": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "complete",
+                                                                    "total",
+                                                                    "missing"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "uuid",
+                                                            "property",
+                                                            "city",
+                                                            "side",
+                                                            "stage",
+                                                            "price",
+                                                            "commission",
+                                                            "source",
+                                                            "read_only",
+                                                            "external_url",
+                                                            "next",
+                                                            "documents"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "under_contract",
+                                                "active",
+                                                "pending_commission",
+                                                "closed_this_year",
+                                                "deals"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/deals/alerts": {
+            "get": {
+                "operationId": "deals.alerts",
+                "description": "Deadlines in the next two weeks, and deals missing documents (phone screen 10).",
+                "summary": "Deal alerts",
+                "tags": [
+                    "Deal"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "deadlines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "deal": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "uuid": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "property": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "city": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "side": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "stage": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "price": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "commission": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "source": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "read_only": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "external_url": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "next": {
+                                                                        "type": [
+                                                                            "object",
+                                                                            "null"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "kind": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "due_on": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "days": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "done": {
+                                                                                "type": "boolean"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "id",
+                                                                            "kind",
+                                                                            "name",
+                                                                            "due_on",
+                                                                            "days",
+                                                                            "done"
+                                                                        ]
+                                                                    },
+                                                                    "documents": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "complete": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "total": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "missing": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "complete",
+                                                                            "total",
+                                                                            "missing"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "uuid",
+                                                                    "property",
+                                                                    "city",
+                                                                    "side",
+                                                                    "stage",
+                                                                    "price",
+                                                                    "commission",
+                                                                    "source",
+                                                                    "read_only",
+                                                                    "external_url",
+                                                                    "next",
+                                                                    "documents"
+                                                                ]
+                                                            },
+                                                            "date": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "days": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "done": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "kind",
+                                                                    "name",
+                                                                    "due_on",
+                                                                    "days",
+                                                                    "done"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "deal",
+                                                            "date"
+                                                        ]
+                                                    }
+                                                },
+                                                "missing": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "deal": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "uuid": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "property": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "city": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "side": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "stage": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "price": {
+                                                                        "type": [
+                                                                            "integer",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "commission": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "source": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "read_only": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "external_url": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "next": {
+                                                                        "type": [
+                                                                            "object",
+                                                                            "null"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "kind": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "due_on": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "days": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "done": {
+                                                                                "type": "boolean"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "id",
+                                                                            "kind",
+                                                                            "name",
+                                                                            "due_on",
+                                                                            "days",
+                                                                            "done"
+                                                                        ]
+                                                                    },
+                                                                    "documents": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "complete": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "total": {
+                                                                                "type": "integer"
+                                                                            },
+                                                                            "missing": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "complete",
+                                                                            "total",
+                                                                            "missing"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "uuid",
+                                                                    "property",
+                                                                    "city",
+                                                                    "side",
+                                                                    "stage",
+                                                                    "price",
+                                                                    "commission",
+                                                                    "source",
+                                                                    "read_only",
+                                                                    "external_url",
+                                                                    "next",
+                                                                    "documents"
+                                                                ]
+                                                            },
+                                                            "documents": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "deal",
+                                                            "documents"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "deadlines",
+                                                "missing"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/deals/{deal}": {
+            "get": {
+                "operationId": "deals.show",
+                "description": "Parties, documents and key dates.",
+                "summary": "A deal",
+                "tags": [
+                    "Deal"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "property": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "side": {
+                                                    "type": "string"
+                                                },
+                                                "stage": {
+                                                    "type": "string"
+                                                },
+                                                "price": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "commission": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "read_only": {
+                                                    "type": "boolean"
+                                                },
+                                                "external_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "kind": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "due_on": {
+                                                            "type": "string"
+                                                        },
+                                                        "days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "done": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "kind",
+                                                        "name",
+                                                        "due_on",
+                                                        "days",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "documents": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "complete": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        },
+                                                        "missing": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "complete",
+                                                        "total",
+                                                        "missing"
+                                                    ]
+                                                },
+                                                "parties": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            },
+                                                            "email": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "phone": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "role",
+                                                            "email",
+                                                            "phone"
+                                                        ]
+                                                    }
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "status",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "dates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "days": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "kind",
+                                                            "name",
+                                                            "due_on",
+                                                            "days",
+                                                            "done"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "uuid",
+                                                "property",
+                                                "city",
+                                                "side",
+                                                "stage",
+                                                "price",
+                                                "commission",
+                                                "source",
+                                                "read_only",
+                                                "external_url",
+                                                "next",
+                                                "documents",
+                                                "parties",
+                                                "files",
+                                                "dates"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "deals.update",
+                "description": "Deals from a tool are changed in the tool.",
+                "summary": "Change a REOS deal",
+                "tags": [
+                    "Deal"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DealRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "property": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "side": {
+                                                    "type": "string"
+                                                },
+                                                "stage": {
+                                                    "type": "string"
+                                                },
+                                                "price": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "commission": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "read_only": {
+                                                    "type": "boolean"
+                                                },
+                                                "external_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "kind": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "due_on": {
+                                                            "type": "string"
+                                                        },
+                                                        "days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "done": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "kind",
+                                                        "name",
+                                                        "due_on",
+                                                        "days",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "documents": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "complete": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        },
+                                                        "missing": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "complete",
+                                                        "total",
+                                                        "missing"
+                                                    ]
+                                                },
+                                                "parties": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            },
+                                                            "email": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "phone": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "role",
+                                                            "email",
+                                                            "phone"
+                                                        ]
+                                                    }
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "name",
+                                                            "status",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "dates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "days": {
+                                                                "type": "integer"
+                                                            },
+                                                            "done": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "kind",
+                                                            "name",
+                                                            "due_on",
+                                                            "days",
+                                                            "done"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "uuid",
+                                                "property",
+                                                "city",
+                                                "side",
+                                                "stage",
+                                                "price",
+                                                "commission",
+                                                "source",
+                                                "read_only",
+                                                "external_url",
+                                                "next",
+                                                "documents",
+                                                "parties",
+                                                "files",
+                                                "dates"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "deals.destroy",
+                "summary": "Delete a REOS deal, with its dates' to-dos",
+                "tags": [
+                    "Deal"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "422": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                "This deal comes from your transaction tool. Change it there."
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/deals/{deal}/stage": {
+            "put": {
+                "operationId": "deals.stage",
+                "description": "Dragging on the board (decision 3: REOS deals only).",
+                "summary": "Move a REOS deal to another stage",
+                "tags": [
+                    "Deal"
+                ],
+                "parameters": [
+                    {
+                        "name": "deal",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "stage": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "under_contract",
+                                            "closed",
+                                            "cancelled"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "stage"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "property": {
+                                                    "type": "string"
+                                                },
+                                                "city": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "side": {
+                                                    "type": "string"
+                                                },
+                                                "stage": {
+                                                    "type": "string"
+                                                },
+                                                "price": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "commission": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "source": {
+                                                    "type": "string"
+                                                },
+                                                "read_only": {
+                                                    "type": "boolean"
+                                                },
+                                                "external_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "kind": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "due_on": {
+                                                            "type": "string"
+                                                        },
+                                                        "days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "done": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "kind",
+                                                        "name",
+                                                        "due_on",
+                                                        "days",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "documents": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "complete": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        },
+                                                        "missing": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "complete",
+                                                        "total",
+                                                        "missing"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "uuid",
+                                                "property",
+                                                "city",
+                                                "side",
+                                                "stage",
+                                                "price",
+                                                "commission",
+                                                "source",
+                                                "read_only",
+                                                "external_url",
+                                                "next",
+                                                "documents"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/me/earnings": {
             "get": {
                 "operationId": "me.earnings",
@@ -21002,6 +22992,142 @@
                     "channel"
                 ],
                 "title": "ContactTouchRequest"
+            },
+            "DealRequest": {
+                "type": "object",
+                "description": "A deal the agent tracks in REOS (B9.1): property, side, stage, price, commission, parties and key dates.",
+                "properties": {
+                    "property": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 255
+                    },
+                    "city": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 120
+                    },
+                    "side": {
+                        "type": "string",
+                        "enum": [
+                            "buy",
+                            "sell",
+                            "lease",
+                            "both"
+                        ]
+                    },
+                    "stage": {
+                        "type": "string",
+                        "enum": [
+                            "active",
+                            "under_contract",
+                            "closed",
+                            "cancelled"
+                        ]
+                    },
+                    "price": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 1000000000
+                    },
+                    "commission": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "minimum": 0,
+                        "maximum": 100000000
+                    },
+                    "parties": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "maxLength": 120
+                                },
+                                "role": {
+                                    "type": "string",
+                                    "maxLength": 60
+                                },
+                                "email": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "format": "email",
+                                    "maxLength": 255
+                                },
+                                "phone": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 40
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "role"
+                            ]
+                        },
+                        "maxItems": 20
+                    },
+                    "dates": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "kind": {
+                                    "type": "string",
+                                    "enum": [
+                                        "option_period",
+                                        "financing",
+                                        "appraisal",
+                                        "inspection",
+                                        "survey",
+                                        "title_commitment",
+                                        "closing",
+                                        "other"
+                                    ]
+                                },
+                                "label": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 120
+                                },
+                                "due_on": {
+                                    "type": "string",
+                                    "format": "date"
+                                },
+                                "done": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "kind",
+                                "due_on"
+                            ]
+                        },
+                        "maxItems": 30
+                    }
+                },
+                "required": [
+                    "property",
+                    "side",
+                    "stage",
+                    "parties",
+                    "dates"
+                ],
+                "title": "DealRequest"
             },
             "DefaultCrmRequest": {
                 "type": "object",

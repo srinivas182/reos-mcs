@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\Crm\ContactWorkController;
+use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
 use App\Http\Controllers\Api\Learn\OfflineController;
@@ -257,6 +258,15 @@ Route::middleware('auth:sanctum')->group(function () {
     // Connections (B3.1, ADR 0013).
     // Report a question (A8.1).
     Route::post('questions/{question}/report', [QuestionReportController::class, 'store'])->whereNumber('question')->middleware('throttle:20,1,api-question-report')->name('api.questions.report');
+    // Deals (B9.1, ADR 0037): the agent's own.
+    Route::get('deals', [DealController::class, 'index'])->name('api.deals.index');
+    Route::get('deals/pipeline', [DealController::class, 'pipeline'])->name('api.deals.pipeline');
+    Route::get('deals/alerts', [DealController::class, 'alerts'])->name('api.deals.alerts');
+    Route::post('deals', [DealController::class, 'store'])->middleware('throttle:30,1,api-deals')->name('api.deals.store');
+    Route::get('deals/{deal}', [DealController::class, 'show'])->whereUuid('deal')->name('api.deals.show');
+    Route::put('deals/{deal}', [DealController::class, 'update'])->whereUuid('deal')->middleware('throttle:60,1,api-deals')->name('api.deals.update');
+    Route::put('deals/{deal}/stage', [DealController::class, 'stage'])->whereUuid('deal')->middleware('throttle:60,1,api-deals')->name('api.deals.stage');
+    Route::delete('deals/{deal}', [DealController::class, 'destroy'])->whereUuid('deal')->middleware('throttle:30,1,api-deals')->name('api.deals.destroy');
     // Contacts (B7.1, ADR 0027): one person, all sources.
     Route::get('contacts', [ContactController::class, 'index'])->name('api.contacts.index');
     Route::get('contacts/activity', [ContactController::class, 'activity'])->name('api.contacts.activity');

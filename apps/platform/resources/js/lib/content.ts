@@ -169,8 +169,13 @@ export async function putJson<T>(url: string, body: unknown = {}): Promise<T> {
     return sendJson<T>('PUT', url, body);
 }
 
+/** DELETE a REOS route from the page (a deal, B9.1). */
+export async function deleteJson<T>(url: string): Promise<T> {
+    return sendJson<T>('DELETE', url, {});
+}
+
 async function sendJson<T>(
-    method: 'POST' | 'PUT',
+    method: 'POST' | 'PUT' | 'DELETE',
     url: string,
     body: unknown,
 ): Promise<T> {

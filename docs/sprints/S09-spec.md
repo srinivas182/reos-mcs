@@ -211,6 +211,13 @@
   - **phone Deals pipeline (Agent App Journey screen 9):** under contract, active clients and pending commission;
   - **phone Deal alerts (screen 10):** deadlines and missing documents;
   - **Connections › Transactions (Connections screen 17):** each deal's stage, documents complete, next deadline and commission. It's read-only: changes are made in the tool.
+- **As built, B9.1a** (ADR 0037):
+  - **The deals model** for every tool.
+  - **Deals tracked in REOS:** add, edit, drag between stages, and delete with Undo.
+  - **Key dates as to-dos** on their day, on the calendar. Moving a date moves the to-do; removing it removes the to-do.
+  - **Deadline pushes,** checked hourly: at 72 and 24 hours before 5:00 pm on the day.
+  - **Screens:** the web Deals board (screen 14), and on the phone the Deals pipeline (screen 9, from Today), Deal alerts (screen 10) and one deal.
+  - **Read-only:** deals from a tool can't be changed in REOS and open in the tool.
 - **Done when:** a deadline in Lone Wolf creates an alert and a to-do, and moving it in Lone Wolf moves both.
 
 ### B9.2 dotloop and SkySlope (Team B)

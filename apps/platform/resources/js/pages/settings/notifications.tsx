@@ -52,6 +52,7 @@ type KindRow = {
 const GROUPS = [
     'messages',
     'learning',
+    'deals',
     'organisation',
     'tools',
     'billing',

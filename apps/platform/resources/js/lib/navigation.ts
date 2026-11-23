@@ -26,12 +26,14 @@ import {
     Users,
     Video,
     Wallet,
+    Handshake,
     CalendarCheck,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
 import { index as brokerageIntegrationsIndex } from '@/routes/brokerage-integrations';
 import { index as contactsIndex } from '@/routes/contacts';
+import { index as dealsIndex } from '@/routes/deals';
 import { index as agentsIndex } from '@/routes/agents';
 import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
@@ -66,6 +68,7 @@ import type { RoleName } from '@/types/auth';
 
 /** Sidebar labels that exist in the translations (pages that are built). */
 export type NavLabel =
+    | 'deals'
     | 'dashboard'
     | 'overview'
     | 'account'
@@ -181,7 +184,7 @@ export function roleNavigation(
             home,
             messages,
             item('contacts', Users, contactsIndex(), '/contacts'),
-            planned('deals'),
+            item('deals', Handshake, dealsIndex(), '/deals'),
             planned('virtualBroker'),
             planned('contentStudio'),
             item('learnAndCe', GraduationCap, learn(), '/learn'),
