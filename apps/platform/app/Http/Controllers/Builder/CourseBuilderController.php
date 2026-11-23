@@ -6,7 +6,8 @@ namespace App\Http\Controllers\Builder;
 
 use App\Authorization\Membership;
 use App\Authorization\Role;
-use App\Content\Approvals\CourseApprovals;
+use App\Content\Ai\LessonPipeline;
+use App\Content\Avatars\AvatarVideos;
 use App\Content\Builder\CourseBuilder;
 use App\Content\Builder\LessonReview;
 use App\Content\Builder\ModuleSources;
@@ -19,10 +20,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\Lesson;
+use App\Models\LessonMedia;
+use App\Models\LessonRender;
 use App\Models\ModuleSource;
+use App\Models\ReviewItem;
 use App\Models\User;
+use App\Services\Ai\AiCredits;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Content\Courses;
+use App\Services\Content\LessonFiles;
 use App\Services\Content\Lessons;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
@@ -69,13 +75,14 @@ final class CourseBuilderController extends Controller
         return to_route('builder.show', $course);
     }
 
-    public function show(Request $request, Course $course, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, CourseApprovals $approvals): Response
+    public function show(Request $request, Course $course, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, AiCredits $credits, AvatarVideos $videos): Response
     {
         $this->course($course, $user, $roles, $builder);
-        $course->load(['modules.sources', 'modules.lessons', 'approvals']);
+        $course->load(['modules.sources', 'modules.lessons.versions.renders', 'approvals']);
         $chosen = $course->modules->firstWhere('id', $request->integer('module')) ?? $course->modules->first();
         $approval = $course->approvals->first(static fn ($a): bool => $a->valid());
-        $checkin = $approval === null ? CourseApprovals::CHECKIN_MINUTES : ($approval->checkin_minutes ?? CourseApprovals::CHECKIN_MINUTES);
+        $checkin = $builder->checkinMinutes($course);
+        $school = $course->owner;
 
         return Inertia::render('builder/course', [
             'course' => [
@@ -99,9 +106,12 @@ final class CourseBuilderController extends Controller
                 'lessons' => $chosen->lessons->map(static fn (Lesson $l): array => [
                     'id' => $l->id, 'title' => $l->title, 'minutes' => $l->minutes, 'language' => $l->language,
                     'status' => $l->review_status === null ? 'approved' : $l->review_status->value, 'has_body' => trim((string) $l->body) !== '', 'body' => $l->body,
+                    'ai' => self::aiSummary($l),
                 ])->all(),
-                'plan' => $builder->plan($course, $chosen, $checkin),
+                'plan' => [...$builder->plan($course, $chosen, $checkin), 'credits_left' => $school === null ? 0 : $credits->schoolLeft($school)],
             ],
+            'vendor_live' => ! $videos->for($builder->settings($course)['vendor'])->simulated(),
+            'vendors' => AvatarVideos::VENDORS,
             'settings' => $builder->settings($course),
             'presenters' => $builder->presenters($course),
             'roles' => array_map(static fn (SourceRole $r): array => ['role' => $r->value, 'types' => array_keys($r->kind()->types()), 'max_mb' => (int) round($r->kind()->maxBytes() / 1024 / 1024)], SourceRole::cases()),
@@ -115,8 +125,10 @@ final class CourseBuilderController extends Controller
             'language' => ['required', Rule::in(['en', 'es', 'both'])],
             'lesson_minutes' => ['required', 'integer', 'min:3', 'max:30'],
             'presenter' => ['required', 'string', 'max:40'],
+            'vendor' => ['sometimes', Rule::in(AvatarVideos::VENDORS)],
         ]);
-        $builder->saveSettings($course, ['language' => (string) $data['language'], 'lesson_minutes' => (int) $data['lesson_minutes'], 'presenter' => (string) $data['presenter']], $user);
+        $vendor = is_string($data['vendor'] ?? null) ? $data['vendor'] : $builder->settings($course)['vendor'];
+        $builder->saveSettings($course, ['language' => (string) $data['language'], 'lesson_minutes' => (int) $data['lesson_minutes'], 'presenter' => (string) $data['presenter'], 'vendor' => $vendor], $user);
 
         return back()->with('success', __('builder.saved'));
     }
@@ -229,6 +241,61 @@ final class CourseBuilderController extends Controller
         return back()->with('success', __('builder.lessonApproved'));
     }
 
+    /** "Generate module" (screen 43): drafts every lesson of the module from its sources, charged to the school. */
+    public function generate(CourseModule $module, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, LessonPipeline $pipeline): RedirectResponse
+    {
+        $course = $module->course;
+        $this->course($course, $user, $roles, $builder);
+        $lessons = $pipeline->generate($course, $module, $builder->checkinMinutes($course), $user);
+
+        return back()->with('success', trans_choice('builder.ai.generating', count($lessons), ['count' => count($lessons)]));
+    }
+
+    /** Generates an AI lesson again: a new version, the earlier ones kept. */
+    public function regenerate(Lesson $lesson, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, LessonPipeline $pipeline): RedirectResponse
+    {
+        $this->course($lesson->course, $user, $roles, $builder);
+        $pipeline->regenerate($lesson, $builder->checkinMinutes($lesson->course), $user);
+
+        return back()->with('success', __('builder.ai.regenerating'));
+    }
+
+    /** An AI lesson's latest draft: the script in both languages with its sources and flags, the videos, and what's waiting for review. */
+    public function draft(Lesson $lesson, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder): JsonResponse
+    {
+        $this->course($lesson->course, $user, $roles, $builder);
+        $version = $lesson->versions()->reorder('version', 'desc')->with('renders')->first();
+        abort_if($version === null, 404);
+        $videos = $lesson->media()->where('kind', MediaKind::Video->value)->whereNotNull('language')->where('status', 'ready')->get()->keyBy('id');
+
+        return response()->json(['data' => [
+            'lesson' => ['id' => $lesson->id, 'title' => $lesson->title],
+            'version' => $version->version,
+            'versions' => $lesson->versions()->count(),
+            'status' => $version->status,
+            'failure' => $version->failure === null ? null : __($version->failure),
+            'presenter' => $version->presenter,
+            'vendor' => $version->vendor,
+            'credits' => $version->credits,
+            'lines' => $version->lines ?? [],
+            'flags' => $version->flags ?? [],
+            'renders' => $version->renders->map(static function (LessonRender $r) use ($videos): array {
+                $media = $r->lesson_media_id === null ? null : $videos->get($r->lesson_media_id);
+
+                return [
+                    'language' => $r->language, 'status' => $r->status, 'simulated' => $r->simulated, 'seconds' => $r->seconds,
+                    'failure' => $r->failure === null ? null : __($r->failure),
+                    'url' => $media instanceof LessonMedia ? LessonFiles::playableUrl($media, 60) : null,
+                ];
+            })->values()->all(),
+            'review' => [
+                'checkins' => ReviewItem::query()->where('lesson_version_id', $version->id)->where('kind', 'checkin')->count(),
+                'questions' => ReviewItem::query()->where('lesson_version_id', $version->id)->where('kind', 'question')->count(),
+                'flashcards' => ReviewItem::query()->where('lesson_version_id', $version->id)->where('kind', 'flashcard')->count(),
+            ],
+        ]]);
+    }
+
     public function removeLesson(Lesson $lesson, #[CurrentUser] User $user, ActiveRole $roles, CourseBuilder $builder, Lessons $lessons): RedirectResponse
     {
         $this->course($lesson->course, $user, $roles, $builder);
@@ -258,6 +325,18 @@ final class CourseBuilderController extends Controller
             $module->sources->isNotEmpty() => 'sources',
             default => 'empty',
         };
+    }
+
+    /**
+     * An AI lesson's state for the lesson list (null for lessons written by hand).
+     *
+     * @return array{version: int, status: string, flags: int}|null
+     */
+    private static function aiSummary(Lesson $lesson): ?array
+    {
+        $version = $lesson->versions->sortByDesc('version')->first();
+
+        return $version === null ? null : ['version' => $version->version, 'status' => $version->status, 'flags' => count($version->flags ?? [])];
     }
 
     private function membership(User $user, ActiveRole $roles, CourseBuilder $builder): Membership

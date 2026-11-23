@@ -137,6 +137,25 @@ On the agent side, REOS gets one contact model that several CRMs feed without du
 - **Check-ins, questions and flashcards:** check-ins every few minutes (from the seat-time rule), multiple-choice questions with a source and topic, and flashcards, all drafted into a review queue with status "to review". Approving, editing and rejecting is A8.1.
 - **Versions:** each generation is a version of the lesson, and earlier versions are kept.
 - **Done when:** one lesson renders end to end: sources → script with citations → legal check → English and Spanish avatar videos with captions → check-ins, questions and flashcards in review.
+- **As built, A7.3** (ADR 0026, items 10–18):
+  - **Screen 43 additions:**
+    - **Generate module** shows the credits the school has, and says when videos will be placeholders because no vendor is connected.
+    - The lesson list shows each AI lesson's version.
+    - **View draft** shows English and Spanish side by side, each line's source file and page, flagged lines, and the two videos. **Generate again** makes a new version; earlier versions are kept.
+    - A new setting picks the avatar vendor: **HeyGen** or **Synthesia**.
+  - **Screen 52 addition:** **Avatar ids** records an instructor's twin at each vendor, once their consent is given.
+  - **Pipeline:**
+    - Claude writes from the sources only and translates line by line.
+    - Legal checks run in both languages; a flagged line stops rendering.
+    - Each lesson is rendered once in English and once in Spanish. REOS checks the vendor every two minutes, then copies the video into storage and Mux and deletes the vendor's copy.
+    - Each video gets captions in both languages. Learners get the video in their language.
+    - Check-ins, questions and flashcards go into `review_items` as "to review".
+  - **Credits** come from the school's pool and are logged per version.
+  - **Simulators:** without keys, REOS uses a sentence-based writer and a placeholder video. The demo school has 5,000 credits and one AI lesson made end to end.
+  - **Differences from the plan:**
+    - Polling rather than webhooks.
+    - Caption timings are proportional to the video's length, because the vendors report the length but not each line's timing.
+    - Lines cite their source file and page. Citing the state rule (screen 62) on each line comes with the line-by-line review (A8.1).
 
 ### B7.1 CRM data model (Team B)
 

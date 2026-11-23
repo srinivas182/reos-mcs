@@ -12,14 +12,17 @@ const td = 'px-3 py-3 align-middle';
 
 /**
  * Instructors (screen 52, A7.1b): approvals, courses, avatar consent, rating,
- * price and status; Edit (courses they teach) and Revoke with Undo.
+ * price and status; Edit (courses they teach), Avatar ids (the instructor's
+ * twin at HeyGen and Synthesia, A7.3) and Revoke with Undo.
  */
 export function InstructorsTable({
     instructors,
     onEdit,
+    onTwins,
 }: {
     instructors: InstructorRow[];
     onEdit: (instructor: InstructorRow) => void;
+    onTwins: (instructor: InstructorRow) => void;
 }) {
     const { t, i18n } = useTranslation();
 
@@ -155,6 +158,18 @@ export function InstructorsTable({
                                             >
                                                 {t('instructors.edit')}
                                             </Button>
+                                            {row.avatar.status === 'given' ? (
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    aria-label={`${t('instructors.twins.open')}: ${row.name}`}
+                                                    onClick={() => onTwins(row)}
+                                                >
+                                                    {t(
+                                                        'instructors.twins.open',
+                                                    )}
+                                                </Button>
+                                            ) : null}
                                             <Button
                                                 size="sm"
                                                 variant="ghost"

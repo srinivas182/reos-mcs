@@ -58,7 +58,7 @@ final class LearnController extends Controller
         }
 
         return Inertia::render('learn/lesson', [
-            'lesson' => $learning->lesson($found),
+            'lesson' => $learning->lesson($found, $user->locale->value),
             'at' => [
                 'page' => isset($at['page']) && is_numeric($at['page']) ? (int) $at['page'] : null,
                 'seconds' => isset($at['t']) && is_numeric($at['t']) ? (int) $at['t'] : null,

@@ -2,6 +2,7 @@ import type {
     BuilderCourse,
     BuilderModule,
     BuilderSettings,
+    LessonDraft,
     ModuleRow,
     RoleRule,
 } from './types';
@@ -82,6 +83,7 @@ export const module: BuilderModule = {
             status: 'approved',
             has_body: true,
             body: '# Who you represent\nExplain it at the first substantive contact.',
+            ai: null,
         },
         {
             id: 22,
@@ -91,6 +93,17 @@ export const module: BuilderModule = {
             status: 'draft',
             has_body: false,
             body: null,
+            ai: null,
+        },
+        {
+            id: 23,
+            title: 'Disclosing who you represent',
+            minutes: 9,
+            language: 'en',
+            status: 'in_review',
+            has_body: false,
+            body: null,
+            ai: { version: 1, status: 'ready', flags: 0 },
         },
     ],
     plan: {
@@ -103,13 +116,56 @@ export const module: BuilderModule = {
         credits: 340,
         sources_ready: 2,
         sources_waiting: 1,
+        credits_left: 5_000,
     },
+};
+
+/** An AI lesson's draft: both languages side by side, a flagged line, and the two videos. */
+export const lessonDraft: LessonDraft = {
+    lesson: { id: 23, title: 'Disclosing who you represent' },
+    version: 2,
+    versions: 2,
+    status: 'flagged',
+    failure: null,
+    presenter: 'instructor:7',
+    vendor: 'heygen',
+    credits: 180,
+    lines: [
+        {
+            n: 0,
+            en: 'In Texas, you tell a party who you represent at the first substantive contact.',
+            es: 'En Texas, usted le dice a una parte a quién representa en el primer contacto sustancial.',
+            source: 'Agency module script.pdf',
+            page: 3,
+        },
+        {
+            n: 1,
+            en: 'You give the Information About Brokerage Services form at that same first contact.',
+            es: 'Usted entrega el formulario Información sobre Servicios de Corretaje en ese mismo primer contacto.',
+            source: 'IABS form.pdf',
+            page: 1,
+        },
+        {
+            n: 2,
+            en: 'Follow these steps and you are guaranteed to stay out of trouble.',
+            es: 'Siga estos pasos y tiene garantizado no tener problemas.',
+            source: 'Agency module script.pdf',
+            page: 4,
+        },
+    ],
+    flags: [
+        { line: 2, rule: 'guarantee', language: 'en' },
+        { line: 2, rule: 'guarantee', language: 'es' },
+    ],
+    renders: [],
+    review: { checkins: 2, questions: 5, flashcards: 8 },
 };
 
 export const settings: BuilderSettings = {
     language: 'both',
     lesson_minutes: 10,
     presenter: 'stock',
+    vendor: 'heygen',
 };
 
 export const roles: RoleRule[] = [

@@ -38,6 +38,8 @@ use Illuminate\Support\Carbon;
  * @property-read CourseModule|null $module
  * @property-read Collection<int, LessonMedia> $media
  * @property-read Collection<int, KbPassage> $passages
+ * @property-read Collection<int, LessonVersion> $versions
+ * @property-read Collection<int, ReviewItem> $reviewItems
  */
 final class Lesson extends Model
 {
@@ -88,6 +90,18 @@ final class Lesson extends Model
     public function media(): HasMany
     {
         return $this->hasMany(LessonMedia::class)->orderBy('id');
+    }
+
+    /** @return HasMany<LessonVersion, $this> AI generations (A7.3), oldest first */
+    public function versions(): HasMany
+    {
+        return $this->hasMany(LessonVersion::class)->orderBy('version');
+    }
+
+    /** @return HasMany<ReviewItem, $this> */
+    public function reviewItems(): HasMany
+    {
+        return $this->hasMany(ReviewItem::class)->orderBy('id');
     }
 
     /** @return HasMany<KbPassage, $this> */

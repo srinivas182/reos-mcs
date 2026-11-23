@@ -99,6 +99,28 @@ export function BuilderSettingsCard({
                     {t('builder.settings.presenterHint')}
                 </p>
             </div>
+            <div className="grid gap-2">
+                <Label htmlFor={`${id}-vendor`}>
+                    {t('builder.settings.vendor')}
+                </Label>
+                <select
+                    id={`${id}-vendor`}
+                    className={nativeSelect}
+                    value={draft.vendor}
+                    onChange={(e) =>
+                        setDraft({
+                            ...draft,
+                            vendor: e.target.value as BuilderSettings['vendor'],
+                        })
+                    }
+                >
+                    {(['heygen', 'synthesia'] as const).map((v) => (
+                        <option key={v} value={v}>
+                            {t(`builder.settings.vendors.${v}`)}
+                        </option>
+                    ))}
+                </select>
+            </div>
             <Button type="submit" variant="outline">
                 {t('builder.settings.save')}
             </Button>

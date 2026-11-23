@@ -790,16 +790,16 @@
     },
     {
       "id": "synthesia",
-      "name": "Synthesia (AI avatar lessons; HeyGen fallback)",
+      "name": "Synthesia (AI avatar lessons)",
       "kind": "platform_service",
       "category": "ai",
-      "purpose": "Render AI avatar lesson videos from approved scripts.",
+      "purpose": "Render AI avatar lesson videos from approved scripts, in English and Spanish.",
       "launch": "not_applicable",
       "build_sprint": 7,
       "owner": "client",
       "access_status": "not_started",
       "personal_data": true,
-      "sandbox": "Trial workspace; API needs an Enterprise plan.",
+      "sandbox": "Trial workspace; the API needs a plan with API access (test videos are watermarked and free).",
       "connection": {
         "auth": "api_key",
         "accounts": "platform",
@@ -807,6 +807,67 @@
           {
             "key": "api_key",
             "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "stock_avatar",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "background",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": "off_white"
+          }
+        ]
+      }
+    },
+    {
+      "id": "heygen",
+      "name": "HeyGen (AI avatar lessons)",
+      "kind": "platform_service",
+      "category": "ai",
+      "purpose": "Render AI avatar lesson videos from approved scripts, in English and Spanish.",
+      "launch": "not_applicable",
+      "build_sprint": 7,
+      "owner": "client",
+      "access_status": "not_started",
+      "personal_data": true,
+      "sandbox": "Buy a small amount of API credits (pay as you go; no plan needed).",
+      "connection": {
+        "auth": "api_key",
+        "accounts": "platform",
+        "fields": [
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "stock_avatar_id",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "voice_id_en",
+            "secret": false,
+            "required": true,
+            "kind": "text",
+            "default": null
+          },
+          {
+            "key": "voice_id_es",
+            "secret": false,
             "required": true,
             "kind": "text",
             "default": null

@@ -146,7 +146,7 @@ describe('settings and seat time', function () {
             ->assertSessionHasErrors('presenter');
         $this->put("/course-builder/{$this->course->id}/settings", ['language' => 'both', 'lesson_minutes' => 8, 'presenter' => 'stock'])->assertSessionHasNoErrors();
 
-        expect($this->course->refresh()->builder)->toBe(['language' => 'both', 'lesson_minutes' => 8, 'presenter' => 'stock']);
+        expect($this->course->refresh()->builder)->toBe(['language' => 'both', 'lesson_minutes' => 8, 'presenter' => 'stock', 'vendor' => 'heygen']);
     });
 
     it('sends seat-time changes on an approved course to the school instead of changing them', function () {

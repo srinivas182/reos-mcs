@@ -71,6 +71,26 @@ final class ContentChecks
         return ['approvals' => $approvals, 'flags' => $flags, 'open' => $open, 'clean' => $open === 0 && $approvals === []];
     }
 
+    /**
+     * The legal rules a line breaks (A7.3: every script line, in both
+     * languages, before anything renders). An approval claim is fine only
+     * when the course's approvals are recorded.
+     *
+     * @return list<string>
+     */
+    public static function rulesBrokenBy(string $text, bool $approved = false): array
+    {
+        $broken = [];
+
+        foreach (LegalRule::cases() as $rule) {
+            if (! ($rule->waivedByApproval() && $approved) && self::match($rule, $text) !== null) {
+                $broken[] = $rule->value;
+            }
+        }
+
+        return $broken;
+    }
+
     /** @return array{0: int, 1: int}|null offset and length of the first match */
     private static function match(LegalRule $rule, string $text): ?array
     {

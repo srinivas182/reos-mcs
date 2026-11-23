@@ -660,10 +660,10 @@ entries:
       captions become searchable passages. Off: the original file plays from S3.
 
   - id: synthesia
-    name: Synthesia (AI avatar lessons; HeyGen fallback)
+    name: Synthesia (AI avatar lessons)
     kind: platform_service
     category: ai
-    purpose: Render AI avatar lesson videos from approved scripts.
+    purpose: Render AI avatar lesson videos from approved scripts, in English and Spanish.
     launch: not_applicable
     build: { sprint: 7, item: A7.3 }
     owner: client
@@ -672,17 +672,58 @@ entries:
       lead_time_weeks: 3
       needed_by_sprint: 7
       status: not_started
-    sandbox: Trial workspace; API needs an Enterprise plan.
+    sandbox: Trial workspace; the API needs a plan with API access (test videos are watermarked and free).
     credentials: platform
     connection:
       auth: api_key
       accounts: platform
       fields:
         - { key: api_key, secret: true }
+        - { key: stock_avatar }
+        - { key: background, default: off_white }
     personal_data: true
-    cost: Enterprise plan (quote).
-    notes: Instructor avatar consent template must be signed before any instructor likeness is used.
-    fallback: HeyGen API; human-recorded video if TREC approval of avatar courses is delayed.
+    cost: Plan with API access (Creator or Enterprise).
+    notes: >-
+      A7.3 renders each lesson twice (English and Spanish, decision of 23 November 2026) with POST /v2/videos
+      and polls GET /v2/videos/{id} every two minutes (reos:lessons:renders) until it's complete, then copies the
+      download into REOS's storage and video pipeline, then deletes Synthesia's copy (DELETE /v2/videos/{id}). Test keys
+      make free, watermarked test videos. Spanish uses scriptLanguage es-MX. Confirm the request and response fields
+      against the sandbox before switching to Live. An instructor's own avatar is made in Synthesia's
+      studio from the consented sample and its id recorded on screen 52; it is never used without consent in force.
+    fallback: HeyGen; human-recorded video if TREC approval of avatar courses is delayed.
+
+  - id: heygen
+    name: HeyGen (AI avatar lessons)
+    kind: platform_service
+    category: ai
+    purpose: Render AI avatar lesson videos from approved scripts, in English and Spanish.
+    launch: not_applicable
+    build: { sprint: 7, item: A7.3 }
+    owner: client
+    access:
+      route: self_serve
+      lead_time_weeks: 1
+      needed_by_sprint: 7
+      status: not_started
+    sandbox: Buy a small amount of API credits (pay as you go; no plan needed).
+    credentials: platform
+    connection:
+      auth: api_key
+      accounts: platform
+      fields:
+        - { key: api_key, secret: true }
+        - { key: stock_avatar_id }
+        - { key: voice_id_en }
+        - { key: voice_id_es }
+    personal_data: true
+    cost: About $0.60 to $7.20 per video minute depending on the avatar engine; digital twins about $2 each to create.
+    notes: >-
+      A7.3 renders each lesson twice (English and Spanish, with that language's voice id) with POST /v2/video/generate
+      and polls GET /v1/video_status.get every two minutes until completed. It then copies the video into REOS's storage
+      and video pipeline and deletes HeyGen's copy (DELETE /v1/video.delete). HeyGen also has a newer v3 video API, so
+      confirm the status and delete endpoints and their fields against the sandbox before switching to Live. An instructor's
+      digital twin is made from the consented sample and its avatar id recorded on screen 52.
+    fallback: Synthesia; human-recorded video.
 
   - id: aws-bedrock-claude
     name: Claude on Amazon Bedrock

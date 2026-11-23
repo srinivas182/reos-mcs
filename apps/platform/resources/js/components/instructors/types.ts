@@ -9,6 +9,7 @@ export type InstructorRow = {
         status: 'given' | 'withdrawn' | 'ended' | null;
         given_at: string | null;
         lessons_due_by: string | null;
+        twins: { heygen: string | null; synthesia: string | null };
     };
     rating: number | null;
     price: number | null;

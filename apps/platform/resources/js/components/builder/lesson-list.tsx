@@ -25,6 +25,7 @@ import {
     store,
     update,
 } from '@/routes/builder/lessons';
+import { LessonDraftDialog } from './lesson-draft';
 import type { LessonRow } from './types';
 import { statusTone } from './types';
 
@@ -39,6 +40,7 @@ export function LessonList({
     const { t } = useTranslation();
     const [title, setTitle] = useState('');
     const [editing, setEditing] = useState<LessonRow | null>(null);
+    const [viewing, setViewing] = useState<number | null>(null);
 
     const remove = (lesson: LessonRow) =>
         router.delete(destroy(lesson.id).url, {
@@ -84,6 +86,26 @@ export function LessonList({
                             >
                                 {t(`builder.lessons.statuses.${lesson.status}`)}
                             </span>
+                            {lesson.ai ? (
+                                <>
+                                    <span className="text-sm text-muted-foreground">
+                                        {t('builder.ai.versionShort', {
+                                            version: lesson.ai.version,
+                                        })}
+                                        {lesson.ai.flags > 0
+                                            ? ` · ${t('builder.ai.flagsShort', { count: lesson.ai.flags })}`
+                                            : ''}
+                                    </span>
+                                    <Button
+                                        size="sm"
+                                        variant="outline"
+                                        aria-label={`${t('builder.ai.view')}: ${lesson.title}`}
+                                        onClick={() => setViewing(lesson.id)}
+                                    >
+                                        {t('builder.ai.view')}
+                                    </Button>
+                                </>
+                            ) : null}
                             <Button
                                 size="sm"
                                 variant="ghost"
@@ -122,7 +144,7 @@ export function LessonList({
                             >
                                 {t('builder.lessons.edit')}
                             </Button>
-                            {lesson.status === 'draft' ? (
+                            {lesson.status === 'draft' && !lesson.ai ? (
                                 <Button
                                     size="sm"
                                     disabled={!lesson.has_body}
@@ -181,6 +203,10 @@ export function LessonList({
                 </Button>
             </form>
             <LessonDialog lesson={editing} onClose={() => setEditing(null)} />
+            <LessonDraftDialog
+                lessonId={viewing}
+                onClose={() => setViewing(null)}
+            />
         </section>
     );
 }

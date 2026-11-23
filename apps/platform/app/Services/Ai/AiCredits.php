@@ -9,6 +9,7 @@ use App\Billing\Ledger\Ledger;
 use App\Billing\ProductKind;
 use App\Billing\SubscriptionStatus;
 use App\Models\LedgerAccount;
+use App\Models\Organisation;
 use App\Models\Product;
 use App\Models\SponsorCodeRedemption;
 use App\Models\Subscription;
@@ -129,6 +130,32 @@ final readonly class AiCredits
                 'engine' => $engine,
                 'credits' => $credits,
                 'created_at' => CarbonImmutable::now(),
+            ]);
+        });
+    }
+
+    /** A school's credits (its pool, funded on the tenant's Plan tab), for AI lessons (A7.3). */
+    public function schoolLeft(Organisation $school): int
+    {
+        $pool = $this->ledger->find("organisation:{$school->id}:credits");
+
+        return $pool === null ? 0 : max(0, $this->ledger->balance($pool));
+    }
+
+    /**
+     * AI lessons are charged to the school that owns the course (A7.3), never
+     * the instructor; the use is logged under the person who asked.
+     */
+    public function chargeSchool(Organisation $school, User $actor, string $feature, string $engine, int $credits, string $reference): void
+    {
+        if ($credits <= 0 || $this->ledger->posted('ai_use', 'lesson_version', $reference)) {
+            return;
+        }
+
+        DB::transaction(function () use ($school, $actor, $feature, $engine, $credits, $reference): void {
+            $this->ledger->post('ai_use', [[$this->ledger->organisation($school, 'credits'), -$credits], [$this->ledger->platform('ai_used'), $credits]], 'lesson_version', $reference, $feature);
+            DB::table('ai_credit_uses')->insert([
+                'user_id' => $actor->id, 'feature' => $feature, 'engine' => $engine, 'credits' => $credits, 'created_at' => CarbonImmutable::now(),
             ]);
         });
     }

@@ -48,6 +48,20 @@ final class InstructorsController extends Controller
         return back()->with('success', __('instructors.saved'));
     }
 
+    public function twins(Request $request, User $instructor, #[CurrentUser] User $user, ActiveRole $roles, SchoolInstructors $instructors): RedirectResponse
+    {
+        $data = $request->validate([
+            'heygen' => ['nullable', 'string', 'max:120', 'regex:/^[A-Za-z0-9_\-]+$/'],
+            'synthesia' => ['nullable', 'string', 'max:120', 'regex:/^[A-Za-z0-9_\-]+$/'],
+        ]);
+        $instructors->recordTwins($this->school($user, $roles), $instructor, [
+            'heygen' => is_string($data['heygen'] ?? null) ? $data['heygen'] : null,
+            'synthesia' => is_string($data['synthesia'] ?? null) ? $data['synthesia'] : null,
+        ], $user);
+
+        return back()->with('success', __('instructors.saved'));
+    }
+
     public function revoke(User $instructor, #[CurrentUser] User $user, ActiveRole $roles, SchoolInstructors $instructors): RedirectResponse
     {
         $instructors->revoke($this->school($user, $roles), $instructor, $user);
