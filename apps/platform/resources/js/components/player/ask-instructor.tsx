@@ -6,7 +6,7 @@ import {
     Wand2,
 } from 'lucide-react';
 import type { RefObject } from 'react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SaveFlashcard } from '@/components/practice/save-flashcard';
 import { Button } from '@/components/ui/button';
@@ -42,6 +42,8 @@ type Mode = 'ask' | 'simpler' | 'spanish' | 'quiz';
 
 type Props = {
     lessonId: number;
+    /** Ask why (A9.2e): a question asked as soon as the lesson opens. */
+    initial?: string | null;
     videoRef?: RefObject<HTMLVideoElement | null>;
     /** Sends the question; tests and stories pass their own. */
     send?: (body: {
@@ -59,9 +61,14 @@ type Props = {
  * Quiz me, and Resume at the same second. Seat time doesn't count while
  * paused, as always.
  */
-export function AskInstructor({ lessonId, videoRef, send }: Props) {
+export function AskInstructor({
+    lessonId,
+    videoRef,
+    send,
+    initial = null,
+}: Props) {
     const { t } = useTranslation();
-    const [question, setQuestion] = useState('');
+    const [question, setQuestion] = useState(initial ?? '');
     const [asked, setAsked] = useState('');
     const [answer, setAnswer] = useState<AskAnswer | null>(null);
     const [busy, setBusy] = useState(false);
@@ -100,6 +107,14 @@ export function AskInstructor({ lessonId, videoRef, send }: Props) {
             setBusy(false);
         }
     };
+
+    // Ask why: asked once, on opening.
+    const asking = useRef(false);
+    useEffect(() => {
+        if (!initial || asking.current) return;
+        asking.current = true;
+        void run('ask', initial);
+    }, [initial]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const resume = (seconds?: number | null) => {
         const video = videoRef?.current;

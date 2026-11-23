@@ -59,3 +59,5 @@ Schedule::command('reos:approvals:check')->dailyAt('07:05')->timezone('America/C
 Schedule::command('reos:lessons:renders')->everyTwoMinutes()->withoutOverlapping()->onOneServer();
 // Readiness for the day and plans that follow it (A9.2), just after midnight on candidates' time.
 Schedule::command('reos:readiness:nightly')->dailyAt('00:10')->timezone(StudyPlans::TIMEZONE)->withoutOverlapping()->onOneServer();
+// Weekly progress reports (A9.2e), Sunday evening on candidates' time.
+Schedule::command('reos:reports:weekly')->weeklyOn(0, '17:45')->timezone(StudyPlans::TIMEZONE)->withoutOverlapping()->onOneServer();

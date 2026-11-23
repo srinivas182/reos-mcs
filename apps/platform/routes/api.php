@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Practice\FlashcardController;
 use App\Http\Controllers\Api\Practice\MathLabController;
 use App\Http\Controllers\Api\Practice\PracticeController;
 use App\Http\Controllers\Api\Practice\ReadinessController;
+use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
@@ -199,6 +200,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('practice/attempts/{attempt}/pause', 'pause')->whereNumber('attempt')->middleware('throttle:60,1,api-practice-pause')->name('pause');
         Route::post('practice/attempts/{attempt}/finish', 'finish')->whereNumber('attempt')->middleware('throttle:30,1,api-practice-finish')->name('finish');
         Route::get('practice/attempts/{attempt}/similar/{question}', 'similar')->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,api-practice-similar')->name('similar');
+        Route::get('practice/attempts/{attempt}/why/{question}', 'why')->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,api-practice-why')->name('why');
     });
     // Readiness map and What you're good at (A9.2).
     Route::get('practice/readiness', [ReadinessController::class, 'show'])->name('api.practice.readiness');
@@ -212,6 +214,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('practice/math', [MathLabController::class, 'index'])->name('api.practice.math.index');
     Route::post('practice/math/problems', [MathLabController::class, 'store'])->middleware('throttle:120,1,api-practice-math')->name('api.practice.math.store');
     Route::post('practice/math/check', [MathLabController::class, 'check'])->middleware('throttle:240,1,api-practice-math')->name('api.practice.math.check');
+    // The weekly progress report and sharing it (A9.2e).
+    Route::get('practice/reports/weekly', [ReportController::class, 'show'])->name('api.practice.reports.show');
+    Route::post('practice/reports/weekly/share', [ReportController::class, 'share'])->middleware('throttle:20,1,api-practice-reports')->name('api.practice.reports.share');
     // Flashcards and the speed round (A9.2d).
     Route::get('practice/flashcards', [FlashcardController::class, 'index'])->name('api.practice.flashcards.index');
     Route::post('practice/flashcards', [FlashcardController::class, 'store'])->middleware('throttle:60,1,api-practice-flashcards')->name('api.practice.flashcards.store');

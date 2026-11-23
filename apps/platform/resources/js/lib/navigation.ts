@@ -26,6 +26,7 @@ import {
     Users,
     Video,
     Wallet,
+    CalendarCheck,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -36,7 +37,7 @@ import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
-import { index as practice, readiness } from '@/routes/practice';
+import { index as practice, progress, readiness } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as messagesIndex } from '@/routes/messages';
@@ -59,6 +60,7 @@ import { index as builderIndex } from '@/routes/builder';
 import { index as questionsIndex } from '@/routes/builder/questions';
 import { index as reviewIndex } from '@/routes/builder/review';
 import { index as schoolApprovals } from '@/routes/school/approvals';
+import { index as schoolStudents } from '@/routes/school/students';
 import { index as schoolInstructors } from '@/routes/school/instructors';
 import type { RoleName } from '@/types/auth';
 
@@ -101,7 +103,9 @@ export type NavLabel =
     | 'questionBank'
     | 'studyPlan'
     | 'practiceAndExams'
-    | 'readiness';
+    | 'readiness'
+    | 'progress'
+    | 'students';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -166,6 +170,8 @@ export function roleNavigation(
             item('studyPlan', CalendarDays, studyPlan(), '/study-plan'),
             item('practiceAndExams', Target, practice(), '/practice'),
             item('readiness', Gauge, readiness(), '/readiness'),
+            // Weekly progress report (A9.2e).
+            item('progress', CalendarCheck, progress(), '/practice/progress'),
             planned('ask'),
             planned('instructors'),
             planned('licenceJourney'),
@@ -260,6 +266,8 @@ export function roleNavigation(
                 schoolApprovals(),
                 '/school/approvals',
             ),
+            // Weekly reports candidates shared with the school (A9.2e).
+            item('students', Users, schoolStudents(), '/school/students'),
             planned('ceReporting'),
             // Instructors and avatar consent (A7.1b, screen 52).
             item(

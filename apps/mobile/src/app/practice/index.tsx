@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from 'expo-router';
-import { ClipboardCheck, Gauge, GraduationCap, Target } from 'lucide-react-native';
+import { CalendarCheck, ClipboardCheck, Gauge, GraduationCap, Target } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -89,6 +89,7 @@ export default function PracticeHub() {
         </Card>
       ) : null}
       <ListRow icon={Gauge} tone="success" title={t('practice.readinessMap.title')} subtitle={t('practice.readinessMap.description')} onPress={() => router.push('/practice/readiness')} />
+      <ListRow icon={CalendarCheck} title={t('practice.reports.title')} subtitle={t('practice.reports.description')} onPress={() => router.push('/practice/progress')} />
       {exams.length > 0 ? <SectionTitle>{t('practice.portions.title')}</SectionTitle> : null}
       {exams.map(({ test, kind }) => (
         <ListRow

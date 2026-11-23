@@ -343,3 +343,30 @@ export type SpeedResult = {
     record: boolean;
     misses: number;
 };
+
+/** The weekly progress report (screen 55, A9.2e). */
+export type WeeklyReport = {
+    week_start: string;
+    week_end: string;
+    first_name: string;
+    minutes: number;
+    goal_minutes: number;
+    per_day: number[];
+    questions: number;
+    cards: number;
+    readiness: {
+        now: number | null;
+        before: number | null;
+        change: number | null;
+    };
+    lessons: number;
+    hours: number;
+    weakest: Topic | null;
+    streak: number;
+};
+
+export type ReportShares = {
+    school: boolean;
+    can_share_school: boolean;
+    link: string | null;
+};

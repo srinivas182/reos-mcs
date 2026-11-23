@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\Practice;
 use App\Http\Controllers\Controller;
 use App\Models\TestAttempt;
 use App\Models\User;
+use App\Practice\AskWhy;
 use App\Practice\CandidateToday;
 use App\Practice\DiagnosticBank;
 use App\Practice\PracticeAccess;
@@ -169,6 +170,24 @@ final class PracticeController extends Controller
         abort_unless($tests->expire($found), 409, __('practice.errors.stillOpen'));
 
         return response()->json(['data' => $tests->similar($found, $question, $user->locale->value)]);
+    }
+
+    /**
+     * Ask why.
+     *
+     * Where to ask the instructor why the right answer is right: the
+     * lesson that teaches the question (at its second, when known) and the
+     * question to ask, ready to send. `data` is null when no lesson the
+     * candidate can open covers it. 409 while the test is still open.
+     *
+     * @response array{data: array{lesson_id: int, seconds: int|null, question: string}|null}
+     */
+    public function why(int $attempt, int $question, #[CurrentUser] User $user, PracticeAccess $access, Tests $tests, AskWhy $why): JsonResponse
+    {
+        $found = $access->attempt($user, $attempt);
+        abort_unless($tests->expire($found), 409, __('practice.errors.stillOpen'));
+
+        return response()->json(['data' => $why->for($user, $found, $question, $user->locale->value)]);
     }
 
     /**

@@ -134,6 +134,12 @@
   - **Where cards come from:** the course's approved cards, **Save as flashcard** from check-ins, Ask and answer review (web and phone), and speed-round misses.
   - **Speed round** (phone screen 50 and a web page): 60 seconds of true or false, scored on the server with the best score kept, feeding readiness at a quarter weight.
   - **Elsewhere:** fix plans get a flashcards step, and the hub ranks cards due and the speed round.
+- **As built, A9.2e** (ADR 0035 §21–22):
+  - **Ask why** is on answer review (web and phone). It opens the lesson behind the question with the question asked, at the second it's taught, or says no lesson covers it yet.
+  - **Weekly progress:** phone screen 55 is reached from the practice hub; on the web it's a candidate sidebar item.
+    - It shows week navigation, figure tiles and bars for each day against the plan.
+    - The Sunday push and email go out at 17:45 Texas time.
+    - **Share with my school** puts the report on the school's new **Students** page. A study-buddy link shows the first name only and works for 14 days; the phone shares it through the share sheet.
 - **Practice hub (screen 38):** the smart drill on the 3 weakest topics first, then flashcards due, speed round, math lab, hands-free, full simulation and challenge a friend, ranked by what helps most.
 - **Weekly progress report (screen 55):**
   - time studied, questions answered, readiness change, minutes per day, lessons and course hours, weakest topic and streak;

@@ -53,7 +53,12 @@ export default function LessonPage({
     player,
 }: {
     lesson: Lesson;
-    at: { page: number | null; seconds: number | null; heading: string | null };
+    at: {
+        page: number | null;
+        seconds: number | null;
+        heading: string | null;
+        ask?: string | null;
+    };
     player: PlayerState;
 }) {
     const { t, i18n } = useTranslation();
@@ -134,7 +139,11 @@ export default function LessonPage({
                     />
                 ) : null}
 
-                <AskInstructor lessonId={lesson.id} videoRef={video} />
+                <AskInstructor
+                    lessonId={lesson.id}
+                    videoRef={video}
+                    initial={at.ask ?? null}
+                />
 
                 {lesson.documents.map((document) => (
                     <section

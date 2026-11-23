@@ -67,7 +67,9 @@
     "practiceAndExams": "Practice and exams",
     "brokerageIntegrations": "Integrations",
     "contacts": "Contacts",
-    "readiness": "Readiness"
+    "readiness": "Readiness",
+    "students": "Students",
+    "progress": "Weekly progress"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -4705,7 +4707,8 @@
       "session_booked": "Sessions booked or cancelled",
       "approval_expiring": "Course approvals and seat time",
       "avatar_consent_ended": "Avatar consent ended",
-      "content_review": "Lesson and question reviews"
+      "content_review": "Lesson and question reviews",
+      "weekly_report": "Weekly progress report"
     },
     "digest": {
       "subject": {
@@ -6007,7 +6010,10 @@
       "watch": "Watch the explanation",
       "similar": "Similar question",
       "noSimilar": "No similar question yet.",
-      "showAnswer": "Show the answer"
+      "showAnswer": "Show the answer",
+      "whyQuestion": "Question: :question Why is “:answer” the right answer?",
+      "askWhy": "Ask why",
+      "noWhy": "No lesson you can open covers this one yet."
     },
     "tasks": {
       "diagnostic": "Take the Texas diagnostic",
@@ -6410,6 +6416,66 @@
       "misses_other": "{{count}} misses saved to your flashcards.",
       "again": "Play again",
       "cardBack": "Answer: :answer. :why"
+    },
+    "reports": {
+      "title": "Weekly progress",
+      "description": "Your week at a glance: time studied, questions answered and how your readiness moved.",
+      "week": "{{start}} to {{end}}",
+      "previous": "Previous week",
+      "next": "Next week",
+      "minutes": "Time studied",
+      "minutesValue_one": "{{count}} minute",
+      "minutesValue_other": "{{count}} minutes",
+      "goal": "Plan: {{minutes}} minutes",
+      "perDay": "Minutes each day",
+      "day": "{{day}}: {{minutes}} min",
+      "questions": "Questions answered",
+      "cards": "Flashcards reviewed",
+      "readiness": "Readiness",
+      "readinessChange": "{{percent}}% ({{change}} this week)",
+      "readinessNow": "{{percent}}%",
+      "notYet": "Not known yet",
+      "lessons": "Lessons finished",
+      "hours": "Course hours",
+      "hoursValue": "{{hours}} h",
+      "weakest": "Weakest topic",
+      "none": "None",
+      "streak": "Streak",
+      "streakValue_one": "{{count}} day",
+      "streakValue_other": "{{count}} days",
+      "shareTitle": "Share",
+      "shareBody": "Your school sees your report only if you share it. A link for a study buddy shows your first name only and works for 14 days.",
+      "shareSchool": "Share with my school",
+      "sharedSchool": "Shared with your school",
+      "shareLink": "Make a link for a study buddy",
+      "copy": "Copy the link",
+      "copied": "Link copied.",
+      "errors": {
+        "noSchool": "You don't study through a school, so there's no school to share with."
+      },
+      "mail": {
+        "title": "Your week in review",
+        "body": ":minutes minutes studied, :questions questions answered, a :streak-day streak.",
+        "readiness": "Readiness: :percent%.",
+        "readinessChange": "Readiness: :percent% (:change this week).",
+        "open": "See your week"
+      },
+      "sharedTitle": "{{name}}'s week",
+      "sharedBody": "A weekly progress report shared from REOS.",
+      "students": {
+        "title": "Students",
+        "description": "Weekly progress reports your candidates have shared with you.",
+        "emptyTitle": "No reports shared yet",
+        "empty": "When a candidate shares their weekly report with the school, it shows up here.",
+        "columns": {
+          "name": "Candidate",
+          "week": "Week",
+          "minutes": "Minutes",
+          "questions": "Questions",
+          "readiness": "Readiness",
+          "weakest": "Weakest topic"
+        }
+      }
     }
   },
   "brokerageIntegrations": {

@@ -16,12 +16,17 @@ import {
     mathKinds,
     mathProblem,
     readinessMap,
+    reportShares,
     results,
     studyToday,
     topicPlan,
+    weeklyReport,
 } from '@/components/practice/fixtures';
 import { i18n } from '@/lib/i18n';
 import PracticeIndex from '@/pages/practice/index';
+import ProgressPage from '@/pages/practice/progress';
+import SharedReport from '@/pages/public/report';
+import StudentsPage from '@/pages/school/students';
 import FixPage from '@/pages/practice/fix';
 import FlashcardsPage from '@/pages/practice/flashcards';
 import SpeedPage from '@/pages/practice/speed';
@@ -649,5 +654,139 @@ describe('flashcards and the speed round (screens 31 and 50, A9.2d)', () => {
         expect(
             screen.getByText('1 miss saved to your flashcards.'),
         ).toBeInTheDocument();
+    });
+});
+
+describe('Ask why and the weekly report (screens 45 and 55, A9.2e)', () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+    const reply = (data: unknown, status = 200) =>
+        new Response(JSON.stringify({ data }), {
+            status,
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        vi.stubGlobal('fetch', fetchMock);
+        router.visit.mockClear();
+    });
+
+    afterEach(() => vi.unstubAllGlobals());
+
+    const readiness = {
+        percent: 72,
+        topics: studyToday.topics,
+        weakest: ['math', 'finance'] as const,
+        tests: 1,
+    };
+
+    it('opens the lesson behind a missed question, or says none covers it', async () => {
+        const user = userEvent.setup();
+        fetchMock
+            .mockResolvedValueOnce(
+                reply({ lesson_id: 31, seconds: 245, question: 'Why?' }),
+            )
+            .mockResolvedValueOnce(reply(null));
+        render(
+            <ResultsPage
+                results={results}
+                readiness={{ ...readiness, weakest: [...readiness.weakest] }}
+            />,
+        );
+
+        const [first] = screen.getAllByRole('button', { name: 'Ask why' });
+        await user.click(first!);
+        expect(router.visit).toHaveBeenCalledWith(
+            expect.stringContaining('/learn/lessons/31'),
+        );
+        expect(String(router.visit.mock.calls[0]?.[0])).toContain('ask=Why');
+
+        await user.click(
+            screen.getAllByRole('button', { name: 'Ask why' })[0]!,
+        );
+        expect(
+            await screen.findByText(
+                'No lesson you can open covers this one yet.',
+            ),
+        ).toBeInTheDocument();
+    });
+
+    it('shows the week against the plan and shares with the school or a link', async () => {
+        const user = userEvent.setup();
+        fetchMock
+            .mockResolvedValueOnce(reply({ ...reportShares, school: true }))
+            .mockResolvedValueOnce(
+                reply({
+                    ...reportShares,
+                    school: true,
+                    link: 'https://reos.com/reports/1b6e',
+                }),
+            );
+        render(
+            <ProgressPage
+                report={weeklyReport}
+                shares={reportShares}
+                this_week="2026-11-23"
+            />,
+        );
+
+        expect(screen.getByText('70 minutes')).toBeInTheDocument();
+        expect(screen.getByText('68% (+4 this week)')).toBeInTheDocument();
+        expect(screen.getByText('Finance')).toBeInTheDocument();
+        expect(
+            screen.getByRole('link', { name: 'Next week' }),
+        ).toBeInTheDocument();
+
+        await user.click(
+            screen.getByRole('button', { name: 'Share with my school' }),
+        );
+        expect(
+            await screen.findByText('Shared with your school'),
+        ).toBeInTheDocument();
+        expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toEqual({
+            with: 'school',
+            week: '2026-11-16',
+        });
+
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Make a link for a study buddy',
+            }),
+        );
+        expect(
+            await screen.findByText('https://reos.com/reports/1b6e'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Copy the link' }),
+        ).toBeInTheDocument();
+    });
+
+    it('shows a study buddy the first name only, and the school its shared reports', () => {
+        const { unmount } = render(<SharedReport report={weeklyReport} />);
+        expect(
+            screen.getByRole('heading', { name: "Sofia's week" }),
+        ).toBeInTheDocument();
+        unmount();
+
+        const { unmount: done } = render(<StudentsPage reports={[]} />);
+        expect(screen.getByText('No reports shared yet')).toBeInTheDocument();
+        done();
+
+        render(
+            <StudentsPage
+                reports={[
+                    {
+                        id: 1,
+                        name: 'Sofia Reyes',
+                        week_start: '2026-11-16',
+                        report: weeklyReport,
+                        shared_at: '2026-11-22T23:50:00Z',
+                    },
+                ]}
+            />,
+        );
+        const row = screen.getByRole('row', { name: /Sofia Reyes/ });
+        expect(within(row).getByText('70 / 140')).toBeInTheDocument();
+        expect(within(row).getByText('68%')).toBeInTheDocument();
     });
 });

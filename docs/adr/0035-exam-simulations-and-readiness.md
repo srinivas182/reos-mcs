@@ -99,6 +99,17 @@ A candidate who passes one portion retakes only the other. Sprint 9 decision 1 s
     - Each answer counts a quarter of a test answer towards readiness ("lightly").
 20. **Fix plans** gain a two-minute flashcards step when the topic has cards. **The hub** ranks flashcards due (with the count) and the speed round after the drill and fix plans.
 
+## Ask why and the weekly report (A9.2e)
+
+21. **Ask why** on a missed question opens the lesson that teaches it, with the question already asked of the lesson instructor (Interrupt and ask), at the second it's taught when known.
+    - **Which lesson:** the question's own lesson when it has one and the candidate can open it; otherwise the best search match in a course they're enrolled in.
+    - **When none covers it,** the button says so instead of guessing.
+22. **The weekly progress report** covers Monday to Sunday in Texas time.
+    - **What it counts:** minutes studied (course seat time, tests capped at four hours each, and speed rounds) against the plan's minutes, with minutes for each day; questions; flashcards; the readiness change from the nightly snapshots; lessons; course hours; the weakest topic; and the streak.
+    - **When it's sent:** Sunday at 17:45 as a push and email (notification kind `weekly_report`, Learning group), only to candidates who studied that week.
+    - **Who sees it:** nobody else until the candidate shares it. **Share with my school** stores a copy for the school's **Students** page (school admins only). **A study-buddy link** is an unguessable UUID that shows the first name only and expires after 14 days.
+    - **Copies:** a shared report is a snapshot, refreshed if shared again, so the school never queries a candidate's live data.
+
 ## Consequences
 
 - Readiness (A9.2) reads `by_topic` with portions mapped from topics (state rules to the state portion), and `by_portion` from simulations for the booking line.

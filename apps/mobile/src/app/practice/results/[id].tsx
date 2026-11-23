@@ -4,7 +4,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
-import { asTopic, countdown, loadResults, type Results, type Similar, similarQuestion } from '@/lib/practice';
+import { askWhy, asTopic, countdown, loadResults, type Results, type Similar, similarQuestion } from '@/lib/practice';
 import { Button, Callout, Card, ProgressBar, Screen, SectionTitle, Text, TitleBar } from '@/ui';
 import { SaveFlashcard } from '@/features/practice/SaveFlashcard';
 
@@ -20,6 +20,7 @@ export default function ResultsScreen() {
   const [results, setResults] = useState<Results | null | undefined>(undefined);
   const [similar, setSimilar] = useState<Record<number, Similar | null>>({});
   const [revealed, setRevealed] = useState<Record<number, boolean>>({});
+  const [noWhy, setNoWhy] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     let active = true;
@@ -130,6 +131,21 @@ export default function ResultsScreen() {
             </Text>
           ) : null}
           {q.lesson ? <Button variant="secondary" label={t('practice.results.watch')} onPress={() => router.push({ pathname: '/learn/[id]', params: { id: String(q.lesson?.id) } })} /> : null}
+          {!q.correct && !noWhy[q.id] ? (
+            <Button
+              variant="secondary"
+              label={t('practice.results.askWhy')}
+              onPress={() =>
+                void askWhy(results.id, q.id)
+                  .catch(() => null)
+                  .then((why) => {
+                    if (!why) return setNoWhy((all) => ({ ...all, [q.id]: true }));
+                    router.push({ pathname: '/learn/[id]', params: { id: String(why.lesson_id), ask: why.question, ...(why.seconds !== null ? { t: String(why.seconds) } : {}) } });
+                  })
+              }
+            />
+          ) : null}
+          {noWhy[q.id] ? <Text tone="muted">{t('practice.results.noWhy')}</Text> : null}
           <SaveFlashcard source="review" front={q.prompt} back={`${q.options[q.right] ?? ''}. ${q.explanation}`} questionId={q.id} />
           {!q.correct && q.math ? <Button variant="secondary" label={t('practice.math.practise')} onPress={() => router.push({ pathname: '/practice/math', params: { kind: q.math ?? '' } })} /> : null}
           {!q.correct && similar[q.id] === undefined ? (

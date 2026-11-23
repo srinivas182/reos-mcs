@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
 use App\Http\Controllers\Api\Practice\MathLabController;
 use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeController;
+use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
@@ -50,10 +51,12 @@ use App\Http\Controllers\Payouts\EarningsController;
 use App\Http\Controllers\Payouts\SalesController;
 use App\Http\Controllers\Payouts\SimulatorController as PayoutSimulatorController;
 use App\Http\Controllers\Practice\PracticePageController;
+use App\Http\Controllers\Practice\SharedReportController;
 use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
 use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
+use App\Http\Controllers\School\StudentsController as SchoolStudentsController;
 use App\Http\Controllers\Sessions\SessionsController;
 use App\Http\Controllers\Settings\AvatarController;
 use App\Http\Controllers\StatusController;
@@ -75,6 +78,8 @@ Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind',
 });
 // The public status page (A6.1).
 // The terms and the privacy notice people agree to (A6.3).
+// A weekly progress report shared with a study buddy (A9.2e): first name only, for 14 days.
+Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
 Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('status', StatusController::class)->middleware('throttle:60,1,status')->name('status');
@@ -175,6 +180,9 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::post('practice/topic-plans', [TopicPlanPageController::class, 'store'])->middleware('throttle:30,1,practice-plans')->name('practice.plans.store');
     Route::get('practice/fix/{plan}', [TopicPlanPageController::class, 'show'])->whereNumber('plan')->name('practice.plans.show');
     Route::post('practice/fix/{plan}/continue', [TopicPlanPageController::class, 'continue'])->whereNumber('plan')->middleware('throttle:60,1,practice-plans')->name('practice.plans.continue');
+    // The weekly progress report (A9.2e): the page, and sharing it.
+    Route::get('practice/progress', [PracticePageController::class, 'progress'])->name('practice.progress');
+    Route::post('practice/reports/weekly/share', [ReportController::class, 'share'])->middleware('throttle:20,1,practice-reports')->name('practice.reports.share');
     // Flashcards and the speed round (A9.2d): the pages, and their JSON.
     Route::get('practice/flashcards', [PracticePageController::class, 'flashcards'])->name('practice.flashcards');
     Route::post('practice/flashcards', [FlashcardController::class, 'store'])->middleware('throttle:60,1,practice-flashcards')->name('practice.flashcards.store');
@@ -191,6 +199,7 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::post('practice/attempts/{attempt}/pause', [ApiPracticeController::class, 'pause'])->whereNumber('attempt')->middleware('throttle:60,1,practice-pause')->name('practice.pause');
     Route::post('practice/attempts/{attempt}/finish', [ApiPracticeController::class, 'finish'])->whereNumber('attempt')->middleware('throttle:30,1,practice-finish')->name('practice.finish');
     Route::get('practice/attempts/{attempt}/similar/{question}', [ApiPracticeController::class, 'similar'])->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,practice-similar')->name('practice.similar');
+    Route::get('practice/attempts/{attempt}/why/{question}', [ApiPracticeController::class, 'why'])->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,practice-why')->name('practice.why');
     Route::controller(StudyPlanController::class)->prefix('study-plan')->name('study-plan.')->group(function () {
         Route::get('/', 'show')->name('show');
         Route::put('tasks/{task}', 'move')->whereNumber('task')->middleware('throttle:60,1,study-plan-move')->name('move');
@@ -268,6 +277,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('own-account', [SalesController::class, 'connectOwn'])->middleware('throttle:10,1,sales-own')->name('connect-own');
     Route::get('own-account', [SalesController::class, 'ownAccount'])->middleware('throttle:10,1,sales-own-back')->name('own-account');
 });
+// Students (A9.2e): weekly reports candidates shared with the school.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->get('school/students', [SchoolStudentsController::class, 'index'])->name('school.students.index');
 // Course catalogue and state approvals (A7.1, school admin screen 50).
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->prefix('school/approvals')->name('school.approvals.')->group(function () {
     Route::get('/', [SchoolApprovalsController::class, 'index'])->name('index');

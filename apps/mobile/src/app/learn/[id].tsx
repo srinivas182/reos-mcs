@@ -33,7 +33,7 @@ const number = (value: string | string[] | undefined): number | null => {
 export default function LessonScreen() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
-  const params = useLocalSearchParams<{ id: string; page?: string; t?: string; heading?: string }>();
+  const params = useLocalSearchParams<{ id: string; page?: string; t?: string; heading?: string; ask?: string }>();
   const id = number(params.id);
   const page = number(params.page);
   const startAt = number(params.t);
@@ -108,7 +108,7 @@ export default function LessonScreen() {
         </Card>
       ) : null}
 
-      <Player key={lesson.id} lesson={lesson} startAt={startAt} saved={saved} onSaved={() => setSaved(savedFor(lesson.id))} />
+      <Player ask={typeof params.ask === 'string' ? params.ask : null} key={lesson.id} lesson={lesson} startAt={startAt} saved={saved} onSaved={() => setSaved(savedFor(lesson.id))} />
 
       {lesson.documents.map((doc) => (
         <View key={doc.id} style={styles.block}>
@@ -153,7 +153,7 @@ export default function LessonScreen() {
  * audio only); the seat meter and check-ins; Interrupt and ask; and the
  * transcript (tap a line to play from there).
  */
-function Player({ lesson, startAt, saved, onSaved }: { lesson: LearnLesson; startAt: number | null; saved: SavedLesson | undefined; onSaved: () => void }) {
+function Player({ lesson, startAt, saved, onSaved, ask }: { lesson: LearnLesson; startAt: number | null; saved: SavedLesson | undefined; onSaved: () => void; ask: string | null }) {
   const { t, i18n } = useTranslation();
   const local = saved && playable(saved) ? saved.uri : null;
   const playback = usePlayback();
@@ -245,6 +245,7 @@ function Player({ lesson, startAt, saved, onSaved }: { lesson: LearnLesson; star
       ) : null}
       <AskInstructor
         lesson={lesson.id}
+        initial={ask}
         pause={() => {
           if (!lesson.video) return null;
           player.pause();
