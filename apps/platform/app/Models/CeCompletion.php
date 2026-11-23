@@ -21,6 +21,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $provider
  * @property string $source `reos`, `other_provider` or `commission_meeting`
  * @property Carbon $completed_on
+ * @property string|null $certificate_path The uploaded certificate (B10.3b), on the content disk
+ * @property string|null $read_by `textract` or `simulator` when the certificate was read
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */

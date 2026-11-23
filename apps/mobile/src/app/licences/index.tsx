@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Circle, CircleCheck, IdCard, Plus } from 'lucide-react-native';
+import { Circle, CircleCheck, FileUp, IdCard, Plus } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -99,6 +99,11 @@ export default function MyLicences() {
           {licence.status === 'rejected' ? <Text tone="danger">{t('licences.rejectedNote', { note: licence.review_note ?? '' })}</Text> : null}
         </Card>
       ))}
+
+      {/* CE taken elsewhere: read by OCR, checked, saved (B10.3b). */}
+      {licences !== null && licences.length > 0 ? (
+        <Button variant="secondary" icon={FileUp} label={t('certificates.add')} onPress={() => router.push('/licences/certificate')} />
+      ) : null}
 
       {licences !== null && licences.length > 0 ? (
         <Text variant="caption" tone="muted">

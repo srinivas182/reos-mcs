@@ -7832,5 +7832,31 @@
         "why": "Por qué no se aprueba"
       }
     }
+  },
+  "certificates": {
+    "add": "Agregar un certificado",
+    "title": "Agregar un certificado de educación continua",
+    "description": "Suba el certificado de un curso que tomó en otro lugar. REOS lo lee y usted revisa los datos antes de guardarlo.",
+    "file": "Certificado (foto o PDF de una página, hasta 10 MB)",
+    "read": "Leer certificado",
+    "reading": "Leyendo…",
+    "review": "Revise lo que leímos",
+    "reviewHint": "Corrija lo que esté mal. Los campos que no pudimos leer están vacíos.",
+    "unread": "No pudimos leer este certificado. Escriba los datos que aparecen en él.",
+    "nameOnCertificate": "Nombre en el certificado: {{name}}",
+    "nameMismatch": "Este nombre no coincide con su cuenta. Agregue solo certificados que sean suyos.",
+    "state": "Estado de la licencia",
+    "course": "Título del curso",
+    "hours": "Horas",
+    "completedOn": "Fecha en que terminó",
+    "provider": "Proveedor",
+    "save": "Guardar certificado",
+    "saved": "Certificado guardado",
+    "confidence": "{{percent}} % de certeza",
+    "errors": {
+      "noLicence": "Primero agregue una licencia: los certificados cuentan para la educación continua de una licencia.",
+      "infected": "Este archivo no pasó la revisión de virus. Suba otra copia.",
+      "state": "Elija el estado de una de sus licencias."
+    }
   }
 }

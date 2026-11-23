@@ -74,3 +74,5 @@ Schedule::command('reos:regulators:import')->dailyAt('05:30')->timezone('America
 Schedule::command('reos:licence:watch')->dailyAt('07:40')->timezone('America/Chicago')->withoutOverlapping()->onOneServer();
 // MLS feeds (B10.1): listings replicated every 15 minutes, platform-wide.
 Schedule::command('reos:mls:sync')->everyFifteenMinutes()->withoutOverlapping()->onOneServer();
+// Certificates read but never saved (B10.3b): gone after a day.
+Schedule::command('reos:certificates:prune')->dailyAt('04:25')->onOneServer();

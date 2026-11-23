@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Billing\MembershipController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
+use App\Http\Controllers\Api\Certificates\CertificateController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Crm\ContactController;
@@ -263,6 +264,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // A post about one of my listings (B10.2), within the MLS's licence terms.
     Route::get('listings/{listing}/post', [ListingPostController::class, 'show'])->whereUuid('listing')->name('api.listings.post.show');
     Route::put('listings/{listing}/post', [ListingPostController::class, 'update'])->whereUuid('listing')->middleware('throttle:30,1,api-listing-post')->name('api.listings.post.update');
+    // Certificates for CE taken elsewhere (B10.3b): read by OCR, checked, saved.
+    Route::post('me/certificates/read', [CertificateController::class, 'read'])->middleware('throttle:10,1,api-certificates-read')->name('api.me.certificates.read');
+    Route::post('me/certificates', [CertificateController::class, 'store'])->middleware('throttle:20,1,api-certificates-store')->name('api.me.certificates.store');
     // A provider's professional licences (B10.3): TREC inspector, TDI, NMLS.
     Route::get('provider/licences', [ProviderLicenceController::class, 'index'])->name('api.provider.licences.index');
     Route::post('provider/licences', [ProviderLicenceController::class, 'store'])->middleware('throttle:10,1,api-provider-licences')->name('api.provider.licences.store');

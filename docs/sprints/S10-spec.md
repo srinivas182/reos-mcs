@@ -237,6 +237,11 @@
   - **Provider licences** (Settings › Profile for providers):
     - TREC inspector and TDI numbers (or an NPN) are checked against the data at once. Another name or no record goes to a reviewer.
     - NMLS IDs always go to a reviewer, with the NMLS Consumer Access link on People. Approvals and rejections are audited.
+- **As built, B10.3b** (ADR 0043 §6–9):
+  - **Certificate OCR** (web: Settings › Profile, *Add a certificate*; phone: My licences):
+    - A photo or one-page PDF is read by AWS Textract (queries for name, course, hours, date and provider, with confidence), or by the Simulator outside production.
+    - The person checks the fields and saves a CE completion for one of their licence states, with the certificate. Another name is pointed out.
+  - Uploads are validated, kept privately and virus-scanned. Unsaved reads are deleted after a day.
 - **Done when:** a licence number is verified in seconds. ✅ Met: `RegulatorDataTest` adds a Texas licence and has it verified from TREC's imported data in well under two seconds.
 
 ## 4. Definition of done (whole sprint)
@@ -252,6 +257,7 @@
   - MLS display rules can't be bypassed by any screen;
   - lookup imports and OCR uploads are validated and virus-scanned.
 - **ADRs:** 0039 Ask and instructor questions; 0040 sessions and live classes; 0041 licence journey; 0042 MLS feeds and listing rules; 0043 lookups and OCR.
+- **Status (24 November 2026):** all of A10.1–A10.3 and B10.1–B10.3 merged with green CI (PRs #108–#121); each sub-sprint's done-when is met (see As built).
 
 ## 5. Risks
 

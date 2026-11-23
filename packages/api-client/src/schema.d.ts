@@ -521,6 +521,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/certificates/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Read a certificate
+         * @description An image or a one-page PDF (`file`, up to 10 MB). Returns what was read (name, course, hours, date, provider, each with its confidence) for me to check; nothing is saved as a completion yet. `reader` is null when no reader is connected: type the details.
+         */
+        post: operations["me.certificates.read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/certificates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Save a checked certificate
+         * @description Records the completion for one of my licence states, with its certificate.
+         */
+        post: operations["me.certificates.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/challenges": {
         parameters: {
             query?: never;
@@ -5378,6 +5418,17 @@ export interface components {
          */
         QuizTopic: "agency" | "contracts" | "math" | "ownership" | "finance" | "state_rules";
         /**
+         * ReadCertificateRequest
+         * @description A certificate to read: an image or a one-page PDF, up to 10 MB (B10.3b).
+         */
+        ReadCertificateRequest: {
+            /**
+             * Format: binary
+             * @description Maximum file size: 10240 kilobytes.
+             */
+            file: string;
+        };
+        /**
          * RecordingAnswerRequest
          * @description Agree or not to recording the session (B6.3c).
          */
@@ -5441,6 +5492,20 @@ export interface components {
             attendees?: string[];
             /** @description Let the calendar email the guests an invitation. Off unless asked: REOS never sends messages for you. */
             notify_guests?: boolean;
+        };
+        /**
+         * SaveCertificateRequest
+         * @description A read certificate, as the person checked it (B10.3b).
+         */
+        SaveCertificateRequest: {
+            /** Format: uuid */
+            upload: string;
+            state: string;
+            title: string;
+            hours: number;
+            /** Format: date */
+            completed_on: string;
+            provider?: string | null;
         };
         /**
          * SaveFlashcardRequest
@@ -5881,10 +5946,12 @@ export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest
 export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
 export type SchemaQuizResultResource = components['schemas']['QuizResultResource'];
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
+export type SchemaReadCertificateRequest = components['schemas']['ReadCertificateRequest'];
 export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswerRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
+export type SchemaSaveCertificateRequest = components['schemas']['SaveCertificateRequest'];
 export type SchemaSaveFlashcardRequest = components['schemas']['SaveFlashcardRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
 export type SchemaScheduleClassRequest = components['schemas']['ScheduleClassRequest'];
@@ -7225,6 +7292,95 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["ToolRequestRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": 201;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.certificates.read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ReadCertificateRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            upload: string;
+                            reader: string | null;
+                            name: string | null;
+                            course: string | null;
+                            hours: number | null;
+                            completed_on: string | null;
+                            provider: string | null;
+                            confidence: {
+                                [key: string]: number;
+                            };
+                            name_matches: boolean | null;
+                            states: string[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.certificates.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveCertificateRequest"];
             };
         };
         responses: {
