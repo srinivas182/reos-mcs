@@ -5,6 +5,7 @@ import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { dealBoard, elmStreet, oakCourt } from '@/components/deals/fixtures';
 import { i18n } from '@/lib/i18n';
+import TransactionsPage from '@/pages/connections/transactions';
 import DealsPage from '@/pages/deals/index';
 
 const router = vi.hoisted(() => ({
@@ -134,5 +135,24 @@ describe('Deals board (screen 14, B9.1)', () => {
             `/deals?deal=${elmStreet.uuid}`,
             expect.anything(),
         );
+    });
+});
+
+describe('Connections › Transactions (screen 17, B9.1b)', () => {
+    it('lists each tool deal with its stage, documents, next deadline and commission, read-only', () => {
+        render(<TransactionsPage deals={[oakCourt]} />);
+
+        const row = screen.getByRole('row', { name: /9 Oak Ct/ });
+        expect(within(row).getByText('Under contract')).toBeInTheDocument();
+        expect(within(row).getByText('1 of 2 documents')).toBeInTheDocument();
+        expect(within(row).getByText('$18,300')).toBeInTheDocument();
+        expect(
+            within(row).getByRole('link', { name: 'Open in Lone Wolf' }),
+        ).toHaveAttribute('href', oakCourt.external_url);
+        expect(
+            screen.getByText(
+                'Read only: changes are made in the transaction tool.',
+            ),
+        ).toBeInTheDocument();
     });
 });

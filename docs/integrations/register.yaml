@@ -967,6 +967,7 @@ entries:
       fields:
         - { key: client_id }
         - { key: client_secret, secret: true }
+        - { key: api_key, secret: true }
     personal_data: true
     cost: Partner terms on application.
     fallback: Email forwarding of deal documents.

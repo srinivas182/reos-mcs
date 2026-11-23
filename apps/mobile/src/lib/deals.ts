@@ -15,6 +15,7 @@ export type Pipeline = Got<'/deals/pipeline'>['data'];
 export type DealCard = Pipeline['deals'][number];
 export type DealAlerts = Got<'/deals/alerts'>['data'];
 export type Deal = Got<'/deals/{deal}'>['data'];
+export type Transactions = Got<'/deals/transactions'>['data'];
 
 /** The tool's name, for "From Lone Wolf" and "Open in Lone Wolf". */
 export const TOOL_NAMES: Record<string, string> = { 'lone-wolf': 'Lone Wolf', dotloop: 'dotloop', skyslope: 'SkySlope' };
@@ -27,6 +28,13 @@ export async function loadPipeline(): Promise<Pipeline | null> {
 
 export async function loadAlerts(): Promise<DealAlerts | null> {
   const { data } = await api().GET('/deals/alerts');
+
+  return data?.data ?? null;
+}
+
+/** Connections › Transactions (screen 17): deals from the agent's tools, read-only. */
+export async function loadTransactions(): Promise<Transactions | null> {
+  const { data } = await api().GET('/deals/transactions');
 
   return data?.data ?? null;
 }

@@ -1155,6 +1155,13 @@
             "required": true,
             "kind": "text",
             "default": null
+          },
+          {
+            "key": "api_key",
+            "secret": true,
+            "required": true,
+            "kind": "text",
+            "default": null
           }
         ]
       }

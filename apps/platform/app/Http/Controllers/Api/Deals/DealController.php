@@ -65,6 +65,20 @@ final class DealController extends Controller
     }
 
     /**
+     * Transactions from my tools.
+     *
+     * Connections › Transactions (screen 17): each deal's stage, documents complete, next deadline and commission. Read only.
+     *
+     * @response array{data: list<array{id: int, uuid: string, property: string, city: string|null, side: string, stage: string, price: int|null, commission: string|null, source: string, read_only: bool, external_url: string|null, next: array{id: int, kind: string, name: string, due_on: string, days: int, done: bool}|null, documents: array{complete: int, total: int, missing: int}}>}
+     */
+    public function transactions(#[CurrentUser] User $user, DealAccess $access, DealViews $views): JsonResponse
+    {
+        $access->allow($user);
+
+        return response()->json(['data' => $views->transactions($user)]);
+    }
+
+    /**
      * A deal.
      *
      * Parties, documents and key dates.

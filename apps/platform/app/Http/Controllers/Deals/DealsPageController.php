@@ -32,4 +32,12 @@ final class DealsPageController extends Controller
             'selected' => $selected === null ? null : $views->show($selected, $user),
         ]);
     }
+
+    /** Connections › Transactions (Connections screen 17, B9.1b): deals from the agent's tools, read-only. */
+    public function transactions(#[CurrentUser] User $user, DealAccess $access, DealViews $views): Response
+    {
+        $access->allow($user);
+
+        return Inertia::render('connections/transactions', ['deals' => $views->transactions($user)]);
+    }
 }

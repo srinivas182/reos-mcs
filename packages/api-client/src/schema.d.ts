@@ -894,6 +894,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Transactions from my tools
+         * @description Connections › Transactions (screen 17): each deal's stage, documents complete, next deadline and commission. Read only.
+         */
+        get: operations["deals.transactions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/deals/{deal}": {
         parameters: {
             query?: never;
@@ -3333,8 +3353,8 @@ export interface components {
             accounts: string;
             /** @description For tools that can be connected: what REOS will be able to do, and what it never does (consent sheet). */
             consent: {
-                can: ("read_events" | "write_events" | "change_alerts" | "read_people" | "write_notes" | "write_tasks" | "write_stage" | "read_campaigns")[];
-                never: ("delete_yours" | "email" | "delete_people" | "send_messages" | "change_campaigns")[];
+                can: ("read_events" | "write_events" | "change_alerts" | "read_people" | "write_notes" | "write_tasks" | "write_stage" | "read_campaigns" | "read_deals" | "read_documents")[];
+                never: ("delete_yours" | "email" | "delete_people" | "send_messages" | "change_campaigns" | "change_deals" | "delete_documents")[];
             } | null;
             /**
              * @description How it's connected: the tool's own sign-in page, or the person's API key (B7.2).
@@ -4236,7 +4256,7 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce";
+            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce" | "lone-wolf";
             history?: components["schemas"]["HistoryRange"] | null;
             /** @description Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API. */
             api_key?: string | null;
@@ -6748,6 +6768,53 @@ export interface operations {
                                 documents: string[];
                             }[];
                         };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "deals.transactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            uuid: string;
+                            property: string;
+                            city: string | null;
+                            side: string;
+                            stage: string;
+                            price: number | null;
+                            commission: string | null;
+                            source: string;
+                            read_only: boolean;
+                            external_url: string | null;
+                            next: {
+                                id: number;
+                                kind: string;
+                                name: string;
+                                due_on: string;
+                                days: number;
+                                done: boolean;
+                            } | null;
+                            documents: {
+                                complete: number;
+                                total: number;
+                                missing: number;
+                            };
+                        }[];
                     };
                 };
             };

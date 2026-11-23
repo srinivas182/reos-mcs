@@ -1,4 +1,4 @@
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Plug, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import { undoToast } from '@/lib/undo-toast';
 import { byNextStep, WEB_TABS, webTab } from '@/lib/connection-tabs';
 import type { WebTab } from '@/lib/connection-tabs';
 import { cn } from '@/lib/utils';
-import { forget, interest } from '@/routes/connections';
+import { forget, interest, transactions } from '@/routes/connections';
 import type { CatalogueItem, ToolConnection } from '@/types';
 
 type Props = { tools: CatalogueItem[]; connections: ToolConnection[] };
@@ -25,7 +25,10 @@ type Props = { tools: CatalogueItem[]; connections: ToolConnection[] };
  */
 export default function Connections({ tools, connections }: Props) {
     const { t } = useTranslation();
-    const { region } = usePage().props;
+    const { region, auth } = usePage().props;
+    // Deals from transaction tools (Connections screen 17, B9.1b): agents and brokers.
+    const role = auth?.roles?.active?.role;
+    const dealsRole = role === 'agent' || role === 'broker';
     const [tab, setTab] = useState<WebTab | 'all'>('all');
     const [managing, setManaging] = useState<ToolConnection | null>(null);
     const [requesting, setRequesting] = useState(false);
@@ -96,12 +99,21 @@ export default function Connections({ tools, connections }: Props) {
                         state: region?.name ?? '',
                     })}
                     actions={
-                        <Button
-                            variant="outline"
-                            onClick={() => setRequesting(true)}
-                        >
-                            {t('connections.web.requestTool')}
-                        </Button>
+                        <>
+                            {dealsRole ? (
+                                <Button variant="outline" asChild>
+                                    <Link href={transactions()}>
+                                        {t('connections.transactions.title')}
+                                    </Link>
+                                </Button>
+                            ) : null}
+                            <Button
+                                variant="outline"
+                                onClick={() => setRequesting(true)}
+                            >
+                                {t('connections.web.requestTool')}
+                            </Button>
+                        </>
                     }
                 />
 

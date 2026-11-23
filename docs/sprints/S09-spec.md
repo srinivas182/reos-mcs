@@ -218,6 +218,12 @@
   - **Deadline pushes,** checked hourly: at 72 and 24 hours before 5:00 pm on the day.
   - **Screens:** the web Deals board (screen 14), and on the phone the Deals pipeline (screen 9, from Today), Deal alerts (screen 10) and one deal.
   - **Read-only:** deals from a tool can't be changed in REOS and open in the tool.
+- **As built, B9.1b** (ADR 0037 §7–10):
+  - **Connection:** Lone Wolf Transact is connected once by the brokerage on screen 40 with its Lone Wolf client ID (REOS's partner keys, client credentials).
+  - **Read:** every 15 minutes, each transaction goes to the agent with the matching email; unmatched users are listed for the broker.
+  - **What syncs:** deals, parties, documents and key dates. A date moved in Transact moves the to-do and the alert; a transaction removed in Transact removes its deal.
+  - **Who sees what:** the broker sees counts and deadlines this week; agents see Connections › Transactions (screen 17), web and phone.
+  - **To confirm in the partner sandbox:** the type, phase and contact codes.
 - **Done when:** a deadline in Lone Wolf creates an alert and a to-do, and moving it in Lone Wolf moves both.
 
 ### B9.2 dotloop and SkySlope (Team B)

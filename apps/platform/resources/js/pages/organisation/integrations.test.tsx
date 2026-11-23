@@ -38,12 +38,14 @@ const salesforce: Props['tools'][number] = {
     allowed: true,
     may_hide: true,
     agents_connected: 0,
+    connects_with: 'sign_in',
     account: {
         connection: 7,
         label: 'admin@lonestar-realty.example',
         status: 'active',
         last_synced_at: new Date().toISOString(),
         people: 214,
+        deals: null,
         agents: 38,
         unmatched_owners: ['assistant@lonestar.example'],
         mapping: { contact_stage: null, lead_stage: 'Status', leads: true },
@@ -64,6 +66,7 @@ const props: Props = {
             allowed: true,
             may_hide: true,
             agents_connected: 12,
+            connects_with: 'api_key',
             account: null,
         },
         {
@@ -76,6 +79,7 @@ const props: Props = {
             allowed: true,
             may_hide: false,
             agents_connected: 80,
+            connects_with: 'sign_in',
             account: null,
         },
     ],
@@ -152,5 +156,55 @@ describe('Brokerage integrations (screen 40)', () => {
         expect(
             screen.getByRole('link', { name: 'Connect Salesforce' }),
         ).toHaveAttribute('href', '/connections/salesforce/connect');
+    });
+
+    it("connects Lone Wolf with the brokerage's client ID, and shows deal counts only", async () => {
+        const lw: Props['tools'][number] = {
+            ...salesforce,
+            id: 'lone-wolf',
+            name: 'Lone Wolf Transactions',
+            category: 'transactions',
+            connects_with: 'api_key',
+            account: null,
+        };
+        const user = userEvent.setup();
+        const { unmount } = render(
+            <BrokerageIntegrations {...props} tools={[lw]} />,
+        );
+        await user.type(
+            screen.getByLabelText('Your Lone Wolf Transactions client ID'),
+            '7f3a2c1e-0000-4c7d-9e2f-5b1a6c8d9e0f',
+        );
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Connect Lone Wolf Transactions',
+            }),
+        );
+        expect(router.post).toHaveBeenCalled();
+        unmount();
+
+        render(
+            <BrokerageIntegrations
+                {...props}
+                tools={[
+                    {
+                        ...lw,
+                        account: {
+                            ...salesforce.account!,
+                            label: 'Lone Star Realty',
+                            people: 0,
+                            deals: { count: 12, due_week: 3 },
+                            mapping: null,
+                        },
+                    },
+                ]}
+            />,
+        );
+        expect(
+            screen.getByText('12 · 3 deadlines this week'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(/You see counts and deadlines only/),
+        ).toBeInTheDocument();
     });
 });
