@@ -11,25 +11,28 @@ export type SheetProps = {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  /** False for a sheet that must be answered (a check-in): no Close, no tap outside, no back button. */
+  dismissible?: boolean;
 };
 
 /**
  * A bottom sheet for short tasks and choices. Tap outside, the Close button,
  * or the Android back button closes it; screen readers stay inside it.
  */
-export function Sheet({ open, onClose, title, children }: SheetProps) {
+export function Sheet({ open, onClose, title, children, dismissible = true }: SheetProps) {
   const { t } = useTranslation();
+  const close = dismissible ? onClose : () => undefined;
 
   return (
-    <Modal visible={open} transparent animationType="slide" onRequestClose={onClose} statusBarTranslucent navigationBarTranslucent>
-      <Pressable accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={styles.scrim} onPress={onClose} />
+    <Modal visible={open} transparent animationType="slide" onRequestClose={close} statusBarTranslucent navigationBarTranslucent>
+      <Pressable accessibilityElementsHidden importantForAccessibility="no-hide-descendants" style={styles.scrim} onPress={close} />
       <View accessibilityViewIsModal style={styles.sheet}>
         <View style={styles.handle} />
         <View style={styles.header}>
           <Text variant="title" style={styles.title}>
             {title}
           </Text>
-          <Button label={t('common.close')} variant="ghost" onPress={onClose} />
+          {dismissible ? <Button label={t('common.close')} variant="ghost" onPress={onClose} /> : null}
         </View>
         <ScrollView contentContainerStyle={styles.body}>{children}</ScrollView>
       </View>

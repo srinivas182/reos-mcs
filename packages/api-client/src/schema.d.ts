@@ -1327,6 +1327,113 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/learn/downloads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My saved lessons on this phone
+         * @description Each is `active`, or `revoked` (access ended, or removed elsewhere): the
+         *     phone deletes those files.
+         */
+        get: operations["learn.downloads.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/lessons/{lesson}/downloads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Save a lesson on this phone
+         * @description Returns a link to the 720p download (valid an hour), the lesson as the
+         *     player needs it offline, its check-ins with answers, the seat-time
+         *     rules, and the key to sign offline seat time with (HMAC-SHA256). Works
+         *     for 30 days between online checks. 422 when the lesson has no video or
+         *     its download isn't ready yet.
+         */
+        post: operations["learn.downloads.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/downloads/{grant}/renew": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a saved lesson online
+         * @description Another 30 days while I still have the course; 410 once access has
+         *     ended (delete the file).
+         */
+        post: operations["learn.downloads.renew"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/downloads/{grant}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Remove a saved lesson from this phone */
+        delete: operations["learn.downloads.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/downloads/{grant}/seat-time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send seat time recorded offline
+         * @description `payload` is the JSON list of events exactly as signed:
+         *     `{"id", "type": "watch", "at", "seconds"}` or
+         *     `{"id", "type": "checkin", "at", "key", "choice"}`; `signature` is its
+         *     HMAC-SHA256 (hex) with the grant's key. Events may arrive in any order
+         *     and more than once; each counts once, under the same rules as online.
+         */
+        post: operations["learn.downloads.seat-time"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/onboarding": {
         parameters: {
             query?: never;
@@ -4905,13 +5012,24 @@ export interface operations {
                                 seconds: number;
                                 text: string;
                             }[];
+                            captions: {
+                                en?: {
+                                    seconds: number;
+                                    text: string;
+                                }[];
+                                es?: {
+                                    seconds: number;
+                                    text: string;
+                                }[];
+                            } | null;
                             previous: number | null;
                             next: number | null;
                             player: {
                                 counted: number;
                                 required: number;
                                 percent: number;
-                                reason: string | null;
+                                /** @enum {string|null} */
+                                reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
                                 checkin: {
                                     key: string;
                                     at: number;
@@ -6284,6 +6402,323 @@ export interface operations {
             };
         };
     };
+    "learn.downloads.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            grant: number;
+                            lesson_id: number;
+                            title: string;
+                            course: string;
+                            bytes: number | null;
+                            expires_at: string;
+                            /** @enum {string} */
+                            status: "active" | "revoked";
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "learn.downloads.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            grant: number;
+                            key: string;
+                            url: string;
+                            bytes: number | null;
+                            expires_at: string;
+                            lesson: {
+                                id: number;
+                                title: string;
+                                /** @enum {string} */
+                                language: "en" | "es";
+                                minutes: number | null;
+                                course: {
+                                    id: number;
+                                    title: string;
+                                };
+                                sections: {
+                                    heading: string | null;
+                                    text: string;
+                                }[];
+                                documents: {
+                                    id: number;
+                                    /** @enum {string} */
+                                    kind: "slides" | "document";
+                                    name: string;
+                                    url: string;
+                                    pages: {
+                                        page: number;
+                                        text: string;
+                                    }[];
+                                }[];
+                                video: {
+                                    /** @enum {string} */
+                                    type: "hls" | "file";
+                                    url: string;
+                                    duration: number | null;
+                                    poster: string | null;
+                                } | null;
+                                transcript: {
+                                    seconds: number;
+                                    text: string;
+                                }[];
+                                captions: {
+                                    en?: {
+                                        seconds: number;
+                                        text: string;
+                                    }[];
+                                    es?: {
+                                        seconds: number;
+                                        text: string;
+                                    }[];
+                                } | null;
+                                previous: number | null;
+                                next: number | null;
+                            };
+                            player: {
+                                counted: number;
+                                required: number;
+                                percent: number;
+                                /** @enum {string|null} */
+                                reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                                checkin: {
+                                    key: string;
+                                    at: number;
+                                    /** @enum {string} */
+                                    kind: "question" | "presence";
+                                    question: {
+                                        id: number;
+                                        prompt: string;
+                                        options: string[];
+                                    } | null;
+                                } | null;
+                                completed: boolean;
+                                today_left: number | null;
+                            };
+                            answered: string[];
+                            checkpoints: {
+                                key: string;
+                                at: number;
+                                /** @enum {string} */
+                                kind: "question" | "presence";
+                                question: {
+                                    id: number;
+                                    prompt: string;
+                                    options: string[];
+                                } | null;
+                                answer: {
+                                    correct: number;
+                                    explanation: string;
+                                    source: string | null;
+                                } | null;
+                            }[];
+                            rules: {
+                                checkin_minutes: number;
+                                presence_percent: number;
+                                max_seconds_per_day: number | null;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description An error */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /**
+                         * @description Error overview.
+                         * @example
+                         */
+                        message: string;
+                    };
+                };
+            };
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.downloads.renew": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grant: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        expires_at: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.downloads.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grant: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.downloads.seat-time": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                grant: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    payload: string;
+                    signature: string;
+                    timezone?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        accepted: number;
+                        duplicates: number;
+                        rejected: number;
+                        state: {
+                            counted: number;
+                            required: number;
+                            percent: number;
+                            /** @enum {string|null} */
+                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                            checkin: {
+                                key: string;
+                                at: number;
+                                /** @enum {string} */
+                                kind: "question" | "presence";
+                                question: {
+                                    id: number;
+                                    prompt: string;
+                                    options: string[];
+                                } | null;
+                            } | null;
+                            completed: boolean;
+                            today_left: number | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "me.onboarding": {
         parameters: {
             query?: never;
@@ -6424,7 +6859,8 @@ export interface operations {
                             counted: number;
                             required: number;
                             percent: number;
-                            reason: string | null;
+                            /** @enum {string|null} */
+                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
                             checkin: {
                                 key: string;
                                 at: number;
@@ -6486,7 +6922,24 @@ export interface operations {
                         explanation: string | null;
                         source: string | null;
                         state: {
-                            [key: string]: unknown;
+                            counted: number;
+                            required: number;
+                            percent: number;
+                            /** @enum {string|null} */
+                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                            checkin: {
+                                key: string;
+                                at: number;
+                                /** @enum {string} */
+                                kind: "question" | "presence";
+                                question: {
+                                    id: number;
+                                    prompt: string;
+                                    options: string[];
+                                } | null;
+                            } | null;
+                            completed: boolean;
+                            today_left: number | null;
                         };
                     };
                 };

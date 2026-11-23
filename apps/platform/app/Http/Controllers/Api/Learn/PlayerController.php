@@ -27,7 +27,7 @@ final class PlayerController extends Controller
      * counted, why the last stretch didn't (if it didn't), and any check-in
      * now waiting.
      *
-     * @response array{data: array{counted: int, required: int, percent: int, reason: string|null, checkin: array{key: string, at: int, kind: 'question'|'presence', question: array{id: int, prompt: string, options: list<string>}|null}|null, completed: bool, today_left: int|null}}
+     * @response array{data: array{counted: int, required: int, percent: int, reason: 'gap'|'paused'|'hidden'|'checkin_due'|'daily_max'|null, checkin: array{key: string, at: int, kind: 'question'|'presence', question: array{id: int, prompt: string, options: list<string>}|null}|null, completed: bool, today_left: int|null}}
      */
     public function heartbeat(Request $request, int $lesson, #[CurrentUser] User $user, Learning $learning, SeatTime $seatTime): JsonResponse
     {
@@ -52,7 +52,7 @@ final class PlayerController extends Controller
      *
      * A wrong answer still counts as present and returns why, with its source.
      *
-     * @response array{correct: bool|null, explanation: string|null, source: string|null, state: array<string, mixed>}
+     * @response array{correct: bool|null, explanation: string|null, source: string|null, state: array{counted: int, required: int, percent: int, reason: 'gap'|'paused'|'hidden'|'checkin_due'|'daily_max'|null, checkin: array{key: string, at: int, kind: 'question'|'presence', question: array{id: int, prompt: string, options: list<string>}|null}|null, completed: bool, today_left: int|null}}
      */
     public function checkin(Request $request, int $lesson, #[CurrentUser] User $user, Learning $learning, SeatTime $seatTime): JsonResponse
     {

@@ -10,7 +10,10 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import type { CheckinAnswer, Checkpoint } from '@/lib/seat-time';
+import { postJson } from '@/lib/content';
+import { nativeSelect } from '@/lib/tenants';
 import { cn } from '@/lib/utils';
+import { report } from '@/routes/learn/questions';
 
 /**
  * A check-in (A8.2): the video stops and seat time waits until it is
@@ -168,6 +171,7 @@ function Body({
                     ) : null}
                 </div>
             ) : null}
+            {result ? <Report question={question.id} /> : null}
             {error ? (
                 <p className="text-body text-destructive" role="alert">
                     {t('player.errors.checkin')}
@@ -188,5 +192,67 @@ function Body({
                 )}
             </DialogFooter>
         </>
+    );
+}
+
+const REASONS = ['wrong_answer', 'unclear', 'out_of_date', 'other'] as const;
+
+/** Report this question (A8.1): its owner keeps or corrects it, and the learner is told. */
+function Report({ question }: { question: number }) {
+    const { t } = useTranslation();
+    const [open, setOpen] = useState(false);
+    const [reason, setReason] =
+        useState<(typeof REASONS)[number]>('wrong_answer');
+    const [sent, setSent] = useState(false);
+
+    if (sent) {
+        return (
+            <p className="text-body text-muted-foreground" role="status">
+                {t('player.report.sent')}
+            </p>
+        );
+    }
+
+    if (!open) {
+        return (
+            <Button
+                variant="ghost"
+                className="justify-self-start"
+                onClick={() => setOpen(true)}
+            >
+                {t('player.report.title')}
+            </Button>
+        );
+    }
+
+    return (
+        <div className="flex flex-wrap items-end gap-3">
+            <label className="flex flex-col gap-1 text-body">
+                {t('player.report.title')}
+                <select
+                    className={`${nativeSelect} w-64`}
+                    value={reason}
+                    onChange={(e) =>
+                        setReason(e.target.value as (typeof REASONS)[number])
+                    }
+                >
+                    {REASONS.map((r) => (
+                        <option key={r} value={r}>
+                            {t(`player.report.reasons.${r}`)}
+                        </option>
+                    ))}
+                </select>
+            </label>
+            <Button
+                variant="outline"
+                onClick={() =>
+                    void postJson(report.url(question), { reason })
+                        .then(() => setSent(true))
+                        .catch(() => setSent(false))
+                }
+            >
+                {t('player.report.send')}
+            </Button>
+        </div>
     );
 }

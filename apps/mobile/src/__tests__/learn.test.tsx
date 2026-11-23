@@ -8,7 +8,7 @@ import { i18n } from '@/lib/i18n';
 import type { LearnLesson, SearchHit } from '@/lib/learn';
 import { clock, marks } from '@/lib/learn';
 
-const mockApi = { GET: jest.fn() };
+const mockApi = { GET: jest.fn(), POST: jest.fn(async () => ({ data: undefined })) };
 const mockAuth = { status: 'signedIn' };
 
 jest.mock('expo-router', () => {
@@ -54,6 +54,7 @@ const lesson: LearnLesson = {
     { seconds: 1, text: 'Welcome back.' },
     { seconds: 245, text: 'Hand them the IABS form.' },
   ],
+  captions: null,
   previous: null,
   next: 8,
   player: { counted: 0, required: 1500, percent: 0, reason: null, checkin: null, completed: false, today_left: null },

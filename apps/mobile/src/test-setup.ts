@@ -39,8 +39,43 @@ jest.mock('expo-haptics', () => ({
 }));
 
 jest.mock('expo-network', () => ({
-  useNetworkState: jest.fn(() => ({ isConnected: true, isInternetReachable: true })),
+  useNetworkState: jest.fn(() => ({ isConnected: true, isInternetReachable: true, type: 'WIFI' })),
+  getNetworkStateAsync: jest.fn(async () => ({ isConnected: true, isInternetReachable: true, type: 'WIFI' })),
+  NetworkStateType: { NONE: 'NONE', UNKNOWN: 'UNKNOWN', CELLULAR: 'CELLULAR', WIFI: 'WIFI' },
 }));
+
+// Offline lessons (A8.2b): files in memory; tests read `__files`.
+jest.mock('expo-file-system', () => {
+  const files = new Map<string, number>();
+  class File {
+    uri: string;
+    constructor(...parts: (string | { uri: string })[]) {
+      this.uri = parts.map((p) => (typeof p === 'string' ? p : p.uri)).join('/');
+    }
+    get exists() {
+      return files.has(this.uri);
+    }
+    get size() {
+      return files.get(this.uri) ?? 0;
+    }
+    delete() {
+      files.delete(this.uri);
+    }
+    static downloadFileAsync = jest.fn(async (_url: string, destination: File) => {
+      files.set(destination.uri, 1000);
+
+      return destination;
+    });
+  }
+  class Directory extends File {
+    get exists() {
+      return true;
+    }
+    create() {}
+  }
+
+  return { File, Directory, Paths: { document: { uri: 'file:///documents' } }, __files: files };
+});
 
 
 // A3.1 sign-in: in-memory stand-ins for the phone's secure storage, crypto,
@@ -64,6 +99,11 @@ jest.mock('expo-crypto', () => {
     randomUUID: () => crypto.randomUUID(),
     getRandomBytes: (length: number) => new Uint8Array(crypto.randomBytes(length)),
     digestStringAsync: async (_algorithm: string, value: string) => crypto.createHash('sha256').update(value).digest('base64'),
+    digest: async (_algorithm: string, data: Uint8Array) => {
+      const out = crypto.createHash('sha256').update(Buffer.from(data)).digest();
+
+      return out.buffer.slice(out.byteOffset, out.byteOffset + out.byteLength);
+    },
     CryptoDigestAlgorithm: { SHA256: 'SHA-256' },
     CryptoEncoding: { BASE64: 'base64' },
   };
@@ -148,6 +188,10 @@ jest.mock('expo-video', () => {
   const { createElement } = jest.requireActual('react');
   const player = {
     currentTime: 0,
+    playing: false,
+    playbackRate: 1,
+    staysActiveInBackground: false,
+    showNowPlayingNotification: false,
     play: jest.fn(),
     pause: jest.fn(),
     seekBy(seconds: number) {

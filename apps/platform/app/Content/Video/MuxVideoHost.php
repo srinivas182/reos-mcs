@@ -22,6 +22,9 @@ final readonly class MuxVideoHost implements VideoHost
 
     public const STREAM = 'https://stream.mux.com';
 
+    /** The download's resolution: about 180 MB an hour (A8.2b, decision 1). */
+    public const OFFLINE = '720p';
+
     private const LANGUAGES = ['en' => 'English', 'es' => 'Español'];
 
     public function __construct(private Http $http, private MuxKeys $keys) {}
@@ -35,6 +38,8 @@ final readonly class MuxVideoHost implements VideoHost
             ]],
             'playback_policies' => ['signed'],
             'video_quality' => 'basic',
+            // A 720p MP4 for offline lessons on the phone (A8.2b, decision 1).
+            'static_renditions' => [['resolution' => self::OFFLINE]],
             'passthrough' => 'lesson_media:'.$media->id,
         ]);
 
@@ -53,6 +58,12 @@ final readonly class MuxVideoHost implements VideoHost
         if ($media->mux_asset_id !== null) {
             $this->api()->delete('/assets/'.rawurlencode($media->mux_asset_id));
         }
+    }
+
+    /** The signed link to the 720p download, for a phone saving the lesson. */
+    public function downloadUrl(string $playbackId, int $minutes = 60): string
+    {
+        return self::STREAM."/{$playbackId}/".self::OFFLINE.'.mp4?token='.$this->token($playbackId, 'v', $minutes);
     }
 
     /** A captions file (WebVTT) Mux generated, fetched with a signed token. */

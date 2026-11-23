@@ -1,14 +1,18 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import * as WebBrowser from 'expo-web-browser';
-import { ExternalLink } from 'lucide-react-native';
+import { CircleCheck, Download, ExternalLink, Headphones, RotateCcw } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import { CheckinSheet } from '@/features/player/CheckinSheet';
+import { SeatMeter } from '@/features/player/SeatMeter';
 import { clock, type LearnLesson, loadLesson } from '@/lib/learn';
-import { Button, Card, Chip, EmptyState, Screen, SectionTitle, Text, TitleBar } from '@/ui';
+import { offlineLesson, playable, SaveError, type SavedLesson, saveLesson, savedFor, smartDownload } from '@/lib/offline';
+import { configurePlayer, SPEEDS, useSeatTime } from '@/lib/player';
+import { Button, Callout, Card, Chip, EmptyState, Icon, PillGroup, Screen, SectionTitle, SwitchRow, Text, TitleBar } from '@/ui';
 
 const number = (value: string | string[] | undefined): number | null => {
   const parsed = typeof value === 'string' ? Number.parseInt(value, 10) : Number.NaN;
@@ -17,11 +21,11 @@ const number = (value: string | string[] | undefined): number | null => {
 };
 
 /**
- * A lesson (A5.3b): opened at the moment, page or heading a search result
- * points to. What the result matched is shown first ("From your search"),
- * then the video with its transcript (tap a line to play from there), the
- * slides page by page, and the lesson text. The full player with check-ins
- * and downloads is screen 9 (Sprint 8).
+ * A lesson (A5.3b, A8.2; candidate screen 25, the player): opened at the
+ * moment, page or heading a search result points to. What the result
+ * matched is shown first ("From your search"), then the player (seat meter,
+ * check-ins, video and controls, transcript), the slides page by page, and
+ * the lesson text. Offline, a saved lesson plays from the phone.
  */
 export default function LessonScreen() {
   const { t } = useTranslation();
@@ -32,6 +36,7 @@ export default function LessonScreen() {
   const startAt = number(params.t);
   const heading = typeof params.heading === 'string' ? params.heading : null;
   const [lesson, setLesson] = useState<LearnLesson | null | undefined>(undefined);
+  const [saved, setSaved] = useState<SavedLesson | undefined>(() => (id === null ? undefined : savedFor(id)));
 
   useEffect(() => {
     if (id === null) return;
@@ -46,7 +51,11 @@ export default function LessonScreen() {
 
           return;
         }
-        setLesson(found);
+        // Offline, a saved lesson plays from the phone (A8.2b).
+        const copy = savedFor(id);
+        setLesson(found ?? (copy && playable(copy) ? offlineLesson(copy) : null));
+        // Smart downloads: the next two lessons, on Wi-Fi.
+        if (found) void smartDownload(found.next);
       });
 
     return () => {
@@ -96,7 +105,7 @@ export default function LessonScreen() {
         </Card>
       ) : null}
 
-      {lesson.video || lesson.transcript.length > 0 ? <Player lesson={lesson} startAt={startAt} /> : null}
+      <Player key={lesson.id} lesson={lesson} startAt={startAt} saved={saved} onSaved={() => setSaved(savedFor(lesson.id))} />
 
       {lesson.documents.map((doc) => (
         <View key={doc.id} style={styles.block}>
@@ -134,32 +143,95 @@ export default function LessonScreen() {
   );
 }
 
-/** The video, starting at the search result's moment, and its transcript: tap a line to play from there. */
-function Player({ lesson, startAt }: { lesson: LearnLesson; startAt: number | null }) {
-  const { t } = useTranslation();
-  const player = useVideoPlayer(lesson.video?.url ?? null, (p) => {
+/**
+ * The player (candidate screen 25, A8.2): the video, from the phone's saved
+ * copy when there is one, with Back 10 seconds, speed, audio only, captions
+ * in either language and Save offline; the seat meter and check-ins; and the
+ * transcript (tap a line to play from there).
+ */
+function Player({ lesson, startAt, saved, onSaved }: { lesson: LearnLesson; startAt: number | null; saved: SavedLesson | undefined; onSaved: () => void }) {
+  const { t, i18n } = useTranslation();
+  const local = saved && playable(saved) ? saved.uri : null;
+  const source = local ?? lesson.video?.url ?? null;
+  const player = useVideoPlayer(source, (p) => {
     if (startAt !== null) p.currentTime = startAt;
   });
+  const seat = useSeatTime(lesson, lesson.video ? player : null, saved);
+  const [speed, setSpeed] = useState<(typeof SPEEDS)[number]>(1);
+  const [audioOnly, setAudioOnly] = useState(false);
+  const languages = (['en', 'es'] as const).filter((l) => (lesson.captions?.[l]?.length ?? 0) > 0);
+  const mine = i18n.language.startsWith('es') ? 'es' : 'en';
+  const [shown, setShown] = useState<'en' | 'es'>(languages.includes(mine) ? mine : (languages[0] ?? mine));
+  const cues = lesson.captions?.[shown] ?? lesson.transcript;
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const chooseSpeed = (value: (typeof SPEEDS)[number]) => {
+    setSpeed(value);
+    configurePlayer(player, { rate: value });
+  };
+
+  // Audio only keeps playing with the screen locked (seat time waits until REOS is in front again).
+  const chooseAudioOnly = (on: boolean) => {
+    setAudioOnly(on);
+    configurePlayer(player, { background: on });
+  };
 
   const jump = (seconds: number) => {
     player.seekBy(seconds - player.currentTime);
     player.play();
   };
 
+  const save = async () => {
+    setSaving(true);
+    setSaveError(null);
+    try {
+      await saveLesson(lesson.id);
+      onSaved();
+    } catch (error) {
+      setSaveError(error instanceof SaveError ? t(`player.downloads.errors.${error.reason}`) : t('player.downloads.errors.server'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <View style={styles.block}>
+      <SeatMeter state={seat.state} offline={!seat.online} />
+      <CheckinSheet checkpoint={seat.state.checkin} online={seat.online} onAnswer={seat.answer} />
       {lesson.video ? (
         <>
-          <VideoView player={player} style={styles.video} nativeControls allowsPictureInPicture accessibilityLabel={lesson.title} />
+          {audioOnly ? (
+            <Card>
+              <Icon icon={Headphones} />
+              <Text>{t('player.audioOnlyOn')}</Text>
+            </Card>
+          ) : (
+            <VideoView player={player} style={styles.video} nativeControls allowsPictureInPicture accessibilityLabel={lesson.title} />
+          )}
           {startAt !== null ? <Text tone="muted">{t('learn.lesson.startsAt', { time: clock(startAt) })}</Text> : null}
+          <View style={styles.controls}>
+            <Button label={t('player.back10')} variant="secondary" icon={RotateCcw} onPress={() => player.seekBy(-10)} />
+            {saved ? (
+              <Chip label={playable(saved) ? t('player.downloads.saved') : t('player.downloads.expired')} tone={playable(saved) ? 'success' : 'warning'} icon={CircleCheck} />
+            ) : (
+              <Button label={t('player.downloads.save')} variant="secondary" icon={Download} loading={saving} onPress={() => void save()} />
+            )}
+          </View>
+          {saveError ? <Callout tone="warning" title={saveError} live /> : null}
+          <PillGroup label={t('player.speed')} value={String(speed)} options={SPEEDS.map((v) => ({ value: String(v), label: `${v}×` }))} onChange={(v) => chooseSpeed(Number(v) as (typeof SPEEDS)[number])} />
+          {languages.length > 1 ? (
+            <PillGroup label={t('player.captions')} value={shown} options={languages.map((l) => ({ value: l, label: t(`player.languages.${l}`) }))} onChange={setShown} />
+          ) : null}
+          <SwitchRow label={t('player.audioOnly')} description={t('player.audioOnlyHint')} value={audioOnly} onValueChange={chooseAudioOnly} />
         </>
       ) : null}
-      {lesson.transcript.length > 0 ? (
+      {cues.length > 0 ? (
         <>
           <SectionTitle>{t('learn.lesson.transcript')}</SectionTitle>
           {!lesson.video ? <Text tone="muted">{t('learn.lesson.noVideo')}</Text> : null}
           {!lesson.video
-            ? lesson.transcript.map((cue, i) => (
+            ? cues.map((cue, i) => (
                 <View key={`${cue.seconds}-${i}`} style={styles.cue}>
                   <Text tone="muted" style={styles.time}>
                     {clock(cue.seconds)}
@@ -168,20 +240,22 @@ function Player({ lesson, startAt }: { lesson: LearnLesson; startAt: number | nu
                 </View>
               ))
             : null}
-          {lesson.video ? lesson.transcript.map((cue, i) => (
-            <Pressable
-              key={`${cue.seconds}-${i}`}
-              accessibilityRole="button"
-              accessibilityLabel={`${t('learn.lesson.jump', { time: clock(cue.seconds) })}. ${cue.text}`}
-              onPress={() => jump(cue.seconds)}
-              style={({ pressed }) => [styles.cue, (pressed || cue.seconds === startAt) && styles.cueActive]}
-            >
-              <Text weight="bold" tone="action" style={styles.time}>
-                {clock(cue.seconds)}
-              </Text>
-              <Text style={styles.flex}>{cue.text}</Text>
-            </Pressable>
-          )) : null}
+          {lesson.video
+            ? cues.map((cue, i) => (
+                <Pressable
+                  key={`${cue.seconds}-${i}`}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${t('learn.lesson.jump', { time: clock(cue.seconds) })}. ${cue.text}`}
+                  onPress={() => jump(cue.seconds)}
+                  style={({ pressed }) => [styles.cue, (pressed || cue.seconds === startAt) && styles.cueActive]}
+                >
+                  <Text weight="bold" tone="action" style={styles.time}>
+                    {clock(cue.seconds)}
+                  </Text>
+                  <Text style={styles.flex}>{cue.text}</Text>
+                </Pressable>
+              ))
+            : null}
         </>
       ) : null}
     </View>
@@ -193,6 +267,7 @@ const styles = StyleSheet.create((theme) => ({
   video: { width: '100%', aspectRatio: 16 / 9, borderRadius: theme.radius.lg, backgroundColor: theme.colors.surfaceMuted },
   cue: { flexDirection: 'row', gap: theme.space.sm, minHeight: 48, paddingVertical: theme.space.xs, paddingHorizontal: theme.space.xs, borderRadius: theme.radius.md },
   cueActive: { backgroundColor: theme.colors.actionTint },
+  controls: { flexDirection: 'row', flexWrap: 'wrap', gap: theme.space.sm, alignItems: 'center' },
   time: { width: 56 },
   flex: { flex: 1 },
 }));

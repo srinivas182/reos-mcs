@@ -83,15 +83,17 @@ describe('course player (screen 5, A8.2)', () => {
     it('stops for a check-in until it is answered, and explains a wrong answer', async () => {
         const user = userEvent.setup();
         fetchMock.mockImplementation((url: string) =>
-            url.endsWith('/checkins')
-                ? reply({
-                      correct: false,
-                      explanation:
-                          'It is given at the first substantive communication.',
-                      source: 'TREC Rule §531.20',
-                      state: counting,
-                  })
-                : reply({ data: { ...counting, checkin: question } }),
+            url.endsWith('/report')
+                ? reply({ id: 1, status: 'open' })
+                : url.endsWith('/checkins')
+                  ? reply({
+                        correct: false,
+                        explanation:
+                            'It is given at the first substantive communication.',
+                        source: 'TREC Rule §531.20',
+                        state: counting,
+                    })
+                  : reply({ data: { ...counting, checkin: question } }),
         );
         render(
             <LessonPage
@@ -119,6 +121,16 @@ describe('course player (screen 5, A8.2)', () => {
             key: 'checkin:12',
             choice: 2,
         });
+
+        await user.click(
+            screen.getByRole('button', { name: 'Report this question' }),
+        );
+        await user.click(screen.getByRole('button', { name: 'Send report' }));
+        expect(
+            fetchMock.mock.calls.some(
+                ([u]) => String(u) === '/learn/questions/41/report',
+            ),
+        ).toBe(true);
 
         await user.click(screen.getByRole('button', { name: 'Continue' }));
         await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
