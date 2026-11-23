@@ -33,6 +33,33 @@ enum LegalRule: string
         };
     }
 
+    /** The rule behind the check, shown beside a flagged line (A8.1, screen 44). */
+    public function source(): string
+    {
+        return match ($this) {
+            self::Guarantee, self::RiskFree, self::Superlative => '22 TAC §535.155 (advertising)',
+            self::PassRate => '22 TAC §535.155; TREC pass rates are public by provider',
+            self::ApprovalClaim => '22 TAC §535.65 (approved courses and approval numbers)',
+        };
+    }
+
+    /**
+     * Plain words that say the same thing within the rules, used to rewrite a
+     * flagged line when Claude isn't set up (A8.1).
+     *
+     * @return array{en: string, es: string}
+     */
+    public function replacement(): array
+    {
+        return match ($this) {
+            self::Guarantee => ['en' => 'help you prepare for', 'es' => 'le ayuda a prepararse para'],
+            self::PassRate => ['en' => 'many of our students pass', 'es' => 'muchos de nuestros estudiantes aprueban'],
+            self::RiskFree => ['en' => 'with a clear refund policy', 'es' => 'con una política de reembolso clara'],
+            self::ApprovalClaim => ['en' => 'approved course number on record', 'es' => 'número de aprobación registrado'],
+            self::Superlative => ['en' => 'a trusted Texas school', 'es' => 'una escuela de Texas de confianza'],
+        };
+    }
+
     /** An approval claim is fine when the course has its approval numbers recorded. */
     public function waivedByApproval(): bool
     {

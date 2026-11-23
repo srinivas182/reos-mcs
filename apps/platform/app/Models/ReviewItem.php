@@ -18,6 +18,10 @@ use Illuminate\Support\Carbon;
  * @property string $kind checkin, question or flashcard
  * @property int|null $after_line
  * @property string|null $topic
+ * @property string|null $difficulty
+ * @property string|null $portion national or state (with the topic, the exam-outline mapping)
+ * @property int|null $reviewed_by
+ * @property Carbon|null $reviewed_at
  * @property array<string, mixed> $content
  * @property string $status to_review, approved or rejected
  * @property Carbon|null $created_at
@@ -28,11 +32,15 @@ final class ReviewItem extends Model
 {
     public const TO_REVIEW = 'to_review';
 
-    protected $fillable = ['lesson_id', 'lesson_version_id', 'kind', 'after_line', 'topic', 'content', 'status'];
+    public const APPROVED = 'approved';
+
+    public const REJECTED = 'rejected';
+
+    protected $fillable = ['lesson_id', 'lesson_version_id', 'kind', 'after_line', 'topic', 'difficulty', 'portion', 'content', 'status', 'reviewed_by', 'reviewed_at'];
 
     protected function casts(): array
     {
-        return ['content' => 'array', 'after_line' => 'integer'];
+        return ['content' => 'array', 'after_line' => 'integer', 'reviewed_at' => 'datetime'];
     }
 
     /** @return BelongsTo<Lesson, $this> */

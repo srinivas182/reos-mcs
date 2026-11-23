@@ -888,21 +888,16 @@ entries:
       needed_by_sprint: 8
       apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
       status: not_started
-    sandbox: A test account's API token (Lead Engine › Lead Dropbox) and Developer Portal access.
+    sandbox: Partner sandbox on approval.
     credentials: tenant
     connection:
-      auth: api_key
+      auth: oauth2
       accounts: user
       fields:
-        - { key: server_url, default: "https://api.kvcore.com/v2/public" }
+        - { key: client_id }
+        - { key: client_secret, secret: true }
     personal_data: true
     cost: Partner terms on application.
-    notes: >-
-      B7.3 (ADR 0029): each agent connects with their own kvCORE API token (Bearer). REOS polls every 15 minutes (no
-      webhooks): GET /contacts (paged, newest first), GET /contact/{id}/notes for contacts that changed, GET /tasks;
-      writes PUT /contact/{id} (status), POST /contact/{id}/action/note and PUT /task/{id} (complete). Smart campaign
-      status is read from the contact and shown, never changed. Confirm paths and fields against the V2 API when
-      the test token arrives.
     fallback: CSV import.
 
   - id: salesforce

@@ -60,7 +60,9 @@
     "instructors": "Instructores",
     "avatar": "Avatar de IA",
     "courseBuilder": "Creador de cursos",
-    "courseCatalogue": "Catálogo de cursos"
+    "courseCatalogue": "Catálogo de cursos",
+    "aiLessons": "Lecciones con IA",
+    "questionBank": "Banco de preguntas"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2082,7 +2084,23 @@
         "lesson.regenerated": "Generó de nuevo una lección",
         "avatar.twins_recorded": "Registró identificadores de avatar",
         "contact.merged": "Combinó dos contactos",
-        "contact.split": "Separó un contacto combinado"
+        "contact.split": "Separó un contacto combinado",
+        "lesson.line_approved": "Aprobó una línea de lección",
+        "lesson.line_edited": "Editó una línea de lección",
+        "lesson.suggestion_used": "Usó una reescritura sugerida",
+        "lesson.item_approved": "Aprobó una verificación o tarjeta de estudio",
+        "lesson.item_rejected": "Rechazó una verificación o tarjeta de estudio",
+        "lesson.published": "Aprobó y publicó una lección con IA",
+        "lesson.sent_back": "Devolvió una lección con IA",
+        "lesson.rerendered": "Volvió a grabar una lección con IA",
+        "question.edited": "Editó una pregunta",
+        "question.approved": "Aprobó una pregunta",
+        "question.rejected": "Rechazó una pregunta",
+        "question.corrected": "Corrigió una pregunta reportada",
+        "question.kept": "Conservó una pregunta reportada",
+        "lesson.suggestion_made": "Pidió una reescritura sugerida",
+        "lesson.line_commented": "Comentó una línea de lección",
+        "lesson.line_rerecord": "Marcó una línea para grabarla de nuevo"
       }
     }
   },
@@ -4163,7 +4181,8 @@
       "content_post": "Publicación del estudio de contenido",
       "short_video": "Video corto",
       "ai_lesson_minute": "Minuto de lección con IA (escuelas)",
-      "voice_todo": "Tarea por voz"
+      "voice_todo": "Tarea por voz",
+      "ai_suggestion": "Reescritura con IA de una línea marcada (escuelas)"
     },
     "monthly": "Predeterminado por puesto, cada mes",
     "creditPack": "Paquete de créditos",
@@ -4617,7 +4636,8 @@
       "session_starting": "Sesión por comenzar",
       "session_booked": "Sesiones programadas o canceladas",
       "approval_expiring": "Aprobaciones de cursos y tiempo de clase",
-      "avatar_consent_ended": "Consentimiento de avatar terminado"
+      "avatar_consent_ended": "Consentimiento de avatar terminado",
+      "content_review": "Revisiones de lecciones y preguntas"
     },
     "digest": {
       "subject": {
@@ -5321,6 +5341,159 @@
       "sources": "Orígenes",
       "stage": "Etapa",
       "campaign": "Campaña inteligente en {{source}}: {{name}} ({{status}})"
+    }
+  },
+  "review": {
+    "errors": {
+      "flagged": "Corrija las palabras marcadas antes de aprobar esta línea.",
+      "notFlagged": "Esta línea no tiene ninguna alerta que corregir.",
+      "noSuggestion": "Primero obtenga una sugerencia.",
+      "nothingToRecord": "Ninguna línea está esperando a grabarse de nuevo.",
+      "questionsInBank": "Las preguntas se revisan en el banco de preguntas.",
+      "notReady": "Esta lección todavía no está lista para publicarse.",
+      "published": "Esta versión ya está publicada.",
+      "noLine": "Esa línea no está en esta versión.",
+      "correct": "Elija la respuesta correcta entre las opciones.",
+      "mapping": "Una pregunta necesita un origen, un tema y una parte del examen antes de aprobarse.",
+      "reason": "Elija un motivo."
+    },
+    "blockers": {
+      "video": "{1} Los videos todavía no están listos|[2,*] Los videos todavía no están listos",
+      "flags": "{1} :count línea tiene una alerta legal|[2,*] :count líneas tienen alertas legales",
+      "lines": "{1} Falta aprobar :count línea|[2,*] Faltan aprobar :count líneas",
+      "rerecord": "{1} :count línea por grabar de nuevo|[2,*] :count líneas por grabar de nuevo",
+      "items": "{1} :count verificación o tarjeta por revisar|[2,*] :count verificaciones o tarjetas por revisar"
+    },
+    "mail": {
+      "sentBack": ":name devolvió :lesson",
+      "open": "Abrir la lección",
+      "corrected": "La pregunta que usted reportó se corrigió",
+      "kept": "La pregunta que usted reportó se revisó y se conservó"
+    },
+    "rendering": "Se está grabando de nuevo la lección. La versión anterior se conserva.",
+    "published": "Lección aprobada y publicada.",
+    "sentBack": "Lección devuelta con su nota.",
+    "questionSaved": "Pregunta guardada.",
+    "disputeResolved": "Reporte resuelto. Se le avisa al estudiante.",
+    "list": {
+      "title": "Lecciones con IA",
+      "description": "Revise las lecciones con IA antes de que los estudiantes las vean.",
+      "emptyTitle": "Todavía no hay lecciones con IA",
+      "empty": "Genere un módulo en el creador de cursos y sus lecciones aparecerán aquí.",
+      "lesson": "Lección",
+      "course": "Curso",
+      "status": "Estado",
+      "version": "Versión",
+      "needs": "Pendiente",
+      "ready": "Nada",
+      "review": "Revisar"
+    },
+    "page": {
+      "description": "Apruebe las lecciones con IA línea por línea.",
+      "back": "Creador de cursos",
+      "publish": "Aprobar y publicar",
+      "sendBack": "Devolver",
+      "renderAgain": "Grabar de nuevo ({{count}})",
+      "blocked": "Antes de publicar",
+      "published": "Esta versión está aprobada y publicada.",
+      "sentBackNote": "Devuelta: {{note}}",
+      "video": "Video",
+      "noVideo": "El video todavía no está listo.",
+      "versions": "Versiones",
+      "versionRow": "Versión {{version}}",
+      "script": "Guion",
+      "line": "Línea {{n}}",
+      "lineStatus": {
+        "to_review": "Por revisar",
+        "approved": "Aprobada",
+        "changed": "Editada"
+      },
+      "flag": "{{rule}} ({{language}}). {{source}}",
+      "rerecord": "Volver a grabar la línea",
+      "willRerecord": "Se grabará de nuevo",
+      "approve": "Aprobar",
+      "edit": "Editar",
+      "suggest": "Sugerir una reescritura",
+      "suggestion": "Sugerencia",
+      "useSuggestion": "Usar la sugerencia",
+      "comment": "Comentar",
+      "commentLabel": "Comentario sobre la línea {{n}}",
+      "post": "Publicar comentario",
+      "editTitle": "Editar la línea {{n}}",
+      "editIntro": "La línea se revisa de nuevo y se graba de nuevo antes de publicar.",
+      "english": "Inglés",
+      "spanish": "Español",
+      "save": "Guardar línea",
+      "cancel": "Cancelar",
+      "items": "Verificaciones y tarjetas de estudio",
+      "checkin": "Verificación después de la línea {{n}}",
+      "flashcard": "Tarjeta de estudio",
+      "reject": "Rechazar",
+      "itemStatus": {
+        "to_review": "Por revisar",
+        "approved": "Aprobada",
+        "rejected": "Rechazada"
+      },
+      "sendBackTitle": "Devolver al autor",
+      "sendBackLabel": "Qué debe cambiar",
+      "sendBackGo": "Devolver",
+      "source": "{{source}}, página {{page}}"
+    }
+  },
+  "questions": {
+    "title": "Banco de preguntas",
+    "description": "Mantenga correctas las preguntas de los cuestionarios y exámenes.",
+    "tabs": {
+      "to_review": "Por revisar ({{count}})",
+      "approved": "Aprobadas ({{count}})",
+      "rejected": "Rechazadas ({{count}})",
+      "disputed": "En disputa ({{count}})"
+    },
+    "columns": {
+      "question": "Pregunta",
+      "topic": "Tema",
+      "difficulty": "Dificultad",
+      "source": "Origen",
+      "outline": "Temario del examen",
+      "actions": "Acciones"
+    },
+    "portions": {
+      "national": "Parte nacional",
+      "state": "Parte de Texas",
+      "none": "Sin asignar"
+    },
+    "difficulties": {
+      "easy": "Fácil",
+      "medium": "Media",
+      "hard": "Difícil"
+    },
+    "approve": "Aprobar",
+    "edit": "Editar",
+    "reject": "Rechazar",
+    "emptyTitle": "No hay nada aquí",
+    "empty": "Aquí aparecen para revisión las preguntas creadas con sus lecciones con IA.",
+    "editTitle": "Editar pregunta",
+    "prompt": "Pregunta",
+    "option": "Opción {{n}}",
+    "explanation": "Por qué (explicación)",
+    "correct": "Respuesta correcta",
+    "save": "Guardar pregunta",
+    "cancel": "Cancelar",
+    "disputes": {
+      "reason": {
+        "wrong_answer": "Dice que la respuesta es incorrecta",
+        "unclear": "Dice que no es clara",
+        "out_of_date": "Dice que está desactualizada",
+        "other": "Otro"
+      },
+      "by": "Reportada por {{name}}",
+      "answer": "Respuesta correcta: {{answer}}",
+      "resolution": "Qué decirle al estudiante",
+      "keep": "Conservar como está",
+      "correct": "Corregida",
+      "correctHint": "Primero edite la pregunta en Aprobadas y luego márquela como corregida.",
+      "emptyTitle": "No hay reportes",
+      "empty": "Cuando un estudiante reporte una pregunta, aparecerá aquí."
     }
   }
 }

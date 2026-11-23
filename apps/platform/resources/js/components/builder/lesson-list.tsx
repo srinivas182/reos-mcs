@@ -1,4 +1,4 @@
-import { router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { ArrowDown, ArrowUp, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,7 @@ import {
     store,
     update,
 } from '@/routes/builder/lessons';
+import { show as reviewShow } from '@/routes/builder/review';
 import { LessonDraftDialog } from './lesson-draft';
 import type { LessonRow } from './types';
 import { statusTone } from './types';
@@ -104,6 +105,16 @@ export function LessonList({
                                     >
                                         {t('builder.ai.view')}
                                     </Button>
+                                    {lesson.status === 'in_review' ? (
+                                        <Button size="sm" asChild>
+                                            <Link
+                                                href={reviewShow(lesson.id)}
+                                                aria-label={`${t('review.list.review')}: ${lesson.title}`}
+                                            >
+                                                {t('review.list.review')}
+                                            </Link>
+                                        </Button>
+                                    ) : null}
                                 </>
                             ) : null}
                             <Button

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Learn\LearnController;
+use App\Http\Controllers\Api\Learn\QuestionReportController;
 use App\Http\Controllers\Api\Licences\LicenceController;
 use App\Http\Controllers\Api\MeController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
@@ -178,6 +179,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('tool-requests', [CatalogueController::class, 'request'])->middleware('throttle:10,60,api-tool-requests-store')->name('api.tool-requests.store');
 
     // Connections (B3.1, ADR 0013).
+    // Report a question (A8.1).
+    Route::post('questions/{question}/report', [QuestionReportController::class, 'store'])->whereNumber('question')->middleware('throttle:20,1,api-question-report')->name('api.questions.report');
     // Contacts (B7.1, ADR 0027): one person, all sources.
     Route::get('contacts', [ContactController::class, 'index'])->name('api.contacts.index');
     Route::get('contacts/activity', [ContactController::class, 'activity'])->name('api.contacts.activity');

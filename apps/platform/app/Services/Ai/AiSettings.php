@@ -34,6 +34,7 @@ final readonly class AiSettings
         'content_post' => 5,
         'short_video' => 30,
         'ai_lesson_minute' => 10,
+        'ai_suggestion' => 1,
         'voice_todo' => 1,
     ];
 

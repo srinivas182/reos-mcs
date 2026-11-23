@@ -17,6 +17,7 @@ import {
     Plug,
     Settings,
     ShieldCheck,
+    ListChecks,
     Sparkles,
     Tag,
     Users,
@@ -48,6 +49,8 @@ import { edit as profile } from '@/routes/profile';
 import { index as states } from '@/routes/states';
 import { index as tenantsIndex } from '@/routes/tenants';
 import { index as builderIndex } from '@/routes/builder';
+import { index as questionsIndex } from '@/routes/builder/questions';
+import { index as reviewIndex } from '@/routes/builder/review';
 import { index as schoolApprovals } from '@/routes/school/approvals';
 import { index as schoolInstructors } from '@/routes/school/instructors';
 import type { RoleName } from '@/types/auth';
@@ -84,7 +87,9 @@ export type NavLabel =
     | 'stateApprovals'
     | 'instructors'
     | 'courseBuilder'
-    | 'courseCatalogue';
+    | 'courseCatalogue'
+    | 'aiLessons'
+    | 'questionBank';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -210,8 +215,14 @@ export function roleNavigation(
             messages,
             // The course builder (A7.2, screen 43).
             item('courseBuilder', Layers, builderIndex(), '/course-builder'),
-            planned('aiLessons'),
-            planned('questionBank'),
+            // AI lesson review (screen 44) and question bank (screen 45), A8.1.
+            item('aiLessons', Sparkles, reviewIndex(), '/ai-lessons'),
+            item(
+                'questionBank',
+                ListChecks,
+                questionsIndex(),
+                '/question-bank',
+            ),
             // Sessions and live classes (B6.3, flag `video_rooms`); the CE report follows.
             options.sessions
                 ? item('liveClasses', Video, sessionsIndex(), '/sessions')
