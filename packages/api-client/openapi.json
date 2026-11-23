@@ -4162,13 +4162,20 @@
                                                                 "string",
                                                                 "null"
                                                             ]
+                                                        },
+                                                        "qualities": {
+                                                            "type": "object",
+                                                            "additionalProperties": {
+                                                                "type": "string"
+                                                            }
                                                         }
                                                     },
                                                     "required": [
                                                         "type",
                                                         "url",
                                                         "duration",
-                                                        "poster"
+                                                        "poster",
+                                                        "qualities"
                                                     ]
                                                 },
                                                 "transcript": {
@@ -7864,13 +7871,20 @@
                                                                         "string",
                                                                         "null"
                                                                     ]
+                                                                },
+                                                                "qualities": {
+                                                                    "type": "object",
+                                                                    "additionalProperties": {
+                                                                        "type": "string"
+                                                                    }
                                                                 }
                                                             },
                                                             "required": [
                                                                 "type",
                                                                 "url",
                                                                 "duration",
-                                                                "poster"
+                                                                "poster",
+                                                                "qualities"
                                                             ]
                                                         },
                                                         "transcript": {
@@ -9117,6 +9131,168 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/learn/lessons/{lesson}/ask": {
+            "post": {
+                "operationId": "learn.ask",
+                "description": "Mid-lesson: an answer from this course only, with where it comes from;\n`simpler`, `spanish` or `quiz` build on the previous answer. Says so\nwhen the course doesn't cover it. One AI credit when Claude answers\n(402 with none left); candidates' come from their sponsor.",
+                "summary": "Ask the instructor (Interrupt and ask)",
+                "tags": [
+                    "Player"
+                ],
+                "parameters": [
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AskInstructorRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "answer": {
+                                            "type": "string"
+                                        },
+                                        "sources": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "lesson_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "lesson": {
+                                                        "type": "string"
+                                                    },
+                                                    "seconds": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "page": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "heading": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "text": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "lesson_id",
+                                                    "lesson",
+                                                    "seconds",
+                                                    "page",
+                                                    "heading",
+                                                    "text"
+                                                ]
+                                            }
+                                        },
+                                        "quiz": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "prompt": {
+                                                    "type": "string"
+                                                },
+                                                "options": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "correct": {
+                                                    "type": "integer"
+                                                },
+                                                "explanation": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "prompt",
+                                                "options",
+                                                "correct",
+                                                "explanation"
+                                            ]
+                                        },
+                                        "engine": {
+                                            "type": "string",
+                                            "enum": [
+                                                "ai",
+                                                "simulator",
+                                                "none"
+                                            ]
+                                        },
+                                        "found": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "answer",
+                                        "sources",
+                                        "quiz",
+                                        "engine",
+                                        "found"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -15194,6 +15370,52 @@
                     "preview"
                 ],
                 "title": "AppConfigResource"
+            },
+            "AskInstructorRequest": {
+                "type": "object",
+                "description": "A question asked mid-lesson (Interrupt and ask).",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 500
+                    },
+                    "mode": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "ask, simpler, spanish or quiz.",
+                        "enum": [
+                            "ask",
+                            "simpler",
+                            "spanish",
+                            "quiz",
+                            null
+                        ]
+                    },
+                    "previous": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The answer being explained again (simpler, spanish).",
+                        "maxLength": 2000
+                    },
+                    "at": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Where the video was paused, in seconds.",
+                        "minimum": 0,
+                        "maximum": 86400
+                    }
+                },
+                "required": [
+                    "question"
+                ],
+                "title": "AskInstructorRequest"
             },
             "BrokerRole": {
                 "type": "string",

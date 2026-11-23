@@ -3478,7 +3478,35 @@
       "noVideo": "Video not added yet. This is the transcript only."
     },
     "noCredit": "Not approved for credit in {{state}} yet",
-    "credit": "{{type}} · approval {{number}}"
+    "credit": "{{type}} · approval {{number}}",
+    "ask": {
+      "notFound": "This course doesn't cover that yet. Try other words, or ask about this lesson.",
+      "noCredits": "You're out of AI credits this month. Add more in Plan and billing.",
+      "sim": {
+        "simpler": "In short: :text",
+        "spanish": ":text",
+        "none": "None of these",
+        "quizPrompt": "Which of these is from “:lesson”?",
+        "quizWhy": "It's what the lesson says, in its own words."
+      },
+      "bar": "Ask the instructor about this lesson",
+      "label": "Your question",
+      "submit": "Ask",
+      "asking": "Thinking…",
+      "paused": "Paused at {{time}}",
+      "title": "Ask the instructor",
+      "simpler": "Explain simpler",
+      "spanish": "En español",
+      "quiz": "Quiz me",
+      "resume": "Resume lesson",
+      "from": "From “{{lesson}}”",
+      "play": "Play from {{time}}",
+      "check": "Check answer",
+      "right": "That's right.",
+      "wrong": "Not quite.",
+      "demo": "Demo answer: AI isn't connected yet, so this is the course's own words.",
+      "notCovered": "Not covered in this course"
+    }
   },
   "billing": {
     "errors": {
@@ -5567,7 +5595,9 @@
         "empty": "That file has no rows under the header.",
         "tooMany": "That file has more than :max rows. Split it and import each part.",
         "noName": "Match at least a name, an email or a phone column.",
-        "state": "That import has already run."
+        "state": "That import has already run.",
+        "infected": "That file looks unsafe, so it was deleted.",
+        "scanner": "We can't check files for viruses right now. Please try again in a few minutes."
       }
     },
     "crms": {
@@ -5832,6 +5862,24 @@
         "out_of_date": "It's out of date",
         "other": "Something else"
       }
+    },
+    "settings": {
+      "open": "Playback settings",
+      "title": "Playback settings",
+      "quality": "Quality",
+      "qualityHint": "On Wi-Fi, Auto picks the best the connection allows.",
+      "qualities": {
+        "auto": "Auto",
+        "720p": "720p (HD)",
+        "540p": "540p",
+        "360p": "360p"
+      },
+      "use": "About {{size}} an hour",
+      "dataSaver": "Data saver on mobile data",
+      "dataSaverHint": "360p on mobile data; Auto again on Wi-Fi.",
+      "onCellular": "On mobile data now",
+      "onWifi": "On Wi-Fi now",
+      "audioUse": "About 60 MB an hour"
     }
   },
   "practice": {

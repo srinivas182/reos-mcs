@@ -49,7 +49,7 @@ const lesson: LearnLesson = {
   course: { id: 3, title: 'Principles of Real Estate II' },
   sections: [{ heading: 'First contact', text: 'Give the IABS at the first substantive contact.' }],
   documents: [{ id: 12, kind: 'slides', name: 'slides.pdf', url: 'https://files.example/slides.pdf', pages: [{ page: 1, text: 'Agency' }, { page: 2, text: 'Information About Brokerage Services' }] }],
-  video: { type: 'hls', url: 'https://stream.mux.com/play-1.m3u8?token=x', duration: 754, poster: null },
+  video: { type: 'hls', url: 'https://stream.mux.com/play-1.m3u8?token=x', duration: 754, poster: null, qualities: {} },
   transcript: [
     { seconds: 1, text: 'Welcome back.' },
     { seconds: 245, text: 'Hand them the IABS form.' },

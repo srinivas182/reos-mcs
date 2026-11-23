@@ -249,6 +249,19 @@
     - import in the background as "CSV import, date";
     - undo from the list of past imports.
 
+### Sprint 8 wrap-up (as built)
+
+- **Interrupt and ask** (web player and phone player; candidate screen 9, agent screen 94, ADR 0030 §12):
+  - asking pauses at the second and answers from this course only, with where it's from;
+  - then Explain simpler, En español, Quiz me, Resume, or Play from the cited second;
+  - says plainly when the course doesn't cover the question;
+  - one AI credit per Claude answer (sponsored for candidates); free in demo mode.
+- **Playback settings** (phone, candidate screen 26, ADR 0030 §11):
+  - Quality (Auto, 720p, 540p, 360p), Data saver, Speed, Captions and Audio only, with data use per hour;
+  - Auto on Wi-Fi; 540p, or 360p with data saver, on mobile data;
+  - capped streams signed by Mux per quality.
+- **CSV files are virus-scanned** before they're read. An infected file, or one that can't be scanned, is refused and deleted; files are deleted once imported (Definition of done).
+
 ## 4. Definition of done (whole sprint)
 
 - Each sub-sprint has its own PR with green CI, merged before the next starts.

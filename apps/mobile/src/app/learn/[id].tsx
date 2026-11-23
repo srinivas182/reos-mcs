@@ -1,18 +1,21 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import * as WebBrowser from 'expo-web-browser';
-import { CircleCheck, Download, ExternalLink, Headphones, RotateCcw } from 'lucide-react-native';
+import { CircleCheck, Download, ExternalLink, Headphones, RotateCcw, Settings2 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
+import { AskInstructor } from '@/features/player/AskInstructor';
 import { CheckinSheet } from '@/features/player/CheckinSheet';
+import { PlaybackSheet } from '@/features/player/PlaybackSheet';
 import { SeatMeter } from '@/features/player/SeatMeter';
 import { clock, type LearnLesson, loadLesson } from '@/lib/learn';
 import { offlineLesson, playable, SaveError, type SavedLesson, saveLesson, savedFor, smartDownload } from '@/lib/offline';
+import { effectiveQuality, streamFor, useCellular, usePlayback } from '@/lib/playback';
 import { configurePlayer, SPEEDS, useSeatTime } from '@/lib/player';
-import { Button, Callout, Card, Chip, EmptyState, Icon, PillGroup, Screen, SectionTitle, SwitchRow, Text, TitleBar } from '@/ui';
+import { Button, Callout, Card, Chip, EmptyState, Icon, Screen, SectionTitle, Text, TitleBar } from '@/ui';
 
 const number = (value: string | string[] | undefined): number | null => {
   const parsed = typeof value === 'string' ? Number.parseInt(value, 10) : Number.NaN;
@@ -145,14 +148,19 @@ export default function LessonScreen() {
 
 /**
  * The player (candidate screen 25, A8.2): the video, from the phone's saved
- * copy when there is one, with Back 10 seconds, speed, audio only, captions
- * in either language and Save offline; the seat meter and check-ins; and the
+ * copy when there is one, with Back 10 seconds, Save offline and Playback
+ * settings (screen 26: quality per connection, data saver, speed, captions,
+ * audio only); the seat meter and check-ins; Interrupt and ask; and the
  * transcript (tap a line to play from there).
  */
 function Player({ lesson, startAt, saved, onSaved }: { lesson: LearnLesson; startAt: number | null; saved: SavedLesson | undefined; onSaved: () => void }) {
   const { t, i18n } = useTranslation();
   const local = saved && playable(saved) ? saved.uri : null;
-  const source = local ?? lesson.video?.url ?? null;
+  const playback = usePlayback();
+  const cellular = useCellular();
+  const quality = effectiveQuality(playback, cellular);
+  const source = local ?? (lesson.video ? streamFor(lesson.video, quality) : null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const player = useVideoPlayer(source, (p) => {
     if (startAt !== null) p.currentTime = startAt;
   });
@@ -212,6 +220,7 @@ function Player({ lesson, startAt, saved, onSaved }: { lesson: LearnLesson; star
           {startAt !== null ? <Text tone="muted">{t('learn.lesson.startsAt', { time: clock(startAt) })}</Text> : null}
           <View style={styles.controls}>
             <Button label={t('player.back10')} variant="secondary" icon={RotateCcw} onPress={() => player.seekBy(-10)} />
+            <Button label={t('player.settings.open')} variant="secondary" icon={Settings2} onPress={() => setSettingsOpen(true)} />
             {saved ? (
               <Chip label={playable(saved) ? t('player.downloads.saved') : t('player.downloads.expired')} tone={playable(saved) ? 'success' : 'warning'} icon={CircleCheck} />
             ) : (
@@ -219,13 +228,35 @@ function Player({ lesson, startAt, saved, onSaved }: { lesson: LearnLesson; star
             )}
           </View>
           {saveError ? <Callout tone="warning" title={saveError} live /> : null}
-          <PillGroup label={t('player.speed')} value={String(speed)} options={SPEEDS.map((v) => ({ value: String(v), label: `${v}×` }))} onChange={(v) => chooseSpeed(Number(v) as (typeof SPEEDS)[number])} />
-          {languages.length > 1 ? (
-            <PillGroup label={t('player.captions')} value={shown} options={languages.map((l) => ({ value: l, label: t(`player.languages.${l}`) }))} onChange={setShown} />
-          ) : null}
-          <SwitchRow label={t('player.audioOnly')} description={t('player.audioOnlyHint')} value={audioOnly} onValueChange={chooseAudioOnly} />
+          <PlaybackSheet
+            open={settingsOpen}
+            onClose={() => setSettingsOpen(false)}
+            cellular={cellular}
+            speed={speed}
+            onSpeed={chooseSpeed}
+            languages={languages}
+            captions={shown}
+            onCaptions={setShown}
+            audioOnly={audioOnly}
+            onAudioOnly={chooseAudioOnly}
+            qualities={local === null && Object.keys(lesson.video.qualities).length > 0}
+          />
         </>
       ) : null}
+      <AskInstructor
+        lesson={lesson.id}
+        pause={() => {
+          if (!lesson.video) return null;
+          player.pause();
+
+          return Math.floor(player.currentTime);
+        }}
+        resume={(seconds) => {
+          if (!lesson.video) return;
+          if (seconds !== undefined) player.seekBy(seconds - player.currentTime);
+          player.play();
+        }}
+      />
       {cues.length > 0 ? (
         <>
           <SectionTitle>{t('learn.lesson.transcript')}</SectionTitle>

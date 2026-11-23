@@ -62,7 +62,7 @@ const lesson: LearnLesson = {
   course: { id: 3, title: 'Texas Agency Law Update' },
   sections: [],
   documents: [],
-  video: { type: 'hls', url: 'https://stream.mux.com/play-1.m3u8?token=x', duration: 7200, poster: null },
+  video: { type: 'hls', url: 'https://stream.mux.com/play-1.m3u8?token=x', duration: 7200, poster: null, qualities: { '720p': 'https://stream.mux.com/play-1.m3u8?token=720', '540p': 'https://stream.mux.com/play-1.m3u8?token=540', '360p': 'https://stream.mux.com/play-1.m3u8?token=360' } },
   transcript: [{ seconds: 1, text: 'Welcome back.' }],
   captions: { en: [{ seconds: 1, text: 'Welcome back.' }], es: [{ seconds: 1, text: 'Bienvenido de nuevo.' }] },
   previous: null,
@@ -147,10 +147,55 @@ describe('the phone player (screen 25)', () => {
     await fireEvent.press(screen.getByRole('button', { name: 'Send report' }));
     expect(mockApi.POST).toHaveBeenCalledWith('/questions/{question}/report', { params: { path: { question: 41 } }, body: { reason: 'wrong_answer' } });
 
+    await fireEvent.press(screen.getByRole('button', { name: 'Playback settings' }));
     await fireEvent.press(screen.getByLabelText('1.5×'));
     expect(player.playbackRate).toBe(1.5);
     await fireEvent.press(screen.getByLabelText('Spanish'));
     expect(screen.getByText('Bienvenido de nuevo.')).toBeTruthy();
+  });
+
+  it('caps quality on mobile data with data saver, and lets the learner pick (screen 26)', async () => {
+    const { setPlayback } = jest.requireActual<typeof import('@/lib/playback')>('@/lib/playback');
+    setPlayback({ quality: 'auto', dataSaver: true });
+    jest.mocked(Network.useNetworkState).mockReturnValue({ isConnected: true, isInternetReachable: true, type: Network.NetworkStateType.CELLULAR });
+    jest.mocked(useLocalSearchParams).mockReturnValue({ id: '7' });
+    mockApi.GET.mockResolvedValue(ok({ data: lesson }));
+    const { useVideoPlayer } = jest.requireMock<{ useVideoPlayer: jest.Mock }>('expo-video');
+
+    await render(wrap(<LessonScreen />));
+    await screen.findByRole('button', { name: 'Playback settings' });
+    expect(useVideoPlayer).toHaveBeenLastCalledWith('https://stream.mux.com/play-1.m3u8?token=360', expect.any(Function));
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Playback settings' }));
+    expect(screen.getByText('On mobile data now')).toBeTruthy();
+    await fireEvent.press(screen.getByText('720p (HD)'));
+    expect(useVideoPlayer).toHaveBeenLastCalledWith('https://stream.mux.com/play-1.m3u8?token=720', expect.any(Function));
+    setPlayback({ quality: 'auto', dataSaver: true });
+  });
+
+  it('pauses to ask the instructor, answers from the course, and resumes', async () => {
+    jest.mocked(useLocalSearchParams).mockReturnValue({ id: '7' });
+    mockApi.GET.mockResolvedValue(ok({ data: lesson }));
+    mockApi.POST.mockImplementation(async (path: string) =>
+      path.endsWith('/ask')
+        ? ok({ answer: 'At the first substantive contact.', sources: [{ lesson_id: 7, lesson: 'Agency disclosure', seconds: 245, page: null, heading: null, text: '…' }], quiz: null, engine: 'ai', found: true })
+        : ok({ data: state }),
+    );
+    const { __player: player } = jest.requireMock<{ __player: { pause: jest.Mock; play: jest.Mock; currentTime: number } }>('expo-video');
+    player.currentTime = 312;
+
+    await render(wrap(<LessonScreen />));
+    await fireEvent.changeText(await screen.findByLabelText('Ask the instructor about this lesson'), 'When is the IABS given?');
+    await fireEvent.press(screen.getByRole('button', { name: 'Ask' }));
+
+    expect(await screen.findByText('At the first substantive contact.')).toBeTruthy();
+    expect(player.pause).toHaveBeenCalled();
+    expect(screen.getByText('Paused at 5:12')).toBeTruthy();
+    expect(mockApi.POST).toHaveBeenCalledWith('/learn/lessons/{lesson}/ask', { params: { path: { lesson: 7 } }, body: { question: 'When is the IABS given?', mode: 'ask', previous: null, at: 312 } });
+
+    await fireEvent.press(screen.getByRole('button', { name: 'Play from 4:05' }));
+    expect(player.currentTime).toBe(245);
+    expect(player.play).toHaveBeenCalled();
   });
 
   it('saves a lesson offline on Wi-Fi, with its key in secure storage', async () => {

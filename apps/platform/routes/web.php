@@ -175,6 +175,7 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::controller(PlayerController::class)->prefix('learn')->name('learn.')->group(function () {
         Route::post('lessons/{lesson}/heartbeat', 'heartbeat')->whereNumber('lesson')->middleware('throttle:12,1,learn-heartbeat')->name('heartbeat');
         Route::post('lessons/{lesson}/checkins', 'checkin')->whereNumber('lesson')->middleware('throttle:30,1,learn-checkin')->name('checkin');
+        Route::post('lessons/{lesson}/ask', 'ask')->whereNumber('lesson')->middleware('throttle:20,1,learn-ask')->name('ask');
     });
     Route::post('learn/questions/{question}/report', [QuestionReportController::class, 'store'])->whereNumber('question')->middleware('throttle:20,1,learn-question-report')->name('learn.questions.report');
 });

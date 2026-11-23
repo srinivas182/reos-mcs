@@ -203,22 +203,36 @@ final readonly class Learning
         return $sections;
     }
 
-    /** @return array{type: 'hls'|'file', url: string, duration: int|null, poster: string|null} */
+    /** Caps the phone can choose (screen 26): lower ones save mobile data. */
+    public const QUALITIES = ['720p', '540p', '360p'];
+
+    /**
+     * The stream (adaptive), plus the same stream capped at each quality for
+     * the phone's playback settings (screen 26, Sprint 8 wrap-up).
+     *
+     * @return array{type: 'hls'|'file', url: string, duration: int|null, poster: string|null, qualities: array<string, string>}
+     */
     private function video(LessonMedia $video): array
     {
         $id = $video->mux_playback_id;
         $mux = $id === null ? null : $this->videos->mux();
 
         if ($mux !== null) {
+            $qualities = [];
+            foreach (self::QUALITIES as $quality) {
+                $qualities[$quality] = "https://stream.mux.com/{$id}.m3u8?token=".$mux->token($id, 'v', self::LINK_MINUTES, ['max_resolution' => $quality]);
+            }
+
             return [
                 'type' => 'hls',
                 'url' => "https://stream.mux.com/{$id}.m3u8?token=".$mux->token($id, 'v', self::LINK_MINUTES),
                 'duration' => $video->duration_seconds,
                 'poster' => "https://image.mux.com/{$id}/thumbnail.webp?token=".$mux->token($id, 't', self::LINK_MINUTES),
+                'qualities' => $qualities,
             ];
         }
 
-        return ['type' => 'file', 'url' => $this->link($video), 'duration' => $video->duration_seconds, 'poster' => null];
+        return ['type' => 'file', 'url' => $this->link($video), 'duration' => $video->duration_seconds, 'poster' => null, 'qualities' => []];
     }
 
     private function link(LessonMedia $media): string
