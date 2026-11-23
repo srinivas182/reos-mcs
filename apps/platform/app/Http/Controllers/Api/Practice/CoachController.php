@@ -22,7 +22,7 @@ final class CoachController extends Controller
      * will bring back, and any drill still open), fix plans under way, and
      * every practice mode ranked by what helps most, each with why.
      *
-     * @response array{data: array{drill: array{topics: list<string>, questions: int, misses: int, open: int|null}, plans: list<array{id: int, topic: string, done: int, steps: int}>, ranked: list<array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'flashcards'|'speed'|'math'|'simulation'|'readiness', why: string, topic: string|null, plan_id: int|null, count: int|null}>}}
+     * @response array{data: array{drill: array{topics: list<string>, questions: int, misses: int, open: int|null}, plans: list<array{id: int, topic: string, done: int, steps: int}>, ranked: list<array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'flashcards'|'speed'|'math'|'simulation'|'readiness'|'exam_success', why: string, topic: string|null, plan_id: int|null, count: int|null, lesson_id: int|null}>}}
      */
     public function hub(#[CurrentUser] User $user, PracticeAccess $access, PracticeCoach $coach): JsonResponse
     {

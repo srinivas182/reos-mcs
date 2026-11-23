@@ -115,9 +115,9 @@ const coach: Coach = {
   drill: { topics: ['finance', 'math', 'state_rules'], questions: 15, misses: 4, open: null },
   plans: [{ id: 31, topic: 'finance', done: 2, steps: 5 }],
   ranked: [
-    { mode: 'plan', why: 'carry_on', topic: 'finance', plan_id: 31, count: null },
-    { mode: 'drill', why: 'weakest', topic: null, plan_id: null, count: null },
-    { mode: 'readiness', why: 'map', topic: null, plan_id: null, count: null },
+    { mode: 'plan', why: 'carry_on', topic: 'finance', plan_id: 31, count: null, lesson_id: null },
+    { mode: 'drill', why: 'weakest', topic: null, plan_id: null, count: null, lesson_id: null },
+    { mode: 'readiness', why: 'map', topic: null, plan_id: null, count: null, lesson_id: null },
   ],
 };
 /** The hub loads its tests and its ranking. */
@@ -320,6 +320,16 @@ describe('drills and fix plans (screens 38, 46 and 47, A9.2b)', () => {
 
     await fireEvent.press(screen.getByText('Carry on: Finance (2 of 5 done)'));
     expect(router.push).toHaveBeenCalledWith({ pathname: '/practice/fix/[id]', params: { id: '31' } });
+  });
+
+  it('suggests the Exam success course past 60% at the next lesson (A9.2f)', async () => {
+    const withCourse: Coach = { ...coach, ranked: [{ mode: 'exam_success', why: 'ready_soon', topic: null, plan_id: null, count: 7, lesson_id: 52 }] };
+    mockApi.GET.mockImplementation((path: string) => Promise.resolve(ok({ data: path === '/practice/hub' ? withCourse : [] })));
+    await render(wrap(<PracticeHub />));
+
+    await fireEvent.press(await screen.findByText('Exam success course (7 lessons left)'));
+    expect(screen.getByText("You're past 60%: learn how to take the exam.")).toBeTruthy();
+    expect(router.push).toHaveBeenCalledWith({ pathname: '/learn/[id]', params: { id: '52' } });
   });
 
   it('keeps the drill streak and strikes out an option with Hint', async () => {

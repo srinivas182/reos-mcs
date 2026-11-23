@@ -106,9 +106,23 @@ A candidate who passes one portion retakes only the other. Sprint 9 decision 1 s
     - **When none covers it,** the button says so instead of guessing.
 22. **The weekly progress report** covers Monday to Sunday in Texas time.
     - **What it counts:** minutes studied (course seat time, tests capped at four hours each, and speed rounds) against the plan's minutes, with minutes for each day; questions; flashcards; the readiness change from the nightly snapshots; lessons; course hours; the weakest topic; and the streak.
-    - **When it's sent:** Sunday at 17:45 as a push and email (notification kind `weekly_report`, Learning group), only to candidates who studied that week.
+    - **When it's sent:** Sunday at 17:45 as a push and email (notification kind `weekly_report`, Learning group), to candidates who studied in the last four weeks.
     - **Who sees it:** nobody else until the candidate shares it. **Share with my school** stores a copy for the school's **Students** page (school admins only). **A study-buddy link** is an unguessable UUID that shows the first name only and expires after 14 days.
     - **Copies:** a shared report is a snapshot, refreshed if shared again, so the school never queries a candidate's live data.
+
+## The Exam success course (A9.2f)
+
+23. **REOS writes the eight scripts** (decision 5): in English and Spanish, line by line, from the Pearson VUE Texas exam format and the TREC rules. They live in `database/data/exam_success.php`, with two practice questions per lesson.
+    - **Installing:** `reos:content:exam-success --reviewer=…` installs them through the AI lesson pipeline's later steps. Each script becomes a source on the course's module, and each lesson gets a version whose lines are the script.
+    - **Checks and videos:** the legal-line checks run in both languages, and clean lessons go to the course's video vendor (simulated without keys).
+    - **Review:** the questions go into review, and every lesson waits on screen 44.
+    - **Running it again** adds only what's missing; lessons already in review or approved are never overwritten.
+    - **Why not draft with Claude:** REOS's scripts are the approved wording to review. Claude drafting from them would add a second author and credits for no gain.
+24. **The course is REOS's own** (no organisation), a test prep course, so every candidate package with `learn.test_prep` includes it.
+    - **Reviewers:** the people assigned as its instructors (Nelle). The builder lets them open REOS courses they're assigned to; other REOS courses stay closed to schools.
+    - **Going live:** the course is created as a draft. After the lessons are approved, it goes live through content approvals (screen 63) like any course.
+25. **On the hub:** once readiness reaches 60% (after the diagnostic), it suggests the course at the next lesson not finished, with how many are left.
+    - **API:** every hub suggestion now carries `lesson_id`.
 
 ## Consequences
 

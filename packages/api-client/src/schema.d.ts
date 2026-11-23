@@ -4788,11 +4788,12 @@ export interface operations {
                             }[];
                             ranked: {
                                 /** @enum {string} */
-                                mode: "diagnostic" | "plan" | "drill" | "fix" | "flashcards" | "speed" | "math" | "simulation" | "readiness";
+                                mode: "diagnostic" | "plan" | "drill" | "fix" | "flashcards" | "speed" | "math" | "simulation" | "readiness" | "exam_success";
                                 why: string;
                                 topic: string | null;
                                 plan_id: number | null;
                                 count: number | null;
+                                lesson_id: number | null;
                             }[];
                         };
                     };

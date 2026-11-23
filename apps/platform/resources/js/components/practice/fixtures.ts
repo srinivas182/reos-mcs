@@ -327,6 +327,7 @@ export const coach: Coach = {
             topic: 'finance',
             plan_id: 31,
             count: null,
+            lesson_id: null,
         },
         {
             mode: 'drill',
@@ -334,6 +335,7 @@ export const coach: Coach = {
             topic: null,
             plan_id: null,
             count: null,
+            lesson_id: null,
         },
         {
             mode: 'flashcards',
@@ -341,6 +343,7 @@ export const coach: Coach = {
             topic: null,
             plan_id: null,
             count: 12,
+            lesson_id: null,
         },
         {
             mode: 'speed',
@@ -348,6 +351,7 @@ export const coach: Coach = {
             topic: null,
             plan_id: null,
             count: null,
+            lesson_id: null,
         },
         {
             mode: 'simulation',
@@ -355,6 +359,7 @@ export const coach: Coach = {
             topic: null,
             plan_id: null,
             count: null,
+            lesson_id: null,
         },
         {
             mode: 'readiness',
@@ -362,6 +367,7 @@ export const coach: Coach = {
             topic: null,
             plan_id: null,
             count: null,
+            lesson_id: null,
         },
     ],
 };

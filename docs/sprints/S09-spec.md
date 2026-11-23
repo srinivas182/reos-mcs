@@ -149,6 +149,12 @@
   - 8 short lessons (2 hours) in English and Spanish: how the exam is built, timing, reading NOT/EXCEPT/BEST questions, eliminating wrong answers, math shortcuts, Texas portion traps, a last-7-days plan, and exam-day nerves;
   - included in every candidate package, and suggested when readiness passes 60%;
   - written through the AI lesson pipeline (A7.3) from REOS's scripts, then reviewed on screen 44 (decision 5).
+- **As built, A9.2f** (ADR 0035 §23–25):
+  - **Course:** REOS's **Exam success: Texas**, eight lessons in English and Spanish, each with two practice questions. It's installed by `reos:content:exam-success` (the demo seeds it).
+  - **Review:** every lesson waits on screen 44 for the course's assigned reviewers (Nelle), with videos from the course's vendor.
+  - **Length:** the scripts run to about 1,800 words, roughly 15 minutes of video in all. The two-hour target needs longer scripts; REOS extends them once Nelle has reviewed this first version.
+  - **Packages:** included in every candidate package through `learn.test_prep`.
+  - **Hub:** suggested once readiness reaches 60%, at the next lesson not finished.
 - **Done when:** readiness drives tomorrow's plan. Tests cover the nightly job, the 90% booking line, flashcard scheduling and offline sync, and the math generators against worked answers.
 
 ### A9.3 Hands-free and groups (Team A)

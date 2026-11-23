@@ -2142,7 +2142,8 @@
         "starter_question.approve": "Approved a starter bank question",
         "starter_question.retire": "Retired a starter bank question",
         "starter_question.restore": "Undid a starter bank decision",
-        "starter_question.edited": "Edited a starter bank question"
+        "starter_question.edited": "Edited a starter bank question",
+        "course.exam_success_installed": "Installed the Exam success course for review"
       }
     }
   },
@@ -6237,7 +6238,8 @@
         "math_weak": "Math is one of your weakest topics: work it step by step.",
         "math": "Real estate math, step by step, with new numbers.",
         "due": "Cards due: two minutes keeps them fresh.",
-        "quick": "60 seconds of quick recall."
+        "quick": "60 seconds of quick recall.",
+        "ready_soon": "You're past 60%: learn how to take the exam."
       },
       "modes": {
         "diagnostic": "Diagnostic",
@@ -6249,7 +6251,10 @@
         "math": "Math lab",
         "flashcards": "Flashcards",
         "speed": "Speed round",
-        "flashcardsDue": "Flashcards ({{count}} due)"
+        "flashcardsDue": "Flashcards ({{count}} due)",
+        "exam_success": "Exam success course",
+        "examSuccessLeft_one": "Exam success course ({{count}} lesson left)",
+        "examSuccessLeft_other": "Exam success course ({{count}} lessons left)"
       }
     },
     "math": {

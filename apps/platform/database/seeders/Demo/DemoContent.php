@@ -11,6 +11,7 @@ use App\Content\Builder\SourceRole;
 use App\Content\CourseStatus;
 use App\Content\CourseType;
 use App\Content\Delivery;
+use App\Content\ExamSuccess;
 use App\Content\Knowledge\Ingestion;
 use App\Content\MediaKind;
 use App\Content\MediaStatus;
@@ -77,6 +78,10 @@ final readonly class DemoContent
         $this->lesson($strategies, 'Pacing the national portion', 'en', 12,
             "# Pacing\nAllow about one minute per question and flag anything that takes longer. "
             .'Candidates who follow this plan are guaranteed to pass on the first try.');
+
+        // REOS's Exam success course (A9.2f), waiting for review by the school's instructor.
+        $rachelUser = is_int($rachel) ? User::query()->find($rachel) : null;
+        app(ExamSuccess::class)->install($rachelUser === null ? [] : [$rachelUser]);
 
         $exam = $this->course('exito-en-el-examen-texas', 'Éxito en el examen: Texas', CourseType::TestPrep, null, CourseStatus::Live);
         $this->lesson($exam, 'Representación y divulgación', 'es', 15,
