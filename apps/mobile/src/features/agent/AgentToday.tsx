@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { CalendarClock, Check, CircleAlert, CircleCheck, ListChecks, Sun, Timer } from 'lucide-react-native';
+import { CalendarClock, Check, CircleAlert, CircleCheck, ListChecks, Sun, Sunrise, Timer } from 'lucide-react-native';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -103,6 +103,7 @@ export function AgentToday({ today, onChanged }: { today: Today; onChanged: () =
       )}
       {today.more > 0 ? <Text tone="muted">{t('agents.today.more', { count: today.more })}</Text> : null}
       <ListRow icon={ListChecks} tone="info" title={t('agents.plan.title')} subtitle={t('agents.plan.week', { week: today.plan_week, weeks: 13 })} onPress={() => router.push('/agent/plan')} />
+      <ListRow icon={Sunrise} tone="info" title={t('agents.brief.title')} subtitle={t('agents.brief.description')} onPress={() => router.push('/agent/brief')} />
     </View>
   );
 }

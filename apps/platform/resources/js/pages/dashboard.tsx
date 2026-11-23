@@ -22,7 +22,11 @@ import { CandidateToday } from '@/components/practice/candidate-today';
 import type { StudyToday } from '@/components/practice/types';
 import { activeMembership, roleName } from '@/lib/roles';
 import { deleteJson, postJson, putJson } from '@/lib/content';
-import { plan as agentPlan, setup as agentSetup } from '@/routes/agent';
+import {
+    brief as agentBrief,
+    plan as agentPlan,
+    setup as agentSetup,
+} from '@/routes/agent';
 import { tick as tickPlan } from '@/routes/agent/plan';
 import { done as todoDone, undone as todoUndone } from '@/routes/today/todos';
 import { goal as goalRoute, snooze as snoozeRoute } from '@/routes/agent/mode';
@@ -114,6 +118,7 @@ export default function Dashboard({
                     <AgentToday
                         today={agentToday}
                         planUrl={agentPlan().url}
+                        briefUrl={agentBrief().url}
                         onDone={(item, done) => markDone(item, done)}
                     />
                 ) : null}

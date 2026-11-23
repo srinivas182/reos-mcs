@@ -56,9 +56,7 @@ final readonly class AgentToday
     {
         $this->modes->show($user);
         $goal = $this->modes->goalOf($user);
-        $items = [...$this->todos($user, $from, $to), ...$this->appointments($user, $from, $to), ...$this->planTasks($user)];
-
-        usort($items, static fn (array $a, array $b): int => [self::RANKS[$a['reason']], $a['at'] ?? '9999'] <=> [self::RANKS[$b['reason']], $b['at'] ?? '9999']);
+        $items = $this->ranked($user, $from, $to);
 
         return [
             'goal' => $goal,
@@ -68,6 +66,20 @@ final readonly class AgentToday
             'day_one' => $this->dayOne($user),
             'plan_week' => $this->plans->week($this->plans->plan($user)),
         ];
+    }
+
+    /**
+     * Every item for the day, ranked (the morning brief reads them all, A11.1c).
+     *
+     * @return list<TodayItem>
+     */
+    public function ranked(User $user, CarbonImmutable $from, CarbonImmutable $to): array
+    {
+        $items = [...$this->todos($user, $from, $to), ...$this->appointments($user, $from, $to), ...$this->planTasks($user)];
+
+        usort($items, static fn (array $a, array $b): int => [self::RANKS[$a['reason']], $a['at'] ?? '9999'] <=> [self::RANKS[$b['reason']], $b['at'] ?? '9999']);
+
+        return $items;
     }
 
     /** @return Scorecard */

@@ -1,5 +1,7 @@
 /**
- * "Hey Siri, quiz me with REOS" and the Android App Action (A9.3, screen 51).
+ * "Hey Siri, quiz me with REOS" and the Android App Action (A9.3, screen 51),
+ * and "Hey Siri/Google, play my REOS brief" for agents (A11.1c, screen 184),
+ * which opens `reos://agent/brief`.
  *
  * iOS: an App Shortcut (App Intents, iOS 18+) in the app itself, no extension.
  * Saying the phrase opens `reos://practice/hands-free`.
@@ -15,6 +17,7 @@ const path = require('node:path');
 const { IOSConfig, withAndroidManifest, withDangerousMod, withStringsXml, withXcodeProject, AndroidConfig } = require('expo/config-plugins');
 
 const LINK = 'reos://practice/hands-free';
+const BRIEF_LINK = 'reos://agent/brief';
 const SWIFT_FILE = 'ReosQuizShortcut.swift';
 
 function swift() {
@@ -34,6 +37,17 @@ struct ReosQuizMeIntent: AppIntent {
 }
 
 @available(iOS 18.0, *)
+struct ReosBriefIntent: AppIntent {
+  static var title: LocalizedStringResource = "Play my brief"
+  static var description = IntentDescription("Opens your REOS morning brief, read aloud.")
+  static var openAppWhenRun: Bool = true
+
+  func perform() async throws -> some IntentResult & OpensIntent {
+    .result(opensIntent: OpenURLIntent(URL(string: "${BRIEF_LINK}")!))
+  }
+}
+
+@available(iOS 18.0, *)
 struct ReosShortcuts: AppShortcutsProvider {
   static var appShortcuts: [AppShortcut] {
     AppShortcut(
@@ -41,6 +55,12 @@ struct ReosShortcuts: AppShortcutsProvider {
       phrases: ["Quiz me with \\(.applicationName)", "Start a voice quiz in \\(.applicationName)", "Hazme preguntas con \\(.applicationName)"],
       shortTitle: "Quiz me",
       systemImageName: "mic.fill"
+    )
+    AppShortcut(
+      intent: ReosBriefIntent(),
+      phrases: ["Play my \\(.applicationName) brief", "Play my brief in \\(.applicationName)", "Reproduce mi resumen de \\(.applicationName)"],
+      shortTitle: "Play my brief",
+      systemImageName: "sunrise.fill"
     )
   }
 }
@@ -62,6 +82,12 @@ function shortcutsXml(packageName) {
       <parameter-binding android:key="feature" android:value="@array/reos_quiz_names" />
     </capability-binding>
   </shortcut>
+  <shortcut android:shortcutId="reos_morning_brief" android:enabled="false" android:shortcutShortLabel="@string/reos_brief_short">
+    <intent android:action="android.intent.action.VIEW" android:targetPackage="${packageName}" android:targetClass="${packageName}.MainActivity" android:data="${BRIEF_LINK}" />
+    <capability-binding android:key="actions.intent.OPEN_APP_FEATURE">
+      <parameter-binding android:key="feature" android:value="@array/reos_brief_names" />
+    </capability-binding>
+  </shortcut>
 </shortcuts>
 `;
 }
@@ -74,6 +100,12 @@ const ARRAYS = `<?xml version="1.0" encoding="utf-8"?>
     <item>quiz</item>
     <item>hands-free quiz</item>
     <item>cuestionario por voz</item>
+  </string-array>
+  <string-array name="reos_brief_names">
+    <item>brief</item>
+    <item>morning brief</item>
+    <item>my brief</item>
+    <item>resumen matutino</item>
   </string-array>
 </resources>
 `;
@@ -113,7 +145,7 @@ function withAndroid(config) {
     },
   ]);
   config = withStringsXml(config, (c) => {
-    c.modResults = AndroidConfig.Strings.setStringItem([{ $: { name: 'reos_quiz_short', translatable: 'false' }, _: 'Voice quiz' }], c.modResults);
+    c.modResults = AndroidConfig.Strings.setStringItem([{ $: { name: 'reos_quiz_short', translatable: 'false' }, _: 'Voice quiz' }, { $: { name: 'reos_brief_short', translatable: 'false' }, _: 'Morning brief' }], c.modResults);
 
     return c;
   });

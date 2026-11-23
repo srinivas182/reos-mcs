@@ -2914,6 +2914,70 @@
         "clients": "Pocos clientes activos. Dé seguimiento a todas las personas que conoció este mes.",
         "ce_hours": "Aún no tiene CE esta semana. Una lección corta lo mantiene al día."
       }
+    },
+    "brief": {
+      "title": "Resumen matutino",
+      "description": "Su día en aproximadamente un minuto: leído en voz alta en su teléfono, o aquí.",
+      "ready": "Su resumen matutino está listo",
+      "greeting": "Buenos días, {{name}}.",
+      "greetingNoName": "Buenos días.",
+      "sections": {
+        "todos": "[0] No tiene pendientes para hoy.|{1} Un pendiente: {{first}}.|[2,*] {{count}} pendientes, empezando por {{first}}.",
+        "overdue": "{1} Uno está vencido.|[2,*] {{count}} están vencidos.",
+        "appointments": "[0] No tiene citas hoy.|{1} Una cita: {{first}} a las {{time}}.|[2,*] {{count}} citas. La primera es {{first}} a las {{time}}.",
+        "deadlines": "[0] No hay fechas límite de negocios en los próximos tres días.|{1} Una fecha límite próxima: {{first}}.|[2,*] {{count}} fechas límite próximas. La primera es {{first}}.",
+        "leads": "[0] No hay clientes potenciales nuevos desde ayer.|{1} Un cliente potencial nuevo: {{first}}.|[2,*] {{count}} clientes potenciales nuevos. El más reciente es {{first}}.",
+        "ce": "CE: {{done}} de {{required}} horas completadas, vence el {{date}}.",
+        "ceComplete": "Su CE está completa para esta renovación."
+      },
+      "firstCall": "Llame primero a {{name}}.",
+      "outro": "Ese es su día. Diga un comando o abra Hoy.",
+      "commands": {
+        "title": "¿Qué sigue?",
+        "call": "Llamar a {{name}}",
+        "deal": "Abrir el negocio de {{property}}",
+        "today": "Abrir Hoy"
+      },
+      "player": {
+        "play": "Reproducir",
+        "pause": "Pausar",
+        "resume": "Continuar",
+        "skip": "Saltar",
+        "readInstead": "Leer en su lugar",
+        "listen": "Diga un comando",
+        "listening": "Escuchando…",
+        "heard": "Escuchado: “{{text}}”",
+        "notUnderstood": "Pruebe “{{example}}” o toque un comando.",
+        "transcript": "Transcripción",
+        "unsupported": "Su navegador no puede leer en voz alta. La transcripción está abajo."
+      },
+      "settings": {
+        "title": "Ajustes del resumen",
+        "enabled": "Enviar mi resumen matutino",
+        "enabledHint": "Una notificación a esta hora abre su resumen.",
+        "time": "Hora",
+        "sections": "Qué incluye",
+        "privacy": "La notificación solo dice que su resumen está listo. No se muestra nada privado en la pantalla de bloqueo.",
+        "save": "Guardar",
+        "saved": "Ajustes del resumen guardados",
+        "names": {
+          "todos": "Pendientes",
+          "appointments": "Citas",
+          "deadlines": "Fechas límite de negocios",
+          "leads": "Clientes potenciales nuevos",
+          "ce": "Progreso de CE"
+        }
+      },
+      "empty": {
+        "title": "Su resumen está vacío",
+        "body": "Elija al menos un tema en Ajustes del resumen."
+      },
+      "shortcut": "Reproducir mi resumen",
+      "shortcutSubtitle": "Su día en un minuto",
+      "errors": {
+        "time": "Elija una hora como 07:00.",
+        "timezone": "Elija una zona horaria válida."
+      }
     }
   },
   "invitePage": {
@@ -5155,7 +5219,8 @@
       "exam_reminder": "Recordatorios del examen",
       "pass_news": "Noticias de aprobación",
       "broker_offer": "Ofertas de corredores",
-      "licence_found": "Licencia encontrada"
+      "licence_found": "Licencia encontrada",
+      "morning_brief": "Resumen matutino"
     },
     "digest": {
       "subject": {

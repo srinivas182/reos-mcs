@@ -2,6 +2,7 @@
 
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Agents\AgentSetupPageController;
+use App\Http\Controllers\Api\Agents\BriefController;
 use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\Ask\AskController;
@@ -116,7 +117,7 @@ Route::get('groups/{group}', [ChallengePageController::class, 'group'])->whereUu
 // A challenge's share link (A9.3b): open to anyone; sign in to accept.
 Route::get('challenges/{challenge}', [ChallengePageController::class, 'show'])->whereUuid('challenge')->middleware('throttle:60,1,challenges')->name('challenges.show');
 // An agent's public page (B10.2b): their MLS listings with each MLS's rules applied.
-Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '(?!(?:setup|mode|plan)$)[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
+Route::get('agent/{handle}', [AgentPublicPageController::class, 'show'])->where('handle', '(?!(?:setup|mode|plan|brief)$)[a-z0-9-]{1,80}')->middleware('throttle:60,1,agent-pages')->name('agent-pages.show');
 Route::get('reports/{share}', [SharedReportController::class, 'show'])->whereUuid('share')->middleware('throttle:60,1,shared-reports')->name('reports.shared');
 Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
@@ -180,6 +181,9 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // The 90-day plan and weekly scorecard (A11.1b, screens 10 and 110).
     Route::get('agent/plan', [AgentSetupPageController::class, 'plan'])->name('agent.plan');
     Route::put('agent/plan/tasks/{code}', [TodayController::class, 'tick'])->where('code', '[a-z_]+')->middleware('throttle:60,1,agent-plan')->name('agent.plan.tick');
+    // The morning brief: transcript, read aloud, settings (A11.1c, screen 184).
+    Route::get('agent/brief', [AgentSetupPageController::class, 'brief'])->name('agent.brief');
+    Route::put('agent/brief/settings', [BriefController::class, 'update'])->middleware('throttle:20,1,agent-brief')->name('agent.brief.settings');
     // Today's to-dos done from the dashboard, and Undo (A11.1b).
     Route::post('today/todos/{todo}/done', [TodoController::class, 'done'])->whereNumber('todo')->middleware('throttle:60,1,today-todos')->name('today.todos.done');
     Route::delete('today/todos/{todo}/done', [TodoController::class, 'undone'])->whereNumber('todo')->middleware('throttle:60,1,today-todos')->name('today.todos.undone');

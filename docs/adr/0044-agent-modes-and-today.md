@@ -1,6 +1,6 @@
 # ADR 0044: Agent modes and Today
 
-- Status: Accepted (modes and goal, A11.1a; plan, scorecard and Today, A11.1b)
+- Status: Accepted (modes and goal, A11.1a; plan, scorecard and Today, A11.1b; morning brief, A11.1c)
 - Date: 2026-11-24 (Sprint 11; spec in docs/sprints/S11-spec.md)
 
 ## Context
@@ -22,10 +22,11 @@ Every licensed agent holds the same Agent membership, but a newly licensed agent
    - **Phone:** a ModeCard on Today shows "Pick your goal" until a goal is set, then the mode badge (which opens My goal) and any suggested switch. The welcome, goal and flags steps are one screen; My goal is in Me.
    - **Web:** the same card on the dashboard, `/agent/setup` for the welcome steps, and Settings › My goal for agents.
    - Every feature stays reachable in every mode.
-7. **Public agent pages** (`/agent/{handle}`, B10.2b) reserve `setup`, `mode` and `plan`, so those paths are never a handle.
+7. **Public agent pages** (`/agent/{handle}`, B10.2b) reserve `setup`, `mode`, `plan` and `brief`, so those paths are never a handle.
 8. **The 90-day plan** (A11.1b) comes from templates in code, one per goal: phases, tasks and weekly targets. A plan is kept per agent and goal, so a switch starts a fresh plan and going back resumes the old one. Ticks are stored per task and week. REOS ticks "connect your tools" and "import your contacts" itself from the data, so the agent never ticks something REOS can see.
 9. **Today is computed, not stored** (A11.1b): it reads to-dos (which carry CRM tasks and deal dates), the calendar and the plan on every request, and ranks them: overdue, deadlines within 72 hours, appointments, follow-ups, plan. Nothing new needs syncing, and "done" stays the to-do's own action, which already writes back to the source.
 10. **The scorecard** counts what REOS already records (CRM activities and REOS notes, calendar appointments and showings, open deals, CE completions) against the plan's targets, and names the one metric furthest behind.
+11. **The morning brief** (A11.1c) is text built on the server from Today's ranked items, read aloud on the device: expo-speech on the phone and the browser's speech synthesis on the web. Commands are recognized on the phone. There is no text-to-speech vendor, no audio file to store, and the same words serve as the transcript. The notification says only that the brief is ready; the content loads after the app opens, behind app lock.
 
 ## Consequences
 

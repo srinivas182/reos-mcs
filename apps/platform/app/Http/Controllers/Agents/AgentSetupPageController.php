@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Agents;
 
+use App\Agents\AgentBriefs;
 use App\Agents\AgentModes;
 use App\Agents\AgentPlans;
 use App\Agents\AgentToday;
@@ -31,6 +32,12 @@ final class AgentSetupPageController extends Controller
         $modes->show($user);
 
         return Inertia::render('agent/plan', ['plan' => $plans->current($user), 'scorecard' => $today->scorecard($user, CarbonImmutable::now(PersonTimezone::of($request)))]);
+    }
+
+    /** The morning brief with its settings (screen 184). */
+    public function brief(#[CurrentUser] User $user, AgentBriefs $briefs): Response
+    {
+        return Inertia::render('agent/brief', ['brief' => $briefs->for($user), 'settings' => $briefs->settings($user), 'sections' => AgentBriefs::SECTIONS]);
     }
 
     public function goal(#[CurrentUser] User $user, AgentModes $modes): Response

@@ -1,4 +1,11 @@
-import type { AgentPlan, AgentTodayData, ModeState, Scorecard } from './types';
+import type {
+    AgentPlan,
+    AgentTodayData,
+    Brief,
+    BriefSettings,
+    ModeState,
+    Scorecard,
+} from './types';
 
 /** James Miller, licensed in 2023, Launch mode with his first verified closing. */
 export function modeState(overrides: Partial<ModeState> = {}): ModeState {
@@ -164,6 +171,75 @@ export function scorecard(overrides: Partial<Scorecard> = {}): Scorecard {
             { key: 'ce_hours', done: 1, target: 1 },
         ],
         fix: 'conversations',
+        ...overrides,
+    };
+}
+
+/** James's Tuesday brief. */
+export function brief(overrides: Partial<Brief> = {}): Brief {
+    return {
+        date: '2026-11-24',
+        sections: [
+            {
+                key: 'todos',
+                count: 4,
+                text: '4 to-dos, starting with Send the Nguyens comps. One is overdue.',
+            },
+            {
+                key: 'appointments',
+                count: 1,
+                text: 'One appointment: Showing at Oak Ridge at 10:00 AM.',
+            },
+            { key: 'leads', count: 1, text: 'One new lead: Ana Garcia.' },
+        ],
+        first_call: {
+            name: 'Ana Garcia',
+            phone: '+1 512 555 0142',
+            contact: 'c-ana',
+        },
+        commands: [
+            {
+                kind: 'call',
+                label: 'Call Ana Garcia',
+                phone: '+1 512 555 0142',
+                contact: 'c-ana',
+                deal: null,
+            },
+            {
+                kind: 'deal',
+                label: 'Open the Oak Ridge deal',
+                phone: null,
+                contact: null,
+                deal: 'd-oak',
+            },
+            {
+                kind: 'today',
+                label: 'Open Today',
+                phone: null,
+                contact: null,
+                deal: null,
+            },
+        ],
+        script: [
+            'Good morning, James.',
+            '4 to-dos, starting with Send the Nguyens comps. One is overdue.',
+            'One appointment: Showing at Oak Ridge at 10:00 AM.',
+            'One new lead: Ana Garcia.',
+            'Call Ana Garcia first.',
+            'That’s your day. Say a command, or open Today.',
+        ],
+        ...overrides,
+    };
+}
+
+export function briefSettings(
+    overrides: Partial<BriefSettings> = {},
+): BriefSettings {
+    return {
+        enabled: true,
+        at: '07:00',
+        timezone: 'America/Chicago',
+        sections: ['todos', 'appointments', 'deadlines', 'leads', 'ce'],
         ...overrides,
     };
 }
