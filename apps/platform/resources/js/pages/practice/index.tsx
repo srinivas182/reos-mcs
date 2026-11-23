@@ -13,6 +13,7 @@ import { isExam } from '@/components/practice/types';
 import { Button } from '@/components/ui/button';
 import {
     attempt as openAttempt,
+    readiness as readinessPage,
     results as openResults,
     start,
 } from '@/routes/practice';
@@ -246,7 +247,12 @@ export default function PracticeIndex({
                         </ul>
                     </section>
                     <section className="space-y-4 rounded-reos-lg border border-border bg-card p-5">
-                        <ReadinessRing percent={readiness.percent} />
+                        <Link
+                            href={readinessPage()}
+                            className="inline-flex rounded-full focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                        >
+                            <ReadinessRing percent={readiness.percent} />
+                        </Link>
                         <TopicBars
                             topics={(
                                 Object.entries(readiness.topics) as [

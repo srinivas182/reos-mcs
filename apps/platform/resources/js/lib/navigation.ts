@@ -7,6 +7,7 @@ import {
     CreditCard,
     FileBadge,
     Flag,
+    Gauge,
     GraduationCap,
     House,
     Layers,
@@ -35,7 +36,7 @@ import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
-import { index as practice } from '@/routes/practice';
+import { index as practice, readiness } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as messagesIndex } from '@/routes/messages';
@@ -99,7 +100,8 @@ export type NavLabel =
     | 'aiLessons'
     | 'questionBank'
     | 'studyPlan'
-    | 'practiceAndExams';
+    | 'practiceAndExams'
+    | 'readiness';
 
 export type RoleNavItem = {
     /** Translation key under `nav.` (journey name, for items not built yet). */
@@ -163,7 +165,7 @@ export function roleNavigation(
             item('courses', BookOpen, learn(), '/learn'),
             item('studyPlan', CalendarDays, studyPlan(), '/study-plan'),
             item('practiceAndExams', Target, practice(), '/practice'),
-            planned('readiness'),
+            item('readiness', Gauge, readiness(), '/readiness'),
             planned('ask'),
             planned('instructors'),
             planned('licenceJourney'),

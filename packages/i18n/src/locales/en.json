@@ -66,7 +66,8 @@
     "studyPlan": "Study plan",
     "practiceAndExams": "Practice and exams",
     "brokerageIntegrations": "Integrations",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "readiness": "Readiness"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -5938,7 +5939,7 @@
     },
     "readiness": {
       "title": "Readiness",
-      "label": "Readiness {{percent}}%",
+      "label": "Readiness {{percent}}%: predicted pass chance of your weaker portion",
       "unknown": "Readiness not known yet. Take the diagnostic to find out.",
       "notYet": "Not tested yet",
       "byTopic": "Readiness by topic",
@@ -6114,6 +6115,54 @@
       "percent": "Percent",
       "equals": "Equals",
       "point": "Decimal point"
+    },
+    "readinessMap": {
+      "title": "Readiness",
+      "description": "Your predicted chance of passing each portion of the exam on a new set of questions. Book the exam when both reach 90%.",
+      "chance": "{{percent}}% pass chance",
+      "chanceLabel": "{{portion}}: {{percent}}% predicted pass chance",
+      "noAnswers": "No answers yet on this portion. Take a test to see your chance.",
+      "aboveLine": "At or above the 90% booking line",
+      "toGo_one": "{{count}} point to the booking line",
+      "toGo_other": "{{count}} points to the booking line",
+      "line": "Booking line: {{line}}%",
+      "booking": {
+        "readyTitle": "Ready to book",
+        "readyBody": "Both portions are at 90% or better and your last two simulations passed. Book your exam with the testing vendor.",
+        "book": "Book the exam",
+        "notYetTitle": "Before you book",
+        "national": "National portion at 90% or better",
+        "state": "Texas portion at 90% or better",
+        "simulations": "{{done}} of {{needed}} recent simulations passed",
+        "met": "Done",
+        "notMet": "Not yet"
+      },
+      "goodAt": {
+        "title": "What you're good at",
+        "description": "Every topic, weakest first. Older answers count less.",
+        "filter": "Show topics",
+        "all": "All",
+        "national": "National",
+        "state": "Texas",
+        "percent": "{{percent}}% right",
+        "needMore": "{{count}} of 10 answers so far",
+        "noneYet": "No answers yet",
+        "trendUp": "Up {{count}} points this week",
+        "trendDown": "Down {{count}} points this week",
+        "trendFlat": "No change this week",
+        "weak": "Weak topic",
+        "practice": "Practice",
+        "practiceTopic": "Practice {{topic}}",
+        "answers_one": "{{count}} answer",
+        "answers_other": "{{count}} answers",
+        "open": "See every topic"
+      },
+      "gain": "Fixing {{topic}} could add {{points}} points to your pass chance on the {{portion}}.",
+      "fixWeakest": "Fix my weakest",
+      "updated": "Updated {{date}}. Readiness is recalculated every night and after every test.",
+      "empty": "Take the diagnostic or a practice test to see your readiness.",
+      "emptyTitle": "No readiness yet",
+      "open": "Opens your readiness map"
     }
   },
   "brokerageIntegrations": {

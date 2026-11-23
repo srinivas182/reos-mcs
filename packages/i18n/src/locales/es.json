@@ -66,7 +66,8 @@
     "studyPlan": "Plan de estudio",
     "practiceAndExams": "Práctica y exámenes",
     "brokerageIntegrations": "Integraciones",
-    "contacts": "Contactos"
+    "contacts": "Contactos",
+    "readiness": "Preparación"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -5938,7 +5939,7 @@
     },
     "readiness": {
       "title": "Preparación",
-      "label": "Preparación {{percent}} %",
+      "label": "Preparación {{percent}}%: probabilidad estimada de aprobar su parte más débil",
       "unknown": "Aún no se conoce su preparación. Haga el diagnóstico para saberlo.",
       "notYet": "Sin evaluar",
       "byTopic": "Preparación por tema",
@@ -6114,6 +6115,54 @@
       "percent": "Porcentaje",
       "equals": "Igual",
       "point": "Punto decimal"
+    },
+    "readinessMap": {
+      "title": "Preparación",
+      "description": "Su probabilidad estimada de aprobar cada parte del examen con un nuevo grupo de preguntas. Reserve el examen cuando ambas lleguen al 90%.",
+      "chance": "{{percent}}% de probabilidad de aprobar",
+      "chanceLabel": "{{portion}}: {{percent}}% de probabilidad estimada de aprobar",
+      "noAnswers": "Aún no tiene respuestas en esta parte. Haga una prueba para ver su probabilidad.",
+      "aboveLine": "En la línea de reserva del 90% o por encima",
+      "toGo_one": "Le falta {{count}} punto para la línea de reserva",
+      "toGo_other": "Le faltan {{count}} puntos para la línea de reserva",
+      "line": "Línea de reserva: {{line}}%",
+      "booking": {
+        "readyTitle": "Listo para reservar",
+        "readyBody": "Ambas partes están en 90% o más y sus dos últimas simulaciones fueron aprobadas. Reserve su examen con el proveedor de exámenes.",
+        "book": "Reservar el examen",
+        "notYetTitle": "Antes de reservar",
+        "national": "Parte nacional en 90% o más",
+        "state": "Parte de Texas en 90% o más",
+        "simulations": "{{done}} de {{needed}} simulaciones recientes aprobadas",
+        "met": "Listo",
+        "notMet": "Todavía no"
+      },
+      "goodAt": {
+        "title": "En qué le va bien",
+        "description": "Todos los temas, del más débil al más fuerte. Las respuestas más antiguas cuentan menos.",
+        "filter": "Mostrar temas",
+        "all": "Todos",
+        "national": "Nacional",
+        "state": "Texas",
+        "percent": "{{percent}}% correctas",
+        "needMore": "{{count}} de 10 respuestas hasta ahora",
+        "noneYet": "Aún no hay respuestas",
+        "trendUp": "Subió {{count}} puntos esta semana",
+        "trendDown": "Bajó {{count}} puntos esta semana",
+        "trendFlat": "Sin cambios esta semana",
+        "weak": "Tema débil",
+        "practice": "Practicar",
+        "practiceTopic": "Practicar {{topic}}",
+        "answers_one": "{{count}} respuesta",
+        "answers_other": "{{count}} respuestas",
+        "open": "Ver todos los temas"
+      },
+      "gain": "Mejorar {{topic}} podría sumar {{points}} puntos a su probabilidad de aprobar la {{portion}}.",
+      "fixWeakest": "Mejorar mi tema más débil",
+      "updated": "Actualizado el {{date}}. La preparación se recalcula cada noche y después de cada prueba.",
+      "empty": "Haga el diagnóstico o una prueba de práctica para ver su preparación.",
+      "emptyTitle": "Aún no hay datos de preparación",
+      "open": "Abre su mapa de preparación"
     }
   },
   "brokerageIntegrations": {

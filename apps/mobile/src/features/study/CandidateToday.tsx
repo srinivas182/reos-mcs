@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import type { LucideIcon } from 'lucide-react-native';
 import { BookOpen, CircleCheck, ClipboardCheck, Flame, Play, RotateCcw, Target } from 'lucide-react-native';
 import { useState } from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
@@ -45,14 +45,16 @@ export function CandidateToday({ today }: { today: Today }) {
   return (
     <View style={styles.wrap}>
       <HeroCard style={styles.hero}>
-        <ProgressRing value={today.readiness ?? 0} label={today.readiness === null ? t('practice.readiness.unknown') : t('practice.readiness.label', { percent: today.readiness })}>
-          <Text variant="title" style={styles.heroText}>
-            {today.readiness === null ? '—' : `${today.readiness}%`}
-          </Text>
-          <Text variant="caption" style={styles.heroMuted}>
-            {t('practice.readiness.title')}
-          </Text>
-        </ProgressRing>
+        <Pressable accessibilityRole="button" accessibilityHint={t('practice.readinessMap.open')} onPress={() => router.push('/practice/readiness')}>
+          <ProgressRing value={today.readiness ?? 0} label={today.readiness === null ? t('practice.readiness.unknown') : t('practice.readiness.label', { percent: today.readiness })}>
+            <Text variant="title" style={styles.heroText}>
+              {today.readiness === null ? '—' : `${today.readiness}%`}
+            </Text>
+            <Text variant="caption" style={styles.heroMuted}>
+              {t('practice.readiness.title')}
+            </Text>
+          </ProgressRing>
+        </Pressable>
         <View style={styles.flex}>
           <Text variant="lead" style={styles.heroText}>
             {t('practice.today.daysShort', { count: today.days_to_exam })}

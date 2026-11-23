@@ -3,6 +3,7 @@
 use App\Models\IntegrationCheck;
 use App\Models\SyncRun;
 use App\Models\WebhookReceipt;
+use App\Practice\StudyPlans;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -56,3 +57,5 @@ Schedule::command('reos:recordings:prune')->dailyAt('04:15')->onOneServer();
 // Course approvals (A7.1): reminders before expiry, and expiries.
 Schedule::command('reos:approvals:check')->dailyAt('07:05')->timezone('America/Chicago')->onOneServer();
 Schedule::command('reos:lessons:renders')->everyTwoMinutes()->withoutOverlapping()->onOneServer();
+// Readiness for the day and plans that follow it (A9.2), just after midnight on candidates' time.
+Schedule::command('reos:readiness:nightly')->dailyAt('00:10')->timezone(StudyPlans::TIMEZONE)->withoutOverlapping()->onOneServer();

@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
 use App\Http\Controllers\Api\Practice\PracticeController;
+use App\Http\Controllers\Api\Practice\ReadinessController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
@@ -194,6 +195,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('practice/attempts/{attempt}/finish', 'finish')->whereNumber('attempt')->middleware('throttle:30,1,api-practice-finish')->name('finish');
         Route::get('practice/attempts/{attempt}/similar/{question}', 'similar')->whereNumber(['attempt', 'question'])->middleware('throttle:60,1,api-practice-similar')->name('similar');
     });
+    // Readiness map and What you're good at (A9.2).
+    Route::get('practice/readiness', [ReadinessController::class, 'show'])->name('api.practice.readiness');
     // Lessons saved on the phone (A8.2b): the learner's own downloads, not admin actions.
     Route::prefix('learn')->name('api.learn.downloads.')->controller(OfflineController::class)->group(function () {
         Route::get('downloads', 'index')->name('index');
