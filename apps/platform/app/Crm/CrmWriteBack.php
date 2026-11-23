@@ -7,6 +7,7 @@ namespace App\Crm;
 use App\Connections\ConnectionStatus;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectorRegistry;
+use App\Connections\Crm\CreatesPeople;
 use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Jobs\PushToCrm;
@@ -32,7 +33,7 @@ use Illuminate\Support\Str;
  */
 final readonly class CrmWriteBack
 {
-    public function __construct(private ConnectorRegistry $registry, private ConnectionTokens $tokens, private Todos $todos, private Sources $sources) {}
+    public function __construct(private ConnectorRegistry $registry, private ConnectionTokens $tokens, private Todos $todos, private Sources $sources, private DefaultCrm $defaultCrm, private Contacts $contacts) {}
 
     public function note(Contact $contact, string $body, User $author): ContactNote
     {
@@ -56,8 +57,9 @@ final readonly class CrmWriteBack
 
     /**
      * A task about the person (the contact panel, B8.3): a REOS to-do at
-     * once, and a task in the CRM that takes it. Returns the to-do and the
-     * CRM's name, or null when it stays in REOS.
+     * once, and a task in the CRM that takes it: the default CRM when it
+     * knows the person, else the one synced most recently. Returns the to-do
+     * and the CRM's name, or null when it stays in REOS.
      *
      * @return array{0: Todo, 1: string|null}
      */
@@ -69,8 +71,13 @@ final readonly class CrmWriteBack
         ], null);
         $target = null;
 
+        $default = $this->defaultCrm->for($agent);
+
         foreach ($this->crmLinks($contact) as [$link, $connection, $driver]) {
-            if ($driver instanceof CreatesTasks && ($target === null || $link->synced_at?->greaterThan($target[0]->synced_at ?? CarbonImmutable::createFromTimestamp(0)))) {
+            if (! $driver instanceof CreatesTasks || ($target !== null && $target[1]->id === $default?->id)) {
+                continue;
+            }
+            if ($target === null || $connection->id === $default?->id || $link->synced_at?->greaterThan($target[0]->synced_at ?? CarbonImmutable::createFromTimestamp(0))) {
                 $target = [$link, $connection];
             }
         }
@@ -83,6 +90,28 @@ final readonly class CrmWriteBack
         PushToCrm::dispatch('new_task', $todo->id);
 
         return [$todo, $this->sources->name($target[1]->integration_id)];
+    }
+
+    /**
+     * A contact the agent adds in REOS (B8.3b): saved at once, then created
+     * in the default CRM (screen 24) unless it already knows them. Returns
+     * the contact and the CRM's name, or null when it stays in REOS.
+     *
+     * @param  array{first_name: string|null, last_name: string|null, emails: list<string>, phones: list<string>, stage: string|null}  $person
+     * @return array{0: Contact, 1: string|null}
+     */
+    public function addPerson(User $agent, array $person): array
+    {
+        $contact = $this->contacts->receive(Connection::OWNER_USER, $agent->id, Contacts::REOS, null, ['external_id' => (string) Str::uuid7(), ...$person, 'updated_at' => CarbonImmutable::now()->toIso8601String()]);
+        $crm = $this->defaultCrm->for($agent);
+
+        if ($crm === null || $contact->links()->where('connection_id', $crm->id)->exists()) {
+            return [$contact, $crm === null ? null : $this->sources->name($crm->integration_id)];
+        }
+
+        PushToCrm::dispatch('new_person', $contact->id, $crm->id);
+
+        return [$contact->refresh(), $this->sources->name($crm->integration_id)];
     }
 
     /**
@@ -109,13 +138,14 @@ final readonly class CrmWriteBack
     }
 
     /** The queued half: sends one change to each CRM that knows the person. */
-    public function push(string $kind, int $id): void
+    public function push(string $kind, int $id, ?int $target = null): void
     {
         match ($kind) {
             'note' => $this->pushNote($id),
             'stage' => $this->pushStage($id),
             'task' => $this->pushTask($id),
             'new_task' => $this->pushNewTask($id),
+            'new_person' => $this->pushNewPerson($id, $target),
             default => null,
         };
     }
@@ -171,6 +201,34 @@ final readonly class CrmWriteBack
                 $driver->setTaskDone($connection, $this->tokens->accessToken($connection, $driver), $row->external_id, $todo->done_at !== null);
             }
         }
+    }
+
+    private function pushNewPerson(int $contactId, ?int $connectionId): void
+    {
+        $contact = Contact::query()->find($contactId);
+        $connection = $connectionId === null ? null : Connection::query()->find($connectionId);
+
+        if ($contact === null || $connection === null || $connection->status !== ConnectionStatus::Active || $contact->links()->where('connection_id', $connection->id)->exists()) {
+            return;
+        }
+
+        $driver = $this->registry->driver($connection->integration_id, $connection->mode);
+
+        if (! $driver instanceof CreatesPeople) {
+            return;
+        }
+
+        $person = [
+            'first_name' => $contact->first_name, 'last_name' => $contact->last_name, 'stage' => $contact->stage,
+            'emails' => array_column($contact->emails, 'value'), 'phones' => array_column($contact->phones, 'value'),
+        ];
+        $id = $driver->createPerson($connection, $this->tokens->accessToken($connection, $driver), $person);
+        $link = ContactLink::query()->firstOrCreate(
+            ['owner_key' => Contacts::ownerKey($contact->owner_type, $contact->owner_id), 'source' => $connection->integration_id, 'external_id' => $id],
+            ['contact_id' => $contact->id, 'connection_id' => $connection->id, 'synced_at' => now()],
+        );
+        // What REOS wrote isn't read back as a change.
+        $this->contacts->wrote($link, ['external_id' => $id, ...$person]);
     }
 
     private function pushNewTask(int $todoId): void

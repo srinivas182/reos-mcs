@@ -157,3 +157,46 @@ export function reachUri(channel: 'call' | 'text', phone: string, body = ''): st
 
   return body.trim() === '' ? `sms:${phone}` : `sms:${phone}?&body=${encodeURIComponent(body)}`;
 }
+
+/* Using two CRMs (screen 24, B8.3b): where new contacts go. */
+
+export type CrmOption = { connection: number; integration: string; name: string; account: string | null; takes_new_people: boolean; is_default: boolean };
+
+export function useCrms() {
+  const { status } = useAuth();
+  const [crms, setCrms] = useState<CrmOption[] | null>(null);
+
+  const load = useCallback(async () => {
+    if (status !== 'signedIn') return;
+    const { data } = await api().GET('/contacts/crms');
+    setCrms(data?.data ?? []);
+  }, [status]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
+
+  const choose = async (connection: number | null) => {
+    const { data, response } = await api().PUT('/contacts/crms/default', { body: { connection } });
+    if (response.ok) setCrms(data?.data ?? []);
+
+    return response.ok;
+  };
+
+  return { crms, choose };
+}
+
+export type NewContact = { first_name: string; last_name: string; email: string; phone: string };
+
+/** Saved in REOS and in the default CRM; returns the contact's id and where it went, or null. */
+export async function addContact(person: NewContact): Promise<{ id: string; sentTo: string | null } | null> {
+  const blank = (v: string) => (v.trim() === '' ? null : v.trim());
+  const { data, response } = await api().POST('/contacts', {
+    body: { first_name: blank(person.first_name), last_name: blank(person.last_name), email: blank(person.email), phone: blank(person.phone) },
+  });
+  const created = data as { data?: { id?: string }; sent_to?: string | null } | undefined;
+
+  return response.ok && created?.data?.id ? { id: created.data.id, sentTo: created.sent_to ?? null } : null;
+}

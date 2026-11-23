@@ -20,6 +20,7 @@ use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
+use App\Http\Controllers\Crm\ContactImportsController;
 use App\Http\Controllers\Crm\ContactsPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Learn\LearnController;
@@ -122,10 +123,21 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // Contacts, the CRM hub (B8.3, agent web screen 13): the agent's own contacts only.
     Route::controller(ContactsPageController::class)->prefix('contacts')->name('contacts.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::post('/', 'add')->middleware('throttle:30,1,contacts-add')->name('store');
+        Route::put('default-crm', 'defaultCrm')->middleware('throttle:30,1,contacts-default')->name('default-crm');
         Route::post('{contact}/notes', 'note')->whereUuid('contact')->middleware('throttle:60,1,contacts-notes')->name('notes.store');
         Route::post('{contact}/tasks', 'task')->whereUuid('contact')->middleware('throttle:60,1,contacts-tasks')->name('tasks.store');
         Route::post('{contact}/insight', 'insight')->whereUuid('contact')->middleware('throttle:30,1,contacts-insight')->name('insight');
         Route::post('{contact}/touches', 'touch')->whereUuid('contact')->middleware('throttle:60,1,contacts-touches')->name('touches.store');
+    });
+
+    // CSV import, the last resort (B8.3b).
+    Route::controller(ContactImportsController::class)->prefix('contacts/import')->name('contacts.import.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'upload')->middleware('throttle:10,1,contacts-import-upload')->name('upload');
+        Route::put('{import}', 'preview')->whereUuid('import')->middleware('throttle:30,1,contacts-import-preview')->name('preview');
+        Route::post('{import}', 'import')->whereUuid('import')->middleware('throttle:10,1,contacts-import-run')->name('run');
+        Route::delete('{import}', 'undo')->whereUuid('import')->middleware('throttle:10,1,contacts-import-undo')->name('undo');
     });
 
     // Plan and billing (B5.1, screen 29 and each role's equivalent) and checkout on reos.com (screen 3).

@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\Lofty;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesPeople;
 use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Exceptions\AccessRevoked;
@@ -27,7 +28,7 @@ use LogicException;
  * read like the real tool and written back with Lofty's own field names.
  * Any key of four or more characters connects.
  */
-final class LoftySimulator implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver
+final class LoftySimulator implements ConnectorDriver, ConnectsWithApiKey, CreatesPeople, CreatesTasks, CrmDriver
 {
     private const CONTAINER = 'lofty';
 
@@ -86,6 +87,15 @@ final class LoftySimulator implements ConnectorDriver, ConnectsWithApiKey, Creat
         $this->authorise($connection);
 
         return self::write($connection, 'notes', null, ['leadId' => $personId, 'content' => $body])->external_id;
+    }
+
+    public function createPerson(Connection $connection, string $token, array $person): string
+    {
+        $this->authorise($connection);
+
+        return self::write($connection, 'people', null, [
+            'firstName' => $person['first_name'], 'lastName' => $person['last_name'], 'emails' => $person['emails'], 'phones' => $person['phones'], 'stage' => $person['stage'], 'tags' => [],
+        ])->external_id;
     }
 
     public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string

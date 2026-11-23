@@ -1703,6 +1703,76 @@
                         "$ref": "#/components/responses/ValidationException"
                     }
                 }
+            },
+            "post": {
+                "operationId": "contacts.store",
+                "description": "Saved in REOS at once and created in your default CRM (screen 24)\nunless it already knows them; matched to people you have on email or\nphone. `sent_to` is null when it stays in REOS.",
+                "summary": "Add a contact",
+                "tags": [
+                    "ContactWork"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddContactRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "additionalProperties": {}
+                                        },
+                                        "sent_to": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "sent_to"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
             }
         },
         "/contacts/activity": {
@@ -2487,6 +2557,174 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contacts/crms": {
+            "get": {
+                "operationId": "contacts.crms",
+                "description": "Where new contacts go: each connected CRM, whether it takes new people,\nand the default.",
+                "summary": "Your CRMs (screen 24)",
+                "tags": [
+                    "ContactWork"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "connection": {
+                                                        "type": "integer"
+                                                    },
+                                                    "integration": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "account": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "takes_new_people": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "is_default": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "connection",
+                                                    "integration",
+                                                    "name",
+                                                    "account",
+                                                    "takes_new_people",
+                                                    "is_default"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contacts/crms/default": {
+            "put": {
+                "operationId": "contacts.crms.default",
+                "description": "One of your CRMs that takes new people, or null: new contacts stay in REOS.",
+                "summary": "Choose where new contacts go",
+                "tags": [
+                    "ContactWork"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DefaultCrmRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "connection": {
+                                                        "type": "integer"
+                                                    },
+                                                    "integration": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "account": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "takes_new_people": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "is_default": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "connection",
+                                                    "integration",
+                                                    "name",
+                                                    "account",
+                                                    "takes_new_people",
+                                                    "is_default"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
@@ -14735,6 +14973,50 @@
                 ],
                 "title": "ActiveRoleRequest"
             },
+            "AddContactRequest": {
+                "type": "object",
+                "description": "A contact the agent adds in REOS (B8.3b): a name, an email or a phone at least.",
+                "properties": {
+                    "first_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 100
+                    },
+                    "last_name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 100
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email",
+                        "maxLength": 191
+                    },
+                    "phone": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "pattern": "^[0-9+()\\-.\\s]{7,40}$",
+                        "maxLength": 40
+                    },
+                    "stage": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 60
+                    }
+                },
+                "title": "AddContactRequest"
+            },
             "AddLicenceRequest": {
                 "type": "object",
                 "description": "\"Add a licence\" (agent journey screen 149, web screen 23): a state and the licence number.",
@@ -15653,7 +15935,7 @@
                     },
                     "sources": {
                         "type": "array",
-                        "description": "Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed.",
+                        "description": "Where this person comes from. Where this person comes from (each source once), and a source's smart campaign (kvCORE), shown but never changed.",
                         "items": {
                             "type": "object",
                             "properties": {
@@ -15767,7 +16049,7 @@
                     },
                     "sources": {
                         "type": "array",
-                        "description": "Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed.",
+                        "description": "Where this person comes from. Where this person comes from (each source once), and a source's smart campaign (kvCORE), shown but never changed.",
                         "items": {
                             "type": "object",
                             "properties": {
@@ -15920,6 +16202,19 @@
                     "channel"
                 ],
                 "title": "ContactTouchRequest"
+            },
+            "DefaultCrmRequest": {
+                "type": "object",
+                "description": "Where new contacts go (screen 24): one of your CRMs, or none (they stay in REOS).",
+                "properties": {
+                    "connection": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "title": "DefaultCrmRequest"
             },
             "DeviceResource": {
                 "type": "object",

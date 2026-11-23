@@ -413,7 +413,13 @@ export interface paths {
          */
         get: operations["contacts.index"];
         put?: never;
-        post?: never;
+        /**
+         * Add a contact
+         * @description Saved in REOS at once and created in your default CRM (screen 24)
+         *     unless it already knows them; matched to people you have on email or
+         *     phone. `sent_to` is null when it stays in REOS.
+         */
+        post: operations["contacts.store"];
         delete?: never;
         options?: never;
         head?: never;
@@ -550,6 +556,47 @@ export interface paths {
         put?: never;
         /** "Not the same person": dismiss a suggested merge */
         post: operations["contacts.suggestions.dismiss"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/crms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Your CRMs (screen 24)
+         * @description Where new contacts go: each connected CRM, whether it takes new people,
+         *     and the default.
+         */
+        get: operations["contacts.crms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contacts/crms/default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Choose where new contacts go
+         * @description One of your CRMs that takes new people, or null: new contacts stay in REOS.
+         */
+        put: operations["contacts.crms.default"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2338,6 +2385,18 @@ export interface components {
             organisation_id: number;
         };
         /**
+         * AddContactRequest
+         * @description A contact the agent adds in REOS (B8.3b): a name, an email or a phone at least.
+         */
+        AddContactRequest: {
+            first_name?: string | null;
+            last_name?: string | null;
+            /** Format: email */
+            email?: string | null;
+            phone?: string | null;
+            stage?: string | null;
+        };
+        /**
          * AddLicenceRequest
          * @description "Add a licence" (agent journey screen 149, web screen 23): a state and the licence number.
          */
@@ -2658,7 +2717,7 @@ export interface components {
             stage: string | null;
             birthday: string | null;
             tags: string[];
-            /** @description Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed. */
+            /** @description Where this person comes from. Where this person comes from (each source once), and a source's smart campaign (kvCORE), shown but never changed. */
             sources: {
                 source: string;
                 name: string;
@@ -2680,7 +2739,7 @@ export interface components {
             stage: string | null;
             birthday: string | null;
             tags: string[];
-            /** @description Where this person comes from. Where this person comes from, and a source's smart campaign (kvCORE), shown but never changed. */
+            /** @description Where this person comes from. Where this person comes from (each source once), and a source's smart campaign (kvCORE), shown but never changed. */
             sources: {
                 source: string;
                 name: string;
@@ -2721,6 +2780,13 @@ export interface components {
             channel: "call" | "text";
             /** @description What was texted. */
             body?: string | null;
+        };
+        /**
+         * DefaultCrmRequest
+         * @description Where new contacts go (screen 24): one of your CRMs, or none (they stay in REOS).
+         */
+        DefaultCrmRequest: {
+            connection?: number | null;
         };
         /** DeviceResource */
         DeviceResource: {
@@ -3529,6 +3595,7 @@ export interface components {
     pathItems: never;
 }
 export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest'];
+export type SchemaAddContactRequest = components['schemas']['AddContactRequest'];
 export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
@@ -3547,6 +3614,7 @@ export type SchemaContactResource = components['schemas']['ContactResource'];
 export type SchemaContactRowResource = components['schemas']['ContactRowResource'];
 export type SchemaContactTaskRequest = components['schemas']['ContactTaskRequest'];
 export type SchemaContactTouchRequest = components['schemas']['ContactTouchRequest'];
+export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
 export type SchemaDeviceResource = components['schemas']['DeviceResource'];
 export type SchemaExchangeSignInRequest = components['schemas']['ExchangeSignInRequest'];
 export type SchemaHealthResource = components['schemas']['HealthResource'];
@@ -4492,6 +4560,48 @@ export interface operations {
             422: components["responses"]["ValidationException"];
         };
     };
+    "contacts.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["AddContactRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            [key: string]: unknown;
+                        };
+                        sent_to: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "contacts.activity": {
         parameters: {
             query?: never;
@@ -4857,6 +4967,82 @@ export interface operations {
                 content?: never;
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contacts.crms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            connection: number;
+                            integration: string;
+                            name: string;
+                            account: string | null;
+                            takes_new_people: boolean;
+                            is_default: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "contacts.crms.default": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["DefaultCrmRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            connection: number;
+                            integration: string;
+                            name: string;
+                            account: string | null;
+                            takes_new_people: boolean;
+                            is_default: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

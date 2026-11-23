@@ -2,6 +2,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { Search, Sparkles, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { AddContactDialog } from '@/components/contacts/add-contact-dialog';
 import { ContactPanel } from '@/components/contacts/contact-panel';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
@@ -11,7 +12,8 @@ import { timeAgo } from '@/lib/time-ago';
 import { cn } from '@/lib/utils';
 import { index as connections } from '@/routes/connections';
 import { index } from '@/routes/contacts';
-import type { ContactPanelData, ContactRow, Segment } from '@/types';
+import { index as importIndex } from '@/routes/contacts/import';
+import type { ContactPanelData, ContactRow, CrmOption, Segment } from '@/types';
 
 type Filters = { segment: Segment; tag: string | null; q: string | null };
 
@@ -22,6 +24,7 @@ type Props = {
     tags: string[];
     total: number;
     selected: ContactPanelData | null;
+    crms: CrmOption[];
 };
 
 const SEGMENTS: Segment[] = ['all', 'new', 'active', 'past', 'sphere'];
@@ -42,6 +45,7 @@ export default function ContactsPage({
     tags,
     total,
     selected,
+    crms,
 }: Props) {
     const { t, i18n } = useTranslation();
     const [search, setSearch] = useState(filters.q ?? '');
@@ -86,38 +90,49 @@ export default function ContactsPage({
                     title={t('crm.hub.title')}
                     description={t('crm.hub.description')}
                     actions={
-                        <form
-                            role="search"
-                            className="flex gap-2"
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                visit({
-                                    q: search.trim() || null,
-                                    contact: null,
-                                });
-                            }}
-                        >
-                            <label htmlFor="contact-search" className="sr-only">
-                                {t('crm.hub.searchLabel')}
-                            </label>
-                            <Input
-                                id="contact-search"
-                                type="search"
-                                value={search}
-                                maxLength={100}
-                                placeholder={t('crm.hub.search')}
-                                onChange={(e) => setSearch(e.target.value)}
-                                className="w-72 max-w-full"
-                            />
-                            <Button
-                                type="submit"
-                                variant="outline"
-                                size="icon"
-                                aria-label={t('crm.hub.searchLabel')}
+                        <div className="flex flex-wrap items-center gap-3">
+                            <form
+                                role="search"
+                                className="flex gap-2"
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    visit({
+                                        q: search.trim() || null,
+                                        contact: null,
+                                    });
+                                }}
                             >
-                                <Search aria-hidden />
+                                <label
+                                    htmlFor="contact-search"
+                                    className="sr-only"
+                                >
+                                    {t('crm.hub.searchLabel')}
+                                </label>
+                                <Input
+                                    id="contact-search"
+                                    type="search"
+                                    value={search}
+                                    maxLength={100}
+                                    placeholder={t('crm.hub.search')}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="w-72 max-w-full"
+                                />
+                                <Button
+                                    type="submit"
+                                    variant="outline"
+                                    size="icon"
+                                    aria-label={t('crm.hub.searchLabel')}
+                                >
+                                    <Search aria-hidden />
+                                </Button>
+                            </form>
+                            <Button asChild variant="outline">
+                                <Link href={importIndex()}>
+                                    {t('crm.import.action')}
+                                </Link>
                             </Button>
-                        </form>
+                            <AddContactDialog crms={crms} />
+                        </div>
                     }
                 />
 

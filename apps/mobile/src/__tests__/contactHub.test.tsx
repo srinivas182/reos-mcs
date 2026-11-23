@@ -4,6 +4,7 @@ import { Linking } from 'react-native';
 import { I18nextProvider } from 'react-i18next';
 
 import ContactsScreen from '@/app/contacts/index';
+import CrmsScreen from '@/app/connections/crms';
 import ContactScreen from '@/app/contacts/[id]';
 import { TodayInsight } from '@/features/contacts/TodayInsight';
 import type { Contact, ContactRow, Insight } from '@/lib/crm';
@@ -11,7 +12,7 @@ import { reachUri } from '@/lib/crm';
 import { i18n } from '@/lib/i18n';
 import { ToastProvider } from '@/ui';
 
-const mockApi = { GET: jest.fn(), POST: jest.fn() };
+const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 
 jest.mock('expo-router', () => {
   const { useEffect } = jest.requireActual<typeof import('react')>('react');
@@ -108,5 +109,38 @@ describe('contacts on the phone (B8.3)', () => {
   it('builds tel: and sms: links', () => {
     expect(reachUri('call', '+18325550123')).toBe('tel:+18325550123');
     expect(reachUri('text', '+18325550123', 'Hi & bye')).toBe('sms:+18325550123?&body=Hi%20%26%20bye');
+  });
+});
+
+describe('using two CRMs and adding a contact (B8.3b)', () => {
+  const crms = [
+    { connection: 1, integration: 'follow-up-boss', name: 'Follow Up Boss', account: 'james@lonestar.example', takes_new_people: true, is_default: true },
+    { connection: 2, integration: 'lofty', name: 'Lofty', account: null, takes_new_people: true, is_default: false },
+    { connection: 3, integration: 'boldtrail', name: 'BoldTrail (kvCORE)', account: null, takes_new_people: false, is_default: false },
+  ];
+
+  it('picks where new contacts go, with Undo', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: crms }));
+    mockApi.PUT.mockResolvedValue(ok({ data: crms.map((c) => ({ ...c, is_default: c.connection === 2 })) }));
+    await render(wrap(<CrmsScreen />));
+
+    expect(await screen.findByText('BoldTrail (kvCORE): Can\'t take new contacts from REOS')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Lofty'));
+    await waitFor(() => expect(mockApi.PUT).toHaveBeenCalledWith('/contacts/crms/default', { body: { connection: 2 } }));
+    expect(await screen.findByText('Saved. New contacts go there from now on.')).toBeTruthy();
+  });
+
+  it('adds a contact from the list and opens it', async () => {
+    mockApi.GET.mockResolvedValue(ok({ data: [], counts: { all: 0 }, tags: [], total: 0 }));
+    mockApi.POST.mockResolvedValue({ data: { data: { id: 'abc' }, sent_to: 'Follow Up Boss' }, error: undefined, response: { ok: true, status: 201 } });
+    await render(wrap(<ContactsScreen />));
+
+    await fireEvent.press(screen.getAllByText('Add contact')[0]);
+    await fireEvent.changeText(screen.getByLabelText('First name'), 'Nora');
+    await fireEvent.changeText(screen.getByLabelText('Email'), 'nora@example.com');
+    await fireEvent.press(screen.getByText('Save contact'));
+
+    await waitFor(() => expect(router.push).toHaveBeenCalledWith({ pathname: '/contacts/[id]', params: { id: 'abc' } }));
+    expect(mockApi.POST).toHaveBeenCalledWith('/contacts', { body: { first_name: 'Nora', last_name: null, email: 'nora@example.com', phone: null } });
   });
 });

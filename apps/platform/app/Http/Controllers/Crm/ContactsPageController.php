@@ -7,17 +7,21 @@ namespace App\Http\Controllers\Crm;
 use App\Authorization\Role;
 use App\Crm\ContactHub;
 use App\Crm\CrmWriteBack;
+use App\Crm\DefaultCrm;
 use App\Crm\Insights\ContactInsights;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Crm\AddContactRequest;
 use App\Http\Requests\Crm\ContactListRequest;
 use App\Http\Requests\Crm\ContactTaskRequest;
 use App\Http\Requests\Crm\ContactTouchRequest;
+use App\Http\Requests\Crm\DefaultCrmRequest;
 use App\Http\Resources\Crm\ContactActivityResource;
 use App\Http\Resources\Crm\ContactInsightResource;
 use App\Http\Resources\Crm\ContactNoteResource;
 use App\Http\Resources\Crm\ContactResource;
 use App\Http\Resources\Crm\ContactRowResource;
 use App\Http\Resources\Todos\TodoResource;
+use App\Models\Connection;
 use App\Models\Contact;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
@@ -35,7 +39,7 @@ use Inertia\Response;
  */
 final class ContactsPageController extends Controller
 {
-    public function index(ContactListRequest $request, #[CurrentUser] User $user, ActiveRole $roles, ContactHub $hub): Response
+    public function index(ContactListRequest $request, #[CurrentUser] User $user, ActiveRole $roles, ContactHub $hub, DefaultCrm $defaultCrm): Response
     {
         $this->agent($user, $roles);
         $list = $hub->list($user, $request->segmentName(), $request->tag(), $request->search());
@@ -48,7 +52,30 @@ final class ContactsPageController extends Controller
             'tags' => $list['tags'],
             'total' => $list['total'],
             'selected' => $selected === null ? null : $this->panel($request, $user, $hub, $selected),
+            // Where new contacts go (screen 24, B8.3b).
+            'crms' => $defaultCrm->options($user),
         ]);
+    }
+
+    /** Add contact: saved in REOS, and in the default CRM (B8.3b). */
+    public function add(AddContactRequest $request, #[CurrentUser] User $user, ActiveRole $roles, CrmWriteBack $writeBack): RedirectResponse
+    {
+        $this->agent($user, $roles);
+        [$contact, $sentTo] = $writeBack->addPerson($user, $request->person());
+
+        return to_route('contacts.index', ['contact' => $contact->uuid])->with('success', $sentTo === null ? __('crm.add.saved') : __('crm.add.sent', ['tool' => $sentTo]));
+    }
+
+    /** Where new contacts go (screen 24). */
+    public function defaultCrm(DefaultCrmRequest $request, #[CurrentUser] User $user, ActiveRole $roles, DefaultCrm $defaultCrm): RedirectResponse
+    {
+        $this->agent($user, $roles);
+        $id = $request->connection();
+        $choice = $id === null ? null : collect($defaultCrm->options($user))->firstWhere('connection', $id);
+        abort_if($id !== null && ($choice === null || ! $choice['takes_new_people']), 422);
+        $defaultCrm->set($user, $id === null ? null : Connection::query()->findOrFail($id));
+
+        return back()->with('success', __('crm.add.defaultSaved'));
     }
 
     public function note(Request $request, string $contact, #[CurrentUser] User $user, ActiveRole $roles, ContactHub $hub, CrmWriteBack $writeBack): RedirectResponse

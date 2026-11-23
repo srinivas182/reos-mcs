@@ -233,6 +233,21 @@
     - sent to the CRM that knows the person and synced most recently (Follow Up Boss, Lofty or Salesforce);
     - BoldTrail-only people keep the task in REOS.
   - **API:** `GET /contacts` gains `segment`, `tag` and `q` plus counts and tags. Also new: `GET /contacts/today`, `POST /contacts/{id}/insight`, `/tasks` and `/touches`.
+- **As built, B8.3b** (ADR 0034):
+  - **Where new contacts go** (phone screen 24, "Using two CRMs" in Connections; on the web, in Add contact):
+    - choose one of the agent's CRMs that can take new people, or "only REOS";
+    - with one such CRM, it's the default;
+    - the conflict rule is shown (newest change wins), with Undo on the phone.
+  - **Add contact** (web screen 13 and the phone's Contacts):
+    - saved in REOS and in the default CRM (Follow Up Boss or Lofty);
+    - someone already known by email or phone is joined, not duplicated;
+    - a new task goes to the default CRM when it knows the person.
+  - **CSV import** (`/contacts/import`, from screen 13):
+    - upload up to 5,000 rows;
+    - map the columns (guessed from the headers);
+    - preview new, joined and skipped rows, with the first 10 as samples;
+    - import in the background as "CSV import, date";
+    - undo from the list of past imports.
 
 ## 4. Definition of done (whole sprint)
 

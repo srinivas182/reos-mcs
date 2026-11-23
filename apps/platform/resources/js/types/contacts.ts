@@ -76,3 +76,13 @@ export type ContactPanelData = {
     segment: Exclude<Segment, 'all'> | null;
     last_touch_at: string | null;
 };
+
+/** A connected CRM and where new contacts go (screen 24, B8.3b). */
+export type CrmOption = {
+    connection: number;
+    integration: string;
+    name: string;
+    account: string | null;
+    takes_new_people: boolean;
+    is_default: boolean;
+};

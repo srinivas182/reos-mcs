@@ -220,6 +220,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('contacts/{contact}/merge', [ContactController::class, 'merge'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.merge');
     Route::post('contacts/{contact}/split', [ContactController::class, 'split'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-merge')->name('api.contacts.split');
     // CRM hub (B8.3, ADR 0034): AI next step, tasks to the CRM, calls and texts logged.
+    Route::post('contacts', [ContactWorkController::class, 'store'])->middleware('throttle:30,1,api-contacts-store')->name('api.contacts.store');
+    Route::get('contacts/crms', [ContactWorkController::class, 'crms'])->name('api.contacts.crms');
+    Route::put('contacts/crms/default', [ContactWorkController::class, 'defaultCrm'])->middleware('throttle:30,1,api-contacts-default')->name('api.contacts.crms.default');
     Route::get('contacts/today', [ContactWorkController::class, 'today'])->middleware('throttle:30,1,api-contacts-today')->name('api.contacts.today');
     Route::post('contacts/{contact}/insight', [ContactWorkController::class, 'insight'])->whereUuid('contact')->middleware('throttle:30,1,api-contacts-insight')->name('api.contacts.insight');
     Route::post('contacts/{contact}/tasks', [ContactWorkController::class, 'task'])->whereUuid('contact')->middleware('throttle:60,1,api-contacts-tasks')->name('api.contacts.tasks.store');

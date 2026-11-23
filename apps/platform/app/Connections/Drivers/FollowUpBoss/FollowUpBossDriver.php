@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\FollowUpBoss;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesPeople;
 use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Exceptions\AccessRevoked;
@@ -37,7 +38,7 @@ use LogicException;
  * (signed with the system key) say when to sync; the 15-minute schedule is
  * the backstop.
  */
-final readonly class FollowUpBossDriver implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver, SubscribesToChanges
+final readonly class FollowUpBossDriver implements ConnectorDriver, ConnectsWithApiKey, CreatesPeople, CreatesTasks, CrmDriver, SubscribesToChanges
 {
     public const INTEGRATION = 'follow-up-boss';
 
@@ -177,6 +178,24 @@ final readonly class FollowUpBossDriver implements ConnectorDriver, ConnectsWith
         $id = $note['id'] ?? null;
 
         return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Follow Up Boss returned no note id.');
+    }
+
+    /**
+     * `POST /v1/people?deduplicate=true`: a person the agent added in REOS
+     * (not a portal lead, which arrives through Follow Up Boss's events).
+     * When Follow Up Boss already has them by email or phone, that person's
+     * id comes back and nothing is changed.
+     */
+    public function createPerson(Connection $connection, string $token, array $person): string
+    {
+        $created = $this->json($this->http($token)->post(self::BASE.'/people?deduplicate=true', array_filter([
+            'firstName' => $person['first_name'], 'lastName' => $person['last_name'], 'stage' => $person['stage'],
+            'emails' => array_map(static fn (string $e): array => ['value' => $e, 'type' => 'home'], $person['emails']),
+            'phones' => array_map(static fn (string $p): array => ['value' => $p, 'type' => 'mobile'], $person['phones']),
+        ], static fn (mixed $value): bool => $value !== null && $value !== [])));
+        $id = $created['id'] ?? null;
+
+        return is_scalar($id) ? (string) $id : throw new VendorUnavailable('Follow Up Boss returned no person id.');
     }
 
     /** `POST /v1/tasks`: a follow-up for the person, due on a day. */

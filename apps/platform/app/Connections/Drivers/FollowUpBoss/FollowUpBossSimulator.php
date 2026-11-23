@@ -7,6 +7,7 @@ namespace App\Connections\Drivers\FollowUpBoss;
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
 use App\Connections\ConnectsWithApiKey;
+use App\Connections\Crm\CreatesPeople;
 use App\Connections\Crm\CreatesTasks;
 use App\Connections\Crm\CrmDriver;
 use App\Connections\Exceptions\AccessRevoked;
@@ -29,7 +30,7 @@ use LogicException;
  * Any key of four or more characters connects. `changeInTool()` lets demos
  * and tests write in "Follow Up Boss" and see it arrive in REOS.
  */
-final class FollowUpBossSimulator implements ConnectorDriver, ConnectsWithApiKey, CreatesTasks, CrmDriver
+final class FollowUpBossSimulator implements ConnectorDriver, ConnectsWithApiKey, CreatesPeople, CreatesTasks, CrmDriver
 {
     private const CONTAINER = 'fub';
 
@@ -115,6 +116,17 @@ final class FollowUpBossSimulator implements ConnectorDriver, ConnectsWithApiKey
         $this->authorise($connection);
 
         return self::write($connection, 'notes', null, ['personId' => $personId, 'subject' => 'REOS', 'body' => $body])->external_id;
+    }
+
+    public function createPerson(Connection $connection, string $token, array $person): string
+    {
+        $this->authorise($connection);
+
+        return self::write($connection, 'people', null, [
+            'firstName' => $person['first_name'], 'lastName' => $person['last_name'], 'stage' => $person['stage'] ?? 'Lead', 'tags' => [],
+            'emails' => array_map(static fn (string $e): array => ['value' => $e, 'type' => 'home'], $person['emails']),
+            'phones' => array_map(static fn (string $p): array => ['value' => $p, 'type' => 'mobile'], $person['phones']),
+        ])->external_id;
     }
 
     public function createTask(Connection $connection, string $token, string $personId, string $title, ?CarbonImmutable $due): string
