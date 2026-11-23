@@ -98,12 +98,9 @@ describe('switching to agent (A10.3c: f03, 20, f04)', () => {
         await waitFor(() =>
             expect(router.visit).toHaveBeenCalledWith('/dashboard'),
         );
+        const sent = fetchMock.mock.calls[0]?.[1] as RequestInit | undefined;
         expect(
-            JSON.parse(
-                String(
-                    (fetchMock.mock.calls[0]?.[1] as RequestInit).body ?? '{}',
-                ),
-            ),
+            JSON.parse(typeof sent?.body === 'string' ? sent.body : '{}'),
         ).toEqual({ path: 'alone', code: null });
     });
 
