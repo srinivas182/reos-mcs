@@ -15,6 +15,7 @@ type Got<P extends keyof paths> = paths[P] extends { get: { responses: { 200: { 
 export type ClassList = Got<'/classes'>;
 export type LiveClassRow = ClassList['data'][number];
 export type ClassLive = Got<'/classes/{session}/live'>['data'];
+export type ClassReport = Got<'/classes/{session}/report'>['data'];
 
 const fail = (error: unknown): never => {
   const e = (error as { errors?: Record<string, string[]>; message?: string } | undefined) ?? {};
@@ -35,6 +36,25 @@ export async function registerForClass(id: string): Promise<LiveClassRow> {
 
 export async function unregisterFromClass(id: string): Promise<LiveClassRow> {
   const { data, error } = await api().DELETE('/classes/{session}/registration', { params: { path: { session: id } } });
+
+  return data ? data.data : fail(error);
+}
+
+/** The CE class report (A10.2c, i13). */
+export async function loadReport(id: string): Promise<ClassReport | null> {
+  const { data } = await api().GET('/classes/{session}/report', { params: { path: { session: id } } });
+
+  return data?.data ?? null;
+}
+
+export async function decideCase(id: string, user: number, accept: boolean, reason: string): Promise<ClassReport> {
+  const { data, error } = await api().POST('/classes/{session}/report/decisions', { params: { path: { session: id } }, body: { user, decision: accept ? 'accepted' : 'rejected', reason } });
+
+  return data ? data.data : fail(error);
+}
+
+export async function sendReport(id: string): Promise<ClassReport> {
+  const { data, error } = await api().POST('/classes/{session}/report/send', { params: { path: { session: id } } });
 
   return data ? data.data : fail(error);
 }

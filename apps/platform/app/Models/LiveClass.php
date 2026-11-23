@@ -21,6 +21,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $checkin_minutes
  * @property int|null $presence_percent
  * @property CarbonImmutable|null $reminded_hour_at
+ * @property string $report_status none, draft or sent (A10.2c)
+ * @property int|null $report_sent_by
+ * @property CarbonImmutable|null $report_sent_at
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read VideoSession $session
@@ -32,11 +35,17 @@ final class LiveClass extends Model
     /** Classes have room for at most this many students. */
     public const MAX_CAPACITY = VideoSession::MAX_GUESTS;
 
-    protected $fillable = ['video_session_id', 'course_id', 'course_approval_id', 'capacity', 'checkin_minutes', 'presence_percent', 'reminded_hour_at'];
+    public const REPORT_NONE = 'none';
+
+    public const REPORT_DRAFT = 'draft';
+
+    public const REPORT_SENT = 'sent';
+
+    protected $fillable = ['video_session_id', 'course_id', 'course_approval_id', 'capacity', 'checkin_minutes', 'presence_percent', 'reminded_hour_at', 'report_status', 'report_sent_by', 'report_sent_at'];
 
     protected function casts(): array
     {
-        return ['capacity' => 'integer', 'checkin_minutes' => 'integer', 'presence_percent' => 'integer', 'reminded_hour_at' => 'datetime'];
+        return ['capacity' => 'integer', 'checkin_minutes' => 'integer', 'presence_percent' => 'integer', 'reminded_hour_at' => 'datetime', 'report_sent_at' => 'datetime'];
     }
 
     /** @return BelongsTo<VideoSession, $this> */

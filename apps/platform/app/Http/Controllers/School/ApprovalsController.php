@@ -109,6 +109,7 @@ final class ApprovalsController extends Controller
             'presence_percent' => $a->presence_percent,
             'makeup_min_percent' => $a->makeup_min_percent,
             'makeup_days' => $a->makeup_days,
+            'records_live' => $a->records_live,
             'note' => $a->note,
         ];
     }

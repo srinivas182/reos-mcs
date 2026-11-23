@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
     Dialog,
     DialogContent,
@@ -46,6 +47,7 @@ type Draft = {
     expires_on: string;
     status: ApprovalStatus;
     note: string;
+    records_live: boolean;
 } & Record<(typeof SEAT_FIELDS)[number], string>;
 
 const text = (value: number | string | null | undefined): string =>
@@ -136,6 +138,7 @@ function ApprovalForm({
         expires_on: mode.kind === 'renew' ? '' : (approval?.expires_on ?? ''),
         status: approval?.status ?? 'approved',
         note: approval?.note ?? '',
+        records_live: approval?.records_live ?? false,
         ...seat(approval ?? options.defaults.TX),
     }));
     const [errors, setErrors] = useState<Record<string, string>>({});
@@ -175,6 +178,7 @@ function ApprovalForm({
             expires_on: draft.expires_on,
             status: draft.status,
             note: draft.note,
+            records_live: draft.records_live,
             ...numbers,
         };
         const callbacks = {
@@ -202,7 +206,7 @@ function ApprovalForm({
     };
 
     const input = (
-        key: keyof Draft,
+        key: Exclude<keyof Draft, 'records_live'>,
         label: string,
         type: 'text' | 'number' | 'date' = 'text',
     ) => (
@@ -365,6 +369,29 @@ function ApprovalForm({
                         'number',
                     )}
                 </div>
+                {/* Live delivery (A10.2c): whether live classes may be recorded for the course. */}
+                {draft.delivery === 'live_online' ||
+                draft.delivery === 'classroom' ? (
+                    <label
+                        htmlFor="approval-records-live"
+                        className="flex min-h-12 items-start gap-3 text-base"
+                    >
+                        <Checkbox
+                            id="approval-records-live"
+                            className="mt-1"
+                            checked={draft.records_live}
+                            onCheckedChange={(on) =>
+                                set({ records_live: on === true })
+                            }
+                        />
+                        <span>
+                            {t('approvals.form.recordsLive')}
+                            <span className="block text-sm text-muted-foreground">
+                                {t('approvals.form.recordsLiveHint')}
+                            </span>
+                        </span>
+                    </label>
+                ) : null}
             </fieldset>
 
             <div className="grid gap-2">

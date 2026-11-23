@@ -1,6 +1,6 @@
 # ADR 0040: Booking 1-on-1 sessions and live classes
 
-- Status: Accepted (booking 1-on-1 sessions, A10.2a; live classes, A10.2b)
+- Status: Accepted (booking 1-on-1 sessions, A10.2a; live classes, A10.2b; CE class report, A10.2c)
 - Date: 2026-11-23 (Sprint 10; spec in docs/sprints/S10-spec.md)
 
 ## Context
@@ -33,11 +33,30 @@ Live 1-on-1 sessions run in REOS's LiveKit rooms since B6.3, but only an instruc
 12. **Seat time** is counted for every session from joins and leaves, only between the booked start and end (`seconds_present`). A reconnect counts the time up to it first.
 13. Scheduling is on the web (w505); the phone lists the instructor's week (i11) and hosts the class (i12), as the journeys say.
 
+## Decision: the CE class report (A10.2c)
+
+14. **When a CE class ends** (the booked end or the host's End), each registered student is measured against the copied rules:
+    - **earned**: at least `presence_percent` of the class's length, and every check answered;
+    - **review** (borderline): at least 90% of the seat time needed, and at most one check missed;
+    - **not earned**: anything else, including not joining.
+
+    Each line keeps its reasons (`seat_time`, `checks`, `not_joined`). The instructor is told the report is ready (`class_report`).
+15. **Confirm** (i13, w505):
+    - The instructor accepts or rejects each borderline case with a reason.
+    - **Confirm and send to school** works only when none is left undecided.
+    - Every decision and the sending are **audited** (`class_report.decided`, `class_report.sent`, with the earned and not-earned lists).
+    - Sent is final. The school's admins are told and can open the report read-only; they report completions to the state.
+16. **Recording:**
+    - A course approval says whether its live classes may be recorded (`records_live`, on screen 50 for live delivery).
+    - A CE class records only when its approval allows it.
+    - Once the class is over, a ready recording is offered to its students from Live classes, which is where the course's classes live.
+    - Classes without an approval follow B6.3's consent rules alone.
+
 ## Consequences
 
 - Any person-to-person service can reuse session products and holds (brokerage mentors in A10.3b).
 - An instructor needs a school to be paid; REOS-employed instructors would need REOS as the seller (not yet).
-- The CE class report (who earned CE, borderline cases, Confirm and send to school) and recordings going to the course when the approval allows build on the checks and seat time kept here (A10.2c).
+- Reporting completions to the state itself stays with the school (TREC's CE roster), which now has the confirmed list and its audit trail.
 
 ## Alternatives considered
 

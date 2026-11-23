@@ -107,7 +107,18 @@
     - In a CE class a check opens on the approval's interval; the host can also send one.
     - Each stays open 3 minutes, and a student who joined and hasn't answered gets one reminder.
     - Seat time is counted from joins and leaves inside the booked time.
-  - **Next (A10.2c):** the CE class report, borderline cases, Confirm and send to school, audited decisions, and recordings going to the course when the approval allows.
+- **As built, A10.2c** (ADR 0040 §14–16):
+  - **Class report** (instructor i13 on the phone; on the web from Live classes):
+    - It's ready automatically when a CE class ends, and the instructor is told.
+    - It shows joined, earned CE, didn't, and to review, against the approval's rules (seat-time share and all checks).
+    - Borderline cases come first. They are within 90% of the seat time needed with at most one check missed, and are accepted or rejected with a reason.
+    - **Confirm and send to school** unlocks once every case is decided. The school's admins are told and can open the report read-only.
+    - Every decision and the sending are audited.
+  - **Recording:**
+    - School approvals for live delivery get "Live classes may be recorded" (screen 50).
+    - A CE class records only when that's on.
+    - Afterward the recording is offered to its students from Live classes.
+- **Done when (A10.2):** a session ends on time and its notes reach the plan (A10.2a); a CE class's attendance is confirmed and sent to the school (A10.2c).
 
 ### A10.3 Licence journey (Team A)
 

@@ -447,6 +447,7 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->pref
 // Live classes (A10.2b): the schedule page, and the same JSON actions as the API for the web's room.
 Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->prefix('classes')->name('classes.')->group(function () {
     Route::get('/', [ClassesPageController::class, 'index'])->name('index');
+    Route::get('{session}/report', [ClassesPageController::class, 'report'])->whereUuid('session')->name('report');
     Route::controller(ClassesController::class)->group(function () {
         Route::post('/', 'store')->middleware('throttle:20,1,classes-schedule')->name('store');
         Route::post('{session}/registration', 'register')->whereUuid('session')->middleware('throttle:20,1,classes-register')->name('register');
@@ -463,6 +464,8 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->pref
         Route::post('{session}/messages', 'chat')->whereUuid('session')->middleware('throttle:30,1,classes-chat')->name('messages');
         Route::post('{session}/checks', 'check')->whereUuid('session')->middleware('throttle:10,1,classes-check')->name('checks');
         Route::post('{session}/checks/{check}/answer', 'answerCheck')->whereUuid('session')->whereNumber('check')->middleware('throttle:30,1,classes-check-answer')->name('checks.answer');
+        Route::post('{session}/report/decisions', 'decide')->whereUuid('session')->middleware('throttle:60,1,classes-report')->name('report.decide');
+        Route::post('{session}/report/send', 'sendReport')->whereUuid('session')->middleware('throttle:10,1,classes-report-send')->name('report.send');
     });
 });
 

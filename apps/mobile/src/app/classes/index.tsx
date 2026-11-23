@@ -1,5 +1,5 @@
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { Award, Users, Video } from 'lucide-react-native';
+import { Award, FileCheck, PlayCircle, Users, Video } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -77,6 +77,16 @@ export default function ClassesScreen() {
               </View>
               <View style={styles.actions}>
                 {row.can_join ? <Button icon={Video} label={t('sessions.join')} onPress={() => open(row)} /> : row.me !== null ? <Button variant="secondary" label={t('classes.open')} onPress={() => open(row)} /> : null}
+                {/* The CE class report for the host (i13), and the recording for students (A10.2c). */}
+                {row.me === 'host' && row.report !== 'none' ? (
+                  <Button
+                    variant={row.report === 'draft' ? 'primary' : 'secondary'}
+                    icon={FileCheck}
+                    label={row.report === 'draft' ? t('classes.report.confirm') : t('classes.report.title')}
+                    onPress={() => router.push({ pathname: '/classes/[id]/report', params: { id: row.id } })}
+                  />
+                ) : null}
+                {row.has_recording && row.me !== 'host' ? <Button variant="secondary" icon={PlayCircle} label={t('classes.recording')} onPress={() => open(row)} /> : null}
                 {row.me === 'registered' && row.status === 'scheduled' ? <Button variant="secondary" label={t('classes.unregister')} onPress={() => void cancel(row)} /> : null}
                 {row.me === null ? <Button label={row.full ? t('classes.full') : t('classes.register')} disabled={!row.can_register} onPress={() => void act(() => registerForClass(row.id))} /> : null}
               </View>

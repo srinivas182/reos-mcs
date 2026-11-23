@@ -2267,7 +2267,9 @@
         "starter_question.restore": "Deshizo una decisión del banco inicial",
         "starter_question.edited": "Editó una pregunta del banco inicial",
         "course.exam_success_installed": "Instaló el curso Éxito en el examen para revisión",
-        "study_group.created": "Creó un grupo de estudio de clase"
+        "study_group.created": "Creó un grupo de estudio de clase",
+        "class_report.decided": "Decisión en el informe de clase",
+        "class_report.sent": "Informe de clase enviado a la escuela"
       }
     }
   },
@@ -4843,7 +4845,8 @@
       "signature_completed": "Documentos firmados",
       "student_question": "Preguntas de estudiantes",
       "instructor_answer": "Respuestas de su instructor",
-      "class_check": "Verificaciones de asistencia"
+      "class_check": "Verificaciones de asistencia",
+      "class_report": "Informes de CE de clases"
     },
     "digest": {
       "subject": {
@@ -5188,7 +5191,9 @@
       "makeupDays": "Recuperación dentro de (días)",
       "note": "Nota (opcional)",
       "save": "Guardar aprobación",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "recordsLive": "Se pueden grabar las clases en vivo",
+      "recordsLiveHint": "La grabación queda en el curso para sus estudiantes después de la clase."
     },
     "dashboard": {
       "title": "Aprobaciones de cursos",
@@ -7176,14 +7181,67 @@
       "voted": "Ya respondió esta encuesta.",
       "studentsOnly": "Solo los estudiantes pueden hacer eso.",
       "checkOpen": "Ya hay una verificación de asistencia abierta.",
-      "checkClosed": "Esta verificación de asistencia ya cerró."
+      "checkClosed": "Esta verificación de asistencia ya cerró.",
+      "noRecording": "La aprobación de este curso no permite grabar las clases en vivo."
     },
     "mail": {
       "check": {
         "title": "Verificación de asistencia en “:title”",
         "body": "Responda “Estoy aquí” en los próximos :minutes minutos para conservar su crédito de CE."
+      },
+      "report": {
+        "ready": {
+          "title": "Informe de la clase listo: “:title”",
+          "body": "Confirme quién obtuvo CE y envíelo a la escuela."
+        },
+        "sent": {
+          "title": "Informe de CE de la clase: “:title”",
+          "body": ":name confirmó quién obtuvo CE. Reporte las aprobaciones al estado."
+        }
       }
     },
-    "scheduleOnWeb": "Programe las clases en la web, desde Clases en vivo."
+    "scheduleOnWeb": "Programe las clases en la web, desde Clases en vivo.",
+    "report": {
+      "title": "Informe de la clase",
+      "open": "Abrir el informe",
+      "confirm": "Confirmar CE",
+      "present_one": "{{count}} minuto presente",
+      "present_other": "{{count}} minutos presente",
+      "checks": "{{answered}} de {{total}} verificaciones",
+      "reasons": {
+        "seat_time": "Le faltó tiempo de asistencia",
+        "checks": "No respondió una verificación",
+        "not_joined": "No entró"
+      },
+      "decided": {
+        "accepted": "Aceptado",
+        "rejected": "Rechazado"
+      },
+      "reason": "Motivo (se guarda con el informe)",
+      "accept": "Aceptar: obtuvo CE",
+      "reject": "Rechazar",
+      "counts": {
+        "joined": "Entraron",
+        "earned": "Obtuvieron CE",
+        "notEarned": "No obtuvieron CE",
+        "review": "Por revisar"
+      },
+      "rules": "Obtener CE requiere el {{percent}} % de la clase ({{minutes}} minutos) y las {{checks}} verificaciones de asistencia.",
+      "approval": "Aprobación {{number}}.",
+      "sent": "{{name}} lo envió a la escuela el {{date}}.",
+      "toReview": "Por revisar",
+      "earned": "Obtuvieron CE",
+      "noneEarned": "Nadie ha obtenido CE todavía.",
+      "notEarned": "No obtuvieron CE",
+      "decideFirst_one": "Decida {{count}} caso dudoso antes de enviar.",
+      "decideFirst_other": "Decida {{count}} casos dudosos antes de enviar.",
+      "send": "Confirmar y enviar a la escuela",
+      "errors": {
+        "notReview": "Solo se deciden los casos dudosos.",
+        "undecided": "Primero decida cada caso dudoso.",
+        "notDraft": "Este informe ya se envió."
+      }
+    },
+    "recording": "Ver la grabación"
   }
 }

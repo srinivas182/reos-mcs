@@ -19,6 +19,10 @@ export type LiveClassRow = {
     can_register: boolean;
     full: boolean;
     can_join: boolean;
+    /** The CE class report, for the host (A10.2c). */
+    report: 'none' | 'draft' | 'sent';
+    /** The class is over and its recording is ready (A10.2c). */
+    has_recording: boolean;
 };
 
 export type ClassCourse = { id: number; title: string; ce: boolean };
@@ -73,4 +77,50 @@ export type ClassLive = {
         of: number;
     }[];
     next_check_at: string | null;
+};
+
+/** The CE class report (A10.2c, i13). */
+export type ReportStudent = {
+    user_id: number;
+    name: string;
+    minutes_present: number;
+    checks_answered: number;
+    checks_total: number;
+    outcome: 'earned' | 'review' | 'not_earned';
+    reasons: ('seat_time' | 'checks' | 'not_joined')[];
+    decision: 'accepted' | 'rejected' | null;
+    decision_reason: string | null;
+    earned: boolean;
+};
+
+export type ClassReport = {
+    class: {
+        id: string;
+        title: string;
+        course: string;
+        starts_at: string;
+        ends_at: string;
+        minutes: number;
+        approval: string | null;
+        ce_hours: number | null;
+    };
+    rules: {
+        presence_percent: number;
+        required_minutes: number;
+        checkin_minutes: number;
+        checks: number;
+    };
+    status: 'none' | 'draft' | 'sent';
+    sent_at: string | null;
+    sent_by: string | null;
+    can_decide: boolean;
+    can_send: boolean;
+    counts: {
+        joined: number;
+        earned: number;
+        not_earned: number;
+        review: number;
+        undecided: number;
+    };
+    students: ReportStudent[];
 };

@@ -174,6 +174,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{session}/messages', 'chat')->whereUuid('session')->middleware('throttle:30,1,api-classes-chat')->name('messages');
         Route::post('{session}/checks', 'check')->whereUuid('session')->middleware('throttle:10,1,api-classes-check')->name('checks');
         Route::post('{session}/checks/{check}/answer', 'answerCheck')->whereUuid('session')->whereNumber('check')->middleware('throttle:30,1,api-classes-check-answer')->name('checks.answer');
+        Route::get('{session}/report', 'report')->whereUuid('session')->name('report');
+        Route::post('{session}/report/decisions', 'decide')->whereUuid('session')->middleware('throttle:60,1,api-classes-report')->name('report.decide');
+        Route::post('{session}/report/send', 'sendReport')->whereUuid('session')->middleware('throttle:10,1,api-classes-report-send')->name('report.send');
     });
     // Video sessions (B6.3), behind the `video_rooms` flag.
     Route::middleware(RequireFlag::class.':video_rooms')->prefix('sessions')->name('api.sessions.')->controller(ApiSessionsController::class)->group(function () {

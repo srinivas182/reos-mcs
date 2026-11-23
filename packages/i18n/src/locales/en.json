@@ -2267,7 +2267,9 @@
         "starter_question.restore": "Undid a starter bank decision",
         "starter_question.edited": "Edited a starter bank question",
         "course.exam_success_installed": "Installed the Exam success course for review",
-        "study_group.created": "Made a class study group"
+        "study_group.created": "Made a class study group",
+        "class_report.decided": "Class report decision",
+        "class_report.sent": "Class report sent to school"
       }
     }
   },
@@ -4843,7 +4845,8 @@
       "signature_completed": "Signed documents",
       "student_question": "Student questions",
       "instructor_answer": "Answers from your instructor",
-      "class_check": "Attendance checks"
+      "class_check": "Attendance checks",
+      "class_report": "CE class reports"
     },
     "digest": {
       "subject": {
@@ -5188,7 +5191,9 @@
       "makeupDays": "Makeup within (days)",
       "note": "Note (optional)",
       "save": "Save approval",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "recordsLive": "Live classes may be recorded",
+      "recordsLiveHint": "The recording goes to the course for its students after class."
     },
     "dashboard": {
       "title": "Course approvals",
@@ -7176,14 +7181,67 @@
       "voted": "You've already answered this poll.",
       "studentsOnly": "Only students can do that.",
       "checkOpen": "An attendance check is already open.",
-      "checkClosed": "This attendance check has closed."
+      "checkClosed": "This attendance check has closed.",
+      "noRecording": "This course's approval doesn't allow recording live classes."
     },
     "mail": {
       "check": {
         "title": "Attendance check in “:title”",
         "body": "Answer “I'm here” in the next :minutes minutes to keep your CE credit."
+      },
+      "report": {
+        "ready": {
+          "title": "Class report ready: “:title”",
+          "body": "Confirm who earned CE and send it to the school."
+        },
+        "sent": {
+          "title": "CE class report: “:title”",
+          "body": ":name confirmed who earned CE. Report the completions to the state."
+        }
       }
     },
-    "scheduleOnWeb": "Schedule classes on the web, from Live classes."
+    "scheduleOnWeb": "Schedule classes on the web, from Live classes.",
+    "report": {
+      "title": "Class report",
+      "open": "Open the report",
+      "confirm": "Confirm CE",
+      "present_one": "{{count}} minute present",
+      "present_other": "{{count}} minutes present",
+      "checks": "{{answered}} of {{total}} checks",
+      "reasons": {
+        "seat_time": "Short on seat time",
+        "checks": "Missed a check",
+        "not_joined": "Didn't join"
+      },
+      "decided": {
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "reason": "Reason (kept with the report)",
+      "accept": "Accept: earned CE",
+      "reject": "Reject",
+      "counts": {
+        "joined": "Joined",
+        "earned": "Earned CE",
+        "notEarned": "Didn't earn CE",
+        "review": "To review"
+      },
+      "rules": "Earning CE takes {{percent}}% of the class ({{minutes}} minutes) and all {{checks}} attendance checks.",
+      "approval": "Approval {{number}}.",
+      "sent": "Sent to the school by {{name}} on {{date}}.",
+      "toReview": "To review",
+      "earned": "Earned CE",
+      "noneEarned": "Nobody has earned CE yet.",
+      "notEarned": "Didn't earn CE",
+      "decideFirst_one": "Decide {{count}} borderline case before sending.",
+      "decideFirst_other": "Decide {{count}} borderline cases before sending.",
+      "send": "Confirm and send to school",
+      "errors": {
+        "notReview": "Only borderline cases are decided.",
+        "undecided": "Decide every borderline case first.",
+        "notDraft": "This report has already been sent."
+      }
+    },
+    "recording": "Watch the recording"
   }
 }

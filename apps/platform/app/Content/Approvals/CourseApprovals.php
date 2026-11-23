@@ -303,6 +303,10 @@ final readonly class CourseApprovals
             $fields['status'] = self::string($data['status']);
         }
 
+        if (array_key_exists('records_live', $data)) {
+            $fields['records_live'] = filter_var($data['records_live'], FILTER_VALIDATE_BOOLEAN);
+        }
+
         if ($approval === null) {
             $fields['hours'] ??= $course->hours === null ? null : (float) $course->hours;
             $fields['status'] ??= CourseApproval::APPROVED;

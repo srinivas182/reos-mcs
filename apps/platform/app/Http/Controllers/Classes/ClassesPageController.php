@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Classes;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\VideoSession;
+use App\Video\Classes\ClassReports;
 use App\Video\Classes\LiveClasses;
 use App\Video\VideoSessions;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -31,5 +33,11 @@ final class ClassesPageController extends Controller
             'courses' => $host ? $classes->courses($user) : [],
             'lengths' => LiveClasses::LENGTHS,
         ]);
+    }
+
+    /** The CE class report (i13; w505): for the instructor, and the school's admins. */
+    public function report(VideoSession $session, #[CurrentUser] User $user, ClassReports $reports): Response
+    {
+        return Inertia::render('classes/report', ['report' => $reports->report($session, $user)]);
     }
 }
