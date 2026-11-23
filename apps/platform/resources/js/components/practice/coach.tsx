@@ -10,6 +10,7 @@ import {
     speed,
     start,
 } from '@/routes/practice';
+import { lesson as openLesson } from '@/routes/learn';
 import { show as showPlan, store as storePlan } from '@/routes/practice/plans';
 import type { Coach } from './types';
 
@@ -46,6 +47,10 @@ export function CoachPanel({ coach }: { coach: Coach }) {
                 return router.visit(flashcards().url);
             case 'speed':
                 return router.visit(speed().url);
+            case 'exam_success':
+                return item.lesson_id !== null
+                    ? router.visit(openLesson(item.lesson_id).url)
+                    : undefined;
             case 'simulation':
                 return document
                     .getElementById('simulations')
@@ -120,13 +125,21 @@ export function CoachPanel({ coach }: { coach: Coach }) {
                                   ? t('practice.coach.modes.flashcardsDue', {
                                         count: item.count,
                                     })
-                                  : item.mode === 'fix' && item.topic
-                                    ? t('practice.fix.start', {
-                                          topic: t(
-                                              `practice.topics.${item.topic}`,
-                                          ),
-                                      })
-                                    : t(`practice.coach.modes.${item.mode}`);
+                                  : item.mode === 'exam_success' &&
+                                      item.count !== null
+                                    ? t(
+                                          'practice.coach.modes.examSuccessLeft',
+                                          {
+                                              count: item.count,
+                                          },
+                                      )
+                                    : item.mode === 'fix' && item.topic
+                                      ? t('practice.fix.start', {
+                                            topic: t(
+                                                `practice.topics.${item.topic}`,
+                                            ),
+                                        })
+                                      : t(`practice.coach.modes.${item.mode}`);
 
                         return (
                             <li

@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace App\Practice;
 
+use App\Content\CourseStatus;
+use App\Content\ExamSuccess;
+use App\Models\Course;
 use App\Models\Flashcard;
+use App\Models\Lesson;
+use App\Models\LessonProgress;
 use App\Models\TestAttempt;
 use App\Models\TopicPlan;
 use App\Models\User;
@@ -28,10 +33,13 @@ use App\Models\User;
  * Hands-free and challenges join
  * the ranking as they arrive (A9.2c to A9.3).
  *
- * @phpstan-type Suggestion array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'flashcards'|'speed'|'math'|'simulation'|'readiness', why: string, topic: string|null, plan_id: int|null, count: int|null}
+ * @phpstan-type Suggestion array{mode: 'diagnostic'|'plan'|'drill'|'fix'|'flashcards'|'speed'|'math'|'simulation'|'readiness'|'exam_success', why: string, topic: string|null, plan_id: int|null, count: int|null, lesson_id: int|null}
  */
 final readonly class PracticeCoach
 {
+    /** Readiness at which the Exam success course is suggested (A9.2f). */
+    public const EXAM_SUCCESS_FROM = 60;
+
     public function __construct(private Readiness $readiness, private Drills $drills) {}
 
     /**
@@ -62,6 +70,11 @@ final readonly class PracticeCoach
         if ($weakest !== null && ! $plans->contains('topic', $weakest)) {
             $ranked[] = ['mode' => 'fix', 'why' => 'weakest', 'topic' => $weakest, 'plan_id' => null, 'count' => null];
         }
+        // Exam success (A9.2f): suggested once readiness passes 60%, at the next lesson not finished.
+        $examSuccess = $diagnostic && $percent >= self::EXAM_SUCCESS_FROM ? $this->examSuccess($user) : null;
+        if ($examSuccess !== null) {
+            $ranked[] = ['mode' => 'exam_success', 'why' => 'ready_soon', 'topic' => null, 'plan_id' => null, 'count' => $examSuccess['left'], 'lesson_id' => $examSuccess['lesson_id']];
+        }
         $due = Flashcard::query()->where('user_id', $user->id)->where('reps', '>', 0)->where('due_at', '<=', now())->count();
         if ($due > 0) {
             $ranked[] = ['mode' => 'flashcards', 'why' => 'due', 'topic' => null, 'plan_id' => null, 'count' => $due];
@@ -89,7 +102,25 @@ final readonly class PracticeCoach
                 'id' => $p->id, 'topic' => $p->topic, 'steps' => count($p->steps),
                 'done' => count(array_filter($p->steps, static fn (array $s): bool => ($s['done_at'] ?? null) !== null)),
             ], $plans->all())),
-            'ranked' => $ranked,
+            'ranked' => array_map(static fn (array $s): array => $s + ['lesson_id' => null], $ranked),
         ];
+    }
+
+    /**
+     * The next Exam success lesson the candidate hasn't finished, and how many are left.
+     *
+     * @return array{lesson_id: int, left: int}|null
+     */
+    private function examSuccess(User $user): ?array
+    {
+        $course = Course::query()->where('slug', ExamSuccess::SLUG)->where('status', CourseStatus::Live->value)->first();
+        if ($course === null) {
+            return null;
+        }
+        $lessons = Lesson::query()->learnable()->where('course_id', $course->id)->orderBy('position')->orderBy('id')->pluck('id')->map(static fn (mixed $id): int => is_numeric($id) ? (int) $id : 0);
+        $done = LessonProgress::query()->where('user_id', $user->id)->whereIn('lesson_id', $lessons)->whereNotNull('completed_at')->pluck('lesson_id')->map(static fn (mixed $id): int => is_numeric($id) ? (int) $id : 0);
+        $left = $lessons->diff($done)->values();
+
+        return $left->isEmpty() ? null : ['lesson_id' => $left->first(), 'left' => $left->count()];
     }
 }

@@ -23,6 +23,7 @@ use App\Services\Audit\AuditLogger;
 use App\Services\Authorization\Memberships;
 use App\Services\Content\Courses;
 use App\Services\Content\Lessons;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
@@ -64,15 +65,31 @@ final readonly class CourseBuilder
     /** @return Collection<int, Course> */
     public function editable(User $user, Membership $membership): Collection
     {
+        $assigned = static fn (Builder $u): Builder => $u->where('users.id', $user->id);
+
         return Course::query()
-            ->where('organisation_id', $membership->organisation->id)
-            ->when($membership->role === Role::Instructor, static fn ($q) => $q->whereHas('instructors', static fn ($i) => $i->where('users.id', $user->id)))
+            ->where(static function (Builder $q) use ($membership, $assigned): void {
+                $q->where(static function (Builder $own) use ($membership, $assigned): void {
+                    $own->where('organisation_id', $membership->organisation->id);
+                    if ($membership->role === Role::Instructor) {
+                        $own->whereHas('instructors', $assigned);
+                    }
+                })
+                    // REOS's own courses (Exam success, A9.2f): only for the people assigned to them.
+                    ->orWhere(static fn (Builder $reos): Builder => $reos->whereNull('organisation_id')->whereHas('instructors', $assigned));
+            })
             ->orderBy('title')
             ->get();
     }
 
     public function canEdit(User $user, Membership $membership, Course $course): bool
     {
+        // REOS's own courses (A9.2f) are reviewed by the people assigned as their instructors.
+        if ($course->organisation_id === null) {
+            return in_array($membership->role, [Role::SchoolAdmin, Role::Instructor], true)
+                && $course->instructors()->where('users.id', $user->id)->exists();
+        }
+
         if ($course->organisation_id !== $membership->organisation->id) {
             return false;
         }

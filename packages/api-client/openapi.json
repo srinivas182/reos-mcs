@@ -1077,7 +1077,8 @@
                                                                     "speed",
                                                                     "math",
                                                                     "simulation",
-                                                                    "readiness"
+                                                                    "readiness",
+                                                                    "exam_success"
                                                                 ]
                                                             },
                                                             "why": {
@@ -1100,6 +1101,12 @@
                                                                     "integer",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "lesson_id": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
                                                             }
                                                         },
                                                         "required": [
@@ -1107,7 +1114,8 @@
                                                             "why",
                                                             "topic",
                                                             "plan_id",
-                                                            "count"
+                                                            "count",
+                                                            "lesson_id"
                                                         ]
                                                     }
                                                 }

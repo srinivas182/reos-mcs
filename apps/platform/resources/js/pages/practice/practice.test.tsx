@@ -342,6 +342,37 @@ describe('drills and fix plans (screens 38, 46 and 47, A9.2b)', () => {
         expect(router.visit).toHaveBeenCalledWith('/practice/fix/31');
     });
 
+    it('suggests the Exam success course past 60% at the next lesson (A9.2f)', async () => {
+        const user = userEvent.setup();
+        render(
+            <CoachPanel
+                coach={{
+                    ...coach,
+                    ranked: [
+                        {
+                            mode: 'exam_success',
+                            why: 'ready_soon',
+                            topic: null,
+                            plan_id: null,
+                            count: 7,
+                            lesson_id: 52,
+                        },
+                    ],
+                }}
+            />,
+        );
+
+        expect(
+            screen.getByText("You're past 60%: learn how to take the exam."),
+        ).toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', {
+                name: 'Exam success course (7 lessons left)',
+            }),
+        );
+        expect(router.visit).toHaveBeenCalledWith('/learn/lessons/52');
+    });
+
     it('shows the fix plan against its goal and continues to the next step', async () => {
         const user = userEvent.setup();
         render(<FixPage plan={topicPlan} />);

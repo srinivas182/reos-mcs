@@ -238,11 +238,13 @@ export type Coach = {
             | 'speed'
             | 'math'
             | 'simulation'
-            | 'readiness';
+            | 'readiness'
+            | 'exam_success';
         why: string;
         topic: Topic | null;
         plan_id: number | null;
         count: number | null;
+        lesson_id: number | null;
     }[];
 };
 

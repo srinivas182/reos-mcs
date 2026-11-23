@@ -2142,7 +2142,8 @@
         "starter_question.approve": "Aprobó una pregunta del banco inicial",
         "starter_question.retire": "Retiró una pregunta del banco inicial",
         "starter_question.restore": "Deshizo una decisión del banco inicial",
-        "starter_question.edited": "Editó una pregunta del banco inicial"
+        "starter_question.edited": "Editó una pregunta del banco inicial",
+        "course.exam_success_installed": "Instaló el curso Éxito en el examen para revisión"
       }
     }
   },
@@ -6237,7 +6238,8 @@
         "math_weak": "Matemáticas es uno de sus temas más débiles: practíquelo paso a paso.",
         "math": "Matemáticas de bienes raíces, paso a paso, con números nuevos.",
         "due": "Tarjetas pendientes: dos minutos las mantienen frescas.",
-        "quick": "60 segundos de memoria rápida."
+        "quick": "60 segundos de memoria rápida.",
+        "ready_soon": "Superó el 60%: aprenda cómo presentar el examen."
       },
       "modes": {
         "diagnostic": "Diagnóstico",
@@ -6249,7 +6251,10 @@
         "math": "Laboratorio de matemáticas",
         "flashcards": "Tarjetas de estudio",
         "speed": "Ronda rápida",
-        "flashcardsDue": "Tarjetas de estudio ({{count}} pendientes)"
+        "flashcardsDue": "Tarjetas de estudio ({{count}} pendientes)",
+        "exam_success": "Curso Éxito en el examen",
+        "examSuccessLeft_one": "Curso Éxito en el examen (falta {{count}} lección)",
+        "examSuccessLeft_other": "Curso Éxito en el examen (faltan {{count}} lecciones)"
       }
     },
     "math": {
