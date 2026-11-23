@@ -69,6 +69,9 @@ Route::middleware(['auth', 'verified'])->prefix('start/{kind}')->whereIn('kind',
 Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('status', StatusController::class)->middleware('throttle:60,1,status')->name('status');
+// Packages and prices for candidates, with "Have a code?" (A8.3b).
+Route::get('packages/{code?}', [PublicSiteController::class, 'packages'])->where('code', '[A-Za-z]{2}')->middleware('throttle:60,1,packages')->name('packages');
+Route::post('packages/code', [PublicSiteController::class, 'code'])->middleware('throttle:10,10,packages-code')->name('packages.code');
 Route::get('for/{audience}', [PublicSiteController::class, 'audience'])
     ->whereIn('audience', PublicSiteController::AUDIENCES)->name('audience');
 

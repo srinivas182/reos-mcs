@@ -75,7 +75,8 @@ final readonly class Membership
             'features' => $features,
             'includes' => $plan?->product->includes ?? [],
             'ios_buy_link' => $mode,
-            'buy_url' => $mode === self::LINK ? route('billing.index') : null,
+            // Candidates choose a package on reos.com (A8.3b); everyone else goes to Plan and billing.
+            'buy_url' => $mode !== self::LINK ? null : ($buyer === Buyer::Candidate ? route('packages', ['code' => $state]) : route('billing.index')),
         ];
     }
 

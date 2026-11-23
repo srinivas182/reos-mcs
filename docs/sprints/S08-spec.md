@@ -152,7 +152,10 @@
   - **Calendar:** the next 14 days are study blocks at the reminder time, on the calendar chosen in Connections, moved in place on each rebuild.
   - **Web:** dashboard for candidates (screen 4); Study plan (screen 6: week view by type, drag or menu to move a task, weekly goal, catch-up rule, change exam month, minutes and reminder); Practice and exams (hub, test with timer, flag and question map, report). Sidebar items Study plan and Practice and exams.
   - **Phone:** Today for candidates (screen 12: readiness ring, days to exam, streak, Continue at its second, today's tasks with why); Practice tests (39); the test (40–42: countdown, flag, navigator, review before submit); results (43). The Ask bar opens search in the person's lessons until the AI study mate exists.
-  - **Next, A8.3b:** packages on reos.com with "Have a code?".
+- **As built, A8.3b** (packages on reos.com):
+  - **`/packages`** (Texas; `/packages/{state}` for other states as they go live) is public and server-rendered. It lists each live candidate package from screen 67 with its current price, what it includes, and what sponsoring schools take off. A signed-in candidate sees their own price, and Buy goes to checkout (B5.1).
+  - **Have a code?** shows what a school's, brokerage's or association's code covers before it's used: sponsor, package, months, and why a code won't work (unknown, expired, full). It is rate-limited and uses nothing up. It then leads to Plan and billing with the code filled in, after signing in.
+  - **iPhone:** the Membership screen's reos.com link now opens the packages page for the person's state (still no price in the app). The candidates' landing page links to it.
 
 ### B8.1 Lofty (Team B)
 

@@ -39,6 +39,8 @@ A candidate's first week should end with a plan they believe in. They find out w
    Agents keep their own Today.
 7. **Candidates only:** practice, the plan and Today return 404 for other roles (`PracticeAccess`). These are the learner's own actions, not admin actions, so they aren't audited as admin changes.
 
+8. **Packages on reos.com** (A8.3b, `App\Billing\Packages`): the public page lists live candidate packages with current prices (screen 67) and active sponsor discounts. It shows a signed-in person their own quote, and Buy goes to checkout (B5.1). "Have a code?" (`SponsorCodes::preview`) says what a code covers without using it, at 10 checks per 10 minutes. The phone never shows a price; the iPhone's link opens this page.
+
 ## Consequences
 
 - The plan is a schedule of tasks rather than a forecast; readiness drives which topics come back, and A9.2's nightly readiness can rebuild it the same way.

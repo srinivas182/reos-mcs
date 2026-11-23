@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { Audience } from '@/components/public-header';
 import { Button } from '@/components/ui/button';
 import { liveStateWording } from '@/lib/live-states';
-import { getStarted, login, signUp } from '@/routes';
+import { getStarted, login, packages, signUp } from '@/routes';
 import { show as startTenant } from '@/routes/start';
 
 type Props = { audience: Audience; liveStates: string[] };
@@ -94,6 +94,13 @@ export default function AudiencePage({ audience, liveStates }: Props) {
                                 {t(
                                     `signup.${audience === 'schools' ? 'school' : 'brokerage'}.cta`,
                                 )}
+                            </Link>
+                        </Button>
+                    ) : null}
+                    {audience === 'candidates' ? (
+                        <Button asChild variant="outline">
+                            <Link href={packages()}>
+                                {t('site.packages.see')}
                             </Link>
                         </Button>
                     ) : null}
