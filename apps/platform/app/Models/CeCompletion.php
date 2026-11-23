@@ -23,6 +23,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon $completed_on
  * @property string|null $certificate_path The uploaded certificate (B10.3b), on the content disk
  * @property string|null $read_by `textract` or `simulator` when the certificate was read
+ * @property int|null $course_id The REOS course behind a REOS completion (A11.2)
+ * @property Carbon|null $confirmed_at When TREC's record showed the requirement met with this in the period (A11.2)
+ * @property string|null $confirmed_by `trec-licence`
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -32,10 +35,10 @@ final class CeCompletion extends Model
 
     public const SOURCES = ['reos', 'other_provider', 'commission_meeting'];
 
-    protected $fillable = ['user_id', 'state_code', 'title', 'course_code', 'hours', 'provider', 'source', 'completed_on'];
+    protected $fillable = ['user_id', 'state_code', 'title', 'course_code', 'hours', 'provider', 'source', 'completed_on', 'course_id'];
 
     protected function casts(): array
     {
-        return ['completed_on' => 'date', 'hours' => 'decimal:1'];
+        return ['completed_on' => 'date', 'hours' => 'decimal:1', 'confirmed_at' => 'datetime'];
     }
 }

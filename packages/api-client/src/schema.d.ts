@@ -559,6 +559,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/ce": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My CE wallet
+         * @description Per licence: hours against the renewal (required and electives), the completions in the period and who reported them, TREC's own view, the renewal checklist and where to get the hours still missing.
+         */
+        get: operations["me.ce.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/licences/{licence}/renewal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Renewed with the regulator
+         * @description The agent says they renewed (or takes it back); REOS confirms the new expiry on the regulator's record overnight.
+         */
+        put: operations["me.licences.renewal"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/certificates/read": {
         parameters: {
             query?: never;
@@ -5667,6 +5707,13 @@ export interface components {
             agreed: boolean;
         };
         /**
+         * RenewalRequest
+         * @description "I've renewed with TREC" on the renewal checklist, or Undo (A11.2).
+         */
+        RenewalRequest: {
+            renewed: boolean;
+        };
+        /**
          * ReportRequest
          * @description Report a conversation (B6.1b): why, optional details, who (in a group), and whether to block too.
          */
@@ -6183,6 +6230,7 @@ export type SchemaQuizResultResource = components['schemas']['QuizResultResource
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
 export type SchemaReadCertificateRequest = components['schemas']['ReadCertificateRequest'];
 export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswerRequest'];
+export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
@@ -7662,6 +7710,231 @@ export interface operations {
                 };
                 content: {
                     "application/json": 201;
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.ce.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            licence: {
+                                id: number;
+                                state_code: string;
+                                state_name: string;
+                                number: string;
+                                type: string;
+                                status: string;
+                                expires_on: string | null;
+                                sponsor_name: string | null;
+                            };
+                            ce: {
+                                state: string;
+                                due_on: string | null;
+                                period_start: string | null;
+                                days_left: number | null;
+                                first_renewal: boolean;
+                                hours_required: number;
+                                hours_done: number;
+                                hours_left: number;
+                                complete: boolean;
+                                parts: {
+                                    code: string;
+                                    title: string;
+                                    /** @enum {string} */
+                                    kind: "mandatory" | "broker_responsibility" | "qualifying" | "elective";
+                                    hours: number;
+                                    hours_done: number;
+                                    done: boolean;
+                                }[];
+                                deferral: {
+                                    fee_usd: number;
+                                    days: number;
+                                } | null;
+                                sources: {
+                                    key: string;
+                                    citation: string;
+                                    url: string | null;
+                                    effective_from: string;
+                                }[];
+                            };
+                            completions: {
+                                id: number;
+                                title: string;
+                                hours: number;
+                                completed_on: string;
+                                provider: string | null;
+                                course_code: string | null;
+                                /** @enum {string} */
+                                status: "reos_reported" | "self_reported" | "on_record";
+                                certificate: boolean;
+                            }[];
+                            trec: {
+                                /** @enum {string|null} */
+                                mce: "met" | "outstanding" | "none" | null;
+                                /** @enum {string|null} */
+                                education: "met" | "outstanding" | "none" | null;
+                                checked_at: string | null;
+                            };
+                            renewal: {
+                                due_on: string | null;
+                                ready: boolean;
+                                renewed_at: string | null;
+                                confirmed_at: string | null;
+                                renewed_until: string | null;
+                                steps: {
+                                    code: string;
+                                    title: string;
+                                    detail: string;
+                                    url: string | null;
+                                    done: boolean;
+                                }[];
+                            };
+                            buy: {
+                                price: number;
+                                product: string;
+                                amount: number;
+                                /** @enum {string} */
+                                interval: "month" | "year" | "once";
+                            } | null;
+                            unlocked: boolean;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.licences.renewal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                licence: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RenewalRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            licence: {
+                                id: number;
+                                state_code: string;
+                                state_name: string;
+                                number: string;
+                                type: string;
+                                status: string;
+                                expires_on: string | null;
+                                sponsor_name: string | null;
+                            };
+                            ce: {
+                                state: string;
+                                due_on: string | null;
+                                period_start: string | null;
+                                days_left: number | null;
+                                first_renewal: boolean;
+                                hours_required: number;
+                                hours_done: number;
+                                hours_left: number;
+                                complete: boolean;
+                                parts: {
+                                    code: string;
+                                    title: string;
+                                    /** @enum {string} */
+                                    kind: "mandatory" | "broker_responsibility" | "qualifying" | "elective";
+                                    hours: number;
+                                    hours_done: number;
+                                    done: boolean;
+                                }[];
+                                deferral: {
+                                    fee_usd: number;
+                                    days: number;
+                                } | null;
+                                sources: {
+                                    key: string;
+                                    citation: string;
+                                    url: string | null;
+                                    effective_from: string;
+                                }[];
+                            };
+                            completions: {
+                                id: number;
+                                title: string;
+                                hours: number;
+                                completed_on: string;
+                                provider: string | null;
+                                course_code: string | null;
+                                /** @enum {string} */
+                                status: "reos_reported" | "self_reported" | "on_record";
+                                certificate: boolean;
+                            }[];
+                            trec: {
+                                /** @enum {string|null} */
+                                mce: "met" | "outstanding" | "none" | null;
+                                /** @enum {string|null} */
+                                education: "met" | "outstanding" | "none" | null;
+                                checked_at: string | null;
+                            };
+                            renewal: {
+                                due_on: string | null;
+                                ready: boolean;
+                                renewed_at: string | null;
+                                confirmed_at: string | null;
+                                renewed_until: string | null;
+                                steps: {
+                                    code: string;
+                                    title: string;
+                                    detail: string;
+                                    url: string | null;
+                                    done: boolean;
+                                }[];
+                            };
+                            buy: {
+                                price: number;
+                                product: string;
+                                amount: number;
+                                /** @enum {string} */
+                                interval: "month" | "year" | "once";
+                            } | null;
+                            unlocked: boolean;
+                        } | null;
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];

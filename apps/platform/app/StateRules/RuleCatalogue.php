@@ -44,6 +44,7 @@ final class RuleCatalogue
             'ce.no_repeat' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Text, 'used_by' => ['ce_card', 'course_catalogue']],
             'ce.commission_meeting' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Number, 'unit' => 'hours', 'used_by' => ['ce_card']],
             'ce.deferral' => ['topic' => RuleTopic::Ce, 'type' => RuleType::FeeDays, 'used_by' => ['ce_card', 'reminders']],
+            'ce.renewal_steps' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Steps, 'used_by' => ['ce_wallet']],
             'advertising.license_holder_name' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
             'advertising.broker_name_size' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
             'advertising.social_media' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
@@ -63,5 +64,5 @@ final class RuleCatalogue
     }
 
     /** Features that read rules today (the rest arrive in their sprints). */
-    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes', 'agent_modes'];
+    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes', 'agent_modes', 'ce_wallet'];
 }

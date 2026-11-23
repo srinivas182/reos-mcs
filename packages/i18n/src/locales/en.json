@@ -77,7 +77,8 @@
     "recruiting": "Recruiting",
     "mentors": "Mentors",
     "goal": "My goal",
-    "plan": "My plan"
+    "plan": "My plan",
+    "ceWallet": "CE wallet"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -3561,7 +3562,8 @@
       "course_approvals": "Course approvals",
       "course_player": "Course player",
       "live_classes": "Live classes",
-      "agent_modes": "Agent modes"
+      "agent_modes": "Agent modes",
+      "ce_wallet": "CE wallet"
     },
     "keys": {
       "licensing": {
@@ -3596,7 +3598,8 @@
         "first_renewal": "First renewal (SAE)",
         "no_repeat": "Repeated courses",
         "commission_meeting": "Commission meeting credit (most)",
-        "deferral": "CE deferral"
+        "deferral": "CE deferral",
+        "renewal_steps": "Renewal checklist"
       },
       "advertising": {
         "license_holder_name": "License holder's name",
@@ -3649,7 +3652,8 @@
         "first_renewal": "first renewal",
         "no_repeat": "repeated courses",
         "commission_meeting": "commission meeting credit",
-        "deferral": "deferral"
+        "deferral": "deferral",
+        "renewal_steps": "renewal checklist"
       },
       "advertising": {
         "license_holder_name": "license holder's name",
@@ -3694,7 +3698,74 @@
     "partHours": "{{done}} of {{hours}} h",
     "deferral": "Short on time? You can pay a ${{fee}} deferral fee and get {{days}} more days after your renewal date.",
     "sources": "From {{sources}}.",
-    "whatYouNeed": "What you still need"
+    "whatYouNeed": "What you still need",
+    "wallet": {
+      "title": "CE wallet",
+      "description": "Every CE hour toward your renewal, who reported it, and what is left.",
+      "renewsOn": "Renews {{date}}",
+      "daysLeft_one": "{{count}} day left",
+      "daysLeft_other": "{{count}} days left",
+      "licence": "{{state}} license #{{number}}",
+      "hours": "{{done}} of {{required}} hours",
+      "required": "Required courses",
+      "electives": "Electives",
+      "completions": "Completions this period",
+      "emptyTitle": "No CE yet this period",
+      "emptyBody": "Take a REOS CE course, or add a certificate from another provider.",
+      "status": {
+        "reos_reported": "Reported by REOS",
+        "self_reported": "Self-reported",
+        "on_record": "On TREC’s record"
+      },
+      "statusHint": {
+        "self_reported": "Counts toward your renewal now. REOS checks TREC’s record each night and marks it confirmed when it appears."
+      },
+      "trec": {
+        "title": "TREC’s record",
+        "mce": {
+          "met": "TREC shows your CE requirement met.",
+          "outstanding": "TREC shows CE still outstanding.",
+          "none": "TREC shows no CE requirement for this license."
+        },
+        "education": {
+          "met": "TREC shows your SAE requirement met.",
+          "outstanding": "TREC shows SAE still outstanding.",
+          "none": "TREC shows no SAE requirement."
+        },
+        "checked": "Checked {{date}}",
+        "unknown": "Not on TREC’s file yet."
+      },
+      "addCertificate": "Add a certificate",
+      "buy": "Get CE courses",
+      "buyFrom": "Get CE courses · {{price}}",
+      "takeCe": "Take CE in Learn",
+      "renew": {
+        "title": "Renew your license",
+        "ready": "Your CE is complete. Here’s how to renew.",
+        "notReady": "Finish your CE first, then renew with TREC.",
+        "expires": "Expires {{date}}",
+        "renewed": "I’ve renewed with TREC",
+        "renewedDone": "Marked renewed",
+        "undoRenewed": "Undo",
+        "confirmed": "Renewed through {{date}}",
+        "open": "Open",
+        "fees": "Renewal fees are paid to TREC, not REOS.",
+        "steps": "Renewal checklist",
+        "done": "Done",
+        "todo": "To do"
+      },
+      "notify": {
+        "dueTitle": "CE due in {{days}} days",
+        "dueBody": "{{hours}} CE hours left before your license renews on {{date}}.",
+        "readyTitle": "Renewal ready",
+        "readyBody": "Your CE is complete. Renew your license with TREC by {{date}}.",
+        "open": "Open my CE wallet"
+      },
+      "errors": {
+        "noRenewal": "This license has no renewal date yet."
+      },
+      "hoursShort": "{{hours}} h"
+    }
   },
   "content": {
     "everyState": "Every state",
@@ -5220,7 +5291,8 @@
       "pass_news": "Passing news",
       "broker_offer": "Broker offers",
       "licence_found": "Licence found",
-      "morning_brief": "Morning brief"
+      "morning_brief": "Morning brief",
+      "ce_renewal": "CE renewal"
     },
     "digest": {
       "subject": {

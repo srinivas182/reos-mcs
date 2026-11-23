@@ -111,6 +111,26 @@
 - **Buy CE:** CE courses from the catalogue through the existing checkout.
 - **Renew your licence** (106): a checklist (CE reported, sponsoring broker, renew with TREC, confirm), then REOS checks TREC's record.
 - **Done when:** an outside certificate counts as self-reported.
+- **As built, A11.2** (ADR 0045):
+  - **Wallet:** `CeWallet`, per licence:
+    - hours against the renewal, with the required courses and electives (A5.2's rules);
+    - the completions in the period, each REOS-reported, self-reported or on TREC's record;
+    - TREC's own view (MCE or SAE status, from the nightly file).
+  - **Confirmation:** `reos:ce:confirm` runs nightly after TREC's import.
+    - When the record shows the requirement met, the period's completions become "on TREC's record".
+    - When it shows a later expiry, the renewal is confirmed and the licence moves to its new period.
+  - **Reminders:** `reos:ce:reminders` sends reminders at 60, 30 and 7 days while hours are missing, then "Renewal ready". Each goes once per period (`ce_reminders`), and only the nearest goes if days were missed.
+  - **Renew your license** (106):
+    - The checklist comes from a new state rule, `ce.renewal_steps`: CE reported, sponsoring broker, renew in REALM, confirmed.
+    - "I've renewed with TREC" has Undo; REOS confirms from the record.
+    - Fees are paid to TREC.
+  - **Buy CE:**
+    - Web: the cheapest live agent plan with `learn.ce` in the state, through the existing checkout, or "Take CE in Learn" when the plan is held.
+    - Phone: opens Membership, with no price shown.
+  - **API:** `GET /api/v1/me/ce`, `PUT /api/v1/me/licences/{licence}/renewal`.
+  - **Web:** `/ce` (CE wallet in the agent sidebar), with Add a certificate (B10.3b's dialog) and the renewal checklist.
+  - **Phone:** Me → CE wallet (`ce`) and `ce/renew/[id]`.
+  - REOS completions now record their course (`course_id`) for A11.3.
 
 ### A11.3 CE reporting (Team A)
 

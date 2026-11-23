@@ -95,3 +95,5 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Scorecard (weekly) | Resultados de la semana | A11.1b |
 | First-Closing Promise | Promesa del Primer Cierre | A11.1b |
 | Morning brief | Resumen matutino | A11.1c |
+| CE wallet | Cartera de CE | A11.2 |
+| Self-reported (CE) | Reportado por usted | A11.2 |

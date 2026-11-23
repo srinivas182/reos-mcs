@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Compass, Download, IdCard, Languages, Map, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Compass, Download, GraduationCap, IdCard, Languages, Map, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -89,6 +89,8 @@ export default function MeScreen() {
         {licensed ? <MenuRow icon={IdCard} title={t('mobile.me.licences')} onPress={() => router.push('/licences')} /> : null}
         {/* My goal (A11.1a, screen 146): the agent's mode and flags. */}
         {current?.role === 'agent' ? <MenuRow icon={Compass} title={t('agents.modes.title')} onPress={() => router.push('/agent/goal')} /> : null}
+        {/* CE wallet (A11.2): hours against the renewal, certificates, renewing. */}
+        {licensed ? <MenuRow icon={GraduationCap} title={t('ce.wallet.title')} onPress={() => router.push('/ce')} /> : null}
         {current?.role === 'instructor' || current?.role === 'mentor' ? <MenuRow icon={Wallet} title={t('mobile.me.earnings')} onPress={() => router.push('/earnings')} /> : null}
         {states && states.options.length > 1 ? <MenuRow icon={Map} title={t('mobile.me.state')} value={states.current.name} onPress={() => setSheet('states')} /> : null}
         {current?.role === 'candidate' ? <MenuRow icon={Users} title={t('practice.groups.profileTitle')} onPress={() => router.push('/practice/groups')} /> : null}
