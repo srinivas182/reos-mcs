@@ -29,7 +29,6 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | ⚠ 9 Nov 2026 | [Google Calendar](#google-calendar) | Client + Mayura | OAuth verification | 10 wk | S4 (18 Jan 2027) | Not started |
 | 18 Dec 2026 † | [Follow Up Boss](#follow-up-boss) | Client + Mayura | Partner application | 4 wk | S7 (1 Mar 2027) | Not started |
 | 18 Dec 2026 † | [kvCORE / BoldTrail](#boldtrail) | Client + Mayura | Partner application | 8 wk | S7 (1 Mar 2027) | Not started |
-| 18 Dec 2026 † | [Lofty](#lofty) | Client + Mayura | Partner application | 6 wk | S8 (15 Mar 2027) | Not started |
 | 18 Dec 2026 † | [Salesforce](#salesforce) | Mayura | Self-serve | 2 wk | S8 (15 Mar 2027) | Not started |
 | 18 Dec 2026 † | [DocuSign](#docusign) | Mayura | Vendor review | 2 wk | S9 (29 Mar 2027) | Not started |
 | 18 Dec 2026 † | [dotloop](#dotloop) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
@@ -72,6 +71,7 @@ Credentials rules: [credentials policy](credentials-policy.md). Lead times are p
 | 15 Feb 2027 | [Paperless Pipeline](#paperless-pipeline) | Client + Mayura | Partner application | 6 wk | S9 (29 Mar 2027) | Not started |
 | 22 Feb 2027 | [HeyGen (AI avatar lessons)](#heygen) | Client | Self-serve | 1 wk | S7 (1 Mar 2027) | Not started |
 | 1 Mar 2027 | [LinkedIn](#linkedin) | Client + Mayura | Partner application | 8 wk | S11 (26 Apr 2027) | Not started |
+| 15 Mar 2027 | [Lofty](#lofty) | Client + Mayura | Self-serve | 0 wk | S8 (15 Mar 2027) | Not started |
 | 15 Mar 2027 | [NMLS Consumer Access](#nmls-lookup) | Mayura | Agreement | 4 wk | S10 (12 Apr 2027) | Not started |
 | 15 Mar 2027 | [Instagram and Facebook](#meta) | Client + Mayura | Vendor review | 6 wk | S11 (26 Apr 2027) | Not started |
 | 15 Mar 2027 | [TikTok](#tiktok) | Client + Mayura | Vendor review | 6 wk | S11 (26 Apr 2027) | Not started |
@@ -680,13 +680,14 @@ Two-way contacts, notes and tasks.
 
 **Integration** · CRM · built in B8.1 (sprint 8) · pilot status **Enabled**
 
-Two-way contacts, notes and tasks.
+Two-way leads, notes and tasks; stage and tags written back.
 
 - **Owner:** Client + Mayura
-- **Access:** Partner application, about 6 weeks; needed by S8 (15 Mar 2027); apply by 18 Dec 2026. Status: Not started.
-- **Sandbox:** Partner sandbox on approval.
+- **Access:** Self-serve, about 0 weeks; needed by S8 (15 Mar 2027); apply by 15 Mar 2027. Status: Not started.
+- **Sandbox:** A Lofty test account's API key (Settings › Integrations › API).
 - **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
-- **Cost:** Partner terms on application.
+- **Cost:** Free API; agents use their own Lofty plan.
+- **Notes:** B8.1 (ADR 0033): each agent connects with their own Lofty API key, sent as Authorization: token ...; every request sends X-Error-Status: true. Base https://api.lofty.com. REOS reads GET /v1.0/leads (limit 100, offset; no changed-since filter, so a sync pages the leads and keeps those with lastUpdateTime after the last mark), then GET /v1.0/notes?leadId= and GET /v1.0/tasks?leadId= for changed leads. Writes POST /v1.0/notes (leadId, content, isPin), POST /v2.0/tasks/{id}/finish or /unfinish, and PUT /v1.0/leads/{id} (stage, tags). Webhooks: POST /v1.0/webhook for lists 2 (lead info), 9 (notes) and 10 (tasks), HTTPS callback with a per-connection signed address (Lofty doesn't sign deliveries); Lofty-Webhook-Id de-duplicates; deliveries only queue a sync, and the 15-minute schedule is the backstop. Confirm webhook availability, the subscription id field and rate limits against the test account before Live.
 - **Fallback:** CSV import.
 
 ### Salesforce

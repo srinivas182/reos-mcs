@@ -69,7 +69,7 @@ describe('the people’s library (/api/v1/catalogue)', function () {
     it('never offers Connect for a tool whose connector isn’t built yet', function () {
         $library = libraryOf($this, catalogueAgent());
 
-        expect($library['lofty'])->toMatchArray(['status' => 'coming_soon', 'action' => 'notify'])
+        expect($library['zillow-leads'])->toMatchArray(['status' => 'coming_soon', 'action' => 'notify'])
             ->and($library['linkedin'])->toMatchArray(['status' => 'coming_soon', 'action' => 'notify']);
     });
 

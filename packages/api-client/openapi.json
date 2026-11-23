@@ -14718,6 +14718,13 @@
                             "sign_in",
                             "api_key"
                         ]
+                    },
+                    "key_hint": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Where the person finds their API key in the tool (B8.1), when it's connected with one."
                     }
                 },
                 "required": [
@@ -14733,7 +14740,8 @@
                     "connected",
                     "accounts",
                     "consent",
-                    "connects_with"
+                    "connects_with",
+                    "key_hint"
                 ],
                 "title": "CatalogueItemResource"
             },
@@ -16980,7 +16988,8 @@
                             "google-calendar",
                             "outlook-calendar",
                             "follow-up-boss",
-                            "boldtrail"
+                            "boldtrail",
+                            "lofty"
                         ]
                     },
                     "history": {

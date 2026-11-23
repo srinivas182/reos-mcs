@@ -10,6 +10,7 @@ use App\Connections\ConnectorRegistry;
 use App\Integrations\IntegrationDefinition;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Lang;
 
 /**
  * One tool in the Connections library, as this person sees it.
@@ -72,6 +73,8 @@ final class CatalogueItemResource extends JsonResource
              * @var 'sign_in'|'api_key'
              */
             'connects_with' => ConnectorRegistry::usesApiKey($definition->id) ? 'api_key' : 'sign_in',
+            /** Where the person finds their API key in the tool (B8.1), when it's connected with one. */
+            'key_hint' => ConnectorRegistry::usesApiKey($definition->id) && Lang::has('connections.consent.keyHints.'.$definition->id) ? __('connections.consent.keyHints.'.$definition->id) : null,
         ];
     }
 }

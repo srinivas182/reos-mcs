@@ -10,6 +10,8 @@ use App\Connections\Drivers\FollowUpBoss\FollowUpBossDriver;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossSimulator;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarDriver;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarSimulator;
+use App\Connections\Drivers\Lofty\LoftyDriver;
+use App\Connections\Drivers\Lofty\LoftySimulator;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarDriver;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarSimulator;
 use App\Integrations\Catalogue;
@@ -37,10 +39,11 @@ final readonly class ConnectorRegistry
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarSimulator::class,
         FollowUpBossDriver::INTEGRATION => FollowUpBossSimulator::class,
         BoldTrailDriver::INTEGRATION => BoldTrailSimulator::class,
+        LoftyDriver::INTEGRATION => LoftySimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
-    private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION];
+    private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION, LoftyDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -58,6 +61,7 @@ final readonly class ConnectorRegistry
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::CONSENT,
         FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::CONSENT,
         BoldTrailDriver::INTEGRATION => BoldTrailDriver::CONSENT,
+        LoftyDriver::INTEGRATION => LoftyDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -66,6 +70,7 @@ final readonly class ConnectorRegistry
         OutlookCalendarDriver::INTEGRATION => OutlookCalendarDriver::STREAMS,
         FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::STREAMS,
         BoldTrailDriver::INTEGRATION => BoldTrailDriver::STREAMS,
+        LoftyDriver::INTEGRATION => LoftyDriver::STREAMS,
     ];
 
     /**
@@ -162,6 +167,7 @@ final readonly class ConnectorRegistry
             OutlookCalendarDriver::INTEGRATION => new OutlookCalendarDriver($value('client_id'), $value('client_secret')),
             FollowUpBossDriver::INTEGRATION => new FollowUpBossDriver($value('system_name'), $value('system_key')),
             BoldTrailDriver::INTEGRATION => new BoldTrailDriver($value('server_url')),
+            LoftyDriver::INTEGRATION => new LoftyDriver,
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
     }

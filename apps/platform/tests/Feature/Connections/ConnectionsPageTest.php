@@ -37,7 +37,7 @@ describe('the Connections page', function () {
         $this->actingAs($maria)->get('/connections')->assertOk()->assertInertia(fn (Assert $page) => $page
             ->component('connections/index')
             ->where('tools', fn ($tools) => collect($tools)->contains(fn ($t) => $t['id'] === 'google-calendar' && $t['connected'] === 1 && $t['category'] === 'calendar_email')
-                && collect($tools)->contains(fn ($t) => $t['id'] === 'lofty' && $t['action'] === 'notify'))
+                && collect($tools)->contains(fn ($t) => $t['id'] === 'zillow-leads' && $t['action'] === 'notify'))
             ->has('connections', 1)
             ->where('connections.0.integration', 'google-calendar'));
     });
@@ -55,10 +55,10 @@ describe('what you can do there', function () {
     it('counts Notify me, and undoes it', function () {
         $maria = webAgent();
 
-        $this->actingAs($maria)->from('/connections')->post('/connections/tools/lofty/interest')->assertRedirect('/connections');
-        expect(IntegrationInterest::query()->where(['user_id' => $maria->id, 'integration_id' => 'lofty', 'kind' => IntegrationInterest::NOTIFY])->exists())->toBeTrue();
+        $this->actingAs($maria)->from('/connections')->post('/connections/tools/zillow-leads/interest')->assertRedirect('/connections');
+        expect(IntegrationInterest::query()->where(['user_id' => $maria->id, 'integration_id' => 'zillow-leads', 'kind' => IntegrationInterest::NOTIFY])->exists())->toBeTrue();
 
-        $this->actingAs($maria)->from('/connections')->delete('/connections/tools/lofty/interest')->assertRedirect('/connections');
+        $this->actingAs($maria)->from('/connections')->delete('/connections/tools/zillow-leads/interest')->assertRedirect('/connections');
         expect(IntegrationInterest::query()->where('user_id', $maria->id)->exists())->toBeFalse();
     });
 

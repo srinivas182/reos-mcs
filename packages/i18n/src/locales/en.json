@@ -1483,7 +1483,12 @@
       "keyBody": "Connect with your own {{tool}} API key. REOS keeps it encrypted and never shows it again.",
       "keyLabel": "{{tool}} API key",
       "keyHint": "In {{tool}}: Admin › API.",
-      "connectKey": "Connect {{tool}}"
+      "connectKey": "Connect {{tool}}",
+      "keyHints": {
+        "lofty": "In Lofty: Settings › Integrations › API. Create a key and copy it here.",
+        "boldtrail": "In kvCORE: Lead Engine › Lead Dropbox, then copy the API token.",
+        "follow-up-boss": "In Follow Up Boss: Admin › API."
+      }
     },
     "connected": {
       "title": "{{tool}} is connected",
