@@ -12,6 +12,8 @@ enum ProductKind: string
     case Package = 'package';
     case CreditPack = 'credit_pack';
     case SeatPack = 'seat_pack';
+    /** A 1-on-1 session with an instructor or mentor (A10.2a): made from their hours and price, never on the catalogue. */
+    case Session = 'session';
 
     /** @return list<string> */
     public static function values(): array

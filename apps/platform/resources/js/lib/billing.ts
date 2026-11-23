@@ -8,6 +8,7 @@ export type ProductKind =
     | 'course'
     | 'package'
     | 'credit_pack'
+    | 'session'
     | 'seat_pack';
 export type Buyer =
     | 'candidate'

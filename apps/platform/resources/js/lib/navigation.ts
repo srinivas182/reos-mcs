@@ -54,6 +54,7 @@ import { index as sales } from '@/routes/sales';
 import { index as earnings } from '@/routes/earnings';
 import { index as featuresIndex } from '@/routes/features';
 import { index as askIndex } from '@/routes/ask';
+import { index as bookingsIndex } from '@/routes/bookings';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -72,6 +73,7 @@ import type { RoleName } from '@/types/auth';
 /** Sidebar labels that exist in the translations (pages that are built). */
 export type NavLabel =
     | 'ask'
+    | 'instructors'
     | 'studentQuestions'
     | 'deals'
     | 'dashboard'
@@ -104,7 +106,6 @@ export type NavLabel =
     | 'connections'
     | 'liveClasses'
     | 'stateApprovals'
-    | 'instructors'
     | 'courseBuilder'
     | 'courseCatalogue'
     | 'aiLessons'
@@ -182,7 +183,8 @@ export function roleNavigation(
             item('progress', CalendarCheck, progress(), '/practice/progress'),
             // Ask, the study mate (A10.1).
             item('ask', MessageCircleQuestion, askIndex(), '/ask'),
-            planned('instructors'),
+            // Book an instructor (A10.2a, screen 18).
+            item('instructors', GraduationCap, bookingsIndex(), '/bookings'),
             planned('licenceJourney'),
             item('account', Settings, profile(), '/settings'),
         ],

@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { BookOpen, Calculator, GraduationCap, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, Sparkles, Square } from 'lucide-react-native';
+import { BookOpen, Calculator, CalendarPlus, GraduationCap, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, Sparkles, Square } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -196,6 +196,7 @@ function Answer({ answer, question, last, busy, onFollow }: { answer: AskMessage
             <Chip label={t('learn.ask.spanish')} icon={Languages} onPress={busy ? undefined : () => onFollow('spanish')} />
           </>
         ) : null}
+        {answer.tier === 'limited' ? <Chip tone="info" label={t('ask.bookInstructor')} icon={CalendarPlus} onPress={() => router.push('/bookings')} /> : null}
         {answer.math_kind ? <Chip tone="info" label={t('ask.similar')} icon={Calculator} onPress={() => router.push({ pathname: '/practice/math', params: { kind: answer.math_kind ?? '' } })} /> : null}
       </View>
       {answer.tier !== 'limited' ? <SaveFlashcard source="ask" front={question} back={answer.body} /> : null}

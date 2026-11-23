@@ -305,6 +305,44 @@ final readonly class VideoSessions
             ->where('starts_at', '<', $ends)->where('ends_at', '>', $starts)->exists();
     }
 
+    /**
+     * A 1-on-1 session a student booked (A10.2a): the booking is the
+     * permission, so the host's contacts aren't checked; the time was
+     * already checked against the host's hours and sessions.
+     */
+    public function booked(User $host, User $guest, string $title, ?string $agenda, CarbonImmutable $starts, int $minutes): VideoSession
+    {
+        $session = DB::transaction(function () use ($host, $guest, $title, $agenda, $starts, $minutes): VideoSession {
+            $session = VideoSession::query()->create([
+                'uuid' => (string) Str::uuid(), 'organisation_id' => $this->hostOrganisation($host)?->id, 'host_id' => $host->id, 'kind' => VideoSession::ONE_ON_ONE,
+                'title' => mb_substr($title, 0, 120), 'agenda' => $agenda, 'starts_at' => $starts->utc(), 'ends_at' => $starts->utc()->addMinutes($minutes),
+            ]);
+            $session->participants()->create(['user_id' => $host->id, 'role' => VideoSessionParticipant::HOST]);
+            $session->participants()->create(['user_id' => $guest->id, 'role' => VideoSessionParticipant::GUEST]);
+
+            return $session;
+        });
+
+        Notification::send($this->people($session), new SessionBooked($session, SessionBooked::BOOKED));
+
+        return $session;
+    }
+
+    /** A booked session called off by the booking (A10.2a: cancelled or a no-show), with everyone told. */
+    public function callOff(VideoSession $session, ?int $except = null): void
+    {
+        if ($session->status === VideoSession::SCHEDULED || $session->status === VideoSession::LIVE) {
+            $session->forceFill(['status' => VideoSession::CANCELLED])->save();
+            Notification::send($this->people($session, except: $except), new SessionBooked($session, SessionBooked::CANCELLED));
+        }
+    }
+
+    /** Whether the host has a session at that time. */
+    public function busy(User $host, CarbonImmutable $starts, CarbonImmutable $ends): bool
+    {
+        return $this->overlaps($host, $starts, $ends);
+    }
+
     /** @return Collection<int, User> */
     private function people(VideoSession $session, ?int $except = null): Collection
     {

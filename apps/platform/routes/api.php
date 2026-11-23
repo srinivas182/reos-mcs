@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Auth\PhoneSignInController;
 use App\Http\Controllers\Api\Billing\EarningsController;
 use App\Http\Controllers\Api\Billing\EntitlementController;
 use App\Http\Controllers\Api\Billing\MembershipController;
+use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Calendar\CalendarController;
 use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
@@ -140,6 +141,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(RequireFlag::class.':messages')->prefix('announcements')->name('api.announcements.')->controller(ApiAnnouncementController::class)->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('{announcement}/read', 'read')->whereUuid('announcement')->middleware('throttle:120,1,api-announcements-read')->name('read');
+    });
+    // Booking 1-on-1 sessions (A10.2a), with the video rooms they run in.
+    Route::middleware(RequireFlag::class.':video_rooms')->prefix('bookings')->name('api.bookings.')->controller(BookingController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->middleware('throttle:20,1,api-bookings-store')->name('store');
+        Route::get('instructors', 'instructors')->name('instructors');
+        Route::get('instructors/{user}', 'instructor')->whereNumber('user')->name('instructor');
+        Route::get('offer', 'offer')->name('offer');
+        Route::put('offer', 'saveOffer')->middleware('throttle:20,1,api-bookings-offer')->name('offer.save');
+        Route::post('{booking}/cancel', 'cancel')->whereUuid('booking')->middleware('throttle:10,1,api-bookings-cancel')->name('cancel');
+        Route::post('{booking}/rating', 'rate')->whereUuid('booking')->middleware('throttle:10,1,api-bookings-rate')->name('rating');
+        Route::get('{booking}/tasks', 'suggestedTasks')->whereUuid('booking')->name('tasks');
+        Route::post('{booking}/tasks', 'sendTasks')->whereUuid('booking')->middleware('throttle:10,1,api-bookings-tasks')->name('tasks.send');
     });
     // Video sessions (B6.3), behind the `video_rooms` flag.
     Route::middleware(RequireFlag::class.':video_rooms')->prefix('sessions')->name('api.sessions.')->controller(ApiSessionsController::class)->group(function () {

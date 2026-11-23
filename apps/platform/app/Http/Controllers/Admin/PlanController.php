@@ -49,7 +49,7 @@ final class PlanController extends Controller
         $products = Product::query()
             ->with(['prices' => static fn ($q) => $q->orderBy('state_code')->orderByDesc('starts_at'), 'seller:id,name', 'splits.payee:id,name,email'])
             ->when($tab === 'credit_packs', static fn ($q) => $q->where('kind', ProductKind::CreditPack))
-            ->when($tab !== 'credit_packs', static fn ($q) => $q->where('kind', '!=', ProductKind::CreditPack)->whereIn('buyer', self::buyers($tab)))
+            ->when($tab !== 'credit_packs', static fn ($q) => $q->whereNotIn('kind', [ProductKind::CreditPack, ProductKind::Session])->whereIn('buyer', self::buyers($tab)))
             ->orderByRaw("CASE status WHEN 'live' THEN 0 WHEN 'draft' THEN 1 ELSE 2 END")
             ->orderBy('name')
             ->get();
@@ -89,7 +89,7 @@ final class PlanController extends Controller
             ])->values()->all(),
             'iosBuyLink' => app(Membership::class)->iosBuyLink(),
             'options' => [
-                'kinds' => ProductKind::values(),
+                'kinds' => array_values(array_diff(ProductKind::values(), [ProductKind::Session->value])),
                 'buyers' => Buyer::values(),
                 'intervals' => PriceInterval::values(),
                 'statuses' => ProductStatus::values(),

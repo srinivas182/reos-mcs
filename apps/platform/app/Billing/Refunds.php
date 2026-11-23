@@ -89,13 +89,19 @@ final readonly class Refunds
     }
 
     /** Refunds `$amount` cents (null: everything left). */
-    public function refund(Order $order, ?int $amount, string $reason, User $actor): Refund
+    public function refund(Order $order, ?int $amount, string $reason, User $actor, bool $bySessionRules = false): Refund
     {
         if ($order->status !== OrderStatus::Paid) {
             throw ValidationException::withMessages(['amount' => __('billing.refunds.errors.notPaid')]);
         }
 
         $policy = $this->policy($order);
+
+        // A booked session (A10.2a) follows its own rules (24-hour cancellation, no-show): always a full refund.
+        if ($bySessionRules) {
+            $policy = ['mode' => RefundPolicy::FULL_AND_PARTIAL, 'refundable' => $this->refundable($order), 'within_policy' => true] + $policy;
+            $amount = null;
+        }
         $amount ??= $policy['refundable'];
 
         if ($policy['mode'] === RefundPolicy::NONE) {

@@ -2,6 +2,7 @@
 
 use App\Connections\ConnectorRegistry;
 use App\Http\Controllers\Api\Ask\AskController;
+use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Auth\SsoSignInController;
 use App\Http\Controllers\Auth\TestIdentityProviderController;
 use App\Http\Controllers\Billing\BillingController;
 use App\Http\Controllers\Billing\CheckoutController;
+use App\Http\Controllers\Bookings\BookingsPageController;
 use App\Http\Controllers\BrandLogoController;
 use App\Http\Controllers\Builder\CourseBuilderController;
 use App\Http\Controllers\Builder\LessonReviewController;
@@ -425,6 +427,19 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix(
     Route::get('/', [AnnouncementController::class, 'index'])->name('index');
     Route::post('/', [AnnouncementController::class, 'store'])->middleware('throttle:10,1,announcements-send')->name('store');
     Route::post('{announcement}/read', [AnnouncementController::class, 'read'])->whereUuid('announcement')->middleware('throttle:120,1,announcements-read')->name('read');
+});
+
+// Booking 1-on-1 sessions (A10.2a): the pages, and the same JSON as the API.
+Route::middleware(['auth', 'verified', RequireFlag::class.':video_rooms'])->prefix('bookings')->name('bookings.')->group(function () {
+    Route::get('/', [BookingsPageController::class, 'index'])->name('index');
+    Route::get('instructors/{user}', [BookingsPageController::class, 'instructor'])->whereNumber('user')->name('instructor');
+    Route::get('hours', [BookingsPageController::class, 'hours'])->name('hours');
+    Route::put('hours', [BookingController::class, 'saveOffer'])->middleware('throttle:20,1,bookings-offer')->name('hours.save');
+    Route::post('/', [BookingController::class, 'store'])->middleware('throttle:20,1,bookings-store')->name('store');
+    Route::post('{booking}/cancel', [BookingController::class, 'cancel'])->whereUuid('booking')->middleware('throttle:10,1,bookings-cancel')->name('cancel');
+    Route::post('{booking}/rating', [BookingController::class, 'rate'])->whereUuid('booking')->middleware('throttle:10,1,bookings-rate')->name('rating');
+    Route::get('{booking}/tasks', [BookingController::class, 'suggestedTasks'])->whereUuid('booking')->name('tasks');
+    Route::post('{booking}/tasks', [BookingController::class, 'sendTasks'])->whereUuid('booking')->middleware('throttle:10,1,bookings-tasks')->name('tasks.send');
 });
 
 // Video sessions (B6.3): behind the `video_rooms` flag while it rolls out.

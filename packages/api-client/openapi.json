@@ -981,6 +981,1319 @@
                 }
             }
         },
+        "/bookings": {
+            "get": {
+                "operationId": "bookings.index",
+                "description": "As a student and as an instructor, the last 30 days and upcoming.",
+                "summary": "My bookings",
+                "tags": [
+                    "Booking"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "uuid": {
+                                                        "type": "string"
+                                                    },
+                                                    "as": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "student",
+                                                            "instructor"
+                                                        ]
+                                                    },
+                                                    "instructor": {
+                                                        "type": "string"
+                                                    },
+                                                    "student": {
+                                                        "type": "string"
+                                                    },
+                                                    "starts_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "ends_at": {
+                                                        "type": "string"
+                                                    },
+                                                    "minutes": {
+                                                        "type": "integer"
+                                                    },
+                                                    "topic": {
+                                                        "type": "string"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "held",
+                                                            "confirmed",
+                                                            "cancelled",
+                                                            "refunded",
+                                                            "completed",
+                                                            "no_show"
+                                                        ]
+                                                    },
+                                                    "price": {
+                                                        "type": "integer"
+                                                    },
+                                                    "session": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "can_cancel": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "refund_on_cancel": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "can_rate": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "rating": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "tasks_sent": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "checkout_url": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "uuid",
+                                                    "as",
+                                                    "instructor",
+                                                    "student",
+                                                    "starts_at",
+                                                    "ends_at",
+                                                    "minutes",
+                                                    "topic",
+                                                    "status",
+                                                    "price",
+                                                    "session",
+                                                    "can_cancel",
+                                                    "refund_on_cancel",
+                                                    "can_rate",
+                                                    "rating",
+                                                    "tasks_sent",
+                                                    "checkout_url"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "bookings.store",
+                "description": "Included sessions are confirmed at once. Paid ones are held for 30 minutes: pay at `checkout_url`.",
+                "summary": "Book a session",
+                "tags": [
+                    "Booking"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BookSessionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "as": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "student",
+                                                        "instructor"
+                                                    ]
+                                                },
+                                                "instructor": {
+                                                    "type": "string"
+                                                },
+                                                "student": {
+                                                    "type": "string"
+                                                },
+                                                "starts_at": {
+                                                    "type": "string"
+                                                },
+                                                "ends_at": {
+                                                    "type": "string"
+                                                },
+                                                "minutes": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "held",
+                                                        "confirmed",
+                                                        "cancelled",
+                                                        "refunded",
+                                                        "completed",
+                                                        "no_show"
+                                                    ]
+                                                },
+                                                "price": {
+                                                    "type": "integer"
+                                                },
+                                                "session": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_cancel": {
+                                                    "type": "boolean"
+                                                },
+                                                "refund_on_cancel": {
+                                                    "type": "boolean"
+                                                },
+                                                "can_rate": {
+                                                    "type": "boolean"
+                                                },
+                                                "rating": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "tasks_sent": {
+                                                    "type": "boolean"
+                                                },
+                                                "checkout_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "as",
+                                                "instructor",
+                                                "student",
+                                                "starts_at",
+                                                "ends_at",
+                                                "minutes",
+                                                "topic",
+                                                "status",
+                                                "price",
+                                                "session",
+                                                "can_cancel",
+                                                "refund_on_cancel",
+                                                "can_rate",
+                                                "rating",
+                                                "tasks_sent",
+                                                "checkout_url"
+                                            ]
+                                        },
+                                        "checkout_url": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "checkout_url"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/bookings/instructors": {
+            "get": {
+                "operationId": "bookings.instructors",
+                "description": "Each with rating, languages, topics, prices (cents; 0 is included) and next free hour.",
+                "summary": "Instructors and mentors to book",
+                "tags": [
+                    "Booking"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "user_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "school": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "bio": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "languages": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "topics": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "price_30": {
+                                                        "type": "integer"
+                                                    },
+                                                    "price_60": {
+                                                        "type": "integer"
+                                                    },
+                                                    "rating": {
+                                                        "type": [
+                                                            "number",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "ratings": {
+                                                        "type": "integer"
+                                                    },
+                                                    "next_slot": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "user_id",
+                                                    "name",
+                                                    "school",
+                                                    "bio",
+                                                    "languages",
+                                                    "topics",
+                                                    "price_30",
+                                                    "price_60",
+                                                    "rating",
+                                                    "ratings",
+                                                    "next_slot"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/bookings/instructors/{user}": {
+            "get": {
+                "operationId": "bookings.instructor",
+                "description": "Slots for the next 14 days, 30 and 60 minutes (UTC).",
+                "summary": "One instructor and their free slots",
+                "tags": [
+                    "Booking"
+                ],
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "user_id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "school": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "bio": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "languages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "topics": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "price_30": {
+                                                    "type": "integer"
+                                                },
+                                                "price_60": {
+                                                    "type": "integer"
+                                                },
+                                                "rating": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "ratings": {
+                                                    "type": "integer"
+                                                },
+                                                "next_slot": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "user_id",
+                                                "name",
+                                                "school",
+                                                "bio",
+                                                "languages",
+                                                "topics",
+                                                "price_30",
+                                                "price_60",
+                                                "rating",
+                                                "ratings",
+                                                "next_slot"
+                                            ]
+                                        },
+                                        "slots_30": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "slots_60": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "slots_30",
+                                        "slots_60"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/bookings/offer": {
+            "get": {
+                "operationId": "bookings.offer",
+                "description": "The instructor's or mentor's offer, or null before they set one.",
+                "summary": "My hours and prices",
+                "tags": [
+                    "Booking"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "bio": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "languages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "en",
+                                                            "es"
+                                                        ]
+                                                    }
+                                                },
+                                                "topics": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "hours": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "timezone": {
+                                                    "type": "string"
+                                                },
+                                                "price_30_cents": {
+                                                    "type": "integer"
+                                                },
+                                                "price_60_cents": {
+                                                    "type": "integer"
+                                                },
+                                                "active": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "bio",
+                                                "languages",
+                                                "topics",
+                                                "hours",
+                                                "timezone",
+                                                "price_30_cents",
+                                                "price_60_cents",
+                                                "active"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                ""
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "bookings.offer.save",
+                "summary": "Save my hours and prices",
+                "tags": [
+                    "Booking"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SessionOfferRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "bio": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "languages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "en",
+                                                            "es"
+                                                        ]
+                                                    }
+                                                },
+                                                "topics": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "hours": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                "timezone": {
+                                                    "type": "string"
+                                                },
+                                                "price_30_cents": {
+                                                    "type": "integer"
+                                                },
+                                                "price_60_cents": {
+                                                    "type": "integer"
+                                                },
+                                                "active": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "bio",
+                                                "languages",
+                                                "topics",
+                                                "hours",
+                                                "timezone",
+                                                "price_30_cents",
+                                                "price_60_cents",
+                                                "active"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "An error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview.",
+                                            "examples": [
+                                                ""
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/bookings/{booking}/cancel": {
+            "post": {
+                "operationId": "bookings.cancel",
+                "description": "The student until 24 hours before (refunded) or later (not refunded); the instructor any time (refunded).",
+                "summary": "Cancel a booking",
+                "tags": [
+                    "Booking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "as": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "student",
+                                                        "instructor"
+                                                    ]
+                                                },
+                                                "instructor": {
+                                                    "type": "string"
+                                                },
+                                                "student": {
+                                                    "type": "string"
+                                                },
+                                                "starts_at": {
+                                                    "type": "string"
+                                                },
+                                                "ends_at": {
+                                                    "type": "string"
+                                                },
+                                                "minutes": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "held",
+                                                        "confirmed",
+                                                        "cancelled",
+                                                        "refunded",
+                                                        "completed",
+                                                        "no_show"
+                                                    ]
+                                                },
+                                                "price": {
+                                                    "type": "integer"
+                                                },
+                                                "session": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_cancel": {
+                                                    "type": "boolean"
+                                                },
+                                                "refund_on_cancel": {
+                                                    "type": "boolean"
+                                                },
+                                                "can_rate": {
+                                                    "type": "boolean"
+                                                },
+                                                "rating": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "tasks_sent": {
+                                                    "type": "boolean"
+                                                },
+                                                "checkout_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "as",
+                                                "instructor",
+                                                "student",
+                                                "starts_at",
+                                                "ends_at",
+                                                "minutes",
+                                                "topic",
+                                                "status",
+                                                "price",
+                                                "session",
+                                                "can_cancel",
+                                                "refund_on_cancel",
+                                                "can_rate",
+                                                "rating",
+                                                "tasks_sent",
+                                                "checkout_url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/bookings/{booking}/rating": {
+            "post": {
+                "operationId": "bookings.rating",
+                "description": "Once, after it ends; shown on the instructor's profile after 24 hours.",
+                "summary": "Rate a session",
+                "tags": [
+                    "Booking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "stars": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 5
+                                    },
+                                    "tags": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": [
+                                                "clear",
+                                                "patient",
+                                                "knowledgeable",
+                                                "on_time",
+                                                "helpful_examples"
+                                            ]
+                                        },
+                                        "maxItems": 5
+                                    },
+                                    "comment": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 1000
+                                    }
+                                },
+                                "required": [
+                                    "stars"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "uuid": {
+                                                    "type": "string"
+                                                },
+                                                "as": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "student",
+                                                        "instructor"
+                                                    ]
+                                                },
+                                                "instructor": {
+                                                    "type": "string"
+                                                },
+                                                "student": {
+                                                    "type": "string"
+                                                },
+                                                "starts_at": {
+                                                    "type": "string"
+                                                },
+                                                "ends_at": {
+                                                    "type": "string"
+                                                },
+                                                "minutes": {
+                                                    "type": "integer"
+                                                },
+                                                "topic": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "held",
+                                                        "confirmed",
+                                                        "cancelled",
+                                                        "refunded",
+                                                        "completed",
+                                                        "no_show"
+                                                    ]
+                                                },
+                                                "price": {
+                                                    "type": "integer"
+                                                },
+                                                "session": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "can_cancel": {
+                                                    "type": "boolean"
+                                                },
+                                                "refund_on_cancel": {
+                                                    "type": "boolean"
+                                                },
+                                                "can_rate": {
+                                                    "type": "boolean"
+                                                },
+                                                "rating": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "tasks_sent": {
+                                                    "type": "boolean"
+                                                },
+                                                "checkout_url": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "uuid",
+                                                "as",
+                                                "instructor",
+                                                "student",
+                                                "starts_at",
+                                                "ends_at",
+                                                "minutes",
+                                                "topic",
+                                                "status",
+                                                "price",
+                                                "session",
+                                                "can_cancel",
+                                                "refund_on_cancel",
+                                                "can_rate",
+                                                "rating",
+                                                "tasks_sent",
+                                                "checkout_url"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/bookings/{booking}/tasks": {
+            "get": {
+                "operationId": "bookings.tasks",
+                "description": "Lines in the session's shared notes that read like actions, for the instructor to send.",
+                "summary": "Suggested follow-up tasks",
+                "tags": [
+                    "Booking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "bookings.tasks.send",
+                "description": "Each becomes a to-do for the student, on its date.",
+                "summary": "Send follow-up tasks",
+                "tags": [
+                    "Booking"
+                ],
+                "parameters": [
+                    {
+                        "name": "booking",
+                        "in": "path",
+                        "required": true,
+                        "description": "The booking UUID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "tasks": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "title": {
+                                                    "type": "string",
+                                                    "minLength": 2,
+                                                    "maxLength": 200
+                                                },
+                                                "due_date": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "format": "date"
+                                                }
+                                            },
+                                            "required": [
+                                                "title"
+                                            ]
+                                        },
+                                        "minItems": 1,
+                                        "maxItems": 10
+                                    }
+                                },
+                                "required": [
+                                    "tasks"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "sent": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "sent"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/broadcasting/auth": {
             "get": {
                 "operationId": "broadcast.authenticate",
@@ -24172,6 +25485,38 @@
                 },
                 "title": "AskRequest"
             },
+            "BookSessionRequest": {
+                "type": "object",
+                "description": "Book a 1-on-1 session (A10.2a, candidate screen 18).",
+                "properties": {
+                    "instructor": {
+                        "type": "integer",
+                        "description": "The instructor's or mentor's user id."
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "A start from the instructor's free slots (ISO 8601)."
+                    },
+                    "minutes": {
+                        "type": "integer",
+                        "description": "30 or 60."
+                    },
+                    "topic": {
+                        "type": "string",
+                        "description": "What the student wants help with.",
+                        "minLength": 3,
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "instructor",
+                    "starts_at",
+                    "minutes",
+                    "topic"
+                ],
+                "title": "BookSessionRequest"
+            },
             "BrokerRole": {
                 "type": "string",
                 "description": "Supervising duties that change a licence's CE (A5.2): in Texas, Broker Responsibility is required for brokers who sponsor agents, designated brokers of sponsoring entities and delegated supervisors (22 TAC \u00a7535.92(a)(4)).\n",
@@ -27360,6 +28705,76 @@
                     "notes"
                 ],
                 "title": "SessionNotesRequest"
+            },
+            "SessionOfferRequest": {
+                "type": "object",
+                "description": "An instructor's or mentor's hours, prices and topics for 1-on-1 sessions (A10.2a, screen i14 Hours).",
+                "properties": {
+                    "bio": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    },
+                    "languages": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "es"
+                            ]
+                        }
+                    },
+                    "topics": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 60
+                        }
+                    },
+                    "hours": {
+                        "type": "object",
+                        "description": "Weekly hours in `timezone`: each day (`mon`\u2026`sun`) a list of [from, to] in 24-hour \"HH:MM\", on the half hour.",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "timezone": {
+                        "type": "string"
+                    },
+                    "price_30_cents": {
+                        "type": "integer",
+                        "description": "Cents; 0 means included (free to book).",
+                        "minimum": 0,
+                        "maximum": 100000
+                    },
+                    "price_60_cents": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 100000
+                    },
+                    "active": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "languages",
+                    "topics",
+                    "hours",
+                    "timezone",
+                    "price_30_cents",
+                    "price_60_cents",
+                    "active"
+                ],
+                "title": "SessionOfferRequest"
             },
             "ShareRequest": {
                 "type": "object",

@@ -78,7 +78,7 @@
 
 - **A10.2a Booking 1-on-1 sessions** (18, tutor live, tutor rate, i14–i16):
   - **Instructor hours:** weekly availability, session lengths (30 or 60 minutes), price; the school may set a maximum (decision 3).
-  - **Book:** instructor profiles with rating, rate, languages and next slots; pick a slot; **sponsored** (the sponsor's session allowance) or **paid** through Stripe Checkout (decision 2).
+  - **Book:** instructor profiles with rating, rate, languages and next slots; pick a slot; **included** (price 0, for example a school's own students) or **paid** through checkout (decision 2), where a sponsor's discount on the session applies as for any product.
   - **Rules:** free cancellation until 24 hours before; the session ends at the booked time; if the instructor doesn't join within 10 minutes, the student is refunded automatically; reminders at 1 hour and 10 minutes.
   - **After:** rate the session (stars, tags, comment; shown on the profile after 24 hours); the instructor's notes (AI summary from the shared notes) become **tasks on the student's study plan and Today**.
   - **Payouts:** the instructor's share through the existing payouts (B5.2).
@@ -89,6 +89,12 @@
   - **Class report** after a CE class: joined, earned CE, didn't; borderline cases accepted or rejected with a reason; **Confirm and send to school**; every decision is audited.
   - **Recording** goes to the course only when the approval allows it.
 - **Done when:** a session ends on time and its notes reach the plan.
+- **As built, A10.2a** (ADR 0040):
+  - **Hours and prices** for instructors and mentors (web and phone): weekly hours in their time zone, 30- and 60-minute prices (0 = included), languages, topics, bio. Paid lengths are session products their school sells; the instructor's share is paid out after REOS's fee.
+  - **Book an instructor** (web sidebar; phone from Today and from Ask): rating (after 24 hours), price, languages, next free time; free half-hour slots in the next 14 days, 2 hours ahead.
+  - **Paying:** included sessions are confirmed at once; paid ones are held 30 minutes while the student pays at checkout, then confirmed into a LiveKit session.
+  - **Rules:** free cancellation until 24 hours before (refunded), the instructor may cancel any time (refunded); an instructor who hasn't joined 10 minutes in means an automatic full refund; the room ends at the booked time.
+  - **After:** rate once; the instructor sends follow-up tasks (suggested from the notes) to the student's to-dos.
 
 ### A10.3 Licence journey (Team A)
 

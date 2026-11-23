@@ -63,3 +63,6 @@ Schedule::command('reos:readiness:nightly')->dailyAt('00:10')->timezone(StudyPla
 Schedule::command('reos:reports:weekly')->weeklyOn(0, '17:45')->timezone(StudyPlans::TIMEZONE)->withoutOverlapping()->onOneServer();
 // Deal key dates 72 and 24 hours away (B9.1): checked hourly.
 Schedule::command('reos:deals:deadlines')->hourlyAt(5)->withoutOverlapping()->onOneServer();
+
+// Booked 1-on-1 sessions (A10.2a): unpaid holds, no-show refunds, completion.
+Schedule::command('reos:sessions:bookings')->everyMinute()->withoutOverlapping()->onOneServer();

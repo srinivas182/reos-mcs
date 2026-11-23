@@ -21,6 +21,8 @@ final class StartCheckoutRequest extends FormRequest
             'postal_code' => ['sometimes', 'nullable', 'string', 'regex:/^\d{5}$/'],
             /** The brokerage or school sign-up this payment is for (A6.1b). */
             'signup' => ['sometimes', 'nullable', 'uuid'],
+            /** The held 1-on-1 session booking this payment is for (A10.2a). */
+            'booking' => ['sometimes', 'nullable', 'uuid'],
         ];
     }
 
@@ -29,6 +31,13 @@ final class StartCheckoutRequest extends FormRequest
         $signup = $this->validated('signup');
 
         return is_string($signup) ? $signup : null;
+    }
+
+    public function booking(): ?string
+    {
+        $booking = $this->validated('booking');
+
+        return is_string($booking) ? $booking : null;
     }
 
     public function postalCode(): ?string
