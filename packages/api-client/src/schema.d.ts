@@ -3187,7 +3187,7 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty";
+            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce";
             history?: components["schemas"]["HistoryRange"] | null;
             /** @description Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API. */
             api_key?: string | null;

@@ -6,6 +6,7 @@ namespace App\Connections\Stores;
 
 use App\Connections\StreamStore;
 use App\Crm\Contacts;
+use App\Crm\RecordOwners;
 use App\Models\Connection;
 use App\Models\ContactLink;
 
@@ -17,11 +18,12 @@ use App\Models\ContactLink;
  */
 final readonly class ContactStore implements StreamStore
 {
-    public function __construct(private Contacts $contacts) {}
+    public function __construct(private Contacts $contacts, private RecordOwners $owners) {}
 
     public function upsert(Connection $connection, array $records): int
     {
         $written = 0;
+        $unmatched = [];
 
         foreach ($records as $record) {
             $id = $record['external_id'] ?? null;
@@ -30,7 +32,15 @@ final readonly class ContactStore implements StreamStore
                 continue;
             }
 
-            $this->contacts->receive($connection->owner_type, $connection->owner_id, $connection->integration_id, $connection, [
+            // A brokerage's CRM (B8.2): the agent who owns the record, or no one.
+            $owner = $this->owners->of($connection, $record);
+            if ($owner === null) {
+                $unmatched[] = is_string($record['owner_email'] ?? null) ? mb_strtolower($record['owner_email']) : '';
+
+                continue;
+            }
+
+            $this->contacts->receive($owner[0], $owner[1], $connection->integration_id, $connection, [
                 'external_id' => (string) $id,
                 'first_name' => self::text($record['first_name'] ?? null),
                 'last_name' => self::text($record['last_name'] ?? null),
@@ -45,12 +55,20 @@ final readonly class ContactStore implements StreamStore
             $written++;
         }
 
+        if (RecordOwners::perRecord($connection) && $unmatched !== []) {
+            // Owners with no REOS account at the brokerage, for screen 40 (up to 50).
+            $known = array_values(array_filter((array) ($connection->meta['unmatched_owners'] ?? []), is_string(...)));
+            $connection->forceFill(['meta' => [...$connection->meta, 'unmatched_owners' => array_slice(array_values(array_unique([...$known, ...$unmatched])), 0, 50)]])->save();
+        }
+
         return $written;
     }
 
     public function remove(Connection $connection, array $externalIds): int
     {
-        $removed = $this->contacts->removed($connection->owner_type, $connection->owner_id, $connection->integration_id, $externalIds);
+        $removed = RecordOwners::perRecord($connection)
+            ? $this->contacts->removedFrom($connection, $externalIds)
+            : $this->contacts->removed($connection->owner_type, $connection->owner_id, $connection->integration_id, $externalIds);
         // People a webhook said were deleted (B7.2) are done with.
         $connection->forceFill(['meta' => array_diff_key($connection->meta, ['deleted_people' => true])])->save();
 
@@ -59,7 +77,9 @@ final readonly class ContactStore implements StreamStore
 
     public function forget(Connection $connection): void
     {
-        $this->contacts->forget($connection->owner_type, $connection->owner_id, $connection->integration_id, $connection);
+        RecordOwners::perRecord($connection)
+            ? $this->contacts->forgetConnection($connection)
+            : $this->contacts->forget($connection->owner_type, $connection->owner_id, $connection->integration_id, $connection);
     }
 
     public function count(Connection $connection): int

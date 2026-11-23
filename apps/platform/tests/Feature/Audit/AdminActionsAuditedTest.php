@@ -17,7 +17,9 @@ use App\Enums\OrganisationType;
 use App\Features\Flags;
 use App\Features\Rollouts;
 use App\Http\Middleware\EnsureAdminTwoStep;
+use App\Integrations\IntegrationMode;
 use App\Models\AuditEvent;
+use App\Models\Connection;
 use App\Models\Course;
 use App\Models\CourseModule;
 use App\Models\GatewaySetting;
@@ -447,6 +449,22 @@ function adminActions(): array
             [$lone, $linda] = auditBrokerage();
 
             return auditCase($linda, 'POST', '/support-access/'.auditGrant($lone, auditOps())->id.'/decline', tenant: $lone->id);
+        },
+
+        // Brokerage integrations (B8.2, screen 40).
+        'brokerage-integrations.allow' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'PUT', '/organisation/integrations/tools/follow-up-boss', ['allowed' => false], tenant: $lone->id);
+        },
+        'brokerage-integrations.mapping' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $connection = Connection::query()->create([
+                'integration_id' => 'salesforce', 'owner_type' => Connection::OWNER_ORGANISATION, 'owner_id' => $lone->id, 'connected_by' => $linda->id,
+                'mode' => IntegrationMode::Simulator, 'external_account_id' => '00Dsim', 'account_label' => 'admin@lonestar-realty.example', 'meta' => [],
+            ]);
+
+            return auditCase($linda, 'PUT', "/organisation/integrations/connections/{$connection->id}/mapping", ['contact_stage' => null, 'lead_stage' => 'Status', 'leads' => true], tenant: $lone->id);
         },
         'support-access.revoke' => function () {
             [$lone, $linda] = auditBrokerage();

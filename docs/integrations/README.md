@@ -131,7 +131,7 @@ What users see in **Connections** on day one. Every row is also a back-office ca
 | [Follow Up Boss](#follow-up-boss) | Enabled | B7.2 · S7 | Customer's own account | Yes | Not started |
 | [kvCORE / BoldTrail](#boldtrail) | Enabled | B7.3 · S7 | Customer's own account | Yes | Not started |
 | [Lofty](#lofty) | Enabled | B8.1 · S8 | Customer's own account | Yes | Not started |
-| [Salesforce](#salesforce) | Enabled | B8.2 · S8 | Customer's own account | Yes | Not started |
+| [Salesforce](#salesforce) | Enabled | B8.2 · S8 | REOS app keys | Yes | Not started |
 
 ### Transactions
 
@@ -695,13 +695,15 @@ Two-way leads, notes and tasks; stage and tags written back.
 
 **Integration** · CRM · built in B8.2 (sprint 8) · pilot status **Enabled**
 
-Contacts, leads, tasks and activities for brokerages on Salesforce.
+Contacts, leads, tasks and notes for brokerages on Salesforce; each agent sees the records they own.
 
 - **Owner:** Mayura
 - **Access:** Self-serve, about 2 weeks; needed by S8 (15 Mar 2027); apply by 18 Dec 2026. Status: Not started.
-- **Sandbox:** Free Developer Edition org.
-- **Credentials:** Customer's own account · **Personal data:** yes (vendor needs a data-processing agreement)
+- **Sandbox:** Free Developer Edition org, with REOS's connected app installed.
+- **Credentials:** REOS app keys · **Personal data:** yes (vendor needs a data-processing agreement)
 - **Cost:** Free to connect; AppExchange listing (optional, later) needs a paid security review.
+- **Notes:** B8.2 (ADR 0033, decision 3): REOS's connected app (OAuth 2 web server flow with PKCE, scopes api and refresh_token; callback /integrations/salesforce/callback); server_url is the login address (test.salesforce.com for sandboxes). The brokerage connects its org once (Brokerage integrations, screen 40). REOS reads Contacts, Leads (not converted), Tasks with a WhoId and ContentNotes linked to a person through SOQL on SystemModstamp (notes on LastModifiedDate) every 15 minutes, plus /sobjects/{Contact|Lead}/deleted for removals; each record goes to the brokerage agent whose email is the record owner's, and records owned by anyone else are left out and counted. Writes a ContentNote plus a ContentDocumentLink, Task Status, and the stage field the brokerage mapped (Lead Status by default; a Contact field such as Stage__c only when chosen). Change Data Capture (paid editions) is later. API v62.0.
+- **Fallback:** CSV import.
 
 ### Lone Wolf Transactions
 <a id="lone-wolf"></a>

@@ -14,6 +14,8 @@ use App\Connections\Drivers\Lofty\LoftyDriver;
 use App\Connections\Drivers\Lofty\LoftySimulator;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarDriver;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarSimulator;
+use App\Connections\Drivers\Salesforce\SalesforceDriver;
+use App\Connections\Drivers\Salesforce\SalesforceSimulator;
 use App\Integrations\Catalogue;
 use App\Integrations\CredentialEnvironment;
 use App\Integrations\Credentials\CredentialVault;
@@ -40,10 +42,14 @@ final readonly class ConnectorRegistry
         FollowUpBossDriver::INTEGRATION => FollowUpBossSimulator::class,
         BoldTrailDriver::INTEGRATION => BoldTrailSimulator::class,
         LoftyDriver::INTEGRATION => LoftySimulator::class,
+        SalesforceDriver::INTEGRATION => SalesforceSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
     private const API_KEYS = [FollowUpBossDriver::INTEGRATION, BoldTrailDriver::INTEGRATION, LoftyDriver::INTEGRATION];
+
+    /** Organisation tools whose records each have an owner, matched to an agent by email (B8.2). */
+    private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -62,6 +68,7 @@ final readonly class ConnectorRegistry
         FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::CONSENT,
         BoldTrailDriver::INTEGRATION => BoldTrailDriver::CONSENT,
         LoftyDriver::INTEGRATION => LoftyDriver::CONSENT,
+        SalesforceDriver::INTEGRATION => SalesforceDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -71,6 +78,7 @@ final readonly class ConnectorRegistry
         FollowUpBossDriver::INTEGRATION => FollowUpBossDriver::STREAMS,
         BoldTrailDriver::INTEGRATION => BoldTrailDriver::STREAMS,
         LoftyDriver::INTEGRATION => LoftyDriver::STREAMS,
+        SalesforceDriver::INTEGRATION => SalesforceDriver::STREAMS,
     ];
 
     /**
@@ -97,6 +105,12 @@ final readonly class ConnectorRegistry
     public static function usesApiKey(string $integrationId): bool
     {
         return in_array($integrationId, self::API_KEYS, true);
+    }
+
+    /** A brokerage tool whose records belong to the agents who own them (B8.2). */
+    public static function ownsPerRecord(string $integrationId): bool
+    {
+        return in_array($integrationId, self::PER_RECORD_OWNER, true);
     }
 
     /** A calendar tool: REOS writes events to it (B4.1). */
@@ -168,6 +182,7 @@ final readonly class ConnectorRegistry
             FollowUpBossDriver::INTEGRATION => new FollowUpBossDriver($value('system_name'), $value('system_key')),
             BoldTrailDriver::INTEGRATION => new BoldTrailDriver($value('server_url')),
             LoftyDriver::INTEGRATION => new LoftyDriver,
+            SalesforceDriver::INTEGRATION => new SalesforceDriver($value('client_id'), $value('client_secret'), $value('server_url')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
     }

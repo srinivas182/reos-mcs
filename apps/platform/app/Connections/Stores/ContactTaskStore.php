@@ -6,6 +6,7 @@ namespace App\Connections\Stores;
 
 use App\Connections\StreamStore;
 use App\Crm\Contacts;
+use App\Crm\RecordOwners;
 use App\Models\Connection;
 use App\Models\Todo;
 use App\Models\User;
@@ -14,17 +15,19 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * A CRM's tasks (B7.2): each is a REOS to-do about the contact, for the
- * person who connected the CRM. Done in one is done in the other.
+ * person who connected the CRM (on a brokerage's CRM, the agent who owns
+ * the task, B8.2). Done in one is done in the other.
  */
 final readonly class ContactTaskStore implements StreamStore
 {
-    public function __construct(private Contacts $contacts) {}
+    public function __construct(private Contacts $contacts, private RecordOwners $owners) {}
 
     public function upsert(Connection $connection, array $records): int
     {
-        $user = $connection->contact();
+        $perRecord = RecordOwners::perRecord($connection);
+        $connectedBy = $connection->contact();
 
-        if (! $user instanceof User) {
+        if (! $perRecord && ! $connectedBy instanceof User) {
             return 0;
         }
 
@@ -39,7 +42,18 @@ final readonly class ContactTaskStore implements StreamStore
                 continue;
             }
 
-            $contact = $this->contacts->forPerson($connection, $person);
+            // A brokerage's CRM (B8.2): the task's owner works it, on a person already theirs.
+            $user = $connectedBy;
+            $contact = null;
+            if ($perRecord) {
+                $user = $this->owners->of($connection, $record)[2] ?? null;
+                $personLink = RecordOwners::linkFor($connection, $person);
+                $contact = $personLink === null ? null : $this->contacts->contactOf($personLink);
+                if (! $user instanceof User || $contact === null) {
+                    continue;
+                }
+            }
+            $contact ??= $this->contacts->forPerson($connection, $person);
             $link = DB::table('contact_tasks')->where('source', $connection->integration_id)->where('external_id', $id)->whereIn('contact_id', $this->contacts->idsFor($connection))->first();
             $todo = $link === null ? new Todo : Todo::withTrashed()->find(is_numeric($link->todo_id) ? (int) $link->todo_id : 0);
 

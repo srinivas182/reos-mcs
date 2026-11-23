@@ -911,7 +911,7 @@ entries:
     name: Salesforce
     kind: integration
     category: crm
-    purpose: Contacts, leads, tasks and activities for brokerages on Salesforce.
+    purpose: Contacts, leads, tasks and notes for brokerages on Salesforce; each agent sees the records they own.
     launch: enabled
     build: { sprint: 8, item: B8.2 }
     owner: mayura
@@ -921,16 +921,28 @@ entries:
       needed_by_sprint: 8
       apply_by: 2026-12-18 # sprint plan: file in sprint 1, approval times vary
       status: not_started
-    sandbox: Free Developer Edition org.
-    credentials: tenant
+    sandbox: Free Developer Edition org, with REOS's connected app installed.
+    credentials: platform
     connection:
       auth: oauth2
       accounts: tenant
       fields:
         - { key: client_id }
         - { key: client_secret, secret: true }
+        - { key: server_url, default: "https://login.salesforce.com" }
     personal_data: true
     cost: Free to connect; AppExchange listing (optional, later) needs a paid security review.
+    notes: >-
+      B8.2 (ADR 0033, decision 3): REOS's connected app (OAuth 2 web server flow with PKCE, scopes api and
+      refresh_token; callback /integrations/salesforce/callback); server_url is the login address (test.salesforce.com for sandboxes).
+      The brokerage connects its org once (Brokerage integrations, screen 40). REOS reads Contacts, Leads (not
+      converted), Tasks with a WhoId and ContentNotes linked to a person through SOQL on SystemModstamp (notes on
+      LastModifiedDate) every 15 minutes, plus /sobjects/{Contact|Lead}/deleted for removals; each record goes to the
+      brokerage agent whose email is the record owner's, and records owned by anyone else are left out and counted.
+      Writes a ContentNote plus a ContentDocumentLink, Task Status, and the stage field the brokerage mapped (Lead
+      Status by default; a Contact field such as Stage__c only when chosen). Change Data Capture (paid editions) is
+      later. API v62.0.
+    fallback: CSV import.
 
   # ── Transactions and e-signature ────────────────────────────────────────────
   - id: lone-wolf

@@ -302,10 +302,54 @@ final readonly class Contacts
         return $link !== null ? $this->current($link->contact) : $this->receive($connection->owner_type, $connection->owner_id, $connection->integration_id, $connection, ['external_id' => $personId]);
     }
 
-    /** @return Builder<Contact> ids of a connection owner's contacts, for subqueries */
+    /**
+     * Ids of a connection owner's contacts, for subqueries; on a brokerage's
+     * CRM with per-record owners (B8.2), the contacts it brought in, whoever
+     * of its agents owns them.
+     *
+     * @return Builder<Contact>
+     */
     public function idsFor(Connection $connection): Builder
     {
+        if (RecordOwners::perRecord($connection)) {
+            return Contact::withTrashed()->whereIn('id', ContactLink::query()->where('connection_id', $connection->id)->select('contact_id'))->select('id');
+        }
+
         return Contact::withTrashed()->where('owner_type', $connection->owner_type)->where('owner_id', $connection->owner_id)->select('id');
+    }
+
+    /** The contact shown for a link (merges followed). */
+    public function contactOf(ContactLink $link): Contact
+    {
+        return $this->current($link->contact);
+    }
+
+    /**
+     * People a brokerage's CRM no longer has (B8.2): their links go, whichever agent owns them.
+     *
+     * @param  list<string>  $externalIds
+     */
+    public function removedFrom(Connection $connection, array $externalIds): int
+    {
+        $links = ContactLink::query()->where('connection_id', $connection->id)->where('source', $connection->integration_id)->whereIn('external_id', $externalIds)->get();
+
+        foreach ($links as $link) {
+            $this->log($this->current($link->contact), 'removed', $connection->integration_id, [], CarbonImmutable::now());
+            $link->delete();
+        }
+
+        return $links->count();
+    }
+
+    /** A brokerage's CRM is disconnected (B8.2): every agent's links from it go. */
+    public function forgetConnection(Connection $connection): void
+    {
+        $keys = ContactLink::query()->where('connection_id', $connection->id)->distinct()->pluck('owner_key');
+
+        foreach ($keys as $key) {
+            [$type, $id] = explode(':', is_string($key) ? $key : '', 2) + [1 => '0'];
+            $this->forget($type, (int) $id, $connection->integration_id, $connection);
+        }
     }
 
     private static function placeholder(Contact $contact): bool

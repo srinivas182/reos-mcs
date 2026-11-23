@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
+import { index as brokerageIntegrationsIndex } from '@/routes/brokerage-integrations';
 import { index as agentsIndex } from '@/routes/agents';
 import { settings as organisationSettings } from '@/routes/organisation';
 import { index as complianceIndex } from '@/routes/compliance';
@@ -71,6 +72,7 @@ export type NavLabel =
     | 'tenants'
     | 'brandingAndDomain'
     | 'brokerageSettings'
+    | 'brokerageIntegrations'
     | 'agents'
     | 'complianceAndAudit'
     | 'contentAndApprovals'
@@ -205,7 +207,7 @@ export function roleNavigation(
             planned('recruiting'),
             planned('teamsAndRouting'),
             planned('reports'),
-            planned('brokerageIntegrations'),
+            item('brokerageIntegrations', Plug, brokerageIntegrationsIndex()),
             item('brokerageSettings', Building2, organisationSettings()),
         ],
         // Mentors work in the mentor workspace (web journey screen 48).

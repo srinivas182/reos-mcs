@@ -34,6 +34,7 @@ use App\Http\Controllers\Onboarding\PublicSiteController;
 use App\Http\Controllers\Onboarding\TenantSignupController;
 use App\Http\Controllers\Organisation\AgentsController;
 use App\Http\Controllers\Organisation\BrandingController;
+use App\Http\Controllers\Organisation\BrokerageIntegrationsController;
 use App\Http\Controllers\Organisation\DomainController;
 use App\Http\Controllers\Organisation\InvitationController;
 use App\Http\Controllers\Organisation\SettingsController;
@@ -199,6 +200,13 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('verify', [DomainController::class, 'verify'])->middleware('throttle:20,1,verify')->name('verify');
     Route::delete('/', [DomainController::class, 'destroy'])->middleware('throttle:10,1,destroy')->name('destroy');
 });
+// Brokerage integrations (B8.2, broker screen 40): which tools agents may use, the brokerage's own CRM, its mapping.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/integrations')->name('brokerage-integrations.')
+    ->controller(BrokerageIntegrationsController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('tools/{tool}', 'allow')->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1,brokerage-integrations-allow')->name('allow');
+        Route::put('connections/{connection}/mapping', 'mapping')->whereNumber('connection')->middleware('throttle:20,1,brokerage-integrations-map')->name('mapping');
+    });
 // Brokerage settings (A4.2b, broker screen 41): domain, brand, people and plan.
 Route::get('organisation/settings', SettingsController::class)
     ->middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->name('organisation.settings');
