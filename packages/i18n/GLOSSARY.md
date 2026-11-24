@@ -27,6 +27,10 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Organization | Organización | |
 | Brokerage | Agencia inmobiliaria (short: agencia) | |
 | Broker | Bróker | |
+| Virtual broker | Bróker virtual | |
+| Policy manual (brokerage) | Manual de políticas | |
+| FAQ | Preguntas frecuentes | |
+| Earnest money | Depósito de garantía | |
 | Licensed agent | Agente con licencia | |
 | Sales agent (license type) | Agente de ventas | |
 | Candidate | Candidato | |

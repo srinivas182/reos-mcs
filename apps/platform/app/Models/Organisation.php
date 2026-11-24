@@ -37,6 +37,7 @@ use Illuminate\Support\Str;
  * @property string $cell
  * @property array<string, mixed>|null $limits Overrides of TenantLimits (see tenantLimits())
  * @property array<string, bool>|null $features
+ * @property array{answerer_id?: int|null, reply_hours?: int}|null $virtual_broker Who answers virtual broker escalations and how fast (A12.1)
  * @property array<string, string|null>|null $brand Logo, colour, app label and email sender (see App\Tenancy\Brand)
  * @property int|null $parent_id
  * @property int|null $session_max_30_cents Most its instructors may charge for 30 minutes (A10.2d)
@@ -45,7 +46,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property-read Organisation|null $parent
  */
-#[Fillable(['type', 'name', 'slug', 'status', 'trial_ends_at', 'status_reason', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'brand', 'parent_id'])]
+#[Fillable(['type', 'name', 'slug', 'status', 'trial_ends_at', 'status_reason', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'brand', 'parent_id', 'virtual_broker'])]
 final class Organisation extends Model
 {
     /** @use HasFactory<OrganisationFactory> */
@@ -129,6 +130,7 @@ final class Organisation extends Model
             'limits' => 'array',
             'features' => 'array',
             'brand' => 'array',
+            'virtual_broker' => 'array',
         ];
     }
 }

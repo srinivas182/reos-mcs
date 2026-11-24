@@ -26,6 +26,7 @@ use Database\Seeders\Demo\DemoSessions;
 use Database\Seeders\Demo\DemoStates;
 use Database\Seeders\Demo\DemoTenantPlans;
 use Database\Seeders\Demo\DemoTenants;
+use Database\Seeders\Demo\DemoVirtualBroker;
 use Database\Seeders\Demo\Personas;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -101,6 +102,8 @@ final class DemoSeeder extends Seeder
         app(DemoContacts::class)->seed();
         // Sample MLS listings, James and Dana linked to their HAR records (B10.1).
         app(DemoListings::class)->seed();
+        // Lone Star Realty's sample policy manual for the virtual broker (A12.1).
+        app(DemoVirtualBroker::class)->seed();
     }
 
     private function organisation(string $name): Organisation

@@ -45,15 +45,21 @@ final class RuleCatalogue
             'ce.commission_meeting' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Number, 'unit' => 'hours', 'used_by' => ['ce_card']],
             'ce.deferral' => ['topic' => RuleTopic::Ce, 'type' => RuleType::FeeDays, 'used_by' => ['ce_card', 'reminders']],
             'ce.renewal_steps' => ['topic' => RuleTopic::Ce, 'type' => RuleType::Steps, 'used_by' => ['ce_wallet']],
-            'advertising.license_holder_name' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
-            'advertising.broker_name_size' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
-            'advertising.social_media' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
-            'advertising.misleading_titles' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks']],
+            'advertising.license_holder_name' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks', 'virtual_broker']],
+            'advertising.broker_name_size' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks', 'virtual_broker']],
+            'advertising.social_media' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks', 'virtual_broker']],
+            'advertising.misleading_titles' => ['topic' => RuleTopic::Advertising, 'type' => RuleType::Text, 'used_by' => ['post_checks', 'virtual_broker']],
             'agents.grow_closings' => ['topic' => RuleTopic::Agents, 'type' => RuleType::Number, 'unit' => 'closings', 'used_by' => ['agent_modes']],
             'agents.lead_closings' => ['topic' => RuleTopic::Agents, 'type' => RuleType::Number, 'unit' => 'closings', 'used_by' => ['agent_modes']],
             'agents.own_years' => ['topic' => RuleTopic::Agents, 'type' => RuleType::Number, 'unit' => 'years', 'used_by' => ['agent_modes']],
             'courses.seat_time' => ['topic' => RuleTopic::Courses, 'type' => RuleType::SeatTime, 'used_by' => ['course_approvals', 'course_player', 'live_classes']],
-            'brokerage.sponsorship' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['brokerage_matching', 'licence_journey']],
+            'brokerage.sponsorship' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['brokerage_matching', 'licence_journey', 'virtual_broker']],
+            // What the virtual broker cites (A12.1): trust money, compensation, supervision, IABS and the promulgated forms.
+            'brokerage.trust_money' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['virtual_broker', 'contract_review']],
+            'brokerage.compensation' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['virtual_broker']],
+            'brokerage.supervision' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['virtual_broker']],
+            'brokerage.iabs' => ['topic' => RuleTopic::Brokerage, 'type' => RuleType::Text, 'used_by' => ['virtual_broker']],
+            'forms.promulgated' => ['topic' => RuleTopic::Forms, 'type' => RuleType::Text, 'used_by' => ['virtual_broker', 'contract_review']],
         ];
     }
 
@@ -64,5 +70,5 @@ final class RuleCatalogue
     }
 
     /** Features that read rules today (the rest arrive in their sprints). */
-    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes', 'agent_modes', 'ce_wallet'];
+    public const LIVE_FEATURES = ['ce_card', 'course_approvals', 'test_prep', 'licence_journey', 'live_classes', 'agent_modes', 'ce_wallet', 'virtual_broker'];
 }

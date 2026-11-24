@@ -4719,6 +4719,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/virtual-broker": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My virtual broker
+         * @description The brokerage, whether its policy manual is in, how fast the broker aims to reply, and my questions (newest first). 404 when the person is not an agent at a brokerage.
+         */
+        get: operations["virtual-broker.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/virtual-broker/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask the virtual broker
+         * @description Answered from the brokerage's policy manual, its FAQ and the state's rules, with a confidence level and citations; free. Money or legal questions, and answers the sources don't support, go to the broker at once (status "waiting", with the time the brokerage aims to reply by).
+         */
+        post: operations["virtual-broker.questions.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/virtual-broker/questions/{question}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One of my questions */
+        get: operations["virtual-broker.questions.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/virtual-broker/questions/{question}/escalate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send to my broker
+         * @description The broker gets the question and the virtual broker's answer to confirm or correct. Nothing changes for a question already with the broker or answered by them.
+         */
+        post: operations["virtual-broker.questions.escalate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/voice/parse": {
         parameters: {
             query?: never;
@@ -4887,6 +4964,14 @@ export interface components {
             preview: {
                 code: string;
             } | null;
+        };
+        /**
+         * AskBrokerRequest
+         * @description A question to the virtual broker (A12.1): the words, and the deal it's about if any.
+         */
+        AskBrokerRequest: {
+            question: string;
+            deal_id?: number | null;
         };
         /**
          * AskInstructorRequest
@@ -6367,6 +6452,7 @@ export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest']
 export type SchemaAgentPageRequest = components['schemas']['AgentPageRequest'];
 export type SchemaAnswerQuestionRequest = components['schemas']['AnswerQuestionRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
+export type SchemaAskBrokerRequest = components['schemas']['AskBrokerRequest'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaAskRequest = components['schemas']['AskRequest'];
 export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest'];
@@ -21258,6 +21344,265 @@ export interface operations {
                                 seconds: number | null;
                             } | null;
                             attempt_id: number | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "virtual-broker.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            manual: boolean;
+                            reply_hours: number;
+                            questions: {
+                                id: string;
+                                question: string;
+                                answer: string;
+                                /** @enum {string} */
+                                confidence: "high" | "medium" | "low";
+                                sources: {
+                                    /** @enum {string} */
+                                    kind: "manual" | "faq" | "rule";
+                                    title: string;
+                                    citation: string | null;
+                                    page: number | null;
+                                    url: string | null;
+                                    effective_from: string | null;
+                                    excerpt: string;
+                                }[];
+                                /** @enum {string} */
+                                status: "answered" | "waiting" | "confirmed" | "corrected";
+                                /** @enum {string|null} */
+                                reason: "unclear" | "money" | "legal" | "asked" | null;
+                                escalated_at: string | null;
+                                due_at: string | null;
+                                broker_answer: string | null;
+                                broker: string | null;
+                                answered_at: string | null;
+                                added_to_knowledge: boolean;
+                                agent: string;
+                                deal: {
+                                    id: number;
+                                    uuid: string;
+                                    property: string;
+                                } | null;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "virtual-broker.questions.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AskBrokerRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            question: string;
+                            answer: string;
+                            /** @enum {string} */
+                            confidence: "high" | "medium" | "low";
+                            sources: {
+                                /** @enum {string} */
+                                kind: "manual" | "faq" | "rule";
+                                title: string;
+                                citation: string | null;
+                                page: number | null;
+                                url: string | null;
+                                effective_from: string | null;
+                                excerpt: string;
+                            }[];
+                            /** @enum {string} */
+                            status: "answered" | "waiting" | "confirmed" | "corrected";
+                            /** @enum {string|null} */
+                            reason: "unclear" | "money" | "legal" | "asked" | null;
+                            escalated_at: string | null;
+                            due_at: string | null;
+                            broker_answer: string | null;
+                            broker: string | null;
+                            answered_at: string | null;
+                            added_to_knowledge: boolean;
+                            agent: string;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "virtual-broker.questions.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            question: string;
+                            answer: string;
+                            /** @enum {string} */
+                            confidence: "high" | "medium" | "low";
+                            sources: {
+                                /** @enum {string} */
+                                kind: "manual" | "faq" | "rule";
+                                title: string;
+                                citation: string | null;
+                                page: number | null;
+                                url: string | null;
+                                effective_from: string | null;
+                                excerpt: string;
+                            }[];
+                            /** @enum {string} */
+                            status: "answered" | "waiting" | "confirmed" | "corrected";
+                            /** @enum {string|null} */
+                            reason: "unclear" | "money" | "legal" | "asked" | null;
+                            escalated_at: string | null;
+                            due_at: string | null;
+                            broker_answer: string | null;
+                            broker: string | null;
+                            answered_at: string | null;
+                            added_to_knowledge: boolean;
+                            agent: string;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "virtual-broker.questions.escalate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                question: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            question: string;
+                            answer: string;
+                            /** @enum {string} */
+                            confidence: "high" | "medium" | "low";
+                            sources: {
+                                /** @enum {string} */
+                                kind: "manual" | "faq" | "rule";
+                                title: string;
+                                citation: string | null;
+                                page: number | null;
+                                url: string | null;
+                                effective_from: string | null;
+                                excerpt: string;
+                            }[];
+                            /** @enum {string} */
+                            status: "answered" | "waiting" | "confirmed" | "corrected";
+                            /** @enum {string|null} */
+                            reason: "unclear" | "money" | "legal" | "asked" | null;
+                            escalated_at: string | null;
+                            due_at: string | null;
+                            broker_answer: string | null;
+                            broker: string | null;
+                            answered_at: string | null;
+                            added_to_knowledge: boolean;
+                            agent: string;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            created_at: string | null;
                         };
                     };
                 };

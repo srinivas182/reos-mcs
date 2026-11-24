@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { BookOpen, Calculator, CalendarPlus, GraduationCap, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, Sparkles, Square } from 'lucide-react-native';
+import { BookOpen, Calculator, CalendarPlus, GraduationCap, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, ShieldQuestion, Sparkles, Square } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -89,6 +89,7 @@ export default function AskScreen() {
       <TitleBar title={t('ask.title')} onBack={() => router.back()} />
       <Text tone="muted">{purpose}</Text>
       {credits ? <Text variant="caption" tone="muted">{credits}</Text> : null}
+      {pack && !pack.candidate ? <ListRow icon={ShieldQuestion} tone="info" title={t('virtualBroker.mobile.open')} subtitle={t('virtualBroker.mobile.openBody')} onPress={() => router.push('/ask/broker')} /> : null}
       {speech.state === 'denied' ? <Callout tone="warning" title={t('ask.micDenied')} /> : null}
 
       {messages.length === 0 ? (
