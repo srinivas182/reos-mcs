@@ -13,6 +13,7 @@ use App\Integrations\Catalogue;
 use App\Integrations\IntegrationMode;
 use App\Models\Connection;
 use App\Models\User;
+use App\Services\Catalogue\IntegrationCatalogue;
 use App\Services\Connections\ConnectionTokens;
 use Carbon\CarbonImmutable;
 use Throwable;
@@ -34,6 +35,7 @@ final readonly class SocialAccounts
         private Catalogue $catalogue,
         private ConnectorRegistry $registry,
         private ConnectionTokens $tokens,
+        private IntegrationCatalogue $offer,
     ) {}
 
     /** @return list<Account> */
@@ -56,7 +58,8 @@ final readonly class SocialAccounts
                 'purpose' => $definition->purpose,
                 'launch' => $definition->launch,
                 'built' => $built,
-                'available' => $built && $this->registry->mode($definition->id) !== IntegrationMode::Off,
+                // Connectable for this person: built, running, and (for a beta) their organisation is in it.
+                'available' => $built && $this->offer->canConnect($user, $definition->id),
                 'connection' => $connection === null ? null : ['id' => $connection->id, 'status' => $connection->status->value, 'label' => $connection->account_label],
                 'targets' => $connection === null ? [] : $this->targets($connection),
                 'channels' => $driver === null ? [] : $driver::channels(),

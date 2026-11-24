@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { connectTool } from '@/lib/connections';
 import { type Channel, refreshTargets, useSocialAccounts } from '@/lib/social';
-import { Button, Callout, Chip, ListRow, Screen, Text, TitleBar } from '@/ui';
+import { Button, Callout, ListRow, Screen, Text, TitleBar } from '@/ui';
 
 /**
  * Social accounts (B11; agent screen 170, Me → Connections → Social or the
@@ -39,7 +39,7 @@ export default function SocialAccountsScreen() {
             key={account.integration}
             icon={Plug}
             tone={account.connection ? (reconnect ? 'danger' : 'success') : 'info'}
-            title={account.name}
+            title={account.launch === 'beta' ? `${account.name} · ${t('social.accounts.beta')}` : account.name}
             subtitle={
               account.connection
                 ? [t('social.accounts.connected', { label: account.connection.label ?? account.name }), ...account.targets.map((x) => `${t(`social.channels.${x.channel as Channel}`)}: ${x.name}`)].join(' · ')
@@ -48,9 +48,7 @@ export default function SocialAccountsScreen() {
                   : t('social.accounts.coming')
             }
             trailing={
-              account.launch === 'beta' ? (
-                <Chip label={t('social.accounts.beta')} tone="info" />
-              ) : account.connection && !reconnect ? (
+              account.connection && !reconnect ? (
                 <Button
                   variant="secondary"
                   icon={RefreshCw}

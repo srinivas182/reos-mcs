@@ -12,8 +12,12 @@ use App\Connections\Drivers\Dotloop\DotloopDriver;
 use App\Connections\Drivers\Dotloop\DotloopSimulator;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossDriver;
 use App\Connections\Drivers\FollowUpBoss\FollowUpBossSimulator;
+use App\Connections\Drivers\GoogleBusiness\GoogleBusinessDriver;
+use App\Connections\Drivers\GoogleBusiness\GoogleBusinessSimulator;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarDriver;
 use App\Connections\Drivers\GoogleCalendar\GoogleCalendarSimulator;
+use App\Connections\Drivers\LinkedIn\LinkedInDriver;
+use App\Connections\Drivers\LinkedIn\LinkedInSimulator;
 use App\Connections\Drivers\Lofty\LoftyDriver;
 use App\Connections\Drivers\Lofty\LoftySimulator;
 use App\Connections\Drivers\LoneWolf\LoneWolfDriver;
@@ -59,6 +63,8 @@ final readonly class ConnectorRegistry
         DocuSignDriver::INTEGRATION => DocuSignSimulator::class,
         // Social channels (B11, ADR 0046).
         MetaDriver::INTEGRATION => MetaSimulator::class,
+        LinkedInDriver::INTEGRATION => LinkedInSimulator::class,
+        GoogleBusinessDriver::INTEGRATION => GoogleBusinessSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
@@ -71,7 +77,7 @@ final readonly class ConnectorRegistry
     private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION, LoneWolfDriver::INTEGRATION, SkySlopeDriver::INTEGRATION];
 
     /** Tools whose drivers also `PublishesPosts` (B11). */
-    public const SOCIAL = [MetaDriver::INTEGRATION];
+    public const SOCIAL = [MetaDriver::INTEGRATION, LinkedInDriver::INTEGRATION, GoogleBusinessDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -96,6 +102,8 @@ final readonly class ConnectorRegistry
         SkySlopeDriver::INTEGRATION => SkySlopeDriver::CONSENT,
         DocuSignDriver::INTEGRATION => DocuSignDriver::CONSENT,
         MetaDriver::INTEGRATION => MetaDriver::CONSENT,
+        LinkedInDriver::INTEGRATION => LinkedInDriver::CONSENT,
+        GoogleBusinessDriver::INTEGRATION => GoogleBusinessDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -111,6 +119,8 @@ final readonly class ConnectorRegistry
         SkySlopeDriver::INTEGRATION => SkySlopeDriver::STREAMS,
         DocuSignDriver::INTEGRATION => DocuSignDriver::STREAMS,
         MetaDriver::INTEGRATION => MetaDriver::STREAMS,
+        LinkedInDriver::INTEGRATION => LinkedInDriver::STREAMS,
+        GoogleBusinessDriver::INTEGRATION => GoogleBusinessDriver::STREAMS,
     ];
 
     /**
@@ -230,6 +240,8 @@ final readonly class ConnectorRegistry
             DotloopDriver::INTEGRATION => new DotloopDriver($value('client_id'), $value('client_secret')),
             SkySlopeDriver::INTEGRATION => new SkySlopeDriver($value('client_id'), $value('client_secret'), $value('server_url')),
             MetaDriver::INTEGRATION => new MetaDriver($value('app_id'), $value('app_secret')),
+            LinkedInDriver::INTEGRATION => new LinkedInDriver($value('client_id'), $value('client_secret')),
+            GoogleBusinessDriver::INTEGRATION => new GoogleBusinessDriver($value('client_id'), $value('client_secret')),
             LoneWolfDriver::INTEGRATION => new LoneWolfDriver($value('client_id'), $value('client_secret'), $value('api_key'), $value('server_url')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };
