@@ -67,6 +67,8 @@ enum NotificationKind: string
     case PolicyQuestion = 'policy_question';
     /** The broker answered the agent's virtual broker question (A12.1). */
     case PolicyAnswer = 'policy_answer';
+    /** A contract review is done, or couldn't be done (A12.2). */
+    case ContractReview = 'contract_review';
 
     public const INBOX = 'inbox';
 
@@ -125,7 +127,7 @@ enum NotificationKind: string
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer => 'deals',
+            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview => 'deals',
         };
     }
 

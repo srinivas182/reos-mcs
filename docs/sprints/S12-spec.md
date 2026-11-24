@@ -77,6 +77,27 @@
 - **Ask about this contract** (66): answers citing pages, and a draft note to the client.
 - **Send to broker:** the summary goes to the broker's questions.
 - **Done when:** a review of a TREC 20-18 lists dated findings.
+- **As built, A12.2** (ADR 0048):
+  - **Reading** (`TrecForms`, `ClaudeContractReader`):
+    - TREC 20-18 is recognized by its title and form line. Addenda are recognized by a page starting with their title; the Third Party Financing Addendum is read first.
+    - Seventeen key terms, each with its page.
+    - Claude (Bedrock) reads text or scans and adds findings; without keys, the rule reader alone.
+  - **Checks** (`ContractChecks`):
+    - Deadlines from the Effective Date: earnest money and option fee, option period (5:00 p.m.), survey, financing approval, then closing.
+    - High: no Effective Date, no earnest money, price math, financing without its addendum, closing before a buyer deadline or before the Effective Date.
+    - Check: weekend dates, no escrow agent, no option or option fee, legal wording in special provisions (§537.11), and changes since the earlier version.
+  - **Earlier version:** the same deal's latest review, or the same property's. Terms show what they were.
+  - **Files:** a new PDF for a deal is kept as a deal file, or the deal's own document is reviewed. The pages' text is kept encrypted. Reviews are private (`contract_reviews`, row-level security).
+  - **Credits:** 20 per review, charged when done (a file REOS can't read is free). 1 per question.
+  - **Background:** the `ReviewContract` job steps through read, terms, checks and compare, then sends a `contract_review` notification.
+  - **Then:**
+    - Deadlines go to the deal as key dates with to-dos, or as to-dos on the calendar; added once.
+    - Send to broker becomes a virtual broker question.
+    - Ask about this contract answers with pages and a note for the client.
+  - **Sample:** a filled-in TREC 20-18 with its financing addendum, outside production.
+  - **API:** `GET` and `POST /api/v1/contracts`, `GET /api/v1/contracts/{id}`, and `POST /api/v1/contracts/{id}/deadlines`, `/broker` and `/questions`.
+  - **Web:** `/contracts` (screen 15 with 63; Contract review in the agent sidebar) and `/contracts/{id}`: the contract beside the result, where a page reference opens that page, with the steps while reviewing.
+  - **Phone:** Ask → Review a contract (`contracts`, screen 63), `contracts/[id]` (screens 64 and 65) and `contracts/ask/[id]` (66).
 
 ### A12.3 AI assistant (Team A)
 

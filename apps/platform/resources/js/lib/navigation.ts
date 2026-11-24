@@ -9,6 +9,7 @@ import {
     Flag,
     Gauge,
     FileCheck2,
+    FileSearch,
     GraduationCap,
     House,
     Layers,
@@ -66,6 +67,7 @@ import { show as licenceJourney } from '@/routes/licence';
 import { index as mentorsIndex } from '@/routes/mentors';
 import { index as recruitingIndex } from '@/routes/recruiting';
 import { index as virtualBroker } from '@/routes/virtual-broker';
+import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
@@ -111,6 +113,7 @@ export type NavLabel =
     | 'ceWallet'
     | 'contentStudio'
     | 'virtualBroker'
+    | 'contractReview'
     | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
@@ -222,6 +225,8 @@ export function roleNavigation(
             messages,
             item('contacts', Users, contactsIndex(), '/contacts'),
             item('deals', Handshake, dealsIndex(), '/deals'),
+            // Contract review (A12.2, screen 15): TREC forms with dated findings and deadlines.
+            item('contractReview', FileSearch, contractReview(), '/contracts'),
             // The virtual broker (A12.1, screen 16): policy answers with sources, the broker when needed.
             item(
                 'virtualBroker',

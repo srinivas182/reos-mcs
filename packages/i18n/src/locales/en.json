@@ -81,7 +81,8 @@
     "ceWallet": "CE wallet",
     "ceReporting": "CE reporting",
     "contentStudio": "Content studio",
-    "virtualBroker": "Virtual broker"
+    "virtualBroker": "Virtual broker",
+    "contractReview": "Contract review"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -5446,7 +5447,8 @@
       "morning_brief": "Morning brief",
       "ce_renewal": "CE renewal",
       "policy_question": "Agent questions for the broker",
-      "policy_answer": "Your broker's answers"
+      "policy_answer": "Your broker's answers",
+      "contract_review": "Contract reviews"
     },
     "digest": {
       "subject": {
@@ -8657,6 +8659,191 @@
       "trained": "Trained on {{brokerage}}'s policy manual",
       "open": "Ask your virtual broker",
       "openBody": "Policies and Texas rules, with your broker when needed"
+    }
+  },
+  "contracts": {
+    "forms": {
+      "20-18": "One to Four Family Residential Contract (Resale), TREC 20-18"
+    },
+    "terms": {
+      "seller": "Seller",
+      "buyer": "Buyer",
+      "property": "Property",
+      "cash_portion": "Cash portion",
+      "financing": "Financing",
+      "sales_price": "Sales price",
+      "escrow_agent": "Escrow agent",
+      "earnest_money": "Earnest money",
+      "option_fee": "Option fee",
+      "earnest_days": "Earnest money due (days)",
+      "option_days": "Option period (days)",
+      "survey_days": "Survey (days)",
+      "financing_days": "Financing approval (days)",
+      "closing_date": "Closing date",
+      "possession": "Possession",
+      "special_provisions": "Special provisions",
+      "effective_date": "Effective date"
+    },
+    "deadlines": {
+      "earnest_money": "Earnest money and option fee due",
+      "option_period": "Option period ends (5:00 p.m.)",
+      "survey": "Survey due",
+      "financing": "Financing approval deadline",
+      "closing": "Closing",
+      "after": "{{days}} days after the Effective Date",
+      "onOrBefore": "On or before"
+    },
+    "findings": {
+      "general": {
+        "title": "Not a TREC form REOS knows yet",
+        "detail": "REOS reviews TREC promulgated forms first. This document gets a general review: check the terms with your broker."
+      },
+      "no_effective_date": {
+        "title": "No Effective Date",
+        "detail": "Without the Effective Date, the option period, earnest money and other deadlines can't be counted. Make sure the final signed copy has it."
+      },
+      "weekend": {
+        "title": "{{deadline}} falls on a {{day}}",
+        "detail": "Confirm with your broker and the title company how this date is counted."
+      },
+      "no_earnest_money": {
+        "title": "No earnest money",
+        "detail": "The contract doesn't show an earnest money amount. Check paragraph 5 before it's signed."
+      },
+      "no_escrow_agent": {
+        "title": "No escrow agent",
+        "detail": "Paragraph 5 doesn't name who holds the earnest money."
+      },
+      "price_math": {
+        "title": "The sales price doesn't add up",
+        "detail": "Cash {{cash}} plus financing {{financing}} isn't the sales price of {{price}}."
+      },
+      "no_financing_addendum": {
+        "title": "Financing without its addendum",
+        "detail": "The contract includes financing, but no Third Party Financing Addendum was found."
+      },
+      "no_option": {
+        "title": "No option period",
+        "detail": "Without an option period, the buyer has no unrestricted right to terminate."
+      },
+      "no_option_fee": {
+        "title": "No option fee",
+        "detail": "There's an option period but no option fee amount."
+      },
+      "closing_early": {
+        "title": "Closing comes before a buyer deadline",
+        "detail": "Closing is on or before the {{deadline}}. Check the dates with your broker."
+      },
+      "closing_before_effective": {
+        "title": "Closing is before the Effective Date",
+        "detail": "The closing date is earlier than the date the contract was signed."
+      },
+      "special_provisions": {
+        "title": "Special provisions read like legal drafting",
+        "detail": "License holders may add only factual statements and business details. Wording like \"indemnify\" or \"hold harmless\" is for the parties' attorneys."
+      },
+      "changed": {
+        "title": "{{term}} changed",
+        "detail": "Earlier version: {{from}}. This version: {{to}}."
+      }
+    },
+    "severity": {
+      "high": "High",
+      "check": "Check"
+    },
+    "page": "page {{page}}",
+    "broker": {
+      "question": "Please review the {{form}} for {{property}} before I respond.",
+      "source": "REOS contract review"
+    },
+    "ask": {
+      "none": "I couldn't find that in this contract's pages. Ask your broker.",
+      "page": "Page {{page}} says:",
+      "note": "Hi {{name}}, here's what the contract says: {{answer}} Let me know if you have any questions.",
+      "there": "there"
+    },
+    "errors": {
+      "credits": "A review takes {{credits}} credits, and you don't have enough left. Get more credits in Membership.",
+      "deal": "That isn't one of your deals.",
+      "nothing": "Choose a PDF, photos of the pages or a deal's document.",
+      "unreadable": "REOS couldn't read this contract. Try the PDF from your transaction tool.",
+      "noText": "This PDF has no text REOS can read (it may be a scan). Upload the PDF from your transaction tool, or photos once AI review is on.",
+      "photos": "Photos of pages are read once AI review is on. Upload the PDF instead.",
+      "notReady": "The review isn't finished yet."
+    },
+    "notify": {
+      "readyTitle": "Your contract review is ready",
+      "readyBody": "[0] {{file}}: nothing High.|{1} {{file}}: 1 High finding.|[2,*] {{file}}: {{count}} High findings.",
+      "failedTitle": "REOS couldn't review your contract",
+      "failedBody": "{{file}}: open it to see why.",
+      "open": "Open the review"
+    },
+    "web": {
+      "title": "Contract review",
+      "purpose": "Catch contract problems before they cost a deal. Information, not legal advice.",
+      "choose": "Review a contract",
+      "upload": "Upload a PDF",
+      "photos": "Photos of pages",
+      "sample": "Try the sample TREC 20-18",
+      "fromDeals": "From your deals",
+      "review": "Review",
+      "cost": "{{credits}} credits per review · {{left}} left",
+      "empty": "No reviews yet",
+      "emptyBody": "Upload a TREC contract and REOS lists the key terms, dated deadlines and anything to check, with pages.",
+      "reviews": "Your reviews",
+      "open": "Open",
+      "steps": {
+        "read": "Reading the pages",
+        "terms": "Pulling terms and dates",
+        "checks": "Checking common problems",
+        "compare": "Comparing with the earlier version",
+        "done": "Done"
+      },
+      "reviewing": "Reviewing… about 20–40 seconds. You can leave; REOS lets you know when it's done.",
+      "status": {
+        "reviewing": "Reviewing",
+        "done": "Done",
+        "failed": "Couldn't review"
+      },
+      "keyTerms": "Key terms",
+      "changed": "Changed",
+      "was": "was {{value}}",
+      "findings": "Findings",
+      "noFindings": "Nothing to flag",
+      "noFindingsBody": "REOS's checks found nothing High or to check. Your broker still reviews before you respond.",
+      "deadlines": "Deadlines",
+      "addDeadlines": "Add deadlines to my calendar",
+      "deadlinesAdded": "Deadlines added",
+      "sendToBroker": "Send to broker",
+      "sentToBroker": "With your broker",
+      "askTitle": "Ask about this contract",
+      "askLabel": "Your question",
+      "askPlaceholder": "For example: When does the option period end?",
+      "ask": "Ask",
+      "noteTitle": "Note to your client",
+      "copy": "Copy",
+      "copied": "Copied",
+      "viewContract": "View the contract",
+      "notLegalAdvice": "Information from the document, not legal advice. Your broker reviews before you respond.",
+      "back": "All reviews",
+      "addenda": "Addenda found",
+      "addendaNames": {
+        "third_party_financing": "Third Party Financing Addendum",
+        "hoa": "Property owners association addendum",
+        "sale_of_other_property": "Sale of other property by buyer",
+        "seller_financing": "Seller financing addendum",
+        "lead_paint": "Lead-based paint disclosure"
+      },
+      "pageShort": "p. {{page}}",
+      "onDeal": "Deal: {{property}}",
+      "askCost_one": "{{count}} credit per question",
+      "askCost_other": "{{count}} credits per question",
+      "highCount_one": "{{count}} High",
+      "highCount_other": "{{count}} High",
+      "share": "Share the note"
+    },
+    "mobile": {
+      "askRow": "TREC forms: deadlines and what to check"
     }
   }
 }

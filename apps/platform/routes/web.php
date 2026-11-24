@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
+use App\Http\Controllers\Api\Contracts\ContractReviewController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
@@ -53,6 +54,7 @@ use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\DocuSignSimulatorController;
 use App\Http\Controllers\Connections\OAuthCallbackController;
 use App\Http\Controllers\Connections\SimulatorSignInController;
+use App\Http\Controllers\Contracts\ContractsPageController;
 use App\Http\Controllers\Crm\ContactImportsController;
 use App\Http\Controllers\Crm\ContactsPageController;
 use App\Http\Controllers\DashboardController;
@@ -197,6 +199,16 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::prefix('virtual-broker')->name('virtual-broker.')->controller(VirtualBrokerController::class)->group(function () {
         Route::post('questions', 'store')->middleware('throttle:20,1,virtual-broker-ask')->name('questions.store');
         Route::post('questions/{question}/escalate', 'escalate')->whereUuid('question')->middleware('throttle:20,1,virtual-broker-escalate')->name('questions.escalate');
+    });
+    // Contract review (A12.2, agent web screen 15): reviews, one result with the contract, and the same JSON actions as the API.
+    Route::get('contracts', [ContractsPageController::class, 'index'])->name('contracts.index');
+    Route::get('contracts/{review}', [ContractsPageController::class, 'show'])->whereUuid('review')->name('contracts.show');
+    Route::get('contracts/{review}/file', [ContractsPageController::class, 'file'])->whereUuid('review')->middleware('throttle:60,1,contracts-file')->name('contracts.file');
+    Route::prefix('contracts')->name('contracts.')->controller(ContractReviewController::class)->group(function () {
+        Route::post('/', 'store')->middleware('throttle:10,1,contracts-review')->name('store');
+        Route::post('{review}/deadlines', 'deadlines')->whereUuid('review')->middleware('throttle:20,1,contracts-actions')->name('deadlines');
+        Route::post('{review}/broker', 'broker')->whereUuid('review')->middleware('throttle:20,1,contracts-actions')->name('broker');
+        Route::post('{review}/questions', 'ask')->whereUuid('review')->middleware('throttle:30,1,contracts-ask')->name('questions');
     });
     // Content studio (B11, web screen 17): compose, check, publish or schedule, and results.
     Route::get('studio', StudioPageController::class)->name('studio.index');

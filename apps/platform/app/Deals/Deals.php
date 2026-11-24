@@ -164,6 +164,21 @@ final readonly class Deals
         }
     }
 
+    /**
+     * One more key date on a deal (a contract review's deadline, A12.2), with
+     * its to-do; the same kind, label and day isn't added twice.
+     */
+    public function addDate(Deal $deal, string $kind, ?string $label, string $dueOn): DealDate
+    {
+        $kind = in_array($kind, DealDate::KINDS, true) ? $kind : 'other';
+        $label = $label === null ? null : mb_substr($label, 0, 120);
+        $date = $deal->dates()->where('kind', $kind)->where('label', $label)->whereDate('due_on', $dueOn)->first()
+            ?? DealDate::query()->create(['deal_id' => $deal->id, 'kind' => $kind, 'label' => $label, 'due_on' => $dueOn]);
+        $this->toTodo($deal, $date);
+
+        return $date;
+    }
+
     /** The key date's to-do, on its day: created, moved, done or reopened. Cancelled deals keep none. */
     private function toTodo(Deal $deal, DealDate $date): void
     {

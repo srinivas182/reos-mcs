@@ -126,6 +126,24 @@ final readonly class VirtualBroker
         return $reason === null ? $row : $this->escalate($row, $reason);
     }
 
+    /**
+     * Something the agent sends straight to the broker with REOS's summary
+     * as the draft, such as a contract review (A12.2).
+     *
+     * @param  list<Source>  $sources
+     */
+    public function refer(User $agent, string $question, string $draft, array $sources, ?int $dealId, string $engine): BrokerQuestion
+    {
+        $brokerage = $this->brokerageOfAgent($agent);
+        $row = BrokerQuestion::query()->create([
+            'uuid' => (string) Str::uuid7(), 'organisation_id' => $brokerage->id, 'user_id' => $agent->id, 'deal_id' => $dealId,
+            'question' => mb_substr($question, 0, 1000), 'language' => $agent->locale->value, 'answer' => mb_substr($draft, 0, 4000), 'confidence' => 'medium',
+            'sources' => $sources, 'status' => BrokerQuestion::ANSWERED, 'engine' => $engine,
+        ]);
+
+        return $this->escalate($row, 'asked');
+    }
+
     /** To the broker: "With your broker" and the time they aim to reply by. */
     public function escalate(BrokerQuestion $question, string $reason = 'asked'): BrokerQuestion
     {
