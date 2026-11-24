@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Compass, Download, GraduationCap, IdCard, Languages, Map, Megaphone, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Camera, Compass, Download, GraduationCap, IdCard, Languages, Map, Megaphone, Plug, ShieldCheck, Users, Wallet } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -91,6 +91,7 @@ export default function MeScreen() {
         {current?.role === 'agent' ? <MenuRow icon={Compass} title={t('agents.modes.title')} onPress={() => router.push('/agent/goal')} /> : null}
         {/* My posts and results (B11, screen 169). */}
         {current?.role === 'agent' ? <MenuRow icon={Megaphone} title={t('social.posts.title')} onPress={() => router.push('/social')} /> : null}
+        {current?.role === 'agent' ? <MenuRow icon={Camera} title={t('studio.brand.title')} onPress={() => router.push('/social/brand')} /> : null}
         {/* CE wallet (A11.2): hours against the renewal, certificates, renewing. */}
         {licensed ? <MenuRow icon={GraduationCap} title={t('ce.wallet.title')} onPress={() => router.push('/ce')} /> : null}
         {current?.role === 'instructor' || current?.role === 'mentor' ? <MenuRow icon={Wallet} title={t('mobile.me.earnings')} onPress={() => router.push('/earnings')} /> : null}

@@ -1,7 +1,7 @@
 # Sprint 12 spec: Virtual broker and AI assistant · content studio
 
 - **Dates:** 10 May – 21 May 2027 (plan); built now, ahead of the calendar.
-- **Status:** agreed 24 November 2026 under the standing approval to build the next sprints in order. The decisions in section 6 are all as recommended.
+- **Status:** agreed 24 November 2026 under the standing approval to build the next sprints in order; the decisions in section 6 are all as recommended. **Complete:** A12.1–A12.3 and B12.1–B12.3 are merged (PRs #130–#135).
 - **Sources:**
   - REOS Sprint Plan v1.0 (Sprint 12: A12.1–A12.3, B12.1–B12.3).
   - The Licensed Agent Complete Journey:
@@ -184,6 +184,28 @@
 - **Calendar:** week and month, drag to move, reuse a post.
 - **Celebration moment** (163): milestone posts made automatically, at most one a day, free.
 - **Done when:** a week of posts is scheduled in one view.
+- **As built, B12.3** (ADR 0052):
+  - **Calendar** (`SocialCalendar`):
+    - A week (Sunday to Saturday) or a month in the agent's time zone: scheduled and approval posts at their time, posts on the day they went out, and drafts planned for a day (`social_posts.planned_on`).
+    - Move: a scheduled post keeps its time of day, a draft moves its plan, never into the past, with Undo. Posts that went out don't move.
+    - Reuse: a copy as a draft planned for a day.
+    - Plan a post: the composer is scheduled for that day at 10 am.
+  - **Celebrations** (`Celebrations`, `reos:celebrations` hourly):
+    - Milestones from REOS's own data in the last 14 days: just listed, under contract, just sold, first closing, CE complete, license renewed, and the anniversary.
+    - Each subject is celebrated once and becomes a free studio making (three captions; three designs with the badge and the agent's photo) and a draft in My posts.
+    - At most one is shown and notified a day (`celebration`); the rest wait. Clients are never named.
+  - **Profile photo and brand kit** (`BrandKit`, screen 162): the photo is squared, sized to 800 × 800, its lighting evened out, with a quality check (small, dark, bright). Name, brokerage (required), license number, and the brokerage's color and logo are shown.
+  - **API:**
+    - `GET /api/v1/social/calendar`, `POST /api/v1/social/posts/{id}/move`, `POST /api/v1/social/posts/{id}/reuse`;
+    - `GET /api/v1/studio/celebrations`, `GET /api/v1/studio/celebrations/{id}`;
+    - `GET /api/v1/me/brand`, `POST` and `DELETE /api/v1/me/brand/photo`.
+  - **Web:** `/studio/calendar`: week and month; drag, or Move with a date, with Undo; Reuse; Plan a post; today's celebration. The studio page has a Calendar action and opens scheduled for a planned day.
+  - **Phone:**
+    - My posts → Content calendar (`social/calendar`) and Celebrations.
+    - A celebration (`social/celebrate/[id]`, screen 163) opens Pick a version with its badge, free.
+    - Me → Photo and brand (`social/brand`, screen 162).
+    - Plan a post opens the composer scheduled for the day.
+  - **Done when:** a test schedules seven posts across a week and the calendar shows all seven, one a day, in one view (API, web page and month view).
 
 ## 4. Definition of done (whole sprint)
 
@@ -194,7 +216,7 @@
   - an agent sees only their own brokerage's policy and their own questions; a broker sees only their brokerage's;
   - contracts are stored with the deal, private to the agent and their broker, and deleted from the AI after the review;
   - the assistant reads CRM data only with the agent's permission, and never sends anything on its own.
-- **ADRs:** 0047 virtual broker; 0048 contract review; 0049 AI assistant; 0050 content studio.
+- **ADRs:** 0047 virtual broker; 0048 contract review; 0049 AI assistant; 0050 content studio; 0051 studio video; 0052 content calendar and celebrations.
 
 ## 5. Risks
 

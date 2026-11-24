@@ -13,6 +13,7 @@ use App\Services\Ai\AiCredits;
 use App\Services\Ai\AiSettings;
 use App\Services\Ai\Bedrock;
 use App\Social\SocialPosts;
+use App\Studio\Celebrations\Celebrations;
 use App\Tenancy\Brand;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -56,6 +57,7 @@ final readonly class StudioGenerator
         private AiSettings $settings,
         private Bedrock $bedrock,
         private AdvertisingPolicy $policy,
+        private BrandKit $kit,
     ) {}
 
     public function cost(): int
@@ -129,6 +131,35 @@ final readonly class StudioGenerator
         return $generation;
     }
 
+    /**
+     * A milestone made into a post (B12.3, screen 163): three captions and three designs with
+     * the milestone's badge and the agent's profile photo. Free; REOS's templates write it.
+     * Clients are never named: a deal's milestone names the property only.
+     */
+    public function celebrate(User $agent, string $milestone, string $label): StudioGeneration
+    {
+        $source = ['type' => 'celebration', 'id' => null, 'text' => $label, 'milestone' => $milestone];
+        $facts = $this->facts($agent, $source);
+        $language = $agent->locale->value;
+        $uuid = (string) Str::uuid7();
+        $brokerage = $this->policy->brokerage($agent);
+        $colour = ($brokerage === null ? null : Brand::of($brokerage)->primary?->hex) ?? self::COLOUR;
+        $portrait = $this->kit->photo($agent);
+        $designs = [];
+
+        foreach (StudioRenderer::LAYOUTS as $layout) {
+            $path = "social/{$agent->id}/studio/{$uuid}-{$layout}.png";
+            Storage::disk(SocialPosts::MEDIA_DISK)->put($path, StudioRenderer::design($layout, null, $colour, ['headline' => $facts['headline'], 'lines' => [$label], 'attribution' => $this->attribution($agent)], $portrait));
+            $designs[] = ['layout' => $layout, 'path' => $path];
+        }
+
+        return StudioGeneration::query()->create([
+            'uuid' => $uuid, 'user_id' => $agent->id, 'source' => [...$source, 'label' => $label], 'listing' => null, 'outputs' => ['post'],
+            'captions' => array_map(fn (string $tone): array => ['tone' => $tone, 'text' => $this->clean($agent, $this->template($facts, $tone, $language))], self::TONES),
+            'designs' => $designs, 'carousel' => [], 'ad' => null, 'language' => $language, 'engine' => 'template', 'credits' => 0,
+        ]);
+    }
+
     /** A caption again, shorter, more professional or in Spanish (free; screen 166). */
     public function retone(StudioGeneration $generation, int $index, string $tone): StudioGeneration
     {
@@ -187,6 +218,15 @@ final readonly class StudioGenerator
 
             // A sale names the property, never the clients.
             return ['type' => 'sale', 'headline' => self::line('studio.headlines.sale', [], $agent->locale->value), 'address' => $deal->property, 'city' => $deal->city, 'price' => null, 'beds' => null, 'baths' => null, 'text' => $text, 'photos' => [], 'listing' => null];
+        }
+
+        if ($type === 'celebration' && in_array($source['milestone'] ?? null, Celebrations::MILESTONES, true)) {
+            $milestone = (string) $source['milestone'];
+
+            return [
+                'type' => "celebration.{$milestone}", 'headline' => self::line("studio.celebrate.badges.{$milestone}", [], $agent->locale->value),
+                'address' => null, 'city' => null, 'price' => null, 'beds' => null, 'baths' => null, 'text' => $text ?? '', 'photos' => [], 'listing' => null,
+            ];
         }
 
         if ($text === null || mb_strlen($text) < 3) {

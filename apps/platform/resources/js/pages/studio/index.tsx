@@ -1,7 +1,9 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { CalendarDays } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/page-header';
 import { AccountsList } from '@/components/social/accounts-list';
 import { Composer } from '@/components/social/composer';
@@ -26,7 +28,10 @@ import type {
 import { deleteJson, postForm, postJson, putJson } from '@/lib/content';
 import { undoToast } from '@/lib/undo-toast';
 import { index as connections } from '@/routes/connections';
-import { media as mediaRoute } from '@/routes/studio';
+import {
+    calendar as calendarRoute,
+    media as mediaRoute,
+} from '@/routes/studio';
 import {
     show as videoRoute,
     store as makeVideoRoute,
@@ -88,11 +93,14 @@ export default function StudioPage({
     posts: initialPosts,
     listing,
     maker,
+    plan = null,
 }: {
     accounts: SocialAccount[];
     posts: PostList;
     listing: ListingDraft | null;
     maker: MakerData;
+    /** Plan a post from the calendar (B12.3): the composer opens scheduled for that day and time. */
+    plan?: string | null;
 }) {
     const { t, i18n } = useTranslation();
     const [accounts, setAccounts] = useState(initialAccounts);
@@ -102,7 +110,13 @@ export default function StudioPage({
         id: string | null;
         draft: Draft;
         key: number;
-    }>({ id: null, draft: blank(listing), key: 0 });
+    }>({
+        id: null,
+        draft: plan
+            ? { ...blank(listing), when: 'later', at: plan }
+            : blank(listing),
+        key: 0,
+    });
     const [error, setError] = useState<string | null>(null);
     const [generation, setGeneration] = useState<Generation | null>(null);
     const [making, setMaking] = useState(false);
@@ -224,6 +238,14 @@ export default function StudioPage({
                 <PageHeader
                     title={t('social.studio.title')}
                     description={t('social.studio.description')}
+                    actions={
+                        <Button variant="outline" asChild>
+                            <Link href={calendarRoute().url}>
+                                <CalendarDays aria-hidden />
+                                {t('social.calendar.title')}
+                            </Link>
+                        </Button>
+                    }
                 />
                 <Maker
                     data={maker}

@@ -50,7 +50,9 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('Social posting on the phone (B11.1: screens 108, 169, 170)', () => {
   it('shows my posts with results', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: { stats: { posts_this_month: 1, reach: 1240, engagement: 20, clicks: 3 }, scheduled: [], posted: [published], drafts: [] } }));
+    mockApi.GET.mockImplementation(async (path: string) =>
+      path === '/studio/celebrations' ? ok({ data: { today: null, waiting: [] } }) : ok({ data: { stats: { posts_this_month: 1, reach: 1240, engagement: 20, clicks: 3 }, scheduled: [], posted: [published], drafts: [] } }),
+    );
     await render(wrap(<PostsScreen />));
 
     expect(await screen.findByText('Posted (1)')).toBeTruthy();

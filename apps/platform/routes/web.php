@@ -29,6 +29,7 @@ use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeControlle
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
+use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Studio\VideoController;
@@ -101,6 +102,7 @@ use App\Http\Controllers\School\InstructorsController as SchoolInstructorsContro
 use App\Http\Controllers\School\StudentsController as SchoolStudentsController;
 use App\Http\Controllers\Sessions\SessionsController;
 use App\Http\Controllers\Settings\AvatarController;
+use App\Http\Controllers\Social\StudioCalendarPageController;
 use App\Http\Controllers\Social\StudioPageController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\Studio\AdvertisingController;
@@ -215,6 +217,12 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     });
     // Content studio (B11, web screen 17): compose, check, publish or schedule, and results.
     Route::get('studio', StudioPageController::class)->name('studio.index');
+    // The content calendar (B12.3): week and month; move, reuse, plan.
+    Route::get('studio/calendar', StudioCalendarPageController::class)->name('studio.calendar');
+    Route::prefix('studio/posts')->name('studio.posts.')->controller(ContentCalendarController::class)->group(function () {
+        Route::post('{post}/move', 'move')->whereUuid('post')->middleware('throttle:60,1,studio-calendar')->name('move');
+        Route::post('{post}/reuse', 'reuse')->whereUuid('post')->middleware('throttle:30,1,studio-calendar')->name('reuse');
+    });
     Route::prefix('studio')->name('studio.')->controller(SocialController::class)->group(function () {
         Route::post('accounts/{connection}/refresh', 'refresh')->whereNumber('connection')->middleware('throttle:10,1,studio-refresh')->name('accounts.refresh');
         Route::post('posts/check', 'check')->middleware('throttle:60,1,studio-check')->name('posts.check');
