@@ -80,7 +80,8 @@
     "plan": "Mi plan",
     "ceWallet": "Cartera de CE",
     "ceReporting": "Reporte de CE",
-    "contentStudio": "Estudio de contenido"
+    "contentStudio": "Estudio de contenido",
+    "virtualBroker": "Bróker virtual"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2294,7 +2295,12 @@
         "ce_report.created": "Reporte de CE creado",
         "ce_report.reported": "Referencia del reporte de CE ingresada",
         "ce_report.rejected": "Curso de CE rechazado por TREC",
-        "ce_report.restored": "Rechazo de curso de CE deshecho"
+        "ce_report.restored": "Rechazo de curso de CE deshecho",
+        "policy_manual.uploaded": "Manual de políticas subido",
+        "policy_faq.removed": "Se quitó de las preguntas frecuentes",
+        "policy_faq.restored": "Se restauró en las preguntas frecuentes",
+        "broker_question.answered": "Respondió la pregunta de un agente",
+        "virtual_broker.settings": "Se cambió a quién van las preguntas del bróker virtual"
       }
     }
   },
@@ -3574,7 +3580,9 @@
       "course_player": "Reproductor de cursos",
       "live_classes": "Clases en vivo",
       "agent_modes": "Modos del agente",
-      "ce_wallet": "Cartera de CE"
+      "ce_wallet": "Cartera de CE",
+      "virtual_broker": "Bróker virtual",
+      "contract_review": "Revisión de contratos"
     },
     "keys": {
       "licensing": {
@@ -5436,7 +5444,9 @@
       "broker_offer": "Ofertas de corredores",
       "licence_found": "Licencia encontrada",
       "morning_brief": "Resumen matutino",
-      "ce_renewal": "Renovación de CE"
+      "ce_renewal": "Renovación de CE",
+      "policy_question": "Preguntas de agentes para el bróker",
+      "policy_answer": "Respuestas de su bróker"
     },
     "digest": {
       "subject": {
@@ -8491,6 +8501,162 @@
       "upload": "No se pudo guardar ese archivo. Inténtelo de nuevo.",
       "imageSize": "Las fotos pueden pesar hasta 8 MB.",
       "reconnect": "Reconecte la cuenta en Cuentas sociales y vuelva a publicar."
+    }
+  },
+  "virtualBroker": {
+    "title": "Bróker virtual",
+    "purpose": "Las políticas de {{brokerage}} y las reglas de Texas, en cualquier momento, y su bróker cuando importa.",
+    "noManual": "{{brokerage}} aún no ha subido su manual de políticas, así que las respuestas vienen de las reglas de Texas y de su bróker.",
+    "conversations": "Sus preguntas",
+    "empty": "Haga su primera pregunta",
+    "emptyBody": "Pregunte sobre publicidad, comisiones, depósitos de garantía o cualquier tema del manual de políticas. Las respuestas muestran de dónde vienen.",
+    "askLabel": "Pregunte al bróker virtual de {{brokerage}}",
+    "placeholder": "Por ejemplo: ¿En cuánto tiempo debo depositar el depósito de garantía?",
+    "free": "Gratis. Las preguntas de dinero y legales siempre van a su bróker.",
+    "ask": "Preguntar",
+    "asking": "Preguntando…",
+    "youAsked": "Usted preguntó",
+    "fromBroker": "De su bróker, {{broker}}",
+    "outcome": {
+      "confirmed": "Confirmada",
+      "corrected": "Corregida"
+    },
+    "aiAnswer": "Bróker virtual",
+    "aiAnswerWas": "La respuesta del bróker virtual",
+    "confidence": {
+      "high": "Confianza alta",
+      "medium": "Confianza media",
+      "low": "Confianza baja"
+    },
+    "withBroker": "Con su bróker",
+    "expected": "Se espera para {{time}}",
+    "reasons": {
+      "unclear": "Las políticas no lo responden con claridad",
+      "money": "Hay dinero de por medio",
+      "legal": "Riesgo legal",
+      "asked": "Usted pidió a su bróker"
+    },
+    "checkWithBroker": "¿No está seguro de que aplique a su caso? Envíelo a su bróker.",
+    "notLegalAdvice": "Orientación basada en las políticas de su agencia y las reglas de Texas, no asesoría legal.",
+    "sendToBroker": "Enviar a mi bróker",
+    "sources": "Fuentes",
+    "source": {
+      "faq": "Preguntas frecuentes de la agencia",
+      "page": "Manual de políticas, página {{page}}",
+      "manual": "Manual de políticas",
+      "checked": "Revisado el {{date}}",
+      "added": "Agregado el {{date}}",
+      "open": "Abrir la fuente"
+    },
+    "status": {
+      "answered": "Respondida",
+      "waiting": "Con su bróker",
+      "confirmed": "Confirmada por el bróker",
+      "corrected": "Corregida por el bróker"
+    },
+    "topics": {
+      "advertising": "Publicidad",
+      "splits": "Comisiones y cuotas",
+      "escrow": "Depósito de garantía y fideicomiso",
+      "coordinators": "Coordinadores",
+      "leads": "Clientes potenciales y referidos",
+      "forms": "Contratos y formularios",
+      "supervision": "Supervisión y capacitación",
+      "fair_housing": "Vivienda justa"
+    },
+    "broker": {
+      "title": "Bróker virtual",
+      "purpose": "Enseñe al bróker virtual las políticas de {{brokerage}} y responda lo que no debe responder solo.",
+      "stats": {
+        "ai": "Respondidas por el bróker virtual (30 días)",
+        "sent": "Enviadas a un bróker (30 días)",
+        "reply": "Tiempo promedio de respuesta",
+        "minutes_one": "{{count}} minuto",
+        "minutes_other": "{{count}} minutos"
+      },
+      "questions": "Preguntas de agentes",
+      "tabs": {
+        "waiting": "En espera ({{count}})",
+        "answered": "Respondidas ({{count}})"
+      },
+      "noneWaiting": "Nada en espera",
+      "noneWaitingBody": "Aquí aparecen las preguntas sobre dinero, riesgo legal o lo que el manual no responde con claridad.",
+      "noneAnswered": "Aún no hay respuestas",
+      "noneAnsweredBody": "Sus respuestas aparecen aquí, marcadas como Confirmada o Corregida.",
+      "removed": "Se quitó de las preguntas frecuentes",
+      "asked": "{{agent}} preguntó",
+      "replyBy": "Responda antes de {{time}}",
+      "draft": "Su respuesta (el borrador del bróker virtual)",
+      "willCorrect": "Usted cambió el borrador: el agente la verá como Corregida.",
+      "willConfirm": "Si la envía así, el agente la verá como Confirmada.",
+      "addToKnowledge": "Agregar a las políticas",
+      "send": "Enviar respuesta",
+      "manual": "Manual de políticas",
+      "manualLine": "{{file}} · versión {{version}} · {{pages}} páginas · {{passages}} fragmentos · {{date}}",
+      "upload": "Subir el manual de políticas",
+      "replace": "Subir una nueva versión",
+      "topics": "Temas encontrados",
+      "versions_one": "{{count}} versión",
+      "versions_other": "{{count}} versiones",
+      "versionLine": "Versión {{version}}: {{file}}, {{date}}",
+      "current": "en uso",
+      "noManual": "Aún no hay manual de políticas",
+      "noManualBody": "Suba su manual de políticas (PDF, Word o texto). Los agentes reciben respuestas que citan sus páginas; se guardan todas las versiones.",
+      "conflicts_one": "{{count}} conflicto con las reglas de TREC",
+      "conflicts_other": "{{count}} conflictos con las reglas de TREC",
+      "trecWins": "Cuando el manual y una regla de TREC no coinciden, la regla de TREC prevalece en todas las respuestas.",
+      "noConflicts": "No se encontraron conflictos",
+      "noConflictsBody": "Nada en el manual contradice las reglas de Texas que REOS revisa: dinero en fideicomiso, compensación, el nombre del bróker en la publicidad y los formularios de contrato.",
+      "faq": "Preguntas frecuentes de la agencia",
+      "noFaq": "Aún no hay preguntas frecuentes",
+      "noFaqBody": "Responda a un agente con Agregar a las políticas activado, y todos los agentes recibirán esa respuesta la próxima vez.",
+      "remove": "Quitar",
+      "escalation": "Quién responde y en cuánto tiempo",
+      "answerer": "Las preguntas van a",
+      "everyBroker": "Todos los brókeres de la agencia",
+      "replyHours": "Responder en (horas)",
+      "save": "Guardar",
+      "uploaded": "La versión {{version}} del manual de políticas está en uso.",
+      "saved": "Guardado.",
+      "sent": "Se envió la respuesta al agente."
+    },
+    "errors": {
+      "noText": "REOS no encontró texto en ese archivo. Suba un PDF con texto (no escaneado), un archivo de Word o de texto.",
+      "unreadable": "REOS no pudo leer ese archivo. Pruebe con un PDF, Word o archivo de texto.",
+      "deal": "Esa operación no es suya.",
+      "answered": "Esta pregunta ya fue respondida.",
+      "answerer": "Elija un bróker de su agencia."
+    },
+    "sim": {
+      "none": "No encontré esto en el manual de políticas de {{brokerage}} ni en las reglas de Texas, así que lo envié a su bróker.",
+      "rule": "Según {{citation}}:",
+      "faq": "Su bróker ya respondió esto:",
+      "page": "El manual de políticas (página {{page}}) dice:",
+      "manual": "El manual de políticas dice:",
+      "trecWins": "El manual de políticas y la regla de TREC no coinciden aquí, y prevalece la regla de TREC."
+    },
+    "notify": {
+      "escalatedTitle": "{{agent}} tiene una pregunta para usted",
+      "escalatedBody": {
+        "unclear": "El manual de políticas no lo responde con claridad.",
+        "money": "Hay dinero de por medio.",
+        "legal": "Implica riesgo legal.",
+        "asked": "Le pidió su respuesta."
+      },
+      "answer": "Responder",
+      "answeredTitle": {
+        "confirmed": "Su bróker confirmó la respuesta",
+        "corrected": "Su bróker corrigió la respuesta"
+      },
+      "answeredBody": "{{broker}} respondió su pregunta.",
+      "open": "Abrir"
+    },
+    "mobile": {
+      "noBrokerage": "Para agentes de una agencia",
+      "noBrokerageBody": "El bróker virtual responde con el manual de políticas de su agencia. Aparece cuando usted se une a una agencia como agente.",
+      "trained": "Entrenado con el manual de políticas de {{brokerage}}",
+      "open": "Pregunte a su bróker virtual",
+      "openBody": "Políticas y reglas de Texas, con su bróker cuando haga falta"
     }
   }
 }

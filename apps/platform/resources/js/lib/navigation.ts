@@ -20,6 +20,7 @@ import {
     Palette,
     Plug,
     Settings,
+    ShieldQuestion,
     ShieldCheck,
     ListChecks,
     Sparkles,
@@ -64,6 +65,8 @@ import { index as classesIndex } from '@/routes/classes';
 import { show as licenceJourney } from '@/routes/licence';
 import { index as mentorsIndex } from '@/routes/mentors';
 import { index as recruitingIndex } from '@/routes/recruiting';
+import { index as virtualBroker } from '@/routes/virtual-broker';
+import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -107,6 +110,7 @@ export type NavLabel =
     | 'learnAndCe'
     | 'ceWallet'
     | 'contentStudio'
+    | 'virtualBroker'
     | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
@@ -218,7 +222,13 @@ export function roleNavigation(
             messages,
             item('contacts', Users, contactsIndex(), '/contacts'),
             item('deals', Handshake, dealsIndex(), '/deals'),
-            planned('virtualBroker'),
+            // The virtual broker (A12.1, screen 16): policy answers with sources, the broker when needed.
+            item(
+                'virtualBroker',
+                ShieldQuestion,
+                virtualBroker(),
+                '/virtual-broker',
+            ),
             // Content studio (B11, screen 17): compose, check, publish or schedule, results.
             item('contentStudio', Megaphone, studio(), '/studio'),
             item('learnAndCe', GraduationCap, learn(), '/learn'),
@@ -252,7 +262,13 @@ export function roleNavigation(
             planned('approvals'),
             item('agents', Users, agentsIndex()),
             planned('ceCompliance'),
-            planned('virtualBroker'),
+            // Teach the virtual broker and answer agents (A12.1, screen 34).
+            item(
+                'virtualBroker',
+                ShieldQuestion,
+                brokerVirtualBroker(),
+                '/organisation/virtual-broker',
+            ),
             planned('policies'),
             planned('mentorProgram'),
             // Recruiting: candidates who asked for broker offers (A10.3b).

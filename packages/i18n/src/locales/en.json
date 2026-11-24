@@ -80,7 +80,8 @@
     "plan": "My plan",
     "ceWallet": "CE wallet",
     "ceReporting": "CE reporting",
-    "contentStudio": "Content studio"
+    "contentStudio": "Content studio",
+    "virtualBroker": "Virtual broker"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2294,7 +2295,12 @@
         "ce_report.created": "CE report created",
         "ce_report.reported": "CE report reference entered",
         "ce_report.rejected": "CE completion rejected by TREC",
-        "ce_report.restored": "CE completion rejection undone"
+        "ce_report.restored": "CE completion rejection undone",
+        "policy_manual.uploaded": "Policy manual uploaded",
+        "policy_faq.removed": "Removed from the brokerage FAQ",
+        "policy_faq.restored": "Put back in the brokerage FAQ",
+        "broker_question.answered": "Answered an agent's question",
+        "virtual_broker.settings": "Virtual broker escalation changed"
       }
     }
   },
@@ -3574,7 +3580,9 @@
       "course_player": "Course player",
       "live_classes": "Live classes",
       "agent_modes": "Agent modes",
-      "ce_wallet": "CE wallet"
+      "ce_wallet": "CE wallet",
+      "virtual_broker": "Virtual broker",
+      "contract_review": "Contract review"
     },
     "keys": {
       "licensing": {
@@ -5436,7 +5444,9 @@
       "broker_offer": "Broker offers",
       "licence_found": "Licence found",
       "morning_brief": "Morning brief",
-      "ce_renewal": "CE renewal"
+      "ce_renewal": "CE renewal",
+      "policy_question": "Agent questions for the broker",
+      "policy_answer": "Your broker's answers"
     },
     "digest": {
       "subject": {
@@ -8491,6 +8501,162 @@
       "upload": "That file couldn’t be saved. Try again.",
       "imageSize": "Photos can be up to 8 MB.",
       "reconnect": "Reconnect the account in Social accounts, then post again."
+    }
+  },
+  "virtualBroker": {
+    "title": "Virtual broker",
+    "purpose": "{{brokerage}}'s policies and the Texas rules, any time, with your broker when it matters.",
+    "noManual": "{{brokerage}} hasn't uploaded its policy manual yet, so answers come from the Texas rules and your broker.",
+    "conversations": "Your questions",
+    "empty": "Ask your first question",
+    "emptyBody": "Ask about advertising, splits, earnest money or anything in the policy manual. Answers show where they come from.",
+    "askLabel": "Ask {{brokerage}}'s virtual broker",
+    "placeholder": "For example: How fast do I deposit earnest money?",
+    "free": "Free. Money and legal questions always go to your broker.",
+    "ask": "Ask",
+    "asking": "Asking…",
+    "youAsked": "You asked",
+    "fromBroker": "From your broker, {{broker}}",
+    "outcome": {
+      "confirmed": "Confirmed",
+      "corrected": "Corrected"
+    },
+    "aiAnswer": "Virtual broker",
+    "aiAnswerWas": "The virtual broker's answer",
+    "confidence": {
+      "high": "High confidence",
+      "medium": "Medium confidence",
+      "low": "Low confidence"
+    },
+    "withBroker": "With your broker",
+    "expected": "Expected by {{time}}",
+    "reasons": {
+      "unclear": "The policies don't answer it clearly",
+      "money": "Money is involved",
+      "legal": "Legal risk",
+      "asked": "You asked for your broker"
+    },
+    "checkWithBroker": "Not sure this fits your situation? Send it to your broker.",
+    "notLegalAdvice": "Guidance from your brokerage's policies and the Texas rules, not legal advice.",
+    "sendToBroker": "Send to my broker",
+    "sources": "Sources",
+    "source": {
+      "faq": "Brokerage FAQ",
+      "page": "Policy manual, page {{page}}",
+      "manual": "Policy manual",
+      "checked": "Checked {{date}}",
+      "added": "Added {{date}}",
+      "open": "Open the source"
+    },
+    "status": {
+      "answered": "Answered",
+      "waiting": "With your broker",
+      "confirmed": "Confirmed by broker",
+      "corrected": "Corrected by broker"
+    },
+    "topics": {
+      "advertising": "Advertising",
+      "splits": "Splits and fees",
+      "escrow": "Earnest money and escrow",
+      "coordinators": "Coordinators",
+      "leads": "Leads and referrals",
+      "forms": "Contracts and forms",
+      "supervision": "Supervision and training",
+      "fair_housing": "Fair housing"
+    },
+    "broker": {
+      "title": "Virtual broker",
+      "purpose": "Teach the virtual broker {{brokerage}}'s policies and answer what it shouldn't answer alone.",
+      "stats": {
+        "ai": "Answered by the virtual broker (30 days)",
+        "sent": "Sent to a broker (30 days)",
+        "reply": "Average reply time",
+        "minutes_one": "{{count}} minute",
+        "minutes_other": "{{count}} minutes"
+      },
+      "questions": "Agent questions",
+      "tabs": {
+        "waiting": "Waiting ({{count}})",
+        "answered": "Answered ({{count}})"
+      },
+      "noneWaiting": "Nothing waiting",
+      "noneWaitingBody": "Questions about money, legal risk or anything the manual doesn't answer clearly appear here.",
+      "noneAnswered": "No answers yet",
+      "noneAnsweredBody": "Your answers appear here, labelled Confirmed or Corrected.",
+      "removed": "Removed from the FAQ",
+      "asked": "{{agent}} asked",
+      "replyBy": "Reply by {{time}}",
+      "draft": "Your answer (the virtual broker's draft)",
+      "willCorrect": "You changed the draft: the agent sees it as Corrected.",
+      "willConfirm": "Sent as is, the agent sees it as Confirmed.",
+      "addToKnowledge": "Add to policy knowledge",
+      "send": "Send answer",
+      "manual": "Policy manual",
+      "manualLine": "{{file}} · version {{version}} · {{pages}} pages · {{passages}} passages · {{date}}",
+      "upload": "Upload the policy manual",
+      "replace": "Upload a new version",
+      "topics": "Topics found",
+      "versions_one": "{{count}} version",
+      "versions_other": "{{count}} versions",
+      "versionLine": "Version {{version}}: {{file}}, {{date}}",
+      "current": "in use",
+      "noManual": "No policy manual yet",
+      "noManualBody": "Upload your policy manual (PDF, Word or text). Agents get answers that cite its pages; every version is kept.",
+      "conflicts_one": "{{count}} conflict with TREC rules",
+      "conflicts_other": "{{count}} conflicts with TREC rules",
+      "trecWins": "When the manual and a TREC rule disagree, the TREC rule wins in every answer.",
+      "noConflicts": "No conflicts found",
+      "noConflictsBody": "Nothing in the manual contradicts the Texas rules REOS checks: trust money, compensation, the broker name in ads and contract forms.",
+      "faq": "Brokerage FAQ",
+      "noFaq": "No FAQ entries yet",
+      "noFaqBody": "Answer an agent with Add to policy knowledge on, and every agent gets that answer next time.",
+      "remove": "Remove",
+      "escalation": "Who answers and how fast",
+      "answerer": "Escalations go to",
+      "everyBroker": "Every broker of the brokerage",
+      "replyHours": "Reply within (hours)",
+      "save": "Save",
+      "uploaded": "Policy manual version {{version}} is in use.",
+      "saved": "Saved.",
+      "sent": "Answer sent to the agent."
+    },
+    "errors": {
+      "noText": "REOS couldn't find any text in that file. Upload a PDF with text (not a scan), a Word file or a text file.",
+      "unreadable": "REOS couldn't read that file. Try a PDF, Word or text file.",
+      "deal": "That deal isn't one of yours.",
+      "answered": "This question has already been answered.",
+      "answerer": "Choose a broker of your brokerage."
+    },
+    "sim": {
+      "none": "I couldn't find this in {{brokerage}}'s policy manual or the Texas rules, so I've sent it to your broker.",
+      "rule": "Under {{citation}}:",
+      "faq": "Your broker answered this before:",
+      "page": "The policy manual (page {{page}}) says:",
+      "manual": "The policy manual says:",
+      "trecWins": "The policy manual and TREC's rule disagree here, and TREC's rule wins."
+    },
+    "notify": {
+      "escalatedTitle": "{{agent}} has a question for you",
+      "escalatedBody": {
+        "unclear": "The policy manual doesn't answer it clearly.",
+        "money": "It involves money.",
+        "legal": "It involves legal risk.",
+        "asked": "They asked for your answer."
+      },
+      "answer": "Answer",
+      "answeredTitle": {
+        "confirmed": "Your broker confirmed the answer",
+        "corrected": "Your broker corrected the answer"
+      },
+      "answeredBody": "{{broker}} answered your question.",
+      "open": "Open"
+    },
+    "mobile": {
+      "noBrokerage": "For agents at a brokerage",
+      "noBrokerageBody": "The virtual broker answers from your brokerage's policy manual. It appears once you join a brokerage as an agent.",
+      "trained": "Trained on {{brokerage}}'s policy manual",
+      "open": "Ask your virtual broker",
+      "openBody": "Policies and Texas rules, with your broker when needed"
     }
   }
 }

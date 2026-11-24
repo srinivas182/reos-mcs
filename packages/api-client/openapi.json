@@ -42993,6 +42993,946 @@
                 }
             }
         },
+        "/virtual-broker": {
+            "get": {
+                "operationId": "virtual-broker.index",
+                "description": "The brokerage, whether its policy manual is in, how fast the broker aims to reply, and my questions (newest first). 404 when the person is not an agent at a brokerage.",
+                "summary": "My virtual broker",
+                "tags": [
+                    "VirtualBroker"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "manual": {
+                                                    "type": "boolean"
+                                                },
+                                                "reply_hours": {
+                                                    "type": "integer"
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "question": {
+                                                                "type": "string"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string"
+                                                            },
+                                                            "confidence": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "high",
+                                                                    "medium",
+                                                                    "low"
+                                                                ]
+                                                            },
+                                                            "sources": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "kind": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "manual",
+                                                                                "faq",
+                                                                                "rule"
+                                                                            ]
+                                                                        },
+                                                                        "title": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "citation": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "page": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "url": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "effective_from": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "excerpt": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "kind",
+                                                                        "title",
+                                                                        "citation",
+                                                                        "page",
+                                                                        "url",
+                                                                        "effective_from",
+                                                                        "excerpt"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "answered",
+                                                                    "waiting",
+                                                                    "confirmed",
+                                                                    "corrected"
+                                                                ]
+                                                            },
+                                                            "reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "unclear",
+                                                                    "money",
+                                                                    "legal",
+                                                                    "asked",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "escalated_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "due_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "broker_answer": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "broker": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "answered_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "added_to_knowledge": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "deal": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "uuid": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "property": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "uuid",
+                                                                    "property"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "question",
+                                                            "answer",
+                                                            "confidence",
+                                                            "sources",
+                                                            "status",
+                                                            "reason",
+                                                            "escalated_at",
+                                                            "due_at",
+                                                            "broker_answer",
+                                                            "broker",
+                                                            "answered_at",
+                                                            "added_to_knowledge",
+                                                            "agent",
+                                                            "deal",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "manual",
+                                                "reply_hours",
+                                                "questions"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/virtual-broker/questions": {
+            "post": {
+                "operationId": "virtual-broker.questions.store",
+                "description": "Answered from the brokerage's policy manual, its FAQ and the state's rules, with a confidence level and citations; free. Money or legal questions, and answers the sources don't support, go to the broker at once (status \"waiting\", with the time the brokerage aims to reply by).",
+                "summary": "Ask the virtual broker",
+                "tags": [
+                    "VirtualBroker"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AskBrokerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "question": {
+                                                    "type": "string"
+                                                },
+                                                "answer": {
+                                                    "type": "string"
+                                                },
+                                                "confidence": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "high",
+                                                        "medium",
+                                                        "low"
+                                                    ]
+                                                },
+                                                "sources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "manual",
+                                                                    "faq",
+                                                                    "rule"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "effective_from": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "excerpt": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "title",
+                                                            "citation",
+                                                            "page",
+                                                            "url",
+                                                            "effective_from",
+                                                            "excerpt"
+                                                        ]
+                                                    }
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "answered",
+                                                        "waiting",
+                                                        "confirmed",
+                                                        "corrected"
+                                                    ]
+                                                },
+                                                "reason": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "unclear",
+                                                        "money",
+                                                        "legal",
+                                                        "asked",
+                                                        null
+                                                    ]
+                                                },
+                                                "escalated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "due_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "broker_answer": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "broker": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "added_to_knowledge": {
+                                                    "type": "boolean"
+                                                },
+                                                "agent": {
+                                                    "type": "string"
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "question",
+                                                "answer",
+                                                "confidence",
+                                                "sources",
+                                                "status",
+                                                "reason",
+                                                "escalated_at",
+                                                "due_at",
+                                                "broker_answer",
+                                                "broker",
+                                                "answered_at",
+                                                "added_to_knowledge",
+                                                "agent",
+                                                "deal",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/virtual-broker/questions/{question}": {
+            "get": {
+                "operationId": "virtual-broker.questions.show",
+                "summary": "One of my questions",
+                "tags": [
+                    "VirtualBroker"
+                ],
+                "parameters": [
+                    {
+                        "name": "question",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "question": {
+                                                    "type": "string"
+                                                },
+                                                "answer": {
+                                                    "type": "string"
+                                                },
+                                                "confidence": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "high",
+                                                        "medium",
+                                                        "low"
+                                                    ]
+                                                },
+                                                "sources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "manual",
+                                                                    "faq",
+                                                                    "rule"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "effective_from": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "excerpt": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "title",
+                                                            "citation",
+                                                            "page",
+                                                            "url",
+                                                            "effective_from",
+                                                            "excerpt"
+                                                        ]
+                                                    }
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "answered",
+                                                        "waiting",
+                                                        "confirmed",
+                                                        "corrected"
+                                                    ]
+                                                },
+                                                "reason": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "unclear",
+                                                        "money",
+                                                        "legal",
+                                                        "asked",
+                                                        null
+                                                    ]
+                                                },
+                                                "escalated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "due_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "broker_answer": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "broker": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "added_to_knowledge": {
+                                                    "type": "boolean"
+                                                },
+                                                "agent": {
+                                                    "type": "string"
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "question",
+                                                "answer",
+                                                "confidence",
+                                                "sources",
+                                                "status",
+                                                "reason",
+                                                "escalated_at",
+                                                "due_at",
+                                                "broker_answer",
+                                                "broker",
+                                                "answered_at",
+                                                "added_to_knowledge",
+                                                "agent",
+                                                "deal",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/virtual-broker/questions/{question}/escalate": {
+            "post": {
+                "operationId": "virtual-broker.questions.escalate",
+                "description": "The broker gets the question and the virtual broker's answer to confirm or correct. Nothing changes for a question already with the broker or answered by them.",
+                "summary": "Send to my broker",
+                "tags": [
+                    "VirtualBroker"
+                ],
+                "parameters": [
+                    {
+                        "name": "question",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "question": {
+                                                    "type": "string"
+                                                },
+                                                "answer": {
+                                                    "type": "string"
+                                                },
+                                                "confidence": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "high",
+                                                        "medium",
+                                                        "low"
+                                                    ]
+                                                },
+                                                "sources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "manual",
+                                                                    "faq",
+                                                                    "rule"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "effective_from": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "excerpt": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "kind",
+                                                            "title",
+                                                            "citation",
+                                                            "page",
+                                                            "url",
+                                                            "effective_from",
+                                                            "excerpt"
+                                                        ]
+                                                    }
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "answered",
+                                                        "waiting",
+                                                        "confirmed",
+                                                        "corrected"
+                                                    ]
+                                                },
+                                                "reason": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "unclear",
+                                                        "money",
+                                                        "legal",
+                                                        "asked",
+                                                        null
+                                                    ]
+                                                },
+                                                "escalated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "due_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "broker_answer": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "broker": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "answered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "added_to_knowledge": {
+                                                    "type": "boolean"
+                                                },
+                                                "agent": {
+                                                    "type": "string"
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "question",
+                                                "answer",
+                                                "confidence",
+                                                "sources",
+                                                "status",
+                                                "reason",
+                                                "escalated_at",
+                                                "due_at",
+                                                "broker_answer",
+                                                "broker",
+                                                "answered_at",
+                                                "added_to_knowledge",
+                                                "agent",
+                                                "deal",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/voice/parse": {
             "post": {
                 "operationId": "voice.parse",
@@ -43521,6 +44461,28 @@
                     "preview"
                 ],
                 "title": "AppConfigResource"
+            },
+            "AskBrokerRequest": {
+                "type": "object",
+                "description": "A question to the virtual broker (A12.1): the words, and the deal it's about if any.",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 1000
+                    },
+                    "deal_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1
+                    }
+                },
+                "required": [
+                    "question"
+                ],
+                "title": "AskBrokerRequest"
             },
             "AskInstructorRequest": {
                 "type": "object",

@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Todos\TodoController;
+use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Ask\AskPageController;
 use App\Http\Controllers\Auth\InviteController;
 use App\Http\Controllers\Auth\PhoneSignInController;
@@ -100,6 +101,8 @@ use App\Http\Controllers\Social\StudioPageController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
+use App\Http\Controllers\VirtualBroker\BrokerVirtualBrokerController;
+use App\Http\Controllers\VirtualBroker\VirtualBrokerPageController;
 use App\Http\Controllers\WhatsNewController;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Http\Middleware\EnsureOnboarded;
@@ -189,6 +192,12 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // The 90-day plan and weekly scorecard (A11.1b, screens 10 and 110).
     Route::get('agent/plan', [AgentSetupPageController::class, 'plan'])->name('agent.plan');
     Route::put('agent/plan/tasks/{code}', [TodayController::class, 'tick'])->where('code', '[a-z_]+')->middleware('throttle:60,1,agent-plan')->name('agent.plan.tick');
+    // The virtual broker (A12.1, agent web screen 16): ask, see sources and status; the same JSON actions as the API.
+    Route::get('virtual-broker', VirtualBrokerPageController::class)->name('virtual-broker.index');
+    Route::prefix('virtual-broker')->name('virtual-broker.')->controller(VirtualBrokerController::class)->group(function () {
+        Route::post('questions', 'store')->middleware('throttle:20,1,virtual-broker-ask')->name('questions.store');
+        Route::post('questions/{question}/escalate', 'escalate')->whereUuid('question')->middleware('throttle:20,1,virtual-broker-escalate')->name('questions.escalate');
+    });
     // Content studio (B11, web screen 17): compose, check, publish or schedule, and results.
     Route::get('studio', StudioPageController::class)->name('studio.index');
     Route::prefix('studio')->name('studio.')->controller(SocialController::class)->group(function () {
@@ -416,6 +425,16 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
         Route::put('tools/{tool}', 'allow')->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1,brokerage-integrations-allow')->name('allow');
         Route::post('tools/{tool}/key', 'connectKey')->where('tool', '[a-z0-9-]+')->middleware('throttle:10,1,brokerage-integrations-key')->name('key');
         Route::put('connections/{connection}/mapping', 'mapping')->whereNumber('connection')->middleware('throttle:20,1,brokerage-integrations-map')->name('mapping');
+    });
+// The virtual broker, broker side (A12.1, broker screen 34): the manual and its versions, TREC conflicts, the FAQ, escalation, answers.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/virtual-broker')->name('organisation.virtual-broker.')
+    ->controller(BrokerVirtualBrokerController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('manual', 'manual')->middleware('throttle:10,1,virtual-broker-manual')->name('manual');
+        Route::put('settings', 'settings')->middleware('throttle:20,1,virtual-broker-settings')->name('settings');
+        Route::post('questions/{question}/reply', 'reply')->whereUuid('question')->middleware('throttle:60,1,virtual-broker-reply')->name('reply');
+        Route::delete('faq/{entry}', 'removeFaq')->whereNumber('entry')->middleware('throttle:60,1,virtual-broker-faq')->name('faq.destroy');
+        Route::post('faq/{entry}/restore', 'restoreFaq')->whereNumber('entry')->middleware('throttle:60,1,virtual-broker-faq')->name('faq.restore');
     });
 // Brokerage settings (A4.2b, broker screen 41): domain, brand, people and plan.
 Route::get('organisation/settings', SettingsController::class)

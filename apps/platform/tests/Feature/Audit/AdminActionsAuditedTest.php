@@ -23,6 +23,7 @@ use App\Integrations\IntegrationMode;
 use App\Licences\Ce\CeReporting;
 use App\Models\AuditEvent;
 use App\Models\BrokerOffer;
+use App\Models\BrokerQuestion;
 use App\Models\CeCompletion;
 use App\Models\CeReport;
 use App\Models\Connection;
@@ -39,6 +40,7 @@ use App\Models\LicenceJourney;
 use App\Models\MessageReport;
 use App\Models\Order;
 use App\Models\Organisation;
+use App\Models\PolicyPassage;
 use App\Models\PrivacyRequest;
 use App\Models\Product;
 use App\Models\ProviderCategory;
@@ -62,6 +64,8 @@ use App\Services\Tenancy\SupportAccess;
 use App\Services\Tenancy\TenantDomains;
 use App\Sso\SsoProtocol;
 use App\Tenancy\Tenancy;
+use App\VirtualBroker\PolicyKnowledge;
+use App\VirtualBroker\VirtualBroker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Routing\Route as LaravelRoute;
@@ -115,6 +119,21 @@ function auditCeReport(bool $reported = false): array
     $report = $reported ? app(CeReporting::class)->create($school, $paul, '2026-01-01', now()->toDateString(), 'file') : null;
 
     return [$school, $paul, $report, $completion];
+}
+
+/**
+ * A brokerage with an agent's question waiting for the broker, and with $faq an FAQ entry (A12.1).
+ *
+ * @return array{0: Organisation, 1: User, 2: BrokerQuestion, 3: PolicyPassage|null}
+ */
+function auditBrokerQuestion(bool $faq = false): array
+{
+    [$lone, $linda] = auditBrokerage();
+    $james = User::factory()->withRole(Role::Agent, $lone)->create();
+    $question = app(VirtualBroker::class)->ask($james, 'Can I pay a referral fee to my cousin?', null);
+    $entry = $faq ? app(PolicyKnowledge::class)->addFaq($lone, 'Who approves yard signs?', 'The office does.', null) : null;
+
+    return [$lone, $linda, $question, $entry];
 }
 
 /** @return array{0: Organisation, 1: User, 2: Course} */
@@ -640,6 +659,34 @@ function adminActions(): array
 
             return auditCase($paul, 'PUT', "/school/approvals/{$approval->id}/status", ['status' => 'withdrawn'], tenant: $school->id);
         },
+        // Broker: the virtual broker (A12.1, screen 34).
+        'organisation.virtual-broker.manual' => function () {
+            [$lone, $linda] = auditBrokerage();
+            Storage::fake(config()->string('reos.content.disk'));
+
+            return auditCase($linda, 'POST', '/organisation/virtual-broker/manual', ['file' => UploadedFile::fake()->createWithContent('manual.txt', "# Advertising\nEvery ad shows the brokerage name.")], tenant: $lone->id);
+        },
+        'organisation.virtual-broker.settings' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'PUT', '/organisation/virtual-broker/settings', ['answerer_id' => $linda->id, 'reply_hours' => 2], tenant: $lone->id);
+        },
+        'organisation.virtual-broker.reply' => function () {
+            [$lone, $linda, $question] = auditBrokerQuestion();
+
+            return auditCase($linda, 'POST', "/organisation/virtual-broker/questions/{$question->uuid}/reply", ['answer' => 'Ask the office first.', 'add_to_knowledge' => true], tenant: $lone->id);
+        },
+        'organisation.virtual-broker.faq.destroy' => function () {
+            [$lone, $linda, , $faq] = auditBrokerQuestion(true);
+
+            return auditCase($linda, 'DELETE', "/organisation/virtual-broker/faq/{$faq->id}", tenant: $lone->id);
+        },
+        'organisation.virtual-broker.faq.restore' => function () {
+            [$lone, $linda, , $faq] = auditBrokerQuestion(true);
+            $faq->delete();
+
+            return auditCase($linda, 'POST', "/organisation/virtual-broker/faq/{$faq->id}/restore", tenant: $lone->id);
+        },
         // School: CE reporting to TREC (A11.3, screen 51).
         'school.ce-reports.store' => function () {
             [$school, $paul] = auditCeReport();
@@ -964,6 +1011,7 @@ it('audits the admin action', function (string $name) {
 
 /** Routes that change a value (rather than add, remove or start something). */
 const CHANGES = [
+    'organisation.virtual-broker.settings',
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
     'compliance.privacy.update', 'content.courses.update', 'content.courses.status', 'content.modules.update', 'plans.update', 'plans.status', 'plans.prices.store', 'plans.prices.destroy', 'plans.ios-buy-link', 'tenants.codes.destroy',

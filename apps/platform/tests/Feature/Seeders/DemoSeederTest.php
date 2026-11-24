@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Authorization\Membership;
 use App\Authorization\Role;
 use App\Models\Organisation;
+use App\Models\PolicyManual;
 use App\Models\User;
 use App\Services\Authorization\Memberships;
 use Database\Seeders\DatabaseSeeder;
@@ -12,6 +13,7 @@ use Database\Seeders\Demo\DemoTenants;
 use Database\Seeders\Demo\Personas;
 use Database\Seeders\DemoSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -112,4 +114,16 @@ it('shows James Miller his sample HAR listings, as in the agent journey (B10.1)'
 
     $this->actingAs($james)->getJson('/api/v1/listings')->assertOk()
         ->assertJsonPath('data.linked.0.name', 'James Miller')->assertJsonPath('data.sample', true)->assertJsonCount(4, 'data.listings');
+});
+
+it('gives Lone Star Realty a sample policy manual, so James can ask the virtual broker (A12.1)', function () {
+    Storage::fake(config()->string('reos.content.disk'));
+    $this->seed(DemoSeeder::class);
+    $this->seed(DemoSeeder::class);
+    $james = User::query()->where('email', 'james.miller@'.Personas::DOMAIN)->sole();
+
+    expect(PolicyManual::query()->count())->toBe(1)
+        ->and(PolicyManual::query()->sole()->conflicts[0]['rule'])->toBe('brokerage.trust_money');
+    $this->actingAs($james)->postJson('/api/v1/virtual-broker/questions', ['question' => 'Do I leave a business card after a showing?'])
+        ->assertCreated()->assertJsonPath('data.status', 'answered')->assertJsonPath('data.sources.0.title', '9. Showings');
 });

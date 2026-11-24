@@ -75,7 +75,7 @@ describe('booking a session (A10.2a, the done-when)', function () {
         $this->actingAs($this->nelle)->getJson("/api/v1/bookings/{$booked['uuid']}/tasks")->assertOk()->assertJsonPath('data', ['Redo the proration drill', 'Review IABS timing']);
         $this->postJson("/api/v1/bookings/{$booked['uuid']}/tasks", ['tasks' => [['title' => 'Redo the proration drill', 'due_date' => '2026-11-24'], ['title' => 'Review IABS timing', 'due_date' => null]]])
             ->assertOk()->assertJsonPath('data.sent', 2);
-        expect(Todo::query()->where('user_id', $this->ana->id)->where('source', 'session')->pluck('title')->all())->toBe(['Redo the proration drill', 'Review IABS timing']);
+        expect(Todo::query()->where('user_id', $this->ana->id)->where('source', 'session')->orderBy('id')->pluck('title')->all())->toBe(['Redo the proration drill', 'Review IABS timing']);
 
         // Ana rates it; the profile shows it after 24 hours.
         $this->actingAs($this->ana)->postJson("/api/v1/bookings/{$booked['uuid']}/rating", ['stars' => 5, 'tags' => ['clear', 'patient'], 'comment' => 'Finally get proration.'])->assertOk()->assertJsonPath('data.rating', 5);

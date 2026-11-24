@@ -62,6 +62,7 @@ use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsControlle
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Todos\TodoController;
+use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Api\Voice\VoiceController;
 use App\Http\Middleware\RequireFlag;
 use App\Http\Middleware\ResolveTenant;
@@ -289,6 +290,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'show')->middleware('throttle:30,1,api-agent-brief')->name('show');
         Route::get('settings', 'settings')->name('settings');
         Route::put('settings', 'update')->middleware('throttle:20,1,api-agent-brief')->name('update');
+    });
+    // The virtual broker (A12.1, agent screens 61 and 62).
+    Route::prefix('virtual-broker')->name('api.virtual-broker.')->controller(VirtualBrokerController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('questions', 'store')->middleware('throttle:20,1,api-virtual-broker-ask')->name('questions.store');
+        Route::get('questions/{question}', 'show')->whereUuid('question')->name('questions.show');
+        Route::post('questions/{question}/escalate', 'escalate')->whereUuid('question')->middleware('throttle:20,1,api-virtual-broker-escalate')->name('questions.escalate');
     });
     // Social posting (B11): accounts, posts, checks, schedule, insights.
     Route::prefix('social')->name('api.social.')->controller(SocialController::class)->group(function () {

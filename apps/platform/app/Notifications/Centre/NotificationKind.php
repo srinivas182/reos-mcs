@@ -63,6 +63,10 @@ enum NotificationKind: string
     case MorningBrief = 'morning_brief';
     /** CE hours missing 60, 30 or 7 days before renewal, or the renewal is ready (A11.2). */
     case CeRenewal = 'ce_renewal';
+    /** An agent's question went to the broker (A12.1): money, legal or unclear. */
+    case PolicyQuestion = 'policy_question';
+    /** The broker answered the agent's virtual broker question (A12.1). */
+    case PolicyAnswer = 'policy_answer';
 
     public const INBOX = 'inbox';
 
@@ -119,9 +123,9 @@ enum NotificationKind: string
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
-            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview => 'organisation',
+            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline, self::SignatureCompleted, self::MorningBrief => 'deals',
+            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer => 'deals',
         };
     }
 

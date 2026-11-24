@@ -33,6 +33,16 @@ final class TexasRules
 
     private const REALM = 'https://aca-prod.accela.com/TREC/Default.aspx';
 
+    private const TAC_535_146 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-535-146';
+
+    private const TAC_535_3 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-535-3';
+
+    private const TAC_535_2 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-535-2';
+
+    private const TAC_531_20 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-531-20';
+
+    private const TAC_537_11 = 'https://www.law.cornell.edu/regulations/texas/22-Tex-Admin-Code-SS-537-11';
+
     public const CHECKED_ON = '2026-11-22';
 
     /** @return list<Seed> */
@@ -86,6 +96,12 @@ final class TexasRules
             ['key' => 'advertising.misleading_titles', 'value' => ['text' => 'A sales agent may not be presented as a broker, owner, president or similar, and a team name may not suggest a separate brokerage ("brokerage", "company", "associates").'], 'citation' => '22 TAC §535.155(d)(3)–(5)', 'source_url' => self::TAC_535_155, 'effective_from' => '2018-09-04'],
             // Classroom delivery: present for the hours credited, no daily segment over 12 hours, a makeup only after two-thirds attended, within 90 days.
             ['key' => 'courses.seat_time', 'value' => ['max_hours_per_day' => 12, 'presence_percent' => 100, 'makeup_min_percent' => 67, 'makeup_days' => 90], 'citation' => '22 TAC §535.65(g)(1)(B)(ii), (iv) and (g)(1)(D)', 'source_url' => self::TAC_535_65, 'effective_from' => '2023-06-11'],
+            // The virtual broker's Texas library (A12.1, ADR 0047): effective_from is the day REOS checked the text against the source; the rule's own history is on the source page.
+            ['key' => 'brokerage.trust_money', 'value' => ['text' => "Trust money a license holder receives (earnest money, option fees and similar deposits) goes into the broker's trust account, or to the escrow agent named in the contract, no later than the close of business on the second working day after all parties have signed the contract. It is never mixed with the broker's own money."], 'citation' => '22 TAC §535.146', 'source_url' => self::TAC_535_146, 'effective_from' => '2026-11-24'],
+            ['key' => 'brokerage.compensation', 'value' => ['text' => 'A sales agent may accept compensation for real estate brokerage services only from their sponsoring broker, and pays any commission or referral fee only through that broker.'], 'citation' => '22 TAC §535.3', 'source_url' => self::TAC_535_3, 'effective_from' => '2026-11-24'],
+            ['key' => 'brokerage.supervision', 'value' => ['text' => "A broker is responsible for the authorized acts of the sales agents they sponsor, and keeps written policies and procedures so those agents' work is supervised. Agents follow the brokerage's policies."], 'citation' => '22 TAC §535.2', 'source_url' => self::TAC_535_2, 'effective_from' => '2026-11-24'],
+            ['key' => 'brokerage.iabs', 'value' => ['text' => 'At the first substantive communication with a party about a specific property, a license holder gives them the Information About Brokerage Services notice (TREC form IABS 1-0).'], 'citation' => '22 TAC §531.20', 'source_url' => self::TAC_531_20, 'effective_from' => '2026-11-24'],
+            ['key' => 'forms.promulgated', 'value' => ['text' => "License holders use TREC's promulgated contract forms when a form exists for the transaction. They may fill in factual statements and business details, but may not draft legal clauses or give legal advice: that is the unauthorized practice of law."], 'citation' => '22 TAC §537.11', 'source_url' => self::TAC_537_11, 'effective_from' => '2026-11-24'],
             ['key' => 'brokerage.sponsorship', 'value' => ['text' => 'A sales agent must be sponsored by a licensed broker to perform any act of real estate services.'], 'citation' => 'TREC: Become a Real Estate Sales Agent', 'source_url' => self::SALES_AGENT, 'effective_from' => '2023-08-29'],
         ];
     }
