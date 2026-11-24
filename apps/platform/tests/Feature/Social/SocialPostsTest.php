@@ -63,7 +63,7 @@ describe('the posting engine with Instagram and Facebook (B11.1)', function () {
         $brokerage = app(ActiveRole::class)->for($this->james)?->organisation->name;
         expect($failing['attribution'])->toBe('James Miller · '.$brokerage)
             ->and(collect($failing['checks'])->mapWithKeys(fn ($c) => [$c['code'].($c['detail'] ? ':'.$c['detail'] : '') => $c['ok']])->all())
-            ->toBe(['broker' => true, 'targets' => true, 'length:instagram' => true, 'media:instagram' => false, 'title' => false])
+            ->toBe(['broker' => true, 'targets' => true, 'length:instagram' => true, 'media:instagram' => false, 'title' => false, 'fair_housing' => true, 'claims' => true, 'banned' => true])
             ->and($failing['ok'])->toBeFalse();
 
         $this->postJson('/api/v1/social/posts', ['body' => 'As your broker I will sell your home', 'media' => [], 'targets' => [$this->instagram], 'when' => 'now'])

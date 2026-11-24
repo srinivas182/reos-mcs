@@ -82,7 +82,8 @@
     "ceReporting": "CE reporting",
     "contentStudio": "Content studio",
     "virtualBroker": "Virtual broker",
-    "contractReview": "Contract review"
+    "contractReview": "Contract review",
+    "policies": "Policies"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2302,7 +2303,10 @@
         "policy_faq.restored": "Put back in the brokerage FAQ",
         "broker_question.answered": "Answered an agent's question",
         "virtual_broker.settings": "Virtual broker escalation changed",
-        "assistant.context": "Assistant permission to read CRM, deals and calendar changed"
+        "assistant.context": "Assistant permission to read CRM, deals and calendar changed",
+        "advertising_policy.updated": "Advertising policy changed",
+        "social_post.approved": "Approved an agent's post",
+        "social_post.returned": "Sent an agent's post back"
       }
     }
   },
@@ -5449,7 +5453,9 @@
       "ce_renewal": "CE renewal",
       "policy_question": "Agent questions for the broker",
       "policy_answer": "Your broker's answers",
-      "contract_review": "Contract reviews"
+      "contract_review": "Contract reviews",
+      "post_approval": "Post approvals",
+      "post_decision": "Your broker's decisions on posts"
     },
     "digest": {
       "subject": {
@@ -8459,7 +8465,10 @@
       "length": "Text fits {{channel}}",
       "media": "{{channel}} has a photo or video",
       "title": "No title a sales agent may not use (broker, owner, president)",
-      "video": "{{channel}} has a video"
+      "video": "{{channel}} has a video",
+      "fair_housing": "Fair housing wording: describes the home, not who should live there",
+      "claims": "No misleading claims (guarantees, \"best price\")",
+      "banned": "None of your brokerage's banned phrases"
     },
     "posts": {
       "title": "My posts and results",
@@ -8485,7 +8494,8 @@
       "published": "Published",
       "partly": "Partly published",
       "failed": "Failed",
-      "queued": "Waiting"
+      "queued": "Waiting",
+      "approval": "Waiting for your broker"
     },
     "insights": {
       "reach": "Reach",
@@ -8930,6 +8940,164 @@
       "reply": "Draft an email to ",
       "emptyTitle": "Ask anything",
       "emptyBody": "Ask about your day, a client, a deal or a policy. Answers come from your own data."
+    }
+  },
+  "studio": {
+    "headlines": {
+      "listing": "JUST LISTED",
+      "coming_soon": "COMING SOON",
+      "sale": "JUST SOLD",
+      "market": "MARKET UPDATE",
+      "text": "REAL ESTATE UPDATE"
+    },
+    "beds": "{{beds}} bd · {{baths}} ba",
+    "card": {
+      "headline": "Let's talk",
+      "line": "Message me to see it or to talk about your move."
+    },
+    "captions": {
+      "listing": {
+        "professional": "Just listed: {{address}}. {{beds}} bedrooms, {{baths}} baths, offered at {{price}}. Message me for details or a private showing. #JustListed #{{tag}}RealEstate",
+        "warm": "Say hello to {{address}}! {{beds}} bedrooms, {{baths}} baths and room to make it your own, at {{price}}. Want to see it? Send me a message. #JustListed #{{tag}}Homes",
+        "short": "New on the market: {{address}}, {{price}}. #JustListed"
+      },
+      "sale": {
+        "professional": "Just sold: {{address}}. Thank you to everyone who made this closing happen. Thinking about selling? Let's talk. #JustSold #{{tag}}RealEstate",
+        "warm": "Another happy closing at {{address}}! It's a joy to hand over the keys. Thinking about your next move? I'm here to help. #JustSold #{{tag}}Homes",
+        "short": "Just sold: {{address}}. #JustSold"
+      },
+      "market": {
+        "professional": "{{city}} market update: {{text}} Want to know what it means for your home? Message me. #MarketUpdate #{{tag}}RealEstate",
+        "warm": "Here's what I'm seeing in the {{city}} market: {{text}} Curious what your home is worth today? Just ask. #MarketUpdate #{{tag}}Homes",
+        "short": "{{city}} market: {{text}} #MarketUpdate"
+      },
+      "text": {
+        "professional": "{{text}} Questions about buying or selling? Message me. #RealEstate #{{tag}}RealEstate",
+        "warm": "{{text}} I'm always happy to help, so send me a message any time. #RealEstate #{{tag}}Homes",
+        "short": "{{text}} #RealEstate"
+      }
+    },
+    "ad": {
+      "headline1": {
+        "listing": "Just listed: {{address}}",
+        "sale": "Just sold: {{address}}",
+        "market": "{{city}} market update",
+        "text": "Your Texas real estate agent"
+      },
+      "headline2": {
+        "listing": "Offered at {{price}}",
+        "sale": "Thinking about selling?",
+        "market": "What's your home worth?",
+        "text": "Buying or selling? Let's talk"
+      },
+      "headline3": {
+        "listing": "Book a private showing",
+        "sale": "Let's get you moving",
+        "market": "Get the latest numbers",
+        "text": "Local advice, fast answers"
+      },
+      "description": "Message me today"
+    },
+    "errors": {
+      "decided": "This post has already been decided."
+    },
+    "notify": {
+      "requestedTitle": "{{agent}} has a post for you to approve",
+      "requestedBody": "It passed REOS's checks and waits for your approval.",
+      "review": "Review",
+      "approvedTitle": "Your broker approved your post",
+      "returnedTitle": "Your broker sent your post back",
+      "open": "Open the studio"
+    },
+    "policy": {
+      "title": "Advertising policy",
+      "purpose": "Set what every post from {{brokerage}} is checked against.",
+      "saved": "Saved. It applies to every post now.",
+      "approved": "Approved.",
+      "returned": "Sent back to the agent.",
+      "texas": "Texas rules (always on)",
+      "texasBody": "Every post carries the agent and broker on one line at the same size, and is checked for titles a sales agent may not use.",
+      "checks": "REOS also checks {{fairHousing}} fair housing phrases and {{claims}} misleading claims.",
+      "brokerage": "Your brokerage's rules",
+      "newAgents": "Approve posts from agents in their first 90 days",
+      "all": "Approve every post",
+      "banned": "Banned phrases",
+      "bannedHelp": "One per line. A post with any of them can't go out until it's fixed.",
+      "save": "Save",
+      "brand": "Brand kit",
+      "brandBody": "Designs use your brokerage's colour and logo, set in Brokerage settings.",
+      "brandLink": "Open Brokerage settings",
+      "noColour": "Not set: designs use REOS navy.",
+      "pending": "Posts waiting for approval",
+      "noPending": "Nothing waiting",
+      "noPendingBody": "Posts from agents who need approval appear here once they pass REOS's checks.",
+      "approve": "Approve",
+      "sendBack": "Send back",
+      "note": "What should the agent change?",
+      "noteLabel": "Note to the agent",
+      "scheduledFor": "Goes out {{time}}",
+      "now": "Goes out when approved",
+      "issues": "Flagged: {{phrases}}"
+    },
+    "maker": {
+      "title": "Make content",
+      "purpose": "From a listing, a sale, a market update or your own words.",
+      "from": "Start from",
+      "sources": {
+        "listing": "A listing",
+        "sale": "A sale",
+        "market": "A market update",
+        "text": "Your words"
+      },
+      "chooseListing": "Choose a listing",
+      "chooseSale": "Choose a closed deal",
+      "noListings": "No listings to post yet. Link your MLS member record in My listings.",
+      "noSales": "No closed deals yet.",
+      "marketText": "What's happening in your market?",
+      "marketPlaceholder": "For example: Median price up 3% this month; homes selling in 21 days.",
+      "city": "City",
+      "text": "What do you want to say?",
+      "textPlaceholder": "Type, or tap the microphone and say it.",
+      "make": "Make",
+      "making": "Making…",
+      "outputs": "What to make",
+      "outputsNames": {
+        "post": "Post and caption",
+        "carousel": "Carousel",
+        "ad": "Ad copy"
+      },
+      "cost": "{{credits}} credits · {{left}} left",
+      "versions": "Pick a version",
+      "designs": "Designs",
+      "captions": "Captions",
+      "tones": {
+        "professional": "Professional",
+        "warm": "Warm",
+        "short": "Short"
+      },
+      "shorter": "Shorter",
+      "professional": "More professional",
+      "spanish": "Español",
+      "use": "Use this",
+      "carousel": "Carousel",
+      "ad": "Ad copy",
+      "headlines": "Headlines",
+      "primary": "Primary text",
+      "description": "Description",
+      "copy": "Copy",
+      "copied": "Copied",
+      "checked": "Checked for fair housing, claims and your brokerage's rules.",
+      "recent": "Made lately",
+      "design": "Design {{n}}",
+      "slide": "Slide {{n}}"
+    },
+    "checks": {
+      "fix": "Fix automatically",
+      "fixed": "Fixed: {{phrases}}",
+      "approval": "Your brokerage approves your posts first. When you post, it goes to your broker.",
+      "sendToBroker": "Send to broker",
+      "returned": "Your broker sent this back: {{note}}",
+      "recheck": "It didn't go out: it now has {{phrases}}. Fix it and schedule it again."
     }
   }
 }

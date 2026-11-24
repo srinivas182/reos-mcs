@@ -87,6 +87,7 @@ export function post(overrides: Partial<SocialPost> = {}): SocialPost {
                 },
             },
         ],
+        approval_note: null,
         totals: {
             reach: 3450,
             likes: 287,
@@ -119,6 +120,7 @@ export function postList(): PostList {
                     insights: {},
                     url: null,
                 })),
+                approval_note: null,
                 totals: {},
             }),
         ],
@@ -153,6 +155,8 @@ export function check(overrides: Partial<CheckResult> = {}): CheckResult {
             { code: 'title', ok: true, detail: null },
         ],
         ok: true,
+        approval: false,
+        issues: [],
         ...overrides,
     };
 }

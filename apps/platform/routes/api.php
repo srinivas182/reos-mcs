@@ -63,6 +63,7 @@ use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\States\CurrentStateController;
+use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Api\Voice\VoiceController;
@@ -316,12 +317,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('questions/{question}', 'show')->whereUuid('question')->name('questions.show');
         Route::post('questions/{question}/escalate', 'escalate')->whereUuid('question')->middleware('throttle:20,1,api-virtual-broker-escalate')->name('questions.escalate');
     });
+    // The content studio's maker (B12.1, agent screens 165 and 166).
+    Route::prefix('studio')->name('api.studio.')->controller(StudioController::class)->group(function () {
+        Route::get('/', 'home')->name('home');
+        Route::post('generations', 'make')->middleware('throttle:10,1,api-studio-make')->name('make');
+        Route::get('generations/{generation}', 'show')->whereUuid('generation')->name('show');
+        Route::post('generations/{generation}/captions', 'retone')->whereUuid('generation')->middleware('throttle:30,1,api-studio-retone')->name('retone');
+    });
     // Social posting (B11): accounts, posts, checks, schedule, insights.
     Route::prefix('social')->name('api.social.')->controller(SocialController::class)->group(function () {
         Route::get('accounts', 'accounts')->name('accounts');
         Route::post('accounts/{connection}/refresh', 'refresh')->whereNumber('connection')->middleware('throttle:10,1,api-social-refresh')->name('accounts.refresh');
         Route::get('posts', 'index')->name('posts.index');
         Route::post('posts/check', 'check')->middleware('throttle:60,1,api-social-check')->name('posts.check');
+        Route::post('posts/fix', 'fix')->middleware('throttle:60,1,api-social-check')->name('posts.fix');
         Route::post('posts', 'store')->middleware('throttle:30,1,api-social-posts')->name('posts.store');
         Route::get('posts/{post}', 'show')->whereUuid('post')->name('posts.show');
         Route::put('posts/{post}', 'update')->whereUuid('post')->middleware('throttle:30,1,api-social-posts')->name('posts.update');

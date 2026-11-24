@@ -20,7 +20,7 @@ export type Pick = { connection: number; channel: string; id: string };
 export type PostBody = { body: string; media: string[]; link: string | null; targets: Pick[]; when: 'now' | 'later' | 'draft'; at: string | null; listing: string | null };
 export type Channel = 'facebook' | 'instagram' | 'linkedin' | 'google_business' | 'youtube' | 'tiktok';
 export type Metric = 'reach' | 'views' | 'likes' | 'comments' | 'clicks' | 'shares';
-export const STATUS_TONE: Record<string, Tone> = { draft: 'neutral', scheduled: 'info', publishing: 'info', queued: 'neutral', published: 'success', partly: 'warning', failed: 'danger' };
+export const STATUS_TONE: Record<string, Tone> = { draft: 'neutral', approval: 'warning', scheduled: 'info', publishing: 'info', queued: 'neutral', published: 'success', partly: 'warning', failed: 'danger' };
 export const METRICS: Metric[] = ['reach', 'views', 'likes', 'comments', 'clicks', 'shares'];
 
 const fail = (error: unknown): never => {

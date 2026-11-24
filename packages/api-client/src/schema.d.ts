@@ -4246,6 +4246,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/social/posts/fix": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Fix automatically
+         * @description The post's words with flagged fair housing wording, misleading claims and the brokerage's banned phrases swapped for the suggested words or taken out (screen 167).
+         */
+        post: operations["social.posts.fix"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/social/posts/{post}": {
         parameters: {
             query?: never;
@@ -4393,6 +4413,83 @@ export interface paths {
          *     told the day the state opens.
          */
         post: operations["states.waitlist"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The studio
+         * @description What a making costs and my credits left, what I can start from (my listings that may be posted, my closed deals), and what I made lately.
+         */
+        get: operations["studio.home"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/generations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Make content
+         * @description From a listing, a closed deal, a market update or my own words: three captions and three designs (post), carousel slides, and ad copy. Every version passes the fair housing, claims and brokerage checks before it's shown. Costs the studio's credits (shown first).
+         */
+        post: operations["studio.make"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/generations/{generation}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One making */
+        get: operations["studio.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/generations/{generation}/captions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A caption in another tone
+         * @description Shorter, more professional or in Spanish (free).
+         */
+        post: operations["studio.retone"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5849,6 +5946,21 @@ export interface components {
          */
         Locale: "en" | "es";
         /**
+         * MakeContentRequest
+         * @description Make content (B12.1; screen 165): where it starts from, and what to make.
+         */
+        MakeContentRequest: {
+            source: {
+                /** @enum {string} */
+                type: "listing" | "sale" | "market" | "text";
+                /** Format: uuid */
+                id?: string | null;
+                text?: string | null;
+                city?: string | null;
+            };
+            outputs: ("post" | "carousel" | "ad")[];
+        };
+        /**
          * MathCheckRequest
          * @description One math lab step to check, or to show (screen 48, A9.2c).
          */
@@ -6705,6 +6817,7 @@ export type SchemaLicenceRoleRequest = components['schemas']['LicenceRoleRequest
 export type SchemaLicenceType = components['schemas']['LicenceType'];
 export type SchemaListingPostRequest = components['schemas']['ListingPostRequest'];
 export type SchemaLocale = components['schemas']['Locale'];
+export type SchemaMakeContentRequest = components['schemas']['MakeContentRequest'];
 export type SchemaMathCheckRequest = components['schemas']['MathCheckRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMediaRequest = components['schemas']['MediaRequest'];
@@ -20241,7 +20354,7 @@ export interface operations {
                                 attribution: string;
                                 listing: string | null;
                                 /** @enum {string} */
-                                status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                                status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                                 scheduled_at: string | null;
                                 published_at: string | null;
                                 created_at: string | null;
@@ -20263,6 +20376,7 @@ export interface operations {
                                 totals: {
                                     [key: string]: number;
                                 };
+                                approval_note: string | null;
                             }[];
                             posted: {
                                 id: string;
@@ -20275,7 +20389,7 @@ export interface operations {
                                 attribution: string;
                                 listing: string | null;
                                 /** @enum {string} */
-                                status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                                status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                                 scheduled_at: string | null;
                                 published_at: string | null;
                                 created_at: string | null;
@@ -20297,6 +20411,7 @@ export interface operations {
                                 totals: {
                                     [key: string]: number;
                                 };
+                                approval_note: string | null;
                             }[];
                             drafts: {
                                 id: string;
@@ -20309,7 +20424,7 @@ export interface operations {
                                 attribution: string;
                                 listing: string | null;
                                 /** @enum {string} */
-                                status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                                status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                                 scheduled_at: string | null;
                                 published_at: string | null;
                                 created_at: string | null;
@@ -20331,6 +20446,7 @@ export interface operations {
                                 totals: {
                                     [key: string]: number;
                                 };
+                                approval_note: string | null;
                             }[];
                         };
                     };
@@ -20369,7 +20485,7 @@ export interface operations {
                             attribution: string;
                             listing: string | null;
                             /** @enum {string} */
-                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                             scheduled_at: string | null;
                             published_at: string | null;
                             created_at: string | null;
@@ -20391,6 +20507,7 @@ export interface operations {
                             totals: {
                                 [key: string]: number;
                             };
+                            approval_note: string | null;
                         };
                     };
                 };
@@ -20434,11 +20551,67 @@ export interface operations {
                             attribution: string;
                             checks: {
                                 /** @enum {string} */
-                                code: "broker" | "targets" | "length" | "media" | "video" | "title";
+                                code: "broker" | "targets" | "length" | "media" | "video" | "title" | "fair_housing" | "claims" | "banned";
                                 ok: boolean;
                                 detail: string | null;
                             }[];
                             ok: boolean;
+                            approval: boolean;
+                            issues: {
+                                /** @enum {string} */
+                                code: "fair_housing" | "claims" | "banned";
+                                phrase: string;
+                                fix: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.fix": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            body: string;
+                            fixed: {
+                                /** @enum {string} */
+                                code: "fair_housing" | "claims" | "banned";
+                                phrase: string;
+                                fix: string;
+                            }[];
                         };
                     };
                 };
@@ -20487,7 +20660,7 @@ export interface operations {
                             attribution: string;
                             listing: string | null;
                             /** @enum {string} */
-                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                             scheduled_at: string | null;
                             published_at: string | null;
                             created_at: string | null;
@@ -20509,6 +20682,7 @@ export interface operations {
                             totals: {
                                 [key: string]: number;
                             };
+                            approval_note: string | null;
                         };
                     };
                 };
@@ -20548,7 +20722,7 @@ export interface operations {
                             attribution: string;
                             listing: string | null;
                             /** @enum {string} */
-                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                             scheduled_at: string | null;
                             published_at: string | null;
                             created_at: string | null;
@@ -20570,6 +20744,7 @@ export interface operations {
                             totals: {
                                 [key: string]: number;
                             };
+                            approval_note: string | null;
                         };
                     };
                 };
@@ -20651,7 +20826,7 @@ export interface operations {
                             attribution: string;
                             listing: string | null;
                             /** @enum {string} */
-                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                             scheduled_at: string | null;
                             published_at: string | null;
                             created_at: string | null;
@@ -20673,6 +20848,7 @@ export interface operations {
                             totals: {
                                 [key: string]: number;
                             };
+                            approval_note: string | null;
                         };
                     };
                 };
@@ -20720,7 +20896,7 @@ export interface operations {
                             attribution: string;
                             listing: string | null;
                             /** @enum {string} */
-                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            status: "draft" | "approval" | "scheduled" | "publishing" | "published" | "partly" | "failed";
                             scheduled_at: string | null;
                             published_at: string | null;
                             created_at: string | null;
@@ -20742,6 +20918,7 @@ export interface operations {
                             totals: {
                                 [key: string]: number;
                             };
+                            approval_note: string | null;
                         };
                     };
                 };
@@ -20957,6 +21134,283 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "studio.home": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            cost: number;
+                            credits_left: number;
+                            listings: {
+                                id: string;
+                                address: string;
+                                status: string;
+                                photo: string | null;
+                            }[];
+                            sales: {
+                                id: string;
+                                property: string;
+                            }[];
+                            generations: {
+                                id: string;
+                                source: {
+                                    /** @enum {string} */
+                                    type: "listing" | "sale" | "market" | "text";
+                                    id: string | null;
+                                    label: string | null;
+                                };
+                                listing: string | null;
+                                outputs: ("post" | "carousel" | "ad")[];
+                                captions: {
+                                    /** @enum {string} */
+                                    tone: "professional" | "warm" | "short";
+                                    text: string;
+                                }[];
+                                designs: {
+                                    /** @enum {string} */
+                                    layout: "band" | "top" | "split";
+                                    path: string;
+                                    url: string;
+                                }[];
+                                carousel: {
+                                    path: string;
+                                    url: string;
+                                }[];
+                                ad: {
+                                    headlines: string[];
+                                    primary: string[];
+                                    description: string;
+                                } | null;
+                                credits: number;
+                                engine: string;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "studio.make": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MakeContentRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            source: {
+                                /** @enum {string} */
+                                type: "listing" | "sale" | "market" | "text";
+                                id: string | null;
+                                label: string | null;
+                            };
+                            listing: string | null;
+                            outputs: ("post" | "carousel" | "ad")[];
+                            captions: {
+                                /** @enum {string} */
+                                tone: "professional" | "warm" | "short";
+                                text: string;
+                            }[];
+                            designs: {
+                                /** @enum {string} */
+                                layout: "band" | "top" | "split";
+                                path: string;
+                                url: string;
+                            }[];
+                            carousel: {
+                                path: string;
+                                url: string;
+                            }[];
+                            ad: {
+                                headlines: string[];
+                                primary: string[];
+                                description: string;
+                            } | null;
+                            credits: number;
+                            engine: string;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "studio.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                generation: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            source: {
+                                /** @enum {string} */
+                                type: "listing" | "sale" | "market" | "text";
+                                id: string | null;
+                                label: string | null;
+                            };
+                            listing: string | null;
+                            outputs: ("post" | "carousel" | "ad")[];
+                            captions: {
+                                /** @enum {string} */
+                                tone: "professional" | "warm" | "short";
+                                text: string;
+                            }[];
+                            designs: {
+                                /** @enum {string} */
+                                layout: "band" | "top" | "split";
+                                path: string;
+                                url: string;
+                            }[];
+                            carousel: {
+                                path: string;
+                                url: string;
+                            }[];
+                            ad: {
+                                headlines: string[];
+                                primary: string[];
+                                description: string;
+                            } | null;
+                            credits: number;
+                            engine: string;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "studio.retone": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                generation: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    index: number;
+                    /** @enum {string} */
+                    tone: "shorter" | "professional" | "spanish";
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            source: {
+                                /** @enum {string} */
+                                type: "listing" | "sale" | "market" | "text";
+                                id: string | null;
+                                label: string | null;
+                            };
+                            listing: string | null;
+                            outputs: ("post" | "carousel" | "ad")[];
+                            captions: {
+                                /** @enum {string} */
+                                tone: "professional" | "warm" | "short";
+                                text: string;
+                            }[];
+                            designs: {
+                                /** @enum {string} */
+                                layout: "band" | "top" | "split";
+                                path: string;
+                                url: string;
+                            }[];
+                            carousel: {
+                                path: string;
+                                url: string;
+                            }[];
+                            ad: {
+                                headlines: string[];
+                                primary: string[];
+                                description: string;
+                            } | null;
+                            credits: number;
+                            engine: string;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

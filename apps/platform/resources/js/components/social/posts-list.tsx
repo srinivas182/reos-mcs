@@ -13,6 +13,7 @@ import {
 
 const TONE: Record<PostStatus | TargetStatus, string> = {
     draft: 'bg-reos-tone-neutral-bg text-reos-tone-neutral-fg',
+    approval: 'bg-reos-tone-warning-bg text-reos-tone-warning-fg',
     scheduled: 'bg-reos-tone-info-bg text-reos-tone-info-fg',
     publishing: 'bg-reos-tone-info-bg text-reos-tone-info-fg',
     queued: 'bg-reos-tone-neutral-bg text-reos-tone-neutral-fg',
@@ -117,6 +118,14 @@ export function PostsList({
                                             {t(`social.status.${post.status}`)}
                                         </span>
                                     </div>
+                                    {post.approval_note &&
+                                    post.status === 'draft' ? (
+                                        <p className="rounded-reos-md bg-reos-tone-warning-bg p-3 text-base text-reos-tone-warning-fg">
+                                            {t('studio.checks.returned', {
+                                                note: post.approval_note,
+                                            })}
+                                        </p>
+                                    ) : null}
                                     <p className="text-base text-muted-foreground">
                                         {post.scheduled_at &&
                                         post.status === 'scheduled'

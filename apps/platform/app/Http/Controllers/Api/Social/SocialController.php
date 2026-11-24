@@ -53,7 +53,7 @@ final class SocialController extends Controller
     /**
      * My posts and results.
      *
-     * @response array{data: array{stats: array{posts_this_month: int, reach: int, engagement: int, clicks: int}, scheduled: list<array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}>, posted: list<array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}>, drafts: list<array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}>}}
+     * @response array{data: array{stats: array{posts_this_month: int, reach: int, engagement: int, clicks: int}, scheduled: list<array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}>, posted: list<array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}>, drafts: list<array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}>}}
      */
     public function index(#[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
@@ -63,7 +63,7 @@ final class SocialController extends Controller
     /**
      * One post.
      *
-     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}}
+     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}}
      */
     public function show(string $post, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
@@ -75,7 +75,7 @@ final class SocialController extends Controller
      *
      * The attribution it will carry and each check; a post that fails can't be scheduled.
      *
-     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'video'|'title', ok: bool, detail: string|null}>, ok: bool}}
+     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'video'|'title'|'fair_housing'|'claims'|'banned', ok: bool, detail: string|null}>, ok: bool, approval: bool, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>}}
      */
     public function check(PostRequest $request, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
@@ -83,11 +83,25 @@ final class SocialController extends Controller
     }
 
     /**
+     * Fix automatically.
+     *
+     * The post's words with flagged fair housing wording, misleading claims and the brokerage's banned phrases swapped for the suggested words or taken out (screen 167).
+     *
+     * @response array{data: array{body: string, fixed: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>}}
+     */
+    public function fix(Request $request, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
+    {
+        $request->validate(['body' => ['required', 'string', 'max:5000']]);
+
+        return response()->json(['data' => $posts->fix($user, $request->string('body')->toString())]);
+    }
+
+    /**
      * New post: publish now, schedule or save a draft.
      *
      * @status 201
      *
-     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}}
+     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}}
      */
     public function store(PostRequest $request, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
@@ -99,7 +113,7 @@ final class SocialController extends Controller
     /**
      * Change a draft or a scheduled post.
      *
-     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}}
+     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}}
      */
     public function update(PostRequest $request, string $post, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
@@ -117,7 +131,7 @@ final class SocialController extends Controller
     /**
      * Undo removing a post.
      *
-     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}}
+     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}}
      */
     public function restore(string $post, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
@@ -129,7 +143,7 @@ final class SocialController extends Controller
      *
      * @status 201
      *
-     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>}}
+     * @response array{data: array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: 'draft'|'approval'|'scheduled'|'publishing'|'published'|'partly'|'failed', scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<array{id: int, integration: string, channel: string, target_id: string, name: string, status: 'queued'|'publishing'|'published'|'failed', error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}>, totals: array<string, int>, approval_note: string|null}}
      */
     public function repost(string $post, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {

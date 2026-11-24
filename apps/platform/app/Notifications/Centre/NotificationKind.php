@@ -69,6 +69,10 @@ enum NotificationKind: string
     case PolicyAnswer = 'policy_answer';
     /** A contract review is done, or couldn't be done (A12.2). */
     case ContractReview = 'contract_review';
+    /** An agent's post waits for the broker's approval (B12.1). */
+    case PostApproval = 'post_approval';
+    /** The broker approved an agent's post or sent it back (B12.1). */
+    case PostDecision = 'post_decision';
 
     public const INBOX = 'inbox';
 
@@ -125,9 +129,9 @@ enum NotificationKind: string
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
-            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion => 'organisation',
+            self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview => 'deals',
+            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision => 'deals',
         };
     }
 

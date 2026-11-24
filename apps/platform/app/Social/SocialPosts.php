@@ -15,8 +15,11 @@ use App\Models\ListingPost;
 use App\Models\MlsListing;
 use App\Models\SocialPost;
 use App\Models\User;
+use App\Notifications\PostApprovalRequested;
 use App\Services\Authorization\ActiveRole;
+use App\Services\Authorization\Memberships;
 use App\Services\States\PersonStates;
+use App\Studio\AdvertisingPolicy;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -38,9 +41,11 @@ use Illuminate\Validation\ValidationException;
  * - **Now, or a time:** due posts go out every minute; each place is a job
  *   that retries.
  *
+ * @phpstan-import-type Issue from AdvertisingPolicy
+ *
  * @phpstan-type Check array{code: string, ok: bool, detail: string|null}
  * @phpstan-type TargetRow array{id: int, integration: string, channel: string, target_id: string, name: string, status: string, error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}
- * @phpstan-type PostRow array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: string, scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<TargetRow>, totals: array<string, int>}
+ * @phpstan-type PostRow array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: string, scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<TargetRow>, totals: array<string, int>, approval_note: string|null}
  * @phpstan-type Pick array{connection: int, channel: string, id: string}
  */
 final readonly class SocialPosts
@@ -55,6 +60,8 @@ final readonly class SocialPosts
         private ListingPosts $listingPosts,
         private ActiveRole $roles,
         private PersonStates $states,
+        private AdvertisingPolicy $policy,
+        private Memberships $memberships,
     ) {}
 
     /** @return array{stats: array{posts_this_month: int, reach: int, engagement: int, clicks: int}, scheduled: list<PostRow>, posted: list<PostRow>, drafts: list<PostRow>} */
@@ -68,7 +75,8 @@ final readonly class SocialPosts
 
         return [
             'stats' => ['posts_this_month' => count($thisMonth), 'reach' => $sum('reach'), 'engagement' => $sum('likes') + $sum('comments') + $sum('shares'), 'clicks' => $sum('clicks')],
-            'scheduled' => array_values(array_filter($rows, static fn (array $r): bool => in_array($r['status'], ['scheduled', 'publishing'], true))),
+            // Waiting for the broker (B12.1) shows with the scheduled posts.
+            'scheduled' => array_values(array_filter($rows, static fn (array $r): bool => in_array($r['status'], ['approval', 'scheduled', 'publishing'], true))),
             'posted' => array_values(array_filter($rows, static fn (array $r): bool => in_array($r['status'], ['published', 'partly', 'failed'], true))),
             'drafts' => array_values(array_filter($rows, static fn (array $r): bool => $r['status'] === 'draft')),
         ];
@@ -105,7 +113,7 @@ final readonly class SocialPosts
     {
         $post = $this->find($user, $uuid);
 
-        if (! in_array($post->status, ['draft', 'scheduled'], true)) {
+        if (! in_array($post->status, ['draft', 'approval', 'scheduled'], true)) {
             throw ValidationException::withMessages(['post' => self::line('social.errors.sent')]);
         }
 
@@ -120,7 +128,7 @@ final readonly class SocialPosts
      *
      * @param  list<string>  $media
      * @param  list<Pick>  $picks
-     * @return array{attribution: string, checks: list<Check>, ok: bool}
+     * @return array{attribution: string, checks: list<Check>, ok: bool, approval: bool, issues: list<Issue>}
      */
     public function check(User $user, string $body, array $media, array $picks, ?string $listing): array
     {
@@ -151,7 +159,28 @@ final readonly class SocialPosts
         $title = $agent?->type === LicenceType::SalesAgent && preg_match("/\\b(i am|i'm|as your|your)\\s+(real estate\\s+)?(broker|owner|president)\\b/i", $body) === 1;
         $checks[] = ['code' => 'title', 'ok' => ! $title, 'detail' => null];
 
-        return ['attribution' => $attribution, 'checks' => $checks, 'ok' => array_filter($checks, static fn (array $c): bool => ! $c['ok']) === []];
+        // Fair housing wording, misleading claims and the brokerage's banned phrases (B12.1, screen 167).
+        $issues = $this->policy->issues($user, $body);
+
+        foreach (['fair_housing', 'claims', 'banned'] as $code) {
+            $found = array_values(array_filter($issues, static fn (array $i): bool => $i['code'] === $code));
+            $checks[] = ['code' => $code, 'ok' => $found === [], 'detail' => $found === [] ? null : implode(', ', array_column($found, 'phrase'))];
+        }
+
+        return [
+            'attribution' => $attribution, 'checks' => $checks, 'ok' => array_filter($checks, static fn (array $c): bool => ! $c['ok']) === [],
+            'approval' => $this->policy->needsApproval($user), 'issues' => $issues,
+        ];
+    }
+
+    /**
+     * "Fix automatically" (screen 167): flagged wording swapped or taken out.
+     *
+     * @return array{body: string, fixed: list<Issue>}
+     */
+    public function fix(User $user, string $body): array
+    {
+        return ['body' => $this->policy->fix($user, $body), 'fixed' => $this->policy->issues($user, $body)];
     }
 
     /** Remove a draft or a scheduled post (Undo restores it as a draft). */
@@ -159,7 +188,7 @@ final readonly class SocialPosts
     {
         $post = $this->find($user, $uuid);
 
-        if (! in_array($post->status, ['draft', 'scheduled'], true)) {
+        if (! in_array($post->status, ['draft', 'approval', 'scheduled'], true)) {
             throw ValidationException::withMessages(['post' => self::line('social.errors.sent')]);
         }
 
@@ -201,8 +230,18 @@ final readonly class SocialPosts
     {
         $count = 0;
 
-        SocialPost::query()->where('status', 'scheduled')->where('scheduled_at', '<=', now())->orderBy('scheduled_at')->limit(200)->get()
+        SocialPost::query()->where('status', 'scheduled')->where('scheduled_at', '<=', now())->with('user')->orderBy('scheduled_at')->limit(200)->get()
             ->each(function (SocialPost $post) use (&$count): void {
+                // Checked again as it goes out (B12.1): the brokerage may have banned a phrase since.
+                $issues = $this->policy->issues($post->user, $post->body);
+
+                if ($issues !== []) {
+                    $note = __('studio.checks.recheck', ['phrases' => implode(', ', array_column($issues, 'phrase'))]);
+                    $post->forceFill(['status' => 'draft', 'scheduled_at' => null, 'approval_note' => is_string($note) ? $note : null])->save();
+
+                    return;
+                }
+
                 $this->publish($post);
                 $count++;
             });
@@ -286,7 +325,8 @@ final readonly class SocialPosts
 
         if ($listing !== null) {
             $draft = $this->listingPosts->draft($user, $listing);
-            if (array_diff($media, array_column($draft['photos'], 'url')) !== []) {
+            // MLS photos must be ones the MLS allows; designs the studio made (B12.1) are the agent's own files.
+            if (array_diff(array_filter($media, static fn (string $m): bool => str_starts_with($m, 'http')), array_column($draft['photos'], 'url')) !== []) {
                 throw ValidationException::withMessages(['media' => self::line('listings.post.errors.photo')]);
             }
             $mls = MlsListing::query()->where('uuid', $listing)->first();
@@ -307,15 +347,20 @@ final readonly class SocialPosts
             throw ValidationException::withMessages(['at' => self::line('social.errors.at')]);
         }
 
-        DB::transaction(function () use ($post, $body, $items, $link, $check, $listingPost, $when, $scheduled, $targets): void {
+        // The brokerage sees this agent's posts first: they wait for approval, then go now or at their time.
+        $approval = $when !== 'draft' && $check['approval'];
+
+        DB::transaction(function () use ($post, $body, $items, $link, $check, $listingPost, $when, $scheduled, $targets, $approval): void {
             $post->forceFill([
                 'body' => $body, 'media' => $items, 'link' => $link, 'attribution' => $check['attribution'], 'listing_post_id' => $listingPost?->id,
-                'status' => match ($when) {
-                    'now' => 'publishing',
-                    'later' => 'scheduled',
+                'status' => match (true) {
+                    $approval => 'approval',
+                    $when === 'now' => 'publishing',
+                    $when === 'later' => 'scheduled',
                     default => 'draft',
                 },
                 'scheduled_at' => $scheduled,
+                'approval_requested_at' => $approval ? now() : null, 'approved_by' => null, 'approved_at' => null, 'approval_note' => $approval ? null : $post->approval_note,
             ])->save();
             $post->targets()->delete();
 
@@ -324,7 +369,13 @@ final readonly class SocialPosts
             }
         });
 
-        if ($when === 'now') {
+        if ($approval) {
+            $brokerage = $this->policy->brokerage($user);
+
+            foreach ($brokerage === null ? [] : $this->memberships->holdersIn(Role::Broker, $brokerage) as $broker) {
+                $broker->notify(new PostApprovalRequested($post->setRelation('user', $user)));
+            }
+        } elseif ($when === 'now') {
             $this->publish($post);
         }
 
@@ -446,7 +497,7 @@ final readonly class SocialPosts
             'id' => $post->uuid, 'body' => $post->body, 'media' => $content['media'], 'link' => $post->link, 'attribution' => $post->attribution,
             'listing' => $post->listing_post_id === null ? null : (string) $post->listing_post_id, 'status' => $post->status,
             'scheduled_at' => $post->scheduled_at?->toIso8601String(), 'published_at' => $post->published_at?->toIso8601String(), 'created_at' => $post->created_at?->toIso8601String(),
-            'targets' => $targets, 'totals' => $totals,
+            'targets' => $targets, 'totals' => $totals, 'approval_note' => $post->approval_note,
         ];
     }
 

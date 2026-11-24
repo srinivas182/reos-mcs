@@ -37,6 +37,7 @@ use Illuminate\Support\Str;
  * @property string $cell
  * @property array<string, mixed>|null $limits Overrides of TenantLimits (see tenantLimits())
  * @property array<string, bool>|null $features
+ * @property array{approval_new_agents?: bool, approval_all?: bool, banned?: list<string>}|null $advertising The brokerage's advertising policy (B12.1)
  * @property array{answerer_id?: int|null, reply_hours?: int}|null $virtual_broker Who answers virtual broker escalations and how fast (A12.1)
  * @property array<string, string|null>|null $brand Logo, colour, app label and email sender (see App\Tenancy\Brand)
  * @property int|null $parent_id
@@ -46,7 +47,7 @@ use Illuminate\Support\Str;
  * @property Carbon|null $updated_at
  * @property-read Organisation|null $parent
  */
-#[Fillable(['type', 'name', 'slug', 'status', 'trial_ends_at', 'status_reason', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'brand', 'parent_id', 'virtual_broker'])]
+#[Fillable(['type', 'name', 'slug', 'status', 'trial_ends_at', 'status_reason', 'states', 'plan', 'region', 'cell', 'limits', 'features', 'brand', 'parent_id', 'virtual_broker', 'advertising'])]
 final class Organisation extends Model
 {
     /** @use HasFactory<OrganisationFactory> */
@@ -131,6 +132,7 @@ final class Organisation extends Model
             'features' => 'array',
             'brand' => 'array',
             'virtual_broker' => 'array',
+            'advertising' => 'array',
         ];
     }
 }

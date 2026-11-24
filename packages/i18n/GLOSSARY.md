@@ -31,6 +31,9 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Policy manual (brokerage) | Manual de políticas | |
 | FAQ | Preguntas frecuentes | |
 | Earnest money | Depósito de garantía | |
+| Fair housing | Vivienda justa | |
+| Brand kit | Kit de marca | |
+| Carousel (social post) | Carrusel | |
 | Licensed agent | Agente con licencia | |
 | Sales agent (license type) | Agente de ventas | |
 | Candidate | Candidato | |

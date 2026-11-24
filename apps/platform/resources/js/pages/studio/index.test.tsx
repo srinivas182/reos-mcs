@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { accounts, check, post, postList } from '@/components/social/fixtures';
+import { generation, maker } from '@/components/studio/fixtures';
 import { i18n } from '@/lib/i18n';
 import StudioPage from '@/pages/studio/index';
 
@@ -23,9 +24,11 @@ describe('the content studio (B11.1)', () => {
         fetchMock = vi.fn(async (url: string) => {
             const data = url.includes('/check')
                 ? check()
-                : url.includes('/studio/posts')
-                  ? post({ status: 'publishing' })
-                  : null;
+                : url.includes('/studio/generations')
+                  ? generation()
+                  : url.includes('/studio/posts')
+                    ? post({ status: 'publishing' })
+                    : null;
             const body =
                 url === '/studio' ? { props: { posts: postList() } } : { data };
             return new Response(JSON.stringify(body), {
@@ -54,6 +57,7 @@ describe('the content studio (B11.1)', () => {
                 accounts={accounts()}
                 posts={postList()}
                 listing={null}
+                maker={maker()}
             />,
         );
 
@@ -89,5 +93,28 @@ describe('the content studio (B11.1)', () => {
             targets: [{ connection: 4, channel: 'facebook', id: 'p1' }],
             when: 'now',
         });
+    });
+
+    it('makes a listing post and puts the chosen design and caption in the composer (B12.1)', async () => {
+        const user = userEvent.setup();
+        render(
+            <StudioPage
+                accounts={accounts()}
+                posts={postList()}
+                listing={null}
+                maker={maker()}
+            />,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Make' }));
+        await waitFor(() =>
+            expect(screen.getByText('Pick a version')).toBeInTheDocument(),
+        );
+        await user.click(screen.getByRole('button', { name: 'Use this' }));
+        await waitFor(() =>
+            expect(screen.getByLabelText('Post text')).toHaveValue(
+                generation().captions[0].text,
+            ),
+        );
     });
 });

@@ -1,6 +1,6 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
-import { CircleCheck, CircleX, ImagePlus, Trash2 } from 'lucide-react-native';
+import { CircleCheck, CircleX, ImagePlus, Trash2, Wand2 } from 'lucide-react-native';
 import { useCallback, useEffect, useState } from 'react';
 import { Image, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,7 @@ import { StyleSheet } from 'react-native-unistyles';
 
 import { api } from '@/lib/api';
 import { type Channel, type CheckResult, checkPost, type Pick, type PostBody, savePost, uploadMedia, useSocialAccounts } from '@/lib/social';
+import { fixPost } from '@/lib/studio';
 import { Button, Callout, Card, Icon, ListRow, PillGroup, Screen, SectionTitle, SwitchRow, Text, TextField, TitleBar, useUndoToast } from '@/ui';
 
 type Media = { value: string; preview: string; kind: string };
@@ -34,7 +35,8 @@ function slots(now: Date): { value: string; label: string }[] {
 export default function NewPostScreen() {
   const { t, i18n } = useTranslation();
   const toast = useUndoToast();
-  const { post: editId, listing } = useLocalSearchParams<{ post?: string; listing?: string }>();
+  // From Pick a version (B12.1): the chosen caption and design, and the listing they came from.
+  const { post: editId, listing, caption, media: studioMedia } = useLocalSearchParams<{ post?: string; listing?: string; caption?: string; media?: string }>();
   const { accounts } = useSocialAccounts();
   const [body, setBody] = useState('');
   const [media, setMedia] = useState<Media[]>([]);
@@ -43,6 +45,7 @@ export default function NewPostScreen() {
   const [when, setWhen] = useState<When>('now');
   const [at, setAt] = useState<string | null>(null);
   const [check, setCheck] = useState<CheckResult | null>(null);
+  const [returned, setReturned] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [now] = useState(() => new Date());
@@ -59,8 +62,17 @@ export default function NewPostScreen() {
             setMedia(p.media.map((m) => ({ value: m.url, preview: m.url, kind: m.kind })));
             setWhen(p.status === 'scheduled' ? 'later' : 'draft');
             setAt(p.scheduled_at);
+            setReturned(p.status === 'draft' ? p.approval_note : null);
           })
           .catch(() => undefined);
+      } else if (caption !== undefined) {
+        setBody(caption);
+        try {
+          const chosen = JSON.parse(studioMedia ?? '[]') as { path: string; url: string }[];
+          setMedia(chosen.map((m) => ({ value: m.path, preview: m.url, kind: 'image' })));
+        } catch {
+          setMedia([]);
+        }
       } else if (listing) {
         void api()
           .GET('/listings/{listing}/post', { params: { path: { listing } } })
@@ -73,7 +85,7 @@ export default function NewPostScreen() {
           })
           .catch(() => undefined);
       }
-    }, [editId, listing]),
+    }, [editId, listing, caption, studioMedia]),
   );
 
   const request = useCallback(
@@ -184,11 +196,28 @@ export default function NewPostScreen() {
           {check.checks.map((c, i) => (
             <View key={`${c.code}-${c.detail ?? i}`} style={styles.check}>
               <Icon icon={c.ok ? CircleCheck : CircleX} color={c.ok ? 'success' : 'danger'} size={20} />
-              <Text>{t(`social.checks.${c.code}`, { channel: c.detail ? t(`social.channels.${c.detail as Channel}`) : '' })}</Text>
+              <Text style={styles.flex}>
+                {['length', 'media', 'video'].includes(c.code) ? t(`social.checks.${c.code}`, { channel: c.detail ? t(`social.channels.${c.detail as Channel}`) : '' }) : t(`social.checks.${c.code}`, { channel: '' })}
+                {!c.ok && c.detail && !['length', 'media', 'video'].includes(c.code) ? `: ${c.detail}` : ''}
+              </Text>
             </View>
           ))}
+          {check.issues.length > 0 ? (
+            <Button
+              variant="secondary"
+              icon={Wand2}
+              label={t('studio.checks.fix')}
+              onPress={() =>
+                void fixPost(body)
+                  .then(setBody)
+                  .catch((e: unknown) => setProblem(e instanceof Error ? e.message : String(e)))
+              }
+            />
+          ) : null}
+          {check.approval ? <Callout tone="info" title={t('studio.checks.approval')} /> : null}
         </>
       ) : null}
+      {returned ? <Callout tone="warning" title={t('studio.checks.returned', { note: returned })} /> : null}
       <PillGroup<When>
         label={t('social.compose.when')}
         value={when}
@@ -215,4 +244,5 @@ const styles = StyleSheet.create((theme) => ({
   image: { width: theme.m.buttonHeight * 2, height: theme.m.buttonHeight * 2, borderRadius: theme.m.radius.card },
   preview: { gap: theme.space.xs },
   check: { flexDirection: 'row', alignItems: 'center', gap: theme.space.sm },
+  flex: { flex: 1 },
 }));
