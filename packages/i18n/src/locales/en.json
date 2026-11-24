@@ -2301,7 +2301,8 @@
         "policy_faq.removed": "Removed from the brokerage FAQ",
         "policy_faq.restored": "Put back in the brokerage FAQ",
         "broker_question.answered": "Answered an agent's question",
-        "virtual_broker.settings": "Virtual broker escalation changed"
+        "virtual_broker.settings": "Virtual broker escalation changed",
+        "assistant.context": "Assistant permission to read CRM, deals and calendar changed"
       }
     }
   },
@@ -8656,9 +8657,7 @@
     "mobile": {
       "noBrokerage": "For agents at a brokerage",
       "noBrokerageBody": "The virtual broker answers from your brokerage's policy manual. It appears once you join a brokerage as an agent.",
-      "trained": "Trained on {{brokerage}}'s policy manual",
-      "open": "Ask your virtual broker",
-      "openBody": "Policies and Texas rules, with your broker when needed"
+      "trained": "Trained on {{brokerage}}'s policy manual"
     }
   },
   "contracts": {
@@ -8841,9 +8840,96 @@
       "highCount_one": "{{count}} High",
       "highCount_other": "{{count}} High",
       "share": "Share the note"
+    }
+  },
+  "assistant": {
+    "permission": {
+      "ask": "To answer from your CRM, deals and calendar, REOS needs your permission. Allow it below; you can turn it off any time."
+    },
+    "today": {
+      "empty": "Nothing is due today. Your CRM, deals and calendar are clear, so it's a good day to call your sphere.",
+      "intro": "Here's your day: {{count}} things, overdue first, then deadlines, appointments, follow-ups and plan tasks.",
+      "callFirst": "Call {{name}} first.",
+      "reasons": {
+        "overdue": "Overdue",
+        "deadline": "Deadline",
+        "appointment": "Appointment",
+        "follow_up": "Follow-up",
+        "plan": "Plan task"
+      }
+    },
+    "prep": {
+      "none": "You have no appointments coming up on your calendar.",
+      "appointment": "Appointment",
+      "summary": "From your CRM",
+      "note": "Latest note",
+      "lastActivity": "Last activity",
+      "activity": "{{kind}}",
+      "deal": "Their deal",
+      "intro": "Your next appointment is with {{who}}, {{time}}. Here's what to know."
+    },
+    "deal": {
+      "none": "You have no open deals.",
+      "intro": "{{property}} is {{stage}}. Here are its next dates.",
+      "stages": {
+        "active": "active",
+        "under_contract": "under contract",
+        "closed": "closed",
+        "cancelled": "cancelled"
+      }
+    },
+    "draft": {
+      "notFound": "I couldn't find that person in your contacts. Check the name, or add them in Contacts.",
+      "noWay": "{{name}} has no email or phone number in your contacts.",
+      "template": {
+        "email": "Hi {{name}},\n\nI wanted to check in and see how things are going. Is there anything I can help you with this week?\n\nBest,\n{{agent}}",
+        "text": "Hi {{name}}, it's {{agent}}. Just checking in. Anything I can help with this week?"
+      },
+      "subject": "Checking in, from {{agent}}",
+      "intro": {
+        "email": "Here's an email to {{name}}. Edit it in Mail before you send it; REOS never sends it for you.",
+        "text": "Here's a text to {{name}}. Edit it in Messages before you send it; REOS never sends it for you."
+      }
+    },
+    "policy": {
+      "withBroker": "This is with your broker too; you'll see their answer in Virtual broker."
+    },
+    "general": {
+      "simulator": "I can plan your day from your CRM, deals and calendar, prep your next appointment, draft an email or text to a contact, and answer policy questions with your virtual broker. Try \"What should I do today?\""
+    },
+    "errors": {
+      "credits": "This answer takes {{credits}} credits, and you don't have enough left."
     },
     "mobile": {
-      "askRow": "TREC forms: deadlines and what to check"
+      "title": "Ask",
+      "purpose": "Your day, your clients and your brokerage's policies, in one place.",
+      "starters": {
+        "virtual_broker": "Ask your virtual broker",
+        "review_contract": "Review a contract",
+        "prepare_contract": "Prepare a contract",
+        "write_ad": "Write an ad or post",
+        "reply_emails": "Reply to an email",
+        "prep_appointment": "Prep an appointment"
+      },
+      "soon": "Coming soon",
+      "allow": "Allow",
+      "allowTitle": "Use my CRM, deals and calendar",
+      "allowBody": "The assistant reads your synced contacts, deals and calendar to answer. Nothing is sent without your tap.",
+      "allowed": "Allowed. Ask again.",
+      "recent": "Recent chats",
+      "label": "Ask anything",
+      "placeholder": "For example: What should I do today?",
+      "send": "Ask",
+      "asking": "Thinking…",
+      "openMail": "Open in Mail",
+      "openMessages": "Open in Messages",
+      "askBroker": "Ask my broker",
+      "viewBroker": "Open in Virtual broker",
+      "today": "What should I do today?",
+      "prep": "Prep my next appointment",
+      "reply": "Draft an email to ",
+      "emptyTitle": "Ask anything",
+      "emptyBody": "Ask about your day, a client, a deal or a policy. Answers come from your own data."
     }
   }
 }

@@ -24,19 +24,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $brief_timezone
  * @property list<string>|null $brief_sections null for all
  * @property CarbonImmutable|null $brief_sent_on
+ * @property CarbonImmutable|null $assistant_context_at when the agent let the assistant read their CRM, deals and calendar (A12.3)
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User|null $user
  */
 final class AgentProfile extends Model
 {
-    protected $fillable = ['user_id', 'goal', 'flags', 'welcomed_at', 'snoozed_goal', 'snoozed_until', 'brief_enabled', 'brief_at', 'brief_timezone', 'brief_sections', 'brief_sent_on'];
+    protected $fillable = ['user_id', 'goal', 'flags', 'welcomed_at', 'snoozed_goal', 'snoozed_until', 'brief_enabled', 'brief_at', 'brief_timezone', 'brief_sections', 'brief_sent_on', 'assistant_context_at'];
 
     protected $attributes = ['flags' => '[]'];
 
     protected function casts(): array
     {
-        return ['flags' => 'array', 'welcomed_at' => 'immutable_datetime', 'snoozed_until' => 'immutable_datetime', 'brief_enabled' => 'boolean', 'brief_sections' => 'array', 'brief_sent_on' => 'immutable_date'];
+        return ['flags' => 'array', 'welcomed_at' => 'immutable_datetime', 'snoozed_until' => 'immutable_datetime', 'brief_enabled' => 'boolean', 'brief_sections' => 'array', 'brief_sent_on' => 'immutable_date', 'assistant_context_at' => 'immutable_datetime'];
     }
 
     /** @return BelongsTo<User, $this> */

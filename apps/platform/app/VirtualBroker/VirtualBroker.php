@@ -88,6 +88,7 @@ final readonly class VirtualBroker
      * An agent's question, answered and, when it should be, sent to the broker.
      *
      * @throws ValidationException
+     * @throws NotFoundHttpException when the person isn't an agent at a brokerage
      */
     public function ask(User $agent, string $question, ?int $dealId): BrokerQuestion
     {

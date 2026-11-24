@@ -185,6 +185,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/assistant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Ask home
+         * @description Whether the assistant may read my CRM, deals and calendar, the starters, and my recent chats.
+         */
+        get: operations["assistant.home"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assistant/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask the assistant
+         * @description It picks the knowledge: my day (Today's ranked list from my CRM, deals, calendar and plan), an appointment's prep, a deal, a draft email or text to a contact (never sent by REOS), the virtual broker for policy, or a general answer. My own data is read only once I've allowed it; otherwise the answer asks (kind "permission").
+         */
+        post: operations["assistant.ask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assistant/chats/{chat}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One of my chats */
+        get: operations["assistant.chat"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assistant/permission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Let the assistant read my data
+         * @description One switch for my CRM contacts, deals and calendar; audited. Turn it off any time.
+         */
+        put: operations["assistant.permission"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/bookings": {
         parameters: {
             query?: never;
@@ -5109,6 +5186,15 @@ export interface components {
             thread?: string | null;
         };
         /**
+         * AssistantQuestionRequest
+         * @description A question to the assistant (A12.3; screen 60), in a new chat or one of mine.
+         */
+        AssistantQuestionRequest: {
+            question: string;
+            /** Format: uuid */
+            chat?: string | null;
+        };
+        /**
          * BookSessionRequest
          * @description Book a 1-on-1 session (A10.2a, candidate screen 18).
          */
@@ -6578,6 +6664,7 @@ export type SchemaAppConfigResource = components['schemas']['AppConfigResource']
 export type SchemaAskBrokerRequest = components['schemas']['AskBrokerRequest'];
 export type SchemaAskInstructorRequest = components['schemas']['AskInstructorRequest'];
 export type SchemaAskRequest = components['schemas']['AskRequest'];
+export type SchemaAssistantQuestionRequest = components['schemas']['AssistantQuestionRequest'];
 export type SchemaBookSessionRequest = components['schemas']['BookSessionRequest'];
 export type SchemaBriefSettingsRequest = components['schemas']['BriefSettingsRequest'];
 export type SchemaBrokerRole = components['schemas']['BrokerRole'];
@@ -7062,6 +7149,203 @@ export interface operations {
                             /** @enum {string} */
                             status: "waiting" | "answered";
                             course: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "assistant.home": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            permission: boolean;
+                            starters: ("virtual_broker" | "review_contract" | "prepare_contract" | "write_ad" | "reply_emails" | "prep_appointment")[];
+                            chats: {
+                                id: string;
+                                title: string;
+                                updated_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "assistant.ask": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssistantQuestionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            updated_at: string | null;
+                            messages: {
+                                id: number;
+                                /** @enum {string} */
+                                role: "question" | "answer";
+                                body: string;
+                                /** @enum {string|null} */
+                                kind: "today" | "prep" | "deal" | "draft" | "policy" | "general" | "permission" | "none" | null;
+                                items: {
+                                    title: string;
+                                    detail: string | null;
+                                    source: string | null;
+                                    at: string | null;
+                                    link: string | null;
+                                }[];
+                                draft: {
+                                    /** @enum {string} */
+                                    channel: "email" | "text";
+                                    to: string;
+                                    name: string;
+                                    subject: string | null;
+                                    body: string;
+                                    href: string;
+                                } | null;
+                                broker_question: string | null;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "assistant.chat": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                chat: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            updated_at: string | null;
+                            messages: {
+                                id: number;
+                                /** @enum {string} */
+                                role: "question" | "answer";
+                                body: string;
+                                /** @enum {string|null} */
+                                kind: "today" | "prep" | "deal" | "draft" | "policy" | "general" | "permission" | "none" | null;
+                                items: {
+                                    title: string;
+                                    detail: string | null;
+                                    source: string | null;
+                                    at: string | null;
+                                    link: string | null;
+                                }[];
+                                draft: {
+                                    /** @enum {string} */
+                                    channel: "email" | "text";
+                                    to: string;
+                                    name: string;
+                                    subject: string | null;
+                                    body: string;
+                                    href: string;
+                                } | null;
+                                broker_question: string | null;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "assistant.permission": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    allowed: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            permission: boolean;
                         };
                     };
                 };
@@ -22165,6 +22449,7 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             403: components["responses"]["AuthorizationException"];
+            404: components["responses"]["NotFoundHttpException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
