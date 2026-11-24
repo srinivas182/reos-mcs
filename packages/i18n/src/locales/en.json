@@ -5455,7 +5455,8 @@
       "policy_answer": "Your broker's answers",
       "contract_review": "Contract reviews",
       "post_approval": "Post approvals",
-      "post_decision": "Your broker's decisions on posts"
+      "post_decision": "Your broker's decisions on posts",
+      "celebration": "Celebration posts"
     },
     "digest": {
       "subject": {
@@ -8514,6 +8515,42 @@
       "upload": "That file couldn’t be saved. Try again.",
       "imageSize": "Photos can be up to 8 MB.",
       "reconnect": "Reconnect the account in Social accounts, then post again."
+    },
+    "calendar": {
+      "title": "Content calendar",
+      "purpose": "Plan, move and reuse your posts.",
+      "week": "Week",
+      "month": "Month",
+      "previous": "Previous",
+      "next": "Next",
+      "today": "Today",
+      "plan": "Plan a post",
+      "move": "Move",
+      "moveTo": "Move to",
+      "moved": "Moved to {{date}}",
+      "reuse": "Reuse",
+      "reused": "Planned again for {{date}}",
+      "reuseOn": "Reuse on",
+      "empty": "Nothing planned",
+      "emptyHint": "Plan a post for this week, or reuse one that did well.",
+      "scheduled_one": "{{count}} post scheduled",
+      "scheduled_other": "{{count}} posts scheduled",
+      "drag": "Drag a post to another day, or use Move.",
+      "day": "{{date}}",
+      "status": {
+        "draft": "Planned",
+        "approval": "Waiting for broker",
+        "scheduled": "Scheduled",
+        "publishing": "Going out",
+        "published": "Posted",
+        "partly": "Partly posted",
+        "failed": "Didn't post"
+      },
+      "errors": {
+        "date": "Choose a valid date.",
+        "move": "Posts that went out can't move. Reuse it instead.",
+        "past": "Choose a day and time that hasn't passed."
+      }
     }
   },
   "virtualBroker": {
@@ -8975,6 +9012,43 @@
         "professional": "{{text}} Questions about buying or selling? Message me. #RealEstate #{{tag}}RealEstate",
         "warm": "{{text}} I'm always happy to help, so send me a message any time. #RealEstate #{{tag}}Homes",
         "short": "{{text}} #RealEstate"
+      },
+      "celebration": {
+        "just_listed": {
+          "professional": "Just listed: {{text}}. I'm proud to bring this home to market. Message me for details. #JustListed #TexasRealEstate",
+          "warm": "Just listed! {{text}} is ready for its next chapter. Want a look? Send me a message. #JustListed #TexasHomes",
+          "short": "Just listed: {{text}}. #JustListed"
+        },
+        "under_contract": {
+          "professional": "Under contract: {{text}}. Thank you to everyone who worked to get here. #UnderContract #TexasRealEstate",
+          "warm": "We're under contract on {{text}}! One step closer to the closing table. #UnderContract #TexasHomes",
+          "short": "Under contract: {{text}}. #UnderContract"
+        },
+        "just_sold": {
+          "professional": "Just sold: {{text}}. Congratulations to my clients, and thank you for your trust. #JustSold #TexasRealEstate",
+          "warm": "Sold! {{text}} has new owners. It was a joy to be part of it. #JustSold #TexasHomes",
+          "short": "Just sold: {{text}}. #JustSold"
+        },
+        "first_closing": {
+          "professional": "My first closing: {{text}}. Thank you to my clients, my broker and everyone who helped along the way. #FirstClosing #TexasRealEstate",
+          "warm": "My first closing! {{text}} is officially sold. What a day, and thank you for your trust. #FirstClosing #NewAgent",
+          "short": "My first closing: {{text}}. #FirstClosing"
+        },
+        "ce_complete": {
+          "professional": "Continuing education complete. I keep learning so I can serve my clients well. #RealEstateEducation #TexasRealtor",
+          "warm": "CE done for this period! Always learning to serve you better. #KeepLearning #TexasRealEstate",
+          "short": "CE complete. #KeepLearning"
+        },
+        "license_renewed": {
+          "professional": "License renewed. I'm here to help you buy or sell in Texas. #TexasRealEstate #Licensed",
+          "warm": "My Texas real estate license is renewed! Ready to help you with your next move. #TexasRealEstate",
+          "short": "License renewed. #TexasRealEstate"
+        },
+        "anniversary": {
+          "professional": "{{text}} in real estate. Thank you to every client who trusted me along the way. #Anniversary #TexasRealEstate",
+          "warm": "Celebrating {{text}} in real estate! Grateful for every client and every move. #Anniversary #TexasHomes",
+          "short": "{{text}} in real estate. #Anniversary"
+        }
       }
     },
     "ad": {
@@ -9181,6 +9255,71 @@
       "noneHint": "Make one from a listing in about a minute.",
       "chooseListing": "Choose a listing",
       "noListings": "No listings to make a video from yet."
+    },
+    "celebrate": {
+      "badges": {
+        "just_listed": "JUST LISTED",
+        "under_contract": "UNDER CONTRACT",
+        "just_sold": "JUST SOLD",
+        "first_closing": "MY FIRST CLOSING",
+        "ce_complete": "CE COMPLETE",
+        "license_renewed": "LICENSE RENEWED",
+        "anniversary": "ANNIVERSARY"
+      },
+      "names": {
+        "just_listed": "Just listed",
+        "under_contract": "Under contract",
+        "just_sold": "Just sold",
+        "first_closing": "First closing",
+        "ce_complete": "CE complete",
+        "license_renewed": "License renewed",
+        "anniversary": "Anniversary"
+      },
+      "notify": {
+        "just_listed": "Your just-listed post is ready",
+        "under_contract": "Your under-contract post is ready",
+        "just_sold": "Your just-sold post is ready",
+        "first_closing": "Congratulations on your first closing! Your post is ready",
+        "ce_complete": "CE complete! Your post is ready",
+        "license_renewed": "License renewed! Your post is ready",
+        "anniversary": "Happy anniversary! Your post is ready",
+        "body": "Free to post. Pick a design and share it."
+      },
+      "years": "{{years}} years",
+      "title": "Celebration",
+      "purpose": "A milestone, ready to post. Free.",
+      "today": "Today's celebration",
+      "waiting": "Waiting in My posts",
+      "none": "No celebrations yet",
+      "noneHint": "When you list, go under contract, close, finish CE or renew, a free post is made for you.",
+      "free": "Free · checked for fair housing and your broker's name",
+      "open": "Open"
+    },
+    "brand": {
+      "title": "Photo and brand",
+      "purpose": "Make every post look professional and on-brand.",
+      "photo": "Profile photo",
+      "noPhoto": "No photo yet",
+      "upload": "Upload photo",
+      "replace": "Replace photo",
+      "remove": "Remove photo",
+      "removed": "Photo removed",
+      "good": "Looks good. Lighting evened out automatically.",
+      "issues": {
+        "small": "It's small; a larger photo looks sharper.",
+        "dark": "It's dark; we brightened it. Daylight works best.",
+        "bright": "It's very bright; we toned it down."
+      },
+      "name": "Name",
+      "brokerage": "Brokerage",
+      "licence": "License number",
+      "colour": "Brand color",
+      "logo": "Logo",
+      "noBrokerage": "Join your brokerage to post: its name is required on every post.",
+      "kitNote": "Your brokerage sets the logo and colors on the web. Your broker's name is added at the size Texas rules require.",
+      "errors": {
+        "photo": "That file isn't a photo we can read."
+      }
     }
   }
 }

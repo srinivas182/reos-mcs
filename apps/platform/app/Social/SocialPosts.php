@@ -360,6 +360,8 @@ final readonly class SocialPosts
                     default => 'draft',
                 },
                 'scheduled_at' => $scheduled,
+                // A planned draft leaves the plan once it's scheduled or sent (B12.3).
+                'planned_on' => $when === 'draft' ? $post->planned_on : null,
                 'approval_requested_at' => $approval ? now() : null, 'approved_by' => null, 'approved_at' => null, 'approval_note' => $approval ? null : $post->approval_note,
             ])->save();
             $post->targets()->delete();

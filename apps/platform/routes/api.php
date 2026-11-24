@@ -61,8 +61,11 @@ use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
+use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\States\CurrentStateController;
+use App\Http\Controllers\Api\Studio\BrandKitController;
+use App\Http\Controllers\Api\Studio\CelebrationController;
 use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Studio\VideoController;
 use App\Http\Controllers\Api\Todos\TodoController;
@@ -347,6 +350,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('posts/{post}/repost', 'repost')->whereUuid('post')->middleware('throttle:30,1,api-social-posts')->name('posts.repost');
         Route::post('media', 'media')->middleware('throttle:20,1,api-social-media')->name('media');
     });
+    // The content calendar (B12.3): a week or month of posts; move and reuse.
+    Route::prefix('social')->name('api.social.')->controller(ContentCalendarController::class)->group(function () {
+        Route::get('calendar', 'index')->name('calendar');
+        Route::post('posts/{post}/move', 'move')->whereUuid('post')->middleware('throttle:60,1,api-social-calendar')->name('posts.move');
+        Route::post('posts/{post}/reuse', 'reuse')->whereUuid('post')->middleware('throttle:30,1,api-social-calendar')->name('posts.reuse');
+    });
+    // Celebration moments, and the profile photo and brand kit (B12.3, screens 163 and 162).
+    Route::get('studio/celebrations', [CelebrationController::class, 'index'])->name('api.studio.celebrations.index');
+    Route::get('studio/celebrations/{celebration}', [CelebrationController::class, 'show'])->whereUuid('celebration')->name('api.studio.celebrations.show');
+    Route::get('me/brand', [BrandKitController::class, 'show'])->name('api.me.brand');
+    Route::post('me/brand/photo', [BrandKitController::class, 'photo'])->middleware('throttle:10,1,api-me-brand-photo')->name('api.me.brand.photo');
+    Route::delete('me/brand/photo', [BrandKitController::class, 'removePhoto'])->middleware('throttle:10,1,api-me-brand-photo')->name('api.me.brand.photo.destroy');
     // The CE wallet and renewal checklist (A11.2).
     Route::get('me/ce', [CeWalletController::class, 'index'])->name('api.me.ce.index');
     Route::get('me/ce/completions/{completion}', [CeWalletController::class, 'certificate'])->whereNumber('completion')->name('api.me.ce.certificate');

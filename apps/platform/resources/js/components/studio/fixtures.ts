@@ -1,3 +1,5 @@
+import type { Calendar } from './calendar';
+import type { CelebrationList } from './celebrations';
 import type { Generation, Maker, Video } from './types';
 
 /** Realistic REOS content for the studio's stories and tests. */
@@ -125,5 +127,90 @@ export const video = (over: Partial<Video> = {}): Video => ({
     engine: 'ffmpeg',
     created_at: '2026-11-24T15:00:00Z',
     rendered_at: '2026-11-24T15:01:00Z',
+    ...over,
+});
+
+const days = [
+    '2026-11-29',
+    '2026-11-30',
+    '2026-12-01',
+    '2026-12-02',
+    '2026-12-03',
+    '2026-12-04',
+    '2026-12-05',
+];
+
+export const calendarWeek = (over: Partial<Calendar> = {}): Calendar => ({
+    view: 'week',
+    date: '2026-12-01',
+    from: '2026-11-29',
+    to: '2026-12-05',
+    previous: '2026-11-24',
+    next: '2026-12-08',
+    timezone: 'America/Chicago',
+    scheduled: 6,
+    days: days.map((date, i) => ({
+        date,
+        today: false,
+        posts:
+            i === 6
+                ? [
+                      {
+                          id: `0193f1c2-7a10-7d43-9b1e-2f6a4c1d8f0${i}`,
+                          status: 'draft',
+                          body: 'Open house Saturday, 1 to 3 pm at 2418 Willow Bend Dr. Stop by!',
+                          time: null,
+                          channels: ['facebook'],
+                          thumb: '/demo/listings/1.png',
+                          kind: 'image',
+                          movable: true,
+                      },
+                  ]
+                : [
+                      {
+                          id: `0193f1c2-7a10-7d43-9b1e-2f6a4c1d8f0${i}`,
+                          status: i === 0 ? 'published' : 'scheduled',
+                          body: `Home buying tip ${i + 1}: get pre-approved before you shop. #HomeBuying`,
+                          time: '10:00',
+                          channels: ['facebook', 'instagram'],
+                          thumb: null,
+                          kind: null,
+                          movable: i !== 0,
+                      },
+                  ],
+    })),
+    ...over,
+});
+
+export const celebrationList = (
+    over: Partial<CelebrationList> = {},
+): CelebrationList => ({
+    today: {
+        id: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8fa1',
+        milestone: 'first_closing',
+        label: '88 Oak Ridge Dr, Katy',
+        post: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8fa2',
+        generation: generation({
+            captions: [
+                {
+                    tone: 'professional',
+                    text: 'My first closing: 88 Oak Ridge Dr, Katy. Thank you to my clients, my broker and everyone who helped along the way. #FirstClosing #TexasRealEstate',
+                },
+            ],
+        }),
+        shown_at: '2026-11-24T15:17:00Z',
+        created_at: '2026-11-24T15:17:00Z',
+    },
+    waiting: [
+        {
+            id: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8fa3',
+            milestone: 'anniversary',
+            label: '3 years',
+            post: null,
+            generation: null,
+            shown_at: null,
+            created_at: '2026-11-24T15:17:00Z',
+        },
+    ],
     ...over,
 });

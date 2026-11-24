@@ -30,7 +30,7 @@ final class StudioRenderer
     /**
      * @param  array{headline: string, lines: list<string>, attribution: string}  $text
      */
-    public static function design(string $layout, ?string $photo, string $colour, array $text): string
+    public static function design(string $layout, ?string $photo, string $colour, array $text, ?string $portrait = null): string
     {
         $im = imagecreatetruecolor(self::SIZE, self::SIZE);
         [$r, $g, $b] = self::rgb($colour);
@@ -52,6 +52,13 @@ final class StudioRenderer
             $top = $layout === 'top' ? 0 : 700;
             imagefilledrectangle($im, 0, $top, self::SIZE, $top + 380, $shade);
             self::words($im, $text, 60, $top + 100, $white);
+        }
+
+        // The agent's profile photo in a circle (B12.3, celebration designs).
+        $face = $portrait === null ? null : self::photo($portrait);
+
+        if ($face !== null) {
+            self::circle($im, $face, self::SIZE - 300, $layout === 'top' ? self::SIZE - 300 : 40, 260, $white);
         }
 
         ob_start();
@@ -104,6 +111,23 @@ final class StudioRenderer
         $sw = (int) round($w / $scale);
         $sh = (int) round($h / $scale);
         imagecopyresampled($im, $photo, $x, $y, (int) (($pw - $sw) / 2), (int) (($ph - $sh) / 2), $w, $h, $sw, $sh);
+    }
+
+    /** A photo cropped to a circle with a white ring. */
+    private static function circle(GdImage $im, GdImage $photo, int $x, int $y, int $size, int $ring): void
+    {
+        $square = imagecreatetruecolor(max(1, $size), max(1, $size));
+        self::cover($square, $photo, 0, 0, $size, $size);
+        imagefilledellipse($im, $x + intdiv($size, 2), $y + intdiv($size, 2), $size + 16, $size + 16, $ring);
+        $r = $size / 2;
+
+        for ($py = 0; $py < $size; $py++) {
+            for ($px = 0; $px < $size; $px++) {
+                if (($px - $r + 0.5) ** 2 + ($py - $r + 0.5) ** 2 <= $r * $r) {
+                    imagesetpixel($im, $x + $px, $y + $py, (int) imagecolorat($square, $px, $py));
+                }
+            }
+        }
     }
 
     /** A photo from REOS's demo listings, the social media disk, or the web (JPEG or PNG). */

@@ -51,4 +51,4 @@ Agents need content for listings, sales and market updates every week. Canva and
 
 - Designs are deliberately simple and consistent. Richer templates can be added as layouts without changing callers.
 - The phrase lists catch common problems, not every one. Brokers add their own, and Claude's writing rules avoid the rest.
-- The agent's profile photo and brand kit screen (162) and celebration posts (163) come with the content calendar (B12.3). Video comes with B12.2.
+- Video came with B12.2 (ADR 0051). The profile photo and brand kit (162), celebration posts (163) and the content calendar came with B12.3 (ADR 0052). Celebration makings are studio makings with `source.type = celebration`, free.

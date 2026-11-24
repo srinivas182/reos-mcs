@@ -1,9 +1,11 @@
-import { router } from 'expo-router';
-import { Megaphone, Plug, Plus, Sparkles } from 'lucide-react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { CalendarDays, Megaphone, PartyPopper, Plug, Plus, Sparkles } from 'lucide-react-native';
+import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
+import { type CelebrationList, loadCelebrations } from '@/lib/content-calendar';
 import { type Channel, STATUS_TONE, usePosts, type SocialPost } from '@/lib/social';
 import { Button, Card, Chip, EmptyState, Icon, IconButton, ListRow, Screen, SectionTitle, Text, TitleBar } from '@/ui';
 
@@ -15,6 +17,8 @@ import { Button, Card, Chip, EmptyState, Icon, IconButton, ListRow, Screen, Sect
 export default function PostsScreen() {
   const { t, i18n } = useTranslation();
   const { posts } = usePosts();
+  const [celebrations, setCelebrations] = useState<CelebrationList | null>(null);
+  useFocusEffect(useCallback(() => void loadCelebrations().then(setCelebrations), []));
 
   if (posts === null) return <Screen>{null}</Screen>;
 
@@ -51,6 +55,23 @@ export default function PostsScreen() {
       </View>
       <Text tone="muted">{t('social.posts.resultsNote')}</Text>
       <ListRow icon={Plug} tone="info" title={t('social.accounts.title')} subtitle={t('social.accounts.description')} onPress={() => router.push('/social/accounts')} />
+      {/* The content calendar and celebration moments (B12.3). */}
+      <ListRow icon={CalendarDays} tone="info" title={t('social.calendar.title')} subtitle={t('social.calendar.purpose')} onPress={() => router.push('/social/calendar')} />
+      {celebrations && (celebrations.today || celebrations.waiting.length > 0) ? (
+        <>
+          <SectionTitle>{t('studio.celebrate.title')}</SectionTitle>
+          {[...(celebrations.today ? [celebrations.today] : []), ...celebrations.waiting].map((c) => (
+            <ListRow
+              key={c.id}
+              icon={PartyPopper}
+              tone="success"
+              title={t(`studio.celebrate.names.${c.milestone}`)}
+              subtitle={c.id === celebrations.today?.id ? t('studio.celebrate.today') : (c.label ?? t('studio.celebrate.waiting'))}
+              onPress={() => router.push({ pathname: '/social/celebrate/[id]', params: { id: c.id } })}
+            />
+          ))}
+        </>
+      ) : null}
       {posts.scheduled.length + posts.posted.length + posts.drafts.length === 0 ? (
         <EmptyState icon={<Icon icon={Megaphone} color="action" size={32} />} title={t('social.posts.emptyTitle')} description={t('social.posts.emptyBody')} />
       ) : null}

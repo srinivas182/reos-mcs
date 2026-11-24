@@ -80,6 +80,8 @@ Schedule::command('reos:mls:sync')->everyFifteenMinutes()->withoutOverlapping()-
 // Certificates read but never saved (B10.3b): gone after a day.
 // Social posts (B11): due posts every minute, insights hourly.
 Schedule::command('reos:social:publish')->everyMinute()->withoutOverlapping()->onOneServer();
+// Celebration posts (B12.3): milestones made into free posts; at most one shown a day.
+Schedule::command('reos:celebrations')->hourlyAt(17)->withoutOverlapping()->onOneServer();
 Schedule::command('reos:social:insights')->hourlyAt(20)->withoutOverlapping()->onOneServer();
 // The morning brief at each agent's chosen time (A11.1c).
 Schedule::command('reos:agents:briefs')->everyFiveMinutes()->withoutOverlapping()->onOneServer();

@@ -411,6 +411,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/brand": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My photo and brand
+         * @description My profile photo (with its quality check), name, brokerage, license number and the brokerage's brand color and logo.
+         */
+        get: operations["me.brand"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/brand/photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * A new profile photo
+         * @description Squared, sized and its lighting evened out; the check says when it's too small, too dark or too bright.
+         */
+        post: operations["me.brand.photo"];
+        /** Remove my profile photo */
+        delete: operations["me.brand.photo.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/agent/brief": {
         parameters: {
             query?: never;
@@ -689,6 +730,43 @@ export interface paths {
          * @description The agent says they renewed (or takes it back); REOS confirms the new expiry on the regulator's record overnight.
          */
         put: operations["me.licences.renewal"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/celebrations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My celebrations
+         * @description Today's milestone post (at most one a day) and the ones waiting. Each is free, with three captions and three designs, and a draft in My posts.
+         */
+        get: operations["studio.celebrations.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/celebrations/{celebration}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One celebration */
+        get: operations["studio.celebrations.show"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -1634,6 +1712,66 @@ export interface paths {
          *     every connected CRM that knows the person.
          */
         post: operations["contacts.touches.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/calendar": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * The calendar
+         * @description A week (Sunday to Saturday) or a month of my posts in my time zone: scheduled posts at their time, posts on the day they went out, and drafts planned for a day.
+         */
+        get: operations["social.calendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/posts/{post}/move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Move a post to another day
+         * @description A scheduled post keeps its time of day; a draft is planned for the day. Posts that went out can't move (reuse them instead).
+         */
+        post: operations["social.posts.move"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/posts/{post}/reuse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Reuse a post
+         * @description A new draft with the same words, media and places, planned for the day.
+         */
+        post: operations["social.posts.reuse"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8073,6 +8211,155 @@ export interface operations {
             };
         };
     };
+    "me.brand": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            photo: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            check: {
+                                width: number;
+                                height: number;
+                                brightness: number;
+                                issues: ("small" | "dark" | "bright")[];
+                            } | null;
+                            name: string;
+                            brokerage: string | null;
+                            licence: string | null;
+                            colour: string;
+                            logo: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.brand.photo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description Maximum file size: 15360 kilobytes.
+                     */
+                    photo: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            photo: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            check: {
+                                width: number;
+                                height: number;
+                                brightness: number;
+                                issues: ("small" | "dark" | "bright")[];
+                            } | null;
+                            name: string;
+                            brokerage: string | null;
+                            licence: string | null;
+                            colour: string;
+                            logo: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.brand.photo.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            photo: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            check: {
+                                width: number;
+                                height: number;
+                                brightness: number;
+                                issues: ("small" | "dark" | "bright")[];
+                            } | null;
+                            name: string;
+                            brokerage: string | null;
+                            licence: string | null;
+                            colour: string;
+                            logo: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "agent.brief.show": {
         parameters: {
             query?: never;
@@ -8929,6 +9216,181 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "studio.celebrations.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            today: {
+                                id: string;
+                                /** @enum {string} */
+                                milestone: "just_listed" | "under_contract" | "just_sold" | "first_closing" | "ce_complete" | "license_renewed" | "anniversary";
+                                label: string | null;
+                                post: string | null;
+                                generation: {
+                                    id: string;
+                                    source: {
+                                        /** @enum {string} */
+                                        type: "listing" | "sale" | "market" | "text" | "celebration";
+                                        id: string | null;
+                                        label: string | null;
+                                    };
+                                    listing: string | null;
+                                    outputs: ("post" | "carousel" | "ad")[];
+                                    captions: {
+                                        /** @enum {string} */
+                                        tone: "professional" | "warm" | "short";
+                                        text: string;
+                                    }[];
+                                    designs: {
+                                        /** @enum {string} */
+                                        layout: "band" | "top" | "split";
+                                        path: string;
+                                        url: string;
+                                    }[];
+                                    carousel: {
+                                        path: string;
+                                        url: string;
+                                    }[];
+                                    ad: {
+                                        headlines: string[];
+                                        primary: string[];
+                                        description: string;
+                                    } | null;
+                                    credits: number;
+                                    engine: string;
+                                    created_at: string | null;
+                                } | null;
+                                shown_at: string | null;
+                                created_at: string | null;
+                            } | null;
+                            waiting: {
+                                id: string;
+                                /** @enum {string} */
+                                milestone: "just_listed" | "under_contract" | "just_sold" | "first_closing" | "ce_complete" | "license_renewed" | "anniversary";
+                                label: string | null;
+                                post: string | null;
+                                generation: {
+                                    id: string;
+                                    source: {
+                                        /** @enum {string} */
+                                        type: "listing" | "sale" | "market" | "text" | "celebration";
+                                        id: string | null;
+                                        label: string | null;
+                                    };
+                                    listing: string | null;
+                                    outputs: ("post" | "carousel" | "ad")[];
+                                    captions: {
+                                        /** @enum {string} */
+                                        tone: "professional" | "warm" | "short";
+                                        text: string;
+                                    }[];
+                                    designs: {
+                                        /** @enum {string} */
+                                        layout: "band" | "top" | "split";
+                                        path: string;
+                                        url: string;
+                                    }[];
+                                    carousel: {
+                                        path: string;
+                                        url: string;
+                                    }[];
+                                    ad: {
+                                        headlines: string[];
+                                        primary: string[];
+                                        description: string;
+                                    } | null;
+                                    credits: number;
+                                    engine: string;
+                                    created_at: string | null;
+                                } | null;
+                                shown_at: string | null;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "studio.celebrations.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                celebration: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            milestone: "just_listed" | "under_contract" | "just_sold" | "first_closing" | "ce_complete" | "license_renewed" | "anniversary";
+                            label: string | null;
+                            post: string | null;
+                            generation: {
+                                id: string;
+                                source: {
+                                    /** @enum {string} */
+                                    type: "listing" | "sale" | "market" | "text" | "celebration";
+                                    id: string | null;
+                                    label: string | null;
+                                };
+                                listing: string | null;
+                                outputs: ("post" | "carousel" | "ad")[];
+                                captions: {
+                                    /** @enum {string} */
+                                    tone: "professional" | "warm" | "short";
+                                    text: string;
+                                }[];
+                                designs: {
+                                    /** @enum {string} */
+                                    layout: "band" | "top" | "split";
+                                    path: string;
+                                    url: string;
+                                }[];
+                                carousel: {
+                                    path: string;
+                                    url: string;
+                                }[];
+                                ad: {
+                                    headlines: string[];
+                                    primary: string[];
+                                    description: string;
+                                } | null;
+                                credits: number;
+                                engine: string;
+                                created_at: string | null;
+                            } | null;
+                            shown_at: string | null;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "me.certificates.read": {
@@ -12144,6 +12606,162 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: components["schemas"]["ContactNoteResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.calendar": {
+        parameters: {
+            query?: {
+                view?: "week" | "month" | null;
+                date?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            view: "week" | "month";
+                            date: string;
+                            from: string;
+                            to: string;
+                            previous: string;
+                            next: string;
+                            timezone: string;
+                            days: {
+                                date: string;
+                                today: boolean;
+                                posts: {
+                                    id: string;
+                                    status: string;
+                                    body: string;
+                                    time: string | null;
+                                    channels: string[];
+                                    thumb: string | null;
+                                    kind: string | null;
+                                    movable: boolean;
+                                }[];
+                            }[];
+                            scheduled: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "social.posts.move": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    date: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                            body: string;
+                            time: string | null;
+                            channels: string[];
+                            thumb: string | null;
+                            kind: string | null;
+                            movable: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.reuse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    date: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                            body: string;
+                            time: string | null;
+                            channels: string[];
+                            thumb: string | null;
+                            kind: string | null;
+                            movable: boolean;
+                        };
                     };
                 };
             };
@@ -21276,7 +21894,7 @@ export interface operations {
                                 id: string;
                                 source: {
                                     /** @enum {string} */
-                                    type: "listing" | "sale" | "market" | "text";
+                                    type: "listing" | "sale" | "market" | "text" | "celebration";
                                     id: string | null;
                                     label: string | null;
                                 };
@@ -21384,7 +22002,7 @@ export interface operations {
                             id: string;
                             source: {
                                 /** @enum {string} */
-                                type: "listing" | "sale" | "market" | "text";
+                                type: "listing" | "sale" | "market" | "text" | "celebration";
                                 id: string | null;
                                 label: string | null;
                             };
@@ -21455,7 +22073,7 @@ export interface operations {
                             id: string;
                             source: {
                                 /** @enum {string} */
-                                type: "listing" | "sale" | "market" | "text";
+                                type: "listing" | "sale" | "market" | "text" | "celebration";
                                 id: string | null;
                                 label: string | null;
                             };
@@ -21520,7 +22138,7 @@ export interface operations {
                             id: string;
                             source: {
                                 /** @enum {string} */
-                                type: "listing" | "sale" | "market" | "text";
+                                type: "listing" | "sale" | "market" | "text" | "celebration";
                                 id: string | null;
                                 label: string | null;
                             };

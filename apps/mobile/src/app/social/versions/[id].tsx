@@ -1,12 +1,15 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowRight, Briefcase, Languages, Minimize2, Share2 } from 'lucide-react-native';
+import { ArrowRight, Briefcase, Languages, Minimize2, PartyPopper, Share2 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, Share, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
+import type { Celebration } from '@/lib/content-calendar';
 import { type Generation, loadGeneration, type Retone, retoneCaption } from '@/lib/studio';
 import { Button, Callout, Card, Chip, Screen, SectionTitle, Text, TitleBar } from '@/ui';
+
+type Milestone = Celebration['milestone'];
 
 /**
  * Pick a version (agent screen 166; ad studio 107): designs to swipe, three
@@ -16,7 +19,8 @@ import { Button, Callout, Card, Chip, Screen, SectionTitle, Text, TitleBar } fro
  */
 export default function VersionsScreen() {
   const { t } = useTranslation();
-  const { id } = useLocalSearchParams<{ id: string }>();
+  // A celebration moment (B12.3, screen 163) opens here with its milestone's badge.
+  const { id, milestone } = useLocalSearchParams<{ id: string; milestone?: Milestone }>();
   const [generation, setGeneration] = useState<Generation | null>(null);
   const [design, setDesign] = useState(0);
   const [caption, setCaption] = useState(0);
@@ -43,11 +47,16 @@ export default function VersionsScreen() {
 
   return (
     <Screen>
-      <TitleBar title={t('studio.maker.versions')} onBack={() => router.back()} />
+      <TitleBar title={milestone ? t('studio.celebrate.title') : t('studio.maker.versions')} onBack={() => router.back()} />
       {generation ? (
         <>
+          {milestone ? (
+            <View style={styles.wrap}>
+              <Chip icon={PartyPopper} tone="success" label={t(`studio.celebrate.names.${milestone}`)} />
+            </View>
+          ) : null}
           <Text variant="caption" tone="muted">
-            {t('studio.maker.checked')}
+            {milestone ? t('studio.celebrate.free') : t('studio.maker.checked')}
           </Text>
           {generation.designs.length > 0 ? (
             <>

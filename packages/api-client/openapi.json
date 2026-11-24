@@ -2937,6 +2937,425 @@
                 }
             }
         },
+        "/me/brand": {
+            "get": {
+                "operationId": "me.brand",
+                "description": "My profile photo (with its quality check), name, brokerage, license number and the brokerage's brand color and logo.",
+                "summary": "My photo and brand",
+                "tags": [
+                    "BrandKit"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "photo": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "check": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "width": {
+                                                            "type": "integer"
+                                                        },
+                                                        "height": {
+                                                            "type": "integer"
+                                                        },
+                                                        "brightness": {
+                                                            "type": "integer"
+                                                        },
+                                                        "issues": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "small",
+                                                                    "dark",
+                                                                    "bright"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "width",
+                                                        "height",
+                                                        "brightness",
+                                                        "issues"
+                                                    ]
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "brokerage": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "licence": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "colour": {
+                                                    "type": "string"
+                                                },
+                                                "logo": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "photo",
+                                                "check",
+                                                "name",
+                                                "brokerage",
+                                                "licence",
+                                                "colour",
+                                                "logo"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/brand/photo": {
+            "post": {
+                "operationId": "me.brand.photo",
+                "description": "Squared, sized and its lighting evened out; the check says when it's too small, too dark or too bright.",
+                "summary": "A new profile photo",
+                "tags": [
+                    "BrandKit"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "photo": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "contentMediaType": "application/octet-stream",
+                                        "description": "Maximum file size: 15360 kilobytes."
+                                    }
+                                },
+                                "required": [
+                                    "photo"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "photo": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "check": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "width": {
+                                                            "type": "integer"
+                                                        },
+                                                        "height": {
+                                                            "type": "integer"
+                                                        },
+                                                        "brightness": {
+                                                            "type": "integer"
+                                                        },
+                                                        "issues": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "small",
+                                                                    "dark",
+                                                                    "bright"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "width",
+                                                        "height",
+                                                        "brightness",
+                                                        "issues"
+                                                    ]
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "brokerage": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "licence": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "colour": {
+                                                    "type": "string"
+                                                },
+                                                "logo": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "photo",
+                                                "check",
+                                                "name",
+                                                "brokerage",
+                                                "licence",
+                                                "colour",
+                                                "logo"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "me.brand.photo.destroy",
+                "summary": "Remove my profile photo",
+                "tags": [
+                    "BrandKit"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "photo": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "check": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "width": {
+                                                            "type": "integer"
+                                                        },
+                                                        "height": {
+                                                            "type": "integer"
+                                                        },
+                                                        "brightness": {
+                                                            "type": "integer"
+                                                        },
+                                                        "issues": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "small",
+                                                                    "dark",
+                                                                    "bright"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "width",
+                                                        "height",
+                                                        "brightness",
+                                                        "issues"
+                                                    ]
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "brokerage": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "licence": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "colour": {
+                                                    "type": "string"
+                                                },
+                                                "logo": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "photo",
+                                                "check",
+                                                "name",
+                                                "brokerage",
+                                                "licence",
+                                                "colour",
+                                                "logo"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/agent/brief": {
             "get": {
                 "operationId": "agent.brief.show",
@@ -5207,6 +5626,792 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/studio/celebrations": {
+            "get": {
+                "operationId": "studio.celebrations.index",
+                "description": "Today's milestone post (at most one a day) and the ones waiting. Each is free, with three captions and three designs, and a draft in My posts.",
+                "summary": "My celebrations",
+                "tags": [
+                    "Celebration"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "today": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "milestone": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "just_listed",
+                                                                "under_contract",
+                                                                "just_sold",
+                                                                "first_closing",
+                                                                "ce_complete",
+                                                                "license_renewed",
+                                                                "anniversary"
+                                                            ]
+                                                        },
+                                                        "label": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "post": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "generation": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "source": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "type": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "listing",
+                                                                                "sale",
+                                                                                "market",
+                                                                                "text",
+                                                                                "celebration"
+                                                                            ]
+                                                                        },
+                                                                        "id": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "label": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "type",
+                                                                        "id",
+                                                                        "label"
+                                                                    ]
+                                                                },
+                                                                "listing": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "outputs": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "post",
+                                                                            "carousel",
+                                                                            "ad"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "captions": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "tone": {
+                                                                                "type": "string",
+                                                                                "enum": [
+                                                                                    "professional",
+                                                                                    "warm",
+                                                                                    "short"
+                                                                                ]
+                                                                            },
+                                                                            "text": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "tone",
+                                                                            "text"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "designs": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "layout": {
+                                                                                "type": "string",
+                                                                                "enum": [
+                                                                                    "band",
+                                                                                    "top",
+                                                                                    "split"
+                                                                                ]
+                                                                            },
+                                                                            "path": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "url": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "layout",
+                                                                            "path",
+                                                                            "url"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "carousel": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "path": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "url": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "path",
+                                                                            "url"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "ad": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "headlines": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "primary": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "description": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "headlines",
+                                                                        "primary",
+                                                                        "description"
+                                                                    ]
+                                                                },
+                                                                "credits": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "engine": {
+                                                                    "type": "string"
+                                                                },
+                                                                "created_at": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "source",
+                                                                "listing",
+                                                                "outputs",
+                                                                "captions",
+                                                                "designs",
+                                                                "carousel",
+                                                                "ad",
+                                                                "credits",
+                                                                "engine",
+                                                                "created_at"
+                                                            ]
+                                                        },
+                                                        "shown_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "created_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "milestone",
+                                                        "label",
+                                                        "post",
+                                                        "generation",
+                                                        "shown_at",
+                                                        "created_at"
+                                                    ]
+                                                },
+                                                "waiting": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "milestone": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "just_listed",
+                                                                    "under_contract",
+                                                                    "just_sold",
+                                                                    "first_closing",
+                                                                    "ce_complete",
+                                                                    "license_renewed",
+                                                                    "anniversary"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "post": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "generation": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "source": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "type": {
+                                                                                "type": "string",
+                                                                                "enum": [
+                                                                                    "listing",
+                                                                                    "sale",
+                                                                                    "market",
+                                                                                    "text",
+                                                                                    "celebration"
+                                                                                ]
+                                                                            },
+                                                                            "id": {
+                                                                                "type": [
+                                                                                    "string",
+                                                                                    "null"
+                                                                                ]
+                                                                            },
+                                                                            "label": {
+                                                                                "type": [
+                                                                                    "string",
+                                                                                    "null"
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "type",
+                                                                            "id",
+                                                                            "label"
+                                                                        ]
+                                                                    },
+                                                                    "listing": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "outputs": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "post",
+                                                                                "carousel",
+                                                                                "ad"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "captions": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "tone": {
+                                                                                    "type": "string",
+                                                                                    "enum": [
+                                                                                        "professional",
+                                                                                        "warm",
+                                                                                        "short"
+                                                                                    ]
+                                                                                },
+                                                                                "text": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "tone",
+                                                                                "text"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "designs": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "layout": {
+                                                                                    "type": "string",
+                                                                                    "enum": [
+                                                                                        "band",
+                                                                                        "top",
+                                                                                        "split"
+                                                                                    ]
+                                                                                },
+                                                                                "path": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "url": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "layout",
+                                                                                "path",
+                                                                                "url"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "carousel": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "path": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "url": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "path",
+                                                                                "url"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "ad": {
+                                                                        "type": [
+                                                                            "object",
+                                                                            "null"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "headlines": {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "primary": {
+                                                                                "type": "array",
+                                                                                "items": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            },
+                                                                            "description": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "required": [
+                                                                            "headlines",
+                                                                            "primary",
+                                                                            "description"
+                                                                        ]
+                                                                    },
+                                                                    "credits": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "engine": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "created_at": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "source",
+                                                                    "listing",
+                                                                    "outputs",
+                                                                    "captions",
+                                                                    "designs",
+                                                                    "carousel",
+                                                                    "ad",
+                                                                    "credits",
+                                                                    "engine",
+                                                                    "created_at"
+                                                                ]
+                                                            },
+                                                            "shown_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "milestone",
+                                                            "label",
+                                                            "post",
+                                                            "generation",
+                                                            "shown_at",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "today",
+                                                "waiting"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/studio/celebrations/{celebration}": {
+            "get": {
+                "operationId": "studio.celebrations.show",
+                "summary": "One celebration",
+                "tags": [
+                    "Celebration"
+                ],
+                "parameters": [
+                    {
+                        "name": "celebration",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "milestone": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "just_listed",
+                                                        "under_contract",
+                                                        "just_sold",
+                                                        "first_closing",
+                                                        "ce_complete",
+                                                        "license_renewed",
+                                                        "anniversary"
+                                                    ]
+                                                },
+                                                "label": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "post": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "generation": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "source": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "type": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "listing",
+                                                                        "sale",
+                                                                        "market",
+                                                                        "text",
+                                                                        "celebration"
+                                                                    ]
+                                                                },
+                                                                "id": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "label": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "type",
+                                                                "id",
+                                                                "label"
+                                                            ]
+                                                        },
+                                                        "listing": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "outputs": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "post",
+                                                                    "carousel",
+                                                                    "ad"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "captions": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "tone": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "professional",
+                                                                            "warm",
+                                                                            "short"
+                                                                        ]
+                                                                    },
+                                                                    "text": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "tone",
+                                                                    "text"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "designs": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "layout": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "band",
+                                                                            "top",
+                                                                            "split"
+                                                                        ]
+                                                                    },
+                                                                    "path": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "layout",
+                                                                    "path",
+                                                                    "url"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "carousel": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "path": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "path",
+                                                                    "url"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "ad": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "headlines": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "primary": {
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "description": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "headlines",
+                                                                "primary",
+                                                                "description"
+                                                            ]
+                                                        },
+                                                        "credits": {
+                                                            "type": "integer"
+                                                        },
+                                                        "engine": {
+                                                            "type": "string"
+                                                        },
+                                                        "created_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "source",
+                                                        "listing",
+                                                        "outputs",
+                                                        "captions",
+                                                        "designs",
+                                                        "carousel",
+                                                        "ad",
+                                                        "credits",
+                                                        "engine",
+                                                        "created_at"
+                                                    ]
+                                                },
+                                                "shown_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "milestone",
+                                                "label",
+                                                "post",
+                                                "generation",
+                                                "shown_at",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -14641,6 +15846,448 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/social/calendar": {
+            "get": {
+                "operationId": "social.calendar",
+                "description": "A week (Sunday to Saturday) or a month of my posts in my time zone: scheduled posts at their time, posts on the day they went out, and drafts planned for a day.",
+                "summary": "The calendar",
+                "tags": [
+                    "ContentCalendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "view",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "week",
+                                "month",
+                                null
+                            ]
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "view": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "week",
+                                                        "month"
+                                                    ]
+                                                },
+                                                "date": {
+                                                    "type": "string"
+                                                },
+                                                "from": {
+                                                    "type": "string"
+                                                },
+                                                "to": {
+                                                    "type": "string"
+                                                },
+                                                "previous": {
+                                                    "type": "string"
+                                                },
+                                                "next": {
+                                                    "type": "string"
+                                                },
+                                                "timezone": {
+                                                    "type": "string"
+                                                },
+                                                "days": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "date": {
+                                                                "type": "string"
+                                                            },
+                                                            "today": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "posts": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "body": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "time": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "channels": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "thumb": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "movable": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "status",
+                                                                        "body",
+                                                                        "time",
+                                                                        "channels",
+                                                                        "thumb",
+                                                                        "kind",
+                                                                        "movable"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "date",
+                                                            "today",
+                                                            "posts"
+                                                        ]
+                                                    }
+                                                },
+                                                "scheduled": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "view",
+                                                "date",
+                                                "from",
+                                                "to",
+                                                "previous",
+                                                "next",
+                                                "timezone",
+                                                "days",
+                                                "scheduled"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/social/posts/{post}/move": {
+            "post": {
+                "operationId": "social.posts.move",
+                "description": "A scheduled post keeps its time of day; a draft is planned for the day. Posts that went out can't move (reuse them instead).",
+                "summary": "Move a post to another day",
+                "tags": [
+                    "ContentCalendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "required": [
+                                    "date"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "time": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "channels": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "thumb": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "movable": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status",
+                                                "body",
+                                                "time",
+                                                "channels",
+                                                "thumb",
+                                                "kind",
+                                                "movable"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/social/posts/{post}/reuse": {
+            "post": {
+                "operationId": "social.posts.reuse",
+                "description": "A new draft with the same words, media and places, planned for the day.",
+                "summary": "Reuse a post",
+                "tags": [
+                    "ContentCalendar"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    }
+                                },
+                                "required": [
+                                    "date"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "time": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "channels": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "thumb": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "movable": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status",
+                                                "body",
+                                                "time",
+                                                "channels",
+                                                "thumb",
+                                                "kind",
+                                                "movable"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }
@@ -42632,7 +44279,8 @@
                                                                             "listing",
                                                                             "sale",
                                                                             "market",
-                                                                            "text"
+                                                                            "text",
+                                                                            "celebration"
                                                                         ]
                                                                     },
                                                                     "id": {
@@ -43101,7 +44749,8 @@
                                                                 "listing",
                                                                 "sale",
                                                                 "market",
-                                                                "text"
+                                                                "text",
+                                                                "celebration"
                                                             ]
                                                         },
                                                         "id": {
@@ -43342,7 +44991,8 @@
                                                                 "listing",
                                                                 "sale",
                                                                 "market",
-                                                                "text"
+                                                                "text",
+                                                                "celebration"
                                                             ]
                                                         },
                                                         "id": {
@@ -43588,7 +45238,8 @@
                                                                 "listing",
                                                                 "sale",
                                                                 "market",
-                                                                "text"
+                                                                "text",
+                                                                "celebration"
                                                             ]
                                                         },
                                                         "id": {

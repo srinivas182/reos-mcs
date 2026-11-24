@@ -36,14 +36,16 @@ export default function NewPostScreen() {
   const { t, i18n } = useTranslation();
   const toast = useUndoToast();
   // From Pick a version (B12.1): the chosen caption and design, and the listing they came from.
-  const { post: editId, listing, caption, media: studioMedia } = useLocalSearchParams<{ post?: string; listing?: string; caption?: string; media?: string }>();
+  const { post: editId, listing, caption, media: studioMedia, at: plannedAt } = useLocalSearchParams<{ post?: string; listing?: string; caption?: string; media?: string; at?: string }>();
+  // Plan a post from the calendar (B12.3): scheduled for that day at 10 am.
+  const planned = plannedAt && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(plannedAt) ? new Date(`${plannedAt}:00`).toISOString() : null;
   const { accounts } = useSocialAccounts();
   const [body, setBody] = useState('');
   const [media, setMedia] = useState<Media[]>([]);
   const [listingPhotos, setListingPhotos] = useState<{ url: string; caption: string | null }[]>([]);
   const [picks, setPicks] = useState<Pick[]>([]);
-  const [when, setWhen] = useState<When>('now');
-  const [at, setAt] = useState<string | null>(null);
+  const [when, setWhen] = useState<When>(planned ? 'later' : 'now');
+  const [at, setAt] = useState<string | null>(planned);
   const [check, setCheck] = useState<CheckResult | null>(null);
   const [returned, setReturned] = useState<string | null>(null);
   const [problem, setProblem] = useState<string | null>(null);
@@ -228,7 +230,7 @@ export default function NewPostScreen() {
         <PillGroup<string>
           label={t('social.compose.at')}
           value={at ?? ''}
-          options={slots(now).map((s) => ({ value: s.value, label: timeLabel(s.value) }))}
+          options={[...(planned ? [{ value: planned }] : []), ...slots(now)].map((s) => ({ value: s.value, label: timeLabel(s.value) }))}
           onChange={setAt}
         />
       ) : null}

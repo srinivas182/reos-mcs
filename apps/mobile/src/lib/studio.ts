@@ -11,7 +11,8 @@ type Got<P extends keyof paths> = paths[P] extends { get: { responses: { 200: { 
 
 export type StudioHome = Got<'/studio'>['data'];
 export type Generation = Got<'/studio/generations/{generation}'>['data'];
-export type SourceType = Generation['source']['type'];
+/** Where a making can start; celebrations are made by REOS (B12.3). */
+export type SourceType = Exclude<Generation['source']['type'], 'celebration'>;
 export type Output = Generation['outputs'][number];
 export type Retone = 'shorter' | 'professional' | 'spanish';
 export type Video = Got<'/studio/videos/{video}'>['data'];

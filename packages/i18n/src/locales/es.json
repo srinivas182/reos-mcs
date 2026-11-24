@@ -5455,7 +5455,8 @@
       "policy_answer": "Respuestas de su bróker",
       "contract_review": "Revisiones de contratos",
       "post_approval": "Aprobación de publicaciones",
-      "post_decision": "Decisiones de su bróker sobre publicaciones"
+      "post_decision": "Decisiones de su bróker sobre publicaciones",
+      "celebration": "Publicaciones de celebración"
     },
     "digest": {
       "subject": {
@@ -8514,6 +8515,42 @@
       "upload": "No se pudo guardar ese archivo. Inténtelo de nuevo.",
       "imageSize": "Las fotos pueden pesar hasta 8 MB.",
       "reconnect": "Reconecte la cuenta en Cuentas sociales y vuelva a publicar."
+    },
+    "calendar": {
+      "title": "Calendario de contenido",
+      "purpose": "Planifique, mueva y reutilice sus publicaciones.",
+      "week": "Semana",
+      "month": "Mes",
+      "previous": "Anterior",
+      "next": "Siguiente",
+      "today": "Hoy",
+      "plan": "Planificar una publicación",
+      "move": "Mover",
+      "moveTo": "Mover a",
+      "moved": "Movida al {{date}}",
+      "reuse": "Reutilizar",
+      "reused": "Planificada de nuevo para el {{date}}",
+      "reuseOn": "Reutilizar el",
+      "empty": "Nada planificado",
+      "emptyHint": "Planifique una publicación para esta semana o reutilice una que funcionó bien.",
+      "scheduled_one": "{{count}} publicación programada",
+      "scheduled_other": "{{count}} publicaciones programadas",
+      "drag": "Arrastre una publicación a otro día o use Mover.",
+      "day": "{{date}}",
+      "status": {
+        "draft": "Planificada",
+        "approval": "Esperando al bróker",
+        "scheduled": "Programada",
+        "publishing": "Publicándose",
+        "published": "Publicada",
+        "partly": "Publicada en parte",
+        "failed": "No se publicó"
+      },
+      "errors": {
+        "date": "Elija una fecha válida.",
+        "move": "Las publicaciones que ya salieron no se pueden mover. Reutilícela.",
+        "past": "Elija un día y una hora que no hayan pasado."
+      }
     }
   },
   "virtualBroker": {
@@ -8975,6 +9012,43 @@
         "professional": "{{text}} ¿Preguntas sobre comprar o vender? Escríbame. #BienesRaices #{{tag}}BienesRaices",
         "warm": "{{text}} Siempre es un gusto ayudarle; escríbame cuando quiera. #BienesRaices #{{tag}}Casas",
         "short": "{{text}} #BienesRaices"
+      },
+      "celebration": {
+        "just_listed": {
+          "professional": "Recién listada: {{text}}. Me enorgullece presentar esta propiedad. Escríbame para más detalles. #RecienListada #BienesRaicesTexas",
+          "warm": "¡Recién listada! {{text}} está lista para su próxima etapa. ¿Quiere verla? Escríbame. #RecienListada #CasasTexas",
+          "short": "Recién listada: {{text}}. #RecienListada"
+        },
+        "under_contract": {
+          "professional": "Bajo contrato: {{text}}. Gracias a todos los que lo hicieron posible. #BajoContrato #BienesRaicesTexas",
+          "warm": "¡Estamos bajo contrato en {{text}}! Un paso más cerca del cierre. #BajoContrato #CasasTexas",
+          "short": "Bajo contrato: {{text}}. #BajoContrato"
+        },
+        "just_sold": {
+          "professional": "Recién vendida: {{text}}. Felicidades a mis clientes y gracias por su confianza. #RecienVendida #BienesRaicesTexas",
+          "warm": "¡Vendida! {{text}} tiene nuevos dueños. Fue un gusto ser parte de esto. #RecienVendida #CasasTexas",
+          "short": "Recién vendida: {{text}}. #RecienVendida"
+        },
+        "first_closing": {
+          "professional": "Mi primer cierre: {{text}}. Gracias a mis clientes, a mi bróker y a todos los que me ayudaron. #PrimerCierre #BienesRaicesTexas",
+          "warm": "¡Mi primer cierre! {{text}} ya está vendida. Qué gran día; gracias por su confianza. #PrimerCierre #NuevoAgente",
+          "short": "Mi primer cierre: {{text}}. #PrimerCierre"
+        },
+        "ce_complete": {
+          "professional": "Educación continua completada. Sigo aprendiendo para servir bien a mis clientes. #EducacionInmobiliaria #BienesRaicesTexas",
+          "warm": "¡Educación continua completada para este periodo! Siempre aprendiendo para servirle mejor. #SiempreAprendiendo",
+          "short": "Educación continua completada. #SiempreAprendiendo"
+        },
+        "license_renewed": {
+          "professional": "Licencia renovada. Estoy aquí para ayudarle a comprar o vender en Texas. #BienesRaicesTexas #Licenciado",
+          "warm": "¡Mi licencia de bienes raíces de Texas está renovada! Listo para ayudarle en su próxima mudanza. #BienesRaicesTexas",
+          "short": "Licencia renovada. #BienesRaicesTexas"
+        },
+        "anniversary": {
+          "professional": "{{text}} en bienes raíces. Gracias a cada cliente que confió en mí. #Aniversario #BienesRaicesTexas",
+          "warm": "¡Celebrando {{text}} en bienes raíces! Agradecido por cada cliente y cada mudanza. #Aniversario #CasasTexas",
+          "short": "{{text}} en bienes raíces. #Aniversario"
+        }
       }
     },
     "ad": {
@@ -9181,6 +9255,71 @@
       "noneHint": "Haga uno a partir de un listado en un minuto.",
       "chooseListing": "Elija un listado",
       "noListings": "Aún no hay listados para hacer un video."
+    },
+    "celebrate": {
+      "badges": {
+        "just_listed": "RECIÉN LISTADA",
+        "under_contract": "BAJO CONTRATO",
+        "just_sold": "RECIÉN VENDIDA",
+        "first_closing": "MI PRIMER CIERRE",
+        "ce_complete": "EDUCACIÓN CONTINUA",
+        "license_renewed": "LICENCIA RENOVADA",
+        "anniversary": "ANIVERSARIO"
+      },
+      "names": {
+        "just_listed": "Recién listada",
+        "under_contract": "Bajo contrato",
+        "just_sold": "Recién vendida",
+        "first_closing": "Primer cierre",
+        "ce_complete": "Educación continua completada",
+        "license_renewed": "Licencia renovada",
+        "anniversary": "Aniversario"
+      },
+      "notify": {
+        "just_listed": "Su publicación de recién listada está lista",
+        "under_contract": "Su publicación de bajo contrato está lista",
+        "just_sold": "Su publicación de recién vendida está lista",
+        "first_closing": "¡Felicidades por su primer cierre! Su publicación está lista",
+        "ce_complete": "¡Educación continua completada! Su publicación está lista",
+        "license_renewed": "¡Licencia renovada! Su publicación está lista",
+        "anniversary": "¡Feliz aniversario! Su publicación está lista",
+        "body": "Publicarla es gratis. Elija un diseño y compártala."
+      },
+      "years": "{{years}} años",
+      "title": "Celebración",
+      "purpose": "Un logro, listo para publicar. Gratis.",
+      "today": "La celebración de hoy",
+      "waiting": "Esperando en Mis publicaciones",
+      "none": "Aún no hay celebraciones",
+      "noneHint": "Cuando liste, quede bajo contrato, cierre, complete su educación continua o renueve, se le prepara una publicación gratis.",
+      "free": "Gratis · revisada para vivienda justa y el nombre de su bróker",
+      "open": "Abrir"
+    },
+    "brand": {
+      "title": "Foto y marca",
+      "purpose": "Que cada publicación se vea profesional y con su marca.",
+      "photo": "Foto de perfil",
+      "noPhoto": "Aún no tiene foto",
+      "upload": "Subir foto",
+      "replace": "Cambiar foto",
+      "remove": "Quitar foto",
+      "removed": "Foto quitada",
+      "good": "Se ve bien. La iluminación se ajustó automáticamente.",
+      "issues": {
+        "small": "Es pequeña; una foto más grande se ve más nítida.",
+        "dark": "Está oscura; la aclaramos. La luz del día funciona mejor.",
+        "bright": "Está muy clara; la suavizamos."
+      },
+      "name": "Nombre",
+      "brokerage": "Agencia inmobiliaria",
+      "licence": "Número de licencia",
+      "colour": "Color de la marca",
+      "logo": "Logo",
+      "noBrokerage": "Únase a su agencia inmobiliaria para publicar: su nombre es obligatorio en cada publicación.",
+      "kitNote": "Su agencia inmobiliaria define el logo y los colores en la web. El nombre de su bróker se agrega del tamaño que exigen las reglas de Texas.",
+      "errors": {
+        "photo": "Ese archivo no es una foto que podamos leer."
+      }
     }
   }
 }
