@@ -6,6 +6,13 @@ import { PageHeader } from '@/components/page-header';
 import { AccountsList } from '@/components/social/accounts-list';
 import { Composer } from '@/components/social/composer';
 import { PostsList } from '@/components/social/posts-list';
+import { Maker } from '@/components/studio/maker';
+import type {
+    Generation,
+    Maker as MakerData,
+    MakeRequest,
+} from '@/components/studio/types';
+import { Versions } from '@/components/studio/versions';
 import type {
     CheckResult,
     Draft,
@@ -20,8 +27,13 @@ import { index as connections } from '@/routes/connections';
 import { media as mediaRoute } from '@/routes/studio';
 import { refresh as refreshRoute } from '@/routes/studio/accounts';
 import {
+    make as makeRoute,
+    retone as retoneRoute,
+} from '@/routes/studio/generations';
+import {
     check as checkRoute,
     destroy,
+    fix as fixRoute,
     repost as repostRoute,
     restore,
     store,
@@ -69,10 +81,12 @@ export default function StudioPage({
     accounts: initialAccounts,
     posts: initialPosts,
     listing,
+    maker,
 }: {
     accounts: SocialAccount[];
     posts: PostList;
     listing: ListingDraft | null;
+    maker: MakerData;
 }) {
     const { t, i18n } = useTranslation();
     const [accounts, setAccounts] = useState(initialAccounts);
@@ -84,6 +98,10 @@ export default function StudioPage({
         key: number;
     }>({ id: null, draft: blank(listing), key: 0 });
     const [error, setError] = useState<string | null>(null);
+    const [generation, setGeneration] = useState<Generation | null>(null);
+    const [making, setMaking] = useState(false);
+    // A design made from a listing posts with the listing's MLS line (B12.1).
+    const [studioListing, setStudioListing] = useState<string | null>(null);
 
     const body = useCallback(
         (draft: Draft) => ({
@@ -96,9 +114,9 @@ export default function StudioPage({
                 draft.when === 'later' && draft.at
                     ? new Date(draft.at).toISOString()
                     : null,
-            listing: listing?.listing ?? null,
+            listing: studioListing ?? listing?.listing ?? null,
         }),
-        [listing],
+        [listing, studioListing],
     );
     const onCheck = useCallback(
         (draft: Draft) => {
@@ -154,6 +172,7 @@ export default function StudioPage({
                       : t('social.compose.saved'),
             );
             setEditing({ id: null, draft: blank(null), key: editing.key + 1 });
+            setStudioListing(null);
             await refreshList();
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
@@ -168,9 +187,56 @@ export default function StudioPage({
                     title={t('social.studio.title')}
                     description={t('social.studio.description')}
                 />
-                <p className="text-base text-muted-foreground">
-                    {t('social.studio.aiSoon')}
-                </p>
+                <Maker
+                    data={maker}
+                    busy={making}
+                    onMake={(request: MakeRequest) => {
+                        setMaking(true);
+                        setError(null);
+                        void postJson<{ data: Generation }>(
+                            makeRoute().url,
+                            request,
+                        )
+                            .then(({ data }) => setGeneration(data))
+                            .catch((e: unknown) =>
+                                setError(
+                                    e instanceof Error ? e.message : String(e),
+                                ),
+                            )
+                            .finally(() => setMaking(false));
+                    }}
+                />
+                {generation ? (
+                    <Versions
+                        generation={generation}
+                        busy={making}
+                        onRetone={(index, tone) => {
+                            setMaking(true);
+                            void postJson<{ data: Generation }>(
+                                retoneRoute(generation.id).url,
+                                { index, tone },
+                            )
+                                .then(({ data }) => setGeneration(data))
+                                .finally(() => setMaking(false));
+                        }}
+                        onUse={(caption, media) => {
+                            setStudioListing(generation.listing);
+                            setEditing({
+                                id: null,
+                                draft: {
+                                    ...blank(null),
+                                    body: caption,
+                                    media: media.map((m) => ({
+                                        value: m.path,
+                                        preview: m.url,
+                                        kind: 'image',
+                                    })),
+                                },
+                                key: editing.key + 1,
+                            });
+                        }}
+                    />
+                ) : null}
                 {error ? (
                     <p role="alert" className="text-base text-destructive">
                         {error}
@@ -201,6 +267,14 @@ export default function StudioPage({
                             };
                         }}
                         onSubmit={(draft) => void submit(draft)}
+                        onFix={async (text) =>
+                            (
+                                await postJson<{ data: { body: string } }>(
+                                    fixRoute().url,
+                                    { body: text },
+                                )
+                            ).data.body
+                        }
                     />
                     <AccountsList
                         accounts={accounts}

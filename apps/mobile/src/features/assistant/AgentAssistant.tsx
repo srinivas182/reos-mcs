@@ -61,7 +61,7 @@ export function AgentAssistant() {
       case 'review_contract':
         return router.push('/contracts');
       case 'write_ad':
-        return router.push('/social/new');
+        return router.push('/social/create');
       case 'reply_emails':
         return setQuestion(t('assistant.mobile.reply'));
       case 'prep_appointment':

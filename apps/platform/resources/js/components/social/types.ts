@@ -28,6 +28,7 @@ export type SocialAccount = {
 
 export type PostStatus =
     | 'draft'
+    | 'approval'
     | 'scheduled'
     | 'publishing'
     | 'published'
@@ -68,6 +69,8 @@ export type SocialPost = {
     created_at: string | null;
     targets: PostTarget[];
     totals: Partial<Record<Metric, number>>;
+    /** What the broker said when sending it back (B12.1). */
+    approval_note: string | null;
 };
 
 export type PostList = {
@@ -88,12 +91,25 @@ export type CheckCode =
     | 'length'
     | 'media'
     | 'video'
-    | 'title';
+    | 'title'
+    | 'fair_housing'
+    | 'claims'
+    | 'banned';
+
+export type PolicyIssue = {
+    code: 'fair_housing' | 'claims' | 'banned';
+    phrase: string;
+    fix: string;
+};
 
 export type CheckResult = {
     attribution: string;
-    checks: { code: CheckCode; ok: boolean; detail: Channel | null }[];
+    /** `detail` is the channel for length, media and video; the flagged phrases for the wording checks (B12.1). */
+    checks: { code: CheckCode; ok: boolean; detail: string | null }[];
     ok: boolean;
+    /** The brokerage approves this agent's posts first (B12.1). */
+    approval: boolean;
+    issues: PolicyIssue[];
 };
 
 export type Pick = { connection: number; channel: Channel; id: string };

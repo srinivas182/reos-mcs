@@ -82,7 +82,8 @@
     "ceReporting": "Reporte de CE",
     "contentStudio": "Estudio de contenido",
     "virtualBroker": "Bróker virtual",
-    "contractReview": "Revisión de contratos"
+    "contractReview": "Revisión de contratos",
+    "policies": "Políticas"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2302,7 +2303,10 @@
         "policy_faq.restored": "Se restauró en las preguntas frecuentes",
         "broker_question.answered": "Respondió la pregunta de un agente",
         "virtual_broker.settings": "Se cambió a quién van las preguntas del bróker virtual",
-        "assistant.context": "Se cambió el permiso del asistente para leer CRM, operaciones y calendario"
+        "assistant.context": "Se cambió el permiso del asistente para leer CRM, operaciones y calendario",
+        "advertising_policy.updated": "Se cambió la política de publicidad",
+        "social_post.approved": "Aprobó la publicación de un agente",
+        "social_post.returned": "Devolvió la publicación de un agente"
       }
     }
   },
@@ -5449,7 +5453,9 @@
       "ce_renewal": "Renovación de CE",
       "policy_question": "Preguntas de agentes para el bróker",
       "policy_answer": "Respuestas de su bróker",
-      "contract_review": "Revisiones de contratos"
+      "contract_review": "Revisiones de contratos",
+      "post_approval": "Aprobación de publicaciones",
+      "post_decision": "Decisiones de su bróker sobre publicaciones"
     },
     "digest": {
       "subject": {
@@ -8459,7 +8465,10 @@
       "length": "El texto cabe en {{channel}}",
       "media": "{{channel}} tiene una foto o un video",
       "title": "Ningún título que un agente de ventas no pueda usar (bróker, dueño, presidente)",
-      "video": "{{channel}} tiene un video"
+      "video": "{{channel}} tiene un video",
+      "fair_housing": "Lenguaje de vivienda justa: describe la casa, no a quién debe vivir ahí",
+      "claims": "Sin afirmaciones engañosas (garantías, \"el mejor precio\")",
+      "banned": "Ninguna de las frases prohibidas por su agencia"
     },
     "posts": {
       "title": "Mis publicaciones y resultados",
@@ -8485,7 +8494,8 @@
       "published": "Publicada",
       "partly": "Publicada en parte",
       "failed": "Falló",
-      "queued": "En espera"
+      "queued": "En espera",
+      "approval": "En espera de su bróker"
     },
     "insights": {
       "reach": "Alcance",
@@ -8930,6 +8940,164 @@
       "reply": "Redacte un correo a ",
       "emptyTitle": "Pregunte lo que sea",
       "emptyBody": "Pregunte sobre su día, un cliente, una operación o una política. Las respuestas vienen de sus propios datos."
+    }
+  },
+  "studio": {
+    "headlines": {
+      "listing": "RECIÉN LISTADA",
+      "coming_soon": "PRÓXIMAMENTE",
+      "sale": "RECIÉN VENDIDA",
+      "market": "ACTUALIZACIÓN DEL MERCADO",
+      "text": "NOVEDADES INMOBILIARIAS"
+    },
+    "beds": "{{beds}} rec. · {{baths}} baños",
+    "card": {
+      "headline": "Hablemos",
+      "line": "Escríbame para verla o para hablar de su mudanza."
+    },
+    "captions": {
+      "listing": {
+        "professional": "Recién listada: {{address}}. {{beds}} recámaras, {{baths}} baños, a un precio de {{price}}. Escríbame para más detalles o una visita privada. #RecienListada #{{tag}}BienesRaices",
+        "warm": "¡Le presento {{address}}! {{beds}} recámaras, {{baths}} baños y espacio para hacerla suya, por {{price}}. ¿Quiere verla? Escríbame. #RecienListada #{{tag}}Casas",
+        "short": "Nueva en el mercado: {{address}}, {{price}}. #RecienListada"
+      },
+      "sale": {
+        "professional": "Recién vendida: {{address}}. Gracias a todos los que hicieron posible este cierre. ¿Piensa vender? Hablemos. #RecienVendida #{{tag}}BienesRaices",
+        "warm": "¡Otro cierre feliz en {{address}}! Es un gusto entregar las llaves. ¿Piensa en su próxima mudanza? Con gusto le ayudo. #RecienVendida #{{tag}}Casas",
+        "short": "Recién vendida: {{address}}. #RecienVendida"
+      },
+      "market": {
+        "professional": "Actualización del mercado de {{city}}: {{text}} ¿Quiere saber qué significa para su casa? Escríbame. #Mercado #{{tag}}BienesRaices",
+        "warm": "Esto es lo que veo en el mercado de {{city}}: {{text}} ¿Le gustaría saber cuánto vale su casa hoy? Solo pregunte. #Mercado #{{tag}}Casas",
+        "short": "Mercado de {{city}}: {{text}} #Mercado"
+      },
+      "text": {
+        "professional": "{{text}} ¿Preguntas sobre comprar o vender? Escríbame. #BienesRaices #{{tag}}BienesRaices",
+        "warm": "{{text}} Siempre es un gusto ayudarle; escríbame cuando quiera. #BienesRaices #{{tag}}Casas",
+        "short": "{{text}} #BienesRaices"
+      }
+    },
+    "ad": {
+      "headline1": {
+        "listing": "Recién listada: {{address}}",
+        "sale": "Recién vendida: {{address}}",
+        "market": "Mercado de {{city}}",
+        "text": "Su agente inmobiliario en Texas"
+      },
+      "headline2": {
+        "listing": "Precio: {{price}}",
+        "sale": "¿Piensa vender?",
+        "market": "¿Cuánto vale su casa?",
+        "text": "¿Compra o vende? Hablemos"
+      },
+      "headline3": {
+        "listing": "Agende una visita privada",
+        "sale": "Le ayudo a mudarse",
+        "market": "Conozca las cifras recientes",
+        "text": "Consejos locales, respuestas rápidas"
+      },
+      "description": "Escríbame hoy"
+    },
+    "errors": {
+      "decided": "Esta publicación ya fue decidida."
+    },
+    "notify": {
+      "requestedTitle": "{{agent}} tiene una publicación para que usted la apruebe",
+      "requestedBody": "Pasó las revisiones de REOS y espera su aprobación.",
+      "review": "Revisar",
+      "approvedTitle": "Su bróker aprobó su publicación",
+      "returnedTitle": "Su bróker le devolvió su publicación",
+      "open": "Abrir el estudio"
+    },
+    "policy": {
+      "title": "Política de publicidad",
+      "purpose": "Defina contra qué se revisa cada publicación de {{brokerage}}.",
+      "saved": "Guardado. Ya aplica a todas las publicaciones.",
+      "approved": "Aprobada.",
+      "returned": "Se devolvió al agente.",
+      "texas": "Reglas de Texas (siempre activas)",
+      "texasBody": "Cada publicación lleva al agente y al bróker en una sola línea del mismo tamaño, y se revisan los títulos que un agente de ventas no puede usar.",
+      "checks": "REOS también revisa {{fairHousing}} frases de vivienda justa y {{claims}} afirmaciones engañosas.",
+      "brokerage": "Las reglas de su agencia",
+      "newAgents": "Aprobar las publicaciones de agentes en sus primeros 90 días",
+      "all": "Aprobar todas las publicaciones",
+      "banned": "Frases prohibidas",
+      "bannedHelp": "Una por línea. Una publicación con alguna de ellas no puede salir hasta corregirse.",
+      "save": "Guardar",
+      "brand": "Kit de marca",
+      "brandBody": "Los diseños usan el color y el logotipo de su agencia, definidos en Configuración de la agencia.",
+      "brandLink": "Abrir Configuración de la agencia",
+      "noColour": "Sin definir: los diseños usan el azul marino de REOS.",
+      "pending": "Publicaciones en espera de aprobación",
+      "noPending": "Nada en espera",
+      "noPendingBody": "Aquí aparecen las publicaciones de agentes que necesitan aprobación, cuando pasan las revisiones de REOS.",
+      "approve": "Aprobar",
+      "sendBack": "Devolver",
+      "note": "¿Qué debe cambiar el agente?",
+      "noteLabel": "Nota para el agente",
+      "scheduledFor": "Sale {{time}}",
+      "now": "Sale al aprobarse",
+      "issues": "Señalado: {{phrases}}"
+    },
+    "maker": {
+      "title": "Crear contenido",
+      "purpose": "A partir de un listado, una venta, una actualización del mercado o sus propias palabras.",
+      "from": "Empezar con",
+      "sources": {
+        "listing": "Un listado",
+        "sale": "Una venta",
+        "market": "Una actualización del mercado",
+        "text": "Sus palabras"
+      },
+      "chooseListing": "Elija un listado",
+      "chooseSale": "Elija una operación cerrada",
+      "noListings": "Aún no hay listados para publicar. Vincule su registro de miembro del MLS en Mis listados.",
+      "noSales": "Aún no hay operaciones cerradas.",
+      "marketText": "¿Qué está pasando en su mercado?",
+      "marketPlaceholder": "Por ejemplo: El precio medio subió 3% este mes; las casas se venden en 21 días.",
+      "city": "Ciudad",
+      "text": "¿Qué quiere decir?",
+      "textPlaceholder": "Escriba, o toque el micrófono y dígalo.",
+      "make": "Crear",
+      "making": "Creando…",
+      "outputs": "Qué crear",
+      "outputsNames": {
+        "post": "Publicación y texto",
+        "carousel": "Carrusel",
+        "ad": "Texto de anuncio"
+      },
+      "cost": "{{credits}} créditos · le quedan {{left}}",
+      "versions": "Elija una versión",
+      "designs": "Diseños",
+      "captions": "Textos",
+      "tones": {
+        "professional": "Profesional",
+        "warm": "Cercano",
+        "short": "Breve"
+      },
+      "shorter": "Más corto",
+      "professional": "Más profesional",
+      "spanish": "Español",
+      "use": "Usar este",
+      "carousel": "Carrusel",
+      "ad": "Texto de anuncio",
+      "headlines": "Títulos",
+      "primary": "Texto principal",
+      "description": "Descripción",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "checked": "Revisado por vivienda justa, afirmaciones y las reglas de su agencia.",
+      "recent": "Creado recientemente",
+      "design": "Diseño {{n}}",
+      "slide": "Diapositiva {{n}}"
+    },
+    "checks": {
+      "fix": "Corregir automáticamente",
+      "fixed": "Corregido: {{phrases}}",
+      "approval": "Su agencia aprueba sus publicaciones primero. Al publicar, va a su bróker.",
+      "sendToBroker": "Enviar al bróker",
+      "returned": "Su bróker la devolvió: {{note}}",
+      "recheck": "No salió: ahora contiene {{phrases}}. Corríjala y vuelva a programarla."
     }
   }
 }

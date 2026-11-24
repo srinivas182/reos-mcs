@@ -128,6 +128,25 @@
 - **Brand kit** (162) and **advertising policy** (broker web screen 35).
 - **Ad studio** (107): hooks and ad versions with the checks.
 - **Done when:** a listing post is made in under a minute.
+- **As built, B12.1** (ADR 0050):
+  - **Making** (`StudioGenerator`): from a listing (posts only from the agent's own MLS listings), a closed deal (property only, never the clients), a market update or the agent's words (typed or spoken).
+    - **Post:** three captions (professional, warm, short) and three designs.
+    - **Carousel:** listing photos and an agent card.
+    - **Ad copy:** three headlines, three primary texts and a description.
+    - Claude writes when configured; otherwise English and Spanish templates.
+    - 5 credits per making; tones (Shorter, More professional, Español) are free.
+  - **Designs** (`StudioRenderer`): 1080 × 1080 PNGs with GD and Inter (bundled, OFL) in the brokerage's colour. The agent and broker are on one line at one size. Demo listing photos have PNG copies.
+  - **Checks** (`AdvertisingPolicy`):
+    - Fair housing wording (HUD guidance), misleading claims, and the brokerage's banned phrases, added to B11's checks.
+    - Fix automatically.
+    - Scheduled posts are checked again as they go out.
+  - **Approval:** for new agents (first 90 days of license) or everyone. The post waits as "approval"; the broker approves it (now or at its time) or sends it back with a note. Notifications go both ways, and every decision is audited.
+  - **API:** `GET /api/v1/studio`, `POST /api/v1/studio/generations`, `GET /api/v1/studio/generations/{id}`, `POST /api/v1/studio/generations/{id}/captions`, `POST /api/v1/social/posts/fix`.
+  - **Web:**
+    - Content studio (screen 17) now has Make content and Pick a version above the composer. The composer shows the new checks, Fix automatically and the approval note.
+    - Broker: `/organisation/advertising` (screen 35, Policies in the broker sidebar): approvals, Texas rules, brokerage rules, banned phrases, brand kit.
+  - **Phone:** My posts → Make content (`social/create`, screen 165) → `social/versions/[id]` (166) → the post (`social/new`, with the checks and Fix automatically, screen 167). Ask's "Write an ad or post" starter opens it.
+  - **Done when:** a test makes a listing post (captions, designs, carousel, ad) and publishes it with the MLS line, all within 60 seconds on the Simulator.
 
 ### B12.2 Studio video (Team B)
 

@@ -22,9 +22,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $link
  * @property string $attribution
  * @property int|null $listing_post_id
- * @property string $status draft, scheduled, publishing, published, partly or failed
+ * @property string $status draft, approval (waiting for the broker, B12.1), scheduled, publishing, published, partly or failed
  * @property CarbonImmutable|null $scheduled_at
  * @property CarbonImmutable|null $published_at
+ * @property CarbonImmutable|null $approval_requested_at
+ * @property int|null $approved_by
+ * @property CarbonImmutable|null $approved_at
+ * @property string|null $approval_note what the broker said when sending it back
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property CarbonImmutable|null $deleted_at
@@ -35,16 +39,16 @@ final class SocialPost extends Model
 {
     use SoftDeletes;
 
-    public const STATUSES = ['draft', 'scheduled', 'publishing', 'published', 'partly', 'failed'];
+    public const STATUSES = ['draft', 'approval', 'scheduled', 'publishing', 'published', 'partly', 'failed'];
 
-    protected $fillable = ['uuid', 'user_id', 'body', 'media', 'link', 'attribution', 'listing_post_id', 'status', 'scheduled_at', 'published_at'];
+    protected $fillable = ['uuid', 'user_id', 'body', 'media', 'link', 'attribution', 'listing_post_id', 'status', 'scheduled_at', 'published_at', 'approval_requested_at', 'approved_by', 'approved_at', 'approval_note'];
 
     protected $attributes = ['media' => '[]'];
 
     protected function casts(): array
     {
         return [
-            'media' => 'array', 'scheduled_at' => 'immutable_datetime', 'published_at' => 'immutable_datetime',
+            'media' => 'array', 'scheduled_at' => 'immutable_datetime', 'published_at' => 'immutable_datetime', 'approval_requested_at' => 'immutable_datetime', 'approved_at' => 'immutable_datetime',
             'created_at' => 'immutable_datetime', 'updated_at' => 'immutable_datetime', 'deleted_at' => 'immutable_datetime',
         ];
     }

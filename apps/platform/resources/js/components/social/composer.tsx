@@ -1,4 +1,4 @@
-import { CheckCircle2, ImagePlus, Trash2, XCircle } from 'lucide-react';
+import { CheckCircle2, ImagePlus, Trash2, Wand2, XCircle } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import type {
+    Channel,
     CheckResult,
     Draft,
     ListingDraft,
@@ -29,6 +30,7 @@ export function Composer({
     onCheck,
     onUpload,
     onSubmit,
+    onFix,
 }: {
     accounts: SocialAccount[];
     draft: Draft;
@@ -39,6 +41,8 @@ export function Composer({
         file: File,
     ) => Promise<{ value: string; preview: string; kind: string }>;
     onSubmit: (draft: Draft) => void;
+    /** Fix automatically (screen 167): the words with flagged phrases swapped. */
+    onFix?: (body: string) => Promise<string>;
 }) {
     const { t } = useTranslation();
     const [value, setValue] = useState(draft);
@@ -318,14 +322,44 @@ export function Composer({
                                         className="size-5 text-destructive"
                                     />
                                 )}
-                                {t(`social.checks.${c.code}`, {
-                                    channel: c.detail
-                                        ? t(`social.channels.${c.detail}`)
-                                        : '',
-                                })}
+                                {['length', 'media', 'video'].includes(c.code)
+                                    ? t(`social.checks.${c.code}`, {
+                                          channel: c.detail
+                                              ? t(
+                                                    `social.channels.${c.detail as Channel}`,
+                                                )
+                                              : '',
+                                      })
+                                    : t(`social.checks.${c.code}`, {
+                                          channel: '',
+                                      })}
+                                {!c.ok &&
+                                c.detail &&
+                                !['length', 'media', 'video'].includes(c.code)
+                                    ? `: ${c.detail}`
+                                    : ''}
                             </li>
                         ))}
                     </ul>
+                    {check.issues.length > 0 && onFix ? (
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() =>
+                                void onFix(value.body).then((body) =>
+                                    set({ body }),
+                                )
+                            }
+                        >
+                            <Wand2 aria-hidden />
+                            {t('studio.checks.fix')}
+                        </Button>
+                    ) : null}
+                    {check.approval ? (
+                        <p className="rounded-reos-md border border-reos-tone-info-fg/30 bg-reos-tone-info-bg p-3 text-base text-reos-tone-info-fg">
+                            {t('studio.checks.approval')}
+                        </p>
+                    ) : null}
                 </div>
             ) : null}
             <fieldset className="space-y-3">

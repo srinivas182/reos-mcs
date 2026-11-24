@@ -22,6 +22,7 @@ import {
     Plug,
     Settings,
     ShieldQuestion,
+    ScrollText,
     ShieldCheck,
     ListChecks,
     Sparkles,
@@ -69,6 +70,7 @@ import { index as recruitingIndex } from '@/routes/recruiting';
 import { index as virtualBroker } from '@/routes/virtual-broker';
 import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
+import { index as advertisingPolicy } from '@/routes/organisation/advertising';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -114,6 +116,7 @@ export type NavLabel =
     | 'contentStudio'
     | 'virtualBroker'
     | 'contractReview'
+    | 'policies'
     | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
@@ -274,7 +277,13 @@ export function roleNavigation(
                 brokerVirtualBroker(),
                 '/organisation/virtual-broker',
             ),
-            planned('policies'),
+            // Advertising policy (B12.1, screen 35): Texas rules, brokerage rules, brand kit, approvals.
+            item(
+                'policies',
+                ScrollText,
+                advertisingPolicy(),
+                '/organisation/advertising',
+            ),
             planned('mentorProgram'),
             // Recruiting: candidates who asked for broker offers (A10.3b).
             item('recruiting', UserPlus, recruitingIndex(), '/recruiting'),

@@ -1,11 +1,11 @@
 import { router } from 'expo-router';
-import { Megaphone, Plug, Plus } from 'lucide-react-native';
+import { Megaphone, Plug, Plus, Sparkles } from 'lucide-react-native';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { type Channel, STATUS_TONE, usePosts, type SocialPost } from '@/lib/social';
-import { Card, Chip, EmptyState, Icon, IconButton, ListRow, Screen, SectionTitle, Text, TitleBar } from '@/ui';
+import { Button, Card, Chip, EmptyState, Icon, IconButton, ListRow, Screen, SectionTitle, Text, TitleBar } from '@/ui';
 
 /**
  * My posts and results (B11; agent screen 169, Me → My posts): this
@@ -39,6 +39,8 @@ export default function PostsScreen() {
   return (
     <Screen>
       <TitleBar title={t('social.posts.title')} onBack={() => router.back()} action={<IconButton icon={Plus} primary label={t('social.posts.new')} onPress={() => router.push('/social/new')} />} />
+      {/* Create a post from a listing, a sale, a market update or a voice note (B12.1, screen 165). */}
+      <Button icon={Sparkles} label={t('studio.maker.title')} variant="secondary" fullWidth onPress={() => router.push('/social/create')} />
       <View style={styles.stats}>
         {(['posts_this_month', 'reach', 'engagement', 'clicks'] as const).map((key) => (
           <Card key={key} style={styles.stat}>

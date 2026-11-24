@@ -30,6 +30,7 @@ use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Social\SocialController;
+use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Ask\AskPageController;
@@ -101,6 +102,7 @@ use App\Http\Controllers\Sessions\SessionsController;
 use App\Http\Controllers\Settings\AvatarController;
 use App\Http\Controllers\Social\StudioPageController;
 use App\Http\Controllers\StatusController;
+use App\Http\Controllers\Studio\AdvertisingController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
 use App\Http\Controllers\VirtualBroker\BrokerVirtualBrokerController;
@@ -113,7 +115,7 @@ use App\Services\Tenancy\TenantSignups;
 use Illuminate\Support\Facades\Route;
 
 // A social post's media, for the channels to fetch (signed links, B11).
-Route::get('social/media/{path}', [SocialController::class, 'file'])->where('path', 'social/[0-9]+/[A-Za-z0-9\-]+\.[a-z0-9]{2,5}')->middleware('throttle:120,1,social-media')->name('social.media');
+Route::get('social/media/{path}', [SocialController::class, 'file'])->where('path', 'social/[0-9]+/(studio/)?[A-Za-z0-9\-]+\.[a-z0-9]{2,5}')->middleware('throttle:120,1,social-media')->name('social.media');
 
 // The public site (web journey screen 1) and each audience's landing page.
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
@@ -215,12 +217,18 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::prefix('studio')->name('studio.')->controller(SocialController::class)->group(function () {
         Route::post('accounts/{connection}/refresh', 'refresh')->whereNumber('connection')->middleware('throttle:10,1,studio-refresh')->name('accounts.refresh');
         Route::post('posts/check', 'check')->middleware('throttle:60,1,studio-check')->name('posts.check');
+        Route::post('posts/fix', 'fix')->middleware('throttle:60,1,studio-check')->name('posts.fix');
         Route::post('posts', 'store')->middleware('throttle:30,1,studio-posts')->name('posts.store');
         Route::put('posts/{post}', 'update')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.update');
         Route::delete('posts/{post}', 'destroy')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.destroy');
         Route::post('posts/{post}/restore', 'restore')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.restore');
         Route::post('posts/{post}/repost', 'repost')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.repost');
         Route::post('media', 'media')->middleware('throttle:20,1,studio-media')->name('media');
+    });
+    // Make content (B12.1, screens 165 and 166): the same JSON actions as the API.
+    Route::prefix('studio/generations')->name('studio.generations.')->controller(StudioController::class)->group(function () {
+        Route::post('/', 'make')->middleware('throttle:10,1,studio-make')->name('make');
+        Route::post('{generation}/captions', 'retone')->whereUuid('generation')->middleware('throttle:30,1,studio-retone')->name('retone');
     });
     // The CE wallet and renewal checklist (A11.2, screens 103, 105, 106).
     Route::get('ce', CeWalletPageController::class)->name('ce.index');
@@ -437,6 +445,14 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
         Route::put('tools/{tool}', 'allow')->where('tool', '[a-z0-9-]+')->middleware('throttle:30,1,brokerage-integrations-allow')->name('allow');
         Route::post('tools/{tool}/key', 'connectKey')->where('tool', '[a-z0-9-]+')->middleware('throttle:10,1,brokerage-integrations-key')->name('key');
         Route::put('connections/{connection}/mapping', 'mapping')->whereNumber('connection')->middleware('throttle:20,1,brokerage-integrations-map')->name('mapping');
+    });
+// Advertising policy (B12.1, broker screen 35): Texas rules, the brokerage's rules and banned phrases, brand kit, approvals.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/advertising')->name('organisation.advertising.')
+    ->controller(AdvertisingController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/', 'update')->middleware('throttle:20,1,advertising-update')->name('update');
+        Route::post('posts/{post}/approve', 'approve')->whereUuid('post')->middleware('throttle:60,1,advertising-approve')->name('approve');
+        Route::post('posts/{post}/return', 'sendBack')->whereUuid('post')->middleware('throttle:60,1,advertising-approve')->name('return');
     });
 // The virtual broker, broker side (A12.1, broker screen 34): the manual and its versions, TREC conflicts, the FAQ, escalation, answers.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/virtual-broker')->name('organisation.virtual-broker.')

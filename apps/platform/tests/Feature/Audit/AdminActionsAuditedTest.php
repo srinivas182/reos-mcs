@@ -47,6 +47,7 @@ use App\Models\ProviderCategory;
 use App\Models\ProviderLicence;
 use App\Models\QuizQuestion;
 use App\Models\ReviewItem;
+use App\Models\SocialPost;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
@@ -134,6 +135,20 @@ function auditBrokerQuestion(bool $faq = false): array
     $entry = $faq ? app(PolicyKnowledge::class)->addFaq($lone, 'Who approves yard signs?', 'The office does.', null) : null;
 
     return [$lone, $linda, $question, $entry];
+}
+
+/**
+ * A brokerage with an agent's post waiting for approval (B12.1).
+ *
+ * @return array{0: Organisation, 1: User, 2: SocialPost}
+ */
+function auditPendingPost(): array
+{
+    [$lone, $linda] = auditBrokerage();
+    $james = User::factory()->withRole(Role::Agent, $lone)->create();
+    $post = SocialPost::query()->create(['uuid' => (string) Str::uuid7(), 'user_id' => $james->id, 'body' => 'Open house Saturday', 'media' => [], 'attribution' => 'James · Lone Star Realty', 'status' => 'approval', 'approval_requested_at' => now()]);
+
+    return [$lone, $linda, $post];
 }
 
 /** @return array{0: Organisation, 1: User, 2: Course} */
@@ -659,6 +674,22 @@ function adminActions(): array
 
             return auditCase($paul, 'PUT', "/school/approvals/{$approval->id}/status", ['status' => 'withdrawn'], tenant: $school->id);
         },
+        // Broker: advertising policy and post approvals (B12.1, screen 35).
+        'organisation.advertising.update' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'PUT', '/organisation/advertising', ['approval_new_agents' => true, 'approval_all' => false, 'banned' => ['motivated seller']], tenant: $lone->id);
+        },
+        'organisation.advertising.approve' => function () {
+            [$lone, $linda, $post] = auditPendingPost();
+
+            return auditCase($linda, 'POST', "/organisation/advertising/posts/{$post->uuid}/approve", tenant: $lone->id);
+        },
+        'organisation.advertising.return' => function () {
+            [$lone, $linda, $post] = auditPendingPost();
+
+            return auditCase($linda, 'POST', "/organisation/advertising/posts/{$post->uuid}/return", ['note' => 'Add the price.'], tenant: $lone->id);
+        },
         // Broker: the virtual broker (A12.1, screen 34).
         'organisation.virtual-broker.manual' => function () {
             [$lone, $linda] = auditBrokerage();
@@ -1011,6 +1042,7 @@ it('audits the admin action', function (string $name) {
 
 /** Routes that change a value (rather than add, remove or start something). */
 const CHANGES = [
+    'organisation.advertising.update',
     'organisation.virtual-broker.settings',
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',
