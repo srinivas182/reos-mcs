@@ -33,6 +33,7 @@
         <env name="REOS_CONTENT_DISK" value="local"/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
+        <env name="REOS_VIDEO_RENDERER" value="simulator"/>
         <env name="REOS_TENANT_BASE_DOMAIN" value="reos.com"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="PULSE_ENABLED" value="false"/>

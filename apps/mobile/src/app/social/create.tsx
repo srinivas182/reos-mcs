@@ -1,13 +1,13 @@
 import { router, useFocusEffect } from 'expo-router';
-import { Mic, Sparkles, Square } from 'lucide-react-native';
+import { Clapperboard, Mic, Sparkles, Square } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
-import { loadStudio, makeContent, type Output, type SourceType, type StudioHome } from '@/lib/studio';
+import { loadStudio, makeContent, makeVideo, type Output, type SourceType, type StudioHome } from '@/lib/studio';
 import { speechLanguage, useSpeech } from '@/lib/voice';
-import { Button, Callout, ChoiceRow, IconButton, PillGroup, Screen, SectionTitle, Text, TextField, TitleBar } from '@/ui';
+import { Button, Callout, ChoiceRow, EmptyState, IconButton, ListRow, PillGroup, Screen, SectionTitle, Text, TextField, TitleBar } from '@/ui';
 
 const SOURCES: SourceType[] = ['listing', 'sale', 'market', 'text'];
 
@@ -15,6 +15,7 @@ const SOURCES: SourceType[] = ['listing', 'sale', 'market', 'text'];
  * Create a post: say it, type it, or start from a listing or a sale
  * (agent screen 165; B12.1). Choose what to make; the cost in credits shows
  * before anything is spent. Recordings stay on the phone; only the words go.
+ * A listing can also become a 30-second video (B12.2), edited on screen 168.
  */
 export default function CreatePostScreen() {
   const { t, i18n } = useTranslation();
@@ -48,6 +49,20 @@ export default function CreatePostScreen() {
     try {
       const made = await makeContent(type === 'listing' || type === 'sale' ? { type, id: pick } : { type, text: text.trim(), city: city.trim() || null }, type === 'listing' ? outputs : outputs.filter((o) => o !== 'carousel'));
       router.push({ pathname: '/social/versions/[id]', params: { id: made.id } });
+    } catch (e) {
+      setProblem(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const video = async () => {
+    if (type !== 'listing' || pick === null || busy) return;
+    setBusy(true);
+    setProblem(null);
+    try {
+      const made = await makeVideo({ type: 'listing', id: pick });
+      router.push({ pathname: '/social/video/[id]', params: { id: made.id } });
     } catch (e) {
       setProblem(e instanceof Error ? e.message : String(e));
     } finally {
@@ -118,6 +133,21 @@ export default function CreatePostScreen() {
         ))}
       {problem ? <Callout tone="danger" title={problem} live /> : null}
       <Button icon={Sparkles} label={busy ? t('studio.maker.making') : t('studio.maker.make')} loading={busy} disabled={!ready} fullWidth onPress={() => void make()} />
+
+      <SectionTitle>{t('studio.video.videos')}</SectionTitle>
+      <Text tone="muted">{t('studio.video.hint')}</Text>
+      {home ? <Text variant="caption" tone="muted">{t('studio.video.cost', { credits: home.video_cost, left: home.credits_left })}</Text> : null}
+      <Button variant="secondary" icon={Clapperboard} label={t('studio.video.listing')} loading={busy} disabled={busy || type !== 'listing' || pick === null} fullWidth onPress={() => void video()} />
+      {home && home.videos.length === 0 ? <EmptyState title={t('studio.video.none')} description={t('studio.video.noneHint')} /> : null}
+      {home?.videos.map((v) => (
+        <ListRow
+          key={v.id}
+          icon={Clapperboard}
+          title={v.source.label ?? v.title}
+          subtitle={v.status === 'rendering' ? t('studio.video.rendering') : v.status === 'failed' ? t('studio.video.failed') : t('studio.video.ready', { seconds: v.seconds ?? 0 })}
+          onPress={() => router.push({ pathname: '/social/video/[id]', params: { id: v.id } })}
+        />
+      ))}
     </Screen>
   );
 }

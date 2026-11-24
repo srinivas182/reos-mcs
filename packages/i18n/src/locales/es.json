@@ -9098,6 +9098,89 @@
       "sendToBroker": "Enviar al bróker",
       "returned": "Su bróker la devolvió: {{note}}",
       "recheck": "No salió: ahora contiene {{phrases}}. Corríjala y vuelva a programarla."
+    },
+    "video": {
+      "headline": "Mi video",
+      "cta": "Llame a {{name}} para verlo",
+      "hooks": {
+        "listing": {
+          "1": "Entre a esta casa en {{city}}",
+          "2": "Nuevo en {{city}}: pase y vea",
+          "3": "Acompáñeme en un recorrido rápido"
+        },
+        "own": {
+          "1": "Venga a ver",
+          "2": "Esto es en lo que estoy trabajando",
+          "3": "Un recorrido rápido conmigo"
+        }
+      },
+      "errors": {
+        "media": "Agregue al menos una foto o un clip.",
+        "busy": "Este video todavía se está procesando. Inténtelo de nuevo en un momento.",
+        "scenes": "Un video tiene de 1 a {{max}} escenas.",
+        "long": "Un video puede durar hasta {{seconds}} segundos.",
+        "checks": "Corrija las palabras marcadas antes de procesar el video.",
+        "render": "El video no se procesó. Inténtelo de nuevo."
+      },
+      "title": "Editar video",
+      "purpose": "Ediciones sencillas: recorte, subtítulos, música, marca y gancho.",
+      "make": "Hacer un video",
+      "listing": "Video del listado",
+      "own": "Sus clips y fotos",
+      "hint": "Unos 30 segundos, vertical, con subtítulos, el marco de su marca y música.",
+      "cost": "{{credits}} créditos · le quedan {{left}}",
+      "addClip": "Agregar un clip o una foto",
+      "clips_one": "{{count}} clip o foto agregado",
+      "clips_other": "{{count}} clips o fotos agregados",
+      "rendering": "Procesando su video…",
+      "ready": "Listo · {{seconds}} segundos",
+      "failed": "El video no se procesó.",
+      "tabs": {
+        "trim": "Recortar",
+        "captions": "Subtítulos",
+        "music": "Música",
+        "brand": "Marca",
+        "hook": "Gancho"
+      },
+      "timeline": "Línea de tiempo",
+      "scene": "Escena {{n}}",
+      "photo": "Foto",
+      "clip": "Clip",
+      "seconds": "{{seconds}} s",
+      "startAt": "Empieza en {{seconds}} s",
+      "longer": "Más larga",
+      "shorter": "Más corta",
+      "later": "Empezar después",
+      "earlier": "Empezar antes",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "remove": "Quitar",
+      "removed": "Escena quitada",
+      "total": "{{seconds}} segundos en total",
+      "tooLong": "Que dure {{seconds}} segundos o menos.",
+      "pauses": "Las pausas de sus clips se quitan automáticamente.",
+      "caption": "Subtítulo de la escena {{n}}",
+      "hookLabel": "Primeros dos segundos",
+      "suggest": "Sugerir ganchos más fuertes",
+      "suggestions": "Sugerencias",
+      "tracks": {
+        "calm": "Tranquila",
+        "bright": "Alegre",
+        "none": "Sin música"
+      },
+      "musicNote": "Música hecha por REOS, libre para usar en cualquier lugar.",
+      "brandOn": "Color de la marca en el marco",
+      "brandNote": "Su nombre y el de su bróker siempre aparecen (regla de Texas).",
+      "issues": "Corrija esto antes de procesar el video",
+      "fix": "Corregir automáticamente",
+      "done": "Listo",
+      "use": "Usar en una publicación",
+      "play": "Vista previa del video",
+      "videos": "Videos",
+      "none": "Aún no tiene videos",
+      "noneHint": "Haga uno a partir de un listado en un minuto.",
+      "chooseListing": "Elija un listado",
+      "noListings": "Aún no hay listados para hacer un video."
     }
   }
 }

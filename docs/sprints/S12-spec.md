@@ -154,6 +154,30 @@
 - **Edit video** (168): trim, captions, music, brand, hook.
 - **Rendering:** ffmpeg in a queue worker behind a renderer interface; the Simulator in CI.
 - **Done when:** a 30-second listing video is rendered.
+- **As built, B12.2** (ADR 0051):
+  - **Making** (`StudioVideos`):
+    - From a listing (up to eight postable photos) or the agent's own clips and photos.
+    - Clips go after the first photo, and the video closes on the agent's card.
+    - It has a hook for the first two seconds and captions per scene (address, beds and baths, price, notes, the call).
+    - Photos are stretched to about 30 seconds; the video is capped at 60 seconds and 12 scenes.
+    - 30 credits, shown first.
+  - **Edit video** (168):
+    - **Trim:** scene length, and the start of a clip.
+    - Reorder or remove scenes (with undo), and add a clip or photo.
+    - **Captions, Music, Brand** (the colour on the frame; the names always show), and **Hook** (three suggestions, free).
+    - Every edit is checked again and shown, with Fix automatically.
+    - Done renders again (free), and is refused while words are flagged.
+  - **Rendering** (`VideoRenderer`):
+    - `FfmpegRenderer` makes 1080 × 1920 H.264 at 30 fps: slow zoom on stills, clips cropped, pauses removed (`silencedetect`).
+    - Overlays (captions, hook, the frame with agent and broker) are drawn by `VideoFrames` with GD and Inter.
+    - Music is REOS-made (`calm`, `bright`) or none.
+    - `SimulatedRenderer` runs in CI. The queue job is `RenderStudioVideo`.
+    - ffmpeg is added to the preview and dev container images.
+  - **API:** `POST /api/v1/studio/videos`, `GET` and `PUT /api/v1/studio/videos/{id}`, `POST /api/v1/studio/videos/{id}/hooks`. `GET /api/v1/studio` adds `video_cost`, `tracks` and `videos`. Signed media now serves byte ranges (local) or a short-lived S3 link.
+  - **Web:** the content studio (screen 17) has Videos: make one from a listing, watch it as it finishes, Use in a post.
+  - **Phone:** Make content (165) → Listing video → `social/video/[id]` (168) → Use in a post → `social/new` (167).
+  - **Done when:** a test renders a real 30-second, 1080 × 1920 MP4 with sound using ffmpeg (skipped where ffmpeg isn't installed). The Simulator test makes, edits, fixes, renders again and posts a 30-second listing video.
+  - **Later:** filler-word removal (needs a transcript), and a licensed music library (the client's licence).
 
 ### B12.3 Content calendar (Team B)
 

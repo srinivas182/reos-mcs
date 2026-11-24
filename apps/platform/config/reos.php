@@ -93,6 +93,17 @@ return [
         ],
     ],
 
+    // Studio videos (B12.2, ADR 0051): ffmpeg in the queue worker renders
+    // them; "simulator" (CI) copies a placeholder so the rest can be tested.
+    'studio' => [
+        'video' => [
+            'renderer' => env('REOS_VIDEO_RENDERER', 'ffmpeg'),
+            'ffmpeg' => env('FFMPEG_BINARY', 'ffmpeg'),
+            'ffprobe' => env('FFPROBE_BINARY', 'ffprobe'),
+            'timeout' => (int) env('REOS_VIDEO_TIMEOUT', 600),
+        ],
+    ],
+
     // Payments (B5.1, B5.2; screen 66). Fees and the refund window are
     // Sprint 5 decisions; change them here, not in code.
     'billing' => [

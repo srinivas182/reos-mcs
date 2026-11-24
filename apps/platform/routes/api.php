@@ -64,6 +64,7 @@ use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsControlle
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Studio\StudioController;
+use App\Http\Controllers\Api\Studio\VideoController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Api\Voice\VoiceController;
@@ -323,6 +324,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('generations', 'make')->middleware('throttle:10,1,api-studio-make')->name('make');
         Route::get('generations/{generation}', 'show')->whereUuid('generation')->name('show');
         Route::post('generations/{generation}/captions', 'retone')->whereUuid('generation')->middleware('throttle:30,1,api-studio-retone')->name('retone');
+    });
+    // Studio videos (B12.2, agent screens 166 and 168).
+    Route::prefix('studio/videos')->name('api.studio.videos.')->controller(VideoController::class)->group(function () {
+        Route::post('/', 'store')->middleware('throttle:6,1,api-studio-video')->name('store');
+        Route::get('{video}', 'show')->whereUuid('video')->name('show');
+        Route::put('{video}', 'update')->whereUuid('video')->middleware('throttle:30,1,api-studio-video-edit')->name('update');
+        Route::post('{video}/hooks', 'hooks')->whereUuid('video')->middleware('throttle:20,1,api-studio-video-hooks')->name('hooks');
     });
     // Social posting (B11): accounts, posts, checks, schedule, insights.
     Route::prefix('social')->name('api.social.')->controller(SocialController::class)->group(function () {

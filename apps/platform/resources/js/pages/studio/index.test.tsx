@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { accounts, check, post, postList } from '@/components/social/fixtures';
-import { generation, maker } from '@/components/studio/fixtures';
+import { generation, maker, video } from '@/components/studio/fixtures';
 import { i18n } from '@/lib/i18n';
 import StudioPage from '@/pages/studio/index';
 
@@ -24,11 +24,13 @@ describe('the content studio (B11.1)', () => {
         fetchMock = vi.fn(async (url: string) => {
             const data = url.includes('/check')
                 ? check()
-                : url.includes('/studio/generations')
-                  ? generation()
-                  : url.includes('/studio/posts')
-                    ? post({ status: 'publishing' })
-                    : null;
+                : url.includes('/studio/videos')
+                  ? video({ status: 'rendering', video: null })
+                  : url.includes('/studio/generations')
+                    ? generation()
+                    : url.includes('/studio/posts')
+                      ? post({ status: 'publishing' })
+                      : null;
             const body =
                 url === '/studio' ? { props: { posts: postList() } } : { data };
             return new Response(JSON.stringify(body), {
@@ -114,6 +116,43 @@ describe('the content studio (B11.1)', () => {
         await waitFor(() =>
             expect(screen.getByLabelText('Post text')).toHaveValue(
                 generation().captions[0].text,
+            ),
+        );
+    });
+
+    it('makes a listing video, and puts a ready one in the composer (B12.2)', async () => {
+        const user = userEvent.setup();
+        render(
+            <StudioPage
+                accounts={accounts()}
+                posts={postList()}
+                listing={null}
+                maker={maker({ videos: [video()] })}
+            />,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Listing video' }));
+        await waitFor(() =>
+            expect(
+                screen.getByText('Rendering your video…'),
+            ).toBeInTheDocument(),
+        );
+        const [, init] = fetchMock.mock.calls.find(
+            ([u]) => u === '/studio/videos',
+        ) as [string, RequestInit];
+        expect(
+            JSON.parse(typeof init.body === 'string' ? init.body : '{}'),
+        ).toEqual({
+            source: {
+                type: 'listing',
+                id: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8e66',
+            },
+        });
+
+        await user.click(screen.getByRole('button', { name: 'Use in a post' }));
+        await waitFor(() =>
+            expect(screen.getByLabelText('Post text')).toHaveValue(
+                'Step inside this Katy home',
             ),
         );
     });

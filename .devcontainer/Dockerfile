@@ -7,7 +7,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 RUN install-php-extensions pdo_pgsql pgsql redis intl bcmath zip pcntl opcache exif gd \
  && apt-get update \
- && apt-get install -y --no-install-recommends git unzip curl postgresql-client \
+ && apt-get install -y --no-install-recommends git unzip curl postgresql-client ffmpeg \
  && rm -rf /var/lib/apt/lists/*
 
 ENV COMPOSER_HOME=/home/vscode/.composer

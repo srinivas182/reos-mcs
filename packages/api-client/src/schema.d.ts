@@ -4428,7 +4428,7 @@ export interface paths {
         };
         /**
          * The studio
-         * @description What a making costs and my credits left, what I can start from (my listings that may be posted, my closed deals), and what I made lately.
+         * @description What a making and a video cost and my credits left, what I can start from (my listings that may be posted, my closed deals), what I made lately, the music for videos, and my videos.
          */
         get: operations["studio.home"];
         put?: never;
@@ -4988,6 +4988,67 @@ export interface paths {
          *     one still open).
          */
         post: operations["practice.plans.continue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/videos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Make a video
+         * @description About 30 seconds, vertical, from the listing's photos and my own clips and photos (uploaded first with `POST /social/media`): a hook, a caption on each scene, the brand frame with my broker, and music. Rendered in the background (`status` is `rendering`, then `ready` or `failed`). Costs the video credits (shown first).
+         */
+        post: operations["studio.videos.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/videos/{video}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One video */
+        get: operations["studio.videos.show"];
+        /**
+         * Edit a video
+         * @description The hook, the scenes (order, trim, length, caption; my own uploads can be added), the music and the brand colour. The words are checked again and the result is in `issues`; `fix` swaps flagged wording; `render` renders again (free) once the checks pass.
+         */
+        put: operations["studio.videos.update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/studio/videos/{video}/hooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Hook ideas
+         * @description Three stronger first two seconds for the video (free).
+         */
+        post: operations["studio.videos.hooks"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5961,6 +6022,20 @@ export interface components {
             outputs: ("post" | "carousel" | "ad")[];
         };
         /**
+         * MakeVideoRequest
+         * @description Make a video (B12.2; screens 165 and 166): a listing, or my own clips and photos.
+         */
+        MakeVideoRequest: {
+            source: {
+                /** @enum {string} */
+                type: "listing" | "own";
+                /** Format: uuid */
+                id?: string | null;
+                text?: string | null;
+            };
+            clips?: string[] | null;
+        };
+        /**
          * MathCheckRequest
          * @description One math lab step to check, or to show (screen 48, A9.2c).
          */
@@ -6682,6 +6757,24 @@ export interface components {
             /** @description dotloop only: the profiles whose loops sync (at least one). */
             profiles?: string[];
         };
+        /**
+         * UpdateVideoRequest
+         * @description Edit a video (B12.2; screen 168): hook, scenes (order, trim, length, caption), music, brand; fix; render.
+         */
+        UpdateVideoRequest: {
+            title?: string | null;
+            /** @enum {string} */
+            music?: "calm" | "bright" | "none";
+            brand?: boolean;
+            scenes?: {
+                media: string;
+                start?: number | null;
+                seconds: number;
+                caption?: string | null;
+            }[];
+            fix?: boolean;
+            render?: boolean;
+        };
         /** WaitlistRequest */
         WaitlistRequest: {
             /**
@@ -6818,6 +6911,7 @@ export type SchemaLicenceType = components['schemas']['LicenceType'];
 export type SchemaListingPostRequest = components['schemas']['ListingPostRequest'];
 export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMakeContentRequest = components['schemas']['MakeContentRequest'];
+export type SchemaMakeVideoRequest = components['schemas']['MakeVideoRequest'];
 export type SchemaMathCheckRequest = components['schemas']['MathCheckRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
 export type SchemaMediaRequest = components['schemas']['MediaRequest'];
@@ -6867,6 +6961,7 @@ export type SchemaTextSwitchRequest = components['schemas']['TextSwitchRequest']
 export type SchemaTodoResource = components['schemas']['TodoResource'];
 export type SchemaToolRequestRequest = components['schemas']['ToolRequestRequest'];
 export type SchemaUpdateConnectionRequest = components['schemas']['UpdateConnectionRequest'];
+export type SchemaUpdateVideoRequest = components['schemas']['UpdateVideoRequest'];
 export type SchemaWaitlistRequest = components['schemas']['WaitlistRequest'];
 export type ResponseModelNotFoundException = components['responses']['ModelNotFoundException'];
 export type ResponseValidationException = components['responses']['ValidationException'];
@@ -21211,6 +21306,54 @@ export interface operations {
                                 engine: string;
                                 created_at: string | null;
                             }[];
+                            video_cost: number;
+                            tracks: ("calm" | "bright" | "none")[];
+                            videos: {
+                                id: string;
+                                source: {
+                                    /** @enum {string} */
+                                    type: "listing" | "own";
+                                    id: string | null;
+                                    label: string | null;
+                                };
+                                listing: string | null;
+                                title: string;
+                                scenes: {
+                                    media: string;
+                                    url: string;
+                                    /** @enum {string} */
+                                    kind: "image" | "video";
+                                    start: number;
+                                    seconds: number;
+                                    length: number | null;
+                                    caption: string;
+                                }[];
+                                /** @enum {string} */
+                                music: "calm" | "bright" | "none";
+                                brand: boolean;
+                                /** @enum {string} */
+                                status: "rendering" | "ready" | "failed";
+                                seconds: number | null;
+                                video: {
+                                    path: string;
+                                    url: string;
+                                } | null;
+                                poster: {
+                                    path: string;
+                                    url: string;
+                                } | null;
+                                error: string | null;
+                                issues: {
+                                    /** @enum {string} */
+                                    code: "fair_housing" | "claims" | "banned";
+                                    phrase: string;
+                                    fix: string;
+                                }[];
+                                credits: number;
+                                engine: string;
+                                created_at: string | null;
+                                rendered_at: string | null;
+                            }[];
                         };
                     };
                 };
@@ -22767,6 +22910,283 @@ export interface operations {
                             } | null;
                             attempt_id: number | null;
                         };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "studio.videos.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MakeVideoRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            source: {
+                                /** @enum {string} */
+                                type: "listing" | "own";
+                                id: string | null;
+                                label: string | null;
+                            };
+                            listing: string | null;
+                            title: string;
+                            scenes: {
+                                media: string;
+                                url: string;
+                                /** @enum {string} */
+                                kind: "image" | "video";
+                                start: number;
+                                seconds: number;
+                                length: number | null;
+                                caption: string;
+                            }[];
+                            /** @enum {string} */
+                            music: "calm" | "bright" | "none";
+                            brand: boolean;
+                            /** @enum {string} */
+                            status: "rendering" | "ready" | "failed";
+                            seconds: number | null;
+                            video: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            poster: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            error: string | null;
+                            issues: {
+                                /** @enum {string} */
+                                code: "fair_housing" | "claims" | "banned";
+                                phrase: string;
+                                fix: string;
+                            }[];
+                            credits: number;
+                            engine: string;
+                            created_at: string | null;
+                            rendered_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "studio.videos.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                video: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            source: {
+                                /** @enum {string} */
+                                type: "listing" | "own";
+                                id: string | null;
+                                label: string | null;
+                            };
+                            listing: string | null;
+                            title: string;
+                            scenes: {
+                                media: string;
+                                url: string;
+                                /** @enum {string} */
+                                kind: "image" | "video";
+                                start: number;
+                                seconds: number;
+                                length: number | null;
+                                caption: string;
+                            }[];
+                            /** @enum {string} */
+                            music: "calm" | "bright" | "none";
+                            brand: boolean;
+                            /** @enum {string} */
+                            status: "rendering" | "ready" | "failed";
+                            seconds: number | null;
+                            video: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            poster: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            error: string | null;
+                            issues: {
+                                /** @enum {string} */
+                                code: "fair_housing" | "claims" | "banned";
+                                phrase: string;
+                                fix: string;
+                            }[];
+                            credits: number;
+                            engine: string;
+                            created_at: string | null;
+                            rendered_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "studio.videos.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                video: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateVideoRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            source: {
+                                /** @enum {string} */
+                                type: "listing" | "own";
+                                id: string | null;
+                                label: string | null;
+                            };
+                            listing: string | null;
+                            title: string;
+                            scenes: {
+                                media: string;
+                                url: string;
+                                /** @enum {string} */
+                                kind: "image" | "video";
+                                start: number;
+                                seconds: number;
+                                length: number | null;
+                                caption: string;
+                            }[];
+                            /** @enum {string} */
+                            music: "calm" | "bright" | "none";
+                            brand: boolean;
+                            /** @enum {string} */
+                            status: "rendering" | "ready" | "failed";
+                            seconds: number | null;
+                            video: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            poster: {
+                                path: string;
+                                url: string;
+                            } | null;
+                            error: string | null;
+                            issues: {
+                                /** @enum {string} */
+                                code: "fair_housing" | "claims" | "banned";
+                                phrase: string;
+                                fix: string;
+                            }[];
+                            credits: number;
+                            engine: string;
+                            created_at: string | null;
+                            rendered_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "studio.videos.hooks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                video: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string[];
                     };
                 };
             };

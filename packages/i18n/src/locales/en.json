@@ -9098,6 +9098,89 @@
       "sendToBroker": "Send to broker",
       "returned": "Your broker sent this back: {{note}}",
       "recheck": "It didn't go out: it now has {{phrases}}. Fix it and schedule it again."
+    },
+    "video": {
+      "headline": "My video",
+      "cta": "Call {{name}} to see it",
+      "hooks": {
+        "listing": {
+          "1": "Step inside this {{city}} home",
+          "2": "New in {{city}}: come on in",
+          "3": "Take a quick tour with me"
+        },
+        "own": {
+          "1": "Come take a look",
+          "2": "Here's what I'm working on",
+          "3": "A quick tour with me"
+        }
+      },
+      "errors": {
+        "media": "Add at least one photo or clip.",
+        "busy": "This video is still rendering. Try again in a moment.",
+        "scenes": "A video has 1 to {{max}} scenes.",
+        "long": "A video can be up to {{seconds}} seconds.",
+        "checks": "Fix the flagged words before rendering.",
+        "render": "The video didn't render. Try again."
+      },
+      "title": "Edit video",
+      "purpose": "Simple edits: trim, captions, music, brand and hook.",
+      "make": "Make a video",
+      "listing": "Listing video",
+      "own": "Your clips and photos",
+      "hint": "About 30 seconds, vertical, with captions, your brand frame and music.",
+      "cost": "{{credits}} credits · {{left}} left",
+      "addClip": "Add a clip or photo",
+      "clips_one": "{{count}} clip or photo added",
+      "clips_other": "{{count}} clips or photos added",
+      "rendering": "Rendering your video…",
+      "ready": "Ready · {{seconds}} seconds",
+      "failed": "The video didn't render.",
+      "tabs": {
+        "trim": "Trim",
+        "captions": "Captions",
+        "music": "Music",
+        "brand": "Brand",
+        "hook": "Hook"
+      },
+      "timeline": "Timeline",
+      "scene": "Scene {{n}}",
+      "photo": "Photo",
+      "clip": "Clip",
+      "seconds": "{{seconds}} s",
+      "startAt": "Starts at {{seconds}} s",
+      "longer": "Longer",
+      "shorter": "Shorter",
+      "later": "Start later",
+      "earlier": "Start earlier",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove",
+      "removed": "Scene removed",
+      "total": "{{seconds}} seconds in all",
+      "tooLong": "Keep it to {{seconds}} seconds or less.",
+      "pauses": "Pauses in your clips are taken out automatically.",
+      "caption": "Caption for scene {{n}}",
+      "hookLabel": "First two seconds",
+      "suggest": "Suggest stronger hooks",
+      "suggestions": "Suggestions",
+      "tracks": {
+        "calm": "Calm",
+        "bright": "Bright",
+        "none": "No music"
+      },
+      "musicNote": "REOS-made music, free to use anywhere.",
+      "brandOn": "Brand color on the frame",
+      "brandNote": "Your name and your broker's name always show (Texas rule).",
+      "issues": "Fix these before rendering",
+      "fix": "Fix automatically",
+      "done": "Done",
+      "use": "Use in a post",
+      "play": "Video preview",
+      "videos": "Videos",
+      "none": "No videos yet",
+      "noneHint": "Make one from a listing in about a minute.",
+      "chooseListing": "Choose a listing",
+      "noListings": "No listings to make a video from yet."
     }
   }
 }

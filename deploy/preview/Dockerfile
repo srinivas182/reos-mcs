@@ -6,7 +6,7 @@
 FROM dunglas/frankenphp:1-php8.5-bookworm AS base
 RUN install-php-extensions pdo_pgsql pgsql redis intl zip gd bcmath pcntl exif opcache sockets \
  && apt-get update \
- && apt-get install -y --no-install-recommends poppler-utils postgresql-client \
+ && apt-get install -y --no-install-recommends poppler-utils postgresql-client ffmpeg \
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 

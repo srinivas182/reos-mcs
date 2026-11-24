@@ -28,6 +28,44 @@ export type Maker = {
     }[];
     sales: { id: string; property: string }[];
     generations: Generation[];
+    video_cost: number;
+    tracks: Track[];
+    videos: Video[];
+};
+
+/** A studio video (B12.2), as the API and page send it. */
+export type Track = 'calm' | 'bright' | 'none';
+
+export type Video = {
+    id: string;
+    source: {
+        type: 'listing' | 'own';
+        id: string | null;
+        label: string | null;
+    };
+    listing: string | null;
+    title: string;
+    scenes: {
+        media: string;
+        url: string;
+        kind: 'image' | 'video';
+        start: number;
+        seconds: number;
+        length: number | null;
+        caption: string;
+    }[];
+    music: Track;
+    brand: boolean;
+    status: 'rendering' | 'ready' | 'failed';
+    seconds: number | null;
+    video: { path: string; url: string } | null;
+    poster: { path: string; url: string } | null;
+    error: string | null;
+    issues: { code: string; phrase: string; fix: string }[];
+    credits: number;
+    engine: string;
+    created_at: string | null;
+    rendered_at: string | null;
 };
 
 export type MakeRequest = {

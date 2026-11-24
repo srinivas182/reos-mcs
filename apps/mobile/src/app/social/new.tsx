@@ -68,8 +68,8 @@ export default function NewPostScreen() {
       } else if (caption !== undefined) {
         setBody(caption);
         try {
-          const chosen = JSON.parse(studioMedia ?? '[]') as { path: string; url: string }[];
-          setMedia(chosen.map((m) => ({ value: m.path, preview: m.url, kind: 'image' })));
+          const chosen = JSON.parse(studioMedia ?? '[]') as { path: string; url: string; kind?: string }[];
+          setMedia(chosen.map((m) => ({ value: m.path, preview: m.url, kind: m.kind ?? 'image' })));
         } catch {
           setMedia([]);
         }
