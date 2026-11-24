@@ -8445,7 +8445,8 @@
       "targets": "Al menos una cuenta elegida",
       "length": "El texto cabe en {{channel}}",
       "media": "{{channel}} tiene una foto o un video",
-      "title": "Ningún título que un agente de ventas no pueda usar (bróker, dueño, presidente)"
+      "title": "Ningún título que un agente de ventas no pueda usar (bróker, dueño, presidente)",
+      "video": "{{channel}} tiene un video"
     },
     "posts": {
       "title": "Mis publicaciones y resultados",

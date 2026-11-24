@@ -30,6 +30,10 @@ use App\Connections\Drivers\Salesforce\SalesforceDriver;
 use App\Connections\Drivers\Salesforce\SalesforceSimulator;
 use App\Connections\Drivers\SkySlope\SkySlopeDriver;
 use App\Connections\Drivers\SkySlope\SkySlopeSimulator;
+use App\Connections\Drivers\TikTok\TikTokDriver;
+use App\Connections\Drivers\TikTok\TikTokSimulator;
+use App\Connections\Drivers\YouTube\YouTubeDriver;
+use App\Connections\Drivers\YouTube\YouTubeSimulator;
 use App\Integrations\Catalogue;
 use App\Integrations\CredentialEnvironment;
 use App\Integrations\Credentials\CredentialVault;
@@ -65,6 +69,8 @@ final readonly class ConnectorRegistry
         MetaDriver::INTEGRATION => MetaSimulator::class,
         LinkedInDriver::INTEGRATION => LinkedInSimulator::class,
         GoogleBusinessDriver::INTEGRATION => GoogleBusinessSimulator::class,
+        YouTubeDriver::INTEGRATION => YouTubeSimulator::class,
+        TikTokDriver::INTEGRATION => TikTokSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
@@ -77,7 +83,7 @@ final readonly class ConnectorRegistry
     private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION, LoneWolfDriver::INTEGRATION, SkySlopeDriver::INTEGRATION];
 
     /** Tools whose drivers also `PublishesPosts` (B11). */
-    public const SOCIAL = [MetaDriver::INTEGRATION, LinkedInDriver::INTEGRATION, GoogleBusinessDriver::INTEGRATION];
+    public const SOCIAL = [MetaDriver::INTEGRATION, LinkedInDriver::INTEGRATION, GoogleBusinessDriver::INTEGRATION, YouTubeDriver::INTEGRATION, TikTokDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -104,6 +110,8 @@ final readonly class ConnectorRegistry
         MetaDriver::INTEGRATION => MetaDriver::CONSENT,
         LinkedInDriver::INTEGRATION => LinkedInDriver::CONSENT,
         GoogleBusinessDriver::INTEGRATION => GoogleBusinessDriver::CONSENT,
+        YouTubeDriver::INTEGRATION => YouTubeDriver::CONSENT,
+        TikTokDriver::INTEGRATION => TikTokDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -121,6 +129,8 @@ final readonly class ConnectorRegistry
         MetaDriver::INTEGRATION => MetaDriver::STREAMS,
         LinkedInDriver::INTEGRATION => LinkedInDriver::STREAMS,
         GoogleBusinessDriver::INTEGRATION => GoogleBusinessDriver::STREAMS,
+        YouTubeDriver::INTEGRATION => YouTubeDriver::STREAMS,
+        TikTokDriver::INTEGRATION => TikTokDriver::STREAMS,
     ];
 
     /**
@@ -242,6 +252,9 @@ final readonly class ConnectorRegistry
             MetaDriver::INTEGRATION => new MetaDriver($value('app_id'), $value('app_secret')),
             LinkedInDriver::INTEGRATION => new LinkedInDriver($value('client_id'), $value('client_secret')),
             GoogleBusinessDriver::INTEGRATION => new GoogleBusinessDriver($value('client_id'), $value('client_secret')),
+            YouTubeDriver::INTEGRATION => new YouTubeDriver($value('client_id'), $value('client_secret')),
+            // Private posts until TikTok's Content Posting audit; then services.tiktok.public_posts.
+            TikTokDriver::INTEGRATION => new TikTokDriver($value('client_key'), $value('client_secret'), config('services.tiktok.public_posts') === true),
             LoneWolfDriver::INTEGRATION => new LoneWolfDriver($value('client_id'), $value('client_secret'), $value('api_key'), $value('server_url')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };

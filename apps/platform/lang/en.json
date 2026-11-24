@@ -5828,6 +5828,7 @@
     "social.checks.media": ":channel has a photo or video",
     "social.checks.targets": "At least one account chosen",
     "social.checks.title": "No title a sales agent may not use (broker, owner, president)",
+    "social.checks.video": ":channel has a video",
     "social.compose.addMedia": "Add a photo or video",
     "social.compose.at": "Date and time",
     "social.compose.attribution": "Added to every post",

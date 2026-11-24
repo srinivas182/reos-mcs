@@ -209,6 +209,17 @@
 - **TikTok:** private until the Content Posting audit.
 - **Insights:** views, likes and comments.
 - **Done when:** a short video posts to both.
+- **As built, B11.3** (ADR 0046):
+  - **YouTube** (`YouTubeDriver`, `YouTubeSimulator`):
+    - The agent's channel.
+    - Resumable upload, titled "first line #Shorts" (private on YouTube's side until Google's audit).
+    - Views, likes and comments.
+  - **TikTok** (`TikTokDriver`, `TikTokSimulator`):
+    - Content Posting API, pulling the video from REOS's signed link.
+    - "Only me" until the audit (`TIKTOK_PUBLIC_POSTS` after).
+    - Views, likes, comments and shares.
+  - **Video check:** posts to these channels must carry a video. Uploads accept MP4 and MOV up to 200 MB.
+  - **Screens:** no new screens. The composer, social accounts and results show both channels on the web and the phone. The content studio's video tools come in Sprint 12.
 
 ## 4. Definition of done (whole sprint)
 
@@ -246,3 +257,5 @@
 - Google Business Profile local posts: https://developers.google.com/my-business/content/posts-data
 - YouTube Data API videos.insert: https://developers.google.com/youtube/v3/docs/videos/insert
 - TikTok Content Posting API: https://developers.tiktok.com/doc/content-posting-api-get-started
+
+- **Status (24 November 2026):** all of A11.1–A11.3 and B11.1–B11.3 merged with green CI (PRs #122–#129); each sub-sprint's done-when is met on the Simulators (see As built). Live posting waits on Meta's app review, LinkedIn's Community Management API, Google's Business Profile and YouTube audits, and TikTok's Content Posting audit (section 1).

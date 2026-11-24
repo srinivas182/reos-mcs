@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    // TikTok posts are private ("only me") until REOS passes the Content Posting audit (B11.3).
+    'tiktok' => [
+        'public_posts' => (bool) env('TIKTOK_PUBLIC_POSTS', false),
+    ],
+
 ];

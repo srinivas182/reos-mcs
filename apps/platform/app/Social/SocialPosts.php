@@ -138,8 +138,11 @@ final readonly class SocialPosts
                 continue;
             }
             $checks[] = ['code' => 'length', 'ok' => mb_strlen($body."\n\n".$attribution) <= $limit['max_text'], 'detail' => $channel];
-            if ($limit['media'] !== 'optional') {
+            if ($limit['media'] === 'required') {
                 $checks[] = ['code' => 'media', 'ok' => $media !== [], 'detail' => $channel];
+            } elseif ($limit['media'] === 'video') {
+                // YouTube Shorts and TikTok take a short video (B11.3).
+                $checks[] = ['code' => 'video', 'ok' => array_filter($media, self::isVideo(...)) !== [], 'detail' => $channel];
             }
         }
 
@@ -340,7 +343,7 @@ final readonly class SocialPosts
 
         foreach ($media as $value) {
             if (str_starts_with($value, "social/{$user->id}/") && Storage::disk(self::MEDIA_DISK)->exists($value)) {
-                $kind = preg_match('/\.(mp4|mov|m4v)$/i', $value) === 1 ? 'video' : 'image';
+                $kind = self::isVideo($value) ? 'video' : 'image';
                 $items[] = ['url' => '', 'kind' => $kind, 'path' => $value];
             } elseif ($fromListing && str_starts_with($value, 'http')) {
                 $items[] = ['url' => $value, 'kind' => 'image'];
@@ -445,6 +448,11 @@ final readonly class SocialPosts
             'scheduled_at' => $post->scheduled_at?->toIso8601String(), 'published_at' => $post->published_at?->toIso8601String(), 'created_at' => $post->created_at?->toIso8601String(),
             'targets' => $targets, 'totals' => $totals,
         ];
+    }
+
+    private static function isVideo(string $media): bool
+    {
+        return preg_match('/\.(mp4|mov|m4v)$/i', $media) === 1;
     }
 
     private static function line(string $key): string

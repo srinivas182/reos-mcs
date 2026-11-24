@@ -38175,6 +38175,7 @@
                                                                     "targets",
                                                                     "length",
                                                                     "media",
+                                                                    "video",
                                                                     "title"
                                                                 ]
                                                             },
@@ -47397,7 +47398,9 @@
                             "docusign",
                             "meta",
                             "linkedin",
-                            "google-business-profile"
+                            "google-business-profile",
+                            "youtube",
+                            "tiktok"
                         ]
                     },
                     "history": {
