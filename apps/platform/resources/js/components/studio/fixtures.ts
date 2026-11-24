@@ -1,4 +1,4 @@
-import type { Generation, Maker } from './types';
+import type { Generation, Maker, Video } from './types';
 
 /** Realistic REOS content for the studio's stories and tests. */
 export const generation = (over: Partial<Generation> = {}): Generation => ({
@@ -81,5 +81,49 @@ export const maker = (over: Partial<Maker> = {}): Maker => ({
         },
     ],
     generations: [],
+    video_cost: 30,
+    tracks: ['calm', 'bright', 'none'],
+    videos: [],
+    ...over,
+});
+
+export const video = (over: Partial<Video> = {}): Video => ({
+    id: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8e99',
+    source: {
+        type: 'listing',
+        id: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8e66',
+        label: '2418 Willow Bend Dr, Katy, TX 77494',
+    },
+    listing: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8e66',
+    title: 'Step inside this Katy home',
+    scenes: [
+        {
+            media: '/demo/listings/1.svg',
+            url: '/demo/listings/1.svg',
+            kind: 'image',
+            start: 0,
+            seconds: 6,
+            length: null,
+            caption: '2418 Willow Bend Dr, Katy, TX 77494',
+        },
+    ],
+    music: 'calm',
+    brand: true,
+    status: 'ready',
+    seconds: 30,
+    video: {
+        path: 'social/1/studio/v-1-v1.mp4',
+        url: '/demo/videos/listing.mp4',
+    },
+    poster: {
+        path: 'social/1/studio/v-1-v1.jpg',
+        url: '/demo/listings/1.png',
+    },
+    error: null,
+    issues: [],
+    credits: 30,
+    engine: 'ffmpeg',
+    created_at: '2026-11-24T15:00:00Z',
+    rendered_at: '2026-11-24T15:01:00Z',
     ...over,
 });

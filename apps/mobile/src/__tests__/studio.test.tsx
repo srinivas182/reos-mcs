@@ -50,7 +50,7 @@ beforeEach(() => {
 
 describe('The content studio on the phone (B12.1: screens 165–167)', () => {
   it('makes a post from a listing, with the cost first', async () => {
-    mockApi.GET.mockResolvedValue(ok({ data: { cost: 5, credits_left: 495, listings: [{ id: listing, address: '2418 Willow Bend Dr', status: 'active', photo: null }], sales: [], generations: [] } }));
+    mockApi.GET.mockResolvedValue(ok({ data: { cost: 5, credits_left: 495, listings: [{ id: listing, address: '2418 Willow Bend Dr', status: 'active', photo: null }], sales: [], generations: [], video_cost: 30, tracks: ['calm', 'bright', 'none'], videos: [] } }));
     mockApi.POST.mockResolvedValue(ok({ data: made }));
     await render(wrap(<CreatePostScreen />));
 

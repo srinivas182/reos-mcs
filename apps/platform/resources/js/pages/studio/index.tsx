@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/page-header';
@@ -10,9 +10,11 @@ import { Maker } from '@/components/studio/maker';
 import type {
     Generation,
     Maker as MakerData,
+    Video,
     MakeRequest,
 } from '@/components/studio/types';
 import { Versions } from '@/components/studio/versions';
+import { Videos } from '@/components/studio/videos';
 import type {
     CheckResult,
     Draft,
@@ -25,6 +27,10 @@ import { deleteJson, postForm, postJson, putJson } from '@/lib/content';
 import { undoToast } from '@/lib/undo-toast';
 import { index as connections } from '@/routes/connections';
 import { media as mediaRoute } from '@/routes/studio';
+import {
+    show as videoRoute,
+    store as makeVideoRoute,
+} from '@/routes/studio/videos';
 import { refresh as refreshRoute } from '@/routes/studio/accounts';
 import {
     make as makeRoute,
@@ -100,6 +106,38 @@ export default function StudioPage({
     const [error, setError] = useState<string | null>(null);
     const [generation, setGeneration] = useState<Generation | null>(null);
     const [making, setMaking] = useState(false);
+    const [videos, setVideos] = useState<Video[]>(maker.videos);
+    const rendering = videos.some((v) => v.status === 'rendering');
+
+    // While a video renders, look again every few seconds (B12.2).
+    useEffect(() => {
+        if (!rendering) return;
+        const timer = setInterval(() => {
+            videos
+                .filter((v) => v.status === 'rendering')
+                .forEach((v) => {
+                    void fetch(videoRoute(v.id).url, {
+                        headers: { Accept: 'application/json' },
+                    })
+                        .then((r) =>
+                            r.ok
+                                ? (r.json() as Promise<{ data: Video }>)
+                                : null,
+                        )
+                        .then((r) => {
+                            if (r && r.data.status !== 'rendering') {
+                                setVideos((list) =>
+                                    list.map((x) =>
+                                        x.id === r.data.id ? r.data : x,
+                                    ),
+                                );
+                            }
+                        })
+                        .catch(() => undefined);
+                });
+        }, 3000);
+        return () => clearInterval(timer);
+    }, [rendering, videos]);
     // A design made from a listing posts with the listing's MLS line (B12.1).
     const [studioListing, setStudioListing] = useState<string | null>(null);
 
@@ -204,6 +242,45 @@ export default function StudioPage({
                                 ),
                             )
                             .finally(() => setMaking(false));
+                    }}
+                />
+                <Videos
+                    data={{ ...maker, videos }}
+                    busy={making}
+                    onMake={(id) => {
+                        setMaking(true);
+                        setError(null);
+                        void postJson<{ data: Video }>(makeVideoRoute().url, {
+                            source: { type: 'listing', id },
+                        })
+                            .then(({ data }) =>
+                                setVideos((list) => [data, ...list]),
+                            )
+                            .catch((e: unknown) =>
+                                setError(
+                                    e instanceof Error ? e.message : String(e),
+                                ),
+                            )
+                            .finally(() => setMaking(false));
+                    }}
+                    onUse={(v) => {
+                        if (!v.video) return;
+                        setStudioListing(v.listing);
+                        setEditing({
+                            id: null,
+                            draft: {
+                                ...blank(null),
+                                body: v.title,
+                                media: [
+                                    {
+                                        value: v.video.path,
+                                        preview: v.video.url,
+                                        kind: 'video',
+                                    },
+                                ],
+                            },
+                            key: editing.key + 1,
+                        });
                     }}
                 />
                 {generation ? (

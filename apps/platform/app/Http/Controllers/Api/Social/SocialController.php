@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * Social posting (B11, ADR 0046; agent screens 108, 169 and 170): accounts
@@ -165,13 +165,23 @@ final class SocialController extends Controller
         return response()->json(['data' => $posts->upload($user, $file)], 201);
     }
 
-    /** A post's media for the channels to fetch (signed, for 48 hours). */
-    public function file(Request $request, string $path): StreamedResponse
+    /**
+     * A post's media for the channels to fetch (signed, for 48 hours). Videos
+     * need byte ranges to play on phones (B12.2): S3 serves them from a
+     * short-lived link; the local disk answers ranges itself.
+     */
+    public function file(Request $request, string $path): SymfonyResponse
     {
         abort_unless($request->hasValidSignature() && str_starts_with($path, 'social/') && ! str_contains($path, '..'), 404);
         $disk = Storage::disk(SocialPosts::MEDIA_DISK);
         abort_unless($disk->exists($path), 404);
 
-        return $disk->response($path, null, ['Cache-Control' => 'private, max-age=3600']);
+        if (is_file($disk->path($path))) {
+            return response()->file($disk->path($path), ['Cache-Control' => 'private, max-age=3600']);
+        }
+
+        return $disk->providesTemporaryUrls()
+            ? redirect()->away($disk->temporaryUrl($path, now()->addMinutes(30)))
+            : $disk->response($path, null, ['Cache-Control' => 'private, max-age=3600']);
     }
 }

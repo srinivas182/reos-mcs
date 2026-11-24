@@ -4,9 +4,10 @@ import {
     type AdvertisingPage,
     AdvertisingPolicyView,
 } from './advertising-policy';
-import { generation, maker } from './fixtures';
+import { generation, maker, video } from './fixtures';
 import { Maker } from './maker';
 import { Versions } from './versions';
+import { Videos } from './videos';
 
 const meta = {
     title: 'Studio/Make content',
@@ -163,4 +164,54 @@ export const NothingWaiting: StoryObj<typeof AdvertisingPolicyView> = {
             pending: [],
         },
     } as never,
+};
+
+/** Listing videos (B12.2): make one from a listing, watch it, use it in a post. */
+export const ListingVideos: Story = {
+    render: () => (
+        <Videos
+            data={maker({
+                videos: [
+                    video(),
+                    video({
+                        id: '0193f1c2-7a10-7d43-9b1e-2f6a4c1d8e9a',
+                        status: 'rendering',
+                        video: null,
+                        source: {
+                            type: 'listing',
+                            id: null,
+                            label: '15 Cypress Hollow Ln, Cypress, TX 77429',
+                        },
+                    }),
+                ],
+            })}
+            onMake={fn()}
+            onUse={fn()}
+        />
+    ),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(
+            canvas.getByText('30 credits · 495 left'),
+        ).toBeInTheDocument();
+        await expect(
+            canvas.getByText('Ready · 30 seconds'),
+        ).toBeInTheDocument();
+        await expect(
+            canvas.getByText('Rendering your video…'),
+        ).toBeInTheDocument();
+        await expect(
+            canvas.getByRole('button', { name: 'Use in a post' }),
+        ).toBeEnabled();
+    },
+};
+
+/** No videos yet: an empty state. */
+export const NoVideos: Story = {
+    render: () => <Videos data={maker()} onMake={fn()} onUse={fn()} />,
+    play: async ({ canvasElement }) => {
+        await expect(
+            within(canvasElement).getByText('No videos yet'),
+        ).toBeInTheDocument();
+    },
 };

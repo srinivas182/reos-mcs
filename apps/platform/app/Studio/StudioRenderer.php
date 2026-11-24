@@ -96,7 +96,7 @@ final class StudioRenderer
     }
 
     /** Scales and crops the photo to fill the box. */
-    private static function cover(GdImage $im, GdImage $photo, int $x, int $y, int $w, int $h): void
+    public static function cover(GdImage $im, GdImage $photo, int $x, int $y, int $w, int $h): void
     {
         $pw = imagesx($photo);
         $ph = imagesy($photo);
@@ -107,7 +107,7 @@ final class StudioRenderer
     }
 
     /** A photo from REOS's demo listings, the social media disk, or the web (JPEG or PNG). */
-    private static function photo(string $photo): ?GdImage
+    public static function photo(string $photo): ?GdImage
     {
         try {
             if (preg_match('#/demo/listings/(\d)\.svg$#', $photo, $m) === 1) {
@@ -130,7 +130,7 @@ final class StudioRenderer
     }
 
     /** @return array{0: int<0, 255>, 1: int<0, 255>, 2: int<0, 255>} */
-    private static function rgb(string $hex): array
+    public static function rgb(string $hex): array
     {
         $hex = ltrim($hex, '#');
 
@@ -147,7 +147,7 @@ final class StudioRenderer
         return max(0, min(255, (int) hexdec($hex)));
     }
 
-    private static function font(string $weight): string
+    public static function font(string $weight): string
     {
         return resource_path("fonts/Inter-{$weight}.otf");
     }

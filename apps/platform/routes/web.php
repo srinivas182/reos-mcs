@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Studio\StudioController;
+use App\Http\Controllers\Api\Studio\VideoController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Ask\AskPageController;
@@ -226,6 +227,10 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
         Route::post('media', 'media')->middleware('throttle:20,1,studio-media')->name('media');
     });
     // Make content (B12.1, screens 165 and 166): the same JSON actions as the API.
+    Route::prefix('studio/videos')->name('studio.videos.')->controller(VideoController::class)->group(function () {
+        Route::post('/', 'store')->middleware('throttle:6,1,studio-video')->name('store');
+        Route::get('{video}', 'show')->whereUuid('video')->name('show');
+    });
     Route::prefix('studio/generations')->name('studio.generations.')->controller(StudioController::class)->group(function () {
         Route::post('/', 'make')->middleware('throttle:10,1,studio-make')->name('make');
         Route::post('{generation}/captions', 'retone')->whereUuid('generation')->middleware('throttle:30,1,studio-retone')->name('retone');

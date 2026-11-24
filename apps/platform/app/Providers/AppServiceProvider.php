@@ -27,6 +27,9 @@ use App\Notifications\Centre\Deliveries;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Connections\SyncEngine;
 use App\Sso\TestIdentityProvider;
+use App\Studio\Video\FfmpegRenderer;
+use App\Studio\Video\SimulatedRenderer;
+use App\Studio\Video\VideoRenderer;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -77,6 +80,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->scoped(FlagUsage::class);
         // Loads its key pair once per process (outside production only).
         $this->app->singleton(TestIdentityProvider::class);
+
+        // Studio videos (B12.2): ffmpeg in the queue worker, or the Simulator.
+        $this->app->bind(VideoRenderer::class, static fn (): VideoRenderer => config('reos.studio.video.renderer') === 'ffmpeg'
+            ? new FfmpegRenderer(config()->string('reos.studio.video.ffmpeg'), config()->string('reos.studio.video.ffprobe'), config()->integer('reos.studio.video.timeout'))
+            : new SimulatedRenderer);
 
         // Lesson files are virus-scanned by ClamAV (A5.3). Without one, local
         // machines and CI accept files unscanned; production refuses them.

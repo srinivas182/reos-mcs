@@ -9,11 +9,15 @@ use App\Models\Deal;
 use App\Models\StudioGeneration;
 use App\Models\User;
 use App\Services\Ai\AiCredits;
+use App\Studio\Video\Music;
+use App\Studio\Video\StudioVideos;
 use Illuminate\Support\Facades\URL;
 
 /**
  * The content studio's rows (B12.1, ADR 0050): what an agent can start
  * from, what they made, and links to the designs.
+ *
+ * @phpstan-import-type VideoRow from StudioVideos
  *
  * @phpstan-type GenerationRow array{id: string, source: array{type: string, id: string|null, label: string|null}, listing: string|null, outputs: list<string>, captions: list<array{tone: string, text: string}>, designs: list<array{layout: string, path: string, url: string}>, carousel: list<array{path: string, url: string}>, ad: array{headlines: list<string>, primary: list<string>, description: string}|null, credits: int, engine: string, created_at: string|null}
  */
@@ -21,10 +25,10 @@ final readonly class Studio
 {
     public const LINK_HOURS = 48;
 
-    public function __construct(private MyListings $listings, private AiCredits $credits, private StudioGenerator $generator) {}
+    public function __construct(private MyListings $listings, private AiCredits $credits, private StudioGenerator $generator, private StudioVideos $videos) {}
 
     /**
-     * @return array{cost: int, credits_left: int, listings: list<array{id: string, address: string, status: string, photo: string|null}>, sales: list<array{id: string, property: string}>, generations: list<GenerationRow>}
+     * @return array{cost: int, credits_left: int, listings: list<array{id: string, address: string, status: string, photo: string|null}>, sales: list<array{id: string, property: string}>, generations: list<GenerationRow>, video_cost: int, tracks: list<string>, videos: list<VideoRow>}
      */
     public function home(User $agent): array
     {
@@ -49,6 +53,9 @@ final readonly class Studio
             'sales' => array_values(Deal::query()->where('user_id', $agent->id)->where('stage', 'closed')->latest('closed_at')->limit(20)->get()
                 ->map(static fn (Deal $d): array => ['id' => $d->uuid, 'property' => $d->property])->all()),
             'generations' => $generations,
+            'video_cost' => $this->videos->cost(),
+            'tracks' => Music::TRACKS,
+            'videos' => $this->videos->recent($agent),
         ];
     }
 

@@ -42546,7 +42546,7 @@
         "/studio": {
             "get": {
                 "operationId": "studio.home",
-                "description": "What a making costs and my credits left, what I can start from (my listings that may be posted, my closed deals), and what I made lately.",
+                "description": "What a making and a video cost and my credits left, what I can start from (my listings that may be posted, my closed deals), what I made lately, the music for videos, and my videos.",
                 "summary": "The studio",
                 "tags": [
                     "Studio"
@@ -42794,6 +42794,245 @@
                                                             "created_at"
                                                         ]
                                                     }
+                                                },
+                                                "video_cost": {
+                                                    "type": "integer"
+                                                },
+                                                "tracks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "calm",
+                                                            "bright",
+                                                            "none"
+                                                        ]
+                                                    }
+                                                },
+                                                "videos": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "listing",
+                                                                            "own"
+                                                                        ]
+                                                                    },
+                                                                    "id": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "label": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "type",
+                                                                    "id",
+                                                                    "label"
+                                                                ]
+                                                            },
+                                                            "listing": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "scenes": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "media": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "image",
+                                                                                "video"
+                                                                            ]
+                                                                        },
+                                                                        "start": {
+                                                                            "type": "number"
+                                                                        },
+                                                                        "seconds": {
+                                                                            "type": "number"
+                                                                        },
+                                                                        "length": {
+                                                                            "type": [
+                                                                                "number",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "caption": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "media",
+                                                                        "url",
+                                                                        "kind",
+                                                                        "start",
+                                                                        "seconds",
+                                                                        "length",
+                                                                        "caption"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "music": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "calm",
+                                                                    "bright",
+                                                                    "none"
+                                                                ]
+                                                            },
+                                                            "brand": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "rendering",
+                                                                    "ready",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "seconds": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "video": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "path": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "path",
+                                                                    "url"
+                                                                ]
+                                                            },
+                                                            "poster": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "path": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "url": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "path",
+                                                                    "url"
+                                                                ]
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "issues": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "code": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "fair_housing",
+                                                                                "claims",
+                                                                                "banned"
+                                                                            ]
+                                                                        },
+                                                                        "phrase": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "fix": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "code",
+                                                                        "phrase",
+                                                                        "fix"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "credits": {
+                                                                "type": "integer"
+                                                            },
+                                                            "engine": {
+                                                                "type": "string"
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "rendered_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "source",
+                                                            "listing",
+                                                            "title",
+                                                            "scenes",
+                                                            "music",
+                                                            "brand",
+                                                            "status",
+                                                            "seconds",
+                                                            "video",
+                                                            "poster",
+                                                            "error",
+                                                            "issues",
+                                                            "credits",
+                                                            "engine",
+                                                            "created_at",
+                                                            "rendered_at"
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "required": [
@@ -42801,7 +43040,10 @@
                                                 "credits_left",
                                                 "listings",
                                                 "sales",
-                                                "generations"
+                                                "generations",
+                                                "video_cost",
+                                                "tracks",
+                                                "videos"
                                             ]
                                         }
                                     },
@@ -46973,6 +47215,913 @@
                 }
             }
         },
+        "/studio/videos": {
+            "post": {
+                "operationId": "studio.videos.store",
+                "description": "About 30 seconds, vertical, from the listing's photos and my own clips and photos (uploaded first with `POST /social/media`): a hook, a caption on each scene, the brand frame with my broker, and music. Rendered in the background (`status` is `rendering`, then `ready` or `failed`). Costs the video credits (shown first).",
+                "summary": "Make a video",
+                "tags": [
+                    "Video"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MakeVideoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "source": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "type": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "listing",
+                                                                "own"
+                                                            ]
+                                                        },
+                                                        "id": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "label": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "type",
+                                                        "id",
+                                                        "label"
+                                                    ]
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "scenes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "media": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "image",
+                                                                    "video"
+                                                                ]
+                                                            },
+                                                            "start": {
+                                                                "type": "number"
+                                                            },
+                                                            "seconds": {
+                                                                "type": "number"
+                                                            },
+                                                            "length": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "caption": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "media",
+                                                            "url",
+                                                            "kind",
+                                                            "start",
+                                                            "seconds",
+                                                            "length",
+                                                            "caption"
+                                                        ]
+                                                    }
+                                                },
+                                                "music": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "calm",
+                                                        "bright",
+                                                        "none"
+                                                    ]
+                                                },
+                                                "brand": {
+                                                    "type": "boolean"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "rendering",
+                                                        "ready",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "seconds": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "video": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "poster": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "issues": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "fair_housing",
+                                                                    "claims",
+                                                                    "banned"
+                                                                ]
+                                                            },
+                                                            "phrase": {
+                                                                "type": "string"
+                                                            },
+                                                            "fix": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "phrase",
+                                                            "fix"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "engine": {
+                                                    "type": "string"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "rendered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "source",
+                                                "listing",
+                                                "title",
+                                                "scenes",
+                                                "music",
+                                                "brand",
+                                                "status",
+                                                "seconds",
+                                                "video",
+                                                "poster",
+                                                "error",
+                                                "issues",
+                                                "credits",
+                                                "engine",
+                                                "created_at",
+                                                "rendered_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/studio/videos/{video}": {
+            "get": {
+                "operationId": "studio.videos.show",
+                "summary": "One video",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    {
+                        "name": "video",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "source": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "type": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "listing",
+                                                                "own"
+                                                            ]
+                                                        },
+                                                        "id": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "label": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "type",
+                                                        "id",
+                                                        "label"
+                                                    ]
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "scenes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "media": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "image",
+                                                                    "video"
+                                                                ]
+                                                            },
+                                                            "start": {
+                                                                "type": "number"
+                                                            },
+                                                            "seconds": {
+                                                                "type": "number"
+                                                            },
+                                                            "length": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "caption": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "media",
+                                                            "url",
+                                                            "kind",
+                                                            "start",
+                                                            "seconds",
+                                                            "length",
+                                                            "caption"
+                                                        ]
+                                                    }
+                                                },
+                                                "music": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "calm",
+                                                        "bright",
+                                                        "none"
+                                                    ]
+                                                },
+                                                "brand": {
+                                                    "type": "boolean"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "rendering",
+                                                        "ready",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "seconds": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "video": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "poster": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "issues": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "fair_housing",
+                                                                    "claims",
+                                                                    "banned"
+                                                                ]
+                                                            },
+                                                            "phrase": {
+                                                                "type": "string"
+                                                            },
+                                                            "fix": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "phrase",
+                                                            "fix"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "engine": {
+                                                    "type": "string"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "rendered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "source",
+                                                "listing",
+                                                "title",
+                                                "scenes",
+                                                "music",
+                                                "brand",
+                                                "status",
+                                                "seconds",
+                                                "video",
+                                                "poster",
+                                                "error",
+                                                "issues",
+                                                "credits",
+                                                "engine",
+                                                "created_at",
+                                                "rendered_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "studio.videos.update",
+                "description": "The hook, the scenes (order, trim, length, caption; my own uploads can be added), the music and the brand colour. The words are checked again and the result is in `issues`; `fix` swaps flagged wording; `render` renders again (free) once the checks pass.",
+                "summary": "Edit a video",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    {
+                        "name": "video",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateVideoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "source": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "type": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "listing",
+                                                                "own"
+                                                            ]
+                                                        },
+                                                        "id": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "label": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "type",
+                                                        "id",
+                                                        "label"
+                                                    ]
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "scenes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "media": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "image",
+                                                                    "video"
+                                                                ]
+                                                            },
+                                                            "start": {
+                                                                "type": "number"
+                                                            },
+                                                            "seconds": {
+                                                                "type": "number"
+                                                            },
+                                                            "length": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "caption": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "media",
+                                                            "url",
+                                                            "kind",
+                                                            "start",
+                                                            "seconds",
+                                                            "length",
+                                                            "caption"
+                                                        ]
+                                                    }
+                                                },
+                                                "music": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "calm",
+                                                        "bright",
+                                                        "none"
+                                                    ]
+                                                },
+                                                "brand": {
+                                                    "type": "boolean"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "rendering",
+                                                        "ready",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "seconds": {
+                                                    "type": [
+                                                        "number",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "video": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "poster": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "path": {
+                                                            "type": "string"
+                                                        },
+                                                        "url": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "path",
+                                                        "url"
+                                                    ]
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "issues": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "fair_housing",
+                                                                    "claims",
+                                                                    "banned"
+                                                                ]
+                                                            },
+                                                            "phrase": {
+                                                                "type": "string"
+                                                            },
+                                                            "fix": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "phrase",
+                                                            "fix"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "engine": {
+                                                    "type": "string"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "rendered_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "source",
+                                                "listing",
+                                                "title",
+                                                "scenes",
+                                                "music",
+                                                "brand",
+                                                "status",
+                                                "seconds",
+                                                "video",
+                                                "poster",
+                                                "error",
+                                                "issues",
+                                                "credits",
+                                                "engine",
+                                                "created_at",
+                                                "rendered_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/studio/videos/{video}/hooks": {
+            "post": {
+                "operationId": "studio.videos.hooks",
+                "description": "Three stronger first two seconds for the video (free).",
+                "summary": "Hook ideas",
+                "tags": [
+                    "Video"
+                ],
+                "parameters": [
+                    {
+                        "name": "video",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/virtual-broker": {
             "get": {
                 "operationId": "virtual-broker.index",
@@ -50734,6 +51883,56 @@
                 ],
                 "title": "MakeContentRequest"
             },
+            "MakeVideoRequest": {
+                "type": "object",
+                "description": "Make a video (B12.2; screens 165 and 166): a listing, or my own clips and photos.",
+                "properties": {
+                    "source": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": [
+                                    "listing",
+                                    "own"
+                                ]
+                            },
+                            "id": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "format": "uuid"
+                            },
+                            "text": {
+                                "type": [
+                                    "string",
+                                    "null"
+                                ],
+                                "maxLength": 300
+                            }
+                        },
+                        "required": [
+                            "type"
+                        ]
+                    },
+                    "clips": {
+                        "type": [
+                            "array",
+                            "null"
+                        ],
+                        "items": {
+                            "type": "string",
+                            "maxLength": 255
+                        },
+                        "maxItems": 6
+                    }
+                },
+                "required": [
+                    "source"
+                ],
+                "title": "MakeVideoRequest"
+            },
             "MathCheckRequest": {
                 "type": "object",
                 "description": "One math lab step to check, or to show (screen 48, A9.2c).",
@@ -52813,6 +54012,75 @@
                     }
                 },
                 "title": "UpdateConnectionRequest"
+            },
+            "UpdateVideoRequest": {
+                "type": "object",
+                "description": "Edit a video (B12.2; screen 168): hook, scenes (order, trim, length, caption), music, brand; fix; render.",
+                "properties": {
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 80
+                    },
+                    "music": {
+                        "type": "string",
+                        "enum": [
+                            "calm",
+                            "bright",
+                            "none"
+                        ]
+                    },
+                    "brand": {
+                        "type": "boolean"
+                    },
+                    "scenes": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "media": {
+                                    "type": "string",
+                                    "maxLength": 2048
+                                },
+                                "start": {
+                                    "type": [
+                                        "number",
+                                        "null"
+                                    ],
+                                    "minimum": 0,
+                                    "maximum": 600
+                                },
+                                "seconds": {
+                                    "type": "number",
+                                    "minimum": 1.5,
+                                    "maximum": 10
+                                },
+                                "caption": {
+                                    "type": [
+                                        "string",
+                                        "null"
+                                    ],
+                                    "maxLength": 90
+                                }
+                            },
+                            "required": [
+                                "media",
+                                "seconds"
+                            ]
+                        },
+                        "minItems": 1,
+                        "maxItems": 12
+                    },
+                    "fix": {
+                        "type": "boolean"
+                    },
+                    "render": {
+                        "type": "boolean"
+                    }
+                },
+                "title": "UpdateVideoRequest"
             },
             "WaitlistRequest": {
                 "type": "object",

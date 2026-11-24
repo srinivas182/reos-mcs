@@ -104,7 +104,7 @@ final readonly class AdvertisingPolicy
         }
 
         // Tidy what removals leave behind.
-        $text = (string) preg_replace(['/[ \t]{2,}/u', '/\s+([,.!?])/u', '/,\s*,/u', '/^\s*[,.]\s*/mu'], [' ', '$1', ',', ''], $text);
+        $text = (string) preg_replace(['/[ \t]{2,}/u', '/\s+([,.!?])/u', '/,\s*,/u', '/,([.!?])/u', '/^\s*[,.]\s*/mu'], [' ', '$1', ',', '$1', ''], $text);
 
         return trim($text);
     }
