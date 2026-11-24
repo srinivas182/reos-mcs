@@ -52,7 +52,8 @@ describe('the posting engine with Instagram and Facebook (B11.1)', function () {
                 ['channel' => 'instagram', 'id' => 'sim-ig-1', 'name' => '@jamesmiller.homes (demo)'],
             ])
             ->and($accounts['meta']['channels']['instagram'])->toBe(['media' => 'required', 'max_text' => 2200])
-            ->and($accounts['linkedin'])->toMatchArray(['built' => false, 'connection' => null]);
+            ->and($accounts['linkedin'])->toMatchArray(['built' => true, 'connection' => null])
+            ->and($accounts['youtube'])->toMatchArray(['built' => false, 'available' => false]);
     });
 
     it('checks every post: broker name, accounts, Instagram needs media, no misleading title', function () {

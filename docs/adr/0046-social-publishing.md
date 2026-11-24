@@ -1,6 +1,6 @@
 # ADR 0046: Social publishing
 
-- Status: Accepted (posting engine with Instagram and Facebook, B11.1)
+- Status: Accepted (posting engine with Instagram and Facebook, B11.1; LinkedIn and Google Business Profile, B11.2)
 - Date: 2026-11-24 (Sprint 11; spec in docs/sprints/S11-spec.md)
 
 ## Context
@@ -35,6 +35,17 @@ Sprint 11 also has to work before Meta, LinkedIn, Google and TikTok approve the 
    - Facebook Login gives a long-lived user token, which is swapped again before it lapses. Meta has no refresh tokens.
    - A Page's token is fetched when needed and never stored.
    - Instagram publishes in two steps: a media container, then `media_publish`. A video waits for processing.
+
+7. **LinkedIn** (B11.2) uses the versioned REST API (`LinkedIn-Version` header):
+   - **Profile posts:** "Share on LinkedIn" posting from the agent's own profile is self-serve.
+   - **Company pages** the agent administers, and their statistics, need the Community Management API. Until LinkedIn approves it, they are skipped quietly, and the catalogue keeps LinkedIn as a beta that a brokerage joins.
+   - **Images** are uploaded first, and a link becomes an article card.
+   - **Reconnecting:** LinkedIn gives refresh tokens only to approved partners, so a connection asks to reconnect when its 60-day token ends.
+8. **Google Business Profile** (B11.2):
+   - **Places:** each location the agent manages.
+   - **Posts:** "What's new" local posts of up to 1,500 characters, with one photo and a Learn more button for a link.
+   - **Insights:** views and button clicks, where Google still reports them. Missing numbers aren't an error.
+9. **Which social channels a person can connect** follows the connections catalogue (`canConnect`): built, running, and for a beta, their organisation joined.
 
 ## Consequences
 

@@ -6,18 +6,16 @@ namespace App\Connections\Drivers\Meta;
 
 use App\Connections\ConnectedAccount;
 use App\Connections\ConnectorDriver;
+use App\Connections\Drivers\Social\PostsOnly;
 use App\Connections\Exceptions\AccessRevoked;
 use App\Connections\Exceptions\VendorRateLimited;
 use App\Connections\Exceptions\VendorUnavailable;
 use App\Connections\PublishesPosts;
-use App\Connections\SyncPage;
 use App\Connections\TokenSet;
-use App\Connections\WebhookDelivery;
 use App\Models\Connection;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 /**
@@ -36,6 +34,8 @@ use Illuminate\Support\Facades\Http;
  */
 final readonly class MetaDriver implements ConnectorDriver, PublishesPosts
 {
+    use PostsOnly;
+
     public const INTEGRATION = 'meta';
 
     public const VERSION = 'v21.0';
@@ -122,25 +122,10 @@ final readonly class MetaDriver implements ConnectorDriver, PublishesPosts
         return new ConnectedAccount($id, is_string($me['name'] ?? null) ? $me['name'] : 'Meta');
     }
 
-    public function streams(): array
-    {
-        return [];
-    }
-
-    public function fetch(Connection $connection, string $accessToken, string $stream, ?string $cursor, ?CarbonImmutable $since): SyncPage
-    {
-        return new SyncPage([], [], null, true);
-    }
-
     public function requestsPerMinute(): int
     {
         // Graph API app limits are generous; posting is rate-limited per Page and account.
         return 60;
-    }
-
-    public function verifyWebhook(Request $request): ?WebhookDelivery
-    {
-        return null;
     }
 
     public function targets(Connection $connection, string $accessToken): array

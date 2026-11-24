@@ -189,6 +189,19 @@
 - **LinkedIn:** member posts; page posts once Community Management API approval arrives (beta); insights.
 - **Google Business Profile:** local posts (what's new, offers) on the agent's profile; insights.
 - **Done when:** the same as Meta.
+- **As built, B11.2** (ADR 0046):
+  - **Shared parts:** `LinkedInDriver` and `GoogleBusinessDriver`, each with a Simulator, plug into the B11.1 engine. A shared `SocialSimulator`, `PostsOnly` and `SocialHttp` keep each channel small.
+  - **LinkedIn** (beta):
+    - Member posts on the REST API.
+    - Company pages the agent administers when Community Management access exists.
+    - Image upload, and article cards for links.
+    - Insights: likes and comments, plus impressions and clicks for pages.
+  - **Google Business Profile:**
+    - Every location the agent manages.
+    - Local posts (1,500 characters, one photo, Learn more).
+    - Views and button clicks where reported.
+  - **Availability:** social accounts are offered as the connections catalogue allows, so LinkedIn waits until the brokerage joins the beta. The checks apply each channel's limits.
+  - **Screens:** no new screens. Social accounts (170), the composer (108) and results (169) show the new channels.
 
 ### B11.3 YouTube and TikTok (Team B)
 
