@@ -37139,6 +37139,2100 @@
                 }
             }
         },
+        "/social/accounts": {
+            "get": {
+                "operationId": "social.accounts",
+                "description": "Every social channel, whether it's connected, and the pages, profiles or channels it can post to.",
+                "summary": "Social accounts",
+                "tags": [
+                    "Social"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "integration": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "purpose": {
+                                                        "type": "string"
+                                                    },
+                                                    "launch": {
+                                                        "type": "string"
+                                                    },
+                                                    "built": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "available": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "connection": {
+                                                        "type": [
+                                                            "object",
+                                                            "null"
+                                                        ],
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "status",
+                                                            "label"
+                                                        ]
+                                                    },
+                                                    "targets": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "channel": {
+                                                                    "type": "string"
+                                                                },
+                                                                "id": {
+                                                                    "type": "string"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "channel",
+                                                                "id",
+                                                                "name"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "channels": {
+                                                        "type": "object",
+                                                        "additionalProperties": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "media": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "required",
+                                                                        "optional",
+                                                                        "video"
+                                                                    ]
+                                                                },
+                                                                "max_text": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "media",
+                                                                "max_text"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "integration",
+                                                    "name",
+                                                    "purpose",
+                                                    "launch",
+                                                    "built",
+                                                    "available",
+                                                    "connection",
+                                                    "targets",
+                                                    "channels"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/social/accounts/{connection}/refresh": {
+            "post": {
+                "operationId": "social.accounts.refresh",
+                "summary": "Read a connection's pages and profiles again",
+                "tags": [
+                    "Social"
+                ],
+                "parameters": [
+                    {
+                        "name": "connection",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "channel": {
+                                                        "type": "string"
+                                                    },
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "channel",
+                                                    "id",
+                                                    "name"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/social/posts": {
+            "get": {
+                "operationId": "social.posts.index",
+                "summary": "My posts and results",
+                "tags": [
+                    "Social"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "stats": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "posts_this_month": {
+                                                            "type": "integer"
+                                                        },
+                                                        "reach": {
+                                                            "type": "integer"
+                                                        },
+                                                        "engagement": {
+                                                            "type": "integer"
+                                                        },
+                                                        "clicks": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "posts_this_month",
+                                                        "reach",
+                                                        "engagement",
+                                                        "clicks"
+                                                    ]
+                                                },
+                                                "scheduled": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "media": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "url",
+                                                                        "kind"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "link": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "attribution": {
+                                                                "type": "string"
+                                                            },
+                                                            "listing": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "draft",
+                                                                    "scheduled",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "partly",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "scheduled_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "targets": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "integration": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "channel": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "target_id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "queued",
+                                                                                "publishing",
+                                                                                "published",
+                                                                                "failed"
+                                                                            ]
+                                                                        },
+                                                                        "error": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "url": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "published_at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "insights": {
+                                                                            "type": "object",
+                                                                            "additionalProperties": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "integration",
+                                                                        "channel",
+                                                                        "target_id",
+                                                                        "name",
+                                                                        "status",
+                                                                        "error",
+                                                                        "url",
+                                                                        "published_at",
+                                                                        "insights"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "totals": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "body",
+                                                            "media",
+                                                            "link",
+                                                            "attribution",
+                                                            "listing",
+                                                            "status",
+                                                            "scheduled_at",
+                                                            "published_at",
+                                                            "created_at",
+                                                            "targets",
+                                                            "totals"
+                                                        ]
+                                                    }
+                                                },
+                                                "posted": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "media": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "url",
+                                                                        "kind"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "link": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "attribution": {
+                                                                "type": "string"
+                                                            },
+                                                            "listing": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "draft",
+                                                                    "scheduled",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "partly",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "scheduled_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "targets": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "integration": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "channel": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "target_id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "queued",
+                                                                                "publishing",
+                                                                                "published",
+                                                                                "failed"
+                                                                            ]
+                                                                        },
+                                                                        "error": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "url": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "published_at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "insights": {
+                                                                            "type": "object",
+                                                                            "additionalProperties": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "integration",
+                                                                        "channel",
+                                                                        "target_id",
+                                                                        "name",
+                                                                        "status",
+                                                                        "error",
+                                                                        "url",
+                                                                        "published_at",
+                                                                        "insights"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "totals": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "body",
+                                                            "media",
+                                                            "link",
+                                                            "attribution",
+                                                            "listing",
+                                                            "status",
+                                                            "scheduled_at",
+                                                            "published_at",
+                                                            "created_at",
+                                                            "targets",
+                                                            "totals"
+                                                        ]
+                                                    }
+                                                },
+                                                "drafts": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "media": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "url",
+                                                                        "kind"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "link": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "attribution": {
+                                                                "type": "string"
+                                                            },
+                                                            "listing": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "draft",
+                                                                    "scheduled",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "partly",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "scheduled_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "targets": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "integration": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "channel": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "target_id": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "name": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "status": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "queued",
+                                                                                "publishing",
+                                                                                "published",
+                                                                                "failed"
+                                                                            ]
+                                                                        },
+                                                                        "error": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "url": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "published_at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "insights": {
+                                                                            "type": "object",
+                                                                            "additionalProperties": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "integration",
+                                                                        "channel",
+                                                                        "target_id",
+                                                                        "name",
+                                                                        "status",
+                                                                        "error",
+                                                                        "url",
+                                                                        "published_at",
+                                                                        "insights"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "totals": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "body",
+                                                            "media",
+                                                            "link",
+                                                            "attribution",
+                                                            "listing",
+                                                            "status",
+                                                            "scheduled_at",
+                                                            "published_at",
+                                                            "created_at",
+                                                            "targets",
+                                                            "totals"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "stats",
+                                                "scheduled",
+                                                "posted",
+                                                "drafts"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "social.posts.store",
+                "summary": "New post: publish now, schedule or save a draft",
+                "tags": [
+                    "Social"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "media": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "kind"
+                                                        ]
+                                                    }
+                                                },
+                                                "link": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "draft",
+                                                        "scheduled",
+                                                        "publishing",
+                                                        "published",
+                                                        "partly",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "scheduled_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "published_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "targets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "integration": {
+                                                                "type": "string"
+                                                            },
+                                                            "channel": {
+                                                                "type": "string"
+                                                            },
+                                                            "target_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "queued",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "insights": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "integration",
+                                                            "channel",
+                                                            "target_id",
+                                                            "name",
+                                                            "status",
+                                                            "error",
+                                                            "url",
+                                                            "published_at",
+                                                            "insights"
+                                                        ]
+                                                    }
+                                                },
+                                                "totals": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "body",
+                                                "media",
+                                                "link",
+                                                "attribution",
+                                                "listing",
+                                                "status",
+                                                "scheduled_at",
+                                                "published_at",
+                                                "created_at",
+                                                "targets",
+                                                "totals"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/social/posts/check": {
+            "post": {
+                "operationId": "social.posts.check",
+                "description": "The attribution it will carry and each check; a post that fails can't be scheduled.",
+                "summary": "Check a post",
+                "tags": [
+                    "Social"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "checks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "broker",
+                                                                    "targets",
+                                                                    "length",
+                                                                    "media",
+                                                                    "title"
+                                                                ]
+                                                            },
+                                                            "ok": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "detail": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "ok",
+                                                            "detail"
+                                                        ]
+                                                    }
+                                                },
+                                                "ok": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "attribution",
+                                                "checks",
+                                                "ok"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/social/posts/{post}": {
+            "get": {
+                "operationId": "social.posts.show",
+                "summary": "One post",
+                "tags": [
+                    "Social"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "media": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "kind"
+                                                        ]
+                                                    }
+                                                },
+                                                "link": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "draft",
+                                                        "scheduled",
+                                                        "publishing",
+                                                        "published",
+                                                        "partly",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "scheduled_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "published_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "targets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "integration": {
+                                                                "type": "string"
+                                                            },
+                                                            "channel": {
+                                                                "type": "string"
+                                                            },
+                                                            "target_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "queued",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "insights": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "integration",
+                                                            "channel",
+                                                            "target_id",
+                                                            "name",
+                                                            "status",
+                                                            "error",
+                                                            "url",
+                                                            "published_at",
+                                                            "insights"
+                                                        ]
+                                                    }
+                                                },
+                                                "totals": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "body",
+                                                "media",
+                                                "link",
+                                                "attribution",
+                                                "listing",
+                                                "status",
+                                                "scheduled_at",
+                                                "published_at",
+                                                "created_at",
+                                                "targets",
+                                                "totals"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "social.posts.update",
+                "summary": "Change a draft or a scheduled post",
+                "tags": [
+                    "Social"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "media": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "kind"
+                                                        ]
+                                                    }
+                                                },
+                                                "link": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "draft",
+                                                        "scheduled",
+                                                        "publishing",
+                                                        "published",
+                                                        "partly",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "scheduled_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "published_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "targets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "integration": {
+                                                                "type": "string"
+                                                            },
+                                                            "channel": {
+                                                                "type": "string"
+                                                            },
+                                                            "target_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "queued",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "insights": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "integration",
+                                                            "channel",
+                                                            "target_id",
+                                                            "name",
+                                                            "status",
+                                                            "error",
+                                                            "url",
+                                                            "published_at",
+                                                            "insights"
+                                                        ]
+                                                    }
+                                                },
+                                                "totals": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "body",
+                                                "media",
+                                                "link",
+                                                "attribution",
+                                                "listing",
+                                                "status",
+                                                "scheduled_at",
+                                                "published_at",
+                                                "created_at",
+                                                "targets",
+                                                "totals"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "social.posts.destroy",
+                "summary": "Remove a draft or a scheduled post (Undo restores it)",
+                "tags": [
+                    "Social"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/social/posts/{post}/restore": {
+            "post": {
+                "operationId": "social.posts.restore",
+                "summary": "Undo removing a post",
+                "tags": [
+                    "Social"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "media": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "kind"
+                                                        ]
+                                                    }
+                                                },
+                                                "link": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "draft",
+                                                        "scheduled",
+                                                        "publishing",
+                                                        "published",
+                                                        "partly",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "scheduled_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "published_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "targets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "integration": {
+                                                                "type": "string"
+                                                            },
+                                                            "channel": {
+                                                                "type": "string"
+                                                            },
+                                                            "target_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "queued",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "insights": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "integration",
+                                                            "channel",
+                                                            "target_id",
+                                                            "name",
+                                                            "status",
+                                                            "error",
+                                                            "url",
+                                                            "published_at",
+                                                            "insights"
+                                                        ]
+                                                    }
+                                                },
+                                                "totals": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "body",
+                                                "media",
+                                                "link",
+                                                "attribution",
+                                                "listing",
+                                                "status",
+                                                "scheduled_at",
+                                                "published_at",
+                                                "created_at",
+                                                "targets",
+                                                "totals"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/social/posts/{post}/repost": {
+            "post": {
+                "operationId": "social.posts.repost",
+                "summary": "Post it again, as a new draft",
+                "tags": [
+                    "Social"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "body": {
+                                                    "type": "string"
+                                                },
+                                                "media": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "kind"
+                                                        ]
+                                                    }
+                                                },
+                                                "link": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "attribution": {
+                                                    "type": "string"
+                                                },
+                                                "listing": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "draft",
+                                                        "scheduled",
+                                                        "publishing",
+                                                        "published",
+                                                        "partly",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "scheduled_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "published_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "targets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "integration": {
+                                                                "type": "string"
+                                                            },
+                                                            "channel": {
+                                                                "type": "string"
+                                                            },
+                                                            "target_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "queued",
+                                                                    "publishing",
+                                                                    "published",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "published_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "insights": {
+                                                                "type": "object",
+                                                                "additionalProperties": {
+                                                                    "type": "integer"
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "integration",
+                                                            "channel",
+                                                            "target_id",
+                                                            "name",
+                                                            "status",
+                                                            "error",
+                                                            "url",
+                                                            "published_at",
+                                                            "insights"
+                                                        ]
+                                                    }
+                                                },
+                                                "totals": {
+                                                    "type": "object",
+                                                    "additionalProperties": {
+                                                        "type": "integer"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "body",
+                                                "media",
+                                                "link",
+                                                "attribution",
+                                                "listing",
+                                                "status",
+                                                "scheduled_at",
+                                                "published_at",
+                                                "created_at",
+                                                "targets",
+                                                "totals"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/social/media": {
+            "post": {
+                "operationId": "social.media",
+                "summary": "Upload a photo or short video for a post",
+                "tags": [
+                    "Social"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MediaRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "path": {
+                                                    "type": "string"
+                                                },
+                                                "url": {
+                                                    "type": "string"
+                                                },
+                                                "kind": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "path",
+                                                "url",
+                                                "kind"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/practice/speed": {
             "post": {
                 "operationId": "practice.speed.store",
@@ -43821,6 +45915,22 @@
                 ],
                 "title": "MeResource"
             },
+            "MediaRequest": {
+                "type": "object",
+                "description": "A photo (up to 8 MB) or a short video (up to 200 MB) for a post (B11).",
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "description": "Maximum file size: 204800 kilobytes."
+                    }
+                },
+                "required": [
+                    "file"
+                ],
+                "title": "MediaRequest"
+            },
             "MembershipResource": {
                 "type": "object",
                 "properties": {
@@ -44285,6 +46395,87 @@
                     "done"
                 ],
                 "title": "PlanTaskRequest"
+            },
+            "PostRequest": {
+                "type": "object",
+                "description": "A social post: text, media, a link, the places it goes, and now, later or a draft (B11).",
+                "properties": {
+                    "body": {
+                        "type": "string",
+                        "maxLength": 5000
+                    },
+                    "media": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 1000
+                        },
+                        "maxItems": 10
+                    },
+                    "link": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "targets": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "connection": {
+                                    "type": "integer"
+                                },
+                                "channel": {
+                                    "type": "string",
+                                    "maxLength": 20
+                                },
+                                "id": {
+                                    "type": "string",
+                                    "maxLength": 120
+                                }
+                            },
+                            "required": [
+                                "connection",
+                                "channel",
+                                "id"
+                            ]
+                        },
+                        "maxItems": 12
+                    },
+                    "when": {
+                        "type": "string",
+                        "enum": [
+                            "now",
+                            "later",
+                            "draft"
+                        ]
+                    },
+                    "at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "listing": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid",
+                        "description": "The listing (B10.2) a listing post comes from."
+                    }
+                },
+                "required": [
+                    "body",
+                    "media",
+                    "targets",
+                    "when"
+                ],
+                "title": "PostRequest"
             },
             "ProviderLicenceRequest": {
                 "type": "object",
@@ -45203,7 +47394,8 @@
                             "lone-wolf",
                             "dotloop",
                             "skyslope",
-                            "docusign"
+                            "docusign",
+                            "meta"
                         ]
                     },
                     "history": {

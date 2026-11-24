@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Check, Share2 } from 'lucide-react-native';
+import { Check, Megaphone, Share2 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Pressable, Share, View } from 'react-native';
@@ -98,6 +98,13 @@ export default function ListingPostScreen() {
             {t('listings.post.channelsNext')}
           </Text>
           <Button label={t('listings.post.save')} loading={busy} disabled={busy || caption.trim() === ''} onPress={() => void save()} />
+          <Button
+            variant="secondary"
+            icon={Megaphone}
+            label={t('listings.post.publish')}
+            disabled={busy || caption.trim() === ''}
+            onPress={() => void save().then(() => router.push({ pathname: '/social/new', params: { listing: uuid } }))}
+          />
           <Button
             variant="secondary"
             icon={Share2}

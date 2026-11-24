@@ -163,6 +163,26 @@
   - Publish or schedule (108), from a listing post or a new post.
   - My posts and results (169).
 - **Done when:** a post appears on both with insights back.
+- **As built, B11.1** (ADR 0046):
+  - **Engine:**
+    - `social_posts` and `social_post_targets`.
+    - `SocialPosts`: create, edit, schedule, remove with Undo, post again, and checks.
+    - Each place is a `PublishSocialTarget` job, retried 1, 5 and 15 minutes apart.
+    - `reos:social:publish` runs every minute; `reos:social:insights` runs hourly for 30 days after posting.
+  - **Attribution** on every post: "Agent · Broker", plus the MLS's line on a listing post.
+  - **Checks:** broker name, at least one account, each channel's limits (Instagram needs a photo or video), and no misleading title for a sales agent. A failing post can only be saved as a draft.
+  - **Meta** (`MetaDriver`, `MetaSimulator`; Graph API v21.0):
+    - Facebook Login with a long-lived token.
+    - Targets are each Page and its linked Instagram business account.
+    - Page posts use `/feed` or `/photos` with the Page token, fetched on demand.
+    - Instagram uses a container, then `media_publish` (Reels for video).
+    - Insights: reach, likes, comments, clicks, shares and views.
+  - **Media:** uploads go to REOS storage, and channels get signed links that last 48 hours.
+  - **API:** `/api/v1/social/accounts` (and refresh), `/api/v1/social/posts` (list, check, store, show, update, delete, restore, repost), `/api/v1/social/media`.
+  - **Web:** "Content studio" in the agent sidebar (`/studio`, web screen 17) with the composer (screen 108), social accounts (170) and my posts and results (169). My listings' post dialog gains "Publish or schedule".
+  - **Phone:**
+    - Me → My posts (`social`, screen 169), `social/new` (108; also from a listing post), `social/[id]` (details, Post again) and `social/accounts` (170).
+    - The share sheet stays for anything else.
 
 ### B11.2 LinkedIn and Google Business Profile (Team B)
 

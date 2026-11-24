@@ -79,7 +79,8 @@
     "goal": "Mi objetivo",
     "plan": "Mi plan",
     "ceWallet": "Cartera de CE",
-    "ceReporting": "Reporte de CE"
+    "ceReporting": "Reporte de CE",
+    "contentStudio": "Estudio de contenido"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -1563,7 +1564,10 @@
         "read_documents": "Ver qué documentos tiene cada transacción",
         "prepare_envelopes": "Preparar sobres desde sus operaciones para que usted los revise y envíe",
         "read_envelopes": "Ver el avance de cada firmante en los sobres enviados desde REOS",
-        "file_signed": "Archivar la copia firmada y el certificado en la operación"
+        "file_signed": "Archivar la copia firmada y el certificado en la operación",
+        "list_pages": "Ver las páginas y cuentas de Instagram que administra",
+        "publish_posts": "Publicar las publicaciones que crea o programa en REOS",
+        "read_insights": "Leer alcance, me gusta, comentarios y clics de esas publicaciones"
       },
       "never": {
         "delete_yours": "Nunca eliminará los eventos que usted creó en su calendario",
@@ -1573,7 +1577,9 @@
         "change_campaigns": "Nunca iniciar, detener ni cambiar sus campañas inteligentes",
         "change_deals": "Cambiar una transacción o sus fechas",
         "delete_documents": "Eliminar o reemplazar documentos",
-        "send_without_you": "Enviar algo sin que usted presione Enviar"
+        "send_without_you": "Enviar algo sin que usted presione Enviar",
+        "post_without_you": "Publicar algo que usted no creó ni programó",
+        "read_messages": "Leer sus mensajes o comentarios"
       },
       "footer": "Puede desconectarla en cualquier momento desde Conexiones. Sus datos siguen siendo suyos.",
       "continue": "Continuar a {{tool}}",
@@ -2827,7 +2833,7 @@
         "mentor_checkin": "Hable con su mentor",
         "book_consultation": "Programe una consulta con un comprador o vendedor",
         "listing_presentation": "Prepare una presentación para captar una propiedad",
-        "review_contract": "Revise un contrato con su corredor",
+        "review_contract": "Revise un contrato con su bróker",
         "plan_closing": "Planifique su primer cierre",
         "pipeline_review": "Revise su cartera de negocios",
         "past_client_touch": "Contacte a 5 clientes anteriores",
@@ -2836,11 +2842,11 @@
         "write_role": "Escriba la descripción de su primer puesto",
         "interview_candidates": "Entreviste a candidatos",
         "team_huddle": "Haga la reunión semanal del equipo",
-        "choose_model": "Elija su modelo de corretaje",
-        "broker_course": "Comience los cursos para la licencia de corredor",
+        "choose_model": "Elija el modelo de su agencia",
+        "broker_course": "Comience los cursos para la licencia de bróker",
         "business_plan": "Escriba su plan de negocios",
         "comp_plan": "Diseñe su plan de comisiones",
-        "broker_licence": "Solicite su licencia de corredor",
+        "broker_licence": "Solicite su licencia de bróker",
         "go_live_checklist": "Complete la lista para comenzar a operar"
       },
       "phases": {
@@ -8228,7 +8234,7 @@
       "saved": "Publicación guardada",
       "copy": "Copiar publicación",
       "copied": "Publicación copiada",
-      "channelsNext": "La publicación en sus redes sociales llega con el estudio de contenido.",
+      "channelsNext": "Guárdela y luego publíquela o prográmela en sus cuentas sociales.",
       "beds": ":count hab.",
       "baths": ":count baños",
       "area": ":area pies²",
@@ -8243,7 +8249,8 @@
         "notAllowed": "El MLS no permite publicaciones sobre este listado en este momento.",
         "notYours": "Solo puede publicar sobre sus propios listados."
       },
-      "share": "Compartir"
+      "share": "Compartir",
+      "publish": "Publicar o programar"
     },
     "cma": {
       "open": "CMA",
@@ -8373,6 +8380,116 @@
       "noLicence": "Primero agregue una licencia: los certificados cuentan para la educación continua de una licencia.",
       "infected": "Este archivo no pasó la revisión de virus. Suba otra copia.",
       "state": "Elija el estado de una de sus licencias."
+    }
+  },
+  "social": {
+    "studio": {
+      "title": "Estudio de contenido",
+      "description": "Cree publicaciones que cumplen las reglas, publíquelas ahora o prográmelas, y vea qué resultados le traen.",
+      "aiSoon": "Pronto podrá escribir publicaciones con IA.",
+      "fromListing": "De su publicación de la propiedad: {{address}}"
+    },
+    "accounts": {
+      "title": "Cuentas sociales",
+      "description": "Conecte dónde se publican sus publicaciones. Los accesos se renuevan solos; se le pedirá reconectar si uno vence.",
+      "connect": "Conectar",
+      "connected": "Conectada como {{label}}",
+      "reconnect": "Reconectar",
+      "refresh": "Actualizar páginas",
+      "coming": "Próximamente",
+      "beta": "Beta",
+      "none": "No se encontraron páginas ni cuentas. Verifique que su página de Facebook esté vinculada a una cuenta de Instagram de empresa o de creador.",
+      "instagramNote": "Instagram publica directamente solo desde cuentas de empresa o de creador; las cuentas personales usan el menú para compartir.",
+      "shareSheet": "Menú para compartir para todo lo demás",
+      "emptyTitle": "No hay cuentas sociales conectadas",
+      "emptyBody": "Conecte Instagram y Facebook para publicar desde REOS."
+    },
+    "channels": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "google_business": "Perfil de Empresa de Google",
+      "youtube": "YouTube Shorts",
+      "tiktok": "TikTok"
+    },
+    "compose": {
+      "title": "Publicar o programar una publicación",
+      "text": "Texto de la publicación",
+      "link": "Enlace (opcional)",
+      "media": "Fotos o video",
+      "addMedia": "Agregar una foto o un video",
+      "removeMedia": "Quitar",
+      "chooseAccounts": "Cuentas",
+      "preview": "Vista previa",
+      "attribution": "Se agrega a cada publicación",
+      "checks": "Verificaciones",
+      "when": "Cuándo",
+      "now": "Ahora",
+      "later": "Elegir una hora",
+      "draft": "Guardar como borrador",
+      "at": "Fecha y hora",
+      "publish": "Publicar ahora",
+      "schedule": "Programar publicación",
+      "saveDraft": "Guardar borrador",
+      "published": "Publicando ahora",
+      "scheduled": "Programada para el {{date}}",
+      "saved": "Borrador guardado",
+      "edit": "Editar",
+      "repost": "Publicar de nuevo",
+      "reposted": "Copiada como un nuevo borrador",
+      "removed": "Publicación eliminada",
+      "fixFirst": "Corrija las verificaciones antes de publicar."
+    },
+    "checks": {
+      "broker": "El nombre de su bróker aparece en la publicación",
+      "targets": "Al menos una cuenta elegida",
+      "length": "El texto cabe en {{channel}}",
+      "media": "{{channel}} tiene una foto o un video",
+      "title": "Ningún título que un agente de ventas no pueda usar (bróker, dueño, presidente)"
+    },
+    "posts": {
+      "title": "Mis publicaciones y resultados",
+      "scheduled": "Programadas ({{count}})",
+      "posted": "Publicadas ({{count}})",
+      "drafts": "Borradores ({{count}})",
+      "emptyTitle": "Aún no hay publicaciones",
+      "emptyBody": "Cree una publicación o empiece desde la publicación de una propiedad.",
+      "new": "Nueva publicación",
+      "stats": {
+        "posts_this_month": "Publicaciones este mes",
+        "reach": "Alcance",
+        "engagement": "Me gusta, comentarios y compartidos",
+        "clicks": "Clics en el enlace"
+      },
+      "resultsNote": "Los resultados se leen de sus cuentas conectadas cada hora.",
+      "open": "Abrir en {{channel}}"
+    },
+    "status": {
+      "draft": "Borrador",
+      "scheduled": "Programada",
+      "publishing": "Publicando",
+      "published": "Publicada",
+      "partly": "Publicada en parte",
+      "failed": "Falló",
+      "queued": "En espera"
+    },
+    "insights": {
+      "reach": "Alcance",
+      "views": "Vistas",
+      "likes": "Me gusta",
+      "comments": "Comentarios",
+      "clicks": "Clics",
+      "shares": "Compartidos"
+    },
+    "errors": {
+      "sent": "Esta publicación ya salió. Publíquela de nuevo para cambiarla.",
+      "checks": "Esta publicación no pasa una verificación. Corríjala antes de publicar.",
+      "at": "Elija una hora al menos 5 minutos a partir de ahora.",
+      "target": "Elija cuentas que haya conectado.",
+      "media": "Use fotos o videos que subió, o las fotos de la propiedad.",
+      "upload": "No se pudo guardar ese archivo. Inténtelo de nuevo.",
+      "imageSize": "Las fotos pueden pesar hasta 8 MB.",
+      "reconnect": "Reconecte la cuenta en Cuentas sociales y vuelva a publicar."
     }
   }
 }
