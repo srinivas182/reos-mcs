@@ -59,6 +59,7 @@ use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
+use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\Voice\VoiceController;
@@ -288,6 +289,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'show')->middleware('throttle:30,1,api-agent-brief')->name('show');
         Route::get('settings', 'settings')->name('settings');
         Route::put('settings', 'update')->middleware('throttle:20,1,api-agent-brief')->name('update');
+    });
+    // Social posting (B11): accounts, posts, checks, schedule, insights.
+    Route::prefix('social')->name('api.social.')->controller(SocialController::class)->group(function () {
+        Route::get('accounts', 'accounts')->name('accounts');
+        Route::post('accounts/{connection}/refresh', 'refresh')->whereNumber('connection')->middleware('throttle:10,1,api-social-refresh')->name('accounts.refresh');
+        Route::get('posts', 'index')->name('posts.index');
+        Route::post('posts/check', 'check')->middleware('throttle:60,1,api-social-check')->name('posts.check');
+        Route::post('posts', 'store')->middleware('throttle:30,1,api-social-posts')->name('posts.store');
+        Route::get('posts/{post}', 'show')->whereUuid('post')->name('posts.show');
+        Route::put('posts/{post}', 'update')->whereUuid('post')->middleware('throttle:30,1,api-social-posts')->name('posts.update');
+        Route::delete('posts/{post}', 'destroy')->whereUuid('post')->middleware('throttle:30,1,api-social-posts')->name('posts.destroy');
+        Route::post('posts/{post}/restore', 'restore')->whereUuid('post')->middleware('throttle:30,1,api-social-posts')->name('posts.restore');
+        Route::post('posts/{post}/repost', 'repost')->whereUuid('post')->middleware('throttle:30,1,api-social-posts')->name('posts.repost');
+        Route::post('media', 'media')->middleware('throttle:20,1,api-social-media')->name('media');
     });
     // The CE wallet and renewal checklist (A11.2).
     Route::get('me/ce', [CeWalletController::class, 'index'])->name('api.me.ce.index');

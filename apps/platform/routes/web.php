@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Practice\PracticeController as ApiPracticeControlle
 use App\Http\Controllers\Api\Practice\ReportController;
 use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
+use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Ask\AskPageController;
 use App\Http\Controllers\Auth\InviteController;
@@ -95,6 +96,7 @@ use App\Http\Controllers\School\InstructorsController as SchoolInstructorsContro
 use App\Http\Controllers\School\StudentsController as SchoolStudentsController;
 use App\Http\Controllers\Sessions\SessionsController;
 use App\Http\Controllers\Settings\AvatarController;
+use App\Http\Controllers\Social\StudioPageController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
@@ -104,6 +106,9 @@ use App\Http\Middleware\EnsureOnboarded;
 use App\Http\Middleware\RequireFlag;
 use App\Services\Tenancy\TenantSignups;
 use Illuminate\Support\Facades\Route;
+
+// A social post's media, for the channels to fetch (signed links, B11).
+Route::get('social/media/{path}', [SocialController::class, 'file'])->where('path', 'social/[0-9]+/[A-Za-z0-9\-]+\.[a-z0-9]{2,5}')->middleware('throttle:120,1,social-media')->name('social.media');
 
 // The public site (web journey screen 1) and each audience's landing page.
 Route::get('/', [PublicSiteController::class, 'home'])->name('home');
@@ -184,6 +189,18 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     // The 90-day plan and weekly scorecard (A11.1b, screens 10 and 110).
     Route::get('agent/plan', [AgentSetupPageController::class, 'plan'])->name('agent.plan');
     Route::put('agent/plan/tasks/{code}', [TodayController::class, 'tick'])->where('code', '[a-z_]+')->middleware('throttle:60,1,agent-plan')->name('agent.plan.tick');
+    // Content studio (B11, web screen 17): compose, check, publish or schedule, and results.
+    Route::get('studio', StudioPageController::class)->name('studio.index');
+    Route::prefix('studio')->name('studio.')->controller(SocialController::class)->group(function () {
+        Route::post('accounts/{connection}/refresh', 'refresh')->whereNumber('connection')->middleware('throttle:10,1,studio-refresh')->name('accounts.refresh');
+        Route::post('posts/check', 'check')->middleware('throttle:60,1,studio-check')->name('posts.check');
+        Route::post('posts', 'store')->middleware('throttle:30,1,studio-posts')->name('posts.store');
+        Route::put('posts/{post}', 'update')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.update');
+        Route::delete('posts/{post}', 'destroy')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.destroy');
+        Route::post('posts/{post}/restore', 'restore')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.restore');
+        Route::post('posts/{post}/repost', 'repost')->whereUuid('post')->middleware('throttle:30,1,studio-posts')->name('posts.repost');
+        Route::post('media', 'media')->middleware('throttle:20,1,studio-media')->name('media');
+    });
     // The CE wallet and renewal checklist (A11.2, screens 103, 105, 106).
     Route::get('ce', CeWalletPageController::class)->name('ce.index');
     Route::get('ce/completions/{completion}/certificate', [CeWalletPageController::class, 'certificate'])->whereNumber('completion')->name('ce.certificate');

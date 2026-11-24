@@ -44,6 +44,7 @@ import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
 import { index as ceWallet } from '@/routes/ce';
+import { index as studio } from '@/routes/studio';
 import { index as ceReports } from '@/routes/school/ce-reports';
 import { index as practice, progress, readiness } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
@@ -105,6 +106,7 @@ export type NavLabel =
     | 'courses'
     | 'learnAndCe'
     | 'ceWallet'
+    | 'contentStudio'
     | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
@@ -217,7 +219,8 @@ export function roleNavigation(
             item('contacts', Users, contactsIndex(), '/contacts'),
             item('deals', Handshake, dealsIndex(), '/deals'),
             planned('virtualBroker'),
-            planned('contentStudio'),
+            // Content studio (B11, screen 17): compose, check, publish or schedule, results.
+            item('contentStudio', Megaphone, studio(), '/studio'),
             item('learnAndCe', GraduationCap, learn(), '/learn'),
             // Hours against the renewal, certificates and renewing (A11.2).
             item('ceWallet', Wallet, ceWallet(), '/ce'),

@@ -3993,6 +3993,151 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/social/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Social accounts
+         * @description Every social channel, whether it's connected, and the pages, profiles or channels it can post to.
+         */
+        get: operations["social.accounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/accounts/{connection}/refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Read a connection's pages and profiles again */
+        post: operations["social.accounts.refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My posts and results */
+        get: operations["social.posts.index"];
+        put?: never;
+        /** New post: publish now, schedule or save a draft */
+        post: operations["social.posts.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/posts/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a post
+         * @description The attribution it will carry and each check; a post that fails can't be scheduled.
+         */
+        post: operations["social.posts.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/posts/{post}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One post */
+        get: operations["social.posts.show"];
+        /** Change a draft or a scheduled post */
+        put: operations["social.posts.update"];
+        post?: never;
+        /** Remove a draft or a scheduled post (Undo restores it) */
+        delete: operations["social.posts.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/posts/{post}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Undo removing a post */
+        post: operations["social.posts.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/posts/{post}/repost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Post it again, as a new draft */
+        post: operations["social.posts.repost"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/social/media": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Upload a photo or short video for a post */
+        post: operations["social.media"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/practice/speed": {
         parameters: {
             query?: never;
@@ -5488,6 +5633,17 @@ export interface components {
                 required: boolean;
             };
         };
+        /**
+         * MediaRequest
+         * @description A photo (up to 8 MB) or a short video (up to 200 MB) for a post (B11).
+         */
+        MediaRequest: {
+            /**
+             * Format: binary
+             * @description Maximum file size: 204800 kilobytes.
+             */
+            file: string;
+        };
         /** MembershipResource */
         MembershipResource: {
             role: components["schemas"]["Role"];
@@ -5645,6 +5801,30 @@ export interface components {
         PlanTaskRequest: {
             week: number;
             done: boolean;
+        };
+        /**
+         * PostRequest
+         * @description A social post: text, media, a link, the places it goes, and now, later or a draft (B11).
+         */
+        PostRequest: {
+            body: string;
+            media: string[];
+            /** Format: uri */
+            link?: string | null;
+            targets: {
+                connection: number;
+                channel: string;
+                id: string;
+            }[];
+            /** @enum {string} */
+            when: "now" | "later" | "draft";
+            /** Format: date-time */
+            at?: string | null;
+            /**
+             * Format: uuid
+             * @description The listing (B10.2) a listing post comes from.
+             */
+            listing?: string | null;
         };
         /**
          * ProviderLicenceRequest
@@ -5986,7 +6166,7 @@ export interface components {
              * @description The tool's register id, for example `google-calendar`.
              * @enum {string}
              */
-            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce" | "lone-wolf" | "dotloop" | "skyslope" | "docusign";
+            integration: "google-calendar" | "outlook-calendar" | "follow-up-boss" | "boldtrail" | "lofty" | "salesforce" | "lone-wolf" | "dotloop" | "skyslope" | "docusign" | "meta";
             history?: components["schemas"]["HistoryRange"] | null;
             /** @description Tools connected with the person's own key (B7.2): Follow Up Boss › Admin › API. */
             api_key?: string | null;
@@ -6230,6 +6410,7 @@ export type SchemaListingPostRequest = components['schemas']['ListingPostRequest
 export type SchemaLocale = components['schemas']['Locale'];
 export type SchemaMathCheckRequest = components['schemas']['MathCheckRequest'];
 export type SchemaMeResource = components['schemas']['MeResource'];
+export type SchemaMediaRequest = components['schemas']['MediaRequest'];
 export type SchemaMembershipResource = components['schemas']['MembershipResource'];
 export type SchemaMlsMemberRequest = components['schemas']['MlsMemberRequest'];
 export type SchemaNotificationSettingsRequest = components['schemas']['NotificationSettingsRequest'];
@@ -6242,6 +6423,7 @@ export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsReq
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
 export type SchemaPhoneVerifyRequest = components['schemas']['PhoneVerifyRequest'];
 export type SchemaPlanTaskRequest = components['schemas']['PlanTaskRequest'];
+export type SchemaPostRequest = components['schemas']['PostRequest'];
 export type SchemaProviderLicenceRequest = components['schemas']['ProviderLicenceRequest'];
 export type SchemaPushDeviceRequest = components['schemas']['PushDeviceRequest'];
 export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest'];
@@ -18872,6 +19054,688 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            integration: string;
+                            name: string;
+                            purpose: string;
+                            launch: string;
+                            built: boolean;
+                            available: boolean;
+                            connection: {
+                                id: number;
+                                status: string;
+                                label: string | null;
+                            } | null;
+                            targets: {
+                                channel: string;
+                                id: string;
+                                name: string;
+                            }[];
+                            channels: {
+                                [key: string]: {
+                                    /** @enum {string} */
+                                    media: "required" | "optional" | "video";
+                                    max_text: number;
+                                };
+                            };
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "social.accounts.refresh": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connection: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            channel: string;
+                            id: string;
+                            name: string;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            stats: {
+                                posts_this_month: number;
+                                reach: number;
+                                engagement: number;
+                                clicks: number;
+                            };
+                            scheduled: {
+                                id: string;
+                                body: string;
+                                media: {
+                                    url: string;
+                                    kind: string;
+                                }[];
+                                link: string | null;
+                                attribution: string;
+                                listing: string | null;
+                                /** @enum {string} */
+                                status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                                scheduled_at: string | null;
+                                published_at: string | null;
+                                created_at: string | null;
+                                targets: {
+                                    id: number;
+                                    integration: string;
+                                    channel: string;
+                                    target_id: string;
+                                    name: string;
+                                    /** @enum {string} */
+                                    status: "queued" | "publishing" | "published" | "failed";
+                                    error: string | null;
+                                    url: string | null;
+                                    published_at: string | null;
+                                    insights: {
+                                        [key: string]: number;
+                                    };
+                                }[];
+                                totals: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                            posted: {
+                                id: string;
+                                body: string;
+                                media: {
+                                    url: string;
+                                    kind: string;
+                                }[];
+                                link: string | null;
+                                attribution: string;
+                                listing: string | null;
+                                /** @enum {string} */
+                                status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                                scheduled_at: string | null;
+                                published_at: string | null;
+                                created_at: string | null;
+                                targets: {
+                                    id: number;
+                                    integration: string;
+                                    channel: string;
+                                    target_id: string;
+                                    name: string;
+                                    /** @enum {string} */
+                                    status: "queued" | "publishing" | "published" | "failed";
+                                    error: string | null;
+                                    url: string | null;
+                                    published_at: string | null;
+                                    insights: {
+                                        [key: string]: number;
+                                    };
+                                }[];
+                                totals: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                            drafts: {
+                                id: string;
+                                body: string;
+                                media: {
+                                    url: string;
+                                    kind: string;
+                                }[];
+                                link: string | null;
+                                attribution: string;
+                                listing: string | null;
+                                /** @enum {string} */
+                                status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                                scheduled_at: string | null;
+                                published_at: string | null;
+                                created_at: string | null;
+                                targets: {
+                                    id: number;
+                                    integration: string;
+                                    channel: string;
+                                    target_id: string;
+                                    name: string;
+                                    /** @enum {string} */
+                                    status: "queued" | "publishing" | "published" | "failed";
+                                    error: string | null;
+                                    url: string | null;
+                                    published_at: string | null;
+                                    insights: {
+                                        [key: string]: number;
+                                    };
+                                }[];
+                                totals: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "social.posts.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            body: string;
+                            media: {
+                                url: string;
+                                kind: string;
+                            }[];
+                            link: string | null;
+                            attribution: string;
+                            listing: string | null;
+                            /** @enum {string} */
+                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            scheduled_at: string | null;
+                            published_at: string | null;
+                            created_at: string | null;
+                            targets: {
+                                id: number;
+                                integration: string;
+                                channel: string;
+                                target_id: string;
+                                name: string;
+                                /** @enum {string} */
+                                status: "queued" | "publishing" | "published" | "failed";
+                                error: string | null;
+                                url: string | null;
+                                published_at: string | null;
+                                insights: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                            totals: {
+                                [key: string]: number;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            attribution: string;
+                            checks: {
+                                /** @enum {string} */
+                                code: "broker" | "targets" | "length" | "media" | "title";
+                                ok: boolean;
+                                detail: string | null;
+                            }[];
+                            ok: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            body: string;
+                            media: {
+                                url: string;
+                                kind: string;
+                            }[];
+                            link: string | null;
+                            attribution: string;
+                            listing: string | null;
+                            /** @enum {string} */
+                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            scheduled_at: string | null;
+                            published_at: string | null;
+                            created_at: string | null;
+                            targets: {
+                                id: number;
+                                integration: string;
+                                channel: string;
+                                target_id: string;
+                                name: string;
+                                /** @enum {string} */
+                                status: "queued" | "publishing" | "published" | "failed";
+                                error: string | null;
+                                url: string | null;
+                                published_at: string | null;
+                                insights: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                            totals: {
+                                [key: string]: number;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "social.posts.update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            body: string;
+                            media: {
+                                url: string;
+                                kind: string;
+                            }[];
+                            link: string | null;
+                            attribution: string;
+                            listing: string | null;
+                            /** @enum {string} */
+                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            scheduled_at: string | null;
+                            published_at: string | null;
+                            created_at: string | null;
+                            targets: {
+                                id: number;
+                                integration: string;
+                                channel: string;
+                                target_id: string;
+                                name: string;
+                                /** @enum {string} */
+                                status: "queued" | "publishing" | "published" | "failed";
+                                error: string | null;
+                                url: string | null;
+                                published_at: string | null;
+                                insights: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                            totals: {
+                                [key: string]: number;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            body: string;
+                            media: {
+                                url: string;
+                                kind: string;
+                            }[];
+                            link: string | null;
+                            attribution: string;
+                            listing: string | null;
+                            /** @enum {string} */
+                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            scheduled_at: string | null;
+                            published_at: string | null;
+                            created_at: string | null;
+                            targets: {
+                                id: number;
+                                integration: string;
+                                channel: string;
+                                target_id: string;
+                                name: string;
+                                /** @enum {string} */
+                                status: "queued" | "publishing" | "published" | "failed";
+                                error: string | null;
+                                url: string | null;
+                                published_at: string | null;
+                                insights: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                            totals: {
+                                [key: string]: number;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.posts.repost": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            body: string;
+                            media: {
+                                url: string;
+                                kind: string;
+                            }[];
+                            link: string | null;
+                            attribution: string;
+                            listing: string | null;
+                            /** @enum {string} */
+                            status: "draft" | "scheduled" | "publishing" | "published" | "partly" | "failed";
+                            scheduled_at: string | null;
+                            published_at: string | null;
+                            created_at: string | null;
+                            targets: {
+                                id: number;
+                                integration: string;
+                                channel: string;
+                                target_id: string;
+                                name: string;
+                                /** @enum {string} */
+                                status: "queued" | "publishing" | "published" | "failed";
+                                error: string | null;
+                                url: string | null;
+                                published_at: string | null;
+                                insights: {
+                                    [key: string]: number;
+                                };
+                            }[];
+                            totals: {
+                                [key: string]: number;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "social.media": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["MediaRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            path: string;
+                            url: string;
+                            kind: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

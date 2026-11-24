@@ -1,4 +1,5 @@
-import { Check, Copy } from 'lucide-react';
+import { router } from '@inertiajs/react';
+import { Check, Copy, Megaphone } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -17,19 +18,22 @@ import type { PostDraft } from './types';
 /**
  * A listing post (B10.2): pick photos (never more than the MLS allows),
  * write the caption; the MLS's attribution is always added and can't be
- * edited. Copy it to share now; publishing to social accounts comes with
- * the content studio.
+ * edited. Copy it to share now, or (B11) save and open it in the content
+ * studio to publish or schedule on social accounts.
  */
 export function PostDialog({
     draft,
     open,
     onOpenChange,
     onSave,
+    publishUrl,
 }: {
     draft: PostDraft | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSave: (caption: string, photos: string[]) => Promise<void>;
+    /** The content studio, starting from this listing post (B11.1). */
+    publishUrl?: (listing: string) => string;
 }) {
     const { t } = useTranslation();
     const [caption, setCaption] = useState('');
@@ -179,6 +183,20 @@ export function PostDialog({
                     >
                         {t('listings.post.save')}
                     </Button>
+                    {draft && publishUrl ? (
+                        <Button
+                            variant="outline"
+                            disabled={busy || caption.trim() === ''}
+                            onClick={() =>
+                                void onSave(caption, chosen).then(() =>
+                                    router.visit(publishUrl(draft.listing)),
+                                )
+                            }
+                        >
+                            <Megaphone aria-hidden />
+                            {t('listings.post.publish')}
+                        </Button>
+                    ) : null}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

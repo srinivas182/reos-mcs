@@ -79,7 +79,8 @@
     "goal": "My goal",
     "plan": "My plan",
     "ceWallet": "CE wallet",
-    "ceReporting": "CE reporting"
+    "ceReporting": "CE reporting",
+    "contentStudio": "Content studio"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -1563,7 +1564,10 @@
         "read_documents": "See which documents each transaction has",
         "prepare_envelopes": "Prepare envelopes from your deals for you to check and send",
         "read_envelopes": "See each signer's progress on the envelopes sent from REOS",
-        "file_signed": "File the signed copy and certificate on the deal"
+        "file_signed": "File the signed copy and certificate on the deal",
+        "list_pages": "See the Pages and Instagram accounts you manage",
+        "publish_posts": "Publish the posts you create or schedule in REOS",
+        "read_insights": "Read reach, likes, comments and clicks on those posts"
       },
       "never": {
         "delete_yours": "Never delete events you made in your calendar",
@@ -1573,7 +1577,9 @@
         "change_campaigns": "Never start, stop or change your smart campaigns",
         "change_deals": "Change a transaction or its dates",
         "delete_documents": "Delete or replace documents",
-        "send_without_you": "Send anything without you pressing Send"
+        "send_without_you": "Send anything without you pressing Send",
+        "post_without_you": "Post anything you didn’t create or schedule",
+        "read_messages": "Read your messages or comments"
       },
       "footer": "Disconnect any time from Connections. Your data stays yours.",
       "continue": "Continue to {{tool}}",
@@ -8228,7 +8234,7 @@
       "saved": "Post saved",
       "copy": "Copy post",
       "copied": "Post copied",
-      "channelsNext": "Publishing to your social accounts comes with Content studio.",
+      "channelsNext": "Save it, then publish or schedule it on your social accounts.",
       "beds": ":count bd",
       "baths": ":count ba",
       "area": ":area sq ft",
@@ -8243,7 +8249,8 @@
         "notAllowed": "The MLS doesn't allow posts about this listing right now.",
         "notYours": "You can post about your own listings only."
       },
-      "share": "Share"
+      "share": "Share",
+      "publish": "Publish or schedule"
     },
     "cma": {
       "open": "CMA",
@@ -8373,6 +8380,116 @@
       "noLicence": "Add a license first: certificates count toward a license's CE.",
       "infected": "This file didn't pass the virus check. Upload a different copy.",
       "state": "Choose the state of one of your licenses."
+    }
+  },
+  "social": {
+    "studio": {
+      "title": "Content studio",
+      "description": "Make compliant posts, publish them now or schedule them, and see what they bring in.",
+      "aiSoon": "Writing posts with AI arrives soon.",
+      "fromListing": "From your listing post: {{address}}"
+    },
+    "accounts": {
+      "title": "Social accounts",
+      "description": "Connect where your posts go. Tokens refresh automatically; you’ll be asked to reconnect if one lapses.",
+      "connect": "Connect",
+      "connected": "Connected as {{label}}",
+      "reconnect": "Reconnect",
+      "refresh": "Refresh pages",
+      "coming": "Coming soon",
+      "beta": "Beta",
+      "none": "No pages or accounts found. Check that your Facebook Page is linked to an Instagram business or creator account.",
+      "instagramNote": "Instagram posts directly only from business or creator accounts; personal accounts use the share sheet.",
+      "shareSheet": "Share sheet for anything else",
+      "emptyTitle": "No social accounts connected",
+      "emptyBody": "Connect Instagram and Facebook to publish from REOS."
+    },
+    "channels": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "google_business": "Google Business Profile",
+      "youtube": "YouTube Shorts",
+      "tiktok": "TikTok"
+    },
+    "compose": {
+      "title": "Publish or schedule a post",
+      "text": "Post text",
+      "link": "Link (optional)",
+      "media": "Photos or video",
+      "addMedia": "Add a photo or video",
+      "removeMedia": "Remove",
+      "chooseAccounts": "Accounts",
+      "preview": "Preview",
+      "attribution": "Added to every post",
+      "checks": "Checks",
+      "when": "When",
+      "now": "Now",
+      "later": "Pick a time",
+      "draft": "Save as draft",
+      "at": "Date and time",
+      "publish": "Publish now",
+      "schedule": "Schedule post",
+      "saveDraft": "Save draft",
+      "published": "Publishing now",
+      "scheduled": "Scheduled for {{date}}",
+      "saved": "Draft saved",
+      "edit": "Edit",
+      "repost": "Post again",
+      "reposted": "Copied as a new draft",
+      "removed": "Post removed",
+      "fixFirst": "Fix the checks before publishing."
+    },
+    "checks": {
+      "broker": "Your broker’s name is on the post",
+      "targets": "At least one account chosen",
+      "length": "Text fits {{channel}}",
+      "media": "{{channel}} has a photo or video",
+      "title": "No title a sales agent may not use (broker, owner, president)"
+    },
+    "posts": {
+      "title": "My posts and results",
+      "scheduled": "Scheduled ({{count}})",
+      "posted": "Posted ({{count}})",
+      "drafts": "Drafts ({{count}})",
+      "emptyTitle": "No posts yet",
+      "emptyBody": "Create a post, or start from a listing post.",
+      "new": "New post",
+      "stats": {
+        "posts_this_month": "Posts this month",
+        "reach": "Reach",
+        "engagement": "Likes, comments and shares",
+        "clicks": "Link clicks"
+      },
+      "resultsNote": "Results are read from your connected accounts every hour.",
+      "open": "Open on {{channel}}"
+    },
+    "status": {
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "publishing": "Publishing",
+      "published": "Published",
+      "partly": "Partly published",
+      "failed": "Failed",
+      "queued": "Waiting"
+    },
+    "insights": {
+      "reach": "Reach",
+      "views": "Views",
+      "likes": "Likes",
+      "comments": "Comments",
+      "clicks": "Clicks",
+      "shares": "Shares"
+    },
+    "errors": {
+      "sent": "This post has already gone out. Post it again to change it.",
+      "checks": "This post fails a check. Fix it before publishing.",
+      "at": "Pick a time at least 5 minutes from now.",
+      "target": "Choose accounts you’ve connected.",
+      "media": "Use photos or videos you uploaded, or the listing’s photos.",
+      "upload": "That file couldn’t be saved. Try again.",
+      "imageSize": "Photos can be up to 8 MB.",
+      "reconnect": "Reconnect the account in Social accounts, then post again."
     }
   }
 }

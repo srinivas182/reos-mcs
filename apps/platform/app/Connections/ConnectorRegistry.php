@@ -18,6 +18,8 @@ use App\Connections\Drivers\Lofty\LoftyDriver;
 use App\Connections\Drivers\Lofty\LoftySimulator;
 use App\Connections\Drivers\LoneWolf\LoneWolfDriver;
 use App\Connections\Drivers\LoneWolf\LoneWolfSimulator;
+use App\Connections\Drivers\Meta\MetaDriver;
+use App\Connections\Drivers\Meta\MetaSimulator;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarDriver;
 use App\Connections\Drivers\OutlookCalendar\OutlookCalendarSimulator;
 use App\Connections\Drivers\Salesforce\SalesforceDriver;
@@ -55,6 +57,8 @@ final readonly class ConnectorRegistry
         DotloopDriver::INTEGRATION => DotloopSimulator::class,
         SkySlopeDriver::INTEGRATION => SkySlopeSimulator::class,
         DocuSignDriver::INTEGRATION => DocuSignSimulator::class,
+        // Social channels (B11, ADR 0046).
+        MetaDriver::INTEGRATION => MetaSimulator::class,
     ];
 
     /** Tools people connect with their own API key (B7.2) rather than by signing in. */
@@ -65,6 +69,9 @@ final readonly class ConnectorRegistry
 
     /** Organisation tools whose records each have an owner, matched to an agent by email (B8.2). */
     private const PER_RECORD_OWNER = [SalesforceDriver::INTEGRATION, LoneWolfDriver::INTEGRATION, SkySlopeDriver::INTEGRATION];
+
+    /** Tools whose drivers also `PublishesPosts` (B11). */
+    public const SOCIAL = [MetaDriver::INTEGRATION];
 
     /** Tools whose drivers are also a `CalendarDriver`. */
     private const CALENDARS = [GoogleCalendarDriver::INTEGRATION, OutlookCalendarDriver::INTEGRATION];
@@ -88,6 +95,7 @@ final readonly class ConnectorRegistry
         DotloopDriver::INTEGRATION => DotloopDriver::CONSENT,
         SkySlopeDriver::INTEGRATION => SkySlopeDriver::CONSENT,
         DocuSignDriver::INTEGRATION => DocuSignDriver::CONSENT,
+        MetaDriver::INTEGRATION => MetaDriver::CONSENT,
     ];
 
     /** @var array<string, array<string, string>> */
@@ -102,6 +110,7 @@ final readonly class ConnectorRegistry
         DotloopDriver::INTEGRATION => DotloopDriver::STREAMS,
         SkySlopeDriver::INTEGRATION => SkySlopeDriver::STREAMS,
         DocuSignDriver::INTEGRATION => DocuSignDriver::STREAMS,
+        MetaDriver::INTEGRATION => MetaDriver::STREAMS,
     ];
 
     /**
@@ -139,6 +148,12 @@ final readonly class ConnectorRegistry
     public static function ownsPerRecord(string $integrationId): bool
     {
         return in_array($integrationId, self::PER_RECORD_OWNER, true);
+    }
+
+    /** A social channel: REOS publishes posts to it (B11). */
+    public static function isSocial(string $integrationId): bool
+    {
+        return in_array($integrationId, self::SOCIAL, true);
     }
 
     /** A calendar tool: REOS writes events to it (B4.1). */
@@ -214,6 +229,7 @@ final readonly class ConnectorRegistry
             DocuSignDriver::INTEGRATION => new DocuSignDriver($value('integration_key'), $value('secret_key'), $environment === CredentialEnvironment::Live ? DocuSignDriver::LIVE_AUTH : DocuSignDriver::DEMO_AUTH, $value('webhook_secret')),
             DotloopDriver::INTEGRATION => new DotloopDriver($value('client_id'), $value('client_secret')),
             SkySlopeDriver::INTEGRATION => new SkySlopeDriver($value('client_id'), $value('client_secret'), $value('server_url')),
+            MetaDriver::INTEGRATION => new MetaDriver($value('app_id'), $value('app_secret')),
             LoneWolfDriver::INTEGRATION => new LoneWolfDriver($value('client_id'), $value('client_secret'), $value('api_key'), $value('server_url')),
             default => throw new LogicException("No real driver for {$integrationId}."),
         };

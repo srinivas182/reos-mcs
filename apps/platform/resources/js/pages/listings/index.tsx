@@ -7,6 +7,7 @@ import { ListingCard } from '@/components/listings/listing-card';
 import { MemberCard } from '@/components/listings/member-card';
 import { PageCard } from '@/components/listings/page-card';
 import { PostDialog } from '@/components/listings/post-dialog';
+import { index as studio } from '@/routes/studio';
 import type {
     ListingRow,
     ListingsOverview,
@@ -251,6 +252,7 @@ export default function ListingsPage({
                 draft={post.draft}
                 open={post.open}
                 onOpenChange={(open) => setPost((p) => ({ ...p, open }))}
+                publishUrl={(listing) => studio({ query: { listing } }).url}
                 onSave={savePost}
             />
         </>
