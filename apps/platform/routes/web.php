@@ -90,6 +90,7 @@ use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
 use App\Http\Controllers\Recruiting\RecruitingController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
+use App\Http\Controllers\School\CeReportsController;
 use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
 use App\Http\Controllers\School\StudentsController as SchoolStudentsController;
 use App\Http\Controllers\Sessions\SessionsController;
@@ -185,6 +186,7 @@ Route::middleware(['auth', 'verified', EnsureOnboarded::class])->group(function 
     Route::put('agent/plan/tasks/{code}', [TodayController::class, 'tick'])->where('code', '[a-z_]+')->middleware('throttle:60,1,agent-plan')->name('agent.plan.tick');
     // The CE wallet and renewal checklist (A11.2, screens 103, 105, 106).
     Route::get('ce', CeWalletPageController::class)->name('ce.index');
+    Route::get('ce/completions/{completion}/certificate', [CeWalletPageController::class, 'certificate'])->whereNumber('completion')->name('ce.certificate');
     Route::put('ce/licences/{licence}/renewal', [CeWalletController::class, 'renewal'])->whereNumber('licence')->middleware('throttle:20,1,ce-renewal')->name('ce.renewal');
     // The morning brief: transcript, read aloud, settings (A11.1c, screen 184).
     Route::get('agent/brief', [AgentSetupPageController::class, 'brief'])->name('agent.brief');
@@ -413,6 +415,14 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
 // Students (A9.2e): weekly reports candidates shared with the school.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->get('school/students', [SchoolStudentsController::class, 'index'])->name('school.students.index');
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage', 'throttle:20,1,school-groups'])->post('school/groups', [SchoolStudentsController::class, 'storeGroup'])->name('school.groups.store');
+// CE reporting to TREC (A11.3, school admin screen 51): TREC's file or REOS submits, the reference, rejections.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->prefix('school/ce-reports')->name('school.ce-reports.')->controller(CeReportsController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->middleware('throttle:10,1,school-ce-reports')->name('store');
+    Route::get('{report}/file', 'file')->whereUuid('report')->middleware('throttle:30,1,school-ce-file')->name('file');
+    Route::put('{report}/reference', 'reference')->whereUuid('report')->middleware('throttle:20,1,school-ce-reports')->name('reference');
+    Route::put('{report}/lines/{completion}', 'line')->whereUuid('report')->whereNumber('completion')->middleware('throttle:60,1,school-ce-reports')->name('line');
+});
 // Course catalogue and state approvals (A7.1, school admin screen 50).
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:courses.manage'])->prefix('school/approvals')->name('school.approvals.')->group(function () {
     Route::get('/', [SchoolApprovalsController::class, 'index'])->name('index');

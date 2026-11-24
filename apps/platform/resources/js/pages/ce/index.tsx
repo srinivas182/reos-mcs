@@ -10,7 +10,10 @@ import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
 import { putJson } from '@/lib/content';
 import { undoToast } from '@/lib/undo-toast';
-import { renewal as renewalRoute } from '@/routes/ce';
+import {
+    certificate as certificateRoute,
+    renewal as renewalRoute,
+} from '@/routes/ce';
 import { show as checkout } from '@/routes/checkout';
 import { index as learn } from '@/routes/learn';
 
@@ -84,6 +87,9 @@ export default function CeWalletPage({
                                 wallet.buy
                                     ? checkout(wallet.buy.price).url
                                     : null
+                            }
+                            certificateUrl={(completion) =>
+                                certificateRoute(completion).url
                             }
                             onAddCertificate={() => setAdding(true)}
                         />

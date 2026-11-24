@@ -18,4 +18,10 @@ final class CeWalletPageController extends Controller
     {
         return Inertia::render('ce/index', ['wallets' => $wallet->for($user)]);
     }
+
+    /** A CE certificate to print or save as PDF, with its reporting steps (screens 103 and 104). */
+    public function certificate(int $completion, #[CurrentUser] User $user, CeWallet $wallet): Response
+    {
+        return Inertia::render('ce/certificate', ['certificate' => $wallet->certificate($user, $completion)]);
+    }
 }

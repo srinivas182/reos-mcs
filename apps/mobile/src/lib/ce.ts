@@ -34,3 +34,21 @@ export function useWallets() {
 
   return { wallets, setWallets, reload };
 }
+
+export type Certificate = paths['/me/ce/completions/{completion}']['get']['responses'][200]['content']['application/json']['data'];
+
+/** One completion's certificate and its steps to TREC (A11.3; screens 103, 104). */
+export function useCertificate(id: number) {
+  const [certificate, setCertificate] = useState<Certificate | null>(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      void api()
+        .GET('/me/ce/completions/{completion}', { params: { path: { completion: id } } })
+        .then(({ data }) => setCertificate(data?.data ?? null))
+        .catch(() => undefined);
+    }, [id]),
+  );
+
+  return certificate;
+}

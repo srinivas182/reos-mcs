@@ -29,12 +29,15 @@ export function WalletCard({
     wallet,
     learnUrl,
     buyUrl,
+    certificateUrl,
     onAddCertificate,
 }: {
     wallet: Wallet;
     learnUrl: string;
     /** Checkout for the plan that unlocks CE, when the agent has none. */
     buyUrl: string | null;
+    /** A completion's certificate and reporting steps (screens 103 and 104). */
+    certificateUrl: (completion: number) => string;
     onAddCertificate: () => void;
 }) {
     const { t, i18n } = useTranslation();
@@ -155,6 +158,16 @@ export function WalletCard({
                                             )}
                                         </p>
                                     ) : null}
+                                    {c.reporting ? (
+                                        <p className="text-sm text-muted-foreground">
+                                            {t(
+                                                `ce.wallet.steps.status.${c.reporting.status}`,
+                                            )}
+                                            {c.reporting.reference
+                                                ? ` · ${t('ce.wallet.steps.reference', { reference: c.reporting.reference })}`
+                                                : null}
+                                        </p>
+                                    ) : null}
                                 </div>
                                 <span
                                     className={cn(
@@ -164,6 +177,14 @@ export function WalletCard({
                                 >
                                     {t(`ce.wallet.status.${c.status}`)}
                                 </span>
+                                <Button asChild variant="outline">
+                                    <Link href={certificateUrl(c.id)}>
+                                        {t('ce.wallet.certificate.open')}
+                                        <span className="sr-only">
+                                            : {c.title}
+                                        </span>
+                                    </Link>
+                                </Button>
                             </li>
                         ))}
                     </ul>

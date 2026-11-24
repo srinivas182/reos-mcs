@@ -1,4 +1,4 @@
-import type { Wallet } from './types';
+import type { Certificate, Wallet } from './types';
 
 /** James Miller's Texas licence: 7 of 18 hours, one outside course self-reported, renewal in January. */
 export function wallet(overrides: Partial<Wallet> = {}): Wallet {
@@ -70,6 +70,7 @@ export function wallet(overrides: Partial<Wallet> = {}): Wallet {
                 course_code: null,
                 status: 'self_reported',
                 certificate: true,
+                reporting: null,
             },
             {
                 id: 1,
@@ -80,6 +81,18 @@ export function wallet(overrides: Partial<Wallet> = {}): Wallet {
                 course_code: 'legal_update_1',
                 status: 'reos_reported',
                 certificate: false,
+                reporting: {
+                    status: 'reported',
+                    reference: 'CE-2026-118844',
+                    reason: null,
+                    steps: [
+                        { code: 'completed', state: 'done' },
+                        { code: 'final_passed', state: 'done' },
+                        { code: 'reported', state: 'done' },
+                        { code: 'member_record', state: 'not_connected' },
+                        { code: 'certificate', state: 'done' },
+                    ],
+                },
             },
         ],
         trec: {
@@ -131,6 +144,25 @@ export function wallet(overrides: Partial<Wallet> = {}): Wallet {
             interval: 'month',
         },
         unlocked: false,
+        ...overrides,
+    };
+}
+
+/** James's Legal Update I certificate, reported to TREC. */
+export function certificate(overrides: Partial<Certificate> = {}): Certificate {
+    return {
+        id: 1,
+        holder: 'James Miller',
+        licence: '0798765',
+        state_code: 'TX',
+        title: 'Legal Update I',
+        hours: 4,
+        completed_on: '2026-03-01',
+        provider: 'Texas Realty School',
+        course_number: '40123',
+        status: 'reos_reported',
+        issued: true,
+        reporting: wallet().completions[1]?.reporting ?? null,
         ...overrides,
     };
 }

@@ -3637,6 +3637,74 @@
                                                                 },
                                                                 "certificate": {
                                                                     "type": "boolean"
+                                                                },
+                                                                "reporting": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "status": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "waiting",
+                                                                                "pending_upload",
+                                                                                "submitted",
+                                                                                "reported",
+                                                                                "rejected"
+                                                                            ]
+                                                                        },
+                                                                        "reference": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "reason": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "steps": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "code": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "completed",
+                                                                                            "final_passed",
+                                                                                            "reported",
+                                                                                            "member_record",
+                                                                                            "certificate"
+                                                                                        ]
+                                                                                    },
+                                                                                    "state": {
+                                                                                        "type": "string",
+                                                                                        "enum": [
+                                                                                            "done",
+                                                                                            "waiting",
+                                                                                            "pending",
+                                                                                            "rejected",
+                                                                                            "not_connected"
+                                                                                        ]
+                                                                                    }
+                                                                                },
+                                                                                "required": [
+                                                                                    "code",
+                                                                                    "state"
+                                                                                ]
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "status",
+                                                                        "reference",
+                                                                        "reason",
+                                                                        "steps"
+                                                                    ]
                                                                 }
                                                             },
                                                             "required": [
@@ -3647,7 +3715,8 @@
                                                                 "provider",
                                                                 "course_code",
                                                                 "status",
-                                                                "certificate"
+                                                                "certificate",
+                                                                "reporting"
                                                             ]
                                                         }
                                                     },
@@ -3809,6 +3878,180 @@
                                                     "unlocked"
                                                 ]
                                             }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/me/ce/completions/{completion}": {
+            "get": {
+                "operationId": "me.ce.certificate",
+                "description": "A REOS course's certificate is issued once TREC has the completion, with TREC's reference (agent screens 103 and 104).",
+                "summary": "A CE certificate and its reporting steps",
+                "tags": [
+                    "CeWallet"
+                ],
+                "parameters": [
+                    {
+                        "name": "completion",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "holder": {
+                                                    "type": "string"
+                                                },
+                                                "licence": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "state_code": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "hours": {
+                                                    "type": "number"
+                                                },
+                                                "completed_on": {
+                                                    "type": "string"
+                                                },
+                                                "provider": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "course_number": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "reos_reported",
+                                                        "self_reported",
+                                                        "on_record"
+                                                    ]
+                                                },
+                                                "issued": {
+                                                    "type": "boolean"
+                                                },
+                                                "reporting": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "status": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "waiting",
+                                                                "pending_upload",
+                                                                "submitted",
+                                                                "reported",
+                                                                "rejected"
+                                                            ]
+                                                        },
+                                                        "reference": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "reason": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "steps": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "code": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "completed",
+                                                                            "final_passed",
+                                                                            "reported",
+                                                                            "member_record",
+                                                                            "certificate"
+                                                                        ]
+                                                                    },
+                                                                    "state": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "done",
+                                                                            "waiting",
+                                                                            "pending",
+                                                                            "rejected",
+                                                                            "not_connected"
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "code",
+                                                                    "state"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "status",
+                                                        "reference",
+                                                        "reason",
+                                                        "steps"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "holder",
+                                                "licence",
+                                                "state_code",
+                                                "title",
+                                                "hours",
+                                                "completed_on",
+                                                "provider",
+                                                "course_number",
+                                                "status",
+                                                "issued",
+                                                "reporting"
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -4092,6 +4335,74 @@
                                                             },
                                                             "certificate": {
                                                                 "type": "boolean"
+                                                            },
+                                                            "reporting": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "status": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "waiting",
+                                                                            "pending_upload",
+                                                                            "submitted",
+                                                                            "reported",
+                                                                            "rejected"
+                                                                        ]
+                                                                    },
+                                                                    "reference": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reason": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "steps": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "code": {
+                                                                                    "type": "string",
+                                                                                    "enum": [
+                                                                                        "completed",
+                                                                                        "final_passed",
+                                                                                        "reported",
+                                                                                        "member_record",
+                                                                                        "certificate"
+                                                                                    ]
+                                                                                },
+                                                                                "state": {
+                                                                                    "type": "string",
+                                                                                    "enum": [
+                                                                                        "done",
+                                                                                        "waiting",
+                                                                                        "pending",
+                                                                                        "rejected",
+                                                                                        "not_connected"
+                                                                                    ]
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "code",
+                                                                                "state"
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "status",
+                                                                    "reference",
+                                                                    "reason",
+                                                                    "steps"
+                                                                ]
                                                             }
                                                         },
                                                         "required": [
@@ -4102,7 +4413,8 @@
                                                             "provider",
                                                             "course_code",
                                                             "status",
-                                                            "certificate"
+                                                            "certificate",
+                                                            "reporting"
                                                         ]
                                                     }
                                                 },

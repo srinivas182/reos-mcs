@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, fn, userEvent, within } from 'storybook/test';
 import { wallet } from './fixtures';
 import { RenewalChecklist } from './renewal-checklist';
+import { ReportingSteps } from './reporting-steps';
 import { WalletCard } from './wallet-card';
 
 const meta = {
@@ -11,6 +12,7 @@ const meta = {
         wallet: wallet(),
         learnUrl: '/learn',
         buyUrl: '/checkout/7',
+        certificateUrl: (id: number) => `/ce/completions/${id}/certificate`,
         onAddCertificate: fn(),
     },
 } satisfies Meta<typeof WalletCard>;
@@ -59,4 +61,12 @@ export const Renewal: Story = {
             onRenewed={fn()}
         />
     ),
+};
+
+/** Reporting to TREC for a REOS course (screen 104): reported with TREC's reference. */
+export const ReportingToTrec: Story = {
+    render: () => {
+        const reporting = wallet().completions[1]?.reporting;
+        return reporting ? <ReportingSteps reporting={reporting} /> : <></>;
+    },
 };

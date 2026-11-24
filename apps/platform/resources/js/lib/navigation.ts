@@ -8,6 +8,7 @@ import {
     FileBadge,
     Flag,
     Gauge,
+    FileCheck2,
     GraduationCap,
     House,
     Layers,
@@ -43,6 +44,7 @@ import { index as complianceIndex } from '@/routes/compliance';
 import { index as contentIndex } from '@/routes/content';
 import { index as learn } from '@/routes/learn';
 import { index as ceWallet } from '@/routes/ce';
+import { index as ceReports } from '@/routes/school/ce-reports';
 import { index as practice, progress, readiness } from '@/routes/practice';
 import { show as studyPlan } from '@/routes/study-plan';
 import { index as announcementsIndex } from '@/routes/announcements';
@@ -103,6 +105,7 @@ export type NavLabel =
     | 'courses'
     | 'learnAndCe'
     | 'ceWallet'
+    | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
     | 'aiAndCredits'
@@ -309,6 +312,8 @@ export function roleNavigation(
                 schoolApprovals(),
                 '/school/approvals',
             ),
+            // CE reporting to TREC (A11.3, screen 51).
+            item('ceReporting', FileCheck2, ceReports(), '/school/ce-reports'),
             // Weekly reports candidates shared with the school (A9.2e).
             item('students', Users, schoolStudents(), '/school/students'),
             planned('ceReporting'),

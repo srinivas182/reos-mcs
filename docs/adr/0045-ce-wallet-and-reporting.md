@@ -1,6 +1,6 @@
 # ADR 0045: CE wallet and reporting
 
-- Status: Accepted (CE wallet, A11.2)
+- Status: Accepted (CE wallet, A11.2; CE reporting, A11.3)
 - Date: 2026-11-24 (Sprint 11; spec in docs/sprints/S11-spec.md)
 
 ## Context
@@ -35,11 +35,25 @@ TREC publishes its licence holder file every night. For each licence it gives an
    - If the job misses days, only the nearest reminder goes.
 6. **Buy CE.** Buy CE uses the existing checkout. The wallet offers the cheapest live agent plan in the state that unlocks CE courses (`learn.ce`), or "Take CE in Learn" when the plan is already held. The phone never shows a price: it opens Membership, which follows the store rules (A6).
 7. **REOS completions name their course** (`course_id`), so reporting (A11.3) can follow each one to TREC.
+8. **Schools report, by file or through REOS** (A11.3; school admin web screen 51). A report covers the school's CE courses' completions in a date range.
+   - **File:** REOS builds TREC's CE Posting System upload. It's a CSV with license type, license number, the course's TREC approval number, delivery method, and the start and completion dates as MMDDYYYY. The school uploads it, and the report waits as "Pending upload".
+   - **REOS submits:** only with the school's ticked authority, through `trec-ce-reporting`. On the Simulator, outside production, TREC's reference comes back at once. While that integration is off, the option says so and the file is the way.
+   - **Reference:** entering TREC's confirmation reference moves every completion still in the report to Reported.
+   - **Rejections:** a completion TREC rejects is marked with the reason (with Undo). It returns to Ready for the next report once fixed.
+   - **Problems shown up front:** a completion with no Texas license on file, or a course without a TREC approval number, stays in Ready with the problem shown.
+   - Every create, reference and rejection is audited.
+9. **What agents see** (A11.3; agent screens 103 and 104). Each REOS completion shows its steps:
+   - completed;
+   - final passed;
+   - reported to TREC, with the reference, or rejected with the reason;
+   - the Texas REALTORS® member record, shown as "Not connected" until A18.1 brings the member-data feed;
+   - the certificate, issued once reported, to print or save as PDF on the web and share from the phone.
 
 ## Consequences
 
 - The confirmation runs at 06:15 Chicago time, after TREC's import at 05:30. The reminders run at 09:10.
 - A self-reported course that TREC never accepts still shows "self-reported" until the period's requirement is met. REOS can't tell which course TREC rejected, so the wallet says plainly what each status means.
+- TREC's upload layout is taken from its CE Posting System page; the dependency on the school's provider account and TREC's guidance stays open (S11 dependencies). Until then "REOS submits" works on the Simulator only.
 - States other than Texas show the wallet and reminders from their rules, but have no TREC-style confirmation until their regulator's data is connected.
 
 ## Alternatives considered
