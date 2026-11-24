@@ -1563,6 +1563,107 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/contracts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My contract reviews
+         * @description Newest first, with what a review costs, my credits left, whether the sample contract is offered, and my deals' documents to choose from.
+         */
+        get: operations["contracts.index"];
+        put?: never;
+        /**
+         * Review a contract
+         * @description A PDF or photo (`file`, up to 20 MB), a deal's document (`deal_file`), or the sample TREC 20-18 outside production (`sample`). A new PDF with `deal_id` is kept with the deal. The review runs in the background (status "reviewing", then "done" or "failed", with a notification); credits are charged only when it's done.
+         */
+        post: operations["contracts.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contracts/{review}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** One review */
+        get: operations["contracts.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contracts/{review}/deadlines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add the deadlines to my calendar
+         * @description On the deal as key dates (with to-dos), or as to-dos with their days when the review has no deal. Done once.
+         */
+        post: operations["contracts.deadlines"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contracts/{review}/broker": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send to my broker
+         * @description The findings and deadlines go to the broker as a virtual broker question, to confirm or correct. Done once.
+         */
+        post: operations["contracts.broker"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/contracts/{review}/questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask about this contract
+         * @description An answer from the contract's own pages, naming them, and a note for the client. 1 credit.
+         */
+        post: operations["contracts.questions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/states": {
         parameters: {
             query?: never;
@@ -5372,6 +5473,13 @@ export interface components {
             body?: string | null;
         };
         /**
+         * ContractQuestionRequest
+         * @description A question about a reviewed contract (A12.2; screen 66).
+         */
+        ContractQuestionRequest: {
+            question: string;
+        };
+        /**
          * DealFileRequest
          * @description A PDF added to a deal to send for signature (B9.3), up to 25 MB.
          */
@@ -6267,6 +6375,21 @@ export interface components {
             /** @description Images and PDFs, scanned before anyone opens them (B6.1b). */
             files?: string[] | null;
         };
+        /**
+         * StartReviewRequest
+         * @description Start a contract review (A12.2; screen 63): a PDF or photo, a deal's document, or the sample.
+         */
+        StartReviewRequest: {
+            /**
+             * Format: binary
+             * @description Maximum file size: 20480 kilobytes.
+             */
+            file?: string | null;
+            /** Format: uuid */
+            deal_file?: string | null;
+            deal_id?: number | null;
+            sample?: boolean | null;
+        };
         /** StateResource */
         StateResource: {
             code: string;
@@ -6474,6 +6597,7 @@ export type SchemaContactResource = components['schemas']['ContactResource'];
 export type SchemaContactRowResource = components['schemas']['ContactRowResource'];
 export type SchemaContactTaskRequest = components['schemas']['ContactTaskRequest'];
 export type SchemaContactTouchRequest = components['schemas']['ContactTouchRequest'];
+export type SchemaContractQuestionRequest = components['schemas']['ContractQuestionRequest'];
 export type SchemaDealFileRequest = components['schemas']['DealFileRequest'];
 export type SchemaDealRequest = components['schemas']['DealRequest'];
 export type SchemaDefaultCrmRequest = components['schemas']['DefaultCrmRequest'];
@@ -6535,6 +6659,7 @@ export type SchemaShareRequest = components['schemas']['ShareRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
+export type SchemaStartReviewRequest = components['schemas']['StartReviewRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
 export type SchemaTextNumberRequest = components['schemas']['TextNumberRequest'];
@@ -11531,6 +11656,565 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contracts.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            reviews: {
+                                id: string;
+                                file_name: string;
+                                form: string | null;
+                                form_name: string | null;
+                                /** @enum {string} */
+                                status: "reviewing" | "done" | "failed";
+                                /** @enum {string} */
+                                step: "read" | "terms" | "checks" | "compare" | "done";
+                                pages: number;
+                                created_at: string | null;
+                                reviewed_at: string | null;
+                                deal: {
+                                    id: number;
+                                    uuid: string;
+                                    property: string;
+                                } | null;
+                                compared: boolean;
+                                terms: {
+                                    code: string;
+                                    label: string;
+                                    value: string;
+                                    page: number | null;
+                                    previous: string | null;
+                                    changed: boolean;
+                                }[];
+                                addenda: string[];
+                                findings: {
+                                    code: string;
+                                    /** @enum {string} */
+                                    severity: "high" | "check";
+                                    title: string;
+                                    detail: string;
+                                    page: number | null;
+                                    date: string | null;
+                                    citation: string | null;
+                                    url: string | null;
+                                }[];
+                                deadlines: {
+                                    code: string;
+                                    kind: string;
+                                    label: string;
+                                    due_on: string;
+                                    page: number | null;
+                                    basis: string;
+                                }[];
+                                deadlines_added: boolean;
+                                broker_question: string | null;
+                                questions: {
+                                    question: string;
+                                    answer: string;
+                                    pages: number[];
+                                    note: string;
+                                    asked_at: string;
+                                }[];
+                                credits: number;
+                                cost: number;
+                                error: string | null;
+                            }[];
+                            cost: number;
+                            credits_left: number;
+                            sample: boolean;
+                            files: {
+                                uuid: string;
+                                name: string;
+                                deal: string;
+                                added_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "contracts.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": components["schemas"]["StartReviewRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            file_name: string;
+                            form: string | null;
+                            form_name: string | null;
+                            /** @enum {string} */
+                            status: "reviewing" | "done" | "failed";
+                            /** @enum {string} */
+                            step: "read" | "terms" | "checks" | "compare" | "done";
+                            pages: number;
+                            created_at: string | null;
+                            reviewed_at: string | null;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            compared: boolean;
+                            terms: {
+                                code: string;
+                                label: string;
+                                value: string;
+                                page: number | null;
+                                previous: string | null;
+                                changed: boolean;
+                            }[];
+                            addenda: string[];
+                            findings: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "high" | "check";
+                                title: string;
+                                detail: string;
+                                page: number | null;
+                                date: string | null;
+                                citation: string | null;
+                                url: string | null;
+                            }[];
+                            deadlines: {
+                                code: string;
+                                kind: string;
+                                label: string;
+                                due_on: string;
+                                page: number | null;
+                                basis: string;
+                            }[];
+                            deadlines_added: boolean;
+                            broker_question: string | null;
+                            questions: {
+                                question: string;
+                                answer: string;
+                                pages: number[];
+                                note: string;
+                                asked_at: string;
+                            }[];
+                            credits: number;
+                            cost: number;
+                            error: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contracts.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            file_name: string;
+                            form: string | null;
+                            form_name: string | null;
+                            /** @enum {string} */
+                            status: "reviewing" | "done" | "failed";
+                            /** @enum {string} */
+                            step: "read" | "terms" | "checks" | "compare" | "done";
+                            pages: number;
+                            created_at: string | null;
+                            reviewed_at: string | null;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            compared: boolean;
+                            terms: {
+                                code: string;
+                                label: string;
+                                value: string;
+                                page: number | null;
+                                previous: string | null;
+                                changed: boolean;
+                            }[];
+                            addenda: string[];
+                            findings: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "high" | "check";
+                                title: string;
+                                detail: string;
+                                page: number | null;
+                                date: string | null;
+                                citation: string | null;
+                                url: string | null;
+                            }[];
+                            deadlines: {
+                                code: string;
+                                kind: string;
+                                label: string;
+                                due_on: string;
+                                page: number | null;
+                                basis: string;
+                            }[];
+                            deadlines_added: boolean;
+                            broker_question: string | null;
+                            questions: {
+                                question: string;
+                                answer: string;
+                                pages: number[];
+                                note: string;
+                                asked_at: string;
+                            }[];
+                            credits: number;
+                            cost: number;
+                            error: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "contracts.deadlines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            file_name: string;
+                            form: string | null;
+                            form_name: string | null;
+                            /** @enum {string} */
+                            status: "reviewing" | "done" | "failed";
+                            /** @enum {string} */
+                            step: "read" | "terms" | "checks" | "compare" | "done";
+                            pages: number;
+                            created_at: string | null;
+                            reviewed_at: string | null;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            compared: boolean;
+                            terms: {
+                                code: string;
+                                label: string;
+                                value: string;
+                                page: number | null;
+                                previous: string | null;
+                                changed: boolean;
+                            }[];
+                            addenda: string[];
+                            findings: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "high" | "check";
+                                title: string;
+                                detail: string;
+                                page: number | null;
+                                date: string | null;
+                                citation: string | null;
+                                url: string | null;
+                            }[];
+                            deadlines: {
+                                code: string;
+                                kind: string;
+                                label: string;
+                                due_on: string;
+                                page: number | null;
+                                basis: string;
+                            }[];
+                            deadlines_added: boolean;
+                            broker_question: string | null;
+                            questions: {
+                                question: string;
+                                answer: string;
+                                pages: number[];
+                                note: string;
+                                asked_at: string;
+                            }[];
+                            credits: number;
+                            cost: number;
+                            error: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contracts.broker": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            file_name: string;
+                            form: string | null;
+                            form_name: string | null;
+                            /** @enum {string} */
+                            status: "reviewing" | "done" | "failed";
+                            /** @enum {string} */
+                            step: "read" | "terms" | "checks" | "compare" | "done";
+                            pages: number;
+                            created_at: string | null;
+                            reviewed_at: string | null;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            compared: boolean;
+                            terms: {
+                                code: string;
+                                label: string;
+                                value: string;
+                                page: number | null;
+                                previous: string | null;
+                                changed: boolean;
+                            }[];
+                            addenda: string[];
+                            findings: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "high" | "check";
+                                title: string;
+                                detail: string;
+                                page: number | null;
+                                date: string | null;
+                                citation: string | null;
+                                url: string | null;
+                            }[];
+                            deadlines: {
+                                code: string;
+                                kind: string;
+                                label: string;
+                                due_on: string;
+                                page: number | null;
+                                basis: string;
+                            }[];
+                            deadlines_added: boolean;
+                            broker_question: string | null;
+                            questions: {
+                                question: string;
+                                answer: string;
+                                pages: number[];
+                                note: string;
+                                asked_at: string;
+                            }[];
+                            credits: number;
+                            cost: number;
+                            error: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "contracts.questions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                review: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ContractQuestionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            file_name: string;
+                            form: string | null;
+                            form_name: string | null;
+                            /** @enum {string} */
+                            status: "reviewing" | "done" | "failed";
+                            /** @enum {string} */
+                            step: "read" | "terms" | "checks" | "compare" | "done";
+                            pages: number;
+                            created_at: string | null;
+                            reviewed_at: string | null;
+                            deal: {
+                                id: number;
+                                uuid: string;
+                                property: string;
+                            } | null;
+                            compared: boolean;
+                            terms: {
+                                code: string;
+                                label: string;
+                                value: string;
+                                page: number | null;
+                                previous: string | null;
+                                changed: boolean;
+                            }[];
+                            addenda: string[];
+                            findings: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "high" | "check";
+                                title: string;
+                                detail: string;
+                                page: number | null;
+                                date: string | null;
+                                citation: string | null;
+                                url: string | null;
+                            }[];
+                            deadlines: {
+                                code: string;
+                                kind: string;
+                                label: string;
+                                due_on: string;
+                                page: number | null;
+                                basis: string;
+                            }[];
+                            deadlines_added: boolean;
+                            broker_question: string | null;
+                            questions: {
+                                question: string;
+                                answer: string;
+                                pages: number[];
+                                note: string;
+                                asked_at: string;
+                            }[];
+                            credits: number;
+                            cost: number;
+                            error: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
             422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {

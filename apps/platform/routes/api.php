@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Certificates\CertificateController;
 use App\Http\Controllers\Api\Classes\ClassesController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
+use App\Http\Controllers\Api\Contracts\ContractReviewController;
 use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\Crm\ContactWorkController;
 use App\Http\Controllers\Api\Deals\DealController;
@@ -290,6 +291,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'show')->middleware('throttle:30,1,api-agent-brief')->name('show');
         Route::get('settings', 'settings')->name('settings');
         Route::put('settings', 'update')->middleware('throttle:20,1,api-agent-brief')->name('update');
+    });
+    // Contract review (A12.2, agent screens 63–66).
+    Route::prefix('contracts')->name('api.contracts.')->controller(ContractReviewController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->middleware('throttle:10,1,api-contracts-review')->name('store');
+        Route::get('{review}', 'show')->whereUuid('review')->name('show');
+        Route::post('{review}/deadlines', 'deadlines')->whereUuid('review')->middleware('throttle:20,1,api-contracts-actions')->name('deadlines');
+        Route::post('{review}/broker', 'broker')->whereUuid('review')->middleware('throttle:20,1,api-contracts-actions')->name('broker');
+        Route::post('{review}/questions', 'ask')->whereUuid('review')->middleware('throttle:30,1,api-contracts-ask')->name('questions');
     });
     // The virtual broker (A12.1, agent screens 61 and 62).
     Route::prefix('virtual-broker')->name('api.virtual-broker.')->controller(VirtualBrokerController::class)->group(function () {

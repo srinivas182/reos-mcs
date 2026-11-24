@@ -81,7 +81,8 @@
     "ceWallet": "Cartera de CE",
     "ceReporting": "Reporte de CE",
     "contentStudio": "Estudio de contenido",
-    "virtualBroker": "Bróker virtual"
+    "virtualBroker": "Bróker virtual",
+    "contractReview": "Revisión de contratos"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -5446,7 +5447,8 @@
       "morning_brief": "Resumen matutino",
       "ce_renewal": "Renovación de CE",
       "policy_question": "Preguntas de agentes para el bróker",
-      "policy_answer": "Respuestas de su bróker"
+      "policy_answer": "Respuestas de su bróker",
+      "contract_review": "Revisiones de contratos"
     },
     "digest": {
       "subject": {
@@ -8657,6 +8659,191 @@
       "trained": "Entrenado con el manual de políticas de {{brokerage}}",
       "open": "Pregunte a su bróker virtual",
       "openBody": "Políticas y reglas de Texas, con su bróker cuando haga falta"
+    }
+  },
+  "contracts": {
+    "forms": {
+      "20-18": "Contrato residencial para una a cuatro familias (reventa), TREC 20-18"
+    },
+    "terms": {
+      "seller": "Vendedor",
+      "buyer": "Comprador",
+      "property": "Propiedad",
+      "cash_portion": "Parte en efectivo",
+      "financing": "Financiamiento",
+      "sales_price": "Precio de venta",
+      "escrow_agent": "Agente de depósito",
+      "earnest_money": "Depósito de garantía",
+      "option_fee": "Cuota de opción",
+      "earnest_days": "Depósito de garantía (días)",
+      "option_days": "Período de opción (días)",
+      "survey_days": "Levantamiento (días)",
+      "financing_days": "Aprobación del financiamiento (días)",
+      "closing_date": "Fecha de cierre",
+      "possession": "Posesión",
+      "special_provisions": "Disposiciones especiales",
+      "effective_date": "Fecha de vigencia"
+    },
+    "deadlines": {
+      "earnest_money": "Vence el depósito de garantía y la cuota de opción",
+      "option_period": "Termina el período de opción (5:00 p. m.)",
+      "survey": "Vence el levantamiento",
+      "financing": "Fecha límite de aprobación del financiamiento",
+      "closing": "Cierre",
+      "after": "{{days}} días después de la fecha de vigencia",
+      "onOrBefore": "En o antes de"
+    },
+    "findings": {
+      "general": {
+        "title": "No es un formulario de TREC que REOS conozca aún",
+        "detail": "REOS revisa primero los formularios oficiales de TREC. Este documento recibe una revisión general: verifique los términos con su bróker."
+      },
+      "no_effective_date": {
+        "title": "Sin fecha de vigencia",
+        "detail": "Sin la fecha de vigencia no se pueden contar el período de opción, el depósito de garantía ni otras fechas límite. Asegúrese de que la copia final firmada la tenga."
+      },
+      "weekend": {
+        "title": "{{deadline}} cae en {{day}}",
+        "detail": "Confirme con su bróker y la compañía de títulos cómo se cuenta esta fecha."
+      },
+      "no_earnest_money": {
+        "title": "Sin depósito de garantía",
+        "detail": "El contrato no muestra un monto de depósito de garantía. Revise el párrafo 5 antes de firmar."
+      },
+      "no_escrow_agent": {
+        "title": "Sin agente de depósito",
+        "detail": "El párrafo 5 no indica quién guarda el depósito de garantía."
+      },
+      "price_math": {
+        "title": "El precio de venta no cuadra",
+        "detail": "El efectivo de {{cash}} más el financiamiento de {{financing}} no es el precio de venta de {{price}}."
+      },
+      "no_financing_addendum": {
+        "title": "Financiamiento sin su anexo",
+        "detail": "El contrato incluye financiamiento, pero no se encontró el anexo de financiamiento de terceros."
+      },
+      "no_option": {
+        "title": "Sin período de opción",
+        "detail": "Sin período de opción, el comprador no tiene el derecho ilimitado de terminar el contrato."
+      },
+      "no_option_fee": {
+        "title": "Sin cuota de opción",
+        "detail": "Hay un período de opción, pero no un monto de cuota de opción."
+      },
+      "closing_early": {
+        "title": "El cierre es antes de una fecha límite del comprador",
+        "detail": "El cierre es en o antes de: {{deadline}}. Revise las fechas con su bróker."
+      },
+      "closing_before_effective": {
+        "title": "El cierre es antes de la fecha de vigencia",
+        "detail": "La fecha de cierre es anterior a la fecha en que se firmó el contrato."
+      },
+      "special_provisions": {
+        "title": "Las disposiciones especiales parecen redacción legal",
+        "detail": "Los titulares de licencia solo pueden agregar declaraciones de hechos y detalles comerciales. Palabras como \"indemnizar\" o \"eximir de responsabilidad\" corresponden a los abogados de las partes."
+      },
+      "changed": {
+        "title": "Cambió: {{term}}",
+        "detail": "Versión anterior: {{from}}. Esta versión: {{to}}."
+      }
+    },
+    "severity": {
+      "high": "Alta",
+      "check": "Revisar"
+    },
+    "page": "página {{page}}",
+    "broker": {
+      "question": "Por favor revise el {{form}} de {{property}} antes de que yo responda.",
+      "source": "Revisión de contrato de REOS"
+    },
+    "ask": {
+      "none": "No encontré eso en las páginas de este contrato. Pregunte a su bróker.",
+      "page": "La página {{page}} dice:",
+      "note": "Hola, {{name}}: esto es lo que dice el contrato: {{answer}} Avíseme si tiene preguntas.",
+      "there": "buen día"
+    },
+    "errors": {
+      "credits": "Una revisión cuesta {{credits}} créditos y no le quedan suficientes. Obtenga más créditos en Membresía.",
+      "deal": "Esa no es una de sus operaciones.",
+      "nothing": "Elija un PDF, fotos de las páginas o un documento de una operación.",
+      "unreadable": "REOS no pudo leer este contrato. Pruebe con el PDF de su herramienta de transacciones.",
+      "noText": "Este PDF no tiene texto que REOS pueda leer (puede ser un escaneo). Suba el PDF de su herramienta de transacciones, o fotos cuando la revisión con IA esté activa.",
+      "photos": "Las fotos de páginas se leen cuando la revisión con IA está activa. Suba el PDF.",
+      "notReady": "La revisión aún no termina."
+    },
+    "notify": {
+      "readyTitle": "Su revisión de contrato está lista",
+      "readyBody": "[0] {{file}}: nada de prioridad alta.|{1} {{file}}: 1 hallazgo de prioridad alta.|[2,*] {{file}}: {{count}} hallazgos de prioridad alta.",
+      "failedTitle": "REOS no pudo revisar su contrato",
+      "failedBody": "{{file}}: ábralo para ver por qué.",
+      "open": "Abrir la revisión"
+    },
+    "web": {
+      "title": "Revisión de contratos",
+      "purpose": "Detecte problemas en el contrato antes de que le cuesten una operación. Información, no asesoría legal.",
+      "choose": "Revisar un contrato",
+      "upload": "Subir un PDF",
+      "photos": "Fotos de las páginas",
+      "sample": "Probar el TREC 20-18 de muestra",
+      "fromDeals": "De sus operaciones",
+      "review": "Revisar",
+      "cost": "{{credits}} créditos por revisión · le quedan {{left}}",
+      "empty": "Aún no hay revisiones",
+      "emptyBody": "Suba un contrato de TREC y REOS mostrará los términos clave, las fechas límite y lo que hay que revisar, con páginas.",
+      "reviews": "Sus revisiones",
+      "open": "Abrir",
+      "steps": {
+        "read": "Leyendo las páginas",
+        "terms": "Extrayendo términos y fechas",
+        "checks": "Revisando problemas comunes",
+        "compare": "Comparando con la versión anterior",
+        "done": "Listo"
+      },
+      "reviewing": "Revisando… unos 20 a 40 segundos. Puede salir; REOS le avisará cuando termine.",
+      "status": {
+        "reviewing": "Revisando",
+        "done": "Lista",
+        "failed": "No se pudo revisar"
+      },
+      "keyTerms": "Términos clave",
+      "changed": "Cambió",
+      "was": "antes: {{value}}",
+      "findings": "Hallazgos",
+      "noFindings": "Nada que señalar",
+      "noFindingsBody": "Las revisiones de REOS no encontraron nada de prioridad alta ni por revisar. Su bróker igual revisa antes de que usted responda.",
+      "deadlines": "Fechas límite",
+      "addDeadlines": "Agregar las fechas límite a mi calendario",
+      "deadlinesAdded": "Fechas límite agregadas",
+      "sendToBroker": "Enviar al bróker",
+      "sentToBroker": "Con su bróker",
+      "askTitle": "Pregunte sobre este contrato",
+      "askLabel": "Su pregunta",
+      "askPlaceholder": "Por ejemplo: ¿Cuándo termina el período de opción?",
+      "ask": "Preguntar",
+      "noteTitle": "Nota para su cliente",
+      "copy": "Copiar",
+      "copied": "Copiado",
+      "viewContract": "Ver el contrato",
+      "notLegalAdvice": "Información del documento, no asesoría legal. Su bróker revisa antes de que usted responda.",
+      "back": "Todas las revisiones",
+      "addenda": "Anexos encontrados",
+      "addendaNames": {
+        "third_party_financing": "Anexo de financiamiento de terceros",
+        "hoa": "Anexo de asociación de propietarios",
+        "sale_of_other_property": "Venta de otra propiedad del comprador",
+        "seller_financing": "Anexo de financiamiento del vendedor",
+        "lead_paint": "Divulgación de pintura con plomo"
+      },
+      "pageShort": "pág. {{page}}",
+      "onDeal": "Operación: {{property}}",
+      "askCost_one": "{{count}} crédito por pregunta",
+      "askCost_other": "{{count}} créditos por pregunta",
+      "highCount_one": "{{count}} alta",
+      "highCount_other": "{{count}} altas",
+      "share": "Compartir la nota"
+    },
+    "mobile": {
+      "askRow": "Formularios de TREC: fechas límite y qué revisar"
     }
   }
 }

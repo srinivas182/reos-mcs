@@ -14046,6 +14046,2177 @@
                 }
             }
         },
+        "/contracts": {
+            "get": {
+                "operationId": "contracts.index",
+                "description": "Newest first, with what a review costs, my credits left, whether the sample contract is offered, and my deals' documents to choose from.",
+                "summary": "My contract reviews",
+                "tags": [
+                    "ContractReview"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "reviews": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "file_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "form": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "form_name": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "reviewing",
+                                                                    "done",
+                                                                    "failed"
+                                                                ]
+                                                            },
+                                                            "step": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "read",
+                                                                    "terms",
+                                                                    "checks",
+                                                                    "compare",
+                                                                    "done"
+                                                                ]
+                                                            },
+                                                            "pages": {
+                                                                "type": "integer"
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reviewed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "deal": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "uuid": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "property": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "uuid",
+                                                                    "property"
+                                                                ]
+                                                            },
+                                                            "compared": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "terms": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "code": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "value": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "page": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "previous": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "changed": {
+                                                                            "type": "boolean"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "code",
+                                                                        "label",
+                                                                        "value",
+                                                                        "page",
+                                                                        "previous",
+                                                                        "changed"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "addenda": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "findings": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "code": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "high",
+                                                                                "check"
+                                                                            ]
+                                                                        },
+                                                                        "title": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "detail": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "page": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "date": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "citation": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "url": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "code",
+                                                                        "severity",
+                                                                        "title",
+                                                                        "detail",
+                                                                        "page",
+                                                                        "date",
+                                                                        "citation",
+                                                                        "url"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "deadlines": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "code": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "kind": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "label": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "due_on": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "page": {
+                                                                            "type": [
+                                                                                "integer",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "basis": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "code",
+                                                                        "kind",
+                                                                        "label",
+                                                                        "due_on",
+                                                                        "page",
+                                                                        "basis"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "deadlines_added": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "broker_question": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "questions": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "question": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "answer": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "pages": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "integer"
+                                                                            }
+                                                                        },
+                                                                        "note": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "asked_at": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "question",
+                                                                        "answer",
+                                                                        "pages",
+                                                                        "note",
+                                                                        "asked_at"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "credits": {
+                                                                "type": "integer"
+                                                            },
+                                                            "cost": {
+                                                                "type": "integer"
+                                                            },
+                                                            "error": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "file_name",
+                                                            "form",
+                                                            "form_name",
+                                                            "status",
+                                                            "step",
+                                                            "pages",
+                                                            "created_at",
+                                                            "reviewed_at",
+                                                            "deal",
+                                                            "compared",
+                                                            "terms",
+                                                            "addenda",
+                                                            "findings",
+                                                            "deadlines",
+                                                            "deadlines_added",
+                                                            "broker_question",
+                                                            "questions",
+                                                            "credits",
+                                                            "cost",
+                                                            "error"
+                                                        ]
+                                                    }
+                                                },
+                                                "cost": {
+                                                    "type": "integer"
+                                                },
+                                                "credits_left": {
+                                                    "type": "integer"
+                                                },
+                                                "sample": {
+                                                    "type": "boolean"
+                                                },
+                                                "files": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "uuid": {
+                                                                "type": "string"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "deal": {
+                                                                "type": "string"
+                                                            },
+                                                            "added_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "uuid",
+                                                            "name",
+                                                            "deal",
+                                                            "added_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "reviews",
+                                                "cost",
+                                                "credits_left",
+                                                "sample",
+                                                "files"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "contracts.store",
+                "description": "A PDF or photo (`file`, up to 20 MB), a deal's document (`deal_file`), or the sample TREC 20-18 outside production (`sample`). A new PDF with `deal_id` is kept with the deal. The review runs in the background (status \"reviewing\", then \"done\" or \"failed\", with a notification); credits are charged only when it's done.",
+                "summary": "Review a contract",
+                "tags": [
+                    "ContractReview"
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StartReviewRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "file_name": {
+                                                    "type": "string"
+                                                },
+                                                "form": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "form_name": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "reviewing",
+                                                        "done",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "step": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "read",
+                                                        "terms",
+                                                        "checks",
+                                                        "compare",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "pages": {
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "reviewed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "compared": {
+                                                    "type": "boolean"
+                                                },
+                                                "terms": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "previous": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "changed": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "label",
+                                                            "value",
+                                                            "page",
+                                                            "previous",
+                                                            "changed"
+                                                        ]
+                                                    }
+                                                },
+                                                "addenda": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "findings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "high",
+                                                                    "check"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "title",
+                                                            "detail",
+                                                            "page",
+                                                            "date",
+                                                            "citation",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "basis": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "kind",
+                                                            "label",
+                                                            "due_on",
+                                                            "page",
+                                                            "basis"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines_added": {
+                                                    "type": "boolean"
+                                                },
+                                                "broker_question": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "question": {
+                                                                "type": "string"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string"
+                                                            },
+                                                            "pages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "note": {
+                                                                "type": "string"
+                                                            },
+                                                            "asked_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "question",
+                                                            "answer",
+                                                            "pages",
+                                                            "note",
+                                                            "asked_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "cost": {
+                                                    "type": "integer"
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "file_name",
+                                                "form",
+                                                "form_name",
+                                                "status",
+                                                "step",
+                                                "pages",
+                                                "created_at",
+                                                "reviewed_at",
+                                                "deal",
+                                                "compared",
+                                                "terms",
+                                                "addenda",
+                                                "findings",
+                                                "deadlines",
+                                                "deadlines_added",
+                                                "broker_question",
+                                                "questions",
+                                                "credits",
+                                                "cost",
+                                                "error"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/contracts/{review}": {
+            "get": {
+                "operationId": "contracts.show",
+                "summary": "One review",
+                "tags": [
+                    "ContractReview"
+                ],
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "file_name": {
+                                                    "type": "string"
+                                                },
+                                                "form": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "form_name": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "reviewing",
+                                                        "done",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "step": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "read",
+                                                        "terms",
+                                                        "checks",
+                                                        "compare",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "pages": {
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "reviewed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "compared": {
+                                                    "type": "boolean"
+                                                },
+                                                "terms": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "previous": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "changed": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "label",
+                                                            "value",
+                                                            "page",
+                                                            "previous",
+                                                            "changed"
+                                                        ]
+                                                    }
+                                                },
+                                                "addenda": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "findings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "high",
+                                                                    "check"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "title",
+                                                            "detail",
+                                                            "page",
+                                                            "date",
+                                                            "citation",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "basis": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "kind",
+                                                            "label",
+                                                            "due_on",
+                                                            "page",
+                                                            "basis"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines_added": {
+                                                    "type": "boolean"
+                                                },
+                                                "broker_question": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "question": {
+                                                                "type": "string"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string"
+                                                            },
+                                                            "pages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "note": {
+                                                                "type": "string"
+                                                            },
+                                                            "asked_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "question",
+                                                            "answer",
+                                                            "pages",
+                                                            "note",
+                                                            "asked_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "cost": {
+                                                    "type": "integer"
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "file_name",
+                                                "form",
+                                                "form_name",
+                                                "status",
+                                                "step",
+                                                "pages",
+                                                "created_at",
+                                                "reviewed_at",
+                                                "deal",
+                                                "compared",
+                                                "terms",
+                                                "addenda",
+                                                "findings",
+                                                "deadlines",
+                                                "deadlines_added",
+                                                "broker_question",
+                                                "questions",
+                                                "credits",
+                                                "cost",
+                                                "error"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contracts/{review}/deadlines": {
+            "post": {
+                "operationId": "contracts.deadlines",
+                "description": "On the deal as key dates (with to-dos), or as to-dos with their days when the review has no deal. Done once.",
+                "summary": "Add the deadlines to my calendar",
+                "tags": [
+                    "ContractReview"
+                ],
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "file_name": {
+                                                    "type": "string"
+                                                },
+                                                "form": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "form_name": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "reviewing",
+                                                        "done",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "step": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "read",
+                                                        "terms",
+                                                        "checks",
+                                                        "compare",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "pages": {
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "reviewed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "compared": {
+                                                    "type": "boolean"
+                                                },
+                                                "terms": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "previous": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "changed": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "label",
+                                                            "value",
+                                                            "page",
+                                                            "previous",
+                                                            "changed"
+                                                        ]
+                                                    }
+                                                },
+                                                "addenda": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "findings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "high",
+                                                                    "check"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "title",
+                                                            "detail",
+                                                            "page",
+                                                            "date",
+                                                            "citation",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "basis": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "kind",
+                                                            "label",
+                                                            "due_on",
+                                                            "page",
+                                                            "basis"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines_added": {
+                                                    "type": "boolean"
+                                                },
+                                                "broker_question": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "question": {
+                                                                "type": "string"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string"
+                                                            },
+                                                            "pages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "note": {
+                                                                "type": "string"
+                                                            },
+                                                            "asked_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "question",
+                                                            "answer",
+                                                            "pages",
+                                                            "note",
+                                                            "asked_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "cost": {
+                                                    "type": "integer"
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "file_name",
+                                                "form",
+                                                "form_name",
+                                                "status",
+                                                "step",
+                                                "pages",
+                                                "created_at",
+                                                "reviewed_at",
+                                                "deal",
+                                                "compared",
+                                                "terms",
+                                                "addenda",
+                                                "findings",
+                                                "deadlines",
+                                                "deadlines_added",
+                                                "broker_question",
+                                                "questions",
+                                                "credits",
+                                                "cost",
+                                                "error"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contracts/{review}/broker": {
+            "post": {
+                "operationId": "contracts.broker",
+                "description": "The findings and deadlines go to the broker as a virtual broker question, to confirm or correct. Done once.",
+                "summary": "Send to my broker",
+                "tags": [
+                    "ContractReview"
+                ],
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "file_name": {
+                                                    "type": "string"
+                                                },
+                                                "form": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "form_name": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "reviewing",
+                                                        "done",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "step": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "read",
+                                                        "terms",
+                                                        "checks",
+                                                        "compare",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "pages": {
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "reviewed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "compared": {
+                                                    "type": "boolean"
+                                                },
+                                                "terms": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "previous": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "changed": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "label",
+                                                            "value",
+                                                            "page",
+                                                            "previous",
+                                                            "changed"
+                                                        ]
+                                                    }
+                                                },
+                                                "addenda": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "findings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "high",
+                                                                    "check"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "title",
+                                                            "detail",
+                                                            "page",
+                                                            "date",
+                                                            "citation",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "basis": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "kind",
+                                                            "label",
+                                                            "due_on",
+                                                            "page",
+                                                            "basis"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines_added": {
+                                                    "type": "boolean"
+                                                },
+                                                "broker_question": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "question": {
+                                                                "type": "string"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string"
+                                                            },
+                                                            "pages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "note": {
+                                                                "type": "string"
+                                                            },
+                                                            "asked_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "question",
+                                                            "answer",
+                                                            "pages",
+                                                            "note",
+                                                            "asked_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "cost": {
+                                                    "type": "integer"
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "file_name",
+                                                "form",
+                                                "form_name",
+                                                "status",
+                                                "step",
+                                                "pages",
+                                                "created_at",
+                                                "reviewed_at",
+                                                "deal",
+                                                "compared",
+                                                "terms",
+                                                "addenda",
+                                                "findings",
+                                                "deadlines",
+                                                "deadlines_added",
+                                                "broker_question",
+                                                "questions",
+                                                "credits",
+                                                "cost",
+                                                "error"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/contracts/{review}/questions": {
+            "post": {
+                "operationId": "contracts.questions",
+                "description": "An answer from the contract's own pages, naming them, and a note for the client. 1 credit.",
+                "summary": "Ask about this contract",
+                "tags": [
+                    "ContractReview"
+                ],
+                "parameters": [
+                    {
+                        "name": "review",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContractQuestionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "file_name": {
+                                                    "type": "string"
+                                                },
+                                                "form": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "form_name": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "reviewing",
+                                                        "done",
+                                                        "failed"
+                                                    ]
+                                                },
+                                                "step": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "read",
+                                                        "terms",
+                                                        "checks",
+                                                        "compare",
+                                                        "done"
+                                                    ]
+                                                },
+                                                "pages": {
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "reviewed_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "deal": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "uuid": {
+                                                            "type": "string"
+                                                        },
+                                                        "property": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "uuid",
+                                                        "property"
+                                                    ]
+                                                },
+                                                "compared": {
+                                                    "type": "boolean"
+                                                },
+                                                "terms": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "previous": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "changed": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "label",
+                                                            "value",
+                                                            "page",
+                                                            "previous",
+                                                            "changed"
+                                                        ]
+                                                    }
+                                                },
+                                                "addenda": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "findings": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "high",
+                                                                    "check"
+                                                                ]
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "detail": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "date": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "title",
+                                                            "detail",
+                                                            "page",
+                                                            "date",
+                                                            "citation",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string"
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "due_on": {
+                                                                "type": "string"
+                                                            },
+                                                            "page": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "basis": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "kind",
+                                                            "label",
+                                                            "due_on",
+                                                            "page",
+                                                            "basis"
+                                                        ]
+                                                    }
+                                                },
+                                                "deadlines_added": {
+                                                    "type": "boolean"
+                                                },
+                                                "broker_question": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "questions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "question": {
+                                                                "type": "string"
+                                                            },
+                                                            "answer": {
+                                                                "type": "string"
+                                                            },
+                                                            "pages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "note": {
+                                                                "type": "string"
+                                                            },
+                                                            "asked_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "question",
+                                                            "answer",
+                                                            "pages",
+                                                            "note",
+                                                            "asked_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "credits": {
+                                                    "type": "integer"
+                                                },
+                                                "cost": {
+                                                    "type": "integer"
+                                                },
+                                                "error": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "file_name",
+                                                "form",
+                                                "form_name",
+                                                "status",
+                                                "step",
+                                                "pages",
+                                                "created_at",
+                                                "reviewed_at",
+                                                "deal",
+                                                "compared",
+                                                "terms",
+                                                "addenda",
+                                                "findings",
+                                                "deadlines",
+                                                "deadlines_added",
+                                                "broker_question",
+                                                "questions",
+                                                "credits",
+                                                "cost",
+                                                "error"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
         "/me/states": {
             "get": {
                 "operationId": "me.states",
@@ -45711,6 +47882,21 @@
                 ],
                 "title": "ContactTouchRequest"
             },
+            "ContractQuestionRequest": {
+                "type": "object",
+                "description": "A question about a reviewed contract (A12.2; screen 66).",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "minLength": 3,
+                        "maxLength": 500
+                    }
+                },
+                "required": [
+                    "question"
+                ],
+                "title": "ContractQuestionRequest"
+            },
             "DealFileRequest": {
                 "type": "object",
                 "description": "A PDF added to a deal to send for signature (B9.3), up to 25 MB.",
@@ -48437,6 +50623,42 @@
                     "people"
                 ],
                 "title": "StartConversationRequest"
+            },
+            "StartReviewRequest": {
+                "type": "object",
+                "description": "Start a contract review (A12.2; screen 63): a PDF or photo, a deal's document, or the sample.",
+                "properties": {
+                    "file": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "description": "Maximum file size: 20480 kilobytes."
+                    },
+                    "deal_file": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    },
+                    "deal_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "minimum": 1
+                    },
+                    "sample": {
+                        "type": [
+                            "boolean",
+                            "null"
+                        ]
+                    }
+                },
+                "title": "StartReviewRequest"
             },
             "StateResource": {
                 "type": "object",
