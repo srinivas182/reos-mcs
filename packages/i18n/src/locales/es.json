@@ -2301,7 +2301,8 @@
         "policy_faq.removed": "Se quitó de las preguntas frecuentes",
         "policy_faq.restored": "Se restauró en las preguntas frecuentes",
         "broker_question.answered": "Respondió la pregunta de un agente",
-        "virtual_broker.settings": "Se cambió a quién van las preguntas del bróker virtual"
+        "virtual_broker.settings": "Se cambió a quién van las preguntas del bróker virtual",
+        "assistant.context": "Se cambió el permiso del asistente para leer CRM, operaciones y calendario"
       }
     }
   },
@@ -8656,9 +8657,7 @@
     "mobile": {
       "noBrokerage": "Para agentes de una agencia",
       "noBrokerageBody": "El bróker virtual responde con el manual de políticas de su agencia. Aparece cuando usted se une a una agencia como agente.",
-      "trained": "Entrenado con el manual de políticas de {{brokerage}}",
-      "open": "Pregunte a su bróker virtual",
-      "openBody": "Políticas y reglas de Texas, con su bróker cuando haga falta"
+      "trained": "Entrenado con el manual de políticas de {{brokerage}}"
     }
   },
   "contracts": {
@@ -8841,9 +8840,96 @@
       "highCount_one": "{{count}} alta",
       "highCount_other": "{{count}} altas",
       "share": "Compartir la nota"
+    }
+  },
+  "assistant": {
+    "permission": {
+      "ask": "Para responder con su CRM, sus operaciones y su calendario, REOS necesita su permiso. Permítalo abajo; puede desactivarlo cuando quiera."
+    },
+    "today": {
+      "empty": "Hoy no vence nada. Su CRM, sus operaciones y su calendario están al día; es un buen día para llamar a sus conocidos.",
+      "intro": "Este es su día: {{count}} pendientes, primero lo atrasado, luego fechas límite, citas, seguimientos y tareas del plan.",
+      "callFirst": "Llame primero a {{name}}.",
+      "reasons": {
+        "overdue": "Atrasado",
+        "deadline": "Fecha límite",
+        "appointment": "Cita",
+        "follow_up": "Seguimiento",
+        "plan": "Tarea del plan"
+      }
+    },
+    "prep": {
+      "none": "No tiene citas próximas en su calendario.",
+      "appointment": "Cita",
+      "summary": "De su CRM",
+      "note": "Última nota",
+      "lastActivity": "Última actividad",
+      "activity": "{{kind}}",
+      "deal": "Su operación",
+      "intro": "Su próxima cita es con {{who}}, {{time}}. Esto es lo que debe saber."
+    },
+    "deal": {
+      "none": "No tiene operaciones abiertas.",
+      "intro": "{{property}} está {{stage}}. Estas son sus próximas fechas.",
+      "stages": {
+        "active": "activa",
+        "under_contract": "bajo contrato",
+        "closed": "cerrada",
+        "cancelled": "cancelada"
+      }
+    },
+    "draft": {
+      "notFound": "No encontré a esa persona en sus contactos. Revise el nombre o agréguela en Contactos.",
+      "noWay": "{{name}} no tiene correo ni teléfono en sus contactos.",
+      "template": {
+        "email": "Hola, {{name}}:\n\nQuería saber cómo va todo. ¿Hay algo en lo que pueda ayudarle esta semana?\n\nSaludos,\n{{agent}}",
+        "text": "Hola, {{name}}, habla {{agent}}. Solo para saludar. ¿Le puedo ayudar en algo esta semana?"
+      },
+      "subject": "Un saludo de {{agent}}",
+      "intro": {
+        "email": "Este es un correo para {{name}}. Edítelo en Correo antes de enviarlo; REOS nunca lo envía por usted.",
+        "text": "Este es un mensaje de texto para {{name}}. Edítelo en Mensajes antes de enviarlo; REOS nunca lo envía por usted."
+      }
+    },
+    "policy": {
+      "withBroker": "Esto también está con su bróker; verá su respuesta en Bróker virtual."
+    },
+    "general": {
+      "simulator": "Puedo planear su día con su CRM, sus operaciones y su calendario, preparar su próxima cita, redactar un correo o mensaje para un contacto y responder preguntas de políticas con su bróker virtual. Pruebe: \"¿Qué debo hacer hoy?\""
+    },
+    "errors": {
+      "credits": "Esta respuesta cuesta {{credits}} créditos y no le quedan suficientes."
     },
     "mobile": {
-      "askRow": "Formularios de TREC: fechas límite y qué revisar"
+      "title": "Preguntar",
+      "purpose": "Su día, sus clientes y las políticas de su agencia, en un solo lugar.",
+      "starters": {
+        "virtual_broker": "Pregunte a su bróker virtual",
+        "review_contract": "Revisar un contrato",
+        "prepare_contract": "Preparar un contrato",
+        "write_ad": "Escribir un anuncio o publicación",
+        "reply_emails": "Responder un correo",
+        "prep_appointment": "Preparar una cita"
+      },
+      "soon": "Próximamente",
+      "allow": "Permitir",
+      "allowTitle": "Usar mi CRM, operaciones y calendario",
+      "allowBody": "El asistente lee sus contactos, operaciones y calendario sincronizados para responder. Nada se envía sin su toque.",
+      "allowed": "Permitido. Pregunte de nuevo.",
+      "recent": "Conversaciones recientes",
+      "label": "Pregunte lo que sea",
+      "placeholder": "Por ejemplo: ¿Qué debo hacer hoy?",
+      "send": "Preguntar",
+      "asking": "Pensando…",
+      "openMail": "Abrir en Correo",
+      "openMessages": "Abrir en Mensajes",
+      "askBroker": "Preguntar a mi bróker",
+      "viewBroker": "Abrir en Bróker virtual",
+      "today": "¿Qué debo hacer hoy?",
+      "prep": "Preparar mi próxima cita",
+      "reply": "Redacte un correo a ",
+      "emptyTitle": "Pregunte lo que sea",
+      "emptyBody": "Pregunte sobre su día, un cliente, una operación o una política. Las respuestas vienen de sus propios datos."
     }
   }
 }

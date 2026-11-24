@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Agents\ModeController;
 use App\Http\Controllers\Api\Agents\TodayController;
 use App\Http\Controllers\Api\AppConfigController;
 use App\Http\Controllers\Api\Ask\AskController;
+use App\Http\Controllers\Api\Assistant\AssistantController;
 use App\Http\Controllers\Api\Auth\ExchangeSignInController;
 use App\Http\Controllers\Api\Auth\IdentitySignInController;
 use App\Http\Controllers\Api\Auth\PhoneSignInController;
@@ -291,6 +292,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'show')->middleware('throttle:30,1,api-agent-brief')->name('show');
         Route::get('settings', 'settings')->name('settings');
         Route::put('settings', 'update')->middleware('throttle:20,1,api-agent-brief')->name('update');
+    });
+    // The agent's AI assistant (A12.3, agent screens 59 and 60).
+    Route::prefix('assistant')->name('api.assistant.')->controller(AssistantController::class)->group(function () {
+        Route::get('/', 'home')->name('home');
+        Route::post('messages', 'ask')->middleware('throttle:30,1,api-assistant-ask')->name('ask');
+        Route::get('chats/{chat}', 'chat')->whereUuid('chat')->name('chat');
+        Route::put('permission', 'permission')->middleware('throttle:10,1,api-assistant-permission')->name('permission');
     });
     // Contract review (A12.2, agent screens 63–66).
     Route::prefix('contracts')->name('api.contracts.')->controller(ContractReviewController::class)->group(function () {

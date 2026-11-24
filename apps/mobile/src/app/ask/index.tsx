@@ -1,10 +1,11 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { BookOpen, Calculator, CalendarPlus, GraduationCap, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, ShieldQuestion, Sparkles, Square, FileSearch } from 'lucide-react-native';
+import { BookOpen, Calculator, CalendarPlus, GraduationCap, Info, Languages, Lightbulb, ListChecks, MessageSquare, Mic, PlayCircle, SendHorizontal, Sparkles, Square } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
+import { AgentAssistant } from '@/features/assistant/AgentAssistant';
 import { SaveFlashcard } from '@/features/practice/SaveFlashcard';
 import { ask, askInstructor, type AskMessage, type AskMode, type AskPackage, type AskThread, type AskThreadRow, clock, loadPackage, loadThread, loadThreads } from '@/lib/ask';
 import { speechLanguage, useSpeech } from '@/lib/voice';
@@ -74,6 +75,11 @@ export default function AskScreen() {
           .join(' ')
       : null;
 
+  // Agents get Ask home (screens 59 and 60): their day, clients, deals and the virtual broker.
+  if (pack && !pack.candidate) {
+    return <AgentAssistant />;
+  }
+
   return (
     <Screen
       footer={
@@ -89,8 +95,6 @@ export default function AskScreen() {
       <TitleBar title={t('ask.title')} onBack={() => router.back()} />
       <Text tone="muted">{purpose}</Text>
       {credits ? <Text variant="caption" tone="muted">{credits}</Text> : null}
-      {pack && !pack.candidate ? <ListRow icon={ShieldQuestion} tone="info" title={t('virtualBroker.mobile.open')} subtitle={t('virtualBroker.mobile.openBody')} onPress={() => router.push('/ask/broker')} /> : null}
-      {pack && !pack.candidate ? <ListRow icon={FileSearch} tone="info" title={t('contracts.web.choose')} subtitle={t('contracts.mobile.askRow')} onPress={() => router.push('/contracts')} /> : null}
       {speech.state === 'denied' ? <Callout tone="warning" title={t('ask.micDenied')} /> : null}
 
       {messages.length === 0 ? (

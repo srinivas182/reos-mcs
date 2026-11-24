@@ -106,6 +106,19 @@
 - **Context:** the agent's CRM contacts, deals and calendar, read only with the agent's permission (one switch).
 - **Drafts:** emails and texts to a contact, sent only by the agent's tap.
 - **Done when:** "What should I do today?" uses real CRM data.
+- **As built, A12.3** (ADR 0049):
+  - **Routing** (`AgentAssistant`): draft (a verb and a name), prep, today, deal, policy (to the virtual broker), general. English and Spanish.
+  - **Permission:** one switch for CRM, deals and calendar (`agent_profiles.assistant_context_at`), audited. Until it's on, answers that need the data say so and offer Allow.
+  - **Today:** Today's ranked items with sources and deal links, plus the brief's first call. Done when: "What should I do today?" lists the CRM follow-up (Follow Up Boss), the deal deadline (dotloop) and the appointment.
+  - **Prep:** the next appointment with the contact's CRM summary, latest note, last activity and deal.
+  - **Deal:** stage and open key dates.
+  - **Drafts:** email or text from the CRM, by Claude (1 credit) or a template, opened as `mailto:` or `sms:`, never sent by REOS.
+  - **Policy:** the virtual broker answers and escalates; the answer links to it.
+  - **General:** Claude (2 credits); without keys, what it can do.
+  - **Chats** (`assistant_chats`, `assistant_messages`) are private to the agent.
+  - **API:** `GET /api/v1/assistant`, `POST /api/v1/assistant/messages`, `GET /api/v1/assistant/chats/{id}`, `PUT /api/v1/assistant/permission`.
+  - **Phone:** the Ask tab for agents is Ask home (screen 59): six starters (prepare a contract is marked Coming soon), today, recent chats and the ask bar. Answers (screen 60) show items with sources, drafts with Open in Mail or Messages, and a link to the virtual broker.
+  - **Web:** no assistant page, as the Web App Journey has none for agents.
 
 ### B12.1 Studio posts (Team B)
 

@@ -981,6 +981,605 @@
                 }
             }
         },
+        "/assistant": {
+            "get": {
+                "operationId": "assistant.home",
+                "description": "Whether the assistant may read my CRM, deals and calendar, the starters, and my recent chats.",
+                "summary": "Ask home",
+                "tags": [
+                    "Assistant"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "permission": {
+                                                    "type": "boolean"
+                                                },
+                                                "starters": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "virtual_broker",
+                                                            "review_contract",
+                                                            "prepare_contract",
+                                                            "write_ad",
+                                                            "reply_emails",
+                                                            "prep_appointment"
+                                                        ]
+                                                    }
+                                                },
+                                                "chats": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "updated_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "updated_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "permission",
+                                                "starters",
+                                                "chats"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/assistant/messages": {
+            "post": {
+                "operationId": "assistant.ask",
+                "description": "It picks the knowledge: my day (Today's ranked list from my CRM, deals, calendar and plan), an appointment's prep, a deal, a draft email or text to a contact (never sent by REOS), the virtual broker for policy, or a general answer. My own data is read only once I've allowed it; otherwise the answer asks (kind \"permission\").",
+                "summary": "Ask the assistant",
+                "tags": [
+                    "Assistant"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssistantQuestionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "messages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "question",
+                                                                    "answer"
+                                                                ]
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "today",
+                                                                    "prep",
+                                                                    "deal",
+                                                                    "draft",
+                                                                    "policy",
+                                                                    "general",
+                                                                    "permission",
+                                                                    "none",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "items": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "title": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "detail": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "source": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "link": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "title",
+                                                                        "detail",
+                                                                        "source",
+                                                                        "at",
+                                                                        "link"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "draft": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "channel": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "email",
+                                                                            "text"
+                                                                        ]
+                                                                    },
+                                                                    "to": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "subject": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "body": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "href": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "channel",
+                                                                    "to",
+                                                                    "name",
+                                                                    "subject",
+                                                                    "body",
+                                                                    "href"
+                                                                ]
+                                                            },
+                                                            "broker_question": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "role",
+                                                            "body",
+                                                            "kind",
+                                                            "items",
+                                                            "draft",
+                                                            "broker_question",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "title",
+                                                "updated_at",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/assistant/chats/{chat}": {
+            "get": {
+                "operationId": "assistant.chat",
+                "summary": "One of my chats",
+                "tags": [
+                    "Assistant"
+                ],
+                "parameters": [
+                    {
+                        "name": "chat",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "updated_at": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "messages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "question",
+                                                                    "answer"
+                                                                ]
+                                                            },
+                                                            "body": {
+                                                                "type": "string"
+                                                            },
+                                                            "kind": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ],
+                                                                "enum": [
+                                                                    "today",
+                                                                    "prep",
+                                                                    "deal",
+                                                                    "draft",
+                                                                    "policy",
+                                                                    "general",
+                                                                    "permission",
+                                                                    "none",
+                                                                    null
+                                                                ]
+                                                            },
+                                                            "items": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "title": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "detail": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "source": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "at": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "link": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "title",
+                                                                        "detail",
+                                                                        "source",
+                                                                        "at",
+                                                                        "link"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "draft": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "channel": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "email",
+                                                                            "text"
+                                                                        ]
+                                                                    },
+                                                                    "to": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "subject": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "body": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "href": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "channel",
+                                                                    "to",
+                                                                    "name",
+                                                                    "subject",
+                                                                    "body",
+                                                                    "href"
+                                                                ]
+                                                            },
+                                                            "broker_question": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "role",
+                                                            "body",
+                                                            "kind",
+                                                            "items",
+                                                            "draft",
+                                                            "broker_question",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "title",
+                                                "updated_at",
+                                                "messages"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/assistant/permission": {
+            "put": {
+                "operationId": "assistant.permission",
+                "description": "One switch for my CRM contacts, deals and calendar; audited. Turn it off any time.",
+                "summary": "Let the assistant read my data",
+                "tags": [
+                    "Assistant"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "allowed": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "allowed"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "permission": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "permission"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/bookings": {
             "get": {
                 "operationId": "bookings.index",
@@ -45635,6 +46234,9 @@
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/NotFoundHttpException"
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     },
@@ -46734,6 +47336,28 @@
                     }
                 },
                 "title": "AskRequest"
+            },
+            "AssistantQuestionRequest": {
+                "type": "object",
+                "description": "A question to the assistant (A12.3; screen 60), in a new chat or one of mine.",
+                "properties": {
+                    "question": {
+                        "type": "string",
+                        "minLength": 2,
+                        "maxLength": 1000
+                    },
+                    "chat": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "question"
+                ],
+                "title": "AssistantQuestionRequest"
             },
             "BookSessionRequest": {
                 "type": "object",
