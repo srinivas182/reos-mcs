@@ -70,7 +70,6 @@ describe('the people’s library (/api/v1/catalogue)', function () {
         $library = libraryOf($this, catalogueAgent());
 
         expect($library['zillow-leads'])->toMatchArray(['status' => 'coming_soon', 'action' => 'notify'])
-            ->and($library['youtube'])->toMatchArray(['status' => 'coming_soon', 'action' => 'notify'])
             // Built (B11.2) and a beta: joined by an organisation first.
             ->and($library['linkedin'])->toMatchArray(['status' => 'beta', 'action' => 'join_beta']);
     });

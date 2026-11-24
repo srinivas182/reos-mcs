@@ -8445,7 +8445,8 @@
       "targets": "At least one account chosen",
       "length": "Text fits {{channel}}",
       "media": "{{channel}} has a photo or video",
-      "title": "No title a sales agent may not use (broker, owner, president)"
+      "title": "No title a sales agent may not use (broker, owner, president)",
+      "video": "{{channel}} has a video"
     },
     "posts": {
       "title": "My posts and results",

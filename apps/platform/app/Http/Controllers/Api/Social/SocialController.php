@@ -75,7 +75,7 @@ final class SocialController extends Controller
      *
      * The attribution it will carry and each check; a post that fails can't be scheduled.
      *
-     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'title', ok: bool, detail: string|null}>, ok: bool}}
+     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'video'|'title', ok: bool, detail: string|null}>, ok: bool}}
      */
     public function check(PostRequest $request, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {

@@ -5828,6 +5828,7 @@
     "social.checks.media": ":channel tiene una foto o un video",
     "social.checks.targets": "Al menos una cuenta elegida",
     "social.checks.title": "Ningún título que un agente de ventas no pueda usar (bróker, dueño, presidente)",
+    "social.checks.video": ":channel tiene un video",
     "social.compose.addMedia": "Agregar una foto o un video",
     "social.compose.at": "Fecha y hora",
     "social.compose.attribution": "Se agrega a cada publicación",

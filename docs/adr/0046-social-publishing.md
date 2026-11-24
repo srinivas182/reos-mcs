@@ -1,6 +1,6 @@
 # ADR 0046: Social publishing
 
-- Status: Accepted (posting engine with Instagram and Facebook, B11.1; LinkedIn and Google Business Profile, B11.2)
+- Status: Accepted (posting engine with Instagram and Facebook, B11.1; LinkedIn and Google Business Profile, B11.2; YouTube Shorts and TikTok, B11.3)
 - Date: 2026-11-24 (Sprint 11; spec in docs/sprints/S11-spec.md)
 
 ## Context
@@ -46,6 +46,17 @@ Sprint 11 also has to work before Meta, LinkedIn, Google and TikTok approve the 
    - **Posts:** "What's new" local posts of up to 1,500 characters, with one photo and a Learn more button for a link.
    - **Insights:** views and button clicks, where Google still reports them. Missing numbers aren't an error.
 9. **Which social channels a person can connect** follows the connections catalogue (`canConnect`): built, running, and for a beta, their organisation joined.
+
+10. **Short video** (B11.3). YouTube Shorts and TikTok take a video, and the checks require one (`video`).
+   - **YouTube:**
+     - Uses a resumable upload. The video streams from REOS's storage to Google through a temporary file, never whole in memory.
+     - The title is the text's first line plus #Shorts, and the text is the description.
+     - Until the API project passes Google's audit, YouTube keeps the uploads private itself.
+   - **TikTok:**
+     - TikTok pulls the video from REOS's signed link, so REOS's domain is verified with TikTok.
+     - Posts are "only me" until the Content Posting audit. `TIKTOK_PUBLIC_POSTS` turns on public posting once it's passed.
+     - REOS waits briefly for TikTok's post id and otherwise keeps the publish id.
+   - **Insights:** views, likes, comments and, on TikTok, shares.
 
 ## Consequences
 

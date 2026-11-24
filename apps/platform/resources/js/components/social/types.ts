@@ -82,7 +82,13 @@ export type PostList = {
     drafts: SocialPost[];
 };
 
-export type CheckCode = 'broker' | 'targets' | 'length' | 'media' | 'title';
+export type CheckCode =
+    | 'broker'
+    | 'targets'
+    | 'length'
+    | 'media'
+    | 'video'
+    | 'title';
 
 export type CheckResult = {
     attribution: string;
