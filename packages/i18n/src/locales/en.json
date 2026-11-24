@@ -78,7 +78,8 @@
     "mentors": "Mentors",
     "goal": "My goal",
     "plan": "My plan",
-    "ceWallet": "CE wallet"
+    "ceWallet": "CE wallet",
+    "ceReporting": "CE reporting"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2283,7 +2284,11 @@
         "recruiting.offer_withdrawn": "Broker offer withdrawn",
         "licence.switched_to_agent": "Switched to agent",
         "provider_licence.approved": "Approved a provider license",
-        "provider_licence.rejected": "Rejected a provider license"
+        "provider_licence.rejected": "Rejected a provider license",
+        "ce_report.created": "CE report created",
+        "ce_report.reported": "CE report reference entered",
+        "ce_report.rejected": "CE completion rejected by TREC",
+        "ce_report.restored": "CE completion rejection undone"
       }
     }
   },
@@ -3764,7 +3769,140 @@
       "errors": {
         "noRenewal": "This license has no renewal date yet."
       },
-      "hoursShort": "{{hours}} h"
+      "hoursShort": "{{hours}} h",
+      "steps": {
+        "title": "Reporting to TREC",
+        "codes": {
+          "completed": "Course completed",
+          "final_passed": "Final passed",
+          "reported": "Reported to TREC",
+          "member_record": "Texas REALTORS® member record",
+          "certificate": "Certificate issued"
+        },
+        "states": {
+          "done": "Done",
+          "waiting": "Waiting",
+          "pending": "In progress",
+          "rejected": "Rejected",
+          "not_connected": "Not connected"
+        },
+        "status": {
+          "waiting": "Waiting to be reported",
+          "pending_upload": "Pending upload",
+          "submitted": "Submitted to TREC",
+          "reported": "Reported to TREC",
+          "rejected": "Rejected by TREC"
+        },
+        "reference": "TREC reference {{reference}}",
+        "reason": "Reason: {{reason}}",
+        "memberNote": "Updates to your Texas REALTORS® record arrive when that connection is set up."
+      },
+      "certificate": {
+        "title": "CE certificate",
+        "open": "Certificate and reporting",
+        "heading": "Certificate of completion",
+        "holder": "Awarded to",
+        "licence": "License",
+        "course": "Course",
+        "hours": "Credit hours",
+        "completed": "Completed",
+        "provider": "Provider",
+        "courseNumber": "TREC course number",
+        "print": "Print or save as PDF",
+        "share": "Share",
+        "shareText": "{{name}} completed {{course}} ({{hours}} CE hours) on {{date}}. TREC reference {{reference}}.",
+        "notIssued": "Your certificate is issued once TREC has your completion.",
+        "selfReported": "Certificates from other providers stay with that provider; this is your record of the course.",
+        "back": "CE wallet"
+      }
+    },
+    "reports": {
+      "title": "CE reporting to TREC",
+      "description": "Report your CE courses’ completions to TREC on time, and keep every submission on record.",
+      "tabs": {
+        "label": "CE reporting",
+        "ready": "Ready ({{count}})",
+        "rejected": "Rejected ({{count}})",
+        "reports": "Reports ({{count}})"
+      },
+      "columns": {
+        "student": "Student",
+        "licence": "License",
+        "course": "Course",
+        "courseNumber": "Course number",
+        "hours": "Hours",
+        "completed": "Completed",
+        "status": "Status",
+        "reason": "Reason",
+        "range": "Completed between",
+        "method": "How",
+        "reference": "TREC reference",
+        "count": "Completions",
+        "sentBy": "By"
+      },
+      "problems": {
+        "no_licence": "No Texas license on file",
+        "no_approval": "Course has no TREC approval number"
+      },
+      "emptyReady": {
+        "title": "Nothing to report",
+        "body": "Completions of your CE courses appear here until they’re in a report."
+      },
+      "emptyRejected": {
+        "title": "No rejections",
+        "body": "If TREC rejects a completion, mark it here with the reason; it returns to Ready for the next report."
+      },
+      "emptyReports": {
+        "title": "No reports yet",
+        "body": "Submit a report for a date range: download TREC’s file to upload yourself, or let REOS submit it."
+      },
+      "submit": {
+        "title": "Submit a report",
+        "from": "From",
+        "to": "To",
+        "method": "How to report",
+        "file": "Download TREC’s file",
+        "fileHint": "Upload it in TREC’s CE Posting System, then enter TREC’s reference here.",
+        "reos": "Let REOS submit",
+        "reosHint": "REOS submits it to TREC for your school and records the reference.",
+        "reosUnavailable": "REOS can’t submit to TREC yet. Download the file instead.",
+        "reosSimulated": "Test mode: TREC’s reference comes back at once.",
+        "authorise": "I authorize REOS to submit these completions to TREC on behalf of my school.",
+        "action": "Submit",
+        "created": "Report created",
+        "download": "Download file"
+      },
+      "status": {
+        "pending_upload": "Pending upload",
+        "submitted": "Submitted",
+        "reported": "Reported",
+        "included": "In report",
+        "rejected": "Rejected",
+        "ready": "Ready to report"
+      },
+      "methods": {
+        "file": "TREC file",
+        "reos": "REOS submitted"
+      },
+      "reference": {
+        "label": "TREC reference",
+        "placeholder": "From TREC’s confirmation",
+        "save": "Save reference",
+        "saved": "Reported to TREC"
+      },
+      "reject": {
+        "action": "Rejected by TREC",
+        "reason": "Reason",
+        "save": "Mark rejected",
+        "done": "Marked rejected",
+        "undo": "Undo"
+      },
+      "rejectedBefore": "Rejected: {{reason}}",
+      "logged": "Every submission is logged.",
+      "errors": {
+        "nothing": "No ready completions in that date range.",
+        "reosUnavailable": "REOS can’t submit to TREC yet. Download the file instead."
+      }
     }
   },
   "content": {

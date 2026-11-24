@@ -89,8 +89,9 @@ function WalletSection({ wallet }: { wallet: Wallet }) {
           icon={BookOpen}
           tone={TONE[c.status]}
           title={c.title}
-          subtitle={[day(c.completed_on, i18n.language), c.provider, t('ce.wallet.hoursShort', { hours: c.hours })].filter(Boolean).join(' · ')}
+          subtitle={[day(c.completed_on, i18n.language), c.provider, t('ce.wallet.hoursShort', { hours: c.hours }), c.reporting ? t(`ce.wallet.steps.status.${c.reporting.status}`) : null].filter(Boolean).join(' · ')}
           trailing={<Chip label={t(`ce.wallet.status.${c.status}`)} tone={TONE[c.status]} />}
+          onPress={() => router.push({ pathname: '/ce/completion/[id]', params: { id: String(c.id) } })}
         />
       ))}
       {wallet.completions.some((c) => c.status === 'self_reported') ? <Text tone="muted">{t('ce.wallet.statusHint.self_reported')}</Text> : null}

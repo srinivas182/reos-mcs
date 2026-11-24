@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -27,6 +30,9 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $confirmed_at When TREC's record showed the requirement met with this in the period (A11.2)
  * @property string|null $confirmed_by `trec-licence`
  * @property Carbon|null $created_at
+ * @property-read User $user
+ * @property-read Course|null $course
+ * @property-read Collection<int, CeReportLine> $reportLines
  * @property Carbon|null $updated_at
  */
 final class CeCompletion extends Model
@@ -40,5 +46,23 @@ final class CeCompletion extends Model
     protected function casts(): array
     {
         return ['completed_on' => 'date', 'hours' => 'decimal:1', 'confirmed_at' => 'datetime'];
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<Course, $this> */
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    /** @return HasMany<CeReportLine, $this> CE reports this completion went in (A11.3) */
+    public function reportLines(): HasMany
+    {
+        return $this->hasMany(CeReportLine::class);
     }
 }

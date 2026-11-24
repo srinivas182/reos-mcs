@@ -579,6 +579,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/me/ce/completions/{completion}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * A CE certificate and its reporting steps
+         * @description A REOS course's certificate is issued once TREC has the completion, with TREC's reference (agent screens 103 and 104).
+         */
+        get: operations["me.ce.certificate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/licences/{licence}/renewal": {
         parameters: {
             query?: never;
@@ -7794,6 +7814,18 @@ export interface operations {
                                 /** @enum {string} */
                                 status: "reos_reported" | "self_reported" | "on_record";
                                 certificate: boolean;
+                                reporting: {
+                                    /** @enum {string} */
+                                    status: "waiting" | "pending_upload" | "submitted" | "reported" | "rejected";
+                                    reference: string | null;
+                                    reason: string | null;
+                                    steps: {
+                                        /** @enum {string} */
+                                        code: "completed" | "final_passed" | "reported" | "member_record" | "certificate";
+                                        /** @enum {string} */
+                                        state: "done" | "waiting" | "pending" | "rejected" | "not_connected";
+                                    }[];
+                                } | null;
                             }[];
                             trec: {
                                 /** @enum {string|null} */
@@ -7825,6 +7857,55 @@ export interface operations {
                             } | null;
                             unlocked: boolean;
                         }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "me.ce.certificate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                completion: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            holder: string;
+                            licence: string | null;
+                            state_code: string;
+                            title: string;
+                            hours: number;
+                            completed_on: string;
+                            provider: string | null;
+                            course_number: string | null;
+                            /** @enum {string} */
+                            status: "reos_reported" | "self_reported" | "on_record";
+                            issued: boolean;
+                            reporting: {
+                                /** @enum {string} */
+                                status: "waiting" | "pending_upload" | "submitted" | "reported" | "rejected";
+                                reference: string | null;
+                                reason: string | null;
+                                steps: {
+                                    /** @enum {string} */
+                                    code: "completed" | "final_passed" | "reported" | "member_record" | "certificate";
+                                    /** @enum {string} */
+                                    state: "done" | "waiting" | "pending" | "rejected" | "not_connected";
+                                }[];
+                            } | null;
+                        };
                     };
                 };
             };
@@ -7903,6 +7984,18 @@ export interface operations {
                                 /** @enum {string} */
                                 status: "reos_reported" | "self_reported" | "on_record";
                                 certificate: boolean;
+                                reporting: {
+                                    /** @enum {string} */
+                                    status: "waiting" | "pending_upload" | "submitted" | "reported" | "rejected";
+                                    reference: string | null;
+                                    reason: string | null;
+                                    steps: {
+                                        /** @enum {string} */
+                                        code: "completed" | "final_passed" | "reported" | "member_record" | "certificate";
+                                        /** @enum {string} */
+                                        state: "done" | "waiting" | "pending" | "rejected" | "not_connected";
+                                    }[];
+                                } | null;
                             }[];
                             trec: {
                                 /** @enum {string|null} */

@@ -33,7 +33,8 @@ use Illuminate\Validation\ValidationException;
  *
  * @phpstan-import-type Requirement from CeRequirements
  *
- * @phpstan-type Completion array{id: int, title: string, hours: float, completed_on: string, provider: string|null, course_code: string|null, status: 'reos_reported'|'self_reported'|'on_record', certificate: bool}
+ * @phpstan-type Reporting array{status: 'waiting'|'pending_upload'|'submitted'|'reported'|'rejected', reference: string|null, reason: string|null, steps: list<array{code: 'completed'|'final_passed'|'reported'|'member_record'|'certificate', state: 'done'|'waiting'|'pending'|'rejected'|'not_connected'}>}
+ * @phpstan-type Completion array{id: int, title: string, hours: float, completed_on: string, provider: string|null, course_code: string|null, status: 'reos_reported'|'self_reported'|'on_record', certificate: bool, reporting: Reporting|null}
  * @phpstan-type Step array{code: string, title: string, detail: string, url: string|null, done: bool}
  * @phpstan-type Wallet array{licence: array{id: int, state_code: string, state_name: string, number: string, type: string, status: string, expires_on: string|null, sponsor_name: string|null}, ce: Requirement, completions: list<Completion>, trec: array{mce: 'met'|'outstanding'|'none'|null, education: 'met'|'outstanding'|'none'|null, checked_at: string|null}, renewal: array{due_on: string|null, ready: bool, renewed_at: string|null, confirmed_at: string|null, renewed_until: string|null, steps: list<Step>}, buy: array{price: int, product: string, amount: int, interval: string}|null, unlocked: bool}
  */
@@ -106,6 +107,30 @@ final readonly class CeWallet
     }
 
     /**
+     * One completion's certificate and reporting steps (agent screens 103 and
+     * 104). A REOS course's certificate is issued once TREC has it, with the
+     * reference; it stays downloadable even if the membership lapses.
+     *
+     * @return array{id: int, holder: string, licence: string|null, state_code: string, title: string, hours: float, completed_on: string, provider: string|null, course_number: string|null, status: 'reos_reported'|'self_reported'|'on_record', issued: bool, reporting: Reporting|null}
+     */
+    public function certificate(User $user, int $id): array
+    {
+        $completion = CeCompletion::query()->where('user_id', $user->id)->with('reportLines.report', 'course.approvals')->findOrFail($id);
+        $reporting = self::reporting($completion);
+        $line = $completion->reportLines->sortByDesc('id')->first();
+        $approval = $completion->course?->approvals->first(static fn ($a): bool => $a->state_code === $completion->state_code && $a->status === 'approved');
+
+        return [
+            'id' => $completion->id, 'holder' => (string) $user->name,
+            'licence' => Licence::query()->where('user_id', $user->id)->where('state_code', $completion->state_code)->first()?->number,
+            'state_code' => $completion->state_code, 'title' => $completion->title, 'hours' => (float) $completion->hours,
+            'completed_on' => $completion->completed_on->toDateString(), 'provider' => $completion->provider,
+            'course_number' => $line->course_number ?? $approval?->number, 'status' => self::status($completion),
+            'issued' => $reporting !== null && $reporting['status'] === 'reported', 'reporting' => $reporting,
+        ];
+    }
+
+    /**
      * The agent says they renewed with the regulator (or takes it back).
      *
      * @return Wallet|null
@@ -135,12 +160,13 @@ final readonly class CeWallet
         $rows = CeCompletion::query()
             ->where('user_id', $licence->user_id)->where('state_code', $licence->state_code)
             ->when($since !== null, static fn ($q) => $q->whereDate('completed_on', '>', $since))
-            ->orderByDesc('completed_on')->orderByDesc('id')->get();
+            ->with('reportLines.report')->orderByDesc('completed_on')->orderByDesc('id')->get();
 
         foreach ($rows as $c) {
             $list[] = [
                 'id' => $c->id, 'title' => $c->title, 'hours' => (float) $c->hours, 'completed_on' => $c->completed_on->toDateString(),
                 'provider' => $c->provider, 'course_code' => $c->course_code, 'status' => self::status($c), 'certificate' => $c->certificate_path !== null,
+                'reporting' => self::reporting($c),
             ];
         }
 
@@ -193,6 +219,49 @@ final readonly class CeWallet
             ->orderBy('amount_cents')->first();
 
         return $price === null ? null : ['price' => $price->id, 'product' => $price->product->name, 'amount' => $price->amount_cents, 'interval' => $price->interval->value];
+    }
+
+    /**
+     * A REOS completion's way to TREC (A11.3; agent screen 104): completed,
+     * final passed, reported to TREC (with the reference), the Texas
+     * REALTORS® member record (not connected until A18.1) and the
+     * certificate, issued once reported. Null for other providers' courses.
+     *
+     * @return Reporting|null
+     */
+    public static function reporting(CeCompletion $completion): ?array
+    {
+        if ($completion->course_id === null) {
+            return null;
+        }
+
+        $line = $completion->reportLines->sortByDesc('id')->first();
+        $status = match (true) {
+            $line === null => 'waiting',
+            $line->status === 'rejected' => 'rejected',
+            $line->status === 'reported' => 'reported',
+            $line->report->status === 'submitted' => 'submitted',
+            default => 'pending_upload',
+        };
+        $reported = match ($status) {
+            'reported' => 'done',
+            'rejected' => 'rejected',
+            'waiting' => 'waiting',
+            default => 'pending',
+        };
+
+        return [
+            'status' => $status,
+            'reference' => $status === 'reported' ? $line->report->reference : null,
+            'reason' => $status === 'rejected' ? $line->reason : null,
+            'steps' => [
+                ['code' => 'completed', 'state' => 'done'],
+                ['code' => 'final_passed', 'state' => 'done'],
+                ['code' => 'reported', 'state' => $reported],
+                ['code' => 'member_record', 'state' => 'not_connected'],
+                ['code' => 'certificate', 'state' => $status === 'reported' ? 'done' : 'waiting'],
+            ],
+        ];
     }
 
     /** @return 'reos_reported'|'self_reported'|'on_record' */

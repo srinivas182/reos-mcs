@@ -5,6 +5,48 @@ export type CompletionStatus = 'reos_reported' | 'self_reported' | 'on_record';
 
 export type TrecStatus = 'met' | 'outstanding' | 'none' | null;
 
+export type ReportingStatus =
+    | 'waiting'
+    | 'pending_upload'
+    | 'submitted'
+    | 'reported'
+    | 'rejected';
+export type StepCode =
+    | 'completed'
+    | 'final_passed'
+    | 'reported'
+    | 'member_record'
+    | 'certificate';
+export type StepState =
+    | 'done'
+    | 'waiting'
+    | 'pending'
+    | 'rejected'
+    | 'not_connected';
+
+/** A REOS completion's way to TREC (A11.3, screen 104). */
+export type Reporting = {
+    status: ReportingStatus;
+    reference: string | null;
+    reason: string | null;
+    steps: { code: StepCode; state: StepState }[];
+};
+
+export type Certificate = {
+    id: number;
+    holder: string;
+    licence: string | null;
+    state_code: string;
+    title: string;
+    hours: number;
+    completed_on: string;
+    provider: string | null;
+    course_number: string | null;
+    status: CompletionStatus;
+    issued: boolean;
+    reporting: Reporting | null;
+};
+
 export type RenewalStep = {
     code: string;
     title: string;
@@ -34,6 +76,7 @@ export type Wallet = {
         course_code: string | null;
         status: CompletionStatus;
         certificate: boolean;
+        reporting: Reporting | null;
     }[];
     trec: { mce: TrecStatus; education: TrecStatus; checked_at: string | null };
     renewal: {

@@ -140,6 +140,17 @@
   - Enter the TREC confirmation reference.
   - The steps move for every student in the file.
 - **Done when:** a completion moves to Reported with the TREC reference.
+- **As built, A11.3** (ADR 0045):
+  - **School admin web** (screen 51, "CE reporting" in the school sidebar, `/school/ce-reports`) has three sections:
+    - **Ready:** the school's CE courses' completions not yet reported. Each shows the license, the TREC course number and any problem, such as no license on file or no approval number.
+    - **Rejected:** with the reason.
+    - **Reports:** range, method, status, reference and each completion.
+  - **Submit:** "Download TREC's file" builds the CE Posting System CSV and marks the report "Pending upload". "Let REOS submit" needs the school's ticked authority, uses `trec-ce-reporting` (the Simulator returns a reference at once), and is unavailable while that integration is off.
+  - **TREC's reference** moves every completion in the report to Reported. "Rejected by TREC" (with the reason, and Undo) returns a completion to Ready. Every action is audited.
+  - **Agents** (screens 103 and 104):
+    - Each REOS completion in the CE wallet shows its steps: completed, final passed, reported (with the reference), Texas REALTORS® member record (not connected until A18.1) and certificate.
+    - The certificate is issued once reported. On the web, `/ce/completions/{id}/certificate` prints or saves as PDF; on the phone, `ce/completion/[id]` has Share.
+  - **API:** `GET /api/v1/me/ce/completions/{completion}`.
 
 ### B11.1 Meta (Team B)
 

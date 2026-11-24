@@ -13,13 +13,18 @@ use App\Content\Avatars\AvatarConsents;
 use App\Content\MediaKind;
 use App\Content\Review\LessonReviews;
 use App\Content\Review\QuestionBank;
+use App\Enums\LicenceStatus;
+use App\Enums\LicenceType;
 use App\Enums\OrganisationType;
 use App\Features\Flags;
 use App\Features\Rollouts;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Integrations\IntegrationMode;
+use App\Licences\Ce\CeReporting;
 use App\Models\AuditEvent;
 use App\Models\BrokerOffer;
+use App\Models\CeCompletion;
+use App\Models\CeReport;
 use App\Models\Connection;
 use App\Models\Course;
 use App\Models\CourseModule;
@@ -29,6 +34,7 @@ use App\Models\Invitation;
 use App\Models\Lesson;
 use App\Models\LessonMedia;
 use App\Models\LessonVersion;
+use App\Models\Licence;
 use App\Models\LicenceJourney;
 use App\Models\MessageReport;
 use App\Models\Order;
@@ -91,6 +97,24 @@ function auditBrokerage(): array
     $lone = Organisation::factory()->create(['name' => 'Lone Star Realty', 'slug' => 'lone-star']);
 
     return [$lone, User::factory()->withRole(Role::Broker, $lone)->withTwoFactor()->create(['name' => 'Linda Park'])];
+}
+
+/**
+ * A school with a CE course and one completion, and with $reported a report holding it (A11.3).
+ *
+ * @return array{0: Organisation, 1: User, 2: CeReport|null, 3: CeCompletion}
+ */
+function auditCeReport(bool $reported = false): array
+{
+    [$school, $paul] = auditSchoolCourse();
+    $course = Course::query()->create(['organisation_id' => $school->id, 'title' => 'Legal Update I', 'slug' => 'legal-update-1', 'type' => 'ce', 'states' => ['TX'], 'hours' => 4]);
+    $course->approvals()->create(['state_code' => 'TX', 'delivery' => 'self_paced', 'number' => '40123', 'status' => 'approved']);
+    $james = User::factory()->withRole(Role::Agent)->create();
+    Licence::query()->create(['user_id' => $james->id, 'state_code' => 'TX', 'type' => LicenceType::SalesAgent, 'number' => '0798765', 'status' => LicenceStatus::Active]);
+    $completion = CeCompletion::query()->forceCreate(['user_id' => $james->id, 'state_code' => 'TX', 'title' => 'Legal Update I', 'hours' => 4, 'completed_on' => now()->subDay()->toDateString(), 'source' => 'reos', 'course_id' => $course->id]);
+    $report = $reported ? app(CeReporting::class)->create($school, $paul, '2026-01-01', now()->toDateString(), 'file') : null;
+
+    return [$school, $paul, $report, $completion];
 }
 
 /** @return array{0: Organisation, 1: User, 2: Course} */
@@ -615,6 +639,22 @@ function adminActions(): array
             $approval = $course->approvals()->create(['state_code' => 'TX', 'delivery' => 'self_paced', 'number' => 'TREC 0451', 'status' => 'approved']);
 
             return auditCase($paul, 'PUT', "/school/approvals/{$approval->id}/status", ['status' => 'withdrawn'], tenant: $school->id);
+        },
+        // School: CE reporting to TREC (A11.3, screen 51).
+        'school.ce-reports.store' => function () {
+            [$school, $paul] = auditCeReport();
+
+            return auditCase($paul, 'POST', '/school/ce-reports', ['from_on' => '2026-01-01', 'to_on' => now()->toDateString(), 'method' => 'file'], tenant: $school->id);
+        },
+        'school.ce-reports.reference' => function () {
+            [$school, $paul, $report] = auditCeReport(true);
+
+            return auditCase($paul, 'PUT', "/school/ce-reports/{$report->uuid}/reference", ['reference' => 'CE-2026-1'], tenant: $school->id);
+        },
+        'school.ce-reports.line' => function () {
+            [$school, $paul, $report, $completion] = auditCeReport(true);
+
+            return auditCase($paul, 'PUT', "/school/ce-reports/{$report->uuid}/lines/{$completion->id}", ['rejected' => true, 'reason' => 'License number not found'], tenant: $school->id);
         },
         // School: class study groups (A9.3c).
         'school.groups.store' => function () {

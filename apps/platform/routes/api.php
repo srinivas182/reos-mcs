@@ -291,6 +291,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // The CE wallet and renewal checklist (A11.2).
     Route::get('me/ce', [CeWalletController::class, 'index'])->name('api.me.ce.index');
+    Route::get('me/ce/completions/{completion}', [CeWalletController::class, 'certificate'])->whereNumber('completion')->name('api.me.ce.certificate');
     Route::put('me/licences/{licence}/renewal', [CeWalletController::class, 'renewal'])->whereNumber('licence')->middleware('throttle:20,1,api-ce-renewal')->name('api.me.licences.renewal');
     // Certificates for CE taken elsewhere (B10.3b): read by OCR, checked, saved.
     Route::post('me/certificates/read', [CertificateController::class, 'read'])->middleware('throttle:10,1,api-certificates-read')->name('api.me.certificates.read');

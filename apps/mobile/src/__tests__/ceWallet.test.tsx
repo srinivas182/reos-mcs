@@ -1,8 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react-native';
 import { router } from 'expo-router';
 import { I18nextProvider } from 'react-i18next';
+import { Share } from 'react-native';
 
 import CeWalletScreen from '@/app/ce';
+import CompletionScreen from '@/app/ce/completion/[id]';
 import RenewScreen from '@/app/ce/renew/[id]';
 import type { Wallet } from '@/lib/ce';
 import { i18n } from '@/lib/i18n';
@@ -34,7 +36,7 @@ const wallet = (over: Partial<Wallet> = {}): Wallet => ({
     state: 'TX', due_on: '2027-01-15', period_start: '2025-01-15', days_left: 52, first_renewal: false, hours_required: 18, hours_done: 7, hours_left: 11, complete: false,
     parts: [{ code: 'legal_update_1', title: 'Legal Update I', kind: 'mandatory', hours: 4, hours_done: 4, done: true }], deferral: null, sources: [],
   },
-  completions: [{ id: 2, title: 'Negotiation essentials', hours: 3, completed_on: '2026-10-02', provider: 'Champions School', course_code: null, status: 'self_reported', certificate: true }],
+  completions: [{ id: 2, title: 'Negotiation essentials', hours: 3, completed_on: '2026-10-02', provider: 'Champions School', course_code: null, status: 'self_reported', certificate: true, reporting: null }],
   trec: { mce: 'outstanding', education: 'none', checked_at: '2026-11-24T11:30:00Z' },
   renewal: {
     due_on: '2027-01-15', ready: false, renewed_at: null, confirmed_at: null, renewed_until: null,
@@ -63,6 +65,31 @@ describe('The CE wallet on the phone (A11.2: screens 103, 105, 106)', () => {
     expect(router.push).toHaveBeenCalledWith('/membership');
     await fireEvent.press(screen.getByText('Add a certificate'));
     expect(router.push).toHaveBeenCalledWith('/licences/certificate');
+  });
+
+  it('shows a REOS course\'s steps to TREC and shares the certificate once reported (screens 103, 104)', async () => {
+    const share = jest.spyOn(Share, 'share').mockResolvedValue({ action: 'sharedAction', activityType: undefined });
+    mockApi.GET.mockResolvedValue(
+      ok({
+        data: {
+          id: 1, holder: 'James Miller', licence: '0798765', state_code: 'TX', title: 'Legal Update I', hours: 4, completed_on: '2026-03-01', provider: 'Texas Realty School', course_number: '40123',
+          status: 'reos_reported', issued: true,
+          reporting: {
+            status: 'reported', reference: 'CE-2026-118844', reason: null,
+            steps: [
+              { code: 'completed', state: 'done' }, { code: 'final_passed', state: 'done' }, { code: 'reported', state: 'done' }, { code: 'member_record', state: 'not_connected' }, { code: 'certificate', state: 'done' },
+            ],
+          },
+        },
+      }),
+    );
+    await render(wrap(<CompletionScreen />));
+
+    expect(await screen.findByText('Reporting to TREC: Reported to TREC')).toBeTruthy();
+    expect(screen.getByText('Done · TREC reference CE-2026-118844')).toBeTruthy();
+    expect(screen.getByText('Not connected')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Share'));
+    expect(share).toHaveBeenCalledWith({ message: expect.stringContaining('James Miller completed Legal Update I (4 CE hours)') });
   });
 
   it('walks the renewal checklist and records "I\'ve renewed"', async () => {

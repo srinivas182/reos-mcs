@@ -78,7 +78,8 @@
     "mentors": "Mentores",
     "goal": "Mi objetivo",
     "plan": "Mi plan",
-    "ceWallet": "Cartera de CE"
+    "ceWallet": "Cartera de CE",
+    "ceReporting": "Reporte de CE"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2283,7 +2284,11 @@
         "recruiting.offer_withdrawn": "Oferta de correduría retirada",
         "licence.switched_to_agent": "Se cambió a agente",
         "provider_licence.approved": "Aprobó una licencia de proveedor",
-        "provider_licence.rejected": "Rechazó una licencia de proveedor"
+        "provider_licence.rejected": "Rechazó una licencia de proveedor",
+        "ce_report.created": "Reporte de CE creado",
+        "ce_report.reported": "Referencia del reporte de CE ingresada",
+        "ce_report.rejected": "Curso de CE rechazado por TREC",
+        "ce_report.restored": "Rechazo de curso de CE deshecho"
       }
     }
   },
@@ -3764,7 +3769,140 @@
       "errors": {
         "noRenewal": "Esta licencia aún no tiene fecha de renovación."
       },
-      "hoursShort": "{{hours}} h"
+      "hoursShort": "{{hours}} h",
+      "steps": {
+        "title": "Reporte a TREC",
+        "codes": {
+          "completed": "Curso completado",
+          "final_passed": "Examen final aprobado",
+          "reported": "Reportado a TREC",
+          "member_record": "Registro de miembro de Texas REALTORS®",
+          "certificate": "Certificado emitido"
+        },
+        "states": {
+          "done": "Hecho",
+          "waiting": "En espera",
+          "pending": "En proceso",
+          "rejected": "Rechazado",
+          "not_connected": "No conectado"
+        },
+        "status": {
+          "waiting": "En espera de reporte",
+          "pending_upload": "Pendiente de subir",
+          "submitted": "Enviado a TREC",
+          "reported": "Reportado a TREC",
+          "rejected": "Rechazado por TREC"
+        },
+        "reference": "Referencia de TREC {{reference}}",
+        "reason": "Motivo: {{reason}}",
+        "memberNote": "Las actualizaciones a su registro de Texas REALTORS® llegarán cuando esa conexión esté configurada."
+      },
+      "certificate": {
+        "title": "Certificado de CE",
+        "open": "Certificado y reporte",
+        "heading": "Certificado de finalización",
+        "holder": "Otorgado a",
+        "licence": "Licencia",
+        "course": "Curso",
+        "hours": "Horas de crédito",
+        "completed": "Completado",
+        "provider": "Proveedor",
+        "courseNumber": "Número de curso de TREC",
+        "print": "Imprimir o guardar como PDF",
+        "share": "Compartir",
+        "shareText": "{{name}} completó {{course}} ({{hours}} horas de CE) el {{date}}. Referencia de TREC {{reference}}.",
+        "notIssued": "Su certificado se emite cuando TREC tenga su curso completado.",
+        "selfReported": "Los certificados de otros proveedores los guarda ese proveedor; este es su registro del curso.",
+        "back": "Cartera de CE"
+      }
+    },
+    "reports": {
+      "title": "Reporte de CE a TREC",
+      "description": "Reporte a TREC a tiempo los cursos de CE completados en su escuela y conserve un registro de cada envío.",
+      "tabs": {
+        "label": "Reporte de CE",
+        "ready": "Listos ({{count}})",
+        "rejected": "Rechazados ({{count}})",
+        "reports": "Reportes ({{count}})"
+      },
+      "columns": {
+        "student": "Estudiante",
+        "licence": "Licencia",
+        "course": "Curso",
+        "courseNumber": "Número de curso",
+        "hours": "Horas",
+        "completed": "Completado",
+        "status": "Estado",
+        "reason": "Motivo",
+        "range": "Completados entre",
+        "method": "Cómo",
+        "reference": "Referencia de TREC",
+        "count": "Completados",
+        "sentBy": "Por"
+      },
+      "problems": {
+        "no_licence": "No hay licencia de Texas registrada",
+        "no_approval": "El curso no tiene número de aprobación de TREC"
+      },
+      "emptyReady": {
+        "title": "Nada que reportar",
+        "body": "Los cursos de CE completados aparecen aquí hasta que estén en un reporte."
+      },
+      "emptyRejected": {
+        "title": "Sin rechazos",
+        "body": "Si TREC rechaza un curso completado, márquelo aquí con el motivo; volverá a Listos para el próximo reporte."
+      },
+      "emptyReports": {
+        "title": "Aún no hay reportes",
+        "body": "Envíe un reporte por rango de fechas: descargue el archivo de TREC para subirlo usted, o deje que REOS lo envíe."
+      },
+      "submit": {
+        "title": "Enviar un reporte",
+        "from": "Desde",
+        "to": "Hasta",
+        "method": "Cómo reportar",
+        "file": "Descargar el archivo de TREC",
+        "fileHint": "Súbalo en el CE Posting System de TREC y luego ingrese aquí la referencia de TREC.",
+        "reos": "Dejar que REOS lo envíe",
+        "reosHint": "REOS lo envía a TREC por su escuela y registra la referencia.",
+        "reosUnavailable": "REOS aún no puede enviar a TREC. Descargue el archivo.",
+        "reosSimulated": "Modo de prueba: la referencia de TREC llega al instante.",
+        "authorise": "Autorizo a REOS a enviar estos cursos completados a TREC en nombre de mi escuela.",
+        "action": "Enviar",
+        "created": "Reporte creado",
+        "download": "Descargar archivo"
+      },
+      "status": {
+        "pending_upload": "Pendiente de subir",
+        "submitted": "Enviado",
+        "reported": "Reportado",
+        "included": "En el reporte",
+        "rejected": "Rechazado",
+        "ready": "Listo para reportar"
+      },
+      "methods": {
+        "file": "Archivo de TREC",
+        "reos": "Enviado por REOS"
+      },
+      "reference": {
+        "label": "Referencia de TREC",
+        "placeholder": "De la confirmación de TREC",
+        "save": "Guardar referencia",
+        "saved": "Reportado a TREC"
+      },
+      "reject": {
+        "action": "Rechazado por TREC",
+        "reason": "Motivo",
+        "save": "Marcar como rechazado",
+        "done": "Marcado como rechazado",
+        "undo": "Deshacer"
+      },
+      "rejectedBefore": "Rechazado: {{reason}}",
+      "logged": "Cada envío queda registrado.",
+      "errors": {
+        "nothing": "No hay cursos completados listos en ese rango de fechas.",
+        "reosUnavailable": "REOS aún no puede enviar a TREC. Descargue el archivo."
+      }
     }
   },
   "content": {
