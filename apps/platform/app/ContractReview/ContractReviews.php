@@ -30,6 +30,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Ramsey\Uuid\Uuid;
 use RuntimeException;
 use Throwable;
 
@@ -189,7 +190,7 @@ final readonly class ContractReviews
             if ($deal !== null) {
                 $this->deals->addDate($deal, $d['kind'], $d['kind'] === 'other' ? $d['label'] : null, $d['due_on']);
             } else {
-                $this->todos->create($review->user, ['title' => mb_substr($d['label'].' · '.$this->property($review), 0, 200), 'due_date' => $d['due_on'], 'source' => 'contract'], "contract-{$review->uuid}-{$d['code']}");
+                $this->todos->create($review->user, ['title' => mb_substr($d['label'].' · '.$this->property($review), 0, 200), 'due_date' => $d['due_on'], 'source' => 'contract'], Uuid::uuid5(Uuid::NAMESPACE_URL, "reos:contract:{$review->uuid}:{$d['code']}")->toString());
             }
         }
 
