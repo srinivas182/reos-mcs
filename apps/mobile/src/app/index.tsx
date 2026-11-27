@@ -203,6 +203,8 @@ export default function HomeScreen() {
       ) : null}
       {/* Your mentors (A10.3c, f04): the agent's own brokerage's mentors. */}
       {agent ? <ListRow icon={Users} tone="info" title={t('mentors.title')} subtitle={t('mentors.purposeNone')} onPress={() => router.push('/mentors')} /> : null}
+      {/* The mentor's workspace (mentor screens 22–24, A13.1b). */}
+      {role === 'mentor' ? <ListRow icon={Users} tone="info" title={t('mentoring.workspace.title')} subtitle={t('mentoring.workspace.today')} onPress={() => router.push('/mentoring')} /> : null}
       {/* Book an instructor (candidate screen 18) and, for instructors and mentors, their booked sessions (A10.2a). */}
       {candidate || role === 'instructor' || role === 'mentor' ? <ListRow icon={GraduationCap} tone="info" title={t('bookings.title')} subtitle={t('bookings.purpose')} onPress={() => router.push('/bookings')} /> : null}
       {/* Student questions (instructor screen i09, A10.1b). */}

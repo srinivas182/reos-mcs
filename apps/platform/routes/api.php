@@ -39,6 +39,7 @@ use App\Http\Controllers\Api\Listings\CmaController;
 use App\Http\Controllers\Api\Listings\ListingPostController;
 use App\Http\Controllers\Api\Listings\ListingsController;
 use App\Http\Controllers\Api\MeController;
+use App\Http\Controllers\Api\Mentoring\MentorWorkspaceController;
 use App\Http\Controllers\Api\Messaging\AnnouncementController as ApiAnnouncementController;
 use App\Http\Controllers\Api\Messaging\MessagesController as ApiMessagesController;
 use App\Http\Controllers\Api\Notifications\NotificationsController as ApiNotificationsController;
@@ -175,6 +176,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('{booking}/cancel', 'cancel')->whereUuid('booking')->middleware('throttle:10,1,api-bookings-cancel')->name('cancel');
         Route::post('{booking}/rating', 'rate')->whereUuid('booking')->middleware('throttle:10,1,api-bookings-rate')->name('rating');
         Route::get('{booking}/tasks', 'suggestedTasks')->whereUuid('booking')->name('tasks');
+        Route::get('{booking}/wrap-up', 'wrapUp')->whereUuid('booking')->middleware('throttle:20,1,api-bookings-wrap-up')->name('wrap-up');
         Route::post('{booking}/tasks', 'sendTasks')->whereUuid('booking')->middleware('throttle:10,1,api-bookings-tasks')->name('tasks.send');
     });
     // Live classes (A10.2b): scheduling, registration and the class tools, behind `video_rooms`.
@@ -268,6 +270,16 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
     Route::post('mentors/change', [SwitchController::class, 'changeMentor'])->middleware('throttle:5,1,api-mentors-change')->name('api.mentors.change');
+    // The mentor's workspace (A13.1b, mentor screens 22–24).
+    Route::prefix('mentoring')->name('api.mentoring.')->controller(MentorWorkspaceController::class)->group(function () {
+        Route::get('today', 'today')->name('today');
+        Route::get('mentees', 'mentees')->name('mentees');
+        Route::get('mentees/{agent}', 'mentee')->whereNumber('agent')->name('mentee');
+        Route::post('mentees/{agent}/notes', 'addNote')->whereNumber('agent')->middleware('throttle:60,1,api-mentoring-notes')->name('notes.store');
+        Route::delete('notes/{note}', 'removeNote')->whereUuid('note')->middleware('throttle:60,1,api-mentoring-notes')->name('notes.destroy');
+        Route::post('notes/{note}/restore', 'restoreNote')->whereUuid('note')->middleware('throttle:60,1,api-mentoring-notes')->name('notes.restore');
+        Route::post('mentees/{agent}/goals', 'addGoal')->whereNumber('agent')->middleware('throttle:30,1,api-mentoring-goals')->name('goals.store');
+    });
     // My listings (B10.1): MLS listings through the agent's confirmed member records.
     Route::prefix('listings')->name('api.listings.')->controller(ListingsController::class)->group(function () {
         Route::get('/', 'index')->name('index');

@@ -35,6 +35,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $tasks_sent_at
  * @property string $paid_with card, points or free (an assigned mentor; A13.1a)
  * @property int|null $points points spent (1 point = 1 cent inside REOS)
+ * @property string|null $summary the wrap-up summary (A13.1b)
+ * @property string|null $review_status a low rating waiting for review: pending, kept or hidden (A13.1b)
+ * @property int|null $reviewed_by
+ * @property Carbon|null $reviewed_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read User $student
@@ -50,7 +54,7 @@ final class SessionBooking extends Model
     public const TAGS = ['clear', 'patient', 'knowledgeable', 'on_time', 'helpful_examples'];
 
     /** @var list<string> */
-    protected $fillable = ['uuid', 'student_id', 'instructor_id', 'video_session_id', 'order_id', 'starts_at', 'ends_at', 'minutes', 'topic', 'status', 'price_cents', 'held_until', 'cancelled_at', 'cancelled_by', 'refunded_at', 'rating', 'rating_tags', 'rating_comment', 'rated_at', 'tasks_sent_at', 'paid_with', 'points'];
+    protected $fillable = ['uuid', 'student_id', 'instructor_id', 'video_session_id', 'order_id', 'starts_at', 'ends_at', 'minutes', 'topic', 'status', 'price_cents', 'held_until', 'cancelled_at', 'cancelled_by', 'refunded_at', 'rating', 'rating_tags', 'rating_comment', 'rated_at', 'tasks_sent_at', 'paid_with', 'points', 'summary', 'review_status', 'reviewed_by', 'reviewed_at'];
 
     /** @return BelongsTo<User, $this> */
     public function student(): BelongsTo
@@ -86,7 +90,7 @@ final class SessionBooking extends Model
     {
         return [
             'starts_at' => 'datetime', 'ends_at' => 'datetime', 'held_until' => 'datetime', 'cancelled_at' => 'datetime', 'refunded_at' => 'datetime',
-            'rating_tags' => 'array', 'rated_at' => 'datetime', 'tasks_sent_at' => 'datetime',
+            'rating_tags' => 'array', 'rated_at' => 'datetime', 'tasks_sent_at' => 'datetime', 'reviewed_at' => 'datetime',
         ];
     }
 }

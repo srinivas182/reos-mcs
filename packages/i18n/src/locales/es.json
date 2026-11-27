@@ -84,7 +84,8 @@
     "virtualBroker": "Bróker virtual",
     "contractReview": "Revisión de contratos",
     "policies": "Políticas",
-    "mentorProgram": "Programa de mentores"
+    "mentorProgram": "Programa de mentores",
+    "mentorWorkspace": "Espacio del mentor"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2311,7 +2312,8 @@
         "mentor_program.updated": "Configuración de mentor cambiada",
         "mentor.assigned": "Mentor asignado",
         "mentor.change_requested": "Se pidió otro mentor",
-        "session_booking.points_returned": "Puntos devueltos por una sesión"
+        "session_booking.points_returned": "Puntos devueltos por una sesión",
+        "mentor.rating_reviewed": "Calificación baja revisada"
       }
     }
   },
@@ -9366,7 +9368,8 @@
     "errors": {
       "full": "Ese mentor no tiene cupo para otro aprendiz.",
       "assignedOnly": "Este mentor solo atiende a sus aprendices asignados.",
-      "noPoints": "Esta sesión no se puede pagar con puntos."
+      "noPoints": "Esta sesión no se puede pagar con puntos.",
+      "pastGoal": "Elija hoy o una fecha posterior."
     },
     "notify": {
       "assigned": "{{name}} es su mentor",
@@ -9415,7 +9418,13 @@
       "matches": "Mejores opciones para {{name}}",
       "noMatches": "Ningún mentor tiene cupo. Aumente el máximo de aprendices de un mentor.",
       "room_one": "Queda {{count}} lugar",
-      "room_other": "Quedan {{count}} lugares"
+      "room_other": "Quedan {{count}} lugares",
+      "reviewed": "Calificación revisada.",
+      "reviews": "Calificaciones por revisar",
+      "reviewsHint": "Las calificaciones bajas con comentario solo cuentan cuando usted las conserva.",
+      "keep": "Conservar",
+      "hide": "Ocultar",
+      "noReviews": "No hay calificaciones por revisar"
     },
     "agent": {
       "assigned": "Su mentor",
@@ -9428,6 +9437,69 @@
       "balance": "{{points}} puntos (valen {{value}})",
       "others": "Otros mentores de su agencia inmobiliaria",
       "otherNote": "Nunca se muestran mentores de otras agencias inmobiliarias."
+    },
+    "workspace": {
+      "title": "Espacio del mentor",
+      "purpose": "Sus aprendices en {{brokerage}}, en minutos al día.",
+      "today": "Hoy",
+      "mentees": "Aprendices",
+      "sessionsWeek_one": "{{count}} sesión esta semana",
+      "sessionsWeek_other": "{{count}} sesiones esta semana",
+      "menteeCount_one": "{{count}} aprendiz",
+      "menteeCount_other": "{{count}} aprendices",
+      "needs": "Quién lo necesita",
+      "upcoming": "Próximas sesiones",
+      "wrapUps": "Resúmenes por enviar",
+      "noNeeds": "Todos van bien",
+      "noUpcoming": "No hay sesiones reservadas",
+      "noWrapUps": "Todo resumido",
+      "noMentees": "Aún no tiene aprendices",
+      "noMenteesHint": "Su agencia inmobiliaria asigna aprendices, y los agentes de su agencia inmobiliaria pueden reservar con usted.",
+      "filters": {
+        "all": "Todos",
+        "assigned": "Asignados",
+        "booked": "Con reserva"
+      },
+      "signals": {
+        "quiet": "Sin actividad en una semana",
+        "first_session": "Aún sin primera sesión",
+        "behind": "Atrasado en su plan",
+        "ok": "Va bien"
+      },
+      "assigned": "Asignado",
+      "nextSession": "Próxima sesión {{time}}",
+      "plan": "Plan",
+      "planWeek": "Semana {{week}} de {{weeks}} · {{done}} de {{total}} hechas",
+      "scorecard": "Esta semana",
+      "deals": "Operaciones",
+      "dealsValue": "{{active}} activas · {{under_contract}} bajo contrato · {{closed}} cerradas en 90 días",
+      "sessions": "Sesiones juntos",
+      "goals": "Metas acordadas",
+      "noGoals": "Aún sin metas",
+      "addGoal": "Agregar una meta",
+      "goalTitle": "Meta",
+      "goalDue": "Fecha límite",
+      "goalAdded": "Meta agregada a las tareas de {{name}}.",
+      "notes": "Notas privadas",
+      "notesHint": "Solo usted las ve.",
+      "noNotes": "Aún sin notas",
+      "addNote": "Agregar una nota",
+      "note": "Nota",
+      "noteRemoved": "Nota quitada",
+      "privacy": "Usted ve su plan y lo que comparte. Nunca se muestran sus contactos ni sus clientes.",
+      "metrics": {
+        "conversations": "Conversaciones",
+        "appointments": "Citas",
+        "clients": "Clientes",
+        "ce_hours": "Horas de educación continua"
+      },
+      "metricValue": "{{done}} de {{target}}",
+      "wrapUp": "Resumir",
+      "wrapUpTitle": "Resumen de la sesión",
+      "summary": "Resumen",
+      "actions": "Acciones",
+      "send": "Enviar a tareas",
+      "sent": "Enviado a las tareas de {{name}} con recordatorios."
     }
   }
 }

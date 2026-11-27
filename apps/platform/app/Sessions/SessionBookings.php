@@ -35,6 +35,7 @@ use App\Services\States\PersonStates;
 use App\Services\Todos\Todos;
 use App\Video\VideoSessions;
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -74,6 +75,9 @@ final readonly class SessionBookings
     public const NO_SHOW_MINUTES = 10;
 
     public const RATING_DELAY_HOURS = 24;
+
+    /** Ratings at or below this, with a comment, go to the brokerage's review (A13.1b). */
+    public const REVIEW_STARS = 2;
 
     /** The gateway name on orders paid with points (A13.1a). */
     public const POINTS = 'points';
@@ -407,7 +411,9 @@ final readonly class SessionBookings
             throw ValidationException::withMessages(['rating' => __('sessions.booking.errors.cannotRate')]);
         }
 
-        $booking->forceFill(['rating' => $stars, 'rating_tags' => array_values(array_intersect($tags, SessionBooking::TAGS)), 'rating_comment' => $comment, 'rated_at' => now()])->save();
+        // A low rating with a comment waits for the brokerage's review before it counts (A13.1b, screen 119).
+        $review = $stars <= self::REVIEW_STARS && $comment !== null && trim($comment) !== '' && $this->mentors->settingsFor($booking->instructor) !== null ? 'pending' : null;
+        $booking->forceFill(['rating' => $stars, 'rating_tags' => array_values(array_intersect($tags, SessionBooking::TAGS)), 'rating_comment' => $comment, 'rated_at' => now(), 'review_status' => $review])->save();
 
         return $booking;
     }
@@ -417,20 +423,22 @@ final readonly class SessionBookings
      *
      * @param  list<array{title: string, due_date: string|null}>  $tasks
      */
-    public function sendTasks(User $instructor, SessionBooking $booking, array $tasks): int
+    public function sendTasks(User $instructor, SessionBooking $booking, array $tasks, ?string $summary = null): int
     {
         if ($booking->instructor_id !== $instructor->id || ! in_array($booking->status, ['confirmed', 'completed'], true) || $booking->starts_at->isFuture()) {
             throw ValidationException::withMessages(['tasks' => __('sessions.booking.errors.cannotSendTasks')]);
         }
 
+        $summary = $summary === null || trim($summary) === '' ? null : mb_substr(trim($summary), 0, 2000);
+
         foreach ($tasks as $task) {
             $this->todos->create($booking->student, [
                 'title' => mb_substr($task['title'], 0, 200), 'due_date' => $task['due_date'], 'related_type' => 'session', 'related_id' => $booking->uuid,
-                'related_label' => (string) $booking->instructor->name, 'source' => 'session',
+                'related_label' => (string) $booking->instructor->name, 'source' => 'session', 'notes' => $summary,
             ], null);
         }
 
-        $booking->forceFill(['tasks_sent_at' => now()])->save();
+        $booking->forceFill(['tasks_sent_at' => now(), 'summary' => $summary ?? $booking->summary])->save();
 
         return count($tasks);
     }
@@ -451,6 +459,18 @@ final readonly class SessionBookings
         }
 
         return array_slice($tasks, 0, 10);
+    }
+
+    /**
+     * Ratings that count: at least 24 hours old, and not waiting for review or hidden by it.
+     *
+     * @param  Builder<SessionBooking>  $query
+     * @return Builder<SessionBooking>
+     */
+    public static function published(Builder $query): Builder
+    {
+        return $query->whereNotNull('rating')->where('rated_at', '<=', now()->subHours(self::RATING_DELAY_HOURS))
+            ->where(static fn ($q) => $q->whereNull('review_status')->orWhere('review_status', 'kept'));
     }
 
     public static function refundOnCancel(SessionBooking $booking): bool
@@ -528,7 +548,7 @@ final readonly class SessionBookings
             ->when($among !== null, static fn ($q) => $q->whereIn('user_id', $among ?? []));
 
         foreach ($query->get() as $offer) {
-            $rated = SessionBooking::query()->where('instructor_id', $offer->user_id)->whereNotNull('rating')->where('rated_at', '<=', now()->subHours(self::RATING_DELAY_HOURS));
+            $rated = self::published(SessionBooking::query()->where('instructor_id', $offer->user_id));
             $count = (clone $rated)->count();
             $average = (clone $rated)->avg('rating');
             $slots = $this->slots($offer, 60);

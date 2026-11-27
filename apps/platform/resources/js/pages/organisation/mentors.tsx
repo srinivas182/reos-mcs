@@ -7,9 +7,10 @@ import {
     MentorList,
 } from '@/components/mentoring/mentor-program';
 import type { MatchRow, MentorProgramData } from '@/components/mentoring/types';
+import { ReviewQueue } from '@/components/mentoring/workspace';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
-import { assign, matches, update } from '@/routes/organisation/mentors';
+import { assign, matches, review, update } from '@/routes/organisation/mentors';
 import { index as agentsIndex } from '@/routes/agents';
 
 /**
@@ -79,6 +80,23 @@ export default function MentorProgramPage(props: MentorProgramData) {
                             router.post(
                                 assign().url,
                                 { agent: agent.id, mentor: mentor.id },
+                                done,
+                            );
+                        }}
+                    />
+                </section>
+                <section aria-labelledby="reviews-title" className="space-y-3">
+                    <h2 id="reviews-title" className="text-lg font-semibold">
+                        {t('mentoring.program.reviews')}
+                    </h2>
+                    <ReviewQueue
+                        reviews={props.reviews}
+                        busy={busy}
+                        onDecide={(id, keep) => {
+                            setBusy(true);
+                            router.post(
+                                review(id).url,
+                                { decision: keep ? 'keep' : 'hide' },
                                 done,
                             );
                         }}

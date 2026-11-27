@@ -88,6 +88,24 @@
   - Ratings show on the mentor's profile only after 24 hours.
   - A rating of 2 stars or less with a comment goes to the admin review queue.
 - **Done when:** a session ends, its wrap-up reaches the mentee's to-dos, and the rating appears the next day.
+- **As built, A13.1b** (ADR 0053):
+  - **`MentorWorkspace`:**
+    - **Today:** mentees, sessions this week, who needs help, upcoming sessions and wrap-ups to send. Someone needs help if they've been quiet for 7 days, haven't had a first session with their assigned mentor, or have 3 or more open plan tasks.
+    - **Mentees:** all, assigned or booked in the last 90 days.
+    - **Mentee detail:** the plan's week and progress, this week's scorecard, deal counts, sessions together with their summaries, goals set together (the mentee's to-dos, source `mentor`) and private notes.
+    - Notes live in `mentee_notes` (row-level security, soft deletes for Undo). The mentee's contacts and clients are never shown.
+  - **Wrap-up** (`WrapUp`, `ClaudeWrapUpWriter`): a summary and dated action items. Claude writes them when it's configured; otherwise REOS uses the notes' action lines, due a week out. `POST /bookings/{id}/tasks` takes the `summary`, which is stored on the booking and goes with the to-dos.
+  - **Ratings:**
+    - A mentor rating of 2 stars or less with a comment waits as `review_status = pending` and counts only once the broker keeps it (Mentor program → Ratings to review, audited).
+    - Ratings still show only after 24 hours.
+  - **API:** `/api/v1/mentoring/today`, `mentees`, `mentees/{agent}`, notes (add, remove, restore) and goals, plus `GET /bookings/{id}/wrap-up`.
+  - **Web:** `/mentoring` (the Mentor workspace sidebar item) and `/mentoring/{agent}`. The broker's Mentor program has Ratings to review.
+  - **Phone:**
+    - Home → Mentor workspace (`mentoring/index`): Today and Mentees.
+    - `mentoring/[agent]`: mentee detail.
+    - The wrap-up screen (`bookings/tasks/[uuid]`) has the summary and dated action items.
+  - **Later (A17.1):** help with a shared deal (mentor screen 25) comes with the mentor and team sprint.
+  - **Done when:** a Pest test ends a session, sends its wrap-up to the mentee's to-dos with dates and the summary, and holds a 1-star rating until the broker keeps it. Only then does the rating count.
 
 ### A13.2 Pods and challenges (Team A)
 

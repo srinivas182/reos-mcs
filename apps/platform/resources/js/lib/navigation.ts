@@ -72,6 +72,7 @@ import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as advertisingPolicy } from '@/routes/organisation/advertising';
 import { index as mentorProgram } from '@/routes/organisation/mentors';
+import { index as mentorWorkspace } from '@/routes/mentoring';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -119,6 +120,7 @@ export type NavLabel =
     | 'contractReview'
     | 'policies'
     | 'mentorProgram'
+    | 'mentorWorkspace'
     | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
@@ -305,7 +307,8 @@ export function roleNavigation(
         mentor: [
             home,
             messages,
-            planned('mentorWorkspace'),
+            // The mentor workspace (A13.1b, screen 48): Today, mentees, notes and goals.
+            item('mentorWorkspace', Users, mentorWorkspace(), '/mentoring'),
             item('earnings', Wallet, earnings()),
         ],
         instructor: [

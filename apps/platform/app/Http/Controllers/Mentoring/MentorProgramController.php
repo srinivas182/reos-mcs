@@ -55,6 +55,15 @@ final class MentorProgramController extends Controller
         return back()->with('success', __('mentoring.program.assigned'));
     }
 
+    /** Keep or hide a low rating (screen 119's review queue). */
+    public function review(Request $request, string $booking, #[CurrentUser] User $user, MentorDirectory $directory, MentorProgram $program): RedirectResponse
+    {
+        $request->validate(['decision' => ['required', 'in:keep,hide']]);
+        $program->review($this->brokerage($user, $directory), $booking, $request->string('decision')->toString() === 'keep', $user);
+
+        return back()->with('success', __('mentoring.program.reviewed'));
+    }
+
     private function brokerage(User $user, MentorDirectory $directory): Organisation
     {
         return $directory->brokerageOf($user, Role::Broker) ?? throw new NotFoundHttpException;
