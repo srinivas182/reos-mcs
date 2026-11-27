@@ -26,6 +26,8 @@ final class PostRequest extends FormRequest
             'at' => ['nullable', 'required_if:when,later', 'date'],
             // The listing (B10.2) a listing post comes from.
             'listing' => ['nullable', 'uuid'],
+            // Instead of fixing flagged wording, send the post to the broker with this reason (B13.2).
+            'ask_broker' => ['nullable', 'string', 'min:3', 'max:500'],
         ];
     }
 

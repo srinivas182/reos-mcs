@@ -54,6 +54,7 @@ use App\Http\Controllers\Builder\StarterBankController;
 use App\Http\Controllers\Calendar\CalendarPageController;
 use App\Http\Controllers\Ce\CeWalletPageController;
 use App\Http\Controllers\Classes\ClassesPageController;
+use App\Http\Controllers\Compliance\ComplianceLogController;
 use App\Http\Controllers\Connections\ConnectController;
 use App\Http\Controllers\Connections\ConnectionsPageController;
 use App\Http\Controllers\Connections\DocuSignSimulatorController;
@@ -529,6 +530,12 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     });
 });
 
+// The compliance log (B13.2, broker web): every check, fix, approval and send-back, with CSV export.
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/compliance-log')->name('organisation.compliance-log.')->group(function () {
+    Route::get('/', [ComplianceLogController::class, 'index'])->name('index');
+    Route::get('export', [ComplianceLogController::class, 'export'])->middleware('throttle:10,1,compliance-export')->name('export');
+});
+
 // The brokerage's mentor program (A13.1a, broker screens 21–23).
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/mentors')->name('organisation.mentors.')
     ->controller(MentorProgramController::class)->group(function () {
@@ -545,6 +552,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
         Route::put('/', 'update')->middleware('throttle:20,1,advertising-update')->name('update');
         Route::post('posts/{post}/approve', 'approve')->whereUuid('post')->middleware('throttle:60,1,advertising-approve')->name('approve');
         Route::post('posts/{post}/return', 'sendBack')->whereUuid('post')->middleware('throttle:60,1,advertising-approve')->name('return');
+        // Public pages waiting for the broker (B13.2).
+        Route::post('pages/{page}/approve', 'approvePage')->where('page', '[a-z0-9-]{1,80}')->middleware('throttle:60,1,advertising-approve')->name('pages.approve');
+        Route::post('pages/{page}/return', 'returnPage')->where('page', '[a-z0-9-]{1,80}')->middleware('throttle:60,1,advertising-approve')->name('pages.return');
     });
 // The virtual broker, broker side (A12.1, broker screen 34): the manual and its versions, TREC conflicts, the FAQ, escalation, answers.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/virtual-broker')->name('organisation.virtual-broker.')

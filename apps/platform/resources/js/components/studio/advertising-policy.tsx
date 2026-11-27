@@ -24,6 +24,17 @@ export type PendingPost = {
     scheduled_at: string | null;
     requested_at: string | null;
     issues: { code: string; phrase: string; fix: string }[];
+    /** The agent's reason for sending flagged wording instead of fixing it (B13.2). */
+    reason?: string | null;
+};
+
+/** A public page waiting for the broker (B13.2). */
+export type PendingPage = {
+    id: string;
+    agent: string;
+    bio: string | null;
+    url: string;
+    requested_at: string | null;
 };
 
 export type AdvertisingPage = {
@@ -38,6 +49,7 @@ export type AdvertisingPage = {
     rules: AdvertisingRules;
     brand: { colour: string | null; logo: string | null };
     pending: PendingPost[];
+    pages?: PendingPage[];
 };
 
 /**
@@ -52,6 +64,7 @@ export function AdvertisingPolicyView({
     onSave,
     onApprove,
     onSendBack,
+    onPage,
     busy = false,
 }: {
     data: AdvertisingPage;
@@ -59,6 +72,8 @@ export function AdvertisingPolicyView({
     onSave: (rules: AdvertisingRules) => void;
     onApprove: (id: string) => void;
     onSendBack: (id: string, note: string) => void;
+    /** Approve a waiting public page, or send it back with a note (B13.2). */
+    onPage?: (id: string, approve: boolean, note: string) => void;
     busy?: boolean;
 }) {
     const { t, i18n } = useTranslation();
@@ -143,6 +158,13 @@ export function AdvertisingPolicyView({
                                         })}
                                     </p>
                                 ) : null}
+                                {p.reason ? (
+                                    <p className="rounded-reos-md bg-reos-tone-info-bg p-3 text-base text-reos-tone-info-fg">
+                                        {t('compliance.agentReason', {
+                                            reason: p.reason,
+                                        })}
+                                    </p>
+                                ) : null}
                                 <div className="space-y-2">
                                     <Label htmlFor={`note-${p.id}`}>
                                         {t('studio.policy.noteLabel')}
@@ -194,6 +216,100 @@ export function AdvertisingPolicyView({
                     </ul>
                 )}
             </section>
+
+            {onPage ? (
+                <section aria-labelledby="adv-pages" className="space-y-3">
+                    <h2 id="adv-pages" className="text-lg font-semibold">
+                        {t('compliance.pages.title')}
+                    </h2>
+                    {(data.pages ?? []).length === 0 ? (
+                        <EmptyState
+                            icon={Check}
+                            title={t('compliance.pages.none')}
+                            description={t('compliance.pages.noneHint')}
+                        />
+                    ) : (
+                        <ul className="space-y-3">
+                            {(data.pages ?? []).map((p) => (
+                                <li
+                                    key={p.id}
+                                    className="space-y-3 rounded-reos-lg border border-border bg-card p-5"
+                                >
+                                    <p className="text-base font-semibold">
+                                        {p.agent}
+                                    </p>
+                                    {p.bio ? (
+                                        <p className="text-base whitespace-pre-line">
+                                            {p.bio}
+                                        </p>
+                                    ) : null}
+                                    <a
+                                        href={p.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="text-base text-primary underline underline-offset-4"
+                                    >
+                                        {t('compliance.pages.view')}
+                                    </a>
+                                    <div className="space-y-2">
+                                        <Label htmlFor={`page-note-${p.id}`}>
+                                            {t('studio.policy.noteLabel')}
+                                        </Label>
+                                        <Textarea
+                                            id={`page-note-${p.id}`}
+                                            rows={2}
+                                            maxLength={500}
+                                            value={notes[`page-${p.id}`] ?? ''}
+                                            onChange={(e) =>
+                                                setNotes({
+                                                    ...notes,
+                                                    [`page-${p.id}`]:
+                                                        e.target.value,
+                                                })
+                                            }
+                                        />
+                                    </div>
+                                    <div className="flex flex-wrap gap-3">
+                                        <Button
+                                            type="button"
+                                            disabled={busy}
+                                            onClick={() =>
+                                                onPage(p.id, true, '')
+                                            }
+                                        >
+                                            <Check aria-hidden />
+                                            {t('compliance.pages.approve')}
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            disabled={
+                                                busy ||
+                                                (
+                                                    notes[`page-${p.id}`] ?? ''
+                                                ).trim().length < 3
+                                            }
+                                            onClick={() =>
+                                                onPage(
+                                                    p.id,
+                                                    false,
+                                                    (
+                                                        notes[`page-${p.id}`] ??
+                                                        ''
+                                                    ).trim(),
+                                                )
+                                            }
+                                        >
+                                            <Undo2 aria-hidden />
+                                            {t('compliance.pages.return')}
+                                        </Button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </section>
+            ) : null}
 
             <section
                 aria-labelledby="adv-texas"

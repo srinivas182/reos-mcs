@@ -6963,6 +6963,8 @@ export interface components {
              * @description The listing (B10.2) a listing post comes from.
              */
             listing?: string | null;
+            /** @description Instead of fixing flagged wording, send the post to the broker with this reason (B13.2). */
+            ask_broker?: string | null;
         };
         /**
          * ProviderLicenceRequest
@@ -12659,6 +12661,8 @@ export interface operations {
                             published: boolean;
                             bio: string | null;
                             url: string;
+                            waiting: boolean;
+                            note: string | null;
                         };
                     };
                 };
@@ -12690,6 +12694,8 @@ export interface operations {
                             published: boolean;
                             bio: string | null;
                             url: string;
+                            waiting: boolean;
+                            note: string | null;
                         };
                     };
                 };
@@ -23460,6 +23466,20 @@ export interface operations {
                                 fix: string;
                             }[];
                             review: string[];
+                            routable: boolean;
+                            compliance: {
+                                /** @enum {string} */
+                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned";
+                                /** @enum {string} */
+                                severity: "block" | "warn";
+                                phrase: string | null;
+                                fix: string | null;
+                                reason: string | null;
+                                citation: string;
+                                url: string;
+                                /** @enum {string} */
+                                source: "rule" | "claude";
+                            }[];
                         };
                     };
                 };

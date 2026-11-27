@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $handle
  * @property bool $published
  * @property string|null $bio
+ * @property CarbonImmutable|null $approval_requested_at waiting for the broker (B13.2)
+ * @property string|null $approval_note what the broker said when sending it back
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
  * @property-read User $user
@@ -26,7 +28,7 @@ final class AgentPage extends Model
 
     protected function casts(): array
     {
-        return ['published' => 'boolean'];
+        return ['published' => 'boolean', 'approval_requested_at' => 'immutable_datetime'];
     }
 
     /** @return BelongsTo<User, $this> */

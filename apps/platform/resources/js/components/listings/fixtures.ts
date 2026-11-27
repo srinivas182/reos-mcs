@@ -193,6 +193,8 @@ export const pageSettings = (
     published: true,
     bio: 'Katy homes, twelve years.',
     url: 'https://reos.com/agent/james-miller',
+    waiting: false,
+    note: null,
     ...overrides,
 });
 

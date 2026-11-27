@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Social;
 
 use App\Authorization\Role;
+use App\Compliance\ComplianceLog;
 use App\Enums\OrganisationType;
 use App\Models\Organisation;
 use App\Models\SocialPost;
@@ -25,11 +26,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * back with a note (it returns to the agent's drafts). Every decision is
  * audited and the agent is told.
  *
- * @phpstan-type PendingRow array{id: string, agent: string, body: string, attribution: string, media: list<array{url: string, kind: string}>, channels: list<string>, scheduled_at: string|null, requested_at: string|null, issues: list<array{code: string, phrase: string, fix: string}>}
+ * @phpstan-type PendingRow array{id: string, agent: string, body: string, attribution: string, media: list<array{url: string, kind: string}>, channels: list<string>, scheduled_at: string|null, requested_at: string|null, issues: list<array{code: string, phrase: string, fix: string}>, reason: string|null}
  */
 final readonly class PostApprovals
 {
-    public function __construct(private Memberships $memberships, private SocialPosts $posts, private AdvertisingPolicy $policy, private AuditLogger $audit) {}
+    public function __construct(private Memberships $memberships, private SocialPosts $posts, private AdvertisingPolicy $policy, private AuditLogger $audit, private ComplianceLog $log) {}
 
     /** @return list<PendingRow> */
     public function pending(Organisation $brokerage): array
@@ -45,6 +46,8 @@ final readonly class PostApprovals
                 'channels' => array_values(array_unique($post->targets->map(static fn ($t): string => $t->channel)->all())),
                 'scheduled_at' => $post->scheduled_at?->toIso8601String(), 'requested_at' => $post->approval_requested_at?->toIso8601String(),
                 'issues' => $this->policy->issues($post->user, $post->body),
+                // The agent's reason when they sent flagged wording to the broker instead of fixing it (B13.2).
+                'reason' => $post->approval_reason,
             ];
         }
 
@@ -63,6 +66,7 @@ final readonly class PostApprovals
         }
 
         $this->audit->record('social_post.approved', 'social_post', $post->uuid, ['agent' => $post->user_id], $broker, $brokerage->id);
+        $this->log->record($post->user, 'post', 'approved', [], $broker, 'social_post', $post->uuid, $post->approval_reason);
         $post->user->notify(new PostApprovalDecided($post, true));
     }
 
@@ -72,6 +76,7 @@ final readonly class PostApprovals
         $post = $this->find($brokerage, $uuid);
         $post->forceFill(['status' => 'draft', 'scheduled_at' => null, 'approved_by' => $broker->id, 'approved_at' => now(), 'approval_note' => mb_substr(trim($note), 0, 500)])->save();
         $this->audit->record('social_post.returned', 'social_post', $post->uuid, ['agent' => $post->user_id], $broker, $brokerage->id);
+        $this->log->record($post->user, 'post', 'sent_back', [], $broker, 'social_post', $post->uuid, $post->approval_note);
         $post->user->notify(new PostApprovalDecided($post, false));
     }
 

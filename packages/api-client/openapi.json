@@ -15308,13 +15308,24 @@
                                                 },
                                                 "url": {
                                                     "type": "string"
+                                                },
+                                                "waiting": {
+                                                    "type": "boolean"
+                                                },
+                                                "note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
                                                 "handle",
                                                 "published",
                                                 "bio",
-                                                "url"
+                                                "url",
+                                                "waiting",
+                                                "note"
                                             ]
                                         }
                                     },
@@ -15372,13 +15383,24 @@
                                                 },
                                                 "url": {
                                                     "type": "string"
+                                                },
+                                                "waiting": {
+                                                    "type": "boolean"
+                                                },
+                                                "note": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
                                                 "handle",
                                                 "published",
                                                 "bio",
-                                                "url"
+                                                "url",
+                                                "waiting",
+                                                "note"
                                             ]
                                         }
                                     },
@@ -47614,6 +47636,79 @@
                                                     "items": {
                                                         "type": "string"
                                                     }
+                                                },
+                                                "routable": {
+                                                    "type": "boolean"
+                                                },
+                                                "compliance": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "broker",
+                                                                    "broker_size",
+                                                                    "team_name",
+                                                                    "links",
+                                                                    "claims",
+                                                                    "title",
+                                                                    "fair_housing",
+                                                                    "unclear",
+                                                                    "banned"
+                                                                ]
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "block",
+                                                                    "warn"
+                                                                ]
+                                                            },
+                                                            "phrase": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "fix": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "rule",
+                                                                    "claude"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "phrase",
+                                                            "fix",
+                                                            "reason",
+                                                            "citation",
+                                                            "url",
+                                                            "source"
+                                                        ]
+                                                    }
                                                 }
                                             },
                                             "required": [
@@ -47622,7 +47717,9 @@
                                                 "ok",
                                                 "approval",
                                                 "issues",
-                                                "review"
+                                                "review",
+                                                "routable",
+                                                "compliance"
                                             ]
                                         }
                                     },
@@ -59514,6 +59611,15 @@
                         ],
                         "format": "uuid",
                         "description": "The listing (B10.2) a listing post comes from."
+                    },
+                    "ask_broker": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Instead of fixing flagged wording, send the post to the broker with this reason (B13.2).",
+                        "minLength": 3,
+                        "maxLength": 500
                     }
                 },
                 "required": [

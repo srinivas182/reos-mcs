@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Studio\Video;
 
 use App\Compliance\ComplianceEngine;
+use App\Compliance\ComplianceLog;
+use App\Compliance\TexasAdRules;
 use App\Jobs\RenderStudioVideo;
 use App\Models\StudioVideo;
 use App\Models\User;
@@ -77,6 +79,7 @@ final readonly class StudioVideos
         private Bedrock $bedrock,
         private AdvertisingPolicy $policy,
         private ComplianceEngine $compliance,
+        private ComplianceLog $log,
         private VideoRenderer $renderer,
     ) {}
 
@@ -218,7 +221,11 @@ final readonly class StudioVideos
         $video->save();
 
         if (($edits['render'] ?? false) === true) {
-            if ($this->issues($video) !== []) {
+            $issues = $this->issues($video);
+            $logged = array_map(static fn (array $i): array => ['code' => $i['code'], 'phrase' => $i['phrase'], 'citation' => TexasAdRules::rule($i['code'])->citation, 'severity' => 'block', 'fix' => $i['fix'], 'reason' => null, 'url' => '', 'source' => 'rule'], $issues);
+            $this->log->record($agent, 'video', $issues === [] ? 'checked' : 'blocked', $logged, subjectType: 'studio_video', subjectId: $video->uuid);
+
+            if ($issues !== []) {
                 throw ValidationException::withMessages(['video' => self::line('studio.video.errors.checks')]);
             }
 

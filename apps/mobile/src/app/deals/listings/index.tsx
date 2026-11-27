@@ -153,6 +153,9 @@ function PageCard() {
       <Text variant="title">{t('listings.page.title')}</Text>
       <Text tone="muted">{t('listings.page.description')}</Text>
       <SwitchRow label={t('listings.page.publish')} value={page.published} onValueChange={(on) => void savePage(on, page.bio).then(setPage)} />
+      {/* Brokerage rules (B13.2): the page waits for the broker, or came back with a note. */}
+      {page.waiting ? <Callout tone="info" title={t('compliance.pageWaiting')} /> : null}
+      {page.note ? <Callout tone="warning" title={t('compliance.pageReturned', { note: page.note })} /> : null}
       {page.published ? (
         <>
           <Text tone="muted">{page.url}</Text>

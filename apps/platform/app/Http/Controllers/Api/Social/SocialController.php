@@ -75,7 +75,7 @@ final class SocialController extends Controller
      *
      * The attribution it will carry and each check; a post that fails can't be scheduled.
      *
-     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'video'|'title'|'fair_housing'|'claims'|'banned'|'team_name', ok: bool, detail: string|null, citation?: string|null}>, ok: bool, approval: bool, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>, review: list<string>}}
+     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'video'|'title'|'fair_housing'|'claims'|'banned'|'team_name', ok: bool, detail: string|null, citation?: string|null}>, ok: bool, approval: bool, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>, review: list<string>, routable: bool, compliance: list<array{code: 'broker'|'broker_size'|'team_name'|'links'|'claims'|'title'|'fair_housing'|'unclear'|'banned', severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}>}}
      */
     public function check(PostRequest $request, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
@@ -105,7 +105,7 @@ final class SocialController extends Controller
      */
     public function store(PostRequest $request, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
-        $row = $posts->create($user, $request->string('body')->toString(), $request->media(), $request->optional('link'), $request->targets(), $request->string('when')->toString(), $request->optional('at'), $request->optional('listing'));
+        $row = $posts->create($user, $request->string('body')->toString(), $request->media(), $request->optional('link'), $request->targets(), $request->string('when')->toString(), $request->optional('at'), $request->optional('listing'), $request->optional('ask_broker'));
 
         return response()->json(['data' => $row], 201);
     }
@@ -117,7 +117,7 @@ final class SocialController extends Controller
      */
     public function update(PostRequest $request, string $post, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
-        return response()->json(['data' => $posts->update($user, $post, $request->string('body')->toString(), $request->media(), $request->optional('link'), $request->targets(), $request->string('when')->toString(), $request->optional('at'))]);
+        return response()->json(['data' => $posts->update($user, $post, $request->string('body')->toString(), $request->media(), $request->optional('link'), $request->targets(), $request->string('when')->toString(), $request->optional('at'), $request->optional('ask_broker'))]);
     }
 
     /** Remove a draft or a scheduled post (Undo restores it). */

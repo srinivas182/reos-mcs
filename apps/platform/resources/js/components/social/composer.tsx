@@ -46,6 +46,9 @@ export function Composer({
 }) {
     const { t } = useTranslation();
     const [value, setValue] = useState(draft);
+    // Routing (B13.2): flagged wording sent to the broker with a reason instead of fixed.
+    const [asking, setAsking] = useState(false);
+    const [reason, setReason] = useState('');
     const file = useRef<HTMLInputElement>(null);
     const targets = accounts.flatMap((a) =>
         a.connection
@@ -412,6 +415,57 @@ export function Composer({
                 <p className="text-base text-destructive">
                     {t('social.compose.fixFirst')}
                 </p>
+            ) : null}
+            {check && !check.ok && check.routable && value.when !== 'draft' ? (
+                asking ? (
+                    <div className="space-y-2">
+                        <Label htmlFor="ask-broker">
+                            {t('compliance.askBroker.reason')}
+                        </Label>
+                        <Textarea
+                            id="ask-broker"
+                            value={reason}
+                            maxLength={500}
+                            aria-describedby="ask-broker-hint"
+                            onChange={(e) => setReason(e.target.value)}
+                        />
+                        <p
+                            id="ask-broker-hint"
+                            className="text-sm text-muted-foreground"
+                        >
+                            {t('compliance.askBroker.reasonHint')}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            <Button
+                                type="button"
+                                disabled={reason.trim().length < 3}
+                                onClick={() =>
+                                    onSubmit({
+                                        ...value,
+                                        ask_broker: reason.trim(),
+                                    })
+                                }
+                            >
+                                {t('compliance.askBroker.send')}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="ghost"
+                                onClick={() => setAsking(false)}
+                            >
+                                {t('compliance.askBroker.cancel')}
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setAsking(true)}
+                    >
+                        {t('compliance.askBroker.button')}
+                    </Button>
+                )
             ) : null}
             <Button
                 type="submit"

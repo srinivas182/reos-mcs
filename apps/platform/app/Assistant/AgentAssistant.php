@@ -7,6 +7,7 @@ namespace App\Assistant;
 use App\Agents\AgentBriefs;
 use App\Agents\AgentToday;
 use App\Compliance\ComplianceEngine;
+use App\Compliance\ComplianceLog;
 use App\Deals\Deals;
 use App\Models\AgentProfile;
 use App\Models\AssistantChat;
@@ -86,6 +87,7 @@ final readonly class AgentAssistant
         private AiSettings $settings,
         private AuditLogger $audit,
         private ComplianceEngine $compliance,
+        private ComplianceLog $log,
     ) {}
 
     /** @return array{permission: bool, starters: list<string>, chats: list<array{id: string, title: string, updated_at: string|null}>} */
@@ -334,6 +336,7 @@ final readonly class AgentAssistant
 
         if ($fixed !== []) {
             $body = $this->compliance->fix($agent, $body, $checked['issues']);
+            $this->log->record($agent, $channel, 'fixed', $checked['issues'], subjectType: 'assistant_draft');
         }
         $subject = $channel === 'email' ? self::line('assistant.draft.subject', ['agent' => (string) $agent->name]) : null;
         $href = $channel === 'email' ? 'mailto:'.rawurlencode($to).'?subject='.rawurlencode((string) $subject).'&body='.rawurlencode($body) : 'sms:'.$to.'?&body='.rawurlencode($body);

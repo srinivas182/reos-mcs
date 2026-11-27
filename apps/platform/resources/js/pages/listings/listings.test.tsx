@@ -28,6 +28,8 @@ const page = {
     published: false,
     bio: null,
     url: 'https://reos.com/agent/james-miller',
+    waiting: false,
+    note: null,
 };
 const render = (ui: ReactElement) =>
     baseRender(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);

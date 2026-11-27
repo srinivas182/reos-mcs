@@ -91,7 +91,8 @@
     "goalsAndRewards": "Goals and rewards",
     "pointsRates": "Points",
     "brokerRewards": "Goals and rewards",
-    "agentFeedback": "Feedback from agents"
+    "agentFeedback": "Feedback from agents",
+    "complianceLog": "Compliance log"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2327,7 +2328,10 @@
         "points_campaign.ended": "Bonus campaign ended",
         "points.redeemed": "Points used",
         "agent_feedback.reported": "Feedback from an agent reported",
-        "agent_feedback.unreported": "Feedback report taken back"
+        "agent_feedback.unreported": "Feedback report taken back",
+        "agent_page.approved": "Public page approved",
+        "agent_page.returned": "Public page sent back",
+        "compliance_log.exported": "Compliance log exported"
       }
     }
   },
@@ -3277,7 +3281,58 @@
       "unclear": "Wording to check",
       "banned": "Your brokerage's banned phrases"
     },
-    "share": "Share the link"
+    "share": "Share the link",
+    "pageWaiting": "Your page is waiting for your broker to approve it. It goes live once they do.",
+    "pageReturned": "Your broker sent your page back: {{note}}",
+    "askBroker": {
+      "button": "Send to my broker instead",
+      "reason": "Why is this wording fine?",
+      "reasonHint": "For example, \"Family Room Ranch is the name of the subdivision.\" Your broker sees this with the post.",
+      "send": "Send to broker",
+      "cancel": "Cancel"
+    },
+    "agentReason": "Agent's reason: {{reason}}",
+    "pages": {
+      "title": "Public pages waiting",
+      "none": "No pages waiting",
+      "noneHint": "When agents publish their page and your brokerage approves ads first, it waits here.",
+      "view": "View page",
+      "approve": "Approve",
+      "return": "Send back"
+    },
+    "log": {
+      "title": "Compliance log",
+      "purpose": "Every check, fix, approval and send-back on every channel, with who did it and when.",
+      "agent": "Agent",
+      "channel": "Channel",
+      "action": "What happened",
+      "from": "From",
+      "to": "To",
+      "all": "All",
+      "apply": "Show",
+      "export": "Export CSV",
+      "none": "Nothing logged yet",
+      "noneHint": "Checks, fixes and approvals appear here as your agents post, send and publish.",
+      "when": "When",
+      "by": "By",
+      "item": "Item",
+      "rules": "Rules",
+      "channels": {
+        "post": "Social post",
+        "video": "Video",
+        "page": "Public page",
+        "email": "Email",
+        "text": "Text"
+      },
+      "actions": {
+        "checked": "Checked, passed",
+        "blocked": "Blocked",
+        "fixed": "Fixed automatically",
+        "sent_to_broker": "Sent to broker",
+        "approved": "Approved",
+        "sent_back": "Sent back"
+      }
+    }
   },
   "calendar": {
     "errors": {

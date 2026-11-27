@@ -63,6 +63,7 @@ import { show as aiSettings } from '@/routes/ai';
 import { show as pointsRates } from '@/routes/points';
 import { index as rewardsIndex } from '@/routes/rewards';
 import { index as feedbackIndex } from '@/routes/feedback';
+import { index as complianceLog } from '@/routes/organisation/compliance-log';
 import { index as brokerRewards } from '@/routes/organisation/rewards';
 import { index as providerCategories } from '@/routes/provider-categories';
 import { index as sales } from '@/routes/sales';
@@ -134,6 +135,7 @@ export type NavLabel =
     | 'brokerRewards'
     | 'goalsAndRewards'
     | 'agentFeedback'
+    | 'complianceLog'
     | 'pointsRates'
     | 'challenges'
     | 'ceReporting'
@@ -312,6 +314,13 @@ export function roleNavigation(
                 ScrollText,
                 advertisingPolicy(),
                 '/organisation/advertising',
+            ),
+            // Compliance log (B13.2): every check, fix, approval and send-back, with CSV export.
+            item(
+                'complianceLog',
+                ScrollText,
+                complianceLog(),
+                '/organisation/compliance-log',
             ),
             // Mentor program (A13.1a, screens 21–23): mentors, prices, points, assignment.
             item(
