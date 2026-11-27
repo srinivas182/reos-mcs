@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -13,15 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $pod_id
  * @property int $user_id
- * @property CarbonImmutable $week_of
+ * @property string $week_of The week's Monday, Y-m-d (kept as text so every database compares it the same way)
  * @property string $text
  */
 final class PodGoal extends Model
 {
     protected $fillable = ['pod_id', 'user_id', 'week_of', 'text'];
-
-    protected function casts(): array
-    {
-        return ['week_of' => 'immutable_date'];
-    }
 }
