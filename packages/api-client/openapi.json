@@ -43199,6 +43199,1469 @@
                 }
             }
         },
+        "/role-play": {
+            "get": {
+                "operationId": "role-play.index",
+                "description": "What I can practise (five types, each with personas, and my best score), my recent practices, and my skills assessment.",
+                "summary": "Role-play",
+                "tags": [
+                    "RolePlay"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "types": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing",
+                                                                    "objection",
+                                                                    "prospecting",
+                                                                    "appraisal_gap",
+                                                                    "follow_up"
+                                                                ]
+                                                            },
+                                                            "personas": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "interviewing_seller",
+                                                                        "downsizing_couple",
+                                                                        "rate_worried_buyer",
+                                                                        "commission_pushback",
+                                                                        "fsbo",
+                                                                        "expired",
+                                                                        "low_appraisal",
+                                                                        "cold_lead"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "best": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "type",
+                                                            "personas",
+                                                            "best"
+                                                        ]
+                                                    }
+                                                },
+                                                "recent": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing",
+                                                                    "objection",
+                                                                    "prospecting",
+                                                                    "appraisal_gap",
+                                                                    "follow_up"
+                                                                ]
+                                                            },
+                                                            "persona": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "interviewing_seller",
+                                                                    "downsizing_couple",
+                                                                    "rate_worried_buyer",
+                                                                    "commission_pushback",
+                                                                    "fsbo",
+                                                                    "expired",
+                                                                    "low_appraisal",
+                                                                    "cold_lead"
+                                                                ]
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "practice",
+                                                                    "assessment"
+                                                                ]
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "active",
+                                                                    "scored"
+                                                                ]
+                                                            },
+                                                            "score": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "type",
+                                                            "persona",
+                                                            "kind",
+                                                            "status",
+                                                            "score",
+                                                            "created_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "assessment": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "done": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        },
+                                                        "next": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "enum": [
+                                                                "listing",
+                                                                "objection",
+                                                                "prospecting",
+                                                                "appraisal_gap",
+                                                                "follow_up",
+                                                                null
+                                                            ]
+                                                        },
+                                                        "completed": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "results": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "type": {
+                                                                        "type": "string",
+                                                                        "enum": [
+                                                                            "listing",
+                                                                            "objection",
+                                                                            "prospecting",
+                                                                            "appraisal_gap",
+                                                                            "follow_up"
+                                                                        ]
+                                                                    },
+                                                                    "score": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "type",
+                                                                    "score"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "weakest": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing",
+                                                                    "objection",
+                                                                    "prospecting",
+                                                                    "appraisal_gap",
+                                                                    "follow_up"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "completed_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "done",
+                                                        "total",
+                                                        "next",
+                                                        "completed",
+                                                        "results",
+                                                        "weakest",
+                                                        "completed_at"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "types",
+                                                "recent",
+                                                "assessment"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "role-play.start",
+                "description": "The persona speaks first. Answer by voice or typing; after four answers the persona agrees to the next step or declines, and the practice is scored.",
+                "summary": "Start a role-play",
+                "tags": [
+                    "RolePlay"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StartRolePlayRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "listing",
+                                                        "objection",
+                                                        "prospecting",
+                                                        "appraisal_gap",
+                                                        "follow_up"
+                                                    ]
+                                                },
+                                                "persona": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "interviewing_seller",
+                                                        "downsizing_couple",
+                                                        "rate_worried_buyer",
+                                                        "commission_pushback",
+                                                        "fsbo",
+                                                        "expired",
+                                                        "low_appraisal",
+                                                        "cold_lead"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "practice",
+                                                        "assessment"
+                                                    ]
+                                                },
+                                                "round": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "active",
+                                                        "scored"
+                                                    ]
+                                                },
+                                                "turns": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "persona",
+                                                                    "agent"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "role",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "turns_left": {
+                                                    "type": "integer"
+                                                },
+                                                "score": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "scores": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "structure": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "objections": {
+                                                            "type": "integer"
+                                                        },
+                                                        "clarity": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ask": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "structure",
+                                                        "questions",
+                                                        "objections",
+                                                        "clarity",
+                                                        "ask"
+                                                    ]
+                                                },
+                                                "fixes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "dimension": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "structure",
+                                                                    "questions",
+                                                                    "objections",
+                                                                    "clarity",
+                                                                    "ask"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string"
+                                                            },
+                                                            "lesson": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing_presentation",
+                                                                    "discovery_questions",
+                                                                    "objection_handling",
+                                                                    "clear_speaking",
+                                                                    "asking_for_business"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "dimension",
+                                                            "text",
+                                                            "example",
+                                                            "lesson"
+                                                        ]
+                                                    }
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "won",
+                                                        "lost",
+                                                        null
+                                                    ]
+                                                },
+                                                "engine": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "claude",
+                                                        "script"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "type",
+                                                "persona",
+                                                "kind",
+                                                "round",
+                                                "status",
+                                                "turns",
+                                                "turns_left",
+                                                "score",
+                                                "scores",
+                                                "fixes",
+                                                "outcome",
+                                                "engine",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/role-play/assessment": {
+            "post": {
+                "operationId": "role-play.assess",
+                "description": "Five short rounds, one per type (two answers each). Starts the assessment or returns its next round; a finished assessment starts over.",
+                "summary": "Start the skills assessment",
+                "tags": [
+                    "RolePlay"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "listing",
+                                                        "objection",
+                                                        "prospecting",
+                                                        "appraisal_gap",
+                                                        "follow_up"
+                                                    ]
+                                                },
+                                                "persona": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "interviewing_seller",
+                                                        "downsizing_couple",
+                                                        "rate_worried_buyer",
+                                                        "commission_pushback",
+                                                        "fsbo",
+                                                        "expired",
+                                                        "low_appraisal",
+                                                        "cold_lead"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "practice",
+                                                        "assessment"
+                                                    ]
+                                                },
+                                                "round": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "active",
+                                                        "scored"
+                                                    ]
+                                                },
+                                                "turns": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "persona",
+                                                                    "agent"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "role",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "turns_left": {
+                                                    "type": "integer"
+                                                },
+                                                "score": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "scores": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "structure": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "objections": {
+                                                            "type": "integer"
+                                                        },
+                                                        "clarity": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ask": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "structure",
+                                                        "questions",
+                                                        "objections",
+                                                        "clarity",
+                                                        "ask"
+                                                    ]
+                                                },
+                                                "fixes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "dimension": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "structure",
+                                                                    "questions",
+                                                                    "objections",
+                                                                    "clarity",
+                                                                    "ask"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string"
+                                                            },
+                                                            "lesson": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing_presentation",
+                                                                    "discovery_questions",
+                                                                    "objection_handling",
+                                                                    "clear_speaking",
+                                                                    "asking_for_business"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "dimension",
+                                                            "text",
+                                                            "example",
+                                                            "lesson"
+                                                        ]
+                                                    }
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "won",
+                                                        "lost",
+                                                        null
+                                                    ]
+                                                },
+                                                "engine": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "claude",
+                                                        "script"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "type",
+                                                "persona",
+                                                "kind",
+                                                "round",
+                                                "status",
+                                                "turns",
+                                                "turns_left",
+                                                "score",
+                                                "scores",
+                                                "fixes",
+                                                "outcome",
+                                                "engine",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/role-play/{rolePlay}": {
+            "get": {
+                "operationId": "role-play.show",
+                "summary": "A role-play",
+                "tags": [
+                    "RolePlay"
+                ],
+                "parameters": [
+                    {
+                        "name": "rolePlay",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "listing",
+                                                        "objection",
+                                                        "prospecting",
+                                                        "appraisal_gap",
+                                                        "follow_up"
+                                                    ]
+                                                },
+                                                "persona": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "interviewing_seller",
+                                                        "downsizing_couple",
+                                                        "rate_worried_buyer",
+                                                        "commission_pushback",
+                                                        "fsbo",
+                                                        "expired",
+                                                        "low_appraisal",
+                                                        "cold_lead"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "practice",
+                                                        "assessment"
+                                                    ]
+                                                },
+                                                "round": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "active",
+                                                        "scored"
+                                                    ]
+                                                },
+                                                "turns": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "persona",
+                                                                    "agent"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "role",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "turns_left": {
+                                                    "type": "integer"
+                                                },
+                                                "score": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "scores": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "structure": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "objections": {
+                                                            "type": "integer"
+                                                        },
+                                                        "clarity": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ask": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "structure",
+                                                        "questions",
+                                                        "objections",
+                                                        "clarity",
+                                                        "ask"
+                                                    ]
+                                                },
+                                                "fixes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "dimension": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "structure",
+                                                                    "questions",
+                                                                    "objections",
+                                                                    "clarity",
+                                                                    "ask"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string"
+                                                            },
+                                                            "lesson": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing_presentation",
+                                                                    "discovery_questions",
+                                                                    "objection_handling",
+                                                                    "clear_speaking",
+                                                                    "asking_for_business"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "dimension",
+                                                            "text",
+                                                            "example",
+                                                            "lesson"
+                                                        ]
+                                                    }
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "won",
+                                                        "lost",
+                                                        null
+                                                    ]
+                                                },
+                                                "engine": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "claude",
+                                                        "script"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "type",
+                                                "persona",
+                                                "kind",
+                                                "round",
+                                                "status",
+                                                "turns",
+                                                "turns_left",
+                                                "score",
+                                                "scores",
+                                                "fixes",
+                                                "outcome",
+                                                "engine",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/role-play/{rolePlay}/turns": {
+            "post": {
+                "operationId": "role-play.say",
+                "description": "What I said (spoken words or typing); the persona replies. After the last answer it's scored: a score out of 100 and three fixes.",
+                "summary": "Answer",
+                "tags": [
+                    "RolePlay"
+                ],
+                "parameters": [
+                    {
+                        "name": "rolePlay",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SayRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "listing",
+                                                        "objection",
+                                                        "prospecting",
+                                                        "appraisal_gap",
+                                                        "follow_up"
+                                                    ]
+                                                },
+                                                "persona": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "interviewing_seller",
+                                                        "downsizing_couple",
+                                                        "rate_worried_buyer",
+                                                        "commission_pushback",
+                                                        "fsbo",
+                                                        "expired",
+                                                        "low_appraisal",
+                                                        "cold_lead"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "practice",
+                                                        "assessment"
+                                                    ]
+                                                },
+                                                "round": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "active",
+                                                        "scored"
+                                                    ]
+                                                },
+                                                "turns": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "persona",
+                                                                    "agent"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "role",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "turns_left": {
+                                                    "type": "integer"
+                                                },
+                                                "score": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "scores": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "structure": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "objections": {
+                                                            "type": "integer"
+                                                        },
+                                                        "clarity": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ask": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "structure",
+                                                        "questions",
+                                                        "objections",
+                                                        "clarity",
+                                                        "ask"
+                                                    ]
+                                                },
+                                                "fixes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "dimension": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "structure",
+                                                                    "questions",
+                                                                    "objections",
+                                                                    "clarity",
+                                                                    "ask"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string"
+                                                            },
+                                                            "lesson": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing_presentation",
+                                                                    "discovery_questions",
+                                                                    "objection_handling",
+                                                                    "clear_speaking",
+                                                                    "asking_for_business"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "dimension",
+                                                            "text",
+                                                            "example",
+                                                            "lesson"
+                                                        ]
+                                                    }
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "won",
+                                                        "lost",
+                                                        null
+                                                    ]
+                                                },
+                                                "engine": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "claude",
+                                                        "script"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "type",
+                                                "persona",
+                                                "kind",
+                                                "round",
+                                                "status",
+                                                "turns",
+                                                "turns_left",
+                                                "score",
+                                                "scores",
+                                                "fixes",
+                                                "outcome",
+                                                "engine",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/role-play/{rolePlay}/finish": {
+            "post": {
+                "operationId": "role-play.finish",
+                "description": "Ends the practice early and scores what I said: a score out of 100 on five parts and three fixes, each with a line to try and a lesson.",
+                "summary": "Finish and score",
+                "tags": [
+                    "RolePlay"
+                ],
+                "parameters": [
+                    {
+                        "name": "rolePlay",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "listing",
+                                                        "objection",
+                                                        "prospecting",
+                                                        "appraisal_gap",
+                                                        "follow_up"
+                                                    ]
+                                                },
+                                                "persona": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "interviewing_seller",
+                                                        "downsizing_couple",
+                                                        "rate_worried_buyer",
+                                                        "commission_pushback",
+                                                        "fsbo",
+                                                        "expired",
+                                                        "low_appraisal",
+                                                        "cold_lead"
+                                                    ]
+                                                },
+                                                "kind": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "practice",
+                                                        "assessment"
+                                                    ]
+                                                },
+                                                "round": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "active",
+                                                        "scored"
+                                                    ]
+                                                },
+                                                "turns": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "persona",
+                                                                    "agent"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "role",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "turns_left": {
+                                                    "type": "integer"
+                                                },
+                                                "score": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "scores": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "structure": {
+                                                            "type": "integer"
+                                                        },
+                                                        "questions": {
+                                                            "type": "integer"
+                                                        },
+                                                        "objections": {
+                                                            "type": "integer"
+                                                        },
+                                                        "clarity": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ask": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "structure",
+                                                        "questions",
+                                                        "objections",
+                                                        "clarity",
+                                                        "ask"
+                                                    ]
+                                                },
+                                                "fixes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "dimension": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "structure",
+                                                                    "questions",
+                                                                    "objections",
+                                                                    "clarity",
+                                                                    "ask"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "example": {
+                                                                "type": "string"
+                                                            },
+                                                            "lesson": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "listing_presentation",
+                                                                    "discovery_questions",
+                                                                    "objection_handling",
+                                                                    "clear_speaking",
+                                                                    "asking_for_business"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "dimension",
+                                                            "text",
+                                                            "example",
+                                                            "lesson"
+                                                        ]
+                                                    }
+                                                },
+                                                "outcome": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "enum": [
+                                                        "won",
+                                                        "lost",
+                                                        null
+                                                    ]
+                                                },
+                                                "engine": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "claude",
+                                                        "script"
+                                                    ]
+                                                },
+                                                "created_at": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "type",
+                                                "persona",
+                                                "kind",
+                                                "round",
+                                                "status",
+                                                "turns",
+                                                "turns_left",
+                                                "score",
+                                                "scores",
+                                                "fixes",
+                                                "outcome",
+                                                "engine",
+                                                "created_at"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/sessions": {
             "get": {
                 "operationId": "sessions.index",
@@ -60777,6 +62240,21 @@
                 ],
                 "title": "SaveTodoRequest"
             },
+            "SayRequest": {
+                "type": "object",
+                "description": "What the agent said in a role-play (A14.1a): spoken words or typing.",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 1500
+                    }
+                },
+                "required": [
+                    "text"
+                ],
+                "title": "SayRequest"
+            },
             "ScheduleClassRequest": {
                 "type": "object",
                 "description": "Schedule a live class (A10.2b, instructor i11; web w505).",
@@ -61258,6 +62736,40 @@
                     }
                 },
                 "title": "StartReviewRequest"
+            },
+            "StartRolePlayRequest": {
+                "type": "object",
+                "description": "Starting a role-play (A14.1a): a type and one of its personas.",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "listing",
+                            "objection",
+                            "prospecting",
+                            "appraisal_gap",
+                            "follow_up"
+                        ]
+                    },
+                    "persona": {
+                        "type": "string",
+                        "enum": [
+                            "interviewing_seller",
+                            "downsizing_couple",
+                            "rate_worried_buyer",
+                            "commission_pushback",
+                            "fsbo",
+                            "expired",
+                            "low_appraisal",
+                            "cold_lead"
+                        ]
+                    }
+                },
+                "required": [
+                    "type",
+                    "persona"
+                ],
+                "title": "StartRolePlayRequest"
             },
             "StateResource": {
                 "type": "object",

@@ -8,8 +8,10 @@ use App\Models\AgentPlan;
 use App\Models\AgentPlanTask;
 use App\Models\Connection;
 use App\Models\Contact;
+use App\Models\RolePlay;
 use App\Models\User;
 use App\Practice\StudyPlans;
+use App\RolePlay\RolePlays;
 use Carbon\CarbonImmutable;
 use Illuminate\Validation\ValidationException;
 
@@ -79,7 +81,7 @@ final readonly class AgentPlans
         'past_client_touch' => 'contacts', 'anniversary_touch' => 'contacts', 'team_huddle' => 'calendar', 'interview_candidates' => 'calendar',
     ];
 
-    public function __construct(private AgentModes $modes) {}
+    public function __construct(private AgentModes $modes, private RolePlays $rolePlays) {}
 
     /** @return Plan */
     public function current(User $user): array
@@ -108,6 +110,18 @@ final readonly class AgentPlans
                     }
                 }
             }
+        }
+
+        // The skills assessment (A14.1a) adds a weekly role-play of the weakest skill, ticked by doing it.
+        $weakest = $this->rolePlays->weakest($user)[0] ?? null;
+
+        if ($weakest !== null) {
+            $from = $plan->starts_on->addWeeks($week - 1)->startOfDay();
+            $practised = RolePlay::query()->where('user_id', $user->id)->where('type', $weakest)->where('status', 'scored')->whereNull('skill_assessment_id')
+                ->whereBetween('finished_at', [$from, $from->addWeek()])->exists();
+            $tasks[] = ['code' => 'practice_'.$weakest, 'week' => $week, 'done' => $practised, 'auto' => true, 'repeats' => true, 'link' => 'role_play'];
+            $total++;
+            $doneCount += $practised ? 1 : 0;
         }
 
         return [

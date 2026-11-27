@@ -4585,6 +4585,107 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/role-play": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Role-play
+         * @description What I can practise (five types, each with personas, and my best score), my recent practices, and my skills assessment.
+         */
+        get: operations["role-play.index"];
+        put?: never;
+        /**
+         * Start a role-play
+         * @description The persona speaks first. Answer by voice or typing; after four answers the persona agrees to the next step or declines, and the practice is scored.
+         */
+        post: operations["role-play.start"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/role-play/assessment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Start the skills assessment
+         * @description Five short rounds, one per type (two answers each). Starts the assessment or returns its next round; a finished assessment starts over.
+         */
+        post: operations["role-play.assess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/role-play/{rolePlay}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A role-play */
+        get: operations["role-play.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/role-play/{rolePlay}/turns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Answer
+         * @description What I said (spoken words or typing); the persona replies. After the last answer it's scored: a score out of 100 and three fixes.
+         */
+        post: operations["role-play.say"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/role-play/{rolePlay}/finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Finish and score
+         * @description Ends the practice early and scores what I said: a score out of 100 on five parts and three fixes, each with a line to try and a lesson.
+         */
+        post: operations["role-play.finish"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sessions": {
         parameters: {
             query?: never;
@@ -7274,6 +7375,13 @@ export interface components {
             source?: "typed" | "voice" | "crm";
         };
         /**
+         * SayRequest
+         * @description What the agent said in a role-play (A14.1a): spoken words or typing.
+         */
+        SayRequest: {
+            text: string;
+        };
+        /**
          * ScheduleClassRequest
          * @description Schedule a live class (A10.2b, instructor i11; web w505).
          */
@@ -7429,6 +7537,16 @@ export interface components {
             deal_file?: string | null;
             deal_id?: number | null;
             sample?: boolean | null;
+        };
+        /**
+         * StartRolePlayRequest
+         * @description Starting a role-play (A14.1a): a type and one of its personas.
+         */
+        StartRolePlayRequest: {
+            /** @enum {string} */
+            type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+            /** @enum {string} */
+            persona: "interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead";
         };
         /** StateResource */
         StateResource: {
@@ -7711,6 +7829,7 @@ export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendar
 export type SchemaSaveCertificateRequest = components['schemas']['SaveCertificateRequest'];
 export type SchemaSaveFlashcardRequest = components['schemas']['SaveFlashcardRequest'];
 export type SchemaSaveTodoRequest = components['schemas']['SaveTodoRequest'];
+export type SchemaSayRequest = components['schemas']['SayRequest'];
 export type SchemaScheduleClassRequest = components['schemas']['ScheduleClassRequest'];
 export type SchemaScheduleSessionRequest = components['schemas']['ScheduleSessionRequest'];
 export type SchemaSendForSignatureRequest = components['schemas']['SendForSignatureRequest'];
@@ -7722,6 +7841,7 @@ export type SchemaSignInResource = components['schemas']['SignInResource'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
 export type SchemaStartReviewRequest = components['schemas']['StartReviewRequest'];
+export type SchemaStartRolePlayRequest = components['schemas']['StartRolePlayRequest'];
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
 export type SchemaTextNumberRequest = components['schemas']['TextNumberRequest'];
@@ -22237,6 +22357,427 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "role-play.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            types: {
+                                /** @enum {string} */
+                                type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                                personas: ("interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead")[];
+                                best: number | null;
+                            }[];
+                            recent: {
+                                id: string;
+                                /** @enum {string} */
+                                type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                                /** @enum {string} */
+                                persona: "interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead";
+                                /** @enum {string} */
+                                kind: "practice" | "assessment";
+                                /** @enum {string} */
+                                status: "active" | "scored";
+                                score: number | null;
+                                created_at: string;
+                            }[];
+                            assessment: {
+                                id: string;
+                                done: number;
+                                total: number;
+                                /** @enum {string|null} */
+                                next: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up" | null;
+                                completed: boolean;
+                                results: {
+                                    /** @enum {string} */
+                                    type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                                    score: number;
+                                }[];
+                                weakest: ("listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up")[];
+                                completed_at: string | null;
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "role-play.start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartRolePlayRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                            /** @enum {string} */
+                            persona: "interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead";
+                            /** @enum {string} */
+                            kind: "practice" | "assessment";
+                            round: number | null;
+                            /** @enum {string} */
+                            status: "active" | "scored";
+                            turns: {
+                                /** @enum {string} */
+                                role: "persona" | "agent";
+                                text: string;
+                            }[];
+                            turns_left: number;
+                            score: number | null;
+                            scores: {
+                                structure: number;
+                                questions: number;
+                                objections: number;
+                                clarity: number;
+                                ask: number;
+                            } | null;
+                            fixes: {
+                                /** @enum {string} */
+                                dimension: "structure" | "questions" | "objections" | "clarity" | "ask";
+                                text: string;
+                                example: string;
+                                /** @enum {string} */
+                                lesson: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business";
+                            }[];
+                            /** @enum {string|null} */
+                            outcome: "won" | "lost" | null;
+                            /** @enum {string} */
+                            engine: "claude" | "script";
+                            created_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "role-play.assess": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                            /** @enum {string} */
+                            persona: "interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead";
+                            /** @enum {string} */
+                            kind: "practice" | "assessment";
+                            round: number | null;
+                            /** @enum {string} */
+                            status: "active" | "scored";
+                            turns: {
+                                /** @enum {string} */
+                                role: "persona" | "agent";
+                                text: string;
+                            }[];
+                            turns_left: number;
+                            score: number | null;
+                            scores: {
+                                structure: number;
+                                questions: number;
+                                objections: number;
+                                clarity: number;
+                                ask: number;
+                            } | null;
+                            fixes: {
+                                /** @enum {string} */
+                                dimension: "structure" | "questions" | "objections" | "clarity" | "ask";
+                                text: string;
+                                example: string;
+                                /** @enum {string} */
+                                lesson: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business";
+                            }[];
+                            /** @enum {string|null} */
+                            outcome: "won" | "lost" | null;
+                            /** @enum {string} */
+                            engine: "claude" | "script";
+                            created_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "role-play.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rolePlay: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                            /** @enum {string} */
+                            persona: "interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead";
+                            /** @enum {string} */
+                            kind: "practice" | "assessment";
+                            round: number | null;
+                            /** @enum {string} */
+                            status: "active" | "scored";
+                            turns: {
+                                /** @enum {string} */
+                                role: "persona" | "agent";
+                                text: string;
+                            }[];
+                            turns_left: number;
+                            score: number | null;
+                            scores: {
+                                structure: number;
+                                questions: number;
+                                objections: number;
+                                clarity: number;
+                                ask: number;
+                            } | null;
+                            fixes: {
+                                /** @enum {string} */
+                                dimension: "structure" | "questions" | "objections" | "clarity" | "ask";
+                                text: string;
+                                example: string;
+                                /** @enum {string} */
+                                lesson: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business";
+                            }[];
+                            /** @enum {string|null} */
+                            outcome: "won" | "lost" | null;
+                            /** @enum {string} */
+                            engine: "claude" | "script";
+                            created_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "role-play.say": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rolePlay: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SayRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                            /** @enum {string} */
+                            persona: "interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead";
+                            /** @enum {string} */
+                            kind: "practice" | "assessment";
+                            round: number | null;
+                            /** @enum {string} */
+                            status: "active" | "scored";
+                            turns: {
+                                /** @enum {string} */
+                                role: "persona" | "agent";
+                                text: string;
+                            }[];
+                            turns_left: number;
+                            score: number | null;
+                            scores: {
+                                structure: number;
+                                questions: number;
+                                objections: number;
+                                clarity: number;
+                                ask: number;
+                            } | null;
+                            fixes: {
+                                /** @enum {string} */
+                                dimension: "structure" | "questions" | "objections" | "clarity" | "ask";
+                                text: string;
+                                example: string;
+                                /** @enum {string} */
+                                lesson: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business";
+                            }[];
+                            /** @enum {string|null} */
+                            outcome: "won" | "lost" | null;
+                            /** @enum {string} */
+                            engine: "claude" | "script";
+                            created_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "role-play.finish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                rolePlay: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            type: "listing" | "objection" | "prospecting" | "appraisal_gap" | "follow_up";
+                            /** @enum {string} */
+                            persona: "interviewing_seller" | "downsizing_couple" | "rate_worried_buyer" | "commission_pushback" | "fsbo" | "expired" | "low_appraisal" | "cold_lead";
+                            /** @enum {string} */
+                            kind: "practice" | "assessment";
+                            round: number | null;
+                            /** @enum {string} */
+                            status: "active" | "scored";
+                            turns: {
+                                /** @enum {string} */
+                                role: "persona" | "agent";
+                                text: string;
+                            }[];
+                            turns_left: number;
+                            score: number | null;
+                            scores: {
+                                structure: number;
+                                questions: number;
+                                objections: number;
+                                clarity: number;
+                                ask: number;
+                            } | null;
+                            fixes: {
+                                /** @enum {string} */
+                                dimension: "structure" | "questions" | "objections" | "clarity" | "ask";
+                                text: string;
+                                example: string;
+                                /** @enum {string} */
+                                lesson: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business";
+                            }[];
+                            /** @enum {string|null} */
+                            outcome: "won" | "lost" | null;
+                            /** @enum {string} */
+                            engine: "claude" | "script";
+                            created_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {

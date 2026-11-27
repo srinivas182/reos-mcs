@@ -66,6 +66,7 @@ use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
 use App\Http\Controllers\Api\Rewards\RewardsController;
+use App\Http\Controllers\Api\RolePlay\RolePlayController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
 use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
@@ -295,6 +296,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('visibility', 'visibility')->middleware('throttle:20,1,api-feedback')->name('visibility');
         Route::put('{feedback}/response', 'respond')->whereUuid('feedback')->middleware('throttle:20,1,api-feedback')->name('respond');
         Route::post('{feedback}/report', 'report')->whereUuid('feedback')->middleware('throttle:20,1,api-feedback')->name('report');
+    });
+
+    // Role-play and the skills assessment (A14.1a, screen 7): private to the agent.
+    Route::prefix('role-play')->name('api.role-play.')->controller(RolePlayController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'start')->middleware('throttle:20,1,api-role-play')->name('start');
+        Route::post('assessment', 'assess')->middleware('throttle:20,1,api-role-play')->name('assess');
+        Route::get('{rolePlay}', 'show')->whereUuid('rolePlay')->name('show');
+        Route::post('{rolePlay}/turns', 'say')->whereUuid('rolePlay')->middleware('throttle:40,1,api-role-play-turns')->name('say');
+        Route::post('{rolePlay}/finish', 'finish')->whereUuid('rolePlay')->middleware('throttle:20,1,api-role-play')->name('finish');
     });
 
     // Daily goals, points and rewards (A13.3a, screens 111 and 112).

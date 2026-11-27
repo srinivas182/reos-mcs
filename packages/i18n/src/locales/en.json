@@ -93,7 +93,8 @@
     "brokerRewards": "Goals and rewards",
     "agentFeedback": "Feedback from agents",
     "complianceLog": "Compliance log",
-    "candidateStudio": "Candidate studio"
+    "candidateStudio": "Candidate studio",
+    "rolePlay": "Role-play"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2885,7 +2886,12 @@
         "business_plan": "Write your business plan",
         "comp_plan": "Design your commission plan",
         "broker_licence": "Apply for your broker license",
-        "go_live_checklist": "Work through the go-live checklist"
+        "go_live_checklist": "Work through the go-live checklist",
+        "practice_listing": "Practice a listing presentation (role-play)",
+        "practice_objection": "Practice handling objections (role-play)",
+        "practice_prospecting": "Practice a prospecting call (role-play)",
+        "practice_appraisal_gap": "Practice an appraisal gap (role-play)",
+        "practice_follow_up": "Practice a follow-up (role-play)"
       },
       "phases": {
         "setup": "Set up",
@@ -9932,5 +9938,211 @@
       "notVerified": "You can rate an agent only after a closing they were on.",
       "already": "You've already rated this agent for this deal."
     }
+  },
+  "roleplay": {
+    "title": "Role-play",
+    "purpose": "Practice a listing presentation, an objection, a call or an appraisal gap out loud, then get a score and three fixes.",
+    "private": "Only you can see your practice. It stays with you if you change brokerage.",
+    "assessment": {
+      "title": "Skills assessment",
+      "purpose": "Five short rounds, one for each skill. Your weakest skill goes into your 90-day plan.",
+      "start": "Start the assessment",
+      "continue": "Continue round {{n}}",
+      "retake": "Take it again",
+      "progress": "{{done}} of {{total}} rounds done",
+      "done": "Finished. Work on these first: {{skills}}",
+      "round": "Assessment round {{n}} of {{total}}"
+    },
+    "types": {
+      "listing": "Listing presentation",
+      "objection": "Objections",
+      "prospecting": "Prospecting call",
+      "appraisal_gap": "Appraisal gap",
+      "follow_up": "Follow-up"
+    },
+    "typeHints": {
+      "listing": "Win the listing from a seller who is interviewing agents.",
+      "objection": "Answer the concern and keep the client moving.",
+      "prospecting": "Book a meeting with a FSBO or an expired listing.",
+      "appraisal_gap": "Keep the deal together when the appraisal comes in low.",
+      "follow_up": "Bring a quiet lead back into the conversation."
+    },
+    "personas": {
+      "interviewing_seller": {
+        "name": "Seller interviewing three agents",
+        "brief": "Mark Ellis is selling a four-bedroom home in Katy and meeting three agents this week.",
+        "lines": {
+          "0": "Thanks for coming. I'm talking to three agents this week, so tell me: why should I list with you?",
+          "1": "Another agent told me we could get 30,000 dollars more than your number. Why is your price lower?",
+          "2": "How exactly will you market the house? I don't want it sitting for months.",
+          "3": "This all sounds good, but I still want to think it over after the other two meetings.",
+          "won": "All right, you've made a good case. Let's meet Thursday and go over the listing agreement.",
+          "lost": "Thanks for your time. I'll call you after I've met the others."
+        }
+      },
+      "downsizing_couple": {
+        "name": "Couple downsizing after 30 years",
+        "brief": "Ruth and Carl Moreno are selling the family home in Sugar Land to move somewhere smaller.",
+        "lines": {
+          "0": "We raised our kids in this house. Selling it is hard, and we don't even know where we'd go next.",
+          "1": "What if it sells before we find our next place? We can't be left without a home.",
+          "2": "Do we really have to fix everything before we list? We're not up for a big project.",
+          "3": "Our neighbor's house took five months to sell. Why would ours be any different?",
+          "won": "That helps a lot. Let's set a time next week to plan it step by step.",
+          "lost": "We need some time to talk about it. We'll be in touch."
+        }
+      },
+      "rate_worried_buyer": {
+        "name": "Buyer worried about rates",
+        "brief": "Jasmine Cole is a first-time buyer in Houston thinking of waiting a year.",
+        "lines": {
+          "0": "Honestly, with rates where they are, I'm thinking of waiting a year before I buy.",
+          "1": "But my monthly payment would be so much higher than my rent. How is that a good idea?",
+          "2": "What if rates drop right after I buy? Then I'd feel stuck.",
+          "3": "I'm still not sure. What would you actually suggest I do next?",
+          "won": "Okay, that makes sense. Let's talk to a lender and look at a few homes this weekend.",
+          "lost": "I think I'll wait and see what rates do. Thanks anyway."
+        }
+      },
+      "commission_pushback": {
+        "name": "Seller pushing back on commission",
+        "brief": "Dan Ortiz likes you but another agent offered a lower commission.",
+        "lines": {
+          "0": "I like you, but another agent said they'd do it for a lot less. Can you match that?",
+          "1": "At the end of the day, isn't every agent putting it on the MLS anyway?",
+          "2": "What do I actually get for the extra money?",
+          "3": "I'd still feel better if you came down a little.",
+          "won": "Fair enough, I can see the difference. Let's get the paperwork started.",
+          "lost": "I'll probably go with the cheaper option. No hard feelings."
+        }
+      },
+      "fsbo": {
+        "name": "Selling without an agent",
+        "brief": "Linda Park is selling her own home to save the commission.",
+        "lines": {
+          "0": "Hello? If you're an agent, I'm selling the house myself, thanks.",
+          "1": "I've already had people come by. Why would I pay a commission?",
+          "2": "I can put it online myself. What would you do that I can't?",
+          "3": "Maybe. But I'm not signing anything today.",
+          "won": "Okay, you can come by Saturday morning and walk me through it.",
+          "lost": "I'll keep trying on my own for now. Bye."
+        }
+      },
+      "expired": {
+        "name": "Expired listing",
+        "brief": "Greg Hall's listing just expired after 120 days with another agent.",
+        "lines": {
+          "0": "Let me guess, another agent calling now that my listing expired. Why should I talk to you?",
+          "1": "The last agent promised a lot too. Nothing happened in four months.",
+          "2": "Are you just going to tell me to lower the price?",
+          "3": "I'm tired of this. Why would it be different with you?",
+          "won": "Fine, I'll give you twenty minutes. Come by tomorrow at five.",
+          "lost": "I think I'll take the house off the market for a while."
+        }
+      },
+      "low_appraisal": {
+        "name": "Appraisal came in low",
+        "brief": "Sara Nguyen's buyer's appraisal came in 15,000 dollars under the contract price.",
+        "lines": {
+          "0": "The appraisal came in 15,000 dollars under our price. What happens now? Is the deal falling apart?",
+          "1": "I'm not just dropping my price by 15,000. That's not fair to me.",
+          "2": "Can we fight the appraisal? It feels wrong.",
+          "3": "What are my real options here, and what would you do?",
+          "won": "Okay, I feel better. Let's go ahead with the plan you laid out.",
+          "lost": "I need to think about whether I want to keep this buyer at all."
+        }
+      },
+      "cold_lead": {
+        "name": "Lead who went quiet",
+        "brief": "Kevin Brooks asked about homes three months ago and stopped answering.",
+        "lines": {
+          "0": "Oh, hi. Sorry, I've been really busy. I'm not sure we're still looking.",
+          "1": "We kind of put it on hold. The market felt crazy.",
+          "2": "I don't want to waste your time if we're not ready.",
+          "3": "Maybe in the spring? I don't know yet.",
+          "won": "Sure, send me a few homes and let's talk next Tuesday.",
+          "lost": "I'll reach out when we're ready. Thanks."
+        }
+      }
+    },
+    "dimensions": {
+      "structure": "Structure",
+      "questions": "Questions",
+      "objections": "Objections",
+      "clarity": "Clarity",
+      "ask": "The ask"
+    },
+    "fixes": {
+      "structure": {
+        "text": "Give your answer a shape: introduce yourself, show proof, then lay out the plan.",
+        "example": "Thanks for having me. Let me show you three homes I sold nearby and my plan for yours."
+      },
+      "questions": {
+        "text": "Ask before you tell: find out what matters most to them.",
+        "example": "Before I share my plan, what matters most to you about this move?"
+      },
+      "objections": {
+        "text": "Acknowledge the concern first, then answer that exact concern.",
+        "example": "I understand, that's a fair worry. Here's what the numbers show for homes like yours."
+      },
+      "clarity": {
+        "text": "Keep each answer short and plain, and drop the fillers.",
+        "example": "Here's the short version: three steps, and I'll handle each one."
+      },
+      "ask": {
+        "text": "End with a clear, specific next step.",
+        "example": "Can we meet Thursday at 4 to go over the details?"
+      }
+    },
+    "lessons": {
+      "listing_presentation": "Listing presentations",
+      "discovery_questions": "Questions that find the need",
+      "objection_handling": "Handling objections",
+      "clear_speaking": "Speaking clearly",
+      "asking_for_business": "Asking for the next step"
+    },
+    "errors": {
+      "persona": "Choose one of this practice's people.",
+      "finished": "This practice is already scored. Start a new one.",
+      "empty": "Say or type your answer first.",
+      "nothingSaid": "Answer at least once before you finish."
+    },
+    "practiceTitle": "Practice a skill",
+    "start": "Start",
+    "best": "Your best: {{score}}",
+    "recent": "Recent practice",
+    "none": "No practice yet",
+    "noneHint": "Pick a skill above. It takes about five minutes.",
+    "inProgress": "In progress",
+    "you": "You",
+    "answer": "Your answer",
+    "answerHint": "Speak or type. Answer as you would with a real client.",
+    "send": "Send",
+    "speak": "Speak",
+    "stopListening": "Stop",
+    "listening": "Listening…",
+    "noVoice": "Voice isn't available here. Type your answer instead.",
+    "readAloud": "Read their lines aloud",
+    "finish": "Finish and score",
+    "turnsLeft_one": "{{count}} answer left",
+    "turnsLeft_other": "{{count}} answers left",
+    "score": "{{score}} out of 100",
+    "won": "They agreed to the next step.",
+    "lost": "They didn't agree to a next step yet.",
+    "fixesTitle": "Three fixes",
+    "tryLine": "Try: “{{line}}”",
+    "lesson": "Lesson: {{name}}",
+    "again": "Practice again",
+    "nextRound": "Next round",
+    "seeResults": "See your results",
+    "allPractice": "All practice",
+    "engine": {
+      "claude": "Played and scored by Claude.",
+      "script": "Played and scored by REOS."
+    },
+    "them": "Client",
+    "part": "{{label}}: {{score}} of 20",
+    "assessmentTitle": "Your skills",
+    "results": "Score by skill"
   }
 }
