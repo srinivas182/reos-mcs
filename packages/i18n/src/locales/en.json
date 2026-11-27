@@ -94,7 +94,8 @@
     "agentFeedback": "Feedback from agents",
     "complianceLog": "Compliance log",
     "candidateStudio": "Candidate studio",
-    "rolePlay": "Role-play"
+    "rolePlay": "Role-play",
+    "videoPractice": "Video practice"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -10144,5 +10145,90 @@
     "part": "{{label}}: {{score}} of 20",
     "assessmentTitle": "Your skills",
     "results": "Score by skill"
+  },
+  "videopractice": {
+    "title": "Video practice",
+    "purpose": "Record a listing pitch or a video intro of up to two minutes, then get your pace, filler words, a score and three fixes.",
+    "private": "Your video stays on your phone or in your browser. Only the words are reviewed, and only you can see the review.",
+    "kinds": {
+      "listing_pitch": "Listing pitch",
+      "video_intro": "Video intro"
+    },
+    "kindHints": {
+      "listing_pitch": "Tell a seller why you're the right agent for their home.",
+      "video_intro": "Introduce yourself for your page or social posts."
+    },
+    "choose": "What are you recording?",
+    "record": "Start recording",
+    "stop": "Stop",
+    "recording": "Recording: {{seconds}} of {{max}} seconds",
+    "transcript": "What you said",
+    "transcriptHint": "Check the words and correct anything that was misheard.",
+    "noWords": "No words were recognized. Type what you said, or record again.",
+    "noCamera": "The camera isn't available in this browser. Try the REOS phone app.",
+    "getReview": "Get my review",
+    "again": "Record again",
+    "yourRecording": "Your recording",
+    "score": "{{score}} out of 100",
+    "pace": {
+      "label": "Pace",
+      "value": "{{wpm}} words a minute",
+      "slow": "A little slow. Aim for 130 to 160.",
+      "good": "Easy to follow.",
+      "fast": "A little fast. Aim for 130 to 160."
+    },
+    "duration": "{{seconds}} seconds",
+    "fillersTitle": "Filler words",
+    "noFillers": "No filler words.",
+    "fillerCount": "“{{word}}” × {{count}}",
+    "dimensions": {
+      "pace": "Pace",
+      "fillers": "Filler words",
+      "opening": "Opening",
+      "proof": "Proof",
+      "close": "Close"
+    },
+    "part": "{{label}}: {{score}} of 20",
+    "fixesTitle": "Three fixes",
+    "tryLine": "Try: “{{line}}”",
+    "lesson": "Lesson: {{name}}",
+    "fixes": {
+      "pace": {
+        "text": "Speak at an easy pace: about 130 to 160 words a minute, with short pauses.",
+        "example": "I'll keep this short. (pause) Here's what I'll do for you."
+      },
+      "fillers": {
+        "text": "Replace filler words with a short pause.",
+        "example": "Here's my plan. (pause) First, pricing."
+      },
+      "opening": {
+        "text": "Say who you are and who you work with in the first sentence.",
+        "example": "Hi, I'm Maria Garcia with Lone Star Realty, and I help families in Katy sell with confidence."
+      },
+      "proof": {
+        "text": "Give one or two facts that prove it: results, numbers or local knowledge.",
+        "example": "This year I sold 14 homes in Cinco Ranch, most in under 20 days."
+      },
+      "close": {
+        "text": "End with one clear next step.",
+        "example": "Text me today and I'll send you a free price review this week."
+      }
+    },
+    "compliance": {
+      "title": "Before you post",
+      "clean": "Nothing to fix before posting.",
+      "hint": "If you post this video, fix these first:"
+    },
+    "recent": "Recent reviews",
+    "none": "No reviews yet",
+    "noneHint": "Record a listing pitch or a video intro to get your first review.",
+    "allPractice": "All video practice",
+    "engine": {
+      "claude": "Reviewed by Claude.",
+      "script": "Reviewed by REOS."
+    },
+    "errors": {
+      "short": "That's too short to review. Record at least 10 seconds and 20 words."
+    }
   }
 }

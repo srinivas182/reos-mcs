@@ -77,6 +77,7 @@ use App\Http\Controllers\Api\Studio\CelebrationController;
 use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Studio\VideoController;
 use App\Http\Controllers\Api\Todos\TodoController;
+use App\Http\Controllers\Api\VideoPractice\VideoPracticeController;
 use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
 use App\Http\Controllers\Api\Voice\VoiceController;
 use App\Http\Middleware\RequireFlag;
@@ -306,6 +307,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('{rolePlay}', 'show')->whereUuid('rolePlay')->name('show');
         Route::post('{rolePlay}/turns', 'say')->whereUuid('rolePlay')->middleware('throttle:40,1,api-role-play-turns')->name('say');
         Route::post('{rolePlay}/finish', 'finish')->whereUuid('rolePlay')->middleware('throttle:20,1,api-role-play')->name('finish');
+    });
+
+    // Video practice with an AI review (A14.1b): the words only; the video stays on the device.
+    Route::prefix('video-practice')->name('api.video-practice.')->controller(VideoPracticeController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'review')->middleware('throttle:10,1,api-video-practice')->name('review');
+        Route::get('{videoPractice}', 'show')->whereUuid('videoPractice')->name('show');
     });
 
     // Daily goals, points and rewards (A13.3a, screens 111 and 112).

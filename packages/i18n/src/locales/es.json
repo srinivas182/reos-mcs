@@ -94,7 +94,8 @@
     "agentFeedback": "Opiniones de agentes",
     "complianceLog": "Registro de cumplimiento",
     "candidateStudio": "Estudio para candidatos",
-    "rolePlay": "Juego de roles"
+    "rolePlay": "Juego de roles",
+    "videoPractice": "Práctica en video"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -10144,5 +10145,90 @@
     "part": "{{label}}: {{score}} de 20",
     "assessmentTitle": "Sus habilidades",
     "results": "Puntuación por habilidad"
+  },
+  "videopractice": {
+    "title": "Práctica en video",
+    "purpose": "Grabe una presentación de listado o un video de presentación de hasta dos minutos y reciba su ritmo, sus muletillas, una puntuación y tres mejoras.",
+    "private": "Su video se queda en su teléfono o en su navegador. Solo se revisan las palabras, y solo usted puede ver la revisión.",
+    "kinds": {
+      "listing_pitch": "Presentación de listado",
+      "video_intro": "Video de presentación"
+    },
+    "kindHints": {
+      "listing_pitch": "Explíquele a un vendedor por qué usted es el agente indicado para su casa.",
+      "video_intro": "Preséntese para su página o sus publicaciones en redes sociales."
+    },
+    "choose": "¿Qué va a grabar?",
+    "record": "Empezar a grabar",
+    "stop": "Detener",
+    "recording": "Grabando: {{seconds}} de {{max}} segundos",
+    "transcript": "Lo que dijo",
+    "transcriptHint": "Revise las palabras y corrija lo que no se haya entendido bien.",
+    "noWords": "No se reconocieron palabras. Escriba lo que dijo o grabe de nuevo.",
+    "noCamera": "La cámara no está disponible en este navegador. Pruebe la aplicación de REOS en su teléfono.",
+    "getReview": "Recibir mi revisión",
+    "again": "Grabar de nuevo",
+    "yourRecording": "Su grabación",
+    "score": "{{score}} de 100",
+    "pace": {
+      "label": "Ritmo",
+      "value": "{{wpm}} palabras por minuto",
+      "slow": "Un poco lento. Procure entre 130 y 160.",
+      "good": "Fácil de seguir.",
+      "fast": "Un poco rápido. Procure entre 130 y 160."
+    },
+    "duration": "{{seconds}} segundos",
+    "fillersTitle": "Muletillas",
+    "noFillers": "Sin muletillas.",
+    "fillerCount": "“{{word}}” × {{count}}",
+    "dimensions": {
+      "pace": "Ritmo",
+      "fillers": "Muletillas",
+      "opening": "Inicio",
+      "proof": "Pruebas",
+      "close": "Cierre"
+    },
+    "part": "{{label}}: {{score}} de 20",
+    "fixesTitle": "Tres mejoras",
+    "tryLine": "Pruebe: “{{line}}”",
+    "lesson": "Lección: {{name}}",
+    "fixes": {
+      "pace": {
+        "text": "Hable a un ritmo cómodo: unas 130 a 160 palabras por minuto, con pausas cortas.",
+        "example": "Seré breve. (pausa) Esto es lo que haré por usted."
+      },
+      "fillers": {
+        "text": "Cambie las muletillas por una pausa corta.",
+        "example": "Este es mi plan. (pausa) Primero, el precio."
+      },
+      "opening": {
+        "text": "Diga quién es y con quién trabaja en la primera oración.",
+        "example": "Hola, soy Maria Garcia de Lone Star Realty y ayudo a las familias de Katy a vender con confianza."
+      },
+      "proof": {
+        "text": "Dé uno o dos datos que lo demuestren: resultados, números o conocimiento local.",
+        "example": "Este año vendí 14 casas en Cinco Ranch, la mayoría en menos de 20 días."
+      },
+      "close": {
+        "text": "Termine con un siguiente paso claro.",
+        "example": "Escríbame hoy y le envío una revisión de precio gratis esta semana."
+      }
+    },
+    "compliance": {
+      "title": "Antes de publicar",
+      "clean": "No hay nada que corregir antes de publicar.",
+      "hint": "Si publica este video, corrija esto primero:"
+    },
+    "recent": "Revisiones recientes",
+    "none": "Todavía no hay revisiones",
+    "noneHint": "Grabe una presentación de listado o un video de presentación para recibir su primera revisión.",
+    "allPractice": "Toda la práctica en video",
+    "engine": {
+      "claude": "Revisado por Claude.",
+      "script": "Revisado por REOS."
+    },
+    "errors": {
+      "short": "Es muy corto para revisarlo. Grabe al menos 10 segundos y 20 palabras."
+    }
   }
 }

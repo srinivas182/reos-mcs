@@ -5903,6 +5903,47 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/video-practice": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Video practice
+         * @description What I can record (a listing pitch or a video intro), the longest recording, and my recent reviews.
+         */
+        get: operations["video-practice.index"];
+        put?: never;
+        /**
+         * Review a recording
+         * @description Send the words (recognised on the device, corrected if needed) and the length; the video itself is never sent. Returns the pace, filler words, a score out of 100, three fixes, and what the compliance engine would flag if I posted it.
+         */
+        post: operations["video-practice.review"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/video-practice/{videoPractice}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** A review */
+        get: operations["video-practice.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/virtual-broker": {
         parameters: {
             query?: never;
@@ -7259,6 +7300,17 @@ export interface components {
             block?: boolean;
         };
         /**
+         * ReviewVideoRequest
+         * @description A recording to review (A14.1b): its kind, the words and its length. The video itself is never sent.
+         */
+        ReviewVideoRequest: {
+            /** @enum {string} */
+            kind: "listing_pitch" | "video_intro";
+            transcript: string;
+            /** @description A little over two minutes, for the moment it takes to stop. */
+            duration_seconds: number;
+        };
+        /**
          * Role
          * @description The roles from the journey documents, plus the platform's super admin. A person can hold several, each in an organisation.
          * @enum {string}
@@ -7824,6 +7876,7 @@ export type SchemaReadCertificateRequest = components['schemas']['ReadCertificat
 export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswerRequest'];
 export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
 export type SchemaReportRequest = components['schemas']['ReportRequest'];
+export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveCertificateRequest = components['schemas']['SaveCertificateRequest'];
@@ -26910,6 +26963,177 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "video-practice.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            kinds: ("listing_pitch" | "video_intro")[];
+                            max_seconds: number;
+                            recent: {
+                                id: string;
+                                /** @enum {string} */
+                                kind: "listing_pitch" | "video_intro";
+                                score: number;
+                                wpm: number;
+                                duration_seconds: number;
+                                created_at: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "video-practice.review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReviewVideoRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "listing_pitch" | "video_intro";
+                            transcript: string;
+                            duration_seconds: number;
+                            words: number;
+                            wpm: number;
+                            /** @enum {string} */
+                            pace: "slow" | "good" | "fast";
+                            fillers: {
+                                word: string;
+                                count: number;
+                            }[];
+                            score: number;
+                            scores: {
+                                pace: number;
+                                fillers: number;
+                                opening: number;
+                                proof: number;
+                                close: number;
+                            };
+                            fixes: {
+                                /** @enum {string} */
+                                dimension: "pace" | "fillers" | "opening" | "proof" | "close";
+                                text: string;
+                                example: string;
+                                /** @enum {string} */
+                                lesson: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business";
+                            }[];
+                            compliance: {
+                                code: string;
+                                phrase: string | null;
+                            }[];
+                            /** @enum {string} */
+                            engine: "claude" | "script";
+                            created_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "video-practice.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                videoPractice: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            kind: "listing_pitch" | "video_intro";
+                            transcript: string;
+                            duration_seconds: number;
+                            words: number;
+                            wpm: number;
+                            /** @enum {string} */
+                            pace: "slow" | "good" | "fast";
+                            fillers: {
+                                word: string;
+                                count: number;
+                            }[];
+                            score: number;
+                            scores: {
+                                pace: number;
+                                fillers: number;
+                                opening: number;
+                                proof: number;
+                                close: number;
+                            };
+                            fixes: {
+                                /** @enum {string} */
+                                dimension: "pace" | "fillers" | "opening" | "proof" | "close";
+                                text: string;
+                                example: string;
+                                /** @enum {string} */
+                                lesson: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business";
+                            }[];
+                            compliance: {
+                                code: string;
+                                phrase: string | null;
+                            }[];
+                            /** @enum {string} */
+                            engine: "claude" | "script";
+                            created_at: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "virtual-broker.index": {
