@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\Licence\SwitchController;
 use App\Http\Controllers\Api\Listings\CmaController;
 use App\Http\Controllers\Api\Listings\ListingPostController;
 use App\Http\Controllers\Api\Listings\ListingsController;
+use App\Http\Controllers\Api\Mentoring\MentorWorkspaceController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
@@ -72,6 +73,7 @@ use App\Http\Controllers\Licence\PassesAndOffersPageController;
 use App\Http\Controllers\Listings\AgentPublicPageController;
 use App\Http\Controllers\Listings\ListingsPageController;
 use App\Http\Controllers\Mentoring\MentorProgramController;
+use App\Http\Controllers\Mentoring\MentorWorkspacePageController;
 use App\Http\Controllers\Mentors\MentorsPageController;
 use App\Http\Controllers\Messaging\AnnouncementController;
 use App\Http\Controllers\Messaging\AttachmentController;
@@ -461,6 +463,18 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
         Route::put('connections/{connection}/mapping', 'mapping')->whereNumber('connection')->middleware('throttle:20,1,brokerage-integrations-map')->name('mapping');
     });
 // Advertising policy (B12.1, broker screen 35): Texas rules, the brokerage's rules and banned phrases, brand kit, approvals.
+// The mentor workspace (A13.1b, web screen 48): Today, mentees, a mentee's notes and goals.
+Route::middleware(['auth', 'verified'])->prefix('mentoring')->name('mentoring.')->group(function () {
+    Route::get('/', [MentorWorkspacePageController::class, 'index'])->name('index');
+    Route::get('{agent}', [MentorWorkspacePageController::class, 'show'])->whereNumber('agent')->name('show');
+    Route::controller(MentorWorkspaceController::class)->group(function () {
+        Route::post('{agent}/notes', 'addNote')->whereNumber('agent')->middleware('throttle:60,1,mentoring-notes')->name('notes.store');
+        Route::delete('notes/{note}', 'removeNote')->whereUuid('note')->middleware('throttle:60,1,mentoring-notes')->name('notes.destroy');
+        Route::post('notes/{note}/restore', 'restoreNote')->whereUuid('note')->middleware('throttle:60,1,mentoring-notes')->name('notes.restore');
+        Route::post('{agent}/goals', 'addGoal')->whereNumber('agent')->middleware('throttle:30,1,mentoring-goals')->name('goals.store');
+    });
+});
+
 // The brokerage's mentor program (A13.1a, broker screens 21–23).
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/mentors')->name('organisation.mentors.')
     ->controller(MentorProgramController::class)->group(function () {
@@ -468,6 +482,7 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
         Route::put('{mentor}', 'update')->whereNumber('mentor')->middleware('throttle:30,1,mentor-program')->name('update');
         Route::get('agents/{agent}/matches', 'matches')->whereNumber('agent')->name('matches');
         Route::post('assign', 'assign')->middleware('throttle:30,1,mentor-program')->name('assign');
+        Route::post('reviews/{booking}', 'review')->whereUuid('booking')->middleware('throttle:30,1,mentor-program')->name('review');
     });
 
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/advertising')->name('organisation.advertising.')

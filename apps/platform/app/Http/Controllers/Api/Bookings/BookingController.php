@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\Bookings;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Bookings\BookSessionRequest;
 use App\Http\Requests\Bookings\SessionOfferRequest;
+use App\Mentoring\WrapUp;
 use App\Models\SessionBooking;
 use App\Models\SessionOffer;
 use App\Models\User;
@@ -131,7 +132,7 @@ final class BookingController extends Controller
     /**
      * Send follow-up tasks.
      *
-     * Each becomes a to-do for the student, on its date.
+     * Each becomes a to-do for the student, on its date; the wrap-up `summary` (mentor screen 27) goes with them.
      *
      * @response array{data: array{sent: int}}
      */
@@ -142,6 +143,7 @@ final class BookingController extends Controller
             'tasks' => ['required', 'array', 'min:1', 'max:10'],
             'tasks.*.title' => ['required', 'string', 'min:2', 'max:200'],
             'tasks.*.due_date' => ['nullable', 'date_format:Y-m-d'],
+            'summary' => ['nullable', 'string', 'max:2000'],
         ]);
         $tasks = [];
         foreach (is_array($data['tasks']) ? $data['tasks'] : [] as $task) {
@@ -150,7 +152,21 @@ final class BookingController extends Controller
             }
         }
 
-        return response()->json(['data' => ['sent' => $bookings->sendTasks($user, $booking, $tasks)]]);
+        return response()->json(['data' => ['sent' => $bookings->sendTasks($user, $booking, $tasks, is_string($data['summary'] ?? null) ? $data['summary'] : null)]]);
+    }
+
+    /**
+     * Session wrap-up.
+     *
+     * A summary and action items with dates from the session's shared notes (mentor screen 27), for the instructor or mentor to edit and send. Claude writes it when configured; otherwise the notes' action lines, a week out. Free.
+     *
+     * @response array{data: array{summary: string, tasks: list<array{title: string, due_date: string|null}>, engine: string}}
+     */
+    public function wrapUp(SessionBooking $booking, #[CurrentUser] User $user, WrapUp $wrapUp): JsonResponse
+    {
+        abort_unless($booking->instructor_id === $user->id, 404);
+
+        return response()->json(['data' => $wrapUp->draft($booking->load('session', 'student'))]);
     }
 
     /**

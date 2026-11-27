@@ -45,6 +45,9 @@ REOS already had what's needed to build this:
    - A refund (a cancellation more than 24 hours ahead, or a mentor no-show) gives the points back, cancels the mentor's share and reverses the order in the ledger.
    - Points have no cash value for agents. Daily reconciliation leaves the `points` gateway out (it has no outside party).
 
+5. **The mentor's workspace (A13.1b).** Today, mentees and mentee detail are built from what REOS already holds: the plan, the scorecard, deal counts and sessions. Notes are the mentor's only, and goals become the mentee's to-dos. Mentors never see a mentee's contacts, clients or messages.
+6. **Wrap-up and ratings (A13.1b).** The wrap-up is drafted from the shared notes (Claude or the notes' action lines) and sent as dated to-dos with the summary. A rating of 2 stars or less with a comment counts only after the brokerage keeps it.
+
 ## Consequences
 
 - Mentor earnings show on the existing earnings screen (mentor screen 28) with no new payout code. The brokerage pays assigned mentors outside REOS during the pilot; REOS records those sessions.

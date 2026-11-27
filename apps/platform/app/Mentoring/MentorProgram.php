@@ -40,6 +40,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * @phpstan-type MentorRow array{id: int, name: string, topics: list<string>, price_30: int, price_60: int, points: bool, max_mentees: int, who: string, mentees: int, rating: float|null, ratings: int, sessions: int, hours_set: bool}
  * @phpstan-type AgentRow array{id: int, name: string, goal: string, mentor: array{id: int, name: string}|null, change_requested: bool}
  * @phpstan-type MatchRow array{id: int, name: string, score: int, reasons: list<string>, room: int}
+ * @phpstan-type ReviewRow array{id: string, mentor: string, agent: string, stars: int, tags: list<string>, comment: string|null, rated_at: string|null}
  * @phpstan-type Settings array{topics: list<string>, price_30_cents: int, price_60_cents: int, points: bool, max_mentees: int, who: string}
  */
 final readonly class MentorProgram
@@ -60,7 +61,7 @@ final readonly class MentorProgram
     /**
      * The broker's view (screen 21): mentors with load, price and rating; agents with their mentor.
      *
-     * @return array{mentors: list<MentorRow>, agents: list<AgentRow>, topics: list<string>}
+     * @return array{mentors: list<MentorRow>, agents: list<AgentRow>, topics: list<string>, reviews: list<ReviewRow>}
      */
     public function program(Organisation $brokerage): array
     {
@@ -68,7 +69,7 @@ final readonly class MentorProgram
 
         foreach ($this->mentorsOf($brokerage) as $mentor) {
             $settings = $this->settings($brokerage, $mentor);
-            $rated = SessionBooking::query()->where('instructor_id', $mentor->id)->whereNotNull('rating')->where('rated_at', '<=', now()->subHours(SessionBookings::RATING_DELAY_HOURS));
+            $rated = SessionBookings::published(SessionBooking::query()->where('instructor_id', $mentor->id));
             $average = (clone $rated)->avg('rating');
             $mentors[] = [
                 'id' => $mentor->id, 'name' => (string) $mentor->name, ...$this->settingsRow($settings),
@@ -92,7 +93,7 @@ final readonly class MentorProgram
 
         usort($agents, static fn (array $a, array $b): int => [$a['mentor'] !== null, $a['name']] <=> [$b['mentor'] !== null, $b['name']]);
 
-        return ['mentors' => $mentors, 'agents' => $agents, 'topics' => self::TOPICS];
+        return ['mentors' => $mentors, 'agents' => $agents, 'topics' => self::TOPICS, 'reviews' => $this->reviews($brokerage)];
     }
 
     /**
@@ -179,6 +180,35 @@ final readonly class MentorProgram
         $mentor->notify(new MentorAssigned($assignment, forMentor: true));
 
         return $assignment->load('mentor', 'agent');
+    }
+
+    /**
+     * Low ratings with a comment waiting for review (agent screen 119): they count only once kept.
+     *
+     * @return list<ReviewRow>
+     */
+    public function reviews(Organisation $brokerage): array
+    {
+        $mentors = array_map(static fn (User $m): int => $m->id, $this->mentorsOf($brokerage));
+        $rows = [];
+
+        foreach (SessionBooking::query()->whereIn('instructor_id', $mentors)->where('review_status', 'pending')->with(['instructor', 'student'])->oldest('rated_at')->limit(50)->get() as $b) {
+            $rows[] = [
+                'id' => $b->uuid, 'mentor' => (string) $b->instructor->name, 'agent' => (string) $b->student->name, 'stars' => (int) $b->rating,
+                'tags' => $b->rating_tags ?? [], 'comment' => $b->rating_comment, 'rated_at' => $b->rated_at?->toIso8601String(),
+            ];
+        }
+
+        return $rows;
+    }
+
+    /** Keeps a low rating (it counts) or hides it (it doesn't); audited. */
+    public function review(Organisation $brokerage, string $uuid, bool $keep, User $actor): void
+    {
+        $mentors = array_map(static fn (User $m): int => $m->id, $this->mentorsOf($brokerage));
+        $booking = SessionBooking::query()->where('uuid', $uuid)->whereIn('instructor_id', $mentors)->where('review_status', 'pending')->first() ?? throw new NotFoundHttpException;
+        $booking->forceFill(['review_status' => $keep ? 'kept' : 'hidden', 'reviewed_by' => $actor->id, 'reviewed_at' => now()])->save();
+        $this->audit->record('mentor.rating_reviewed', 'session_booking', $booking->uuid, ['before' => 'pending', 'after' => $booking->review_status, 'mentor' => $booking->instructor_id], $actor, $brokerage->id);
     }
 
     /** The agent asks for another mentor; the brokers are told. */

@@ -62,6 +62,12 @@ final readonly class MentorDirectory
         return null;
     }
 
+    /** @return list<int> the brokerage's agents */
+    public function agentsOf(Organisation $brokerage): array
+    {
+        return array_values(array_map(static fn (User $u): int => $u->id, $this->memberships->holdersIn(Role::Agent, $brokerage)->all()));
+    }
+
     public static function settings(Organisation $brokerage, User $mentor): MentorSetting
     {
         return MentorSetting::query()->firstOrNew(['organisation_id' => $brokerage->id, 'user_id' => $mentor->id], ['topics' => [], 'price_30_cents' => 0, 'price_60_cents' => 0, 'points' => true, 'max_mentees' => 5, 'who' => 'everyone']);

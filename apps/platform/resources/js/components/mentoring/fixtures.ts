@@ -1,4 +1,8 @@
-import type { MentorProgramData } from './types';
+import type {
+    MenteeDetailData,
+    MentorProgramData,
+    MentorTodayData,
+} from './types';
 
 export const program = (
     over: Partial<MentorProgramData> = {},
@@ -60,6 +64,72 @@ export const program = (
             goal: 'grow',
             mentor: { id: 11, name: 'Sarah Kim' },
             change_requested: true,
+        },
+    ],
+    reviews: [],
+    ...over,
+});
+
+const priya = {
+    id: 21,
+    name: 'Priya Shah',
+    goal: 'launch' as const,
+    assigned: true,
+    signal: 'quiet' as const,
+    last_active: null,
+    next_session: null,
+};
+
+export const mentorToday = (
+    over: Partial<MentorTodayData> = {},
+): MentorTodayData => ({
+    brokerage: 'Lone Star Realty',
+    mentees: 2,
+    sessions_this_week: 1,
+    needs: [priya],
+    upcoming: [
+        {
+            uuid: 'b-2',
+            agent: 'Tom Reyes',
+            agent_id: 22,
+            starts_at: '2026-11-24T17:00:00Z',
+            minutes: 30,
+            topic: 'Pricing my first listing',
+            status: 'confirmed',
+            session: null,
+            summary: null,
+            tasks_sent: false,
+        },
+    ],
+    wrap_ups: [],
+    ...over,
+});
+
+export const menteeDetail = (
+    over: Partial<MenteeDetailData> = {},
+): MenteeDetailData => ({
+    mentee: priya,
+    plan: { week: 2, weeks: 12, done: 3, total: 20 },
+    scorecard: [
+        { key: 'conversations', done: 4, target: 10 },
+        { key: 'appointments', done: 1, target: 2 },
+    ],
+    fix: 'conversations',
+    deals: { active: 1, under_contract: 0, closed: 0 },
+    sessions: [],
+    goals: [
+        {
+            id: 5,
+            title: 'Host an open house',
+            due_date: '2026-11-29',
+            done: false,
+        },
+    ],
+    notes: [
+        {
+            id: 'n-1',
+            body: 'Nervous about her first open house.',
+            created_at: '2026-11-23T15:00:00Z',
         },
     ],
     ...over,

@@ -47,6 +47,7 @@ use App\Models\ProviderCategory;
 use App\Models\ProviderLicence;
 use App\Models\QuizQuestion;
 use App\Models\ReviewItem;
+use App\Models\SessionBooking;
 use App\Models\SocialPost;
 use App\Models\State;
 use App\Models\SupportAccessGrant;
@@ -704,6 +705,15 @@ function adminActions(): array
 
             return auditCase($linda, 'POST', '/organisation/mentors/assign', ['agent' => $priya->id, 'mentor' => $sarah->id], tenant: $lone->id);
         },
+        'organisation.mentors.review' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $sarah = User::factory()->withRole(Role::Mentor, $lone)->create(['name' => 'Sarah Kim']);
+            $priya = User::factory()->withRole(Role::Agent, $lone)->create(['name' => 'Priya Shah']);
+            $booking = SessionBooking::query()->create(['uuid' => (string) Str::uuid(), 'student_id' => $priya->id, 'instructor_id' => $sarah->id, 'starts_at' => now()->subDay(), 'ends_at' => now()->subDay()->addMinutes(30),
+                'minutes' => 30, 'topic' => 'Pricing', 'status' => 'completed', 'price_cents' => 0, 'rating' => 1, 'rating_comment' => 'Late.', 'rated_at' => now()->subDay(), 'review_status' => 'pending']);
+
+            return auditCase($linda, 'POST', "/organisation/mentors/reviews/{$booking->uuid}", ['decision' => 'keep'], tenant: $lone->id);
+        },
         // Broker: the virtual broker (A12.1, screen 34).
         'organisation.virtual-broker.manual' => function () {
             [$lone, $linda] = auditBrokerage();
@@ -1056,7 +1066,7 @@ it('audits the admin action', function (string $name) {
 
 /** Routes that change a value (rather than add, remove or start something). */
 const CHANGES = [
-    'organisation.advertising.update', 'organisation.mentors.update',
+    'organisation.advertising.update', 'organisation.mentors.update', 'organisation.mentors.review',
     'organisation.virtual-broker.settings',
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',

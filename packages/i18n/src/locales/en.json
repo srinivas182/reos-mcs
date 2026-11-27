@@ -84,7 +84,8 @@
     "virtualBroker": "Virtual broker",
     "contractReview": "Contract review",
     "policies": "Policies",
-    "mentorProgram": "Mentor program"
+    "mentorProgram": "Mentor program",
+    "mentorWorkspace": "Mentor workspace"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2311,7 +2312,8 @@
         "mentor_program.updated": "Mentor settings changed",
         "mentor.assigned": "Mentor assigned",
         "mentor.change_requested": "Another mentor asked for",
-        "session_booking.points_returned": "Points returned for a session"
+        "session_booking.points_returned": "Points returned for a session",
+        "mentor.rating_reviewed": "Low rating reviewed"
       }
     }
   },
@@ -9366,7 +9368,8 @@
     "errors": {
       "full": "That mentor has no room for another mentee.",
       "assignedOnly": "This mentor takes their assigned mentees only.",
-      "noPoints": "This session can't be paid with points."
+      "noPoints": "This session can't be paid with points.",
+      "pastGoal": "Choose today or a later date."
     },
     "notify": {
       "assigned": "{{name}} is your mentor",
@@ -9415,7 +9418,13 @@
       "matches": "Best matches for {{name}}",
       "noMatches": "No mentor has room. Raise a mentor's max mentees.",
       "room_one": "{{count}} place left",
-      "room_other": "{{count}} places left"
+      "room_other": "{{count}} places left",
+      "reviewed": "Rating reviewed.",
+      "reviews": "Ratings to review",
+      "reviewsHint": "Low ratings with a comment count only once you keep them.",
+      "keep": "Keep",
+      "hide": "Hide",
+      "noReviews": "No ratings to review"
     },
     "agent": {
       "assigned": "Your mentor",
@@ -9428,6 +9437,69 @@
       "balance": "{{points}} points (worth {{value}})",
       "others": "Other mentors at your brokerage",
       "otherNote": "Mentors from other brokerages are never shown."
+    },
+    "workspace": {
+      "title": "Mentor workspace",
+      "purpose": "Your mentees at {{brokerage}}, in minutes a day.",
+      "today": "Today",
+      "mentees": "Mentees",
+      "sessionsWeek_one": "{{count}} session this week",
+      "sessionsWeek_other": "{{count}} sessions this week",
+      "menteeCount_one": "{{count}} mentee",
+      "menteeCount_other": "{{count}} mentees",
+      "needs": "Who needs you",
+      "upcoming": "Upcoming sessions",
+      "wrapUps": "Wrap-ups to send",
+      "noNeeds": "Everyone is on track",
+      "noUpcoming": "No sessions booked",
+      "noWrapUps": "All wrapped up",
+      "noMentees": "No mentees yet",
+      "noMenteesHint": "Your brokerage assigns mentees, and agents at your brokerage can book you.",
+      "filters": {
+        "all": "All",
+        "assigned": "Assigned",
+        "booked": "Booked"
+      },
+      "signals": {
+        "quiet": "Quiet for a week",
+        "first_session": "No first session yet",
+        "behind": "Behind on their plan",
+        "ok": "On track"
+      },
+      "assigned": "Assigned",
+      "nextSession": "Next session {{time}}",
+      "plan": "Plan",
+      "planWeek": "Week {{week}} of {{weeks}} · {{done}} of {{total}} done",
+      "scorecard": "This week",
+      "deals": "Deals",
+      "dealsValue": "{{active}} active · {{under_contract}} under contract · {{closed}} closed in 90 days",
+      "sessions": "Sessions together",
+      "goals": "Goals set together",
+      "noGoals": "No goals yet",
+      "addGoal": "Add a goal",
+      "goalTitle": "Goal",
+      "goalDue": "Due",
+      "goalAdded": "Goal added to {{name}}'s to-dos.",
+      "notes": "Private notes",
+      "notesHint": "Only you see these.",
+      "noNotes": "No notes yet",
+      "addNote": "Add a note",
+      "note": "Note",
+      "noteRemoved": "Note removed",
+      "privacy": "You see their plan and what they share. Their contacts and clients are never shown.",
+      "metrics": {
+        "conversations": "Conversations",
+        "appointments": "Appointments",
+        "clients": "Clients",
+        "ce_hours": "CE hours"
+      },
+      "metricValue": "{{done}} of {{target}}",
+      "wrapUp": "Wrap up",
+      "wrapUpTitle": "Session wrap-up",
+      "summary": "Summary",
+      "actions": "Action items",
+      "send": "Send to to-dos",
+      "sent": "Sent to {{name}}'s to-dos with reminders."
     }
   }
 }

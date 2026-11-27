@@ -402,9 +402,29 @@ export interface paths {
         put?: never;
         /**
          * Send follow-up tasks
-         * @description Each becomes a to-do for the student, on its date.
+         * @description Each becomes a to-do for the student, on its date; the wrap-up `summary` (mentor screen 27) goes with them.
          */
         post: operations["bookings.tasks.send"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/bookings/{booking}/wrap-up": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Session wrap-up
+         * @description A summary and action items with dates from the session's shared notes (mentor screen 27), for the instructor or mentor to edit and send. Claude writes it when configured; otherwise the notes' action lines, a week out. Free.
+         */
+        get: operations["bookings.wrap-up"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2819,6 +2839,143 @@ export interface paths {
          *     at once. 422 when the code is unknown, expired, full or already used.
          */
         post: operations["me.codes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentoring/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Today for mentors
+         * @description Mentees, this week's sessions, who needs help (quiet for a week, no first session yet, behind on their plan), upcoming sessions and wrap-ups to send.
+         */
+        get: operations["mentoring.today"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentoring/mentees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My mentees
+         * @description Assigned by the brokerage, or who booked me (`filter`: all, assigned or booked); who needs help first.
+         */
+        get: operations["mentoring.mentees"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentoring/mentees/{agent}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * One mentee
+         * @description The plan's week and progress, this week's scorecard, deal counts, sessions together, goals set together and my private notes. Never their CRM contacts.
+         */
+        get: operations["mentoring.mentee"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentoring/mentees/{agent}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a private note
+         * @description Seen by me only.
+         */
+        post: operations["mentoring.notes.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentoring/notes/{note}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Remove a note
+         * @description Undo with restore.
+         */
+        delete: operations["mentoring.notes.destroy"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentoring/notes/{note}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restore a removed note */
+        post: operations["mentoring.notes.restore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentoring/mentees/{agent}/goals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a goal together
+         * @description It becomes one of the mentee's to-dos, from me, on its date.
+         */
+        post: operations["mentoring.goals.store"];
         delete?: never;
         options?: never;
         head?: never;
@@ -8215,6 +8372,7 @@ export interface operations {
                         /** Format: date */
                         due_date?: string | null;
                     }[];
+                    summary?: string | null;
                 };
             };
         };
@@ -8234,6 +8392,51 @@ export interface operations {
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "bookings.wrap-up": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The booking UUID */
+                booking: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            summary: string;
+                            tasks: {
+                                title: string;
+                                due_date: string | null;
+                            }[];
+                            engine: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -16431,6 +16634,348 @@ export interface operations {
                         sponsor: string;
                         product: string;
                         features: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "mentoring.today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            mentees: number;
+                            sessions_this_week: number;
+                            needs: {
+                                id: number;
+                                name: string;
+                                goal: string;
+                                assigned: boolean;
+                                /** @enum {string} */
+                                signal: "quiet" | "first_session" | "behind" | "ok";
+                                last_active: string | null;
+                                next_session: string | null;
+                            }[];
+                            upcoming: {
+                                uuid: string;
+                                agent: string;
+                                agent_id: number;
+                                starts_at: string;
+                                minutes: number;
+                                topic: string;
+                                status: string;
+                                session: string | null;
+                                summary: string | null;
+                                tasks_sent: boolean;
+                            }[];
+                            wrap_ups: {
+                                uuid: string;
+                                agent: string;
+                                agent_id: number;
+                                starts_at: string;
+                                minutes: number;
+                                topic: string;
+                                status: string;
+                                session: string | null;
+                                summary: string | null;
+                                tasks_sent: boolean;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "mentoring.mentees": {
+        parameters: {
+            query?: {
+                filter?: "all" | "assigned" | "booked" | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            name: string;
+                            goal: string;
+                            assigned: boolean;
+                            /** @enum {string} */
+                            signal: "quiet" | "first_session" | "behind" | "ok";
+                            last_active: string | null;
+                            next_session: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "mentoring.mentee": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            mentee: {
+                                id: number;
+                                name: string;
+                                goal: string;
+                                assigned: boolean;
+                                /** @enum {string} */
+                                signal: "quiet" | "first_session" | "behind" | "ok";
+                                last_active: string | null;
+                                next_session: string | null;
+                            };
+                            plan: {
+                                week: number;
+                                weeks: number;
+                                done: number;
+                                total: number;
+                            };
+                            scorecard: {
+                                key: string;
+                                done: number;
+                                target: number;
+                            }[];
+                            fix: string | null;
+                            deals: {
+                                active: number;
+                                under_contract: number;
+                                closed: number;
+                            };
+                            sessions: {
+                                uuid: string;
+                                agent: string;
+                                agent_id: number;
+                                starts_at: string;
+                                minutes: number;
+                                topic: string;
+                                status: string;
+                                session: string | null;
+                                summary: string | null;
+                                tasks_sent: boolean;
+                            }[];
+                            goals: {
+                                id: number;
+                                title: string;
+                                due_date: string | null;
+                                done: boolean;
+                            }[];
+                            notes: {
+                                id: string;
+                                body: string;
+                                created_at: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "mentoring.notes.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    body: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            body: string;
+                            created_at: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "mentoring.notes.destroy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                note: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            removed: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "mentoring.notes.restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                note: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            removed: boolean;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "mentoring.goals.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    title: string;
+                    /** Format: date */
+                    due_date?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            title: string;
+                            due_date: string | null;
+                            done: boolean;
+                        };
                     };
                 };
             };

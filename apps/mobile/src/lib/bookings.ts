@@ -60,8 +60,8 @@ export async function suggestedTasks(uuid: string): Promise<string[]> {
   return data?.data ?? [];
 }
 
-export async function sendTasks(uuid: string, tasks: { title: string; due_date: string | null }[]): Promise<number> {
-  const { data, error } = await api().POST('/bookings/{booking}/tasks', { params: { path: { booking: uuid } }, body: { tasks } });
+export async function sendTasks(uuid: string, tasks: { title: string; due_date: string | null }[], summary?: string): Promise<number> {
+  const { data, error } = await api().POST('/bookings/{booking}/tasks', { params: { path: { booking: uuid } }, body: { tasks, ...(summary ? { summary } : {}) } });
 
   return data ? data.data.sent : fail(error);
 }
