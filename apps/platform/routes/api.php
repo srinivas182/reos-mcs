@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Catalogue\CatalogueController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Certificates\CertificateController;
 use App\Http\Controllers\Api\Classes\ClassesController;
+use App\Http\Controllers\Api\Compliance\ComplianceController;
 use App\Http\Controllers\Api\Connections\ConnectionController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
 use App\Http\Controllers\Api\Crm\ContactController;
@@ -274,6 +275,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
     Route::post('mentors/change', [SwitchController::class, 'changeMentor'])->middleware('throttle:5,1,api-mentors-change')->name('api.mentors.change');
+    // The compliance engine for emails and texts to contacts (B13.1).
+    Route::post('compliance/check', [ComplianceController::class, 'check'])->middleware('throttle:60,1,api-compliance')->name('api.compliance.check');
+    Route::post('compliance/fix', [ComplianceController::class, 'fix'])->middleware('throttle:30,1,api-compliance')->name('api.compliance.fix');
+
     // Feedback from agents after verified closings (A13.3b, screen 125).
     Route::prefix('feedback')->name('api.feedback.')->controller(AgentFeedbackController::class)->group(function () {
         Route::get('/', 'index')->name('index');

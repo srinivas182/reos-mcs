@@ -2440,6 +2440,12 @@
                                                                     },
                                                                     "href": {
                                                                         "type": "string"
+                                                                    },
+                                                                    "fixed": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
                                                                     }
                                                                 },
                                                                 "required": [
@@ -2670,6 +2676,12 @@
                                                                     },
                                                                     "href": {
                                                                         "type": "string"
+                                                                    },
+                                                                    "fixed": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
                                                                     }
                                                                 },
                                                                 "required": [
@@ -15601,6 +15613,338 @@
                                             },
                                             "required": [
                                                 "eliminated"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/compliance/check": {
+            "post": {
+                "operationId": "compliance.check",
+                "description": "Texas advertising rules, fair housing wording (with context exceptions and a second opinion for unclear wording) and the brokerage's phrases.",
+                "summary": "Check before sending",
+                "tags": [
+                    "Compliance"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "channel": {
+                                        "type": "string",
+                                        "enum": [
+                                            "post",
+                                            "video",
+                                            "page",
+                                            "email",
+                                            "text"
+                                        ]
+                                    },
+                                    "text": {
+                                        "type": "string",
+                                        "maxLength": 5000
+                                    }
+                                },
+                                "required": [
+                                    "channel",
+                                    "text"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "ok": {
+                                                    "type": "boolean"
+                                                },
+                                                "issues": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "broker",
+                                                                    "broker_size",
+                                                                    "team_name",
+                                                                    "links",
+                                                                    "claims",
+                                                                    "title",
+                                                                    "fair_housing",
+                                                                    "unclear",
+                                                                    "banned"
+                                                                ]
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "block",
+                                                                    "warn"
+                                                                ]
+                                                            },
+                                                            "phrase": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "fix": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "rule",
+                                                                    "claude"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "phrase",
+                                                            "fix",
+                                                            "reason",
+                                                            "citation",
+                                                            "url",
+                                                            "source"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "ok",
+                                                "issues"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/compliance/fix": {
+            "post": {
+                "operationId": "compliance.fix",
+                "description": "Swaps flagged wording for words about the home, or takes it out.",
+                "summary": "Fix automatically",
+                "tags": [
+                    "Compliance"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "channel": {
+                                        "type": "string",
+                                        "enum": [
+                                            "post",
+                                            "video",
+                                            "page",
+                                            "email",
+                                            "text"
+                                        ]
+                                    },
+                                    "text": {
+                                        "type": "string",
+                                        "maxLength": 5000
+                                    }
+                                },
+                                "required": [
+                                    "channel",
+                                    "text"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "text": {
+                                                    "type": "string"
+                                                },
+                                                "ok": {
+                                                    "type": "boolean"
+                                                },
+                                                "issues": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "broker",
+                                                                    "broker_size",
+                                                                    "team_name",
+                                                                    "links",
+                                                                    "claims",
+                                                                    "title",
+                                                                    "fair_housing",
+                                                                    "unclear",
+                                                                    "banned"
+                                                                ]
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "block",
+                                                                    "warn"
+                                                                ]
+                                                            },
+                                                            "phrase": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "fix": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "rule",
+                                                                    "claude"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "phrase",
+                                                            "fix",
+                                                            "reason",
+                                                            "citation",
+                                                            "url",
+                                                            "source"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "text",
+                                                "ok",
+                                                "issues"
                                             ]
                                         }
                                     },
@@ -47205,13 +47549,20 @@
                                                                     "title",
                                                                     "fair_housing",
                                                                     "claims",
-                                                                    "banned"
+                                                                    "banned",
+                                                                    "team_name"
                                                                 ]
                                                             },
                                                             "ok": {
                                                                 "type": "boolean"
                                                             },
                                                             "detail": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
                                                                 "type": [
                                                                     "string",
                                                                     "null"
@@ -47257,6 +47608,12 @@
                                                             "fix"
                                                         ]
                                                     }
+                                                },
+                                                "review": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
                                                 }
                                             },
                                             "required": [
@@ -47264,7 +47621,8 @@
                                                 "checks",
                                                 "ok",
                                                 "approval",
-                                                "issues"
+                                                "issues",
+                                                "review"
                                             ]
                                         }
                                     },
@@ -53829,7 +54187,11 @@
                                                                 "enum": [
                                                                     "fair_housing",
                                                                     "claims",
-                                                                    "banned"
+                                                                    "banned",
+                                                                    "broker",
+                                                                    "broker_size",
+                                                                    "team_name",
+                                                                    "title"
                                                                 ]
                                                             },
                                                             "phrase": {
@@ -54115,7 +54477,11 @@
                                                                 "enum": [
                                                                     "fair_housing",
                                                                     "claims",
-                                                                    "banned"
+                                                                    "banned",
+                                                                    "broker",
+                                                                    "broker_size",
+                                                                    "team_name",
+                                                                    "title"
                                                                 ]
                                                             },
                                                             "phrase": {
@@ -54384,7 +54750,11 @@
                                                                 "enum": [
                                                                     "fair_housing",
                                                                     "claims",
-                                                                    "banned"
+                                                                    "banned",
+                                                                    "broker",
+                                                                    "broker_size",
+                                                                    "team_name",
+                                                                    "title"
                                                                 ]
                                                             },
                                                             "phrase": {

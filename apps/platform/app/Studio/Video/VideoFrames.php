@@ -93,15 +93,44 @@ final class VideoFrames
         imagepng($im, $file, 6);
     }
 
-    /** The band along the bottom: the agent and the broker, one line, one size. */
+    /** The attribution's size on the band (the largest contact information on a video). */
+    public const ATTRIBUTION_SIZE = 40;
+
+    /** The band along the bottom: the agent and the broker at one size, on one line or two. */
     public static function frame(string $attribution, string $colour, string $file): void
     {
         $im = self::clear();
         [$r, $g, $b] = StudioRenderer::rgb($colour);
         imagefilledrectangle($im, 0, self::HEIGHT - self::BAND, self::WIDTH, self::HEIGHT, (int) imagecolorallocate($im, $r, $g, $b));
-        $line = self::wrap($attribution, 40, 'SemiBold', 1)[0] ?? '';
-        self::centred($im, $line, 40, 'SemiBold', self::HEIGHT - (int) (self::BAND / 2) + 15, (int) imagecolorallocate($im, 255, 255, 255));
+        $lines = self::attributionLines($attribution);
+        $y = self::HEIGHT - (int) (self::BAND / 2) + 15 - (count($lines) - 1) * 24;
+
+        foreach ($lines as $i => $line) {
+            self::centred($im, $line, self::ATTRIBUTION_SIZE, 'SemiBold', $y + $i * 48, (int) imagecolorallocate($im, 255, 255, 255));
+        }
         imagepng($im, $file, 6);
+    }
+
+    /**
+     * The band's lines: one when it fits; otherwise the agent, then the
+     * broker, each on its own line at the same size, so the broker's name
+     * is never cut off (22 TAC §535.155).
+     *
+     * @return list<string>
+     */
+    public static function attributionLines(string $attribution): array
+    {
+        $one = self::wrap($attribution, self::ATTRIBUTION_SIZE, 'SemiBold', 1)[0] ?? '';
+
+        if (! str_ends_with($one, '…')) {
+            return [$one];
+        }
+
+        $parts = explode(' · ', $attribution, 2);
+        $agent = self::wrap($parts[0], self::ATTRIBUTION_SIZE, 'SemiBold', 1);
+
+        // The broker's name may take two lines; it's never shortened.
+        return [...$agent, ...self::wrap($parts[1] ?? '', self::ATTRIBUTION_SIZE, 'SemiBold', 2)];
     }
 
     /**

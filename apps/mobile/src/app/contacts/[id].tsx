@@ -1,3 +1,4 @@
+import { fixBeforeSending } from "@/lib/compliance";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { ListChecks, MessageSquareText, Phone, StickyNote } from "lucide-react-native";
 import { useCallback, useState } from "react";
@@ -94,7 +95,10 @@ export default function ContactScreen() {
   };
 
   const reach = async (channel: "call" | "text", phone: string) => {
-    const draft = channel === "text" && insight?.channel === "text" ? (insight.draft ?? "") : "";
+    const written = channel === "text" && insight?.channel === "text" ? (insight.draft ?? "") : "";
+    // Checked and fixed before it opens in Messages (B13.1).
+    const { text: draft, changed } = channel === "text" ? await fixBeforeSending("text", written) : { text: written, changed: [] };
+    if (changed.length > 0) toast({ message: t("compliance.fixedNote", { phrases: changed.join(", ") }) });
     await Linking.openURL(reachUri(channel, phone, draft));
     if (await logTouch(id, channel, draft === "" ? null : draft)) {
       toast({ message: t("crm.hub.touchLogged") });

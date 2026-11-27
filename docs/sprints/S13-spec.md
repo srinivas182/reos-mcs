@@ -216,6 +216,30 @@
     - no misleading claims (§535.155(d)).
 - **Fair housing in context:** phrases plus exceptions for place names ("Indian Wells") and room names ("family room"). When a phrase is unclear, Claude gives a second opinion (free) if it is configured.
 - **Done when:** a post without the broker's name is blocked.
+- **As built, B13.1** (ADR 0057):
+  - **The engine** (`App\Compliance\ComplianceEngine`) has rules as data (`TexasAdRules`), each with a citation and channels:
+    - `broker`: the broker's name in posts, videos and the public page;
+    - `broker_size`: the broker's name in full, at half the size of the largest contact information or more, on designs and videos;
+    - `team_name`;
+    - `links`: IABS and CPN on the page;
+    - `claims` and `title`;
+    - `fair_housing`, plus `unclear` (warn only);
+    - `banned`.
+  - **Wording** (`App\Compliance\Wording`):
+    - The phrase lists moved here from `AdvertisingPolicy`.
+    - Context exceptions: Indian Wells and other "Indian …" place names, Christian Street and Christian County, "family room".
+    - Unclear phrases get Claude's second opinion (free, cached for a day). Without Claude, they're a "check this" warning.
+  - **Channels:**
+    - **Social post checks:** each failing rule shows its citation, plus `team_name` and a `review` list.
+    - **Videos:** won't render with a problem; the band check uses `VideoFrames::attributionLines`.
+    - **Public page:** won't publish without the broker's name and a clean bio. It shows the brokerage when there's no MLS office, and the settings card shows the IABS and CPN links to copy into social profiles.
+    - **Assistant drafts:** fixed, with the changed phrases listed (`draft.fixed`).
+    - **Texts from the phone:** fixed before Messages opens.
+    - **The web text dialog:** Check before sending and Fix automatically.
+    - **Studio brand screen (phone):** the profile links to share.
+  - **API:** `POST /api/v1/compliance/check` and `/fix`, for email and text; web `POST /compliance/check` and `/fix` return JSON.
+  - **Designs and video bands:** the broker's name goes on its own line at the same size when the line is too long, so it's never cut off.
+  - **Done when:** a Pest test blocks a post (check and publish) from an agent with no brokerage or sponsoring broker, and passes it once the broker's name is on it.
 
 ### B13.2 Brokerage rules (Team B)
 

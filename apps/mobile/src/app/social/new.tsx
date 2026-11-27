@@ -201,6 +201,7 @@ export default function NewPostScreen() {
               <Text style={styles.flex}>
                 {['length', 'media', 'video'].includes(c.code) ? t(`social.checks.${c.code}`, { channel: c.detail ? t(`social.channels.${c.detail as Channel}`) : '' }) : t(`social.checks.${c.code}`, { channel: '' })}
                 {!c.ok && c.detail && !['length', 'media', 'video'].includes(c.code) ? `: ${c.detail}` : ''}
+                {!c.ok && c.citation ? ` (${c.citation})` : ''}
               </Text>
             </View>
           ))}
@@ -216,6 +217,7 @@ export default function NewPostScreen() {
               }
             />
           ) : null}
+          {check.review.length > 0 ? <Callout tone="warning" title={t('compliance.review', { phrases: check.review.join(', ') })} /> : null}
           {check.approval ? <Callout tone="info" title={t('studio.checks.approval')} /> : null}
         </>
       ) : null}

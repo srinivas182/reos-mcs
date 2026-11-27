@@ -3229,7 +3229,55 @@
       "pages": "Audit log pages",
       "newer": "Newer",
       "older": "Older"
-    }
+    },
+    "fix": {
+      "broker": "Add your broker's name to every ad.",
+      "brokerSize": "Show your broker's name in full, at least half the size of your largest contact details.",
+      "teamName": "Use your team name with your broker's name, and leave out words like \"Realty\" or \"Brokerage\".",
+      "links": "Link the IABS and the Consumer Protection Notice on your page and social profiles.",
+      "claims": "Take out promises and \"best price\" claims.",
+      "title": "Don't call yourself a broker, owner or president as a sales agent.",
+      "fairHousing": "Describe the home, not who should live there.",
+      "unclear": "Check this wording describes the home, not who should live there.",
+      "banned": "Take out the phrase your brokerage doesn't allow."
+    },
+    "blocked": {
+      "broker": "Add your broker's name before publishing ({{citation}}).",
+      "broker_size": "Your broker's name must show in full ({{citation}}).",
+      "team_name": "\"{{phrase}}\" can't be used like this ({{citation}}).",
+      "links": "The page must link the IABS and the Consumer Protection Notice ({{citation}}).",
+      "claims": "\"{{phrase}}\" is a claim an ad can't make ({{citation}}).",
+      "title": "A sales agent can't be called a broker, owner or president ({{citation}}).",
+      "fair_housing": "\"{{phrase}}\" is about who should live there, not the home ({{citation}}).",
+      "unclear": "Check \"{{phrase}}\" ({{citation}}).",
+      "banned": "\"{{phrase}}\" is a phrase your brokerage doesn't allow."
+    },
+    "review": "Check this wording: {{phrases}}. It's fine if it describes the home, not who should live there.",
+    "check": "Check before sending",
+    "checking": "Checking…",
+    "clean": "No problems found.",
+    "found": "Fix before sending",
+    "fixAuto": "Fix automatically",
+    "sendAnyway": "Send as written",
+    "fixedNote": "We changed wording that Texas or fair housing rules don't allow: {{phrases}}.",
+    "profileLinks": "Links for your social profiles",
+    "profileLinksHint": "Texas requires these two links on your website and every social profile (22 TAC §531.18, §531.20). Your REOS page already has them.",
+    "iabs": "Information About Brokerage Services (IABS)",
+    "cpn": "Consumer Protection Notice",
+    "copy": "Copy link",
+    "copied": "Link copied.",
+    "engine": {
+      "broker": "The broker's name",
+      "broker_size": "The broker's name at full size",
+      "team_name": "Team name",
+      "links": "IABS and Consumer Protection Notice links",
+      "claims": "Misleading claims",
+      "title": "Titles a sales agent may not use",
+      "fair_housing": "Fair housing wording",
+      "unclear": "Wording to check",
+      "banned": "Your brokerage's banned phrases"
+    },
+    "share": "Share the link"
   },
   "calendar": {
     "errors": {
@@ -8505,7 +8553,8 @@
       "video": "{{channel}} has a video",
       "fair_housing": "Fair housing wording: describes the home, not who should live there",
       "claims": "No misleading claims (guarantees, \"best price\")",
-      "banned": "None of your brokerage's banned phrases"
+      "banned": "None of your brokerage's banned phrases",
+      "team_name": "Team name: shown with your broker's name, without \"Realty\" or \"Brokerage\""
     },
     "posts": {
       "title": "My posts and results",

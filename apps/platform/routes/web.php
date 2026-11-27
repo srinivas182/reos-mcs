@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Ce\CeWalletController;
 use App\Http\Controllers\Api\Classes\ClassesController;
+use App\Http\Controllers\Api\Compliance\ComplianceController;
 use App\Http\Controllers\Api\Contracts\ContractReviewController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
@@ -495,6 +496,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/challenges')->name('organisation.challenges.')->group(function () {
     Route::get('/', [ChallengesController::class, 'broker'])->name('index');
     Route::post('/', [ChallengesController::class, 'store'])->middleware('throttle:20,1,challenges-store')->name('store');
+});
+
+// The compliance engine for emails and texts from the web (B13.1): JSON for the reach dialog.
+Route::middleware(['auth', 'verified'])->prefix('compliance')->name('compliance.')->group(function () {
+    Route::post('check', [ComplianceController::class, 'check'])->middleware('throttle:60,1,compliance')->name('check');
+    Route::post('fix', [ComplianceController::class, 'fix'])->middleware('throttle:30,1,compliance')->name('fix');
 });
 
 // Feedback from agents after verified closings (A13.3b, screen 125).

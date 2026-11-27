@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Studio\Video;
 
+use App\Compliance\ComplianceEngine;
 use App\Jobs\RenderStudioVideo;
 use App\Models\StudioVideo;
 use App\Models\User;
@@ -47,7 +48,8 @@ use Throwable;
  * @phpstan-import-type Plan from VideoRenderer
  *
  * @phpstan-type SceneRow array{media: string, url: string, kind: 'image'|'video', start: float, seconds: float, length: float|null, caption: string}
- * @phpstan-type VideoRow array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<SceneRow>, music: string, brand: bool, status: string, seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<Issue>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}
+ * @phpstan-type VideoIssue array{code: string, phrase: string, fix: string}
+ * @phpstan-type VideoRow array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<SceneRow>, music: string, brand: bool, status: string, seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<VideoIssue>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}
  */
 final readonly class StudioVideos
 {
@@ -74,6 +76,7 @@ final readonly class StudioVideos
         private AiSettings $settings,
         private Bedrock $bedrock,
         private AdvertisingPolicy $policy,
+        private ComplianceEngine $compliance,
         private VideoRenderer $renderer,
     ) {}
 
@@ -280,10 +283,31 @@ final readonly class StudioVideos
         $video->forceFill(['status' => 'failed', 'error' => 'studio.video.errors.render'])->save();
     }
 
-    /** @return list<Issue> */
+    /**
+     * Wording the video breaks (fair housing, claims, the brokerage's
+     * phrases), plus the compliance engine's checks on the band: the
+     * broker's name in full and at the attribution's size (B13.1).
+     *
+     * @return list<VideoIssue>
+     */
     public function issues(StudioVideo $video): array
     {
-        return $this->policy->issues($video->user, implode("\n", [$video->title, ...array_column($video->scenes, 'caption')]));
+        $text = implode("\n", [$video->title, ...array_column($video->scenes, 'caption')]);
+        $issues = $this->policy->issues($video->user, $text);
+        $attribution = $this->attribution($video->user);
+        $result = $this->compliance->check($video->user, [
+            'channel' => 'video', 'text' => $text, 'attribution' => $attribution,
+            'layout' => ['rendered' => implode(' ', VideoFrames::attributionLines($attribution)), 'broker_size' => VideoFrames::ATTRIBUTION_SIZE, 'largest_contact' => VideoFrames::ATTRIBUTION_SIZE],
+        ]);
+
+        foreach ($result['issues'] as $i) {
+            if (in_array($i['code'], ['broker', 'broker_size', 'team_name', 'title'], true)) {
+                $label = __('compliance.engine.'.$i['code']);
+                $issues[] = ['code' => $i['code'], 'phrase' => $i['phrase'] ?? (is_string($label) ? $label : $i['code']), 'fix' => ''];
+            }
+        }
+
+        return $issues;
     }
 
     /** @return VideoRow */

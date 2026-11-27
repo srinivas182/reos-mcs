@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Mls;
 
+use App\Compliance\ComplianceEngine;
+use App\Compliance\TexasAdRules;
 use App\Deals\DealAccess;
 use App\Enums\LicenceStatus;
 use App\Feedback\AgentFeedbacks;
@@ -15,6 +17,7 @@ use App\Models\MlsMemberLink;
 use App\Models\MlsOffice;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 /**
  * The agent's public page (B10.2b): name, brokerage, license numbers, a
@@ -30,7 +33,22 @@ use Illuminate\Support\Str;
  */
 final readonly class AgentPages
 {
-    public function __construct(private ListingService $listings, private DealAccess $access, private AgentFeedbacks $feedback) {}
+    public function __construct(private ListingService $listings, private DealAccess $access, private AgentFeedbacks $feedback, private ComplianceEngine $compliance) {}
+
+    /** The broker's name the page shows: the agent's MLS office, else their brokerage or sponsoring broker. */
+    private function brokerageShown(User $user): ?string
+    {
+        foreach (MlsMemberLink::query()->where('user_id', $user->id)->where('status', MlsMemberLink::CONFIRMED)->get() as $link) {
+            $member = MlsMember::query()->where('integration', $link->integration)->where('member_key', $link->member_key)->first();
+            $office = $member?->office_key === null ? null : MlsOffice::query()->where('integration', $link->integration)->where('office_key', $member->office_key)->value('name');
+
+            if (is_string($office)) {
+                return $office;
+            }
+        }
+
+        return $this->compliance->brokerName($user);
+    }
 
     /** @return PageSettings */
     public function settings(User $user): array
@@ -45,7 +63,23 @@ final readonly class AgentPages
     {
         $this->access->allow($user);
         $page = $this->page($user);
-        $page->fill(['published' => $published, 'bio' => $bio === null || trim($bio) === '' ? null : trim($bio)])->save();
+        $bio = $bio === null || trim($bio) === '' ? null : trim($bio);
+
+        // The compliance engine (B13.1): a published page names the broker, links the IABS and
+        // Consumer Protection Notice (always on the page), and its bio passes the wording checks.
+        if ($published) {
+            $result = $this->compliance->check($user, ['channel' => 'page', 'text' => (string) $bio, 'attribution' => $this->brokerageShown($user), 'links' => [TexasAdRules::IABS, TexasAdRules::CPN]]);
+
+            if (! $result['ok']) {
+                throw ValidationException::withMessages(['bio' => array_values(array_map(static function (array $i): string {
+                    $line = __('compliance.blocked.'.$i['code'], ['phrase' => $i['phrase'] ?? '', 'citation' => $i['citation']]);
+
+                    return is_string($line) ? $line : $i['code'];
+                }, array_filter($result['issues'], static fn (array $i): bool => $i['severity'] === 'block')))]);
+            }
+        }
+
+        $page->fill(['published' => $published, 'bio' => $bio])->save();
 
         return $this->settingsOf($page);
     }
@@ -89,7 +123,8 @@ final readonly class AgentPages
 
         return [
             'name' => (string) $user->name,
-            'brokerage' => is_string($brokerage) ? $brokerage : null,
+            // The broker's name on every page (22 TAC §535.155): the MLS office, else the agent's brokerage.
+            'brokerage' => is_string($brokerage) ? $brokerage : $this->compliance->brokerName($user),
             'licences' => $licences,
             'bio' => $page->bio,
             // Feedback from agents, only if the agent chose to show it (A13.3b).

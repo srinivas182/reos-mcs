@@ -3229,7 +3229,55 @@
       "pages": "Páginas del registro de auditoría",
       "newer": "Más recientes",
       "older": "Más antiguos"
-    }
+    },
+    "fix": {
+      "broker": "Agregue el nombre de su bróker en todo anuncio.",
+      "brokerSize": "Muestre el nombre completo de su bróker, al menos de la mitad del tamaño de sus datos de contacto más grandes.",
+      "teamName": "Use el nombre de su equipo junto con el nombre de su bróker, y no incluya palabras como \"Realty\" o \"Brokerage\".",
+      "links": "Ponga los enlaces al IABS y al Aviso de Protección al Consumidor en su página y en sus perfiles sociales.",
+      "claims": "Quite promesas y frases como \"el mejor precio\".",
+      "title": "Como agente de ventas, no se presente como bróker, dueño o presidente.",
+      "fairHousing": "Describa la vivienda, no a quién debería vivir en ella.",
+      "unclear": "Revise que este texto describa la vivienda y no a quién debería vivir en ella.",
+      "banned": "Quite la frase que su agencia inmobiliaria no permite."
+    },
+    "blocked": {
+      "broker": "Agregue el nombre de su bróker antes de publicar ({{citation}}).",
+      "broker_size": "El nombre de su bróker debe mostrarse completo ({{citation}}).",
+      "team_name": "\"{{phrase}}\" no se puede usar así ({{citation}}).",
+      "links": "La página debe enlazar el IABS y el Aviso de Protección al Consumidor ({{citation}}).",
+      "claims": "\"{{phrase}}\" es una afirmación que un anuncio no puede hacer ({{citation}}).",
+      "title": "Un agente de ventas no puede presentarse como bróker, dueño o presidente ({{citation}}).",
+      "fair_housing": "\"{{phrase}}\" habla de quién debería vivir ahí, no de la vivienda ({{citation}}).",
+      "unclear": "Revise \"{{phrase}}\" ({{citation}}).",
+      "banned": "\"{{phrase}}\" es una frase que su agencia inmobiliaria no permite."
+    },
+    "review": "Revise este texto: {{phrases}}. Está bien si describe la vivienda y no a quién debería vivir en ella.",
+    "check": "Revisar antes de enviar",
+    "checking": "Revisando…",
+    "clean": "No se encontraron problemas.",
+    "found": "Corrija antes de enviar",
+    "fixAuto": "Corregir automáticamente",
+    "sendAnyway": "Enviar como está",
+    "fixedNote": "Cambiamos texto que las reglas de Texas o de vivienda justa no permiten: {{phrases}}.",
+    "profileLinks": "Enlaces para sus perfiles sociales",
+    "profileLinksHint": "Texas exige estos dos enlaces en su sitio web y en cada perfil social (22 TAC §531.18, §531.20). Su página de REOS ya los tiene.",
+    "iabs": "Información sobre Servicios de Corretaje (IABS)",
+    "cpn": "Aviso de Protección al Consumidor",
+    "copy": "Copiar enlace",
+    "copied": "Enlace copiado.",
+    "engine": {
+      "broker": "El nombre del bróker",
+      "broker_size": "El nombre del bróker completo",
+      "team_name": "Nombre del equipo",
+      "links": "Enlaces al IABS y al Aviso de Protección al Consumidor",
+      "claims": "Afirmaciones engañosas",
+      "title": "Títulos que un agente de ventas no puede usar",
+      "fair_housing": "Lenguaje de vivienda justa",
+      "unclear": "Texto por revisar",
+      "banned": "Frases que su agencia inmobiliaria no permite"
+    },
+    "share": "Compartir el enlace"
   },
   "calendar": {
     "errors": {
@@ -8505,7 +8553,8 @@
       "video": "{{channel}} tiene un video",
       "fair_housing": "Lenguaje de vivienda justa: describe la casa, no a quién debe vivir ahí",
       "claims": "Sin afirmaciones engañosas (garantías, \"el mejor precio\")",
-      "banned": "Ninguna de las frases prohibidas por su agencia"
+      "banned": "Ninguna de las frases prohibidas por su agencia",
+      "team_name": "Nombre del equipo: junto al nombre de su bróker, sin \"Realty\" ni \"Brokerage\""
     },
     "posts": {
       "title": "Mis publicaciones y resultados",

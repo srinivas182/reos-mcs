@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Social;
 
 use App\Authorization\Role;
-use App\Enums\LicenceType;
+use App\Compliance\ComplianceEngine;
 use App\Enums\OrganisationType;
 use App\Jobs\PublishSocialTarget;
 use App\Mls\ListingPosts;
@@ -43,7 +43,7 @@ use Illuminate\Validation\ValidationException;
  *
  * @phpstan-import-type Issue from AdvertisingPolicy
  *
- * @phpstan-type Check array{code: string, ok: bool, detail: string|null}
+ * @phpstan-type Check array{code: string, ok: bool, detail: string|null, citation?: string|null}
  * @phpstan-type TargetRow array{id: int, integration: string, channel: string, target_id: string, name: string, status: string, error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}
  * @phpstan-type PostRow array{id: string, body: string, media: list<array{url: string, kind: string}>, link: string|null, attribution: string, listing: string|null, status: string, scheduled_at: string|null, published_at: string|null, created_at: string|null, targets: list<TargetRow>, totals: array<string, int>, approval_note: string|null}
  * @phpstan-type Pick array{connection: int, channel: string, id: string}
@@ -62,6 +62,7 @@ final readonly class SocialPosts
         private PersonStates $states,
         private AdvertisingPolicy $policy,
         private Memberships $memberships,
+        private ComplianceEngine $compliance,
     ) {}
 
     /** @return array{stats: array{posts_this_month: int, reach: int, engagement: int, clicks: int}, scheduled: list<PostRow>, posted: list<PostRow>, drafts: list<PostRow>} */
@@ -128,7 +129,7 @@ final readonly class SocialPosts
      *
      * @param  list<string>  $media
      * @param  list<Pick>  $picks
-     * @return array{attribution: string, checks: list<Check>, ok: bool, approval: bool, issues: list<Issue>}
+     * @return array{attribution: string, checks: list<Check>, ok: bool, approval: bool, issues: list<Issue>, review: list<string>}
      */
     public function check(User $user, string $body, array $media, array $picks, ?string $listing): array
     {
@@ -154,22 +155,28 @@ final readonly class SocialPosts
             }
         }
 
-        // A sales agent may not be presented as a broker, owner or president (22 TAC §535.155(d)).
-        $agent = Licence::query()->where('user_id', $user->id)->where('state_code', $this->states->current($user))->first();
-        $title = $agent?->type === LicenceType::SalesAgent && preg_match("/\\b(i am|i'm|as your|your)\\s+(real estate\\s+)?(broker|owner|president)\\b/i", $body) === 1;
-        $checks[] = ['code' => 'title', 'ok' => ! $title, 'detail' => null];
+        // The compliance engine (B13.1): the broker's name, team names, misleading claims and titles,
+        // fair housing wording with context exceptions, and the brokerage's phrases.
+        $result = $this->compliance->check($user, ['channel' => 'post', 'text' => $body, 'attribution' => $attribution]);
+        $of = static fn (string $code): array => array_values(array_filter($result['issues'], static fn (array $i): bool => $i['code'] === $code));
+        $checks[0] = ['code' => 'broker', 'ok' => $of('broker') === [], 'detail' => null, 'citation' => $of('broker')[0]['citation'] ?? null];
 
-        // Fair housing wording, misleading claims and the brokerage's banned phrases (B12.1, screen 167).
-        $issues = $this->policy->issues($user, $body);
-
-        foreach (['fair_housing', 'claims', 'banned'] as $code) {
-            $found = array_values(array_filter($issues, static fn (array $i): bool => $i['code'] === $code));
-            $checks[] = ['code' => $code, 'ok' => $found === [], 'detail' => $found === [] ? null : implode(', ', array_column($found, 'phrase'))];
+        foreach (['title', 'fair_housing', 'claims', 'banned'] as $code) {
+            $found = $of($code);
+            $checks[] = ['code' => $code, 'ok' => $found === [], 'detail' => $found === [] ? null : implode(', ', array_filter(array_column($found, 'phrase'))), 'citation' => $found[0]['citation'] ?? null];
         }
+
+        if (($teams = $of('team_name')) !== []) {
+            $checks[] = ['code' => 'team_name', 'ok' => false, 'detail' => implode(', ', array_filter(array_column($teams, 'phrase'))), 'citation' => $teams[0]['citation']];
+        }
+
+        $issues = $this->policy->issues($user, $body);
 
         return [
             'attribution' => $attribution, 'checks' => $checks, 'ok' => array_filter($checks, static fn (array $c): bool => ! $c['ok']) === [],
             'approval' => $this->policy->needsApproval($user), 'issues' => $issues,
+            // Wording to look at again: not blocked, but a second opinion couldn't settle it.
+            'review' => array_values(array_filter(array_map(static fn (array $i): ?string => $i['phrase'], $of('unclear')))),
         ];
     }
 

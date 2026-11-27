@@ -1,13 +1,19 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { router, useFocusEffect } from 'expo-router';
-import { Camera, Trash2 } from 'lucide-react-native';
+import { Camera, Link2, Trash2 } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
-import { Image, View } from 'react-native';
+import { Image, Share, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { type BrandKit, loadBrandKit, removeProfilePhoto, uploadProfilePhoto } from '@/lib/content-calendar';
-import { Button, Callout, Card, EmptyState, Icon, MenuGroup, MenuRow, Screen, Text, TitleBar, useUndoToast } from '@/ui';
+import { Button, Callout, Card, EmptyState, Icon, ListRow, MenuGroup, MenuRow, Screen, SectionTitle, Text, TitleBar, useUndoToast } from '@/ui';
+
+/** TREC's forms every Texas agent links from their website and social profiles. */
+const PROFILE_LINKS = [
+  { key: 'iabs', url: 'https://www.trec.texas.gov/forms/information-about-brokerage-services' },
+  { key: 'cpn', url: 'https://www.trec.texas.gov/forms/consumer-protection-notice' },
+] as const;
 
 /**
  * Profile photo and brand kit (agent screen 162; B12.3), from Me → Photo
@@ -92,6 +98,13 @@ export default function BrandKitScreen() {
       <Text variant="caption" tone="muted">
         {t('studio.brand.kitNote')}
       </Text>
+
+      {/* Texas: the IABS and Consumer Protection Notice links on every social profile (22 TAC §531.18, §531.20; B13.1). */}
+      <SectionTitle>{t('compliance.profileLinks')}</SectionTitle>
+      <Text tone="muted">{t('compliance.profileLinksHint')}</Text>
+      {PROFILE_LINKS.map((link) => (
+        <ListRow key={link.key} icon={Link2} tone="info" title={t(`compliance.${link.key}`)} subtitle={t('compliance.share')} onPress={() => void Share.share({ message: link.url })} />
+      ))}
     </Screen>
   );
 }

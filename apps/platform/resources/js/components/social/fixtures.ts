@@ -156,6 +156,7 @@ export function check(overrides: Partial<CheckResult> = {}): CheckResult {
         ],
         ok: true,
         approval: false,
+        review: [],
         issues: [],
         ...overrides,
     };
