@@ -66,6 +66,7 @@ import { show as pointsRates } from '@/routes/points';
 import { index as rewardsIndex } from '@/routes/rewards';
 import { index as feedbackIndex } from '@/routes/feedback';
 import { index as rolePlayIndex } from '@/routes/role-play';
+import { index as videoPracticeIndex } from '@/routes/video-practice';
 import { index as candidateStudio } from '@/routes/candidate-studio';
 import { index as complianceLog } from '@/routes/organisation/compliance-log';
 import { index as brokerRewards } from '@/routes/organisation/rewards';
@@ -140,6 +141,7 @@ export type NavLabel =
     | 'goalsAndRewards'
     | 'agentFeedback'
     | 'rolePlay'
+    | 'videoPractice'
     | 'complianceLog'
     | 'candidateStudio'
     | 'pointsRates'
@@ -276,6 +278,13 @@ export function roleNavigation(
             item('learnAndCe', GraduationCap, learn(), '/learn'),
             // Role-play and the skills assessment (A14.1a, screen 7).
             item('rolePlay', Theater, rolePlayIndex(), '/role-play'),
+            // Video practice with an AI review (A14.1b).
+            item(
+                'videoPractice',
+                Video,
+                videoPracticeIndex(),
+                '/video-practice',
+            ),
             // Hours against the renewal, certificates and renewing (A11.2).
             item('ceWallet', Wallet, ceWallet(), '/ce'),
             // Mentors from the agent's own brokerage (A10.3c, f04).

@@ -119,6 +119,7 @@ use App\Http\Controllers\Studio\AdvertisingController;
 use App\Http\Controllers\Studio\CandidateStudioPageController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
+use App\Http\Controllers\VideoPractice\VideoPracticePageController;
 use App\Http\Controllers\VirtualBroker\BrokerVirtualBrokerController;
 use App\Http\Controllers\VirtualBroker\VirtualBrokerPageController;
 use App\Http\Controllers\WhatsNewController;
@@ -537,6 +538,13 @@ Route::middleware(['auth', 'verified'])->prefix('role-play')->name('role-play.')
         Route::post('{rolePlay}/finish', 'finish')->whereUuid('rolePlay')->name('finish');
     });
     Route::post('{rolePlay}/turns', 'say')->whereUuid('rolePlay')->middleware('throttle:40,1,role-play-turns')->name('say');
+});
+
+// Video practice with an AI review (A14.1b): the words only; the video stays in the browser.
+Route::middleware(['auth', 'verified'])->prefix('video-practice')->name('video-practice.')->controller(VideoPracticePageController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'review')->middleware('throttle:10,1,video-practice')->name('review');
+    Route::get('{videoPractice}', 'show')->whereUuid('videoPractice')->name('show');
 });
 
 // Goals and rewards (A13.3a): the agent's goals, streak and rewards; the broker's targets and bonus campaigns.

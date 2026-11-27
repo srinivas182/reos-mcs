@@ -78,6 +78,27 @@
 - Record a listing pitch or a video intro on the phone (up to 2 minutes).
 - **AI review:** the transcript, pace (words per minute), filler words, structure, and three fixes; private to the agent.
 - **Done when:** a recorded practice comes back with a review.
+- **As built, A14.1b** (ADR 0061):
+  - **Data:** `video_practices` (words, length, wpm, fillers, score, five parts, three fixes, compliance issues, engine). There's no organisation, and no video is stored.
+  - **Services:**
+    - `App\VideoPractice\VideoReviewer` measures the words and wpm, finds the fillers, and gives five parts of 20 and three fixes.
+    - `ClaudeVideoCoach` uses a forced tool and falls back to REOS.
+    - `VideoPractices` (overview, review, show) also runs the compliance engine on the `video` channel.
+  - **API:**
+    - `GET /api/v1/video-practice`
+    - `POST /api/v1/video-practice` (10 a minute; kind, transcript and duration up to 130 seconds)
+    - `GET /api/v1/video-practice/{id}`
+  - **Web:**
+    - `/video-practice` (Video practice in the agent sidebar): pick a listing pitch or a video intro, then record with the camera and MediaRecorder while browser speech fills the words. Watch it back, correct the words, and get the review. Recent reviews are listed, with an EmptyState when there are none.
+    - `/video-practice/{id}`: the score, the pace, the filler words, the five parts, three fixes with lessons, "Before you post", and the transcript.
+  - **Phone:**
+    - Video practice on Home.
+    - `video-practice/index`: CameraView with the front camera and a two-minute limit, playback with expo-video, on-device recognition from the file, and editable words.
+    - `video-practice/[id]`: the review.
+    - `expo-camera` is added, with camera and microphone permissions.
+  - **Strings:** `videopractice.*` in English and Spanish.
+  - **Housekeeping:** A14.1a's phone files are back in the repo's style: single quotes and long lines.
+  - **Done when:** a Pest test sends a 30-second, 78-word pitch and gets back 156 wpm, no fillers, 100 points, three fixes and no broker issue. A rushed intro shows six "um"s, a fast pace, no close, and the claims and broker issues.
 
 ### A14.2 Agent learning (Team A)
 
