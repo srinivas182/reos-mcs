@@ -68,7 +68,8 @@ final readonly class AgentPages
         // The compliance engine (B13.1): a published page names the broker, links the IABS and
         // Consumer Protection Notice (always on the page), and its bio passes the wording checks.
         if ($published) {
-            $result = $this->compliance->check($user, ['channel' => 'page', 'text' => (string) $bio, 'attribution' => $this->brokerageShown($user), 'links' => [TexasAdRules::IABS, TexasAdRules::CPN]]);
+            $shown = $this->brokerageShown($user);
+            $result = $this->compliance->check($user, ['channel' => 'page', 'text' => (string) $bio, 'attribution' => $shown, 'broker' => $shown, 'links' => [TexasAdRules::IABS, TexasAdRules::CPN]]);
 
             if (! $result['ok']) {
                 throw ValidationException::withMessages(['bio' => array_values(array_map(static function (array $i): string {

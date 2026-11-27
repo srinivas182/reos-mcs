@@ -44,7 +44,7 @@ const published = {
   targets: [{ id: 1, integration: 'meta', channel: 'facebook', target_id: 'p1', name: 'James Miller, REALTOR®', status: 'published', error: null, url: null, published_at: '2026-11-20T16:00:00Z', insights: { reach: 1240 } }],
   totals: { reach: 1240 },
 };
-const checks = { attribution: 'James Miller · Lone Star Realty', checks: [{ code: 'broker', ok: true, detail: null }, { code: 'targets', ok: true, detail: null }], ok: true, approval: false, issues: [] };
+const checks = { attribution: 'James Miller · Lone Star Realty', checks: [{ code: 'broker', ok: true, detail: null }, { code: 'targets', ok: true, detail: null }], ok: true, approval: false, issues: [], review: [] };
 
 beforeEach(() => jest.clearAllMocks());
 

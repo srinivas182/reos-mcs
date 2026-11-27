@@ -79,7 +79,7 @@ describe('The content studio on the phone (B12.1: screens 165–167)', () => {
     mockApi.POST.mockImplementation(async (path: string) =>
       path === '/social/posts/fix'
         ? ok({ data: { body: 'roomy layout! Open house Saturday.', fixed: [] } })
-        : ok({ data: { attribution: 'James Miller · Lone Star Realty', checks: [{ code: 'fair_housing', ok: false, detail: 'perfect for families' }], ok: false, approval: true, issues: [{ code: 'fair_housing', phrase: 'perfect for families', fix: 'roomy layout' }] } }),
+        : ok({ data: { attribution: 'James Miller · Lone Star Realty', checks: [{ code: 'fair_housing', ok: false, detail: 'perfect for families' }], ok: false, approval: true, issues: [{ code: 'fair_housing', phrase: 'perfect for families', fix: 'roomy layout' }], review: [] } }),
     );
     await render(wrap(<NewPostScreen />));
 

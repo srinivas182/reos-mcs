@@ -29,7 +29,7 @@ use Throwable;
  * phrases. Unclear wording gets Claude's second opinion when Claude is
  * configured (free to the agent); otherwise the agent is asked to check it.
  *
- * @phpstan-type Content array{channel: string, text: string, attribution?: string|null, layout?: array{rendered: string, broker_size: int, largest_contact: int}|null, links?: list<string>|null}
+ * @phpstan-type Content array{channel: string, text: string, attribution?: string|null, broker?: string|null, layout?: array{rendered: string, broker_size: int, largest_contact: int}|null, links?: list<string>|null}
  * @phpstan-type Issue array{code: string, severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}
  * @phpstan-type Result array{ok: bool, issues: list<Issue>}
  */
@@ -65,7 +65,8 @@ final readonly class ComplianceEngine
         }
 
         // The broker's name in every ad.
-        $broker = $this->brokerName($agent);
+        // The broker the content must name: given (the public page shows the MLS office), else the agent's.
+        $broker = array_key_exists('broker', $content) ? $content['broker'] : $this->brokerName($agent);
         $named = $broker !== null && str_contains(mb_strtolower($whole), mb_strtolower($broker));
 
         if (TexasAdRules::rule('broker')->appliesTo($channel) && ! $named) {
