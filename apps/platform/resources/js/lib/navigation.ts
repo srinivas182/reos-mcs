@@ -35,6 +35,7 @@ import {
     CalendarCheck,
     Milestone,
     UserPlus,
+    Trophy,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -73,6 +74,8 @@ import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-brok
 import { index as advertisingPolicy } from '@/routes/organisation/advertising';
 import { index as mentorProgram } from '@/routes/organisation/mentors';
 import { index as mentorWorkspace } from '@/routes/mentoring';
+import { index as brokerChallenges } from '@/routes/organisation/challenges';
+import { index as podIndex } from '@/routes/pod';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -121,6 +124,8 @@ export type NavLabel =
     | 'policies'
     | 'mentorProgram'
     | 'mentorWorkspace'
+    | 'podAndChallenges'
+    | 'challenges'
     | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
@@ -248,6 +253,8 @@ export function roleNavigation(
             item('ceWallet', Wallet, ceWallet(), '/ce'),
             // Mentors from the agent's own brokerage (A10.3c, f04).
             item('mentors', Users, mentorsIndex(), '/mentors'),
+            // Accountability pod and brokerage challenges (A13.2, screen 131).
+            item('podAndChallenges', Trophy, podIndex(), '/pod'),
             planned('serviceProviders'),
             planned('goalsAndRewards'),
             item('connections', Plug, connections()),
@@ -294,6 +301,13 @@ export function roleNavigation(
                 GraduationCap,
                 mentorProgram(),
                 '/organisation/mentors',
+            ),
+            // Opt-in brokerage challenges (A13.2).
+            item(
+                'challenges',
+                Trophy,
+                brokerChallenges(),
+                '/organisation/challenges',
             ),
             // Recruiting: candidates who asked for broker offers (A10.3b).
             item('recruiting', UserPlus, recruitingIndex(), '/recruiting'),

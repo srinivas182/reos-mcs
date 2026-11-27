@@ -85,7 +85,9 @@
     "contractReview": "Contract review",
     "policies": "Policies",
     "mentorProgram": "Mentor program",
-    "mentorWorkspace": "Mentor workspace"
+    "mentorWorkspace": "Mentor workspace",
+    "challenges": "Challenges",
+    "podAndChallenges": "Pod and challenges"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2313,7 +2315,8 @@
         "mentor.assigned": "Mentor assigned",
         "mentor.change_requested": "Another mentor asked for",
         "session_booking.points_returned": "Points returned for a session",
-        "mentor.rating_reviewed": "Low rating reviewed"
+        "mentor.rating_reviewed": "Low rating reviewed",
+        "challenge.created": "Challenge created"
       }
     }
   },
@@ -9500,6 +9503,91 @@
       "actions": "Action items",
       "send": "Send to to-dos",
       "sent": "Sent to {{name}}'s to-dos with reminders."
+    }
+  },
+  "pods": {
+    "name": "{{goal}} pod {{n}}",
+    "welcome": "Welcome to your pod! Share this week's goal and see you on the call.",
+    "errors": {
+      "already": "You're already in a pod.",
+      "full": "That pod is full now. Join again to be matched."
+    },
+    "notify": {
+      "matched": "You're in {{name}}",
+      "matchedBody": "Your weekly 15-minute pod call is {{day}} at {{time}}. Share your goal for the week."
+    },
+    "call": {
+      "title": "{{name}} call"
+    },
+    "days": {
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday",
+      "sat": "Saturday",
+      "sun": "Sunday"
+    },
+    "title": "Accountability pod",
+    "purpose": "Five agents with the same goal: weekly goals, a 15-minute call, and peer support.",
+    "none": "You're not in a pod yet",
+    "noneHint": "We match you with agents at your brokerage with the same goal, language and schedule.",
+    "join": "Join a pod",
+    "waiting": "Finding your pod",
+    "waitingHint": "You'll be told as soon as your pod is ready, usually within a week.",
+    "cancel": "Stop waiting",
+    "callNext": "Next call {{time}} · 15 minutes",
+    "joinCall": "Join call",
+    "message": "Message pod",
+    "leave": "Leave pod",
+    "left": "You left the pod.",
+    "week": "Week of {{date}}",
+    "yourGoal": "Your goal this week",
+    "goalPlaceholder": "For example, 20 conversations and 2 appointments",
+    "saveGoal": "Save goal",
+    "saved": "Goal saved.",
+    "noGoal": "No goal yet",
+    "shares": "What you share",
+    "sharesHint": "Your numbers come from your activity and are shown only inside the pod.",
+    "you": "You",
+    "private": "Shared only inside the pod.",
+    "challenges": {
+      "title": "Challenges",
+      "purpose": "Opt-in challenges at your brokerage. Win on total or most improved.",
+      "none": "No challenges right now",
+      "noneHint": "Your broker sets challenges here.",
+      "join": "Join",
+      "leave": "Leave",
+      "joined": "You joined.",
+      "leftOne": "You left the challenge.",
+      "total": "Total",
+      "improved": "Most improved",
+      "personalBest": "Personal best",
+      "ends": "Ends {{date}}",
+      "ended": "Ended",
+      "entrants_one": "{{count}} taking part",
+      "entrants_other": "{{count}} taking part",
+      "metrics": {
+        "conversations": "Conversations",
+        "appointments": "Appointments",
+        "ce_hours": "CE hours",
+        "posts": "Posts"
+      },
+      "broker": {
+        "title": "Challenges",
+        "purpose": "Set opt-in challenges on agents' own numbers. Only agents who join appear on the boards.",
+        "new": "New challenge",
+        "name": "Name",
+        "metric": "What counts",
+        "starts": "Starts",
+        "ends": "Ends",
+        "create": "Create challenge"
+      },
+      "created": "Challenge created.",
+      "errors": {
+        "dates": "Choose dates up to three months apart that haven't passed.",
+        "ended": "This challenge has ended."
+      }
     }
   }
 }

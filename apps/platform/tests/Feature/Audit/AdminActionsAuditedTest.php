@@ -714,6 +714,12 @@ function adminActions(): array
 
             return auditCase($linda, 'POST', "/organisation/mentors/reviews/{$booking->uuid}", ['decision' => 'keep'], tenant: $lone->id);
         },
+        // Broker: opt-in brokerage challenges (A13.2).
+        'organisation.challenges.store' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'POST', '/organisation/challenges', ['title' => 'Posts this week', 'metric' => 'posts', 'starts_on' => now()->toDateString(), 'ends_on' => now()->addDays(6)->toDateString()], tenant: $lone->id);
+        },
         // Broker: the virtual broker (A12.1, screen 34).
         'organisation.virtual-broker.manual' => function () {
             [$lone, $linda] = auditBrokerage();

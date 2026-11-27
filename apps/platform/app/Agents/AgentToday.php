@@ -9,8 +9,6 @@ use App\Models\CalendarEvent;
 use App\Models\CeCompletion;
 use App\Models\Connection;
 use App\Models\Contact;
-use App\Models\ContactActivity;
-use App\Models\ContactNote;
 use App\Models\Deal;
 use App\Models\DealDate;
 use App\Models\Todo;
@@ -90,7 +88,7 @@ final readonly class AgentToday
         $sunday = $monday->addWeek();
         $targets = $this->plans->targets($user, $this->modes->goalOf($user));
         $done = [
-            'conversations' => $this->conversations($user, $monday, $sunday),
+            'conversations' => Activity::conversations($user, $monday, $sunday),
             'appointments' => CalendarEvent::query()->where('user_id', $user->id)->whereIn('kind', ['appointment', 'showing'])->where('status', '!=', 'cancelled')
                 ->whereBetween('starts_at', [$monday->utc(), $sunday->utc()])->count(),
             'clients' => Deal::query()->where('user_id', $user->id)->whereIn('stage', ['active', 'under_contract'])->count(),
@@ -277,14 +275,6 @@ final readonly class AgentToday
     }
 
     /** Calls and emails from the CRMs, and touches logged in REOS, this week. */
-    private function conversations(User $user, CarbonImmutable $from, CarbonImmutable $to): int
-    {
-        $contacts = Contact::query()->where('owner_type', 'user')->where('owner_id', $user->id)->select('id');
-
-        return ContactActivity::query()->whereIn('contact_id', $contacts)->whereIn('kind', ['call', 'email', 'text'])->whereBetween('occurred_at', [$from->utc(), $to->utc()])->count()
-            + ContactNote::query()->where('author_id', $user->id)->whereBetween('created_at', [$from->utc(), $to->utc()])->count();
-    }
-
     private function name(string $source): string
     {
         return $source === 'reos' ? 'REOS' : ($this->catalogue->find($source)->name ?? $source);

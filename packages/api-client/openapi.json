@@ -3863,6 +3863,508 @@
                 }
             }
         },
+        "/challenges": {
+            "get": {
+                "operationId": "challenges.index",
+                "description": "My brokerage's challenges with the total and most-improved boards (only agents who joined appear).",
+                "summary": "Challenges",
+                "tags": [
+                    "BrokerageChallenge"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "metric": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "conversations",
+                                                            "appointments",
+                                                            "ce_hours",
+                                                            "posts"
+                                                        ]
+                                                    },
+                                                    "starts_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "ends_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "open": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "entrants": {
+                                                        "type": "integer"
+                                                    },
+                                                    "total": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "me": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "value": {
+                                                                    "type": "number"
+                                                                },
+                                                                "improved": {
+                                                                    "type": "number"
+                                                                },
+                                                                "personal_best": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "me",
+                                                                "value",
+                                                                "improved",
+                                                                "personal_best"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "improved": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "me": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "value": {
+                                                                    "type": "number"
+                                                                },
+                                                                "improved": {
+                                                                    "type": "number"
+                                                                },
+                                                                "personal_best": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "me",
+                                                                "value",
+                                                                "improved",
+                                                                "personal_best"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "metric",
+                                                    "starts_on",
+                                                    "ends_on",
+                                                    "joined",
+                                                    "open",
+                                                    "entrants",
+                                                    "total",
+                                                    "improved"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/challenges/{challenge}/join": {
+            "post": {
+                "operationId": "challenges.join",
+                "description": "My baseline is the same length of time just before it started.",
+                "summary": "Join a challenge",
+                "tags": [
+                    "BrokerageChallenge"
+                ],
+                "parameters": [
+                    {
+                        "name": "challenge",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "metric": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "conversations",
+                                                            "appointments",
+                                                            "ce_hours",
+                                                            "posts"
+                                                        ]
+                                                    },
+                                                    "starts_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "ends_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "open": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "entrants": {
+                                                        "type": "integer"
+                                                    },
+                                                    "total": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "me": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "value": {
+                                                                    "type": "number"
+                                                                },
+                                                                "improved": {
+                                                                    "type": "number"
+                                                                },
+                                                                "personal_best": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "me",
+                                                                "value",
+                                                                "improved",
+                                                                "personal_best"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "improved": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "me": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "value": {
+                                                                    "type": "number"
+                                                                },
+                                                                "improved": {
+                                                                    "type": "number"
+                                                                },
+                                                                "personal_best": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "me",
+                                                                "value",
+                                                                "improved",
+                                                                "personal_best"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "metric",
+                                                    "starts_on",
+                                                    "ends_on",
+                                                    "joined",
+                                                    "open",
+                                                    "entrants",
+                                                    "total",
+                                                    "improved"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/challenges/{challenge}/leave": {
+            "post": {
+                "operationId": "challenges.leave",
+                "description": "I leave its boards (Undo joins again).",
+                "summary": "Leave a challenge",
+                "tags": [
+                    "BrokerageChallenge"
+                ],
+                "parameters": [
+                    {
+                        "name": "challenge",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "metric": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "conversations",
+                                                            "appointments",
+                                                            "ce_hours",
+                                                            "posts"
+                                                        ]
+                                                    },
+                                                    "starts_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "ends_on": {
+                                                        "type": "string"
+                                                    },
+                                                    "joined": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "open": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "entrants": {
+                                                        "type": "integer"
+                                                    },
+                                                    "total": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "me": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "value": {
+                                                                    "type": "number"
+                                                                },
+                                                                "improved": {
+                                                                    "type": "number"
+                                                                },
+                                                                "personal_best": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "me",
+                                                                "value",
+                                                                "improved",
+                                                                "personal_best"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "improved": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "me": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "value": {
+                                                                    "type": "number"
+                                                                },
+                                                                "improved": {
+                                                                    "type": "number"
+                                                                },
+                                                                "personal_best": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "id",
+                                                                "name",
+                                                                "me",
+                                                                "value",
+                                                                "improved",
+                                                                "personal_best"
+                                                            ]
+                                                        }
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "metric",
+                                                    "starts_on",
+                                                    "ends_on",
+                                                    "joined",
+                                                    "open",
+                                                    "entrants",
+                                                    "total",
+                                                    "improved"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/calendar/events": {
             "get": {
                 "operationId": "calendar.index",
@@ -35170,6 +35672,1266 @@
                     },
                     "422": {
                         "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/pod": {
+            "get": {
+                "operationId": "pod.show",
+                "description": "`none`, `waiting` (matched with agents at my brokerage with the same goal, language and part-time flag) or `member`: the weekly call, the pod's conversation, and each member's goal for the week and the numbers they share, only inside the pod.",
+                "summary": "My pod",
+                "tags": [
+                    "Pod"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "waiting",
+                                                        "member"
+                                                    ]
+                                                },
+                                                "waiting_since": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "pod": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "call": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "day": {
+                                                                    "type": "string"
+                                                                },
+                                                                "time": {
+                                                                    "type": "string"
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string"
+                                                                },
+                                                                "next": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "session": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "day",
+                                                                "time",
+                                                                "timezone",
+                                                                "next",
+                                                                "session"
+                                                            ]
+                                                        },
+                                                        "conversation": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "week_of": {
+                                                            "type": "string"
+                                                        },
+                                                        "members": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "me": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "goal": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "metrics": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "key": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "number"
+                                                                                },
+                                                                                "target": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "key",
+                                                                                "done",
+                                                                                "target"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "shares": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "me",
+                                                                    "goal",
+                                                                    "metrics",
+                                                                    "shares"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "goal",
+                                                        "call",
+                                                        "conversation",
+                                                        "week_of",
+                                                        "members"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "waiting_since",
+                                                "pod"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/pod/join": {
+            "post": {
+                "operationId": "pod.join",
+                "description": "Into an open pod now, or onto the waiting list until five (or three after a week) can make one.",
+                "summary": "Join a pod",
+                "tags": [
+                    "Pod"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "waiting",
+                                                        "member"
+                                                    ]
+                                                },
+                                                "waiting_since": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "pod": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "call": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "day": {
+                                                                    "type": "string"
+                                                                },
+                                                                "time": {
+                                                                    "type": "string"
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string"
+                                                                },
+                                                                "next": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "session": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "day",
+                                                                "time",
+                                                                "timezone",
+                                                                "next",
+                                                                "session"
+                                                            ]
+                                                        },
+                                                        "conversation": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "week_of": {
+                                                            "type": "string"
+                                                        },
+                                                        "members": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "me": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "goal": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "metrics": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "key": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "number"
+                                                                                },
+                                                                                "target": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "key",
+                                                                                "done",
+                                                                                "target"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "shares": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "me",
+                                                                    "goal",
+                                                                    "metrics",
+                                                                    "shares"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "goal",
+                                                        "call",
+                                                        "conversation",
+                                                        "week_of",
+                                                        "members"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "waiting_since",
+                                                "pod"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/pod/leave": {
+            "post": {
+                "operationId": "pod.leave",
+                "description": "`left` is the pod to rejoin with Undo.",
+                "summary": "Leave the pod or the waiting list",
+                "tags": [
+                    "Pod"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "waiting",
+                                                        "member"
+                                                    ]
+                                                },
+                                                "waiting_since": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "pod": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "call": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "day": {
+                                                                    "type": "string"
+                                                                },
+                                                                "time": {
+                                                                    "type": "string"
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string"
+                                                                },
+                                                                "next": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "session": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "day",
+                                                                "time",
+                                                                "timezone",
+                                                                "next",
+                                                                "session"
+                                                            ]
+                                                        },
+                                                        "conversation": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "week_of": {
+                                                            "type": "string"
+                                                        },
+                                                        "members": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "me": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "goal": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "metrics": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "key": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "number"
+                                                                                },
+                                                                                "target": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "key",
+                                                                                "done",
+                                                                                "target"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "shares": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "me",
+                                                                    "goal",
+                                                                    "metrics",
+                                                                    "shares"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "goal",
+                                                        "call",
+                                                        "conversation",
+                                                        "week_of",
+                                                        "members"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "waiting_since",
+                                                "pod"
+                                            ]
+                                        },
+                                        "left": {
+                                            "type": [
+                                                "string",
+                                                "null"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "left"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/pod/rejoin": {
+            "post": {
+                "operationId": "pod.rejoin",
+                "summary": "Rejoin (Undo)",
+                "tags": [
+                    "Pod"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "pod": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                    }
+                                },
+                                "required": [
+                                    "pod"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "waiting",
+                                                        "member"
+                                                    ]
+                                                },
+                                                "waiting_since": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "pod": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "call": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "day": {
+                                                                    "type": "string"
+                                                                },
+                                                                "time": {
+                                                                    "type": "string"
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string"
+                                                                },
+                                                                "next": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "session": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "day",
+                                                                "time",
+                                                                "timezone",
+                                                                "next",
+                                                                "session"
+                                                            ]
+                                                        },
+                                                        "conversation": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "week_of": {
+                                                            "type": "string"
+                                                        },
+                                                        "members": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "me": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "goal": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "metrics": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "key": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "number"
+                                                                                },
+                                                                                "target": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "key",
+                                                                                "done",
+                                                                                "target"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "shares": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "me",
+                                                                    "goal",
+                                                                    "metrics",
+                                                                    "shares"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "goal",
+                                                        "call",
+                                                        "conversation",
+                                                        "week_of",
+                                                        "members"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "waiting_since",
+                                                "pod"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/pod/goal": {
+            "put": {
+                "operationId": "pod.goal",
+                "summary": "My goal for the week",
+                "tags": [
+                    "Pod"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string",
+                                        "minLength": 2,
+                                        "maxLength": 200
+                                    }
+                                },
+                                "required": [
+                                    "text"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "waiting",
+                                                        "member"
+                                                    ]
+                                                },
+                                                "waiting_since": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "pod": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "call": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "day": {
+                                                                    "type": "string"
+                                                                },
+                                                                "time": {
+                                                                    "type": "string"
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string"
+                                                                },
+                                                                "next": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "session": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "day",
+                                                                "time",
+                                                                "timezone",
+                                                                "next",
+                                                                "session"
+                                                            ]
+                                                        },
+                                                        "conversation": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "week_of": {
+                                                            "type": "string"
+                                                        },
+                                                        "members": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "me": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "goal": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "metrics": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "key": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "number"
+                                                                                },
+                                                                                "target": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "key",
+                                                                                "done",
+                                                                                "target"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "shares": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "me",
+                                                                    "goal",
+                                                                    "metrics",
+                                                                    "shares"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "goal",
+                                                        "call",
+                                                        "conversation",
+                                                        "week_of",
+                                                        "members"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "waiting_since",
+                                                "pod"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/pod/share": {
+            "put": {
+                "operationId": "pod.share",
+                "summary": "What I share inside the pod",
+                "tags": [
+                    "Pod"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "metrics": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": [
+                                                "conversations",
+                                                "appointments",
+                                                "clients",
+                                                "ce_hours"
+                                            ]
+                                        }
+                                    }
+                                },
+                                "required": [
+                                    "metrics"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "status": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "none",
+                                                        "waiting",
+                                                        "member"
+                                                    ]
+                                                },
+                                                "waiting_since": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "pod": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "call": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "day": {
+                                                                    "type": "string"
+                                                                },
+                                                                "time": {
+                                                                    "type": "string"
+                                                                },
+                                                                "timezone": {
+                                                                    "type": "string"
+                                                                },
+                                                                "next": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "session": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "day",
+                                                                "time",
+                                                                "timezone",
+                                                                "next",
+                                                                "session"
+                                                            ]
+                                                        },
+                                                        "conversation": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "week_of": {
+                                                            "type": "string"
+                                                        },
+                                                        "members": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "me": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "goal": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "metrics": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "key": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "done": {
+                                                                                    "type": "number"
+                                                                                },
+                                                                                "target": {
+                                                                                    "type": "number"
+                                                                                }
+                                                                            },
+                                                                            "required": [
+                                                                                "key",
+                                                                                "done",
+                                                                                "target"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "shares": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name",
+                                                                    "me",
+                                                                    "goal",
+                                                                    "metrics",
+                                                                    "shares"
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "goal",
+                                                        "call",
+                                                        "conversation",
+                                                        "week_of",
+                                                        "members"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "status",
+                                                "waiting_since",
+                                                "pod"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
                     }
                 }
             }

@@ -82,6 +82,8 @@ Schedule::command('reos:mls:sync')->everyFifteenMinutes()->withoutOverlapping()-
 Schedule::command('reos:social:publish')->everyMinute()->withoutOverlapping()->onOneServer();
 // Celebration posts (B12.3): milestones made into free posts; at most one shown a day.
 Schedule::command('reos:celebrations')->hourlyAt(17)->withoutOverlapping()->onOneServer();
+// Pods (A13.2): waiting agents matched, and each pod's weekly call booked.
+Schedule::command('reos:pods')->dailyAt('06:10')->withoutOverlapping()->onOneServer();
 Schedule::command('reos:social:insights')->hourlyAt(20)->withoutOverlapping()->onOneServer();
 // The morning brief at each agent's chosen time (A11.1c).
 Schedule::command('reos:agents:briefs')->everyFiveMinutes()->withoutOverlapping()->onOneServer();

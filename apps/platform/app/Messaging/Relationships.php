@@ -8,6 +8,7 @@ use App\Authorization\Membership;
 use App\Authorization\Role;
 use App\Enums\OrganisationType;
 use App\Models\Organisation;
+use App\Models\PodMember;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
@@ -84,6 +85,15 @@ final readonly class Relationships
                 }
 
                 $found[$id] = ['role' => $role, 'organisation' => is_string($row->organisation) ? $row->organisation : ''];
+            }
+        }
+
+        // Pod members message each other (A13.2), inside their pod.
+        $pods = PodMember::query()->where('user_id', $user->id)->whereNull('left_at')->pluck('pod_id');
+
+        if ($pods->isNotEmpty()) {
+            foreach (PodMember::query()->whereIn('pod_id', $pods)->whereNull('left_at')->where('user_id', '!=', $user->id)->with('pod')->get() as $member) {
+                $found[$member->user_id] ??= ['role' => Role::Agent, 'organisation' => $member->pod->name];
             }
         }
 

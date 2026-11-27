@@ -527,6 +527,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/challenges": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Challenges
+         * @description My brokerage's challenges with the total and most-improved boards (only agents who joined appear).
+         */
+        get: operations["challenges.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/challenges/{challenge}/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join a challenge
+         * @description My baseline is the same length of time just before it started.
+         */
+        post: operations["challenges.join"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/challenges/{challenge}/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Leave a challenge
+         * @description I leave its boards (Undo joins again).
+         */
+        post: operations["challenges.leave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/calendar/events": {
         parameters: {
             query?: never;
@@ -3712,6 +3772,117 @@ export interface paths {
          *     when the course doesn't cover it. Free; 429 over the hourly AI limit.
          */
         post: operations["learn.ask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pod": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My pod
+         * @description `none`, `waiting` (matched with agents at my brokerage with the same goal, language and part-time flag) or `member`: the weekly call, the pod's conversation, and each member's goal for the week and the numbers they share, only inside the pod.
+         */
+        get: operations["pod.show"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pod/join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Join a pod
+         * @description Into an open pod now, or onto the waiting list until five (or three after a week) can make one.
+         */
+        post: operations["pod.join"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pod/leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Leave the pod or the waiting list
+         * @description `left` is the pod to rejoin with Undo.
+         */
+        post: operations["pod.leave"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pod/rejoin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rejoin (Undo) */
+        post: operations["pod.rejoin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pod/goal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** My goal for the week */
+        put: operations["pod.goal"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pod/share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** What I share inside the pod */
+        put: operations["pod.share"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -8744,6 +8915,178 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "challenges.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            /** @enum {string} */
+                            metric: "conversations" | "appointments" | "ce_hours" | "posts";
+                            starts_on: string;
+                            ends_on: string;
+                            joined: boolean;
+                            open: boolean;
+                            entrants: number;
+                            total: {
+                                id: number;
+                                name: string;
+                                me: boolean;
+                                value: number;
+                                improved: number;
+                                personal_best: boolean;
+                            }[];
+                            improved: {
+                                id: number;
+                                name: string;
+                                me: boolean;
+                                value: number;
+                                improved: number;
+                                personal_best: boolean;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "challenges.join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                challenge: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            /** @enum {string} */
+                            metric: "conversations" | "appointments" | "ce_hours" | "posts";
+                            starts_on: string;
+                            ends_on: string;
+                            joined: boolean;
+                            open: boolean;
+                            entrants: number;
+                            total: {
+                                id: number;
+                                name: string;
+                                me: boolean;
+                                value: number;
+                                improved: number;
+                                personal_best: boolean;
+                            }[];
+                            improved: {
+                                id: number;
+                                name: string;
+                                me: boolean;
+                                value: number;
+                                improved: number;
+                                personal_best: boolean;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "challenges.leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                challenge: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            title: string;
+                            /** @enum {string} */
+                            metric: "conversations" | "appointments" | "ce_hours" | "posts";
+                            starts_on: string;
+                            ends_on: string;
+                            joined: boolean;
+                            open: boolean;
+                            entrants: number;
+                            total: {
+                                id: number;
+                                name: string;
+                                me: boolean;
+                                value: number;
+                                improved: number;
+                                personal_best: boolean;
+                            }[];
+                            improved: {
+                                id: number;
+                                name: string;
+                                me: boolean;
+                                value: number;
+                                improved: number;
+                                personal_best: boolean;
+                            }[];
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
     };
     "calendar.index": {
@@ -19103,6 +19446,401 @@ export interface operations {
                         /** @enum {string} */
                         engine: "ai" | "simulator" | "none";
                         found: boolean;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "pod.show": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            status: "none" | "waiting" | "member";
+                            waiting_since: string | null;
+                            pod: {
+                                id: string;
+                                name: string;
+                                goal: string;
+                                call: {
+                                    day: string;
+                                    time: string;
+                                    timezone: string;
+                                    next: string | null;
+                                    session: string | null;
+                                };
+                                conversation: string | null;
+                                week_of: string;
+                                members: {
+                                    id: number;
+                                    name: string;
+                                    me: boolean;
+                                    goal: string | null;
+                                    metrics: {
+                                        key: string;
+                                        done: number;
+                                        target: number;
+                                    }[];
+                                    shares: string[];
+                                }[];
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "pod.join": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            status: "none" | "waiting" | "member";
+                            waiting_since: string | null;
+                            pod: {
+                                id: string;
+                                name: string;
+                                goal: string;
+                                call: {
+                                    day: string;
+                                    time: string;
+                                    timezone: string;
+                                    next: string | null;
+                                    session: string | null;
+                                };
+                                conversation: string | null;
+                                week_of: string;
+                                members: {
+                                    id: number;
+                                    name: string;
+                                    me: boolean;
+                                    goal: string | null;
+                                    metrics: {
+                                        key: string;
+                                        done: number;
+                                        target: number;
+                                    }[];
+                                    shares: string[];
+                                }[];
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "pod.leave": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            status: "none" | "waiting" | "member";
+                            waiting_since: string | null;
+                            pod: {
+                                id: string;
+                                name: string;
+                                goal: string;
+                                call: {
+                                    day: string;
+                                    time: string;
+                                    timezone: string;
+                                    next: string | null;
+                                    session: string | null;
+                                };
+                                conversation: string | null;
+                                week_of: string;
+                                members: {
+                                    id: number;
+                                    name: string;
+                                    me: boolean;
+                                    goal: string | null;
+                                    metrics: {
+                                        key: string;
+                                        done: number;
+                                        target: number;
+                                    }[];
+                                    shares: string[];
+                                }[];
+                            } | null;
+                        };
+                        left: string | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "pod.rejoin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    pod: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            status: "none" | "waiting" | "member";
+                            waiting_since: string | null;
+                            pod: {
+                                id: string;
+                                name: string;
+                                goal: string;
+                                call: {
+                                    day: string;
+                                    time: string;
+                                    timezone: string;
+                                    next: string | null;
+                                    session: string | null;
+                                };
+                                conversation: string | null;
+                                week_of: string;
+                                members: {
+                                    id: number;
+                                    name: string;
+                                    me: boolean;
+                                    goal: string | null;
+                                    metrics: {
+                                        key: string;
+                                        done: number;
+                                        target: number;
+                                    }[];
+                                    shares: string[];
+                                }[];
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "pod.goal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            status: "none" | "waiting" | "member";
+                            waiting_since: string | null;
+                            pod: {
+                                id: string;
+                                name: string;
+                                goal: string;
+                                call: {
+                                    day: string;
+                                    time: string;
+                                    timezone: string;
+                                    next: string | null;
+                                    session: string | null;
+                                };
+                                conversation: string | null;
+                                week_of: string;
+                                members: {
+                                    id: number;
+                                    name: string;
+                                    me: boolean;
+                                    goal: string | null;
+                                    metrics: {
+                                        key: string;
+                                        done: number;
+                                        target: number;
+                                    }[];
+                                    shares: string[];
+                                }[];
+                            } | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "pod.share": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    metrics: ("conversations" | "appointments" | "clients" | "ce_hours")[];
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            status: "none" | "waiting" | "member";
+                            waiting_since: string | null;
+                            pod: {
+                                id: string;
+                                name: string;
+                                goal: string;
+                                call: {
+                                    day: string;
+                                    time: string;
+                                    timezone: string;
+                                    next: string | null;
+                                    session: string | null;
+                                };
+                                conversation: string | null;
+                                week_of: string;
+                                members: {
+                                    id: number;
+                                    name: string;
+                                    me: boolean;
+                                    goal: string | null;
+                                    metrics: {
+                                        key: string;
+                                        done: number;
+                                        target: number;
+                                    }[];
+                                    shares: string[];
+                                }[];
+                            } | null;
+                        };
                     };
                 };
             };

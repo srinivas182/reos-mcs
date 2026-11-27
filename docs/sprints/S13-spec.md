@@ -118,6 +118,22 @@
   - Brokerage challenges, for example most conversations this week, or CE lessons in November, with an opt-in leaderboard.
   - Boards for total, most improved and personal best.
 - **Done when:** a pod of five sees each other's weekly goals.
+- **As built, A13.2** (ADR 0054):
+  - **Pods** (`App\Pods\Pods`):
+    - Opting in puts the agent on `pod_requests`. They join an open pod at once, or wait.
+    - The daily `reos:pods` run (06:10) makes pods of five, or three after 7 days, matching brokerage, state, goal, language and part-time. It also books each pod's next 15-minute call (a `pod_call` video session).
+    - Each pod has a group conversation, and pod members are message contacts.
+    - Weekly goals live in `pod_goals`; the numbers come from `App\Agents\Activity`, and each member chooses what to share.
+    - Leave and Undo (rejoin).
+  - **Challenges** (`App\Pods\BrokerageChallenges`):
+    - The broker creates them at `/organisation/challenges` (audited).
+    - Agents opt in; the baseline is stored at joining.
+    - Boards for total and most improved, with personal best.
+  - **API:** `/api/v1/pod` (show, join, leave, rejoin, goal, share) and `/api/v1/challenges` (list, join, leave).
+  - **Web:** Pod and challenges (`/pod`, agent sidebar) and Challenges (`/organisation/challenges`, broker sidebar).
+  - **Phone:** `pod` (screen 131), from Home and Mentors.
+  - **Matching stays inside the brokerage.** Pods made by the brokerage by hand are deferred; matching covers the done-when.
+  - **Done when:** a Pest test has five agents join, become a pod, and each see the others' goals and shared numbers. A sixth agent with another goal keeps waiting.
 
 ### A13.3 Goals, points and feedback (Team A)
 
