@@ -110,6 +110,9 @@ return new class extends Migration
         });
 
         RowLevelSecurity::protect('brokerage_challenges');
+        // Independent agents' pods have no brokerage (organisation_id null).
+        RowLevelSecurity::protect('pod_requests', allowPersonal: true);
+        RowLevelSecurity::protect('pods', allowPersonal: true);
     }
 
     public function down(): void
@@ -117,6 +120,9 @@ return new class extends Migration
         Schema::table('video_sessions', function (Blueprint $table): void {
             $table->dropConstrainedForeignId('pod_id');
         });
+        RowLevelSecurity::release('pods');
+        RowLevelSecurity::release('pod_requests');
+        RowLevelSecurity::release('brokerage_challenges');
         Schema::dropIfExists('challenge_entries');
         Schema::dropIfExists('brokerage_challenges');
         Schema::dropIfExists('pod_goals');
