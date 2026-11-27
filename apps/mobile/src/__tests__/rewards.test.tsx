@@ -56,7 +56,7 @@ beforeEach(() => jest.clearAllMocks());
 
 describe('Goals and rewards on the phone (A13.3a: screens 111 and 112)', () => {
   it('shows today\'s goals and shares the streak', async () => {
-    const share = jest.spyOn(Share, 'share').mockResolvedValue({ action: 'sharedAction' });
+    const share = jest.spyOn(Share, 'share').mockResolvedValue({ action: 'sharedAction', activityType: undefined });
     mockApi.GET.mockResolvedValue(ok({ data: today }));
     await render(wrap(<GoalsScreen />));
 
