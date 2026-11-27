@@ -105,6 +105,7 @@ use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
 use App\Http\Controllers\Recruiting\RecruitingController;
 use App\Http\Controllers\Rewards\RewardsPageController;
+use App\Http\Controllers\RolePlay\RolePlayPageController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
 use App\Http\Controllers\School\CeReportsController;
 use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
@@ -524,6 +525,18 @@ Route::middleware(['auth', 'verified'])->prefix('feedback')->name('feedback.')->
         Route::put('{feedback}/response', 'respond')->whereUuid('feedback')->name('respond');
         Route::post('{feedback}/report', 'report')->whereUuid('feedback')->name('report');
     });
+});
+
+// Role-play and the skills assessment (A14.1a, screen 7): private to the agent.
+Route::middleware(['auth', 'verified'])->prefix('role-play')->name('role-play.')->controller(RolePlayPageController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('{rolePlay}', 'show')->whereUuid('rolePlay')->name('show');
+    Route::middleware('throttle:20,1,role-play')->group(function () {
+        Route::post('/', 'start')->name('start');
+        Route::post('assessment', 'assess')->name('assess');
+        Route::post('{rolePlay}/finish', 'finish')->whereUuid('rolePlay')->name('finish');
+    });
+    Route::post('{rolePlay}/turns', 'say')->whereUuid('rolePlay')->middleware('throttle:40,1,role-play-turns')->name('say');
 });
 
 // Goals and rewards (A13.3a): the agent's goals, streak and rewards; the broker's targets and bonus campaigns.

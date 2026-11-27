@@ -93,7 +93,8 @@
     "brokerRewards": "Metas y recompensas",
     "agentFeedback": "Opiniones de agentes",
     "complianceLog": "Registro de cumplimiento",
-    "candidateStudio": "Estudio para candidatos"
+    "candidateStudio": "Estudio para candidatos",
+    "rolePlay": "Juego de roles"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2885,7 +2886,12 @@
         "business_plan": "Escriba su plan de negocios",
         "comp_plan": "Diseñe su plan de comisiones",
         "broker_licence": "Solicite su licencia de bróker",
-        "go_live_checklist": "Complete la lista para comenzar a operar"
+        "go_live_checklist": "Complete la lista para comenzar a operar",
+        "practice_listing": "Practicar una presentación de listado (juego de roles)",
+        "practice_objection": "Practicar cómo manejar objeciones (juego de roles)",
+        "practice_prospecting": "Practicar una llamada de prospección (juego de roles)",
+        "practice_appraisal_gap": "Practicar una diferencia de avalúo (juego de roles)",
+        "practice_follow_up": "Practicar un seguimiento (juego de roles)"
       },
       "phases": {
         "setup": "Preparación",
@@ -9932,5 +9938,211 @@
       "notVerified": "Solo puede calificar a un agente después de un cierre en el que participó.",
       "already": "Ya calificó a este agente por este negocio."
     }
+  },
+  "roleplay": {
+    "title": "Juego de roles",
+    "purpose": "Practique en voz alta una presentación de listado, una objeción, una llamada o una diferencia de avalúo, y reciba una puntuación y tres mejoras.",
+    "private": "Solo usted puede ver su práctica. Se queda con usted si cambia de agencia.",
+    "assessment": {
+      "title": "Evaluación de habilidades",
+      "purpose": "Cinco rondas cortas, una para cada habilidad. Su habilidad más débil se agrega a su plan de 90 días.",
+      "start": "Empezar la evaluación",
+      "continue": "Continuar la ronda {{n}}",
+      "retake": "Hacerla de nuevo",
+      "progress": "{{done}} de {{total}} rondas terminadas",
+      "done": "Terminada. Trabaje primero en: {{skills}}",
+      "round": "Ronda de evaluación {{n}} de {{total}}"
+    },
+    "types": {
+      "listing": "Presentación de listado",
+      "objection": "Objeciones",
+      "prospecting": "Llamada de prospección",
+      "appraisal_gap": "Diferencia de avalúo",
+      "follow_up": "Seguimiento"
+    },
+    "typeHints": {
+      "listing": "Gane el listado de un vendedor que está entrevistando agentes.",
+      "objection": "Responda la preocupación y mantenga al cliente avanzando.",
+      "prospecting": "Consiga una reunión con un vendedor sin agente o un listado vencido.",
+      "appraisal_gap": "Mantenga el trato cuando el avalúo sale bajo.",
+      "follow_up": "Recupere la conversación con un cliente que dejó de responder."
+    },
+    "personas": {
+      "interviewing_seller": {
+        "name": "Vendedor que entrevista a tres agentes",
+        "brief": "Mark Ellis vende una casa de cuatro recámaras en Katy y se reúne con tres agentes esta semana.",
+        "lines": {
+          "0": "Gracias por venir. Esta semana hablo con tres agentes, así que dígame: ¿por qué debería listar con usted?",
+          "1": "Otro agente me dijo que podríamos obtener 30,000 dólares más que su precio. ¿Por qué su precio es más bajo?",
+          "2": "¿Cómo va a promocionar la casa exactamente? No quiero que pase meses sin venderse.",
+          "3": "Todo suena bien, pero quiero pensarlo después de las otras dos reuniones.",
+          "won": "Está bien, me ha convencido. Reunámonos el jueves para revisar el contrato de listado.",
+          "lost": "Gracias por su tiempo. Le llamo después de reunirme con los demás."
+        }
+      },
+      "downsizing_couple": {
+        "name": "Pareja que se muda a algo más pequeño",
+        "brief": "Ruth y Carl Moreno venden la casa familiar en Sugar Land para mudarse a algo más pequeño.",
+        "lines": {
+          "0": "Criamos a nuestros hijos en esta casa. Venderla es difícil, y ni siquiera sabemos a dónde iríamos.",
+          "1": "¿Y si se vende antes de encontrar nuestra próxima casa? No podemos quedarnos sin hogar.",
+          "2": "¿De verdad tenemos que arreglar todo antes de listarla? No estamos para un proyecto grande.",
+          "3": "La casa de nuestro vecino tardó cinco meses en venderse. ¿Por qué la nuestra sería distinta?",
+          "won": "Eso nos ayuda mucho. Pongamos una hora la próxima semana para planearlo paso a paso.",
+          "lost": "Necesitamos tiempo para hablarlo. Nosotros le avisamos."
+        }
+      },
+      "rate_worried_buyer": {
+        "name": "Comprador preocupado por las tasas",
+        "brief": "Jasmine Cole compra por primera vez en Houston y piensa esperar un año.",
+        "lines": {
+          "0": "La verdad, con las tasas como están, estoy pensando en esperar un año antes de comprar.",
+          "1": "Pero mi pago mensual sería mucho más alto que mi renta. ¿Cómo puede ser buena idea?",
+          "2": "¿Y si las tasas bajan justo después de que compre? Me sentiría atrapada.",
+          "3": "Todavía no estoy segura. ¿Qué me sugiere que haga ahora?",
+          "won": "Está bien, tiene sentido. Hablemos con un prestamista y veamos algunas casas este fin de semana.",
+          "lost": "Creo que voy a esperar a ver qué pasa con las tasas. Gracias de todos modos."
+        }
+      },
+      "commission_pushback": {
+        "name": "Vendedor que pide bajar la comisión",
+        "brief": "Dan Ortiz le tiene confianza, pero otro agente le ofreció una comisión más baja.",
+        "lines": {
+          "0": "Usted me cae bien, pero otro agente dijo que lo haría por mucho menos. ¿Puede igualarlo?",
+          "1": "Al final, ¿no ponen todos los agentes la casa en el MLS de todos modos?",
+          "2": "¿Qué recibo exactamente por el dinero extra?",
+          "3": "Aun así me sentiría mejor si bajara un poco.",
+          "won": "Es justo, veo la diferencia. Empecemos con los papeles.",
+          "lost": "Probablemente me quede con la opción más barata. Sin rencores."
+        }
+      },
+      "fsbo": {
+        "name": "Vende sin agente",
+        "brief": "Linda Park vende su propia casa para ahorrarse la comisión.",
+        "lines": {
+          "0": "¿Bueno? Si es agente, estoy vendiendo la casa yo misma, gracias.",
+          "1": "Ya vino gente a verla. ¿Por qué pagaría una comisión?",
+          "2": "Puedo anunciarla en internet yo misma. ¿Qué haría usted que yo no pueda?",
+          "3": "Tal vez. Pero hoy no voy a firmar nada.",
+          "won": "Está bien, puede venir el sábado por la mañana y explicármelo.",
+          "lost": "Voy a seguir intentándolo sola por ahora. Adiós."
+        }
+      },
+      "expired": {
+        "name": "Listado vencido",
+        "brief": "El listado de Greg Hall acaba de vencer después de 120 días con otro agente.",
+        "lines": {
+          "0": "Déjeme adivinar, otro agente que llama ahora que venció mi listado. ¿Por qué debería hablar con usted?",
+          "1": "El agente anterior también prometió mucho. No pasó nada en cuatro meses.",
+          "2": "¿Me va a decir que baje el precio y ya?",
+          "3": "Estoy cansado de esto. ¿Por qué sería diferente con usted?",
+          "won": "Está bien, le doy veinte minutos. Venga mañana a las cinco.",
+          "lost": "Creo que voy a quitar la casa del mercado por un tiempo."
+        }
+      },
+      "low_appraisal": {
+        "name": "El avalúo salió bajo",
+        "brief": "El avalúo del comprador de Sara Nguyen salió 15,000 dólares por debajo del precio del contrato.",
+        "lines": {
+          "0": "El avalúo salió 15,000 dólares por debajo de nuestro precio. ¿Qué pasa ahora? ¿Se cae el trato?",
+          "1": "No voy a bajar mi precio 15,000 dólares así nada más. No es justo para mí.",
+          "2": "¿Podemos impugnar el avalúo? Me parece incorrecto.",
+          "3": "¿Cuáles son mis opciones reales y qué haría usted?",
+          "won": "Está bien, me siento mejor. Sigamos con el plan que me explicó.",
+          "lost": "Tengo que pensar si quiero seguir con este comprador."
+        }
+      },
+      "cold_lead": {
+        "name": "Cliente que dejó de responder",
+        "brief": "Kevin Brooks preguntó por casas hace tres meses y dejó de responder.",
+        "lines": {
+          "0": "Ah, hola. Perdón, he estado muy ocupado. No sé si todavía estamos buscando.",
+          "1": "Lo pusimos en pausa. El mercado se sentía muy loco.",
+          "2": "No quiero hacerle perder el tiempo si no estamos listos.",
+          "3": "¿Tal vez en la primavera? Todavía no sé.",
+          "won": "Claro, mándeme algunas casas y hablamos el próximo martes.",
+          "lost": "Yo le aviso cuando estemos listos. Gracias."
+        }
+      }
+    },
+    "dimensions": {
+      "structure": "Estructura",
+      "questions": "Preguntas",
+      "objections": "Objeciones",
+      "clarity": "Claridad",
+      "ask": "El siguiente paso"
+    },
+    "fixes": {
+      "structure": {
+        "text": "Dele forma a su respuesta: preséntese, muestre pruebas y luego explique el plan.",
+        "example": "Gracias por recibirme. Le muestro tres casas que vendí cerca y mi plan para la suya."
+      },
+      "questions": {
+        "text": "Pregunte antes de explicar: averigüe qué es lo más importante para la persona.",
+        "example": "Antes de contarle mi plan, ¿qué es lo más importante para usted en esta mudanza?"
+      },
+      "objections": {
+        "text": "Primero reconozca la preocupación y luego responda exactamente esa preocupación.",
+        "example": "Entiendo, es una preocupación justa. Le muestro lo que dicen los números de casas como la suya."
+      },
+      "clarity": {
+        "text": "Haga cada respuesta corta y sencilla, sin muletillas.",
+        "example": "En pocas palabras: son tres pasos y yo me encargo de cada uno."
+      },
+      "ask": {
+        "text": "Termine con un siguiente paso claro y concreto.",
+        "example": "¿Podemos reunirnos el jueves a las 4 para revisar los detalles?"
+      }
+    },
+    "lessons": {
+      "listing_presentation": "Presentaciones de listado",
+      "discovery_questions": "Preguntas que descubren la necesidad",
+      "objection_handling": "Cómo manejar objeciones",
+      "clear_speaking": "Hablar con claridad",
+      "asking_for_business": "Pedir el siguiente paso"
+    },
+    "errors": {
+      "persona": "Elija una de las personas de esta práctica.",
+      "finished": "Esta práctica ya tiene puntuación. Empiece una nueva.",
+      "empty": "Primero diga o escriba su respuesta.",
+      "nothingSaid": "Responda al menos una vez antes de terminar."
+    },
+    "practiceTitle": "Practicar una habilidad",
+    "start": "Empezar",
+    "best": "Su mejor puntuación: {{score}}",
+    "recent": "Práctica reciente",
+    "none": "Todavía no hay práctica",
+    "noneHint": "Elija una habilidad arriba. Toma unos cinco minutos.",
+    "inProgress": "En curso",
+    "you": "Usted",
+    "answer": "Su respuesta",
+    "answerHint": "Hable o escriba. Responda como lo haría con un cliente real.",
+    "send": "Enviar",
+    "speak": "Hablar",
+    "stopListening": "Detener",
+    "listening": "Escuchando…",
+    "noVoice": "La voz no está disponible aquí. Escriba su respuesta.",
+    "readAloud": "Leer sus líneas en voz alta",
+    "finish": "Terminar y puntuar",
+    "turnsLeft_one": "Le queda {{count}} respuesta",
+    "turnsLeft_other": "Le quedan {{count}} respuestas",
+    "score": "{{score}} de 100",
+    "won": "Aceptó el siguiente paso.",
+    "lost": "Todavía no aceptó un siguiente paso.",
+    "fixesTitle": "Tres mejoras",
+    "tryLine": "Pruebe: “{{line}}”",
+    "lesson": "Lección: {{name}}",
+    "again": "Practicar de nuevo",
+    "nextRound": "Siguiente ronda",
+    "seeResults": "Ver sus resultados",
+    "allPractice": "Toda la práctica",
+    "engine": {
+      "claude": "Interpretado y puntuado por Claude.",
+      "script": "Interpretado y puntuado por REOS."
+    },
+    "them": "Cliente",
+    "part": "{{label}}: {{score}} de 20",
+    "assessmentTitle": "Sus habilidades",
+    "results": "Puntuación por habilidad"
   }
 }

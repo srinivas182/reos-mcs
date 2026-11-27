@@ -35,6 +35,7 @@ import {
     CalendarCheck,
     Milestone,
     UserPlus,
+    Theater,
     Trophy,
     Gift,
     MessageSquareQuote,
@@ -64,6 +65,7 @@ import { show as aiSettings } from '@/routes/ai';
 import { show as pointsRates } from '@/routes/points';
 import { index as rewardsIndex } from '@/routes/rewards';
 import { index as feedbackIndex } from '@/routes/feedback';
+import { index as rolePlayIndex } from '@/routes/role-play';
 import { index as candidateStudio } from '@/routes/candidate-studio';
 import { index as complianceLog } from '@/routes/organisation/compliance-log';
 import { index as brokerRewards } from '@/routes/organisation/rewards';
@@ -137,6 +139,7 @@ export type NavLabel =
     | 'brokerRewards'
     | 'goalsAndRewards'
     | 'agentFeedback'
+    | 'rolePlay'
     | 'complianceLog'
     | 'candidateStudio'
     | 'pointsRates'
@@ -271,6 +274,8 @@ export function roleNavigation(
             // Content studio (B11, screen 17): compose, check, publish or schedule, results.
             item('contentStudio', Megaphone, studio(), '/studio'),
             item('learnAndCe', GraduationCap, learn(), '/learn'),
+            // Role-play and the skills assessment (A14.1a, screen 7).
+            item('rolePlay', Theater, rolePlayIndex(), '/role-play'),
             // Hours against the renewal, certificates and renewing (A11.2).
             item('ceWallet', Wallet, ceWallet(), '/ce'),
             // Mentors from the agent's own brokerage (A10.3c, f04).
