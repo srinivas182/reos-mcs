@@ -25122,6 +25122,130 @@
                 }
             }
         },
+        "/learn/picks": {
+            "get": {
+                "operationId": "learn.picks",
+                "description": "For agents (A14.2): CE first when my license renews within 120 days and I still owe hours, then courses for the skills role-play found weakest (or the `topic` asked for, from a fix's lesson link), then for my mode. Each says why and whether I can listen to it (audio-only). Empty for other roles.",
+                "summary": "Courses picked for me",
+                "tags": [
+                    "Learn"
+                ],
+                "parameters": [
+                    {
+                        "name": "topic",
+                        "in": "query",
+                        "schema": {
+                            "type": [
+                                "string",
+                                "null"
+                            ],
+                            "enum": [
+                                "listing_presentation",
+                                "discovery_questions",
+                                "objection_handling",
+                                "clear_speaking",
+                                "asking_for_business",
+                                null
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "hours": {
+                                                        "type": [
+                                                            "number",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "reason": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "renewal",
+                                                            "skill",
+                                                            "mode"
+                                                        ]
+                                                    },
+                                                    "skill": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ],
+                                                        "enum": [
+                                                            "listing_presentation",
+                                                            "discovery_questions",
+                                                            "objection_handling",
+                                                            "clear_speaking",
+                                                            "asking_for_business",
+                                                            null
+                                                        ]
+                                                    },
+                                                    "audio": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "first_lesson": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "percent": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "title",
+                                                    "type",
+                                                    "hours",
+                                                    "reason",
+                                                    "skill",
+                                                    "audio",
+                                                    "first_lesson",
+                                                    "percent"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/learn/search": {
             "get": {
                 "operationId": "learn.search",
@@ -25483,6 +25607,7 @@
                                                                 "hidden",
                                                                 "checkin_due",
                                                                 "daily_max",
+                                                                "audio_not_allowed",
                                                                 null
                                                             ]
                                                         },
@@ -35362,6 +35487,7 @@
                                                                 "hidden",
                                                                 "checkin_due",
                                                                 "daily_max",
+                                                                "audio_not_allowed",
                                                                 null
                                                             ]
                                                         },
@@ -35816,6 +35942,7 @@
                                                         "hidden",
                                                         "checkin_due",
                                                         "daily_max",
+                                                        "audio_not_allowed",
                                                         null
                                                     ]
                                                 },
@@ -37254,7 +37381,7 @@
         "/learn/lessons/{lesson}/heartbeat": {
             "post": {
                 "operationId": "learn.heartbeat",
-                "description": "Every 15 seconds while the lesson is open: where the video is, whether\nit plays and whether the page or app is in front. Returns what has\ncounted, why the last stretch didn't (if it didn't), and any check-in\nnow waiting.",
+                "description": "Every 15 seconds while the lesson is open: where the video is, whether\nit plays and whether the page or app is in front. With `mode: audio`\n(A14.2) the phone is reading the lesson aloud and the screen may be\noff; it counts only where the course allows audio-only study\n(`audio_not_allowed` otherwise). Returns what has\ncounted, why the last stretch didn't (if it didn't), and any check-in\nnow waiting.",
                 "summary": "Send a heartbeat",
                 "tags": [
                     "Player"
@@ -37297,6 +37424,17 @@
                                             "null"
                                         ],
                                         "maxLength": 60
+                                    },
+                                    "mode": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "enum": [
+                                            "screen",
+                                            "audio",
+                                            null
+                                        ]
                                     }
                                 },
                                 "required": [
@@ -37340,6 +37478,7 @@
                                                         "hidden",
                                                         "checkin_due",
                                                         "daily_max",
+                                                        "audio_not_allowed",
                                                         null
                                                     ]
                                                 },
@@ -37451,6 +37590,226 @@
                 }
             }
         },
+        "/learn/lessons/{lesson}/listen": {
+            "get": {
+                "operationId": "learn.listen",
+                "description": "Audio-only (A14.2): the lesson's text by heading (or its video's words) for the phone to read aloud, how long that takes, whether audio-only study counts for this course (CE and qualifying courses only once the school has confirmed it), and the seat time so far. Heartbeats then go with `mode: audio`; check-ins are asked and answered out loud.",
+                "summary": "Listen to the lesson",
+                "tags": [
+                    "Player"
+                ],
+                "parameters": [
+                    {
+                        "name": "lesson",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "course": {
+                                                    "type": "string"
+                                                },
+                                                "language": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "en",
+                                                        "es"
+                                                    ]
+                                                },
+                                                "sections": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "heading": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "heading",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "words": {
+                                                    "type": "integer"
+                                                },
+                                                "seconds": {
+                                                    "type": "integer"
+                                                },
+                                                "audio_allowed": {
+                                                    "type": "boolean"
+                                                },
+                                                "player": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "counted": {
+                                                            "type": "integer"
+                                                        },
+                                                        "required": {
+                                                            "type": "integer"
+                                                        },
+                                                        "percent": {
+                                                            "type": "integer"
+                                                        },
+                                                        "reason": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "enum": [
+                                                                "gap",
+                                                                "paused",
+                                                                "hidden",
+                                                                "checkin_due",
+                                                                "daily_max",
+                                                                "audio_not_allowed",
+                                                                null
+                                                            ]
+                                                        },
+                                                        "checkin": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "key": {
+                                                                    "type": "string"
+                                                                },
+                                                                "at": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "kind": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "question",
+                                                                        "presence"
+                                                                    ]
+                                                                },
+                                                                "question": {
+                                                                    "type": [
+                                                                        "object",
+                                                                        "null"
+                                                                    ],
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "integer"
+                                                                        },
+                                                                        "prompt": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "options": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "id",
+                                                                        "prompt",
+                                                                        "options"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "key",
+                                                                "at",
+                                                                "kind",
+                                                                "question"
+                                                            ]
+                                                        },
+                                                        "completed": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "today_left": {
+                                                            "type": [
+                                                                "integer",
+                                                                "null"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "counted",
+                                                        "required",
+                                                        "percent",
+                                                        "reason",
+                                                        "checkin",
+                                                        "completed",
+                                                        "today_left"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "title",
+                                                "course",
+                                                "language",
+                                                "sections",
+                                                "words",
+                                                "seconds",
+                                                "audio_allowed",
+                                                "player"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/learn/lessons/{lesson}/checkins": {
             "post": {
                 "operationId": "learn.checkin",
@@ -37545,6 +37904,7 @@
                                                         "hidden",
                                                         "checkin_due",
                                                         "daily_max",
+                                                        "audio_not_allowed",
                                                         null
                                                     ]
                                                 },

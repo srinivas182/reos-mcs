@@ -31,6 +31,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $makeup_days
  * @property string|null $note
  * @property bool $records_live Live classes may be recorded for the course (A10.2c)
+ * @property bool $audio_allowed The school confirms audio-only study counts as seat time (A14.2)
  * @property int|null $reminded_days
  * @property Carbon|null $expired_at
  * @property int|null $created_by
@@ -54,7 +55,7 @@ final class CourseApproval extends Model
 
     protected $fillable = [
         'course_id', 'state_code', 'delivery', 'number', 'hours', 'approved_on', 'expires_on', 'status',
-        'max_hours_per_day', 'checkin_minutes', 'presence_percent', 'makeup_min_percent', 'makeup_days', 'note', 'records_live', 'created_by',
+        'max_hours_per_day', 'checkin_minutes', 'presence_percent', 'makeup_min_percent', 'makeup_days', 'note', 'records_live', 'audio_allowed', 'created_by',
     ];
 
     protected function casts(): array
@@ -72,6 +73,7 @@ final class CourseApproval extends Model
             'reminded_days' => 'integer',
             'expired_at' => 'datetime',
             'records_live' => 'boolean',
+            'audio_allowed' => 'boolean',
         ];
     }
 

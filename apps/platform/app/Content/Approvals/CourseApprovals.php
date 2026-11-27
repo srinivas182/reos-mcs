@@ -307,6 +307,11 @@ final readonly class CourseApprovals
             $fields['records_live'] = filter_var($data['records_live'], FILTER_VALIDATE_BOOLEAN);
         }
 
+        // The school confirms audio-only study counts as seat time (A14.2).
+        if (array_key_exists('audio_allowed', $data)) {
+            $fields['audio_allowed'] = filter_var($data['audio_allowed'], FILTER_VALIDATE_BOOLEAN);
+        }
+
         if ($approval === null) {
             $fields['hours'] ??= $course->hours === null ? null : (float) $course->hours;
             $fields['status'] ??= CourseApproval::APPROVED;

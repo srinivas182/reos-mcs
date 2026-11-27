@@ -252,6 +252,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Learn (A5.3b): my courses, search inside them, and a lesson to open.
     Route::middleware('can:learning.study')->prefix('learn')->name('api.learn.')->controller(LearnController::class)->group(function () {
         Route::get('courses', 'courses')->name('courses');
+        Route::get('picks', 'picks')->name('picks');
         Route::get('search', 'search')->middleware('throttle:60,1,api-learn-search')->name('search');
         Route::get('lessons/{lesson}', 'lesson')->whereNumber('lesson')->name('lesson');
     });
@@ -259,6 +260,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Learners' own progress, not admin actions: the controller checks learning.study.
     Route::prefix('learn')->name('api.learn.')->controller(PlayerController::class)->group(function () {
         Route::post('lessons/{lesson}/heartbeat', 'heartbeat')->whereNumber('lesson')->middleware('throttle:12,1,api-learn-heartbeat')->name('heartbeat');
+        Route::get('lessons/{lesson}/listen', 'listen')->whereNumber('lesson')->middleware('throttle:30,1,api-learn-listen')->name('listen');
         Route::post('lessons/{lesson}/checkins', 'checkin')->whereNumber('lesson')->middleware('throttle:30,1,api-learn-checkin')->name('checkin');
         Route::post('lessons/{lesson}/ask', 'ask')->whereNumber('lesson')->middleware('throttle:20,1,api-learn-ask')->name('ask');
     });

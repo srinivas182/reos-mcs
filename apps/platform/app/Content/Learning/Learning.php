@@ -156,6 +156,31 @@ final readonly class Learning
         ];
     }
 
+    /** Words a minute the phone reads a lesson aloud at, to estimate its length. */
+    public const LISTEN_WPM = 150;
+
+    /**
+     * The lesson to listen to (A14.2, ADR 0062): its text by heading, or the
+     * video's words when it has no text, with how long it takes to read.
+     *
+     * @return array{sections: list<array{heading: string|null, text: string}>, words: int, seconds: int}
+     */
+    public function listen(Lesson $lesson, string $language = 'en'): array
+    {
+        $view = $this->lesson($lesson, $language);
+        $sections = array_values(array_filter(self::sections((string) $lesson->body), static fn (array $s): bool => trim($s['text']) !== ''));
+
+        if ($sections === []) {
+            $cues = is_array($view['transcript'] ?? null) ? $view['transcript'] : [];
+            $text = trim(implode(' ', array_map(static fn (mixed $c): string => is_array($c) && is_string($c['text'] ?? null) ? $c['text'] : '', $cues)));
+            $sections = $text === '' ? [] : [['heading' => null, 'text' => $text]];
+        }
+
+        $words = array_sum(array_map(static fn (array $s): int => count(preg_split('/\s+/u', trim(($s['heading'] ?? '').' '.$s['text']), -1, PREG_SPLIT_NO_EMPTY) ?: []), $sections));
+
+        return ['sections' => $sections, 'words' => $words, 'seconds' => (int) ceil($words / self::LISTEN_WPM * 60)];
+    }
+
     /** The learner's video: in their language, else the lesson's first (A7.3). */
     public function videoFor(Lesson $lesson, string $language): ?LessonMedia
     {

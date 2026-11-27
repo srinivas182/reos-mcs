@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\Admin\Content;
 
+use App\Agents\AgentModes;
 use App\Content\CourseType;
+use App\RolePlay\RolePlayScorer;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -38,6 +40,11 @@ final class CourseRequest extends FormRequest
             'states' => ['sometimes', 'nullable', 'array', 'max:60'],
             'states.*' => ['string', 'size:2', Rule::exists('states', 'code')],
             'hours' => ['sometimes', 'nullable', 'numeric', 'min:0', 'max:500'],
+            // What it teaches and who it suits, for course picks (A14.2).
+            'skills' => ['sometimes', 'nullable', 'array', 'max:5'],
+            'skills.*' => ['string', Rule::in(array_values(RolePlayScorer::LESSONS))],
+            'modes' => ['sometimes', 'nullable', 'array', 'max:4'],
+            'modes.*' => ['string', Rule::in(AgentModes::GOALS)],
             'approvals' => ['sometimes', 'nullable', 'array'],
             'approvals.*' => ['array'],
             'approvals.*.number' => ['nullable', 'string', 'max:60'],

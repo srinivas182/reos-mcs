@@ -73,9 +73,25 @@ final readonly class SeatTime
     }
 
     /**
-     * One heartbeat from the player.
+     * Whether audio-only study counts for the course (A14.2, ADR 0062): CE
+     * and qualifying courses only once the school has confirmed it on an
+     * approval in force; other courses always.
+     */
+    public function audioAllowed(Course $course): bool
+    {
+        if (! $course->type->needsApproval()) {
+            return true;
+        }
+
+        return $course->approvals()->get()->contains(static fn (CourseApproval $a): bool => $a->valid() && $a->audio_allowed);
+    }
+
+    /**
+     * One heartbeat from the player. In audio-only mode (A14.2) the screen
+     * may be off — the phone reads the lesson aloud and asks check-ins out
+     * loud — so being in front isn't needed, but the course must allow it.
      *
-     * @param  array{position: int, playing: bool, visible: bool, session: string, timezone: string, source: string}  $beat
+     * @param  array{position: int, playing: bool, visible: bool, session: string, timezone: string, source: string, mode?: 'screen'|'audio'}  $beat
      * @return State
      */
     public function beat(User $user, Lesson $lesson, array $beat, ?CarbonImmutable $now = null): array
@@ -95,11 +111,13 @@ final readonly class SeatTime
             $used = DB::table('seat_time_days')->where('user_id', $user->id)->where('course_id', $course->id)->where('day', $day)->value('seconds');
             $usedToday = is_numeric($used) ? (int) $used : 0;
             $left = $rules['max_seconds_per_day'] === null ? null : max(0, $rules['max_seconds_per_day'] - $usedToday);
+            $audio = ($beat['mode'] ?? 'screen') === 'audio';
 
             $reason = match (true) {
                 ! $sameViewing && $last !== null => 'gap',
+                $audio && ! $this->audioAllowed($course) => 'audio_not_allowed',
                 ! $beat['playing'] => 'paused',
-                ! $beat['visible'] => 'hidden',
+                ! $beat['visible'] && ! $audio => 'hidden',
                 $checkin !== null => 'checkin_due',
                 $left === 0 => 'daily_max',
                 default => null,
@@ -119,7 +137,7 @@ final readonly class SeatTime
                 DB::table('seat_time_days')->where($row)->increment('seconds', $counted, ['updated_at' => $now]);
             }
 
-            $this->log($user, $lesson, $counted, $reason === null ? 0 : $elapsed, $reason, $beat['source'], null, $now);
+            $this->log($user, $lesson, $counted, $reason === null ? 0 : $elapsed, $reason, $audio ? $beat['source'].'-audio' : $beat['source'], null, $now);
             $this->settle($user, $lesson, $progress);
 
             return $this->state($lesson, $progress->refresh(), $reason, $left === null ? null : $left - $counted);

@@ -1,12 +1,13 @@
 import type { TFunction } from 'i18next';
 import { router } from 'expo-router';
-import { BookOpen, Download, FileText, Lock, Presentation, Search, Users, Video } from 'lucide-react-native';
-import { useState } from 'react';
+import { BookOpen, Download, FileText, Headphones, Lock, Presentation, Search, Users, Video } from 'lucide-react-native';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 
 import { marks, searchLessons, type SearchHit, useLearnCourses, where } from '@/lib/learn';
+import { type CoursePick, loadPicks } from '@/lib/listen';
 import { useSessions } from '@/lib/sessions';
 import { Button, Card, EmptyState, Icon, ListRow, Screen, SectionTitle, Text, TextField, TitleBar } from '@/ui';
 
@@ -25,6 +26,14 @@ export default function Learn() {
   const [results, setResults] = useState<SearchHit[] | null>(null);
   const [searched, setSearched] = useState('');
   const [busy, setBusy] = useState(false);
+  const [picks, setPicks] = useState<CoursePick[]>([]);
+
+  // Picked for an agent (A14.2): CE before renewal, then the skills practice found weak, then the mode.
+  useEffect(() => {
+    void loadPicks()
+      .then(setPicks)
+      .catch(() => setPicks([]));
+  }, []);
 
   const search = async () => {
     const q = query.trim();
@@ -50,6 +59,22 @@ export default function Learn() {
   return (
     <Screen>
       <TitleBar title={t('learn.title')} onBack={() => router.back()} action={<Button label={t('player.downloads.title')} variant="ghost" icon={Download} onPress={() => router.push('/downloads')} />} />
+
+      {picks.length > 0 ? (
+        <>
+          <SectionTitle>{t('learn.picks.title')}</SectionTitle>
+          {picks.map((pick) => (
+            <Card key={pick.id}>
+              <Text weight="semibold">{pick.title}</Text>
+              <Text tone="muted">{pick.reason === 'skill' && pick.skill ? t('learn.picks.skill', { skill: t(`roleplay.lessons.${pick.skill}`) }) : t(`learn.picks.${pick.reason}`)}</Text>
+              {pick.first_lesson !== null ? (
+                <Button label={pick.percent > 0 ? t('learn.picks.continue', { percent: pick.percent }) : t('learn.picks.start')} variant="secondary" onPress={() => router.push({ pathname: '/learn/[id]', params: { id: String(pick.first_lesson) } })} />
+              ) : null}
+              {pick.audio && pick.first_lesson !== null ? <Button label={t('learn.listen.open')} variant="ghost" icon={Headphones} onPress={() => router.push({ pathname: '/learn/listen/[id]', params: { id: String(pick.first_lesson) } })} /> : null}
+            </Card>
+          ))}
+        </>
+      ) : null}
 
       <TextField label={t('learn.searchLabel')} value={query} onChangeText={setQuery} returnKeyType="search" onSubmitEditing={() => void search()} autoCapitalize="none" />
       <Button label={t('learn.searchButton')} icon={Search} loading={busy} onPress={() => void search()} />

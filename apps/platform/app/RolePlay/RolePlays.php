@@ -186,6 +186,19 @@ final readonly class RolePlays
     }
 
     /**
+     * The lessons behind the three fixes of the agent's latest scored
+     * practice, for course picks (A14.2).
+     *
+     * @return list<string>
+     */
+    public function latestFixes(User $user): array
+    {
+        $play = RolePlay::query()->where('user_id', $user->id)->where('status', 'scored')->latest('finished_at')->latest('id')->first();
+
+        return array_map(static fn (array $f): string => $f['lesson'], $play->fixes ?? []);
+    }
+
+    /**
      * The weakest skills from the last finished assessment, weakest first.
      *
      * @return list<string>

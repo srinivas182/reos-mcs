@@ -92,6 +92,8 @@ export default function LessonScreen() {
     <Screen>
       <TitleBar title={lesson.title} onBack={() => router.back()} />
       <Text tone="muted">{lesson.course.title}</Text>
+      {/* Audio-only (A14.2): the lesson read aloud, with spoken check-ins. */}
+      <Button label={t('learn.listen.open')} variant="secondary" icon={Headphones} onPress={() => router.push({ pathname: '/learn/listen/[id]', params: { id: String(lesson.id) } })} />
 
       {document && pageText !== undefined ? (
         <Card>

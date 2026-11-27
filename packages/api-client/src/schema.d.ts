@@ -2551,6 +2551,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/learn/picks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Courses picked for me
+         * @description For agents (A14.2): CE first when my license renews within 120 days and I still owe hours, then courses for the skills role-play found weakest (or the `topic` asked for, from a fix's lesson link), then for my mode. Each says why and whether I can listen to it (audio-only). Empty for other roles.
+         */
+        get: operations["learn.picks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/learn/search": {
         parameters: {
             query?: never;
@@ -3926,11 +3946,34 @@ export interface paths {
         /**
          * Send a heartbeat
          * @description Every 15 seconds while the lesson is open: where the video is, whether
-         *     it plays and whether the page or app is in front. Returns what has
+         *     it plays and whether the page or app is in front. With `mode: audio`
+         *     (A14.2) the phone is reading the lesson aloud and the screen may be
+         *     off; it counts only where the course allows audio-only study
+         *     (`audio_not_allowed` otherwise). Returns what has
          *     counted, why the last stretch didn't (if it didn't), and any check-in
          *     now waiting.
          */
         post: operations["learn.heartbeat"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/learn/lessons/{lesson}/listen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Listen to the lesson
+         * @description Audio-only (A14.2): the lesson's text by heading (or its video's words) for the phone to read aloud, how long that takes, whether audio-only study counts for this course (CE and qualifying courses only once the school has confirmed it), and the seat time so far. Heartbeats then go with `mode: audio`; check-ins are asked and answered out loud.
+         */
+        get: operations["learn.listen"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -16336,6 +16379,44 @@ export interface operations {
             403: components["responses"]["AuthorizationException"];
         };
     };
+    "learn.picks": {
+        parameters: {
+            query?: {
+                topic?: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business" | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            title: string;
+                            type: string;
+                            hours: number | null;
+                            /** @enum {string} */
+                            reason: "renewal" | "skill" | "mode";
+                            /** @enum {string|null} */
+                            skill: "listing_presentation" | "discovery_questions" | "objection_handling" | "clear_speaking" | "asking_for_business" | null;
+                            audio: boolean;
+                            first_lesson: number | null;
+                            percent: number;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
     "learn.search": {
         parameters: {
             query: {
@@ -16449,7 +16530,7 @@ export interface operations {
                                 required: number;
                                 percent: number;
                                 /** @enum {string|null} */
-                                reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                                reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | "audio_not_allowed" | null;
                                 checkin: {
                                     key: string;
                                     at: number;
@@ -19700,7 +19781,7 @@ export interface operations {
                                 required: number;
                                 percent: number;
                                 /** @enum {string|null} */
-                                reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                                reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | "audio_not_allowed" | null;
                                 checkin: {
                                     key: string;
                                     at: number;
@@ -19875,7 +19956,7 @@ export interface operations {
                             required: number;
                             percent: number;
                             /** @enum {string|null} */
-                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | "audio_not_allowed" | null;
                             checkin: {
                                 key: string;
                                 at: number;
@@ -20451,6 +20532,8 @@ export interface operations {
                     visible: boolean;
                     session: string;
                     timezone?: string | null;
+                    /** @enum {string|null} */
+                    mode?: "screen" | "audio" | null;
                 };
             };
         };
@@ -20466,7 +20549,7 @@ export interface operations {
                             required: number;
                             percent: number;
                             /** @enum {string|null} */
-                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | "audio_not_allowed" | null;
                             checkin: {
                                 key: string;
                                 at: number;
@@ -20486,6 +20569,75 @@ export interface operations {
             };
             401: components["responses"]["AuthenticationException"];
             422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "learn.listen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lesson: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: number;
+                            title: string;
+                            course: string;
+                            /** @enum {string} */
+                            language: "en" | "es";
+                            sections: {
+                                heading: string | null;
+                                text: string;
+                            }[];
+                            words: number;
+                            seconds: number;
+                            audio_allowed: boolean;
+                            player: {
+                                counted: number;
+                                required: number;
+                                percent: number;
+                                /** @enum {string|null} */
+                                reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | "audio_not_allowed" | null;
+                                checkin: {
+                                    key: string;
+                                    at: number;
+                                    /** @enum {string} */
+                                    kind: "question" | "presence";
+                                    question: {
+                                        id: number;
+                                        prompt: string;
+                                        options: string[];
+                                    } | null;
+                                } | null;
+                                completed: boolean;
+                                today_left: number | null;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
             /** @description Too many requests */
             429: {
                 headers: {
@@ -20532,7 +20684,7 @@ export interface operations {
                             required: number;
                             percent: number;
                             /** @enum {string|null} */
-                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | null;
+                            reason: "gap" | "paused" | "hidden" | "checkin_due" | "daily_max" | "audio_not_allowed" | null;
                             checkin: {
                                 key: string;
                                 at: number;

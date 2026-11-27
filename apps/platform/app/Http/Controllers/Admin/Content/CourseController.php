@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin\Content;
 
+use App\Agents\AgentModes;
 use App\Content\CourseType;
 use App\Content\Review\ContentChecks;
 use App\Enums\StateStatus;
@@ -16,6 +17,7 @@ use App\Models\KbPassage;
 use App\Models\Lesson;
 use App\Models\State;
 use App\Models\User;
+use App\RolePlay\RolePlayScorer;
 use App\Services\Content\Courses;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
@@ -51,6 +53,9 @@ final class CourseController extends Controller
                 'description' => $course->description,
                 'states' => $course->states,
                 'hours' => $course->hours === null ? null : (float) $course->hours,
+                // What it teaches and who it suits, for course picks (A14.2).
+                'skills' => $course->skills ?? [],
+                'modes' => $course->modes ?? [],
                 'approvals' => $course->approvalNumbers() ?: (object) [],
                 'status' => $course->status->value,
                 'status_note' => $course->status_note,
@@ -73,6 +78,8 @@ final class CourseController extends Controller
             ])->all(),
             'checks' => $checks->for($course),
             'types' => CourseType::values(),
+            'skills' => array_values(array_unique(RolePlayScorer::LESSONS)),
+            'modes' => AgentModes::GOALS,
             'states' => self::stateOptions(),
         ]);
     }

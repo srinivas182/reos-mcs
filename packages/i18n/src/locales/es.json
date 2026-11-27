@@ -4102,7 +4102,10 @@
         "type": "Tipo",
         "states": "Estados",
         "hours": "Horas",
-        "description": "Descripción"
+        "description": "Descripción",
+        "skills": "Qué enseña",
+        "skillsHint": "Los agentes que necesitan estas habilidades ven este curso en Elegidos para usted.",
+        "modes": "Para quién es"
       },
       "statesHelp": "No marque ningún estado si el curso sirve para todos.",
       "description": "{{type}} · {{states}}",
@@ -4373,7 +4376,40 @@
       "demo": "Respuesta de demostración: la IA todavía no está conectada, así que son las palabras del propio curso.",
       "notCovered": "No se trata en este curso"
     },
-    "liveClasses": "Clases en vivo de este curso"
+    "liveClasses": "Clases en vivo de este curso",
+    "picks": {
+      "title": "Elegidos para usted",
+      "purpose": "Elegidos según la fecha de renovación, su práctica y su etapa.",
+      "renewal": "Su licencia se renueva pronto y todavía le faltan horas de CE.",
+      "skill": "Para mejorar en {{skill}}, según su práctica.",
+      "mode": "Adecuado para su etapa.",
+      "audio": "Puede escucharlo en su teléfono",
+      "start": "Empezar",
+      "continue": "Continuar ({{percent}} %)"
+    },
+    "listen": {
+      "title": "Escuchar",
+      "purpose": "La lección se lee en voz alta y las preguntas de control se hacen en voz alta, así puede estudiar con la pantalla apagada.",
+      "open": "Escuchar (solo audio)",
+      "start": "Empezar a escuchar",
+      "pause": "Pausar",
+      "resume": "Continuar",
+      "reading": "Sección {{n}} de {{total}}",
+      "length": "Unos {{minutes}} minutos",
+      "notAllowed": "Escuchar todavía no cuenta como tiempo de estudio en este curso. Su escuela primero debe confirmarlo con el regulador. Puede escuchar igual; solo que no contará.",
+      "counted": "{{counted}} de {{required}} contados",
+      "done": "Lección terminada. Su tiempo de estudio está guardado.",
+      "checkin": "Pregunta de control",
+      "say": "Diga el número de su respuesta o tóquelo.",
+      "presence": "¿Sigue ahí? Diga “Aquí estoy” o toque el botón.",
+      "here": "Aquí estoy",
+      "heard": "Escuché “{{words}}”.",
+      "again": "No le entendí. Por favor, dígalo de nuevo.",
+      "option": "Opción {{n}}: {{text}}",
+      "correct": "Correcto.",
+      "wrong": "No es correcto.",
+      "noText": "Esta lección no tiene texto para leer en voz alta. Mírela en la pantalla."
+    }
   },
   "billing": {
     "errors": {
@@ -5939,7 +5975,9 @@
       "save": "Guardar aprobación",
       "cancel": "Cancelar",
       "recordsLive": "Se pueden grabar las clases en vivo",
-      "recordsLiveHint": "La grabación queda en el curso para sus estudiantes después de la clase."
+      "recordsLiveHint": "La grabación queda en el curso para sus estudiantes después de la clase.",
+      "audioAllowed": "El estudio solo con audio cuenta como tiempo de estudio",
+      "audioAllowedHint": "Márquelo solo cuando el regulador lo haya confirmado. Así los estudiantes pueden escuchar en su teléfono con preguntas de control habladas y la pantalla apagada."
     },
     "dashboard": {
       "title": "Aprobaciones de cursos",
@@ -6726,7 +6764,8 @@
       "hidden": "Esta pestaña no está al frente, así que el tiempo no cuenta. Regrese para continuar.",
       "checkin_due": "Responda la verificación para que el tiempo siga contando.",
       "daily_max": "Llegó al límite de hoy para este curso. El tiempo vuelve a contar mañana.",
-      "hiddenApp": "REOS no está en pantalla, así que el tiempo no cuenta. Regrese para continuar."
+      "hiddenApp": "REOS no está en pantalla, así que el tiempo no cuenta. Regrese para continuar.",
+      "audio_not_allowed": "Escuchar todavía no cuenta en este curso. Su escuela primero debe confirmar el estudio solo con audio."
     },
     "errors": {
       "heartbeat": "No pudimos conectar con REOS, así que el tiempo no cuenta. Revise su conexión.",

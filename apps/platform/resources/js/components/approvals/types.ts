@@ -26,6 +26,7 @@ export type ApprovalRow = SeatTime & {
     labels_course: boolean;
     /** Live classes of the course may be recorded for the course (A10.2c). */
     records_live: boolean;
+    audio_allowed: boolean;
     note: string | null;
 };
 

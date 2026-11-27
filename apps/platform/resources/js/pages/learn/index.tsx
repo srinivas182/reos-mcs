@@ -3,6 +3,7 @@ import { BookOpen, CheckCircle2, Search, Users } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { KnowledgeResults } from '@/components/knowledge-results';
+import { type CoursePick, CoursePicks } from '@/components/learn/course-picks';
 import { PageHeader } from '@/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -50,9 +51,12 @@ export const learnerHref = (hit: SearchHit) =>
  */
 export default function Learn({
     courses,
+    picks = [],
     search,
 }: {
     courses: Course[];
+    /** Picked for an agent (A14.2); empty for other roles. */
+    picks?: CoursePick[];
     search: {
         q: string;
         language: Language | null;
@@ -71,6 +75,11 @@ export default function Learn({
                 <PageHeader
                     title={t('learn.title')}
                     description={t('learn.description', { state })}
+                />
+
+                <CoursePicks
+                    picks={picks}
+                    lessonHref={(id) => openLesson(id).url}
                 />
 
                 <section className="space-y-4 rounded-reos-lg border border-border bg-card p-5">
