@@ -28,6 +28,87 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Feedback
+         * @description Agents I closed with and can rate, and my own feedback: nothing shows until three agents have rated me; then the averages, the comments (no names), and a tip.
+         */
+        get: operations["feedback.index"];
+        put?: never;
+        /**
+         * Rate an agent
+         * @description Rates the other side's agent on a closed deal of mine (they must be a REOS agent on the deal's parties), once.
+         */
+        post: operations["feedback.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/feedback/visibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Show on my agent page
+         * @description Shows my average on my public agent page (only with three ratings or more), or hides it.
+         */
+        put: operations["feedback.visibility"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/feedback/{feedback}/response": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Respond to a rating */
+        put: operations["feedback.respond"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/feedback/{feedback}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Report a rating
+         * @description Reported ratings leave the average until REOS support looks. Send no reason to take the report back (Undo).
+         */
+        post: operations["feedback.report"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/announcements": {
         parameters: {
             query?: never;
@@ -6906,6 +6987,19 @@ export interface components {
          */
         QuizTopic: "agency" | "contracts" | "math" | "ownership" | "finance" | "state_rules";
         /**
+         * RateAgentRequest
+         * @description Rating the other side's agent after a verified closing (A13.3b).
+         */
+        RateAgentRequest: {
+            /** Format: uuid */
+            deal: string;
+            agent: number;
+            communication: number;
+            responsiveness: number;
+            professionalism: number;
+            comment?: string | null;
+        };
+        /**
          * ReadCertificateRequest
          * @description A certificate to read: an image or a one-page PDF, up to 10 MB (B10.3b).
          */
@@ -7485,6 +7579,7 @@ export type SchemaQuizAttemptRequest = components['schemas']['QuizAttemptRequest
 export type SchemaQuizQuestionResource = components['schemas']['QuizQuestionResource'];
 export type SchemaQuizResultResource = components['schemas']['QuizResultResource'];
 export type SchemaQuizTopic = components['schemas']['QuizTopic'];
+export type SchemaRateAgentRequest = components['schemas']['RateAgentRequest'];
 export type SchemaReadCertificateRequest = components['schemas']['ReadCertificateRequest'];
 export type SchemaRecordingAnswerRequest = components['schemas']['RecordingAnswerRequest'];
 export type SchemaRenewalRequest = components['schemas']['RenewalRequest'];
@@ -7541,6 +7636,390 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeResource"];
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "feedback.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            to_rate: {
+                                deal: string;
+                                property: string;
+                                closed_at: string | null;
+                                agent: {
+                                    id: number;
+                                    name: string;
+                                };
+                            }[];
+                            mine: {
+                                count: number;
+                                needed: number;
+                                shown: boolean;
+                                average: {
+                                    overall: number;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                } | null;
+                                items: {
+                                    id: string;
+                                    month: string;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                    comment: string | null;
+                                    response: string | null;
+                                    reported: boolean;
+                                }[];
+                                tip: {
+                                    /** @enum {string} */
+                                    dimension: "communication" | "responsiveness" | "professionalism";
+                                    text: string;
+                                    /** @enum {string} */
+                                    engine: "claude" | "template";
+                                } | null;
+                                public: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "feedback.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RateAgentRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            to_rate: {
+                                deal: string;
+                                property: string;
+                                closed_at: string | null;
+                                agent: {
+                                    id: number;
+                                    name: string;
+                                };
+                            }[];
+                            mine: {
+                                count: number;
+                                needed: number;
+                                shown: boolean;
+                                average: {
+                                    overall: number;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                } | null;
+                                items: {
+                                    id: string;
+                                    month: string;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                    comment: string | null;
+                                    response: string | null;
+                                    reported: boolean;
+                                }[];
+                                tip: {
+                                    /** @enum {string} */
+                                    dimension: "communication" | "responsiveness" | "professionalism";
+                                    text: string;
+                                    /** @enum {string} */
+                                    engine: "claude" | "template";
+                                } | null;
+                                public: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            403: components["responses"]["AuthorizationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "feedback.visibility": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    public: boolean;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            to_rate: {
+                                deal: string;
+                                property: string;
+                                closed_at: string | null;
+                                agent: {
+                                    id: number;
+                                    name: string;
+                                };
+                            }[];
+                            mine: {
+                                count: number;
+                                needed: number;
+                                shown: boolean;
+                                average: {
+                                    overall: number;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                } | null;
+                                items: {
+                                    id: string;
+                                    month: string;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                    comment: string | null;
+                                    response: string | null;
+                                    reported: boolean;
+                                }[];
+                                tip: {
+                                    /** @enum {string} */
+                                    dimension: "communication" | "responsiveness" | "professionalism";
+                                    text: string;
+                                    /** @enum {string} */
+                                    engine: "claude" | "template";
+                                } | null;
+                                public: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "feedback.respond": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feedback: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    response: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            to_rate: {
+                                deal: string;
+                                property: string;
+                                closed_at: string | null;
+                                agent: {
+                                    id: number;
+                                    name: string;
+                                };
+                            }[];
+                            mine: {
+                                count: number;
+                                needed: number;
+                                shown: boolean;
+                                average: {
+                                    overall: number;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                } | null;
+                                items: {
+                                    id: string;
+                                    month: string;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                    comment: string | null;
+                                    response: string | null;
+                                    reported: boolean;
+                                }[];
+                                tip: {
+                                    /** @enum {string} */
+                                    dimension: "communication" | "responsiveness" | "professionalism";
+                                    text: string;
+                                    /** @enum {string} */
+                                    engine: "claude" | "template";
+                                } | null;
+                                public: boolean;
+                            };
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "feedback.report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feedback: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    reason?: string | null;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            to_rate: {
+                                deal: string;
+                                property: string;
+                                closed_at: string | null;
+                                agent: {
+                                    id: number;
+                                    name: string;
+                                };
+                            }[];
+                            mine: {
+                                count: number;
+                                needed: number;
+                                shown: boolean;
+                                average: {
+                                    overall: number;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                } | null;
+                                items: {
+                                    id: string;
+                                    month: string;
+                                    communication: number;
+                                    responsiveness: number;
+                                    professionalism: number;
+                                    comment: string | null;
+                                    response: string | null;
+                                    reported: boolean;
+                                }[];
+                                tip: {
+                                    /** @enum {string} */
+                                    dimension: "communication" | "responsiveness" | "professionalism";
+                                    text: string;
+                                    /** @enum {string} */
+                                    engine: "claude" | "template";
+                                } | null;
+                                public: boolean;
+                            };
+                        };
+                    };
                 };
             };
             401: components["responses"]["AuthenticationException"];

@@ -6,6 +6,7 @@ namespace App\Mls;
 
 use App\Deals\DealAccess;
 use App\Enums\LicenceStatus;
+use App\Feedback\AgentFeedbacks;
 use App\Models\AgentPage;
 use App\Models\Licence;
 use App\Models\MlsListing;
@@ -25,11 +26,11 @@ use Illuminate\Support\Str;
  * @phpstan-import-type ListingView from ListingService
  *
  * @phpstan-type PageSettings array{handle: string, published: bool, bio: string|null, url: string}
- * @phpstan-type PublicPage array{name: string, brokerage: string|null, licences: list<array{state: string, number: string, type: string}>, bio: string|null, listings: list<ListingView>, sample: bool, url: string}
+ * @phpstan-type PublicPage array{name: string, brokerage: string|null, licences: list<array{state: string, number: string, type: string}>, bio: string|null, peer_rating: array{average: float, count: int}|null, listings: list<ListingView>, sample: bool, url: string}
  */
 final readonly class AgentPages
 {
-    public function __construct(private ListingService $listings, private DealAccess $access) {}
+    public function __construct(private ListingService $listings, private DealAccess $access, private AgentFeedbacks $feedback) {}
 
     /** @return PageSettings */
     public function settings(User $user): array
@@ -91,6 +92,8 @@ final readonly class AgentPages
             'brokerage' => is_string($brokerage) ? $brokerage : null,
             'licences' => $licences,
             'bio' => $page->bio,
+            // Feedback from agents, only if the agent chose to show it (A13.3b).
+            'peer_rating' => $this->feedback->publicRating($user),
             'listings' => $listings,
             'sample' => array_any($listings, static fn (array $l): bool => $l['sample']),
             'url' => route('agent-pages.show', $page->handle),

@@ -203,6 +203,7 @@ export function publicPage(
         name: 'James Miller',
         brokerage: 'Lone Star Realty',
         licences: [{ state: 'TX', number: '0798765', type: 'sales_agent' }],
+        peer_rating: null,
         bio: 'Katy homes, twelve years.',
         listings: [view()],
         sample: true,

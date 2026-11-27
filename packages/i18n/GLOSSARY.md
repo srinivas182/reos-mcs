@@ -111,3 +111,5 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Streak | Racha | A13.3a |
 | Bonus campaign | Campaña de bono | A13.3a |
 | Goals and rewards | Metas y recompensas | A13.3a |
+| Feedback from agents | Opiniones de agentes | A13.3b |
+| Responsiveness | Rapidez de respuesta | A13.3b |

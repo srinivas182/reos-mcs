@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import { BadgeCheck, Building2, Home } from 'lucide-react';
+import { BadgeCheck, Building2, Home, Star } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/empty-state';
 import { ListingCard } from '@/components/listings/listing-card';
@@ -59,6 +59,15 @@ export default function AgentPublicPage({ page }: { page: PublicAgentPage }) {
                                 </li>
                             ))}
                         </ul>
+                    ) : null}
+                    {page.peer_rating ? (
+                        <p className="flex items-center gap-2 text-base">
+                            <Star aria-hidden className="size-4" />
+                            {t('feedback.publicLine', {
+                                average: page.peer_rating.average.toFixed(1),
+                                count: page.peer_rating.count,
+                            })}
+                        </p>
                     ) : null}
                     {page.bio ? (
                         <p className="max-w-3xl text-body">{page.bio}</p>

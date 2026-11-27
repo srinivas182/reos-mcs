@@ -90,7 +90,8 @@
     "podAndChallenges": "Grupo y retos",
     "goalsAndRewards": "Metas y recompensas",
     "pointsRates": "Puntos",
-    "brokerRewards": "Metas y recompensas"
+    "brokerRewards": "Metas y recompensas",
+    "agentFeedback": "Opiniones de agentes"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2324,7 +2325,9 @@
         "daily_goals.updated": "Metas diarias cambiadas",
         "points_campaign.created": "Campaña de bono creada",
         "points_campaign.ended": "Campaña de bono terminada",
-        "points.redeemed": "Puntos usados"
+        "points.redeemed": "Puntos usados",
+        "agent_feedback.reported": "Opinión de un agente reportada",
+        "agent_feedback.unreported": "Reporte de opinión retirado"
       }
     }
   },
@@ -5474,7 +5477,8 @@
       "contract_review": "Revisiones de contratos",
       "post_approval": "Aprobación de publicaciones",
       "post_decision": "Decisiones de su bróker sobre publicaciones",
-      "celebration": "Publicaciones de celebración"
+      "celebration": "Publicaciones de celebración",
+      "agent_feedback": "Opiniones de agentes"
     },
     "digest": {
       "subject": {
@@ -9710,6 +9714,61 @@
       "save": "Guardar",
       "saved": "Puntos guardados.",
       "respa": "Los puntos solo se ganan con la actividad propia del agente, nunca por elegir o recomendar a un proveedor de servicios."
+    }
+  },
+  "feedback": {
+    "title": "Opiniones de agentes",
+    "purpose": "Califique a los agentes con quienes cierra y vea lo que dicen de trabajar con usted.",
+    "toRate": "Agentes por calificar",
+    "toRateHint": "Después de un cierre, califique al agente de la otra parte. No verá nada hasta que tres agentes lo califiquen, así que su calificación no se puede rastrear hasta usted.",
+    "noneToRate": "Por ahora no hay a quién calificar",
+    "noneToRateHint": "Cuando cierre un negocio con otro agente de REOS, podrá calificarlo aquí.",
+    "closed": "Cerrado el {{date}}",
+    "rate": "Calificar a {{name}}",
+    "dimensions": {
+      "communication": "Comunicación",
+      "responsiveness": "Rapidez de respuesta",
+      "professionalism": "Profesionalismo"
+    },
+    "stars_one": "{{count}} estrella",
+    "stars_other": "{{count}} estrellas",
+    "comment": "Comentario (opcional)",
+    "commentHint": "¿Qué salió bien y qué podría mejorar? No incluya nombres de clientes.",
+    "send": "Enviar opinión",
+    "sent": "Gracias. Su opinión se envió.",
+    "yours": "Sus opiniones",
+    "waiting_one": "{{count}} agente lo ha calificado. Sus opiniones se muestran cuando lo hayan hecho {{needed}}.",
+    "waiting_other": "{{count}} agentes lo han calificado. Sus opiniones se muestran cuando lo hayan hecho {{needed}}.",
+    "none": "Todavía no tiene opiniones",
+    "average": "{{average}} de 5 según {{count}} agentes",
+    "scoreLine": "{{label}}: {{score}}",
+    "tip": "En qué trabajar",
+    "public": "Mostrar mi promedio en mi página de agente",
+    "publicHint": "Desactivado de forma predeterminada. Solo se muestran el promedio y el número de calificaciones, y solo con tres o más.",
+    "publicLine": "{{average}} de 5 según {{count}} agentes con quienes cerró",
+    "respond": "Responder",
+    "yourResponse": "Su respuesta",
+    "saveResponse": "Guardar respuesta",
+    "report": "Reportar",
+    "reportReason": "¿Por qué reporta esto?",
+    "reportSend": "Reportarlo",
+    "reported": "Reportado. No cuenta en su promedio mientras el soporte de REOS lo revisa.",
+    "reportedBadge": "Reportado",
+    "month": "{{month}}",
+    "tips": {
+      "communication": "Los agentes quisieran saber más de usted. Envíe una actualización breve en cada paso, aunque no haya novedades.",
+      "responsiveness": "Los agentes notaron respuestas lentas. Intente responder a otros agentes el mismo día, aunque sea para decir cuándo sabrá más.",
+      "professionalism": "Los agentes mencionaron cómo se manejó el negocio. Mantenga los documentos completos y a tiempo, y conserve cada mensaje sobre el negocio."
+    },
+    "notify": {
+      "title": "Un agente lo calificó",
+      "waiting": "Otro agente lo calificó después de un cierre. Sus opiniones se muestran cuando tres agentes lo hayan hecho.",
+      "shown": "Otro agente lo calificó después de un cierre. Vea sus opiniones.",
+      "open": "Abrir opiniones"
+    },
+    "errors": {
+      "notVerified": "Solo puede calificar a un agente después de un cierre en el que participó.",
+      "already": "Ya calificó a este agente por este negocio."
     }
   }
 }

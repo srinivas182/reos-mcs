@@ -183,6 +183,27 @@
     - the nightly run settles days the app wasn't opened;
     - brokerage bonus points come from the brokerage, up to the budget;
     - points pay for AI credits and a month of membership, never more than the balance.
+- **As built, A13.3b** (ADR 0056):
+  - **Verified closing** (`App\Feedback\AgentFeedbacks`):
+    - The agent's deal is closed, within the last 180 days.
+    - The other side's agent is on the deal's parties with an "agent" role and an email that belongs to a REOS user with the Agent role.
+    - Clients and other REOS users can't be rated, and each pair rates once per deal.
+  - **Rating:** communication, responsiveness and professionalism (1–5), with an optional comment (`agent_feedback`).
+  - **What the rated agent sees:**
+    - Nothing until **three** ratings: just how many have come in.
+    - After three: the averages, the comments with no names or deals (only the month), and a tip on the lowest area.
+    - The tip comes from Claude using the comments when it's configured, otherwise REOS's tip for that area.
+  - **Respond:** the agent can reply to each comment.
+  - **Report:**
+    - A reported rating leaves the average until REOS support looks.
+    - Undo takes the report back.
+    - Reports are audited `agent_feedback.reported`.
+  - **Public average:** off by default (`agent_profiles.feedback_public`). When on, the public agent page shows the average and the count, and only with three ratings or more.
+  - **Notification:** the rated agent gets `agent_feedback` (in-app inbox and push), which says whether feedback can be seen yet.
+  - **API:** `/api/v1/feedback`: list, rate, respond, report, visibility.
+  - **Web:** Feedback from agents (`/feedback`, agent sidebar).
+  - **Phone:** `feedback` (screen 125), from Home.
+  - **Done when:** a Pest test has two ratings show nothing, and the third show the averages, the comments and a tip.
 
 ### B13.1 Texas checks (Team B)
 
