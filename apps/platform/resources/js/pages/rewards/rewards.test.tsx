@@ -71,10 +71,13 @@ describe('goals and rewards on the web (A13.3a)', () => {
 
     it('copies the streak when the browser has no share sheet', async () => {
         const writeText = vi.fn(async () => undefined);
-        vi.stubGlobal('navigator', {
-            ...navigator,
-            share: undefined,
-            clipboard: { writeText },
+        Object.defineProperty(navigator, 'share', {
+            value: undefined,
+            configurable: true,
+        });
+        Object.defineProperty(navigator, 'clipboard', {
+            value: { writeText },
+            configurable: true,
         });
         render(
             <RewardsPage today={todayFixture()} rewards={rewardsFixture()} />,
