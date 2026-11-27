@@ -6,6 +6,7 @@ namespace App\Assistant;
 
 use App\Agents\AgentBriefs;
 use App\Agents\AgentToday;
+use App\Compliance\ComplianceEngine;
 use App\Deals\Deals;
 use App\Models\AgentProfile;
 use App\Models\AssistantChat;
@@ -53,7 +54,7 @@ use Throwable;
  * `general_answer`.
  *
  * @phpstan-type Item array{title: string, detail: string|null, source: string|null, at: string|null, link: string|null}
- * @phpstan-type Draft array{channel: 'email'|'text', to: string, name: string, subject: string|null, body: string, href: string}
+ * @phpstan-type Draft array{channel: 'email'|'text', to: string, name: string, subject: string|null, body: string, href: string, fixed?: list<string>}
  * @phpstan-type Reply array{body: string, kind: string, items: list<Item>|null, draft: Draft|null, broker_question: string|null, engine: string}
  * @phpstan-type MessageRow array{id: int, role: string, body: string, kind: string|null, items: list<Item>, draft: Draft|null, broker_question: string|null, created_at: string|null}
  * @phpstan-type ChatRow array{id: string, title: string, updated_at: string|null, messages: list<MessageRow>}
@@ -84,6 +85,7 @@ final readonly class AgentAssistant
         private AiCredits $credits,
         private AiSettings $settings,
         private AuditLogger $audit,
+        private ComplianceEngine $compliance,
     ) {}
 
     /** @return array{permission: bool, starters: list<string>, chats: list<array{id: string, title: string, updated_at: string|null}>} */
@@ -325,6 +327,14 @@ final readonly class AgentAssistant
         }
 
         $body ??= $contact->insight->draft ?? self::line('assistant.draft.template.'.$channel, ['name' => $first, 'agent' => (string) $agent->name]);
+        // The compliance engine (B13.1): fair housing wording, misleading claims, titles and the brokerage's
+        // phrases are fixed before the agent sees the draft; what was changed is listed.
+        $checked = $this->compliance->check($agent, ['channel' => $channel, 'text' => $body]);
+        $fixed = array_values(array_filter(array_map(static fn (array $i): ?string => $i['severity'] === 'block' ? $i['phrase'] : null, $checked['issues'])));
+
+        if ($fixed !== []) {
+            $body = $this->compliance->fix($agent, $body, $checked['issues']);
+        }
         $subject = $channel === 'email' ? self::line('assistant.draft.subject', ['agent' => (string) $agent->name]) : null;
         $href = $channel === 'email' ? 'mailto:'.rawurlencode($to).'?subject='.rawurlencode((string) $subject).'&body='.rawurlencode($body) : 'sms:'.$to.'?&body='.rawurlencode($body);
 
@@ -334,7 +344,7 @@ final readonly class AgentAssistant
 
         return [
             'body' => self::line('assistant.draft.intro.'.$channel, ['name' => $contact->name()]), 'kind' => 'draft', 'items' => null, 'broker_question' => null, 'engine' => $engine,
-            'draft' => ['channel' => $channel, 'to' => $to, 'name' => $contact->name(), 'subject' => $subject, 'body' => $body, 'href' => $href],
+            'draft' => ['channel' => $channel, 'to' => $to, 'name' => $contact->name(), 'subject' => $subject, 'body' => $body, 'href' => $href, 'fixed' => $fixed],
         ];
     }
 

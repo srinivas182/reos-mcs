@@ -142,6 +142,7 @@ function Answer({ message, onAllow }: { message: AssistantMessage; onAllow: () =
             {message.draft.channel === 'email' ? message.draft.subject ?? '' : message.draft.to}
           </Text>
           <Text>{message.draft.body}</Text>
+          {message.draft.fixed && message.draft.fixed.length > 0 ? <Text variant="caption" tone="muted">{t('compliance.fixedNote', { phrases: message.draft.fixed.join(', ') })}</Text> : null}
           <Button icon={ExternalLink} label={message.draft.channel === 'email' ? t('assistant.mobile.openMail') : t('assistant.mobile.openMessages')} onPress={() => void Linking.openURL(message.draft?.href ?? '')} />
         </Card>
       ) : null}

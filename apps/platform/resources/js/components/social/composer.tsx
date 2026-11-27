@@ -338,6 +338,11 @@ export function Composer({
                                 !['length', 'media', 'video'].includes(c.code)
                                     ? `: ${c.detail}`
                                     : ''}
+                                {!c.ok && c.citation ? (
+                                    <span className="text-sm text-muted-foreground">
+                                        {` (${c.citation})`}
+                                    </span>
+                                ) : null}
                             </li>
                         ))}
                     </ul>
@@ -354,6 +359,13 @@ export function Composer({
                             <Wand2 aria-hidden />
                             {t('studio.checks.fix')}
                         </Button>
+                    ) : null}
+                    {check.review.length > 0 ? (
+                        <p className="rounded-reos-md border border-reos-tone-warning-fg/30 bg-reos-tone-warning-bg p-3 text-base text-reos-tone-warning-fg">
+                            {t('compliance.review', {
+                                phrases: check.review.join(', '),
+                            })}
+                        </p>
                     ) : null}
                     {check.approval ? (
                         <p className="rounded-reos-md border border-reos-tone-info-fg/30 bg-reos-tone-info-bg p-3 text-base text-reos-tone-info-fg">

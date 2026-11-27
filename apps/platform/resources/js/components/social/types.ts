@@ -94,7 +94,8 @@ export type CheckCode =
     | 'title'
     | 'fair_housing'
     | 'claims'
-    | 'banned';
+    | 'banned'
+    | 'team_name';
 
 export type PolicyIssue = {
     code: 'fair_housing' | 'claims' | 'banned';
@@ -105,11 +106,18 @@ export type PolicyIssue = {
 export type CheckResult = {
     attribution: string;
     /** `detail` is the channel for length, media and video; the flagged phrases for the wording checks (B12.1). */
-    checks: { code: CheckCode; ok: boolean; detail: string | null }[];
+    checks: {
+        code: CheckCode;
+        ok: boolean;
+        detail: string | null;
+        citation?: string | null;
+    }[];
     ok: boolean;
     /** The brokerage approves this agent's posts first (B12.1). */
     approval: boolean;
     issues: PolicyIssue[];
+    /** Unclear wording a second opinion couldn't settle: not blocked, worth a look (B13.1). */
+    review: string[];
 };
 
 export type Pick = { connection: number; channel: Channel; id: string };

@@ -34,7 +34,7 @@ final class AssistantController extends Controller
      *
      * @status 201
      *
-     * @response array{data: array{id: string, title: string, updated_at: string|null, messages: list<array{id: int, role: 'question'|'answer', body: string, kind: 'today'|'prep'|'deal'|'draft'|'policy'|'general'|'permission'|'none'|null, items: list<array{title: string, detail: string|null, source: string|null, at: string|null, link: string|null}>, draft: array{channel: 'email'|'text', to: string, name: string, subject: string|null, body: string, href: string}|null, broker_question: string|null, created_at: string|null}>}}
+     * @response array{data: array{id: string, title: string, updated_at: string|null, messages: list<array{id: int, role: 'question'|'answer', body: string, kind: 'today'|'prep'|'deal'|'draft'|'policy'|'general'|'permission'|'none'|null, items: list<array{title: string, detail: string|null, source: string|null, at: string|null, link: string|null}>, draft: array{channel: 'email'|'text', to: string, name: string, subject: string|null, body: string, href: string, fixed?: list<string>}|null, broker_question: string|null, created_at: string|null}>}}
      */
     public function ask(AssistantQuestionRequest $request, #[CurrentUser] User $user, AgentAssistant $assistant): JsonResponse
     {
@@ -46,7 +46,7 @@ final class AssistantController extends Controller
     /**
      * One of my chats.
      *
-     * @response array{data: array{id: string, title: string, updated_at: string|null, messages: list<array{id: int, role: 'question'|'answer', body: string, kind: 'today'|'prep'|'deal'|'draft'|'policy'|'general'|'permission'|'none'|null, items: list<array{title: string, detail: string|null, source: string|null, at: string|null, link: string|null}>, draft: array{channel: 'email'|'text', to: string, name: string, subject: string|null, body: string, href: string}|null, broker_question: string|null, created_at: string|null}>}}
+     * @response array{data: array{id: string, title: string, updated_at: string|null, messages: list<array{id: int, role: 'question'|'answer', body: string, kind: 'today'|'prep'|'deal'|'draft'|'policy'|'general'|'permission'|'none'|null, items: list<array{title: string, detail: string|null, source: string|null, at: string|null, link: string|null}>, draft: array{channel: 'email'|'text', to: string, name: string, subject: string|null, body: string, href: string, fixed?: list<string>}|null, broker_question: string|null, created_at: string|null}>}}
      */
     public function chat(string $chat, #[CurrentUser] User $user, AgentAssistant $assistant): JsonResponse
     {

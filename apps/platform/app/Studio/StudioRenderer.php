@@ -27,6 +27,9 @@ final class StudioRenderer
 
     public const LAYOUTS = ['band', 'top', 'split'];
 
+    /** The attribution's size: the agent and the broker, the largest contact information on a design. */
+    public const ATTRIBUTION_SIZE = 30;
+
     /**
      * @param  array{headline: string, lines: list<string>, attribution: string}  $text
      */
@@ -80,8 +83,27 @@ final class StudioRenderer
             $y += 56;
         }
 
-        // The agent and the broker: one line, one size.
-        imagettftext($im, 30, 0, $x, $y + 20, $colour, self::font('SemiBold'), self::fit($text['attribution'], 30, 'SemiBold'));
+        // The agent and the broker at one size: one line, or the broker on its own line so it's never cut off.
+        foreach (self::attributionLines($text['attribution']) as $i => $line) {
+            imagettftext($im, self::ATTRIBUTION_SIZE, 0, $x, $y + 20 + $i * 40, $colour, self::font('SemiBold'), $line);
+        }
+    }
+
+    /**
+     * The design's attribution lines: one when it fits, else the agent and
+     * the broker on two lines at the same size.
+     *
+     * @return list<string>
+     */
+    public static function attributionLines(string $attribution): array
+    {
+        $one = self::fit($attribution, self::ATTRIBUTION_SIZE, 'SemiBold');
+
+        if ($one === $attribution) {
+            return [$one];
+        }
+
+        return array_map(static fn (string $part): string => self::fit($part, self::ATTRIBUTION_SIZE, 'SemiBold'), array_slice(explode(' · ', $attribution), 0, 2));
     }
 
     /** Shortens a line until it fits the width. */

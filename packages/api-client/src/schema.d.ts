@@ -1466,6 +1466,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/compliance/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check before sending
+         * @description Texas advertising rules, fair housing wording (with context exceptions and a second opinion for unclear wording) and the brokerage's phrases.
+         */
+        post: operations["compliance.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/compliance/fix": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Fix automatically
+         * @description Swaps flagged wording for words about the home, or takes it out.
+         */
+        post: operations["compliance.fix"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/connections": {
         parameters: {
             query?: never;
@@ -8482,6 +8522,7 @@ export interface operations {
                                     subject: string | null;
                                     body: string;
                                     href: string;
+                                    fixed?: string[];
                                 } | null;
                                 broker_question: string | null;
                                 created_at: string | null;
@@ -8550,6 +8591,7 @@ export interface operations {
                                     subject: string | null;
                                     body: string;
                                     href: string;
+                                    fixed?: string[];
                                 } | null;
                                 broker_question: string | null;
                                 created_at: string | null;
@@ -12732,6 +12774,123 @@ export interface operations {
                     "application/json": {
                         data: {
                             eliminated: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "compliance.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel: "post" | "video" | "page" | "email" | "text";
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ok: boolean;
+                            issues: {
+                                /** @enum {string} */
+                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned";
+                                /** @enum {string} */
+                                severity: "block" | "warn";
+                                phrase: string | null;
+                                fix: string | null;
+                                reason: string | null;
+                                citation: string;
+                                url: string;
+                                /** @enum {string} */
+                                source: "rule" | "claude";
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "compliance.fix": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    channel: "post" | "video" | "page" | "email" | "text";
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            text: string;
+                            ok: boolean;
+                            issues: {
+                                /** @enum {string} */
+                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned";
+                                /** @enum {string} */
+                                severity: "block" | "warn";
+                                phrase: string | null;
+                                fix: string | null;
+                                reason: string | null;
+                                citation: string;
+                                url: string;
+                                /** @enum {string} */
+                                source: "rule" | "claude";
+                            }[];
                         };
                     };
                 };
@@ -23287,9 +23446,10 @@ export interface operations {
                             attribution: string;
                             checks: {
                                 /** @enum {string} */
-                                code: "broker" | "targets" | "length" | "media" | "video" | "title" | "fair_housing" | "claims" | "banned";
+                                code: "broker" | "targets" | "length" | "media" | "video" | "title" | "fair_housing" | "claims" | "banned" | "team_name";
                                 ok: boolean;
                                 detail: string | null;
+                                citation?: string | null;
                             }[];
                             ok: boolean;
                             approval: boolean;
@@ -23299,6 +23459,7 @@ export interface operations {
                                 phrase: string;
                                 fix: string;
                             }[];
+                            review: string[];
                         };
                     };
                 };
@@ -25687,7 +25848,7 @@ export interface operations {
                             error: string | null;
                             issues: {
                                 /** @enum {string} */
-                                code: "fair_housing" | "claims" | "banned";
+                                code: "fair_housing" | "claims" | "banned" | "broker" | "broker_size" | "team_name" | "title";
                                 phrase: string;
                                 fix: string;
                             }[];
@@ -25770,7 +25931,7 @@ export interface operations {
                             error: string | null;
                             issues: {
                                 /** @enum {string} */
-                                code: "fair_housing" | "claims" | "banned";
+                                code: "fair_housing" | "claims" | "banned" | "broker" | "broker_size" | "team_name" | "title";
                                 phrase: string;
                                 fix: string;
                             }[];
@@ -25843,7 +26004,7 @@ export interface operations {
                             error: string | null;
                             issues: {
                                 /** @enum {string} */
-                                code: "fair_housing" | "claims" | "banned";
+                                code: "fair_housing" | "claims" | "banned" | "broker" | "broker_size" | "team_name" | "title";
                                 phrase: string;
                                 fix: string;
                             }[];

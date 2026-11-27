@@ -14,6 +14,10 @@ import {
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { MessageCheck } from '@/components/compliance/message-check';
+import type { ComplianceResult } from '@/components/compliance/types';
+import { postJson } from '@/lib/content';
+import { check as checkRoute, fix as fixRoute } from '@/routes/compliance';
 
 type Props = {
     channel: 'call' | 'text';
@@ -92,6 +96,24 @@ export function ReachDialog({ channel, name, phone, draft, onLogged }: Props) {
                             value={body}
                             maxLength={1000}
                             onChange={(e) => setBody(e.target.value)}
+                        />
+                        <MessageCheck
+                            channel="text"
+                            text={body}
+                            onCheck={(c, text) =>
+                                postJson<{ data: ComplianceResult }>(
+                                    checkRoute().url,
+                                    { channel: c, text },
+                                ).then((r) => r.data)
+                            }
+                            onFix={(c, text) =>
+                                postJson<{
+                                    data: ComplianceResult & { text: string };
+                                }>(fixRoute().url, { channel: c, text }).then(
+                                    (r) => r.data,
+                                )
+                            }
+                            onFixed={setBody}
                         />
                     </div>
                 ) : null}

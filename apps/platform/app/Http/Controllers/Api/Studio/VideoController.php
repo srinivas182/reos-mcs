@@ -22,7 +22,7 @@ final class VideoController extends Controller
      *
      * @status 201
      *
-     * @response array{data: array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<array{media: string, url: string, kind: 'image'|'video', start: float, seconds: float, length: float|null, caption: string}>, music: 'calm'|'bright'|'none', brand: bool, status: 'rendering'|'ready'|'failed', seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}}
+     * @response array{data: array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<array{media: string, url: string, kind: 'image'|'video', start: float, seconds: float, length: float|null, caption: string}>, music: 'calm'|'bright'|'none', brand: bool, status: 'rendering'|'ready'|'failed', seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<array{code: 'fair_housing'|'claims'|'banned'|'broker'|'broker_size'|'team_name'|'title', phrase: string, fix: string}>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}}
      */
     public function store(MakeVideoRequest $request, #[CurrentUser] User $user, StudioVideos $videos): JsonResponse
     {
@@ -37,7 +37,7 @@ final class VideoController extends Controller
     /**
      * One video.
      *
-     * @response array{data: array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<array{media: string, url: string, kind: 'image'|'video', start: float, seconds: float, length: float|null, caption: string}>, music: 'calm'|'bright'|'none', brand: bool, status: 'rendering'|'ready'|'failed', seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}}
+     * @response array{data: array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<array{media: string, url: string, kind: 'image'|'video', start: float, seconds: float, length: float|null, caption: string}>, music: 'calm'|'bright'|'none', brand: bool, status: 'rendering'|'ready'|'failed', seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<array{code: 'fair_housing'|'claims'|'banned'|'broker'|'broker_size'|'team_name'|'title', phrase: string, fix: string}>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}}
      */
     public function show(string $video, #[CurrentUser] User $user, StudioVideos $videos): JsonResponse
     {
@@ -49,7 +49,7 @@ final class VideoController extends Controller
      *
      * The hook, the scenes (order, trim, length, caption; my own uploads can be added), the music and the brand colour. The words are checked again and the result is in `issues`; `fix` swaps flagged wording; `render` renders again (free) once the checks pass.
      *
-     * @response array{data: array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<array{media: string, url: string, kind: 'image'|'video', start: float, seconds: float, length: float|null, caption: string}>, music: 'calm'|'bright'|'none', brand: bool, status: 'rendering'|'ready'|'failed', seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}}
+     * @response array{data: array{id: string, source: array{type: 'listing'|'own', id: string|null, label: string|null}, listing: string|null, title: string, scenes: list<array{media: string, url: string, kind: 'image'|'video', start: float, seconds: float, length: float|null, caption: string}>, music: 'calm'|'bright'|'none', brand: bool, status: 'rendering'|'ready'|'failed', seconds: float|null, video: array{path: string, url: string}|null, poster: array{path: string, url: string}|null, error: string|null, issues: list<array{code: 'fair_housing'|'claims'|'banned'|'broker'|'broker_size'|'team_name'|'title', phrase: string, fix: string}>, credits: int, engine: string, created_at: string|null, rendered_at: string|null}}
      */
     public function update(UpdateVideoRequest $request, string $video, #[CurrentUser] User $user, StudioVideos $videos): JsonResponse
     {

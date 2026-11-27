@@ -1,3 +1,4 @@
+import { fixBeforeSending } from '@/lib/compliance';
 import { router } from 'expo-router';
 import { MessageSquareText, Phone, Sparkles } from 'lucide-react-native';
 import { Linking, View } from 'react-native';
@@ -21,8 +22,11 @@ export function TodayInsight({ contact, insight, onDone }: Props) {
 
   const reach = async (channel: 'call' | 'text') => {
     if (!phone) return;
-    await Linking.openURL(reachUri(channel, phone, channel === 'text' ? (insight.draft ?? '') : ''));
-    if (await logTouch(contact.id, channel, channel === 'text' ? insight.draft : null)) {
+    // Checked and fixed before it opens in Messages (B13.1).
+    const { text, changed } = channel === 'text' ? await fixBeforeSending('text', insight.draft ?? '') : { text: '', changed: [] };
+    if (changed.length > 0) toast({ message: t('compliance.fixedNote', { phrases: changed.join(', ') }) });
+    await Linking.openURL(reachUri(channel, phone, text));
+    if (await logTouch(contact.id, channel, channel === 'text' ? text : null)) {
       toast({ message: t('crm.hub.today.logged') });
       onDone();
     }

@@ -8,6 +8,11 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import type { PageSettings } from './types';
 
+/** TREC's forms every Texas agent links from their website and social profiles (22 TAC §531.18, §531.20). */
+const TREC_IABS =
+    'https://www.trec.texas.gov/forms/information-about-brokerage-services';
+const TREC_CPN = 'https://www.trec.texas.gov/forms/consumer-protection-notice';
+
 /**
  * The agent's public page (B10.2b): publish it, write a short bio, copy the
  * link. The listings on it follow each MLS's display rules.
@@ -23,6 +28,7 @@ export function PageCard({
     const [published, setPublished] = useState(page.published);
     const [bio, setBio] = useState(page.bio ?? '');
     const [busy, setBusy] = useState(false);
+    const [problem, setProblem] = useState<string | null>(null);
 
     useEffect(() => {
         setPublished(page.published);
@@ -31,8 +37,13 @@ export function PageCard({
 
     const save = async (next: boolean = published) => {
         setBusy(true);
+        setProblem(null);
         try {
             await onSave(next, bio);
+        } catch (e) {
+            // The compliance engine (B13.1): what keeps the page from being published.
+            setPublished(page.published);
+            setProblem(e instanceof Error ? e.message : String(e));
         } finally {
             setBusy(false);
         }
@@ -84,9 +95,27 @@ export function PageCard({
                     {t('listings.page.bioHint')}
                 </p>
             </div>
+            {problem ? (
+                <p
+                    role="alert"
+                    className="rounded-reos-md border border-destructive/30 bg-reos-tone-danger-bg p-3 text-base text-reos-tone-danger-fg"
+                >
+                    {problem}
+                </p>
+            ) : null}
             {published ? (
                 <CopyField label={t('listings.page.link')} value={page.url} />
             ) : null}
+            <div className="space-y-2">
+                <h3 className="text-base font-semibold">
+                    {t('compliance.profileLinks')}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                    {t('compliance.profileLinksHint')}
+                </p>
+                <CopyField label={t('compliance.iabs')} value={TREC_IABS} />
+                <CopyField label={t('compliance.cpn')} value={TREC_CPN} />
+            </div>
             <div className="flex flex-wrap gap-3">
                 <Button disabled={busy} onClick={() => void save()}>
                     {t('listings.page.save')}
