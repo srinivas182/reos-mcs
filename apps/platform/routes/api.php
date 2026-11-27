@@ -63,6 +63,7 @@ use App\Http\Controllers\Api\Practice\TopicPlanController;
 use App\Http\Controllers\Api\Privacy\ConsentController;
 use App\Http\Controllers\Api\Providers\ProviderLicenceController;
 use App\Http\Controllers\Api\Releases\WhatsNewController;
+use App\Http\Controllers\Api\Rewards\RewardsController;
 use App\Http\Controllers\Api\Sessions\SessionsController as ApiSessionsController;
 use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
@@ -272,6 +273,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
     Route::post('mentors/change', [SwitchController::class, 'changeMentor'])->middleware('throttle:5,1,api-mentors-change')->name('api.mentors.change');
+    // Daily goals, points and rewards (A13.3a, screens 111 and 112).
+    Route::get('goals/today', [RewardsController::class, 'today'])->middleware('throttle:60,1,api-goals')->name('api.goals.today');
+    Route::get('rewards', [RewardsController::class, 'index'])->name('api.rewards.index');
+    Route::post('rewards/redeem', [RewardsController::class, 'redeem'])->middleware('throttle:10,1,api-rewards')->name('api.rewards.redeem');
+
     // Accountability pods and brokerage challenges (A13.2, screen 131).
     Route::prefix('pod')->name('api.pod.')->controller(PodController::class)->group(function () {
         Route::get('/', 'show')->name('show');

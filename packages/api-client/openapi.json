@@ -40594,6 +40594,466 @@
                 }
             }
         },
+        "/goals/today": {
+            "get": {
+                "operationId": "goals.today",
+                "description": "The day's goals for my mode, what's done, the points earned (awarded as goals are met), my streak and any brokerage bonus campaigns.",
+                "summary": "Today's goals",
+                "tags": [
+                    "Rewards"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "day": {
+                                                    "type": "string"
+                                                },
+                                                "mode": {
+                                                    "type": "string"
+                                                },
+                                                "goals": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "conversations",
+                                                                    "ce_lesson",
+                                                                    "follow_ups",
+                                                                    "post"
+                                                                ]
+                                                            },
+                                                            "done": {
+                                                                "type": "integer"
+                                                            },
+                                                            "target": {
+                                                                "type": "integer"
+                                                            },
+                                                            "points": {
+                                                                "type": "integer"
+                                                            },
+                                                            "met": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "bonus": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "key",
+                                                            "done",
+                                                            "target",
+                                                            "points",
+                                                            "met",
+                                                            "bonus"
+                                                        ]
+                                                    }
+                                                },
+                                                "points_today": {
+                                                    "type": "integer"
+                                                },
+                                                "bonus_today": {
+                                                    "type": "integer"
+                                                },
+                                                "all_done": {
+                                                    "type": "boolean"
+                                                },
+                                                "all_done_points": {
+                                                    "type": "integer"
+                                                },
+                                                "streak": {
+                                                    "type": "integer"
+                                                },
+                                                "best_streak": {
+                                                    "type": "integer"
+                                                },
+                                                "balance": {
+                                                    "type": "integer"
+                                                },
+                                                "campaigns": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "goal": {
+                                                                "type": "string"
+                                                            },
+                                                            "multiplier": {
+                                                                "type": "integer"
+                                                            },
+                                                            "ends_on": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "title",
+                                                            "goal",
+                                                            "multiplier",
+                                                            "ends_on"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "day",
+                                                "mode",
+                                                "goals",
+                                                "points_today",
+                                                "bonus_today",
+                                                "all_done",
+                                                "all_done_points",
+                                                "streak",
+                                                "best_streak",
+                                                "balance",
+                                                "campaigns"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/rewards": {
+            "get": {
+                "operationId": "rewards.index",
+                "description": "My points balance and its value (1,000 points = $10 inside REOS, no cash value), what points pay for, and recent points.",
+                "summary": "My rewards",
+                "tags": [
+                    "Rewards"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "balance": {
+                                                    "type": "integer"
+                                                },
+                                                "value_cents": {
+                                                    "type": "integer"
+                                                },
+                                                "options": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "price": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "credit_pack",
+                                                                    "plan"
+                                                                ]
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "points": {
+                                                                "type": "integer"
+                                                            },
+                                                            "credits": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "interval": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "once",
+                                                                    "month",
+                                                                    "year"
+                                                                ]
+                                                            },
+                                                            "affordable": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "price",
+                                                            "kind",
+                                                            "name",
+                                                            "points",
+                                                            "credits",
+                                                            "interval",
+                                                            "affordable"
+                                                        ]
+                                                    }
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "reason": {
+                                                                "type": "string"
+                                                            },
+                                                            "points": {
+                                                                "type": "integer"
+                                                            },
+                                                            "memo": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "reason",
+                                                            "points",
+                                                            "memo",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "balance",
+                                                "value_cents",
+                                                "options",
+                                                "history"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/rewards/redeem": {
+            "post": {
+                "operationId": "rewards.redeem",
+                "description": "Pays for an AI credit pack or a period of membership with points (mentor sessions are paid when booking).",
+                "summary": "Use points",
+                "tags": [
+                    "Rewards"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "price": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "price"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "balance": {
+                                                    "type": "integer"
+                                                },
+                                                "value_cents": {
+                                                    "type": "integer"
+                                                },
+                                                "options": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "price": {
+                                                                "type": "integer"
+                                                            },
+                                                            "kind": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "credit_pack",
+                                                                    "plan"
+                                                                ]
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "points": {
+                                                                "type": "integer"
+                                                            },
+                                                            "credits": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "interval": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "once",
+                                                                    "month",
+                                                                    "year"
+                                                                ]
+                                                            },
+                                                            "affordable": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "price",
+                                                            "kind",
+                                                            "name",
+                                                            "points",
+                                                            "credits",
+                                                            "interval",
+                                                            "affordable"
+                                                        ]
+                                                    }
+                                                },
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "reason": {
+                                                                "type": "string"
+                                                            },
+                                                            "points": {
+                                                                "type": "integer"
+                                                            },
+                                                            "memo": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "at": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "reason",
+                                                            "points",
+                                                            "memo",
+                                                            "at"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "balance",
+                                                "value_cents",
+                                                "options",
+                                                "history"
+                                            ]
+                                        },
+                                        "order": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "order"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/sessions": {
             "get": {
                 "operationId": "sessions.index",

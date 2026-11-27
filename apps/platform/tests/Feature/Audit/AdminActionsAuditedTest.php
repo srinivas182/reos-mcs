@@ -40,6 +40,7 @@ use App\Models\LicenceJourney;
 use App\Models\MessageReport;
 use App\Models\Order;
 use App\Models\Organisation;
+use App\Models\PointsCampaign;
 use App\Models\PolicyPassage;
 use App\Models\PrivacyRequest;
 use App\Models\Product;
@@ -53,6 +54,7 @@ use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
 use App\Privacy\ConsentMethod;
+use App\Rewards\PointRates;
 use App\Services\Ai\AiSettings;
 use App\Services\Content\Courses;
 use App\Services\Content\LessonFiles;
@@ -407,6 +409,12 @@ function adminActions(): array
 
             return auditCase($ops, 'PATCH', "/admin/provider-categories/{$id}", ['areas_on_pro' => 5], confirmed: true);
         },
+        'points.update' => function () {
+            $rates = app(PointRates::class)->current();
+            $rates['daily_cap'] = 300;
+
+            return auditCase(auditOps(), 'PUT', '/admin/points', $rates);
+        },
         'ai.update' => function () {
             $ops = auditOps();
             $settings = app(AiSettings::class)->current();
@@ -713,6 +721,23 @@ function adminActions(): array
                 'minutes' => 30, 'topic' => 'Pricing', 'status' => 'completed', 'price_cents' => 0, 'rating' => 1, 'rating_comment' => 'Late.', 'rated_at' => now()->subDay(), 'review_status' => 'pending']);
 
             return auditCase($linda, 'POST', "/organisation/mentors/reviews/{$booking->uuid}", ['decision' => 'keep'], tenant: $lone->id);
+        },
+        // Broker: daily goals and bonus campaigns (A13.3a).
+        'organisation.rewards.goals' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'PUT', '/organisation/rewards/goals/launch', ['targets' => ['conversations' => 6, 'ce_lesson' => 1, 'follow_ups' => 3, 'post' => 1]], tenant: $lone->id);
+        },
+        'organisation.rewards.campaigns.store' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'POST', '/organisation/rewards/campaigns', ['title' => 'Double CE', 'goal' => 'ce_lesson', 'multiplier' => 2, 'starts_on' => now()->toDateString(), 'ends_on' => now()->addDays(10)->toDateString(), 'budget' => 5000], tenant: $lone->id);
+        },
+        'organisation.rewards.campaigns.end' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $campaign = PointsCampaign::query()->create(['uuid' => (string) Str::uuid7(), 'organisation_id' => $lone->id, 'title' => 'Double CE', 'goal' => 'ce_lesson', 'multiplier' => 2, 'starts_on' => now()->toDateString(), 'ends_on' => now()->addDays(10)->toDateString(), 'budget' => 5000]);
+
+            return auditCase($linda, 'POST', "/organisation/rewards/campaigns/{$campaign->uuid}/end", [], tenant: $lone->id);
         },
         // Broker: opt-in brokerage challenges (A13.2).
         'organisation.challenges.store' => function () {
@@ -1072,7 +1097,7 @@ it('audits the admin action', function (string $name) {
 
 /** Routes that change a value (rather than add, remove or start something). */
 const CHANGES = [
-    'organisation.advertising.update', 'organisation.mentors.update', 'organisation.mentors.review',
+    'organisation.advertising.update', 'organisation.mentors.update', 'organisation.mentors.review', 'organisation.rewards.goals', 'organisation.rewards.campaigns.end', 'points.update',
     'organisation.virtual-broker.settings',
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',

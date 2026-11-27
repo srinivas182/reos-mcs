@@ -100,6 +100,7 @@ use App\Http\Controllers\Practice\SharedReportController;
 use App\Http\Controllers\Practice\StudyPlanController;
 use App\Http\Controllers\Practice\TopicPlanPageController;
 use App\Http\Controllers\Recruiting\RecruitingController;
+use App\Http\Controllers\Rewards\RewardsPageController;
 use App\Http\Controllers\School\ApprovalsController as SchoolApprovalsController;
 use App\Http\Controllers\School\CeReportsController;
 use App\Http\Controllers\School\InstructorsController as SchoolInstructorsController;
@@ -493,6 +494,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/challenges')->name('organisation.challenges.')->group(function () {
     Route::get('/', [ChallengesController::class, 'broker'])->name('index');
     Route::post('/', [ChallengesController::class, 'store'])->middleware('throttle:20,1,challenges-store')->name('store');
+});
+
+// Goals and rewards (A13.3a): the agent's goals, streak and rewards; the broker's targets and bonus campaigns.
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('rewards', [RewardsPageController::class, 'agent'])->name('rewards.index');
+    Route::post('rewards/redeem', [RewardsPageController::class, 'redeem'])->middleware('throttle:10,1,rewards')->name('rewards.redeem');
+});
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/rewards')->name('organisation.rewards.')->group(function () {
+    Route::get('/', [RewardsPageController::class, 'broker'])->name('index');
+    Route::middleware('throttle:30,1,rewards-broker')->group(function () {
+        Route::put('goals/{mode}', [RewardsPageController::class, 'targets'])->whereIn('mode', ['launch', 'grow', 'lead', 'own'])->name('goals');
+        Route::post('campaigns', [RewardsPageController::class, 'campaign'])->name('campaigns.store');
+        Route::post('campaigns/{campaign}/end', [RewardsPageController::class, 'endCampaign'])->whereUuid('campaign')->name('campaigns.end');
+    });
 });
 
 // The brokerage's mentor program (A13.1a, broker screens 21–23).

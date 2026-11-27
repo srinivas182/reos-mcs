@@ -151,6 +151,38 @@
   - **The average shows only after three ratings.** It is private by default and public on the agent's page only if they choose. The agent can respond or report.
   - An AI tip on what to improve.
 - **Done when:** a rating appears only after three ratings.
+- **Split:** A13.3a covers daily goals, points and rewards. A13.3b covers feedback from agents.
+- **As built, A13.3a** (ADR 0055):
+  - **Rates** (`App\Rewards\PointRates`, super admin → Points at `/admin/points`, audited):
+    - Points per goal: conversations 20, a CE lesson 25, follow-ups 15, a post 15.
+    - 25 more for meeting every goal, and at most 200 points a day.
+    - REOS's targets for each mode. 1,000 points = $10, fixed, with no cash value.
+  - **Daily goals** (`App\Rewards\DailyGoals`):
+    - **What counts:** conversations (CRM calls, emails, texts and notes), CE lessons finished, to-dos done, and posts published. All of it is the agent's own activity; no goal involves a service provider.
+    - **Targets:** the brokerage can set its own per mode (`daily_goal_settings`, Goals and rewards at `/organisation/rewards`, audited); 0 turns a goal off.
+    - **Awarding:** a met goal earns its points once (`goal:{day}:{key}` in the points ledger).
+    - **Streak:** `daily_goal_days` records each day and keeps the streak and the best streak.
+    - **Nightly run:** `reos:daily-goals` (06:40 UTC) settles yesterday in each agent's time zone, so days the app wasn't opened still count.
+  - **Bonus campaigns** (`App\Rewards\BonusCampaigns`, `points_campaigns`):
+    - The broker picks a goal or every goal, double or triple points, dates up to three months apart, and a points budget.
+    - The extra points come from the brokerage's own points account (`brokerage_points_funded`) and stop when the budget is spent.
+    - End now closes the budget. Created and ended are both audited.
+  - **Rewards** (`App\Rewards\Rewards`):
+    - **Shows:** the balance and its value, and the last 20 points lines in words.
+    - **Points pay for:** mentor sessions (A13.1a), an AI credit pack, and one month or year of membership. Membership doesn't renew on its own.
+    - **How a redemption works:** it's an order with gateway `points`, so it goes through `RevenueSplit` and `MoneyPostings` like any sale. It's audited `points.redeemed`.
+  - **API:** `GET /api/v1/goals/today`, `GET /api/v1/rewards`, `POST /api/v1/rewards/redeem`.
+  - **Web:**
+    - Goals and rewards (`/rewards`, agent sidebar), with Share my streak (the share sheet, or copy).
+    - Goals and rewards for brokers (`/organisation/rewards`).
+    - Points for the super admin (`/admin/points`).
+  - **Phone:** `goals` (screen 111, from Home) and `rewards` (screen 112), with Share my streak.
+  - **Demo:** Lone Star Realty runs Double points on CE this month, and James Miller is on a four-day streak.
+  - **Done when:** Pest tests cover these cases:
+    - each met goal is awarded once and the streak grows;
+    - the nightly run settles days the app wasn't opened;
+    - brokerage bonus points come from the brokerage, up to the budget;
+    - points pay for AI credits and a month of membership, never more than the balance.
 
 ### B13.1 Texas checks (Team B)
 
