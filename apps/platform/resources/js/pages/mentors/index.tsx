@@ -11,14 +11,15 @@ import { index as bookings } from '@/routes/bookings';
 /**
  * Your mentors (candidate f04, A10.3c): a new agent's own brokerage's
  * mentors with rating, languages and next free hour; Book through 1-on-1
- * sessions. Exam instructors stay available for CE questions.
+ * sessions. Exam instructors stay available for CE questions. The
+ * assigned mentor comes first and is free (A13.1a, screens 114 and 116).
  */
 export default function MentorsPage({
     brokerage,
     mentors,
 }: {
     brokerage: string | null;
-    mentors: InstructorOffer[];
+    mentors: (InstructorOffer & { assigned?: boolean; points?: boolean })[];
 }) {
     const { t } = useTranslation();
 
@@ -58,8 +59,23 @@ export default function MentorsPage({
                 ) : (
                     <ul className="grid gap-3 md:grid-cols-2">
                         {mentors.map((m) => (
-                            <li key={m.id}>
+                            <li key={m.id} className="space-y-2">
+                                {m.assigned ? (
+                                    <p className="text-base font-semibold">
+                                        {t('mentoring.agent.assigned')} ·{' '}
+                                        {t('mentoring.agent.free')}
+                                    </p>
+                                ) : null}
                                 <InstructorCard offer={m} />
+                                {m.assigned ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('mentoring.agent.assignedNote')}
+                                    </p>
+                                ) : m.points && m.price_60 > 0 ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        {t('mentoring.agent.points')}
+                                    </p>
+                                ) : null}
                             </li>
                         ))}
                     </ul>

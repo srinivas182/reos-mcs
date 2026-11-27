@@ -1,0 +1,66 @@
+import type { MentorProgramData } from './types';
+
+export const program = (
+    over: Partial<MentorProgramData> = {},
+): MentorProgramData => ({
+    brokerage: 'Lone Star Realty',
+    topics: [
+        'first_deals',
+        'buyers',
+        'listings',
+        'contracts',
+        'negotiation',
+        'marketing',
+        'investors',
+        'leading_a_team',
+    ],
+    mentors: [
+        {
+            id: 11,
+            name: 'Sarah Kim',
+            topics: ['first_deals', 'contracts'],
+            price_30: 0,
+            price_60: 0,
+            points: true,
+            max_mentees: 5,
+            who: 'everyone',
+            mentees: 3,
+            rating: 4.8,
+            ratings: 12,
+            sessions: 31,
+            hours_set: true,
+        },
+        {
+            id: 12,
+            name: 'Dana Brooks',
+            topics: ['listings', 'negotiation'],
+            price_30: 4000,
+            price_60: 7500,
+            points: true,
+            max_mentees: 4,
+            who: 'everyone',
+            mentees: 4,
+            rating: null,
+            ratings: 0,
+            sessions: 0,
+            hours_set: false,
+        },
+    ],
+    agents: [
+        {
+            id: 21,
+            name: 'Priya Shah',
+            goal: 'launch',
+            mentor: null,
+            change_requested: false,
+        },
+        {
+            id: 22,
+            name: 'Tom Reyes',
+            goal: 'grow',
+            mentor: { id: 11, name: 'Sarah Kim' },
+            change_requested: true,
+        },
+    ],
+    ...over,
+});

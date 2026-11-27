@@ -156,3 +156,10 @@ export async function loadMentors(): Promise<MentorList | null> {
 
   return data?.data ?? null;
 }
+
+/** Ask the brokerage for another mentor (A13.1a). */
+export async function askForAnotherMentor(): Promise<MentorList> {
+  const { data, error } = await api().POST('/mentors/change');
+
+  return data ? data.data : fail(error);
+}

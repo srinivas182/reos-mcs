@@ -36,7 +36,7 @@ export async function loadBookings(): Promise<Booking[]> {
   return data?.data ?? [];
 }
 
-export async function book(body: { instructor: number; starts_at: string; minutes: number; topic: string }): Promise<{ booking: Booking; checkoutUrl: string | null }> {
+export async function book(body: { instructor: number; starts_at: string; minutes: number; topic: string; pay_with?: 'card' | 'points' }): Promise<{ booking: Booking; checkoutUrl: string | null }> {
   const { data, error } = await api().POST('/bookings', { body });
 
   return data ? { booking: data.data, checkoutUrl: data.checkout_url } : fail(error);

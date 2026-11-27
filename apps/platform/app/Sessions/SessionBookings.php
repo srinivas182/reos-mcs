@@ -7,12 +7,17 @@ namespace App\Sessions;
 use App\Authorization\Role;
 use App\Billing\Buyer;
 use App\Billing\Checkout;
+use App\Billing\Ledger\MoneyPostings;
+use App\Billing\Ledger\Points;
+use App\Billing\OrderStatus;
 use App\Billing\Payouts\PayeeRole;
+use App\Billing\Payouts\RevenueSplit;
 use App\Billing\PriceInterval;
 use App\Billing\ProductKind;
 use App\Billing\ProductStatus;
 use App\Billing\Refunds;
 use App\Enums\StateStatus;
+use App\Mentoring\MentorDirectory;
 use App\Models\Order;
 use App\Models\Organisation;
 use App\Models\Price;
@@ -54,7 +59,7 @@ use Throwable;
  *   the instructor sends tasks from the notes to the student's to-dos.
  *
  * @phpstan-type OfferRow array{id: int, user_id: int, name: string, school: string|null, bio: string|null, languages: list<string>, topics: list<string>, price_30: int, price_60: int, rating: float|null, ratings: int, next_slot: string|null}
- * @phpstan-type BookingRow array{uuid: string, as: string, instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: string, price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null}
+ * @phpstan-type BookingRow array{uuid: string, as: string, instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: string, price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null, paid_with: string, points: int|null}
  */
 final readonly class SessionBookings
 {
@@ -70,7 +75,10 @@ final readonly class SessionBookings
 
     public const RATING_DELAY_HOURS = 24;
 
-    public function __construct(private VideoSessions $sessions, private Refunds $refunds, private Todos $todos, private PersonStates $states, private AuditLogger $audit) {}
+    /** The gateway name on orders paid with points (A13.1a). */
+    public const POINTS = 'points';
+
+    public function __construct(private VideoSessions $sessions, private Refunds $refunds, private Todos $todos, private PersonStates $states, private AuditLogger $audit, private MentorDirectory $mentors, private Points $points, private RevenueSplit $split, private MoneyPostings $money) {}
 
     /**
      * The instructor's hours, prices and topics; paid lengths become session products.
@@ -91,34 +99,69 @@ final readonly class SessionBookings
             }
         }
 
+        // A brokerage mentor's prices are set by the brokerage (A13.1a, broker screen 22).
+        $brokerage = $this->mentors->settingsFor($instructor);
+
+        if ($brokerage !== null && $brokerage->exists) {
+            $values['price_30_cents'] = $brokerage->price_30_cents;
+            $values['price_60_cents'] = $brokerage->price_60_cents;
+        }
+
         return DB::transaction(function () use ($instructor, $values, $school): SessionOffer {
             $offer = SessionOffer::query()->firstOrNew(['user_id' => $instructor->id]);
             $offer->fill($values);
 
-            foreach (SessionOffer::LENGTHS as $minutes) {
-                $cents = $offer->price($minutes);
-                $product = Product::query()->firstOrNew(['key' => "session-{$instructor->id}-{$minutes}"]);
-                $product->forceFill([
-                    'name' => mb_substr(__('sessions.booking.productName', ['name' => (string) $instructor->name, 'minutes' => (string) $minutes]), 0, 120),
-                    'kind' => ProductKind::Session, 'buyer' => Buyer::Candidate, 'seller_organisation_id' => $school->id,
-                    'status' => $cents > 0 && $offer->active ? ProductStatus::Live : ProductStatus::Retired,
-                ])->save();
-                ProductSplit::query()->updateOrCreate(['product_id' => $product->id, 'payee_user_id' => $instructor->id], ['role' => PayeeRole::Instructor, 'percent' => 100]);
-
-                foreach (State::query()->where('status', StateStatus::Live)->pluck('code') as $code) {
-                    Price::query()->updateOrCreate(
-                        ['product_id' => $product->id, 'state_code' => $code, 'interval' => PriceInterval::Once],
-                        ['amount_cents' => max(0, $cents), 'currency' => 'usd', 'starts_at' => $offer->exists ? Price::query()->where('product_id', $product->id)->where('state_code', $code)->value('starts_at') ?? now() : now(), 'ends_at' => null],
-                    );
-                }
-
-                $offer->forceFill([$minutes === 30 ? 'product_30_id' : 'product_60_id' => $product->id]);
-            }
-
+            $this->products($instructor, $offer, $school);
             $offer->save();
 
             return $offer;
         });
+    }
+
+    /**
+     * The brokerage sets a mentor's prices and topics (A13.1a): the mentor's
+     * offer follows, with hours left as the mentor set them.
+     *
+     * @param  list<string>  $topics
+     */
+    public function setPrices(User $mentor, int $price30, int $price60, array $topics): SessionOffer
+    {
+        $organisation = $this->sessions->hostOrganisation($mentor) ?? throw ValidationException::withMessages(['offer' => __('sessions.errors.notHost')]);
+
+        return DB::transaction(function () use ($mentor, $price30, $price60, $topics, $organisation): SessionOffer {
+            $offer = SessionOffer::query()->firstOrNew(['user_id' => $mentor->id], ['bio' => null, 'languages' => ['en'], 'hours' => [], 'timezone' => 'America/Chicago', 'active' => true, 'topics' => []]);
+            $offer->fill(['price_30_cents' => $price30, 'price_60_cents' => $price60, 'topics' => $topics === [] ? $offer->topics : $topics]);
+            $this->products($mentor, $offer, $organisation);
+            $offer->save();
+
+            return $offer;
+        });
+    }
+
+    /** Paid lengths become session products sold by the school or brokerage, the host taking their share. */
+    private function products(User $instructor, SessionOffer $offer, Organisation $school): void
+    {
+        $role = $this->mentors->settingsFor($instructor) !== null ? PayeeRole::Mentor : PayeeRole::Instructor;
+
+        foreach (SessionOffer::LENGTHS as $minutes) {
+            $cents = $offer->price($minutes);
+            $product = Product::query()->firstOrNew(['key' => "session-{$instructor->id}-{$minutes}"]);
+            $product->forceFill([
+                'name' => mb_substr(__('sessions.booking.productName', ['name' => (string) $instructor->name, 'minutes' => (string) $minutes]), 0, 120),
+                'kind' => ProductKind::Session, 'buyer' => Buyer::Candidate, 'seller_organisation_id' => $school->id,
+                'status' => $cents > 0 && $offer->active ? ProductStatus::Live : ProductStatus::Retired,
+            ])->save();
+            ProductSplit::query()->updateOrCreate(['product_id' => $product->id, 'payee_user_id' => $instructor->id], ['role' => $role, 'percent' => 100]);
+
+            foreach (State::query()->where('status', StateStatus::Live)->pluck('code') as $code) {
+                Price::query()->updateOrCreate(
+                    ['product_id' => $product->id, 'state_code' => $code, 'interval' => PriceInterval::Once],
+                    ['amount_cents' => max(0, $cents), 'currency' => 'usd', 'starts_at' => $offer->exists ? Price::query()->where('product_id', $product->id)->where('state_code', $code)->value('starts_at') ?? now() : now(), 'ends_at' => null],
+                );
+            }
+
+            $offer->forceFill([$minutes === 30 ? 'product_30_id' : 'product_60_id' => $product->id]);
+        }
     }
 
     /**
@@ -212,13 +255,26 @@ final readonly class SessionBookings
      *
      * @return array{booking: SessionBooking, checkout_url: string|null}
      */
-    public function book(User $student, SessionOffer $offer, CarbonImmutable $starts, int $minutes, string $topic): array
+    public function book(User $student, SessionOffer $offer, CarbonImmutable $starts, int $minutes, string $topic, string $payWith = 'card'): array
     {
         if (! $offer->active || $offer->user_id === $student->id || ! in_array($minutes, SessionOffer::LENGTHS, true)) {
             throw ValidationException::withMessages(['starts_at' => __('sessions.booking.errors.unavailable')]);
         }
 
-        $booking = DB::transaction(function () use ($student, $offer, $starts, $minutes, $topic): SessionBooking {
+        // Brokerage mentors (A13.1a): "who can book", the assigned mentor free, points if the brokerage accepts them.
+        $mentor = $this->mentors->settingsFor($offer->user);
+
+        if ($mentor !== null && ! $this->mentors->canBook($student, $offer->user)) {
+            throw ValidationException::withMessages(['instructor' => __('mentoring.errors.assignedOnly')]);
+        }
+
+        $free = $mentor !== null && $this->mentors->isAssigned($student, $offer->user_id);
+
+        if ($payWith === 'points' && ! $free && ($mentor === null || ! $mentor->points)) {
+            throw ValidationException::withMessages(['pay_with' => __('mentoring.errors.noPoints')]);
+        }
+
+        $booking = DB::transaction(function () use ($student, $offer, $starts, $minutes, $topic, $free, $payWith): SessionBooking {
             // One at a time: lock the instructor's bookings while checking the slot.
             SessionBooking::query()->where('instructor_id', $offer->user_id)->lockForUpdate()->get(['id']);
 
@@ -226,16 +282,24 @@ final readonly class SessionBookings
                 throw ValidationException::withMessages(['starts_at' => __('sessions.booking.errors.taken')]);
             }
 
-            $price = $offer->price($minutes);
+            $price = $free ? 0 : $offer->price($minutes);
+            $points = $price > 0 && $payWith === 'points';
 
-            return SessionBooking::query()->create([
+            $booking = SessionBooking::query()->create([
                 'uuid' => (string) Str::uuid(), 'student_id' => $student->id, 'instructor_id' => $offer->user_id, 'starts_at' => $starts->utc(), 'ends_at' => $starts->utc()->addMinutes($minutes),
                 'minutes' => $minutes, 'topic' => mb_substr(trim($topic), 0, 200), 'status' => 'held', 'price_cents' => $price,
-                'held_until' => $price > 0 ? CarbonImmutable::now()->addMinutes(self::HOLD_MINUTES) : null,
+                'held_until' => $price > 0 && ! $points ? CarbonImmutable::now()->addMinutes(self::HOLD_MINUTES) : null,
+                'paid_with' => $free ? 'free' : ($points ? 'points' : 'card'), 'points' => $points ? $price : null,
             ]);
+
+            if ($points) {
+                $this->payWithPoints($booking, $offer, $student);
+            }
+
+            return $booking;
         });
 
-        if ($booking->price_cents === 0) {
+        if ($booking->price_cents === 0 || $booking->paid_with === 'points') {
             return ['booking' => $this->confirm($booking), 'checkout_url' => null];
         }
 
@@ -394,11 +458,48 @@ final readonly class SessionBookings
         return $booking->starts_at->greaterThanOrEqualTo(now()->addHours(self::FREE_CANCEL_HOURS));
     }
 
+    /**
+     * Pays a mentor session with points (A13.1a): the points are spent and
+     * an order is written as if paid, at 1 point = 1 cent, so the mentor's
+     * share reaches their earnings and payouts like a card payment. REOS
+     * funds the points it issued (the `points` clearing account).
+     */
+    private function payWithPoints(SessionBooking $booking, SessionOffer $offer, User $student): void
+    {
+        $product = $offer->productId($booking->minutes);
+        $state = $this->states->current($student);
+        $price = Price::query()->where('product_id', $product)->where('state_code', $state)->first()
+            ?? Price::query()->where('product_id', $product)->orderBy('id')->first()
+            ?? throw ValidationException::withMessages(['starts_at' => __('sessions.booking.errors.unavailable')]);
+
+        $this->points->redeem($student, $booking->price_cents, "session:{$booking->uuid}");
+        $order = Order::query()->create([
+            'uuid' => (string) Str::uuid(), 'user_id' => $student->id, 'product_id' => $price->product_id, 'price_id' => $price->id, 'state_code' => $price->state_code,
+            'amount_cents' => $booking->price_cents, 'discount_cents' => 0, 'tax_cents' => 0, 'total_cents' => $booking->price_cents, 'currency' => 'usd',
+            'status' => OrderStatus::Paid, 'gateway' => self::POINTS, 'environment' => 'live', 'paid_at' => now(),
+        ]);
+        $booking->forceFill(['order_id' => $order->id])->save();
+        $this->split->record($order);
+        $this->money->orderPaid($order);
+    }
+
     private function refund(SessionBooking $booking, User $actor, string $reason): void
     {
         $order = $booking->order;
 
         if ($order === null || $booking->refunded_at !== null) {
+            return;
+        }
+
+        // Points come back as points, and the mentor's share is taken back (A13.1a).
+        if ($booking->paid_with === 'points') {
+            $this->points->giveBack($booking->student, (int) $booking->points, "session:{$booking->uuid}");
+            $order->forceFill(['status' => OrderStatus::Refunded])->save();
+            $this->split->reverse($order);
+            $this->money->fullRefund($order);
+            $booking->forceFill(['refunded_at' => now(), 'status' => $booking->status === 'no_show' ? 'no_show' : 'refunded'])->save();
+            $this->audit->record('session_booking.points_returned', 'session_booking', $booking->uuid, ['points' => $booking->points, 'reason' => $reason], $actor);
+
             return;
         }
 
@@ -455,7 +556,8 @@ final readonly class SessionBookings
             'refund_on_cancel' => $b->price_cents > 0 && ($viewer->id === $b->instructor_id || self::refundOnCancel($b)),
             'can_rate' => $student && $b->status === 'completed' && $b->rated_at === null,
             'rating' => $b->rating, 'tasks_sent' => $b->tasks_sent_at !== null,
-            'checkout_url' => $offer === null ? null : $this->checkoutUrl($b, $offer, $viewer),
+            'checkout_url' => $offer === null || $b->paid_with !== 'card' ? null : $this->checkoutUrl($b, $offer, $viewer),
+            'paid_with' => $b->paid_with, 'points' => $b->points,
         ];
     }
 

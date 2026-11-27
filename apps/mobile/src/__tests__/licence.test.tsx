@@ -183,11 +183,31 @@ describe('Switching to agent on the phone (A10.3c: f03, 20, f04)', () => {
 
   it('lists the brokerage\'s mentors to book', async () => {
     mockApi.GET.mockResolvedValue(
-      ok({ data: { brokerage: 'Lone Star Realty', mentors: [{ id: 3, user_id: 12, name: 'Maya Chen', school: 'Lone Star Realty', bio: null, languages: ['en', 'es'], topics: [], price_30: 0, price_60: 0, rating: 4.9, ratings: 31, next_slot: null }] } }),
+      ok({
+        data: {
+          brokerage: 'Lone Star Realty',
+          assigned: 12,
+          change_requested: false,
+          points_balance: 2500,
+          mentors: [
+            { id: 3, user_id: 12, name: 'Maya Chen', school: 'Lone Star Realty', bio: null, languages: ['en', 'es'], topics: ['first_deals'], price_30: 0, price_60: 0, rating: 4.9, ratings: 31, next_slot: null, assigned: true, free: true, points: true },
+            { id: 4, user_id: 13, name: 'Dana Brooks', school: 'Lone Star Realty', bio: null, languages: ['en'], topics: ['listings'], price_30: 4000, price_60: 7500, rating: null, ratings: 0, next_slot: null, assigned: false, free: false, points: true },
+          ],
+        },
+      }),
     );
+    mockApi.POST.mockResolvedValue(ok({ data: { brokerage: 'Lone Star Realty', assigned: 12, change_requested: true, points_balance: 2500, mentors: [] } }));
     await render(wrap(<MentorsScreen />));
 
     await fireEvent.press(await screen.findByText('Maya Chen'));
     expect(router.push).toHaveBeenCalledWith({ pathname: '/bookings/[id]', params: { id: '12' } });
+    // The assigned mentor first and free (A13.1a, screens 114 and 116), then the others with points.
+    expect(screen.getByText('Your mentor')).toBeTruthy();
+    expect(screen.getByText(/Free · First deals/)).toBeTruthy();
+    expect(screen.getByText('Other mentors at your brokerage')).toBeTruthy();
+    expect(screen.getByText(/Points accepted/)).toBeTruthy();
+    await fireEvent.press(screen.getByText('Ask for another mentor'));
+    expect(mockApi.POST).toHaveBeenCalledWith('/mentors/change');
+    expect(await screen.findByText('You asked for another mentor.')).toBeTruthy();
   });
 });

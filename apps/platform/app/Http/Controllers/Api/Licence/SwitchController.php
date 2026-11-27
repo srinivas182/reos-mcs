@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api\Licence;
 use App\Http\Controllers\Controller;
 use App\Licences\Journey\Mentors;
 use App\Licences\Journey\SwitchToAgent;
+use App\Mentoring\MentorProgram;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
@@ -65,12 +66,26 @@ final class SwitchController extends Controller
     /**
      * My mentors.
      *
-     * Mentors of my own brokerage who take 1-on-1 bookings, with rating, languages and next free hour.
+     * Mentors of my own brokerage who take 1-on-1 bookings, with rating, languages and next free hour. My assigned mentor comes first and is free; `points` says whether a mentor accepts points, and `points_balance` is mine (1 point = 1 cent inside REOS).
      *
-     * @response array{data: array{brokerage: string|null, mentors: list<array{id: int, user_id: int, name: string, school: string|null, bio: string|null, languages: list<string>, topics: list<string>, price_30: int, price_60: int, rating: float|null, ratings: int, next_slot: string|null}>}}
+     * @response array{data: array{brokerage: string|null, mentors: list<array{id: int, user_id: int, name: string, school: string|null, bio: string|null, languages: list<string>, topics: list<string>, price_30: int, price_60: int, rating: float|null, ratings: int, next_slot: string|null, assigned: bool, free: bool, points: bool}>, assigned: int|null, change_requested: bool, points_balance: int}}
      */
     public function mentors(#[CurrentUser] User $user, Mentors $mentors): JsonResponse
     {
+        return response()->json(['data' => $mentors->for($user)]);
+    }
+
+    /**
+     * Ask for another mentor.
+     *
+     * The brokerage's brokers are told; my mentor stays until they assign another.
+     *
+     * @response array{data: array{brokerage: string|null, mentors: list<array{id: int, user_id: int, name: string, school: string|null, bio: string|null, languages: list<string>, topics: list<string>, price_30: int, price_60: int, rating: float|null, ratings: int, next_slot: string|null, assigned: bool, free: bool, points: bool}>, assigned: int|null, change_requested: bool, points_balance: int}}
+     */
+    public function changeMentor(#[CurrentUser] User $user, Mentors $mentors, MentorProgram $program): JsonResponse
+    {
+        $program->requestChange($user);
+
         return response()->json(['data' => $mentors->for($user)]);
     }
 }

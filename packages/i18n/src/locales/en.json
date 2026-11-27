@@ -83,7 +83,8 @@
     "contentStudio": "Content studio",
     "virtualBroker": "Virtual broker",
     "contractReview": "Contract review",
-    "policies": "Policies"
+    "policies": "Policies",
+    "mentorProgram": "Mentor program"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2306,7 +2307,11 @@
         "assistant.context": "Assistant permission to read CRM, deals and calendar changed",
         "advertising_policy.updated": "Advertising policy changed",
         "social_post.approved": "Approved an agent's post",
-        "social_post.returned": "Sent an agent's post back"
+        "social_post.returned": "Sent an agent's post back",
+        "mentor_program.updated": "Mentor settings changed",
+        "mentor.assigned": "Mentor assigned",
+        "mentor.change_requested": "Another mentor asked for",
+        "session_booking.points_returned": "Points returned for a session"
       }
     }
   },
@@ -7692,6 +7697,20 @@
       "add": "Add a task",
       "label": "Task {{n}}",
       "due": "Due date for task {{n}}"
+    },
+    "points": {
+      "payWith": "Pay with",
+      "card": "Card",
+      "usePoints": "Reward points",
+      "pointsNeeded": "{{points}} points · you have {{balance}}",
+      "notEnough": "Not enough points. Pay by card, or earn more from daily goals.",
+      "bookWithPoints": "Book with {{points}} points",
+      "freeAssigned": "Free with your mentor",
+      "paidWith": {
+        "card": "Paid by card",
+        "points": "Paid with {{points}} points",
+        "free": "Free (your mentor)"
+      }
     }
   },
   "classes": {
@@ -9320,6 +9339,95 @@
       "errors": {
         "photo": "That file isn't a photo we can read."
       }
+    }
+  },
+  "mentoring": {
+    "topics": {
+      "first_deals": "First deals",
+      "buyers": "Working with buyers",
+      "listings": "Winning listings",
+      "contracts": "Contracts and deadlines",
+      "negotiation": "Negotiation",
+      "marketing": "Marketing",
+      "investors": "Investors",
+      "leading_a_team": "Leading a team"
+    },
+    "reasons": {
+      "language": "Speaks their language",
+      "focus": "Fits their goal",
+      "capacity": "Has room"
+    },
+    "goals": {
+      "launch": "Launch",
+      "grow": "Grow",
+      "lead": "Lead",
+      "own": "Own"
+    },
+    "errors": {
+      "full": "That mentor has no room for another mentee.",
+      "assignedOnly": "This mentor takes their assigned mentees only.",
+      "noPoints": "This session can't be paid with points."
+    },
+    "notify": {
+      "assigned": "{{name}} is your mentor",
+      "assignedBody": "Your brokerage matched you with {{name}}. Sessions with them are free. Book your first one this week.",
+      "newMentee": "New mentee: {{name}}",
+      "newMenteeBody": "Your brokerage assigned {{name}} to you. Suggest a first session this week.",
+      "change": "{{name}} asked for another mentor",
+      "changeBody": "Their mentor now is {{mentor}}. Assign another from Mentor program.",
+      "open": "Open"
+    },
+    "program": {
+      "title": "Mentor program",
+      "purpose": "Brokerage mentors only: prices, points, assignment and matching.",
+      "mentors": "Mentors",
+      "agents": "Agents and their mentors",
+      "addMentor": "Add a mentor",
+      "addHint": "Invite someone with the Mentor role from Agents.",
+      "noMentors": "No mentors yet",
+      "noMentorsHint": "Invite experienced agents as mentors. Agents only ever see your brokerage's mentors.",
+      "noAgents": "No agents yet",
+      "focus": "Focus",
+      "load": "Mentees",
+      "price": "Price",
+      "rating": "Rating",
+      "sessions": "Sessions",
+      "noRating": "No ratings yet",
+      "hoursMissing": "Hours not set yet",
+      "loadValue": "{{count}} of {{max}}",
+      "settings": "Settings",
+      "save": "Save",
+      "saved": "Mentor settings saved.",
+      "price30": "30 minutes (US$)",
+      "price60": "60 minutes (US$)",
+      "free": "Free",
+      "points": "Accept reward points",
+      "maxMentees": "Max mentees",
+      "who": "Who can book",
+      "whoEveryone": "Everyone at the brokerage",
+      "whoAssigned": "Assigned mentees only",
+      "priceNote": "Prices are set by the brokerage; mentors set their own hours. Points spent on sessions are paid to the mentor by REOS.",
+      "assign": "Assign",
+      "reassign": "Change mentor",
+      "assigned": "Mentor assigned. Both have been told.",
+      "noMentor": "No mentor yet",
+      "changeAsked": "Asked for a change",
+      "matches": "Best matches for {{name}}",
+      "noMatches": "No mentor has room. Raise a mentor's max mentees.",
+      "room_one": "{{count}} place left",
+      "room_other": "{{count}} places left"
+    },
+    "agent": {
+      "assigned": "Your mentor",
+      "free": "Free",
+      "assignedNote": "Assigned by your brokerage. Sessions with your mentor are free.",
+      "change": "Ask for another mentor",
+      "changed": "Your brokerage has been asked.",
+      "changeAsked": "You asked for another mentor.",
+      "points": "Points accepted",
+      "balance": "{{points}} points (worth {{value}})",
+      "others": "Other mentors at your brokerage",
+      "otherNote": "Mentors from other brokerages are never shown."
     }
   }
 }

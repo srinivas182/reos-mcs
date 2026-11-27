@@ -690,6 +690,20 @@ function adminActions(): array
 
             return auditCase($linda, 'POST', "/organisation/advertising/posts/{$post->uuid}/return", ['note' => 'Add the price.'], tenant: $lone->id);
         },
+        // Broker: the mentor program (A13.1a, screens 21–23).
+        'organisation.mentors.update' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $sarah = User::factory()->withRole(Role::Mentor, $lone)->create(['name' => 'Sarah Kim']);
+
+            return auditCase($linda, 'PUT', "/organisation/mentors/{$sarah->id}", ['topics' => ['first_deals'], 'price_30_cents' => 0, 'price_60_cents' => 5000, 'points' => true, 'max_mentees' => 5, 'who' => 'everyone'], tenant: $lone->id);
+        },
+        'organisation.mentors.assign' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $sarah = User::factory()->withRole(Role::Mentor, $lone)->create(['name' => 'Sarah Kim']);
+            $priya = User::factory()->withRole(Role::Agent, $lone)->create(['name' => 'Priya Shah']);
+
+            return auditCase($linda, 'POST', '/organisation/mentors/assign', ['agent' => $priya->id, 'mentor' => $sarah->id], tenant: $lone->id);
+        },
         // Broker: the virtual broker (A12.1, screen 34).
         'organisation.virtual-broker.manual' => function () {
             [$lone, $linda] = auditBrokerage();
@@ -1042,7 +1056,7 @@ it('audits the admin action', function (string $name) {
 
 /** Routes that change a value (rather than add, remove or start something). */
 const CHANGES = [
-    'organisation.advertising.update',
+    'organisation.advertising.update', 'organisation.mentors.update',
     'organisation.virtual-broker.settings',
     'integrations.mode.update', 'integrations.catalogue.update', 'integrations.pause', 'states.update', 'states.prepare', 'states.rules.publish',
     'tenants.update', 'tenants.status', 'branding.update', 'sso.update', 'sso.test-provider', 'invites.destroy',

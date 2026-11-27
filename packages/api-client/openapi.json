@@ -1672,6 +1672,20 @@
                                                             "string",
                                                             "null"
                                                         ]
+                                                    },
+                                                    "paid_with": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "card",
+                                                            "points",
+                                                            "free"
+                                                        ]
+                                                    },
+                                                    "points": {
+                                                        "type": [
+                                                            "integer",
+                                                            "null"
+                                                        ]
                                                     }
                                                 },
                                                 "required": [
@@ -1691,7 +1705,9 @@
                                                     "can_rate",
                                                     "rating",
                                                     "tasks_sent",
-                                                    "checkout_url"
+                                                    "checkout_url",
+                                                    "paid_with",
+                                                    "points"
                                                 ]
                                             }
                                         }
@@ -1807,6 +1823,20 @@
                                                         "string",
                                                         "null"
                                                     ]
+                                                },
+                                                "paid_with": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "card",
+                                                        "points",
+                                                        "free"
+                                                    ]
+                                                },
+                                                "points": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -1826,7 +1856,9 @@
                                                 "can_rate",
                                                 "rating",
                                                 "tasks_sent",
-                                                "checkout_url"
+                                                "checkout_url",
+                                                "paid_with",
+                                                "points"
                                             ]
                                         },
                                         "checkout_url": {
@@ -2511,6 +2543,20 @@
                                                         "string",
                                                         "null"
                                                     ]
+                                                },
+                                                "paid_with": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "card",
+                                                        "points",
+                                                        "free"
+                                                    ]
+                                                },
+                                                "points": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -2530,7 +2576,9 @@
                                                 "can_rate",
                                                 "rating",
                                                 "tasks_sent",
-                                                "checkout_url"
+                                                "checkout_url",
+                                                "paid_with",
+                                                "points"
                                             ]
                                         }
                                     },
@@ -2711,6 +2759,20 @@
                                                         "string",
                                                         "null"
                                                     ]
+                                                },
+                                                "paid_with": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "card",
+                                                        "points",
+                                                        "free"
+                                                    ]
+                                                },
+                                                "points": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
                                                 }
                                             },
                                             "required": [
@@ -2730,7 +2792,9 @@
                                                 "can_rate",
                                                 "rating",
                                                 "tasks_sent",
-                                                "checkout_url"
+                                                "checkout_url",
+                                                "paid_with",
+                                                "points"
                                             ]
                                         }
                                     },
@@ -46812,7 +46876,7 @@
         "/mentors": {
             "get": {
                 "operationId": "mentors",
-                "description": "Mentors of my own brokerage who take 1-on-1 bookings, with rating, languages and next free hour.",
+                "description": "Mentors of my own brokerage who take 1-on-1 bookings, with rating, languages and next free hour. My assigned mentor comes first and is free; `points` says whether a mentor accepts points, and `points_balance` is mine (1 point = 1 cent inside REOS).",
                 "summary": "My mentors",
                 "tags": [
                     "Switch"
@@ -46892,6 +46956,15 @@
                                                                     "string",
                                                                     "null"
                                                                 ]
+                                                            },
+                                                            "assigned": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "free": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "points": {
+                                                                "type": "boolean"
                                                             }
                                                         },
                                                         "required": [
@@ -46906,19 +46979,204 @@
                                                             "price_60",
                                                             "rating",
                                                             "ratings",
-                                                            "next_slot"
+                                                            "next_slot",
+                                                            "assigned",
+                                                            "free",
+                                                            "points"
                                                         ]
                                                     }
+                                                },
+                                                "assigned": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "change_requested": {
+                                                    "type": "boolean"
+                                                },
+                                                "points_balance": {
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
                                                 "brokerage",
-                                                "mentors"
+                                                "mentors",
+                                                "assigned",
+                                                "change_requested",
+                                                "points_balance"
                                             ]
                                         }
                                     },
                                     "required": [
                                         "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/mentors/change": {
+            "post": {
+                "operationId": "mentors.change",
+                "description": "The brokerage's brokers are told; my mentor stays until they assign another.",
+                "summary": "Ask for another mentor",
+                "tags": [
+                    "Switch"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "mentors": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "school": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "bio": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "languages": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "topics": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "price_30": {
+                                                                "type": "integer"
+                                                            },
+                                                            "price_60": {
+                                                                "type": "integer"
+                                                            },
+                                                            "rating": {
+                                                                "type": [
+                                                                    "number",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "ratings": {
+                                                                "type": "integer"
+                                                            },
+                                                            "next_slot": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "assigned": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "free": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "points": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "user_id",
+                                                            "name",
+                                                            "school",
+                                                            "bio",
+                                                            "languages",
+                                                            "topics",
+                                                            "price_30",
+                                                            "price_60",
+                                                            "rating",
+                                                            "ratings",
+                                                            "next_slot",
+                                                            "assigned",
+                                                            "free",
+                                                            "points"
+                                                        ]
+                                                    }
+                                                },
+                                                "assigned": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "change_requested": {
+                                                    "type": "boolean"
+                                                },
+                                                "points_balance": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "mentors",
+                                                "assigned",
+                                                "change_requested",
+                                                "points_balance"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
                                     ]
                                 }
                             }
@@ -51391,6 +51649,18 @@
                         "description": "What the student wants help with.",
                         "minLength": 3,
                         "maxLength": 200
+                    },
+                    "pay_with": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "How to pay: `card` (default, checkout) or `points` (brokerage mentors that accept them; 1 point = 1 cent). An assigned mentor is free.",
+                        "enum": [
+                            "card",
+                            "points",
+                            null
+                        ]
                     }
                 },
                 "required": [

@@ -57,12 +57,12 @@ final class BookingController extends Controller
      *
      * @status 201
      *
-     * @response array{data: array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null}, checkout_url: string|null}
+     * @response array{data: array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null, paid_with: 'card'|'points'|'free', points: int|null}, checkout_url: string|null}
      */
     public function store(BookSessionRequest $request, #[CurrentUser] User $user, SessionBookings $bookings): JsonResponse
     {
         $offer = SessionOffer::query()->where('user_id', $request->integer('instructor'))->firstOrFail();
-        $booked = $bookings->book($user, $offer, $request->startsAt(), $request->integer('minutes'), $request->string('topic')->toString());
+        $booked = $bookings->book($user, $offer, $request->startsAt(), $request->integer('minutes'), $request->string('topic')->toString(), $request->input('pay_with') === 'points' ? 'points' : 'card');
 
         return response()->json(['data' => $bookings->row($booked['booking']->refresh(), $user), 'checkout_url' => $booked['checkout_url']], 201);
     }
@@ -72,7 +72,7 @@ final class BookingController extends Controller
      *
      * As a student and as an instructor, the last 30 days and upcoming.
      *
-     * @response array{data: list<array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null}>}
+     * @response array{data: list<array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null, paid_with: 'card'|'points'|'free', points: int|null}>}
      */
     public function index(#[CurrentUser] User $user, SessionBookings $bookings): JsonResponse
     {
@@ -84,7 +84,7 @@ final class BookingController extends Controller
      *
      * The student until 24 hours before (refunded) or later (not refunded); the instructor any time (refunded).
      *
-     * @response array{data: array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null}}
+     * @response array{data: array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null, paid_with: 'card'|'points'|'free', points: int|null}}
      */
     public function cancel(SessionBooking $booking, #[CurrentUser] User $user, SessionBookings $bookings): JsonResponse
     {
@@ -98,7 +98,7 @@ final class BookingController extends Controller
      *
      * Once, after it ends; shown on the instructor's profile after 24 hours.
      *
-     * @response array{data: array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null}}
+     * @response array{data: array{uuid: string, as: 'student'|'instructor', instructor: string, student: string, starts_at: string, ends_at: string, minutes: int, topic: string, status: 'held'|'confirmed'|'cancelled'|'refunded'|'completed'|'no_show', price: int, session: string|null, can_cancel: bool, refund_on_cancel: bool, can_rate: bool, rating: int|null, tasks_sent: bool, checkout_url: string|null, paid_with: 'card'|'points'|'free', points: int|null}}
      */
     public function rate(Request $request, SessionBooking $booking, #[CurrentUser] User $user, SessionBookings $bookings): JsonResponse
     {

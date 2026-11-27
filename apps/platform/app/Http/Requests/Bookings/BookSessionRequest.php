@@ -29,6 +29,8 @@ final class BookSessionRequest extends FormRequest
             'minutes' => ['required', 'integer', Rule::in([30, 60])],
             /** What the student wants help with. */
             'topic' => ['required', 'string', 'min:3', 'max:200'],
+            /** How to pay: `card` (default, checkout) or `points` (brokerage mentors that accept them; 1 point = 1 cent). An assigned mentor is free. */
+            'pay_with' => ['nullable', Rule::in(['card', 'points'])],
         ];
     }
 

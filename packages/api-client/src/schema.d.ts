@@ -4824,11 +4824,31 @@ export interface paths {
         };
         /**
          * My mentors
-         * @description Mentors of my own brokerage who take 1-on-1 bookings, with rating, languages and next free hour.
+         * @description Mentors of my own brokerage who take 1-on-1 bookings, with rating, languages and next free hour. My assigned mentor comes first and is free; `points` says whether a mentor accepts points, and `points_balance` is mine (1 point = 1 cent inside REOS).
          */
         get: operations["mentors"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mentors/change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask for another mentor
+         * @description The brokerage's brokers are told; my mentor stays until they assign another.
+         */
+        post: operations["mentors.change"];
         delete?: never;
         options?: never;
         head?: never;
@@ -5506,6 +5526,11 @@ export interface components {
             minutes: number;
             /** @description What the student wants help with. */
             topic: string;
+            /**
+             * @description How to pay: `card` (default, checkout) or `points` (brokerage mentors that accept them; 1 point = 1 cent). An assigned mentor is free.
+             * @enum {string|null}
+             */
+            pay_with?: "card" | "points" | null;
         };
         /**
          * BriefSettingsRequest
@@ -7747,6 +7772,9 @@ export interface operations {
                             rating: number | null;
                             tasks_sent: boolean;
                             checkout_url: string | null;
+                            /** @enum {string} */
+                            paid_with: "card" | "points" | "free";
+                            points: number | null;
                         }[];
                     };
                 };
@@ -7793,6 +7821,9 @@ export interface operations {
                             rating: number | null;
                             tasks_sent: boolean;
                             checkout_url: string | null;
+                            /** @enum {string} */
+                            paid_with: "card" | "points" | "free";
+                            points: number | null;
                         };
                         checkout_url: string | null;
                     };
@@ -8047,6 +8078,9 @@ export interface operations {
                             rating: number | null;
                             tasks_sent: boolean;
                             checkout_url: string | null;
+                            /** @enum {string} */
+                            paid_with: "card" | "points" | "free";
+                            points: number | null;
                         };
                     };
                 };
@@ -8113,6 +8147,9 @@ export interface operations {
                             rating: number | null;
                             tasks_sent: boolean;
                             checkout_url: string | null;
+                            /** @enum {string} */
+                            paid_with: "card" | "points" | "free";
+                            points: number | null;
                         };
                     };
                 };
@@ -22720,12 +22757,74 @@ export interface operations {
                                 rating: number | null;
                                 ratings: number;
                                 next_slot: string | null;
+                                assigned: boolean;
+                                free: boolean;
+                                points: boolean;
                             }[];
+                            assigned: number | null;
+                            change_requested: boolean;
+                            points_balance: number;
                         };
                     };
                 };
             };
             401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "mentors.change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string | null;
+                            mentors: {
+                                id: number;
+                                user_id: number;
+                                name: string;
+                                school: string | null;
+                                bio: string | null;
+                                languages: string[];
+                                topics: string[];
+                                price_30: number;
+                                price_60: number;
+                                rating: number | null;
+                                ratings: number;
+                                next_slot: string | null;
+                                assigned: boolean;
+                                free: boolean;
+                                points: boolean;
+                            }[];
+                            assigned: number | null;
+                            change_requested: boolean;
+                            points_balance: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
         };
     };
     "me.texts.phone": {

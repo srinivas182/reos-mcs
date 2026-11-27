@@ -9,8 +9,9 @@ use Illuminate\Validation\ValidationException;
 
 /**
  * Points (B5.3): earned for learning milestones and redeemable later for
- * sessions, credits, tickets or seats. This sprint builds the accounts and
- * entries; the earning rules arrive in Sprint 13. Each award is counted
+ * sessions, credits, tickets or seats. B5.3 built the accounts and
+ * entries; mentor sessions are paid with them from A13.1a (1 point = 1
+ * cent inside REOS), and the earning rules come with A13.3. Each award is counted
  * once per milestone; agents never get cash for points.
  */
 final readonly class Points
@@ -48,5 +49,19 @@ final readonly class Points
         }
 
         $this->ledger->post('points_redeemed', [[$account, -$points], [$this->ledger->platform('points_redeemed'), $points]], 'redemption', $user->id.':'.$for, $for);
+    }
+
+    /** Gives spent points back (a refunded session); once per redemption. */
+    public function giveBack(User $user, int $points, string $for): bool
+    {
+        $reference = $user->id.':'.$for;
+
+        if ($points <= 0 || ! $this->ledger->posted('points_redeemed', 'redemption', $reference) || $this->ledger->posted('points_returned', 'redemption', $reference)) {
+            return false;
+        }
+
+        $this->ledger->post('points_returned', [[$this->ledger->platform('points_redeemed'), -$points], [$this->ledger->person($user, 'points'), $points]], 'redemption', $reference, $for);
+
+        return true;
     }
 }

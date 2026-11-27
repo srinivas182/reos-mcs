@@ -55,7 +55,11 @@ describe('Book an instructor on the phone (candidate screen 18, A10.2a)', () => 
 
   it('books a free time with a topic, and opens checkout for a paid one', async () => {
     jest.mocked(useLocalSearchParams).mockReturnValue({ id: '12' });
-    mockApi.GET.mockResolvedValue(ok({ data: nelle, slots_30: ['2026-11-24T19:00:00Z'], slots_60: ['2026-11-24T19:00:00Z'] }));
+    mockApi.GET.mockImplementation(async (path: string) =>
+      path === '/mentors'
+        ? ok({ data: { brokerage: null, mentors: [], assigned: null, change_requested: false, points_balance: 0 } })
+        : ok({ data: nelle, slots_30: ['2026-11-24T19:00:00Z'], slots_60: ['2026-11-24T19:00:00Z'] }),
+    );
     mockApi.POST.mockResolvedValue(ok({ data: { ...booking, status: 'held' }, checkout_url: 'https://reos.com/checkout/9?booking=x' }));
     await render(wrap(<InstructorScreen />));
 
@@ -65,8 +69,29 @@ describe('Book an instructor on the phone (candidate screen 18, A10.2a)', () => 
     await fireEvent.changeText(screen.getByLabelText('What would you like help with?'), 'Proration math');
     await fireEvent.press(screen.getByRole('button', { name: 'Book and pay $60' }));
 
-    expect(mockApi.POST).toHaveBeenCalledWith('/bookings', { body: { instructor: 12, starts_at: '2026-11-24T19:00:00Z', minutes: 60, topic: 'Proration math' } });
+    expect(mockApi.POST).toHaveBeenCalledWith('/bookings', { body: { instructor: 12, starts_at: '2026-11-24T19:00:00Z', minutes: 60, topic: 'Proration math', pay_with: 'card' } });
     expect(jest.requireMock<{ openBrowserAsync: jest.Mock }>('expo-web-browser').openBrowserAsync).toHaveBeenCalledWith('https://reos.com/checkout/9?booking=x');
+    expect(router.replace).toHaveBeenCalledWith('/bookings');
+  });
+
+  it('pays a brokerage mentor with reward points (A13.1a, screen 117)', async () => {
+    jest.mocked(useLocalSearchParams).mockReturnValue({ id: '12' });
+    const mentor = { ...nelle, assigned: false, free: false, points: true };
+    mockApi.GET.mockImplementation(async (path: string) =>
+      path === '/mentors'
+        ? ok({ data: { brokerage: 'Lone Star Realty', mentors: [mentor], assigned: null, change_requested: false, points_balance: 12500 } })
+        : ok({ data: nelle, slots_30: ['2026-11-24T19:00:00Z'], slots_60: ['2026-11-24T19:00:00Z'] }),
+    );
+    mockApi.POST.mockResolvedValue(ok({ data: { ...booking, status: 'confirmed', paid_with: 'points', points: 6000 }, checkout_url: null }));
+    await render(wrap(<InstructorScreen />));
+
+    await fireEvent.press(await screen.findByText('Reward points'));
+    expect(screen.getByText('6,000 points · you have 12,500')).toBeTruthy();
+    const slot = new Date('2026-11-24T19:00:00Z').toLocaleString('en', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    await fireEvent.press(screen.getByRole('button', { name: slot }));
+    await fireEvent.changeText(screen.getByLabelText('What would you like help with?'), 'Winning a listing');
+    await fireEvent.press(screen.getByRole('button', { name: 'Book with 6,000 points' }));
+    expect(mockApi.POST).toHaveBeenCalledWith('/bookings', { body: { instructor: 12, starts_at: '2026-11-24T19:00:00Z', minutes: 60, topic: 'Winning a listing', pay_with: 'points' } });
     expect(router.replace).toHaveBeenCalledWith('/bookings');
   });
 });

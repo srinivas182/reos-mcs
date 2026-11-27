@@ -71,6 +71,7 @@ import { index as virtualBroker } from '@/routes/virtual-broker';
 import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as advertisingPolicy } from '@/routes/organisation/advertising';
+import { index as mentorProgram } from '@/routes/organisation/mentors';
 import { index as instructorQuestions } from '@/routes/instructor/questions';
 import { index as connections } from '@/routes/connections';
 import { index as integrations } from '@/routes/integrations';
@@ -117,6 +118,7 @@ export type NavLabel =
     | 'virtualBroker'
     | 'contractReview'
     | 'policies'
+    | 'mentorProgram'
     | 'ceReporting'
     | 'paymentGateways'
     | 'providerCategories'
@@ -284,7 +286,13 @@ export function roleNavigation(
                 advertisingPolicy(),
                 '/organisation/advertising',
             ),
-            planned('mentorProgram'),
+            // Mentor program (A13.1a, screens 21–23): mentors, prices, points, assignment.
+            item(
+                'mentorProgram',
+                GraduationCap,
+                mentorProgram(),
+                '/organisation/mentors',
+            ),
             // Recruiting: candidates who asked for broker offers (A10.3b).
             item('recruiting', UserPlus, recruitingIndex(), '/recruiting'),
             planned('teamsAndRouting'),
