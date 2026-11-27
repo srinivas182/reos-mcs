@@ -173,6 +173,11 @@ final readonly class SocialPosts
             $checks[] = ['code' => $code, 'ok' => $found === [], 'detail' => $found === [] ? null : implode(', ', array_filter(array_column($found, 'phrase'))), 'citation' => $found[0]['citation'] ?? null];
         }
 
+        // Candidates: no service advertising before the license is active (B13.3).
+        if (($unlicensed = $of('unlicensed')) !== []) {
+            $checks[] = ['code' => 'unlicensed', 'ok' => false, 'detail' => implode(', ', array_filter(array_column($unlicensed, 'phrase'))), 'citation' => $unlicensed[0]['citation']];
+        }
+
         if (($teams = $of('team_name')) !== []) {
             $checks[] = ['code' => 'team_name', 'ok' => false, 'detail' => implode(', ', array_filter(array_column($teams, 'phrase'))), 'citation' => $teams[0]['citation']];
         }

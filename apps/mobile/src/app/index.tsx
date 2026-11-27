@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bell, BookOpen, Gift, GraduationCap, Handshake, MessageCircleQuestion, MessageSquare, Milestone, Palette, Trophy, Users, Video } from 'lucide-react-native';
+import { Bell, BookOpen, Gift, GraduationCap, Handshake, MessageCircleQuestion, MessageSquare, Milestone, Palette, PartyPopper, Trophy, Users, Video } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -197,6 +197,7 @@ export default function HomeScreen() {
       {agent && insight ? <TodayInsight contact={insight.contact} insight={insight.insight} onDone={() => void reloadInsight()} /> : null}
       {/* The licence journey (A10.3a, screen 16): steps, window, exam date, result. */}
       {candidate ? <ListRow icon={Milestone} tone="info" title={t('licence.title')} subtitle={t('licence.today')} onPress={() => router.push('/licence-journey')} /> : null}
+      {candidate ? <ListRow icon={PartyPopper} tone="info" title={t('studio.candidate.title')} subtitle={t('studio.candidate.moments')} onPress={() => router.push('/social/candidate')} /> : null}
       {/* Live classes (A10.2b): for candidates their courses' classes (L12); for instructors their week (i11). */}
       {sessions !== null && (candidate || role === 'instructor') ? (
         <ListRow icon={Users} tone="info" title={t('classes.title')} subtitle={role === 'instructor' ? t('classes.purposeHost') : t('classes.purpose')} onPress={() => router.push('/classes')} />

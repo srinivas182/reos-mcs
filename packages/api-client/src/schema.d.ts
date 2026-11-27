@@ -779,6 +779,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/candidate-studio": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Moments
+         * @description What the candidate has done that's worth a post right now, and whether each was made.
+         */
+        get: operations["candidate-studio.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/candidate-studio/moments/{milestone}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Make a post
+         * @description Three captions and three designs for the moment, free, each caption already checked.
+         */
+        post: operations["candidate-studio.make"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/candidate-studio/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Check a caption
+         * @description The compliance engine on an edited caption: no service advertising before the license is active.
+         */
+        post: operations["candidate-studio.check"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/candidate-studio/posts/{post}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Post it
+         * @description Posts the chosen caption and design to the candidate's connected accounts, after the same checks as any post.
+         */
+        post: operations["candidate-studio.post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/catalogue": {
         parameters: {
             query?: never;
@@ -9959,6 +10039,208 @@ export interface operations {
             };
         };
     };
+    "candidate-studio.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            /** @enum {string} */
+                            milestone: "exam_pass" | "study_streak" | "practice_score";
+                            label: string;
+                            made: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "candidate-studio.make": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                milestone: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            /** @enum {string} */
+                            milestone: "exam_pass" | "study_streak" | "practice_score";
+                            label: string;
+                            captions: {
+                                /** @enum {string} */
+                                tone: "professional" | "warm" | "short";
+                                text: string;
+                            }[];
+                            designs: {
+                                layout: string;
+                                path: string;
+                                url: string;
+                            }[];
+                            checks: {
+                                caption: number;
+                                ok: boolean;
+                                issues: {
+                                    code: string;
+                                    /** @enum {string} */
+                                    severity: "block" | "warn";
+                                    phrase: string | null;
+                                    fix: string | null;
+                                    reason: string | null;
+                                    citation: string;
+                                    url: string;
+                                    /** @enum {string} */
+                                    source: "rule" | "claude";
+                                }[];
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "candidate-studio.check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    text: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            ok: boolean;
+                            issues: {
+                                code: string;
+                                /** @enum {string} */
+                                severity: "block" | "warn";
+                                phrase: string | null;
+                                fix: string | null;
+                                reason: string | null;
+                                citation: string;
+                                url: string;
+                                /** @enum {string} */
+                                source: "rule" | "claude";
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "candidate-studio.post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                post: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    caption: number;
+                    design: number;
+                    text?: string | null;
+                    targets: {
+                        connection: number;
+                        channel: string;
+                        id: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     "catalogue.index": {
         parameters: {
             query?: never;
@@ -12827,7 +13109,7 @@ export interface operations {
                             ok: boolean;
                             issues: {
                                 /** @enum {string} */
-                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned";
+                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned" | "unlicensed";
                                 /** @enum {string} */
                                 severity: "block" | "warn";
                                 phrase: string | null;
@@ -12886,7 +13168,7 @@ export interface operations {
                             ok: boolean;
                             issues: {
                                 /** @enum {string} */
-                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned";
+                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned" | "unlicensed";
                                 /** @enum {string} */
                                 severity: "block" | "warn";
                                 phrase: string | null;
@@ -23452,7 +23734,7 @@ export interface operations {
                             attribution: string;
                             checks: {
                                 /** @enum {string} */
-                                code: "broker" | "targets" | "length" | "media" | "video" | "title" | "fair_housing" | "claims" | "banned" | "team_name";
+                                code: "broker" | "targets" | "length" | "media" | "video" | "title" | "fair_housing" | "claims" | "banned" | "team_name" | "unlicensed";
                                 ok: boolean;
                                 detail: string | null;
                                 citation?: string | null;
@@ -23469,7 +23751,7 @@ export interface operations {
                             routable: boolean;
                             compliance: {
                                 /** @enum {string} */
-                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned";
+                                code: "broker" | "broker_size" | "team_name" | "links" | "claims" | "title" | "fair_housing" | "unclear" | "banned" | "unlicensed";
                                 /** @enum {string} */
                                 severity: "block" | "warn";
                                 phrase: string | null;

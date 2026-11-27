@@ -26,6 +26,15 @@ final class TexasAdRules
 
     private const FHA = 'https://www.law.cornell.edu/uscode/text/42/3604';
 
+    private const OCC_1101_351 = 'https://statutes.capitol.texas.gov/Docs/OC/htm/OC.1101.htm#1101.351';
+
+    /** What a candidate can't say before their license is active: offering services, listings, prices, solicitation. */
+    public const UNLICENSED = [
+        'just listed', 'for sale', 'open house', 'my listing', 'my listings', 'list your home', 'list with me', 'sell your home', 'buy or sell', 'buying or selling',
+        'call me', 'text me', 'dm me', 'contact me', 'help you buy', 'help you sell', 'home valuation', 'price reduced', 'join my brokerage', 'join our brokerage',
+        'join my team', 'now hiring', 'recruiting agents', 'en venta', 'casa abierta', 'llámeme', 'comprar o vender', 'compre o venda', 'únase a mi agencia',
+    ];
+
     /** Ads: posts and designs, videos, and the public page. Messages: emails and texts to contacts. */
     private const ADS = ['post', 'video', 'page'];
 
@@ -50,6 +59,9 @@ final class TexasAdRules
             new Rule('fair_housing', '42 U.S.C. §3604(c)', self::FHA, self::ALL, 'block', 'compliance.fix.fairHousing'),
             // Wording that depends on how it's used; a second opinion decides.
             new Rule('unclear', '42 U.S.C. §3604(c)', self::FHA, self::ALL, 'warn', 'compliance.fix.unclear'),
+            // Before the license is active, no service advertising: no listings, prices, "call me to buy or sell" or
+            // brokerage solicitation (Tex. Occ. Code §1101.351). "Future agent" wording is fine (B13.3).
+            new Rule('unlicensed', 'Tex. Occ. Code §1101.351', self::OCC_1101_351, self::ADS, 'block', 'compliance.fix.unlicensed'),
             // The brokerage's own banned phrases (B12.1; every channel from B13.2).
             new Rule('banned', 'brokerage', '', self::ALL, 'block', 'compliance.fix.banned'),
         ];

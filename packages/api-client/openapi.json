@@ -6130,6 +6130,554 @@
                 }
             }
         },
+        "/candidate-studio": {
+            "get": {
+                "operationId": "candidate-studio.index",
+                "description": "What the candidate has done that's worth a post right now, and whether each was made.",
+                "summary": "Moments",
+                "tags": [
+                    "CandidateStudio"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "milestone": {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "exam_pass",
+                                                            "study_streak",
+                                                            "practice_score"
+                                                        ]
+                                                    },
+                                                    "label": {
+                                                        "type": "string"
+                                                    },
+                                                    "made": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "milestone",
+                                                    "label",
+                                                    "made"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/candidate-studio/moments/{milestone}": {
+            "post": {
+                "operationId": "candidate-studio.make",
+                "description": "Three captions and three designs for the moment, free, each caption already checked.",
+                "summary": "Make a post",
+                "tags": [
+                    "CandidateStudio"
+                ],
+                "parameters": [
+                    {
+                        "name": "milestone",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "milestone": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "exam_pass",
+                                                        "study_streak",
+                                                        "practice_score"
+                                                    ]
+                                                },
+                                                "label": {
+                                                    "type": "string"
+                                                },
+                                                "captions": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "tone": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "professional",
+                                                                    "warm",
+                                                                    "short"
+                                                                ]
+                                                            },
+                                                            "text": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "tone",
+                                                            "text"
+                                                        ]
+                                                    }
+                                                },
+                                                "designs": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "layout": {
+                                                                "type": "string"
+                                                            },
+                                                            "path": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "layout",
+                                                            "path",
+                                                            "url"
+                                                        ]
+                                                    }
+                                                },
+                                                "checks": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "caption": {
+                                                                "type": "integer"
+                                                            },
+                                                            "ok": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "issues": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "code": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "severity": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "block",
+                                                                                "warn"
+                                                                            ]
+                                                                        },
+                                                                        "phrase": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "fix": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "reason": {
+                                                                            "type": [
+                                                                                "string",
+                                                                                "null"
+                                                                            ]
+                                                                        },
+                                                                        "citation": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "url": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "source": {
+                                                                            "type": "string",
+                                                                            "enum": [
+                                                                                "rule",
+                                                                                "claude"
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "required": [
+                                                                        "code",
+                                                                        "severity",
+                                                                        "phrase",
+                                                                        "fix",
+                                                                        "reason",
+                                                                        "citation",
+                                                                        "url",
+                                                                        "source"
+                                                                    ]
+                                                                }
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "caption",
+                                                            "ok",
+                                                            "issues"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "milestone",
+                                                "label",
+                                                "captions",
+                                                "designs",
+                                                "checks"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/candidate-studio/check": {
+            "post": {
+                "operationId": "candidate-studio.check",
+                "description": "The compliance engine on an edited caption: no service advertising before the license is active.",
+                "summary": "Check a caption",
+                "tags": [
+                    "CandidateStudio"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string",
+                                        "maxLength": 2000
+                                    }
+                                },
+                                "required": [
+                                    "text"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "ok": {
+                                                    "type": "boolean"
+                                                },
+                                                "issues": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "code": {
+                                                                "type": "string"
+                                                            },
+                                                            "severity": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "block",
+                                                                    "warn"
+                                                                ]
+                                                            },
+                                                            "phrase": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "fix": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "citation": {
+                                                                "type": "string"
+                                                            },
+                                                            "url": {
+                                                                "type": "string"
+                                                            },
+                                                            "source": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "rule",
+                                                                    "claude"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "code",
+                                                            "severity",
+                                                            "phrase",
+                                                            "fix",
+                                                            "reason",
+                                                            "citation",
+                                                            "url",
+                                                            "source"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "ok",
+                                                "issues"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/candidate-studio/posts/{post}": {
+            "post": {
+                "operationId": "candidate-studio.post",
+                "description": "Posts the chosen caption and design to the candidate's connected accounts, after the same checks as any post.",
+                "summary": "Post it",
+                "tags": [
+                    "CandidateStudio"
+                ],
+                "parameters": [
+                    {
+                        "name": "post",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "caption": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 2
+                                    },
+                                    "design": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 2
+                                    },
+                                    "text": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 2000
+                                    },
+                                    "targets": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "connection": {
+                                                    "type": "integer"
+                                                },
+                                                "channel": {
+                                                    "type": "string",
+                                                    "maxLength": 20
+                                                },
+                                                "id": {
+                                                    "type": "string",
+                                                    "maxLength": 120
+                                                }
+                                            },
+                                            "required": [
+                                                "connection",
+                                                "channel",
+                                                "id"
+                                            ]
+                                        },
+                                        "minItems": 1,
+                                        "maxItems": 12
+                                    }
+                                },
+                                "required": [
+                                    "caption",
+                                    "design",
+                                    "targets"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id",
+                                                "status"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/catalogue": {
             "get": {
                 "operationId": "catalogue.index",
@@ -15741,7 +16289,8 @@
                                                                     "title",
                                                                     "fair_housing",
                                                                     "unclear",
-                                                                    "banned"
+                                                                    "banned",
+                                                                    "unlicensed"
                                                                 ]
                                                             },
                                                             "severity": {
@@ -15908,7 +16457,8 @@
                                                                     "title",
                                                                     "fair_housing",
                                                                     "unclear",
-                                                                    "banned"
+                                                                    "banned",
+                                                                    "unlicensed"
                                                                 ]
                                                             },
                                                             "severity": {
@@ -47572,7 +48122,8 @@
                                                                     "fair_housing",
                                                                     "claims",
                                                                     "banned",
-                                                                    "team_name"
+                                                                    "team_name",
+                                                                    "unlicensed"
                                                                 ]
                                                             },
                                                             "ok": {
@@ -47656,7 +48207,8 @@
                                                                     "title",
                                                                     "fair_housing",
                                                                     "unclear",
-                                                                    "banned"
+                                                                    "banned",
+                                                                    "unlicensed"
                                                                 ]
                                                             },
                                                             "severity": {

@@ -71,6 +71,7 @@ use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
 use App\Http\Controllers\Api\States\CurrentStateController;
 use App\Http\Controllers\Api\Studio\BrandKitController;
+use App\Http\Controllers\Api\Studio\CandidateStudioController;
 use App\Http\Controllers\Api\Studio\CelebrationController;
 use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Studio\VideoController;
@@ -275,6 +276,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
     Route::post('mentors/change', [SwitchController::class, 'changeMentor'])->middleware('throttle:5,1,api-mentors-change')->name('api.mentors.change');
+    // The free candidate studio (B13.3): study-streak, practice-score and exam-pass posts.
+    Route::prefix('candidate-studio')->name('api.candidate-studio.')->controller(CandidateStudioController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('moments/{milestone}', 'make')->whereIn('milestone', ['exam_pass', 'study_streak', 'practice_score'])->middleware('throttle:20,1,api-candidate-studio')->name('make');
+        Route::post('check', 'check')->middleware('throttle:60,1,api-candidate-studio-check')->name('check');
+        Route::post('posts/{post}', 'post')->whereUuid('post')->middleware('throttle:10,1,api-candidate-studio-post')->name('post');
+    });
+
     // The compliance engine for emails and texts to contacts (B13.1).
     Route::post('compliance/check', [ComplianceController::class, 'check'])->middleware('throttle:60,1,api-compliance')->name('api.compliance.check');
     Route::post('compliance/fix', [ComplianceController::class, 'fix'])->middleware('throttle:30,1,api-compliance')->name('api.compliance.fix');

@@ -38,6 +38,7 @@ import {
     Trophy,
     Gift,
     MessageSquareQuote,
+    PartyPopper,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -63,6 +64,7 @@ import { show as aiSettings } from '@/routes/ai';
 import { show as pointsRates } from '@/routes/points';
 import { index as rewardsIndex } from '@/routes/rewards';
 import { index as feedbackIndex } from '@/routes/feedback';
+import { index as candidateStudio } from '@/routes/candidate-studio';
 import { index as complianceLog } from '@/routes/organisation/compliance-log';
 import { index as brokerRewards } from '@/routes/organisation/rewards';
 import { index as providerCategories } from '@/routes/provider-categories';
@@ -136,6 +138,7 @@ export type NavLabel =
     | 'goalsAndRewards'
     | 'agentFeedback'
     | 'complianceLog'
+    | 'candidateStudio'
     | 'pointsRates'
     | 'challenges'
     | 'ceReporting'
@@ -235,6 +238,13 @@ export function roleNavigation(
                 : []),
             // Book an instructor (A10.2a, screen 18).
             item('instructors', GraduationCap, bookingsIndex(), '/bookings'),
+            // Free posts for study wins (B13.3), checked so nothing advertises services before the license.
+            item(
+                'candidateStudio',
+                PartyPopper,
+                candidateStudio(),
+                '/candidate-studio',
+            ),
             // The licence journey (A10.3a, screen 16).
             item(
                 'licenceJourney',

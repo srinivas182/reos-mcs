@@ -64,19 +64,36 @@ final readonly class ComplianceEngine
             $issues[] = self::issue($f['code'], $f['phrase'], $f['fix'], null, 'rule');
         }
 
+        // A candidate (B13.3) isn't licensed yet: no broker to name, and no service advertising at all.
+        $candidate = $this->roles->for($agent)?->role === Role::Candidate;
+
+        if ($candidate) {
+            $lower = mb_strtolower($text);
+
+            foreach (TexasAdRules::UNLICENSED as $phrase) {
+                if (preg_match('/(?<![\p{L}])'.preg_quote($phrase, '/').'(?![\p{L}])/u', $lower) === 1) {
+                    $issues[] = self::issue('unlicensed', $phrase, '', null, 'rule');
+                }
+            }
+
+            if (preg_match('/\$\d[\d,]*(?:\.\d+)?(?:\s?[kKmM]\b)?/u', $text, $price) === 1) {
+                $issues[] = self::issue('unlicensed', $price[0], '', null, 'rule');
+            }
+        }
+
         // The broker's name in every ad.
         // The broker the content must name: given (the public page shows the MLS office), else the agent's.
         $broker = array_key_exists('broker', $content) ? $content['broker'] : $this->brokerName($agent);
         $named = $broker !== null && str_contains(mb_strtolower($whole), mb_strtolower($broker));
 
-        if (TexasAdRules::rule('broker')->appliesTo($channel) && ! $named) {
+        if (! $candidate && TexasAdRules::rule('broker')->appliesTo($channel) && ! $named) {
             $issues[] = self::issue('broker', $broker, null, null, 'rule');
         }
 
         // …and at least half the size of the largest contact information, in full, on designs and videos.
         $layout = $content['layout'] ?? null;
 
-        if ($layout !== null && TexasAdRules::rule('broker_size')->appliesTo($channel)) {
+        if (! $candidate && $layout !== null && TexasAdRules::rule('broker_size')->appliesTo($channel)) {
             $whole_rendered = $broker !== null && str_contains(mb_strtolower($layout['rendered']), mb_strtolower($broker));
 
             if (! $whole_rendered || $layout['largest_contact'] > $layout['broker_size'] * 2) {
@@ -85,7 +102,7 @@ final readonly class ComplianceEngine
         }
 
         // Team names: with the broker's name, and without words that make them sound like a brokerage.
-        foreach (self::teams($whole) as $team) {
+        foreach ($candidate ? [] : self::teams($whole) as $team) {
             $lower = mb_strtolower($team);
 
             if (array_any(TexasAdRules::TEAM_WORDS, static fn (string $w): bool => str_contains($lower, $w)) || ! $named) {

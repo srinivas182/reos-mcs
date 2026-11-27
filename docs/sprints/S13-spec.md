@@ -268,6 +268,22 @@
 - **A free studio for candidates:** study-streak, practice-score and exam-pass posts, with designs and captions from templates, the school's or REOS's brand, and the same checks.
 - **No service advertising before the license is active:** no listings, prices, "call me to buy or sell", or brokerage solicitation. "Future agent" wording is allowed.
 - **Done when:** a candidate posts a pass announcement safely.
+- **As built, B13.3** (ADR 0059):
+  - **Moments** (`App\Studio\Celebrations\CandidateStudio`):
+    - exam passed;
+    - a study streak of 7, 14, 30, 60 or 100 days;
+    - a practice exam of 80% or more.
+
+    Each is made once (a `celebration`), with three template captions (English or Spanish) and three designs. The designs use the school's brand color (or REOS's) and "Name · Future agent". All of it is free.
+  - **The compliance engine for candidates:**
+    - no broker-name or team rules;
+    - `unlicensed` (Tex. Occ. Code §1101.351) blocks listings, prices, "call me", "buy or sell", "list your home" and brokerage or team recruiting;
+    - "Future agent" wording is allowed;
+    - checks are logged.
+  - **API:** `/api/v1/candidate-studio`: moments, make, check, post.
+  - **Web:** Candidate studio (`/candidate-studio`, candidate sidebar), with Check, Post now, Download the design and Copy the caption.
+  - **Phone:** `social/candidate`, from Home, with Check, Post now and Share.
+  - **Done when:** a Pest test has a candidate who passed make the pass post (every caption already checked and clean) and post it. An edited caption that offers services is blocked, both at Check and at posting.
 
 ## 4. Definition of done (whole sprint)
 

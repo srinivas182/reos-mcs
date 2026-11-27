@@ -75,7 +75,7 @@ final class SocialController extends Controller
      *
      * The attribution it will carry and each check; a post that fails can't be scheduled.
      *
-     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'video'|'title'|'fair_housing'|'claims'|'banned'|'team_name', ok: bool, detail: string|null, citation?: string|null}>, ok: bool, approval: bool, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>, review: list<string>, routable: bool, compliance: list<array{code: 'broker'|'broker_size'|'team_name'|'links'|'claims'|'title'|'fair_housing'|'unclear'|'banned', severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}>}}
+     * @response array{data: array{attribution: string, checks: list<array{code: 'broker'|'targets'|'length'|'media'|'video'|'title'|'fair_housing'|'claims'|'banned'|'team_name'|'unlicensed', ok: bool, detail: string|null, citation?: string|null}>, ok: bool, approval: bool, issues: list<array{code: 'fair_housing'|'claims'|'banned', phrase: string, fix: string}>, review: list<string>, routable: bool, compliance: list<array{code: 'broker'|'broker_size'|'team_name'|'links'|'claims'|'title'|'fair_housing'|'unclear'|'banned'|'unlicensed', severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}>}}
      */
     public function check(PostRequest $request, #[CurrentUser] User $user, SocialPosts $posts): JsonResponse
     {
