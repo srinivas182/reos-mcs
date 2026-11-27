@@ -36,6 +36,7 @@ import {
     Milestone,
     UserPlus,
     Trophy,
+    Gift,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -58,6 +59,9 @@ import { index as billingIndex } from '@/routes/billing';
 import { index as gateways } from '@/routes/gateways';
 import { index as plans } from '@/routes/plans';
 import { show as aiSettings } from '@/routes/ai';
+import { show as pointsRates } from '@/routes/points';
+import { index as rewardsIndex } from '@/routes/rewards';
+import { index as brokerRewards } from '@/routes/organisation/rewards';
 import { index as providerCategories } from '@/routes/provider-categories';
 import { index as sales } from '@/routes/sales';
 import { index as earnings } from '@/routes/earnings';
@@ -125,6 +129,9 @@ export type NavLabel =
     | 'mentorProgram'
     | 'mentorWorkspace'
     | 'podAndChallenges'
+    | 'brokerRewards'
+    | 'goalsAndRewards'
+    | 'pointsRates'
     | 'challenges'
     | 'ceReporting'
     | 'paymentGateways'
@@ -256,7 +263,8 @@ export function roleNavigation(
             // Accountability pod and brokerage challenges (A13.2, screen 131).
             item('podAndChallenges', Trophy, podIndex(), '/pod'),
             planned('serviceProviders'),
-            planned('goalsAndRewards'),
+            // Daily goals, points and rewards (A13.3a, screens 111 and 112).
+            item('goalsAndRewards', Gift, rewardsIndex(), '/rewards'),
             item('connections', Plug, connections()),
             item('settings', Settings, profile(), '/settings'),
         ],
@@ -301,6 +309,13 @@ export function roleNavigation(
                 GraduationCap,
                 mentorProgram(),
                 '/organisation/mentors',
+            ),
+            // Daily goals per mode and bonus campaigns (A13.3a).
+            item(
+                'brokerRewards',
+                Gift,
+                brokerRewards(),
+                '/organisation/rewards',
             ),
             // Opt-in brokerage challenges (A13.2).
             item(
@@ -418,6 +433,8 @@ export function roleNavigation(
                 '/admin/provider-categories',
             ),
             item('aiAndCredits', Sparkles, aiSettings(), '/admin/ai'),
+            // What daily goals earn (A13.3a).
+            item('pointsRates', Gift, pointsRates(), '/admin/points'),
             item(
                 'featuresAndReleases',
                 Flag,

@@ -87,7 +87,10 @@
     "mentorProgram": "Mentor program",
     "mentorWorkspace": "Mentor workspace",
     "challenges": "Challenges",
-    "podAndChallenges": "Pod and challenges"
+    "podAndChallenges": "Pod and challenges",
+    "goalsAndRewards": "Goals and rewards",
+    "pointsRates": "Points",
+    "brokerRewards": "Goals and rewards"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2316,7 +2319,12 @@
         "mentor.change_requested": "Another mentor asked for",
         "session_booking.points_returned": "Points returned for a session",
         "mentor.rating_reviewed": "Low rating reviewed",
-        "challenge.created": "Challenge created"
+        "challenge.created": "Challenge created",
+        "points.rates_updated": "Points rates changed",
+        "daily_goals.updated": "Daily goals changed",
+        "points_campaign.created": "Bonus campaign created",
+        "points_campaign.ended": "Bonus campaign ended",
+        "points.redeemed": "Points used"
       }
     }
   },
@@ -9588,6 +9596,120 @@
         "dates": "Choose dates up to three months apart that haven't passed.",
         "ended": "This challenge has ended."
       }
+    }
+  },
+  "rewards": {
+    "title": "Goals and rewards",
+    "purpose": "Meet today's goals to earn points. 1,000 points are worth $10 inside REOS.",
+    "today": "Today's goals",
+    "goals": {
+      "conversations": "Conversations",
+      "ce_lesson": "A CE lesson",
+      "follow_ups": "Follow-ups",
+      "post": "A post"
+    },
+    "goalProgress": "{{done}} of {{target}}",
+    "goalPoints": "{{count}} points",
+    "goalBonus": "+{{count}} bonus",
+    "met": "Done",
+    "pointsToday": "{{count}} points today",
+    "bonusToday": "+{{count}} bonus points",
+    "allDone": "Every goal done today. Nice work!",
+    "allDoneHint": "Meet every goal for a {{count}}-point bonus and keep your streak going.",
+    "streak_one": "{{count}}-day streak",
+    "streak_other": "{{count}}-day streak",
+    "bestStreak": "Best: {{count}} days",
+    "noStreak": "Meet every goal today to start a streak.",
+    "share": "Share my streak",
+    "shareText": "I'm on a {{count}}-day streak of meeting my daily goals on REOS.",
+    "copied": "Copied. Paste it wherever you like.",
+    "campaigns": "Bonus from your brokerage",
+    "campaignLine": "{{title}}: {{multiplier}}× points on {{goal}} until {{date}}",
+    "allGoals": "every goal",
+    "balance": "Your points",
+    "balanceValue": "{{points}} points · worth {{value}} inside REOS",
+    "noCash": "Points pay for things inside REOS. They have no cash value and are never earned from choosing a service provider.",
+    "use": "Use points",
+    "mentorSessions": "Mentor sessions",
+    "mentorSessionsHint": "Choose Reward points when you book a mentor.",
+    "findMentor": "Find a mentor",
+    "creditPack": "{{credits}} AI credits",
+    "membership": "{{name}}: one month",
+    "membershipYear": "{{name}}: one year",
+    "optionPoints": "{{count}} points",
+    "redeem": "Use {{count}} points",
+    "notEnough": "Not enough points yet",
+    "redeemed": "Done. Your points paid for it.",
+    "noOptions": "Nothing to use points on right now",
+    "noOptionsHint": "AI credits and membership appear here when they're for sale in your state.",
+    "history": "Recent points",
+    "noHistory": "No points yet",
+    "noHistoryHint": "Meet a daily goal to earn your first points.",
+    "reasons": {
+      "goal": "Daily goal: {{goal}}",
+      "all_done": "Every goal done",
+      "bonus": "Brokerage bonus: {{goal}}",
+      "session": "Mentor session",
+      "order": "Used points",
+      "returned": "Points returned",
+      "other": "Points"
+    },
+    "errors": {
+      "mode": "Choose a mode.",
+      "dates": "Choose dates up to three months apart that haven't passed.",
+      "goal": "Choose a goal.",
+      "option": "That can't be paid with points."
+    },
+    "broker": {
+      "title": "Goals and rewards",
+      "purpose": "Set your agents' daily goals for each mode and fund bonus campaigns. Points come only from agents' own activity.",
+      "targets": "Daily goals by mode",
+      "targetsHint": "Leave a goal at 0 to turn it off. Your targets replace REOS's for your agents.",
+      "own": "Your targets",
+      "reos": "REOS targets",
+      "save": "Save",
+      "saved": "Daily goals saved.",
+      "modes": {
+        "launch": "Launch",
+        "grow": "Grow",
+        "lead": "Lead",
+        "own": "Own"
+      }
+    },
+    "campaignsAdmin": {
+      "title": "Bonus campaigns",
+      "purpose": "Your brokerage funds the extra points, up to the budget you set.",
+      "new": "New campaign",
+      "name": "Name",
+      "goal": "Goal",
+      "multiplier": "Points",
+      "double": "Double points",
+      "triple": "Triple points",
+      "starts": "Starts",
+      "ends": "Ends",
+      "budget": "Budget (points)",
+      "budgetHint": "1,000 points = $10. You're billed only for points agents earn.",
+      "create": "Create campaign",
+      "created": "Campaign created.",
+      "none": "No bonus campaigns yet",
+      "noneHint": "Try double points on CE this month.",
+      "used": "{{spent}} of {{budget}} points used",
+      "active": "Running",
+      "ended": "Ended",
+      "scheduled": "Starts {{date}}",
+      "end": "End now",
+      "endedToast": "Campaign ended."
+    },
+    "admin": {
+      "title": "Points",
+      "purpose": "What daily goals earn and REOS's targets for each mode. 1,000 points = $10 inside REOS, with no cash value.",
+      "points": "Points per goal",
+      "allDone": "Bonus for every goal",
+      "dailyCap": "Most points in a day",
+      "targets": "REOS targets by mode",
+      "save": "Save",
+      "saved": "Points saved.",
+      "respa": "Points are earned only from an agent's own activity, never from choosing or recommending a service provider."
     }
   }
 }

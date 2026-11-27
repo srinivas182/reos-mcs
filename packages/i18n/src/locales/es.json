@@ -87,7 +87,10 @@
     "mentorProgram": "Programa de mentores",
     "mentorWorkspace": "Espacio del mentor",
     "challenges": "Retos",
-    "podAndChallenges": "Grupo y retos"
+    "podAndChallenges": "Grupo y retos",
+    "goalsAndRewards": "Metas y recompensas",
+    "pointsRates": "Puntos",
+    "brokerRewards": "Metas y recompensas"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2316,7 +2319,12 @@
         "mentor.change_requested": "Se pidió otro mentor",
         "session_booking.points_returned": "Puntos devueltos por una sesión",
         "mentor.rating_reviewed": "Calificación baja revisada",
-        "challenge.created": "Reto creado"
+        "challenge.created": "Reto creado",
+        "points.rates_updated": "Tarifas de puntos cambiadas",
+        "daily_goals.updated": "Metas diarias cambiadas",
+        "points_campaign.created": "Campaña de bono creada",
+        "points_campaign.ended": "Campaña de bono terminada",
+        "points.redeemed": "Puntos usados"
       }
     }
   },
@@ -9588,6 +9596,120 @@
         "dates": "Elija fechas con un máximo de tres meses de diferencia que no hayan pasado.",
         "ended": "Este reto ya terminó."
       }
+    }
+  },
+  "rewards": {
+    "title": "Metas y recompensas",
+    "purpose": "Cumpla las metas de hoy para ganar puntos. 1,000 puntos valen $10 dentro de REOS.",
+    "today": "Metas de hoy",
+    "goals": {
+      "conversations": "Conversaciones",
+      "ce_lesson": "Una lección de CE",
+      "follow_ups": "Seguimientos",
+      "post": "Una publicación"
+    },
+    "goalProgress": "{{done}} de {{target}}",
+    "goalPoints": "{{count}} puntos",
+    "goalBonus": "+{{count}} de bono",
+    "met": "Listo",
+    "pointsToday": "{{count}} puntos hoy",
+    "bonusToday": "+{{count}} puntos de bono",
+    "allDone": "Cumplió todas las metas de hoy. ¡Excelente trabajo!",
+    "allDoneHint": "Cumpla todas las metas para ganar un bono de {{count}} puntos y mantener su racha.",
+    "streak_one": "Racha de {{count}} día",
+    "streak_other": "Racha de {{count}} días",
+    "bestStreak": "Mejor: {{count}} días",
+    "noStreak": "Cumpla todas las metas hoy para empezar una racha.",
+    "share": "Compartir mi racha",
+    "shareText": "Llevo una racha de {{count}} días cumpliendo mis metas diarias en REOS.",
+    "copied": "Copiado. Péguelo donde quiera.",
+    "campaigns": "Bono de su agencia inmobiliaria",
+    "campaignLine": "{{title}}: {{multiplier}}× puntos en {{goal}} hasta el {{date}}",
+    "allGoals": "todas las metas",
+    "balance": "Sus puntos",
+    "balanceValue": "{{points}} puntos · valen {{value}} dentro de REOS",
+    "noCash": "Los puntos pagan cosas dentro de REOS. No tienen valor en efectivo y nunca se ganan por elegir a un proveedor de servicios.",
+    "use": "Usar puntos",
+    "mentorSessions": "Sesiones con mentores",
+    "mentorSessionsHint": "Elija Puntos de recompensa al reservar con un mentor.",
+    "findMentor": "Buscar un mentor",
+    "creditPack": "{{credits}} créditos de IA",
+    "membership": "{{name}}: un mes",
+    "membershipYear": "{{name}}: un año",
+    "optionPoints": "{{count}} puntos",
+    "redeem": "Usar {{count}} puntos",
+    "notEnough": "Todavía no tiene suficientes puntos",
+    "redeemed": "Listo. Sus puntos lo pagaron.",
+    "noOptions": "Por ahora no hay en qué usar puntos",
+    "noOptionsHint": "Los créditos de IA y la membresía aparecen aquí cuando están a la venta en su estado.",
+    "history": "Puntos recientes",
+    "noHistory": "Todavía no tiene puntos",
+    "noHistoryHint": "Cumpla una meta diaria para ganar sus primeros puntos.",
+    "reasons": {
+      "goal": "Meta diaria: {{goal}}",
+      "all_done": "Todas las metas cumplidas",
+      "bonus": "Bono de la agencia: {{goal}}",
+      "session": "Sesión con mentor",
+      "order": "Puntos usados",
+      "returned": "Puntos devueltos",
+      "other": "Puntos"
+    },
+    "errors": {
+      "mode": "Elija un modo.",
+      "dates": "Elija fechas con un máximo de tres meses de diferencia que no hayan pasado.",
+      "goal": "Elija una meta.",
+      "option": "Eso no se puede pagar con puntos."
+    },
+    "broker": {
+      "title": "Metas y recompensas",
+      "purpose": "Fije las metas diarias de sus agentes para cada modo y financie campañas de bono. Los puntos solo se ganan con la actividad propia de cada agente.",
+      "targets": "Metas diarias por modo",
+      "targetsHint": "Deje una meta en 0 para desactivarla. Sus metas reemplazan las de REOS para sus agentes.",
+      "own": "Sus metas",
+      "reos": "Metas de REOS",
+      "save": "Guardar",
+      "saved": "Metas diarias guardadas.",
+      "modes": {
+        "launch": "Arrancar",
+        "grow": "Crecer",
+        "lead": "Dirigir",
+        "own": "Ser dueño"
+      }
+    },
+    "campaignsAdmin": {
+      "title": "Campañas de bono",
+      "purpose": "Su agencia financia los puntos extra, hasta el presupuesto que usted fije.",
+      "new": "Nueva campaña",
+      "name": "Nombre",
+      "goal": "Meta",
+      "multiplier": "Puntos",
+      "double": "Puntos dobles",
+      "triple": "Puntos triples",
+      "starts": "Empieza",
+      "ends": "Termina",
+      "budget": "Presupuesto (puntos)",
+      "budgetHint": "1,000 puntos = $10. Solo se le cobran los puntos que ganen los agentes.",
+      "create": "Crear campaña",
+      "created": "Campaña creada.",
+      "none": "Todavía no hay campañas de bono",
+      "noneHint": "Pruebe puntos dobles en CE este mes.",
+      "used": "{{spent}} de {{budget}} puntos usados",
+      "active": "En curso",
+      "ended": "Terminada",
+      "scheduled": "Empieza el {{date}}",
+      "end": "Terminar ahora",
+      "endedToast": "Campaña terminada."
+    },
+    "admin": {
+      "title": "Puntos",
+      "purpose": "Lo que ganan las metas diarias y las metas de REOS para cada modo. 1,000 puntos = $10 dentro de REOS, sin valor en efectivo.",
+      "points": "Puntos por meta",
+      "allDone": "Bono por todas las metas",
+      "dailyCap": "Máximo de puntos por día",
+      "targets": "Metas de REOS por modo",
+      "save": "Guardar",
+      "saved": "Puntos guardados.",
+      "respa": "Los puntos solo se ganan con la actividad propia del agente, nunca por elegir o recomendar a un proveedor de servicios."
     }
   }
 }

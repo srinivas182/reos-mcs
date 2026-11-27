@@ -104,3 +104,10 @@ REOS Spanish is for people in Texas and the US, many of whom also use English ap
 | Morning brief | Resumen matutino | A11.1c |
 | CE wallet | Cartera de CE | A11.2 |
 | Self-reported (CE) | Reportado por usted | A11.2 |
+| Accountability pod | Grupo de responsabilidad / Grupo | A13.2 |
+| Challenge (brokerage) | Reto | A13.2 |
+| Daily goals | Metas diarias | A13.3a |
+| Points (rewards) | Puntos | A13.3a |
+| Streak | Racha | A13.3a |
+| Bonus campaign | Campaña de bono | A13.3a |
+| Goals and rewards | Metas y recompensas | A13.3a |

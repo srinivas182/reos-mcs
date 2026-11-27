@@ -4324,6 +4324,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/goals/today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Today's goals
+         * @description The day's goals for my mode, what's done, the points earned (awarded as goals are met), my streak and any brokerage bonus campaigns.
+         */
+        get: operations["goals.today"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rewards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * My rewards
+         * @description My points balance and its value (1,000 points = $10 inside REOS, no cash value), what points pay for, and recent points.
+         */
+        get: operations["rewards.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rewards/redeem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Use points
+         * @description Pays for an AI credit pack or a period of membership with points (mentor sessions are paid when booking).
+         */
+        post: operations["rewards.redeem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/sessions": {
         parameters: {
             query?: never;
@@ -21082,6 +21142,170 @@ export interface operations {
                             can_share_school: boolean;
                             link: string | null;
                         };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "goals.today": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            day: string;
+                            mode: string;
+                            goals: {
+                                /** @enum {string} */
+                                key: "conversations" | "ce_lesson" | "follow_ups" | "post";
+                                done: number;
+                                target: number;
+                                points: number;
+                                met: boolean;
+                                bonus: number;
+                            }[];
+                            points_today: number;
+                            bonus_today: number;
+                            all_done: boolean;
+                            all_done_points: number;
+                            streak: number;
+                            best_streak: number;
+                            balance: number;
+                            campaigns: {
+                                id: string;
+                                title: string;
+                                goal: string;
+                                multiplier: number;
+                                ends_on: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "rewards.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            balance: number;
+                            value_cents: number;
+                            options: {
+                                price: number;
+                                /** @enum {string} */
+                                kind: "credit_pack" | "plan";
+                                name: string;
+                                points: number;
+                                credits: number | null;
+                                /** @enum {string} */
+                                interval: "once" | "month" | "year";
+                                affordable: boolean;
+                            }[];
+                            history: {
+                                reason: string;
+                                points: number;
+                                memo: string | null;
+                                at: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "rewards.redeem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    price: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            balance: number;
+                            value_cents: number;
+                            options: {
+                                price: number;
+                                /** @enum {string} */
+                                kind: "credit_pack" | "plan";
+                                name: string;
+                                points: number;
+                                credits: number | null;
+                                /** @enum {string} */
+                                interval: "once" | "month" | "year";
+                                affordable: boolean;
+                            }[];
+                            history: {
+                                reason: string;
+                                points: number;
+                                memo: string | null;
+                                at: string;
+                            }[];
+                        };
+                        order: string;
                     };
                 };
             };

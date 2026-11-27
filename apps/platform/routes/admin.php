@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\PeopleController;
 use App\Http\Controllers\Admin\PersonConsentController;
 use App\Http\Controllers\Admin\PersonRoleController;
 use App\Http\Controllers\Admin\PlanController;
+use App\Http\Controllers\Admin\PointRatesController;
 use App\Http\Controllers\Admin\ProviderCategoryController;
 use App\Http\Controllers\Admin\ProviderLicenceReviewController;
 use App\Http\Controllers\Admin\StateController;
@@ -227,6 +228,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:plans.man
         Route::patch('provider-categories/{category}', [ProviderCategoryController::class, 'update'])->whereNumber('category')->middleware('throttle:60,1,admin-provider-categories')->name('provider-categories.update');
         Route::get('ai', [AiSettingsController::class, 'show'])->name('ai.show');
         Route::put('ai', [AiSettingsController::class, 'update'])->middleware('throttle:30,1,admin-ai')->name('ai.update');
+        // Points (A13.3a): what daily goals earn, the cap and REOS's targets per mode.
+        Route::get('points', [PointRatesController::class, 'show'])->name('points.show');
+        Route::put('points', [PointRatesController::class, 'update'])->middleware('throttle:30,1,admin-points')->name('points.update');
     });
 
 // Features and releases (screen 70, A6.2): rollouts, the kill switch and releases.

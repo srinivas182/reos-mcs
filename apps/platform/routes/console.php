@@ -84,6 +84,8 @@ Schedule::command('reos:social:publish')->everyMinute()->withoutOverlapping()->o
 Schedule::command('reos:celebrations')->hourlyAt(17)->withoutOverlapping()->onOneServer();
 // Pods (A13.2): waiting agents matched, and each pod's weekly call booked.
 Schedule::command('reos:pods')->dailyAt('06:10')->withoutOverlapping()->onOneServer();
+// Daily goals (A13.3a): yesterday's points and streaks settled for every agent.
+Schedule::command('reos:daily-goals')->dailyAt('06:40')->withoutOverlapping()->onOneServer();
 Schedule::command('reos:social:insights')->hourlyAt(20)->withoutOverlapping()->onOneServer();
 // The morning brief at each agent's chosen time (A11.1c).
 Schedule::command('reos:agents:briefs')->everyFiveMinutes()->withoutOverlapping()->onOneServer();

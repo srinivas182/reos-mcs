@@ -62,13 +62,15 @@ final readonly class Ledger
         return $this->account("person:{$user->id}:{$kind}", $type, $unit, 'user', $user->id);
     }
 
-    /** An organisation's accounts: sponsor `credits` and `seats` pools, and `usd` (what a school has earned). */
+    /** An organisation's accounts: sponsor `credits` and `seats` pools, `usd` (what a school has earned) and `points` (bonus points a brokerage funded). */
     public function organisation(Organisation $organisation, string $kind): LedgerAccount
     {
         [$type, $unit] = match ($kind) {
             'credits' => ['sponsor_credit_pool', Unit::Credit],
             'seats' => ['sponsor_seat_pool', Unit::Seat],
             'usd' => ['tenant_earnings', Unit::Usd],
+            // Bonus points a brokerage funds for its agents (A13.3a); it goes negative by what was given.
+            'points' => ['brokerage_points_funded', Unit::Point],
             default => throw new InvalidArgumentException("Unknown organisation account {$kind}."),
         };
 
