@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Practice\SpeedRoundController;
 use App\Http\Controllers\Api\Practice\StudyGroupController;
 use App\Http\Controllers\Api\Social\ContentCalendarController;
 use App\Http\Controllers\Api\Social\SocialController;
+use App\Http\Controllers\Api\Studio\CandidateStudioController;
 use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Studio\VideoController;
 use App\Http\Controllers\Api\Todos\TodoController;
@@ -114,6 +115,7 @@ use App\Http\Controllers\Social\StudioCalendarPageController;
 use App\Http\Controllers\Social\StudioPageController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\Studio\AdvertisingController;
+use App\Http\Controllers\Studio\CandidateStudioPageController;
 use App\Http\Controllers\SupportConsentController;
 use App\Http\Controllers\SupportSessionController;
 use App\Http\Controllers\VirtualBroker\BrokerVirtualBrokerController;
@@ -497,6 +499,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/challenges')->name('organisation.challenges.')->group(function () {
     Route::get('/', [ChallengesController::class, 'broker'])->name('index');
     Route::post('/', [ChallengesController::class, 'store'])->middleware('throttle:20,1,challenges-store')->name('store');
+});
+
+// The free candidate studio on the web (B13.3): the page, and JSON for making, checking and posting.
+Route::middleware(['auth', 'verified'])->prefix('candidate-studio')->name('candidate-studio.')->group(function () {
+    Route::get('/', CandidateStudioPageController::class)->name('index');
+    Route::post('moments/{milestone}', [CandidateStudioController::class, 'make'])->whereIn('milestone', ['exam_pass', 'study_streak', 'practice_score'])->middleware('throttle:20,1,candidate-studio')->name('make');
+    Route::post('check', [CandidateStudioController::class, 'check'])->middleware('throttle:60,1,candidate-studio-check')->name('check');
+    Route::post('posts/{post}', [CandidateStudioController::class, 'post'])->whereUuid('post')->middleware('throttle:10,1,candidate-studio-post')->name('post');
 });
 
 // The compliance engine for emails and texts from the web (B13.1): JSON for the reach dialog.

@@ -26,7 +26,7 @@ final class ComplianceController extends Controller
      *
      * Texas advertising rules, fair housing wording (with context exceptions and a second opinion for unclear wording) and the brokerage's phrases.
      *
-     * @response array{data: array{ok: bool, issues: list<array{code: 'broker'|'broker_size'|'team_name'|'links'|'claims'|'title'|'fair_housing'|'unclear'|'banned', severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}>}}
+     * @response array{data: array{ok: bool, issues: list<array{code: 'broker'|'broker_size'|'team_name'|'links'|'claims'|'title'|'fair_housing'|'unclear'|'banned'|'unlicensed', severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}>}}
      */
     public function check(Request $request, #[CurrentUser] User $user, ComplianceEngine $engine, ComplianceLog $log): JsonResponse
     {
@@ -42,7 +42,7 @@ final class ComplianceController extends Controller
      *
      * Swaps flagged wording for words about the home, or takes it out.
      *
-     * @response array{data: array{text: string, ok: bool, issues: list<array{code: 'broker'|'broker_size'|'team_name'|'links'|'claims'|'title'|'fair_housing'|'unclear'|'banned', severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}>}}
+     * @response array{data: array{text: string, ok: bool, issues: list<array{code: 'broker'|'broker_size'|'team_name'|'links'|'claims'|'title'|'fair_housing'|'unclear'|'banned'|'unlicensed', severity: 'block'|'warn', phrase: string|null, fix: string|null, reason: string|null, citation: string, url: string, source: 'rule'|'claude'}>}}
      */
     public function fix(Request $request, #[CurrentUser] User $user, ComplianceEngine $engine, ComplianceLog $log): JsonResponse
     {

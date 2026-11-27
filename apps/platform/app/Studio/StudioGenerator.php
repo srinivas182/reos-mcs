@@ -13,6 +13,7 @@ use App\Services\Ai\AiCredits;
 use App\Services\Ai\AiSettings;
 use App\Services\Ai\Bedrock;
 use App\Social\SocialPosts;
+use App\Studio\Celebrations\CandidateStudio;
 use App\Studio\Celebrations\Celebrations;
 use App\Tenancy\Brand;
 use Illuminate\Support\Facades\Log;
@@ -136,20 +137,22 @@ final readonly class StudioGenerator
      * the milestone's badge and the agent's profile photo. Free; REOS's templates write it.
      * Clients are never named: a deal's milestone names the property only.
      */
-    public function celebrate(User $agent, string $milestone, string $label): StudioGeneration
+    public function celebrate(User $agent, string $milestone, string $label, ?string $attribution = null, ?string $colour = null): StudioGeneration
     {
         $source = ['type' => 'celebration', 'id' => null, 'text' => $label, 'milestone' => $milestone];
         $facts = $this->facts($agent, $source);
         $language = $agent->locale->value;
         $uuid = (string) Str::uuid7();
         $brokerage = $this->policy->brokerage($agent);
-        $colour = ($brokerage === null ? null : Brand::of($brokerage)->primary?->hex) ?? self::COLOUR;
+        // A candidate's posts (B13.3) carry their school's or REOS's brand and "Future agent", never a broker.
+        $colour ??= ($brokerage === null ? null : Brand::of($brokerage)->primary?->hex) ?? self::COLOUR;
+        $attribution ??= $this->attribution($agent);
         $portrait = $this->kit->photo($agent);
         $designs = [];
 
         foreach (StudioRenderer::LAYOUTS as $layout) {
             $path = "social/{$agent->id}/studio/{$uuid}-{$layout}.png";
-            Storage::disk(SocialPosts::MEDIA_DISK)->put($path, StudioRenderer::design($layout, null, $colour, ['headline' => $facts['headline'], 'lines' => [$label], 'attribution' => $this->attribution($agent)], $portrait));
+            Storage::disk(SocialPosts::MEDIA_DISK)->put($path, StudioRenderer::design($layout, null, $colour, ['headline' => $facts['headline'], 'lines' => [$label], 'attribution' => $attribution], $portrait));
             $designs[] = ['layout' => $layout, 'path' => $path];
         }
 
@@ -220,7 +223,7 @@ final readonly class StudioGenerator
             return ['type' => 'sale', 'headline' => self::line('studio.headlines.sale', [], $agent->locale->value), 'address' => $deal->property, 'city' => $deal->city, 'price' => null, 'beds' => null, 'baths' => null, 'text' => $text, 'photos' => [], 'listing' => null];
         }
 
-        if ($type === 'celebration' && in_array($source['milestone'] ?? null, Celebrations::MILESTONES, true)) {
+        if ($type === 'celebration' && in_array($source['milestone'] ?? null, [...Celebrations::MILESTONES, ...CandidateStudio::MILESTONES], true)) {
             $milestone = (string) $source['milestone'];
 
             return [

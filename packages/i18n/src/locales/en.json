@@ -92,7 +92,8 @@
     "pointsRates": "Points",
     "brokerRewards": "Goals and rewards",
     "agentFeedback": "Feedback from agents",
-    "complianceLog": "Compliance log"
+    "complianceLog": "Compliance log",
+    "candidateStudio": "Candidate studio"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -3243,7 +3244,8 @@
       "title": "Don't call yourself a broker, owner or president as a sales agent.",
       "fairHousing": "Describe the home, not who should live there.",
       "unclear": "Check this wording describes the home, not who should live there.",
-      "banned": "Take out the phrase your brokerage doesn't allow."
+      "banned": "Take out the phrase your brokerage doesn't allow.",
+      "unlicensed": "Until your license is active, don't offer services: no listings, prices, \"call me\" or brokerage invitations."
     },
     "blocked": {
       "broker": "Add your broker's name before publishing ({{citation}}).",
@@ -3254,7 +3256,8 @@
       "title": "A sales agent can't be called a broker, owner or president ({{citation}}).",
       "fair_housing": "\"{{phrase}}\" is about who should live there, not the home ({{citation}}).",
       "unclear": "Check \"{{phrase}}\" ({{citation}}).",
-      "banned": "\"{{phrase}}\" is a phrase your brokerage doesn't allow."
+      "banned": "\"{{phrase}}\" is a phrase your brokerage doesn't allow.",
+      "unlicensed": "\"{{phrase}}\" offers real estate services before your license is active ({{citation}})."
     },
     "review": "Check this wording: {{phrases}}. It's fine if it describes the home, not who should live there.",
     "check": "Check before sending",
@@ -3279,7 +3282,8 @@
       "title": "Titles a sales agent may not use",
       "fair_housing": "Fair housing wording",
       "unclear": "Wording to check",
-      "banned": "Your brokerage's banned phrases"
+      "banned": "Your brokerage's banned phrases",
+      "unlicensed": "Service advertising before a license"
     },
     "share": "Share the link",
     "pageWaiting": "Your page is waiting for your broker to approve it. It goes live once they do.",
@@ -8609,7 +8613,8 @@
       "fair_housing": "Fair housing wording: describes the home, not who should live there",
       "claims": "No misleading claims (guarantees, \"best price\")",
       "banned": "None of your brokerage's banned phrases",
-      "team_name": "Team name: shown with your broker's name, without \"Realty\" or \"Brokerage\""
+      "team_name": "Team name: shown with your broker's name, without \"Realty\" or \"Brokerage\"",
+      "unlicensed": "No service advertising before the license is active"
     },
     "posts": {
       "title": "My posts and results",
@@ -9188,6 +9193,21 @@
           "professional": "{{text}} in real estate. Thank you to every client who trusted me along the way. #Anniversary #TexasRealEstate",
           "warm": "Celebrating {{text}} in real estate! Grateful for every client and every move. #Anniversary #TexasHomes",
           "short": "{{text}} in real estate. #Anniversary"
+        },
+        "exam_pass": {
+          "professional": "I passed the {{text}}! Next step: my license. Thank you to everyone who helped me study. #FutureAgent #TexasRealEstate",
+          "warm": "I did it: I passed the {{text}}! So grateful for the support along the way. #FutureAgent #RealEstateExam",
+          "short": "Passed the {{text}}! #FutureAgent"
+        },
+        "study_streak": {
+          "professional": "{{text}} on my way to a Texas real estate license. Showing up every day. #FutureAgent #StudyStreak",
+          "warm": "{{text}} and counting! A little studying every day for my real estate exam. #FutureAgent",
+          "short": "{{text}}! #FutureAgent"
+        },
+        "practice_score": {
+          "professional": "New personal best: {{text}}. One step closer to my real estate license. #FutureAgent",
+          "warm": "So proud: {{text}}! The hard work is paying off. #FutureAgent #RealEstateExam",
+          "short": "{{text}}! #FutureAgent"
         }
       }
     },
@@ -9404,7 +9424,10 @@
         "first_closing": "MY FIRST CLOSING",
         "ce_complete": "CE COMPLETE",
         "license_renewed": "LICENSE RENEWED",
-        "anniversary": "ANNIVERSARY"
+        "anniversary": "ANNIVERSARY",
+        "exam_pass": "I PASSED!",
+        "study_streak": "STUDY STREAK",
+        "practice_score": "PERSONAL BEST"
       },
       "names": {
         "just_listed": "Just listed",
@@ -9413,7 +9436,10 @@
         "first_closing": "First closing",
         "ce_complete": "CE complete",
         "license_renewed": "License renewed",
-        "anniversary": "Anniversary"
+        "anniversary": "Anniversary",
+        "exam_pass": "Exam passed",
+        "study_streak": "Study streak",
+        "practice_score": "Practice score"
       },
       "notify": {
         "just_listed": "Your just-listed post is ready",
@@ -9459,6 +9485,38 @@
       "kitNote": "Your brokerage sets the logo and colors on the web. Your broker's name is added at the size Texas rules require.",
       "errors": {
         "photo": "That file isn't a photo we can read."
+      }
+    },
+    "candidate": {
+      "title": "Candidate studio",
+      "purpose": "Free posts for your study wins. Pick a caption and a design, then post or share it.",
+      "futureAgent": "Future agent",
+      "moments": "Ready to post",
+      "none": "Nothing to post yet",
+      "noneHint": "Keep a 7-day study streak, score 80% or more on a practice exam, or pass your exam, and a post appears here.",
+      "make": "Make the post",
+      "open": "Open the post",
+      "captions": "Captions",
+      "designs": "Designs",
+      "design": "Design {{n}}",
+      "edit": "Caption",
+      "check": "Check",
+      "ok": "Ready to share.",
+      "post": "Post now",
+      "posted": "Posted.",
+      "noAccounts": "Connect an account in Settings to post from here, or share it yourself.",
+      "share": "Share",
+      "download": "Download the design",
+      "copy": "Copy the caption",
+      "copied": "Caption copied.",
+      "rule": "Until your license is active, posts can't offer services: no listings, prices, \"call me to buy or sell\" or brokerage invitations.",
+      "labels": {
+        "exam_pass": "{{state}} real estate exam",
+        "study_streak": "{{days}}-day study streak",
+        "practice_score": "{{score}}% on a practice exam"
+      },
+      "errors": {
+        "notYet": "That moment isn't ready to post yet."
       }
     }
   },

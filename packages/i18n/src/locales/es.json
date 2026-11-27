@@ -92,7 +92,8 @@
     "pointsRates": "Puntos",
     "brokerRewards": "Metas y recompensas",
     "agentFeedback": "Opiniones de agentes",
-    "complianceLog": "Registro de cumplimiento"
+    "complianceLog": "Registro de cumplimiento",
+    "candidateStudio": "Estudio para candidatos"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -3243,7 +3244,8 @@
       "title": "Como agente de ventas, no se presente como bróker, dueño o presidente.",
       "fairHousing": "Describa la vivienda, no a quién debería vivir en ella.",
       "unclear": "Revise que este texto describa la vivienda y no a quién debería vivir en ella.",
-      "banned": "Quite la frase que su agencia inmobiliaria no permite."
+      "banned": "Quite la frase que su agencia inmobiliaria no permite.",
+      "unlicensed": "Hasta que su licencia esté activa, no ofrezca servicios: nada de listados, precios, \"llámeme\" ni invitaciones a una agencia inmobiliaria."
     },
     "blocked": {
       "broker": "Agregue el nombre de su bróker antes de publicar ({{citation}}).",
@@ -3254,7 +3256,8 @@
       "title": "Un agente de ventas no puede presentarse como bróker, dueño o presidente ({{citation}}).",
       "fair_housing": "\"{{phrase}}\" habla de quién debería vivir ahí, no de la vivienda ({{citation}}).",
       "unclear": "Revise \"{{phrase}}\" ({{citation}}).",
-      "banned": "\"{{phrase}}\" es una frase que su agencia inmobiliaria no permite."
+      "banned": "\"{{phrase}}\" es una frase que su agencia inmobiliaria no permite.",
+      "unlicensed": "\"{{phrase}}\" ofrece servicios de bienes raíces antes de que su licencia esté activa ({{citation}})."
     },
     "review": "Revise este texto: {{phrases}}. Está bien si describe la vivienda y no a quién debería vivir en ella.",
     "check": "Revisar antes de enviar",
@@ -3279,7 +3282,8 @@
       "title": "Títulos que un agente de ventas no puede usar",
       "fair_housing": "Lenguaje de vivienda justa",
       "unclear": "Texto por revisar",
-      "banned": "Frases que su agencia inmobiliaria no permite"
+      "banned": "Frases que su agencia inmobiliaria no permite",
+      "unlicensed": "Publicidad de servicios antes de la licencia"
     },
     "share": "Compartir el enlace",
     "pageWaiting": "Su página espera la aprobación de su bróker. Se publica en cuanto la apruebe.",
@@ -8609,7 +8613,8 @@
       "fair_housing": "Lenguaje de vivienda justa: describe la casa, no a quién debe vivir ahí",
       "claims": "Sin afirmaciones engañosas (garantías, \"el mejor precio\")",
       "banned": "Ninguna de las frases prohibidas por su agencia",
-      "team_name": "Nombre del equipo: junto al nombre de su bróker, sin \"Realty\" ni \"Brokerage\""
+      "team_name": "Nombre del equipo: junto al nombre de su bróker, sin \"Realty\" ni \"Brokerage\"",
+      "unlicensed": "Nada de publicidad de servicios antes de tener la licencia"
     },
     "posts": {
       "title": "Mis publicaciones y resultados",
@@ -9188,6 +9193,21 @@
           "professional": "{{text}} en bienes raíces. Gracias a cada cliente que confió en mí. #Aniversario #BienesRaicesTexas",
           "warm": "¡Celebrando {{text}} en bienes raíces! Agradecido por cada cliente y cada mudanza. #Aniversario #CasasTexas",
           "short": "{{text}} en bienes raíces. #Aniversario"
+        },
+        "exam_pass": {
+          "professional": "¡Aprobé el {{text}}! Siguiente paso: mi licencia. Gracias a todos los que me ayudaron a estudiar. #FuturoAgente #BienesRaícesTexas",
+          "warm": "Lo logré: ¡aprobé el {{text}}! Muy agradecido por el apoyo en el camino. #FuturoAgente",
+          "short": "¡Aprobé el {{text}}! #FuturoAgente"
+        },
+        "study_streak": {
+          "professional": "{{text}} rumbo a mi licencia de bienes raíces de Texas. Constancia todos los días. #FuturoAgente",
+          "warm": "¡{{text}} y contando! Estudio un poco cada día para mi examen de bienes raíces. #FuturoAgente",
+          "short": "¡{{text}}! #FuturoAgente"
+        },
+        "practice_score": {
+          "professional": "Nueva mejor marca: {{text}}. Un paso más cerca de mi licencia de bienes raíces. #FuturoAgente",
+          "warm": "¡Qué orgullo: {{text}}! El esfuerzo está dando frutos. #FuturoAgente",
+          "short": "¡{{text}}! #FuturoAgente"
         }
       }
     },
@@ -9404,7 +9424,10 @@
         "first_closing": "MI PRIMER CIERRE",
         "ce_complete": "EDUCACIÓN CONTINUA",
         "license_renewed": "LICENCIA RENOVADA",
-        "anniversary": "ANIVERSARIO"
+        "anniversary": "ANIVERSARIO",
+        "exam_pass": "¡APROBÉ!",
+        "study_streak": "RACHA DE ESTUDIO",
+        "practice_score": "MEJOR MARCA"
       },
       "names": {
         "just_listed": "Recién listada",
@@ -9413,7 +9436,10 @@
         "first_closing": "Primer cierre",
         "ce_complete": "Educación continua completada",
         "license_renewed": "Licencia renovada",
-        "anniversary": "Aniversario"
+        "anniversary": "Aniversario",
+        "exam_pass": "Examen aprobado",
+        "study_streak": "Racha de estudio",
+        "practice_score": "Puntaje de práctica"
       },
       "notify": {
         "just_listed": "Su publicación de recién listada está lista",
@@ -9459,6 +9485,38 @@
       "kitNote": "Su agencia inmobiliaria define el logo y los colores en la web. El nombre de su bróker se agrega del tamaño que exigen las reglas de Texas.",
       "errors": {
         "photo": "Ese archivo no es una foto que podamos leer."
+      }
+    },
+    "candidate": {
+      "title": "Estudio para candidatos",
+      "purpose": "Publicaciones gratis para sus logros de estudio. Elija un texto y un diseño, y publíquelo o compártalo.",
+      "futureAgent": "Futuro agente",
+      "moments": "Listo para publicar",
+      "none": "Todavía no hay nada para publicar",
+      "noneHint": "Mantenga una racha de 7 días de estudio, saque 80% o más en un examen de práctica o apruebe su examen, y aparecerá una publicación aquí.",
+      "make": "Crear la publicación",
+      "open": "Abrir la publicación",
+      "captions": "Textos",
+      "designs": "Diseños",
+      "design": "Diseño {{n}}",
+      "edit": "Texto",
+      "check": "Revisar",
+      "ok": "Listo para compartir.",
+      "post": "Publicar ahora",
+      "posted": "Publicado.",
+      "noAccounts": "Conecte una cuenta en Configuración para publicar desde aquí, o compártalo usted mismo.",
+      "share": "Compartir",
+      "download": "Descargar el diseño",
+      "copy": "Copiar el texto",
+      "copied": "Texto copiado.",
+      "rule": "Hasta que su licencia esté activa, sus publicaciones no pueden ofrecer servicios: nada de listados, precios, \"llámeme para comprar o vender\" ni invitaciones a una agencia inmobiliaria.",
+      "labels": {
+        "exam_pass": "examen de bienes raíces de {{state}}",
+        "study_streak": "Racha de {{days}} días de estudio",
+        "practice_score": "{{score}}% en un examen de práctica"
+      },
+      "errors": {
+        "notYet": "Ese logro todavía no está listo para publicar."
       }
     }
   },
