@@ -83,7 +83,8 @@
     "contentStudio": "Estudio de contenido",
     "virtualBroker": "Bróker virtual",
     "contractReview": "Revisión de contratos",
-    "policies": "Políticas"
+    "policies": "Políticas",
+    "mentorProgram": "Programa de mentores"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2306,7 +2307,11 @@
         "assistant.context": "Se cambió el permiso del asistente para leer CRM, operaciones y calendario",
         "advertising_policy.updated": "Se cambió la política de publicidad",
         "social_post.approved": "Aprobó la publicación de un agente",
-        "social_post.returned": "Devolvió la publicación de un agente"
+        "social_post.returned": "Devolvió la publicación de un agente",
+        "mentor_program.updated": "Configuración de mentor cambiada",
+        "mentor.assigned": "Mentor asignado",
+        "mentor.change_requested": "Se pidió otro mentor",
+        "session_booking.points_returned": "Puntos devueltos por una sesión"
       }
     }
   },
@@ -7692,6 +7697,20 @@
       "add": "Agregar una tarea",
       "label": "Tarea {{n}}",
       "due": "Fecha de la tarea {{n}}"
+    },
+    "points": {
+      "payWith": "Pagar con",
+      "card": "Tarjeta",
+      "usePoints": "Puntos de recompensa",
+      "pointsNeeded": "{{points}} puntos · usted tiene {{balance}}",
+      "notEnough": "No tiene suficientes puntos. Pague con tarjeta o gane más con las metas diarias.",
+      "bookWithPoints": "Reservar con {{points}} puntos",
+      "freeAssigned": "Gratis con su mentor",
+      "paidWith": {
+        "card": "Pagado con tarjeta",
+        "points": "Pagado con {{points}} puntos",
+        "free": "Gratis (su mentor)"
+      }
     }
   },
   "classes": {
@@ -9320,6 +9339,95 @@
       "errors": {
         "photo": "Ese archivo no es una foto que podamos leer."
       }
+    }
+  },
+  "mentoring": {
+    "topics": {
+      "first_deals": "Primeras operaciones",
+      "buyers": "Trabajar con compradores",
+      "listings": "Conseguir listados",
+      "contracts": "Contratos y plazos",
+      "negotiation": "Negociación",
+      "marketing": "Mercadeo",
+      "investors": "Inversionistas",
+      "leading_a_team": "Dirigir un equipo"
+    },
+    "reasons": {
+      "language": "Habla su idioma",
+      "focus": "Se ajusta a su meta",
+      "capacity": "Tiene cupo"
+    },
+    "goals": {
+      "launch": "Arrancar",
+      "grow": "Crecer",
+      "lead": "Dirigir",
+      "own": "Ser dueño"
+    },
+    "errors": {
+      "full": "Ese mentor no tiene cupo para otro aprendiz.",
+      "assignedOnly": "Este mentor solo atiende a sus aprendices asignados.",
+      "noPoints": "Esta sesión no se puede pagar con puntos."
+    },
+    "notify": {
+      "assigned": "{{name}} es su mentor",
+      "assignedBody": "Su agencia inmobiliaria le asignó a {{name}}. Las sesiones con esta persona son gratis. Reserve la primera esta semana.",
+      "newMentee": "Nuevo aprendiz: {{name}}",
+      "newMenteeBody": "Su agencia inmobiliaria le asignó a {{name}}. Sugiera una primera sesión esta semana.",
+      "change": "{{name}} pidió otro mentor",
+      "changeBody": "Su mentor ahora es {{mentor}}. Asigne otro desde Programa de mentores.",
+      "open": "Abrir"
+    },
+    "program": {
+      "title": "Programa de mentores",
+      "purpose": "Solo mentores de la agencia inmobiliaria: precios, puntos, asignación y emparejamiento.",
+      "mentors": "Mentores",
+      "agents": "Agentes y sus mentores",
+      "addMentor": "Agregar un mentor",
+      "addHint": "Invite a alguien con el rol de Mentor desde Agentes.",
+      "noMentors": "Aún no hay mentores",
+      "noMentorsHint": "Invite a agentes con experiencia como mentores. Los agentes solo ven a los mentores de su agencia inmobiliaria.",
+      "noAgents": "Aún no hay agentes",
+      "focus": "Enfoque",
+      "load": "Aprendices",
+      "price": "Precio",
+      "rating": "Calificación",
+      "sessions": "Sesiones",
+      "noRating": "Aún sin calificaciones",
+      "hoursMissing": "Aún no tiene horario",
+      "loadValue": "{{count}} de {{max}}",
+      "settings": "Configuración",
+      "save": "Guardar",
+      "saved": "Configuración del mentor guardada.",
+      "price30": "30 minutos (US$)",
+      "price60": "60 minutos (US$)",
+      "free": "Gratis",
+      "points": "Aceptar puntos de recompensa",
+      "maxMentees": "Máximo de aprendices",
+      "who": "Quién puede reservar",
+      "whoEveryone": "Todos en la agencia inmobiliaria",
+      "whoAssigned": "Solo aprendices asignados",
+      "priceNote": "La agencia inmobiliaria fija los precios; los mentores fijan su horario. REOS le paga al mentor los puntos usados en sesiones.",
+      "assign": "Asignar",
+      "reassign": "Cambiar mentor",
+      "assigned": "Mentor asignado. Se les avisó a ambos.",
+      "noMentor": "Aún sin mentor",
+      "changeAsked": "Pidió un cambio",
+      "matches": "Mejores opciones para {{name}}",
+      "noMatches": "Ningún mentor tiene cupo. Aumente el máximo de aprendices de un mentor.",
+      "room_one": "Queda {{count}} lugar",
+      "room_other": "Quedan {{count}} lugares"
+    },
+    "agent": {
+      "assigned": "Su mentor",
+      "free": "Gratis",
+      "assignedNote": "Asignado por su agencia inmobiliaria. Las sesiones con su mentor son gratis.",
+      "change": "Pedir otro mentor",
+      "changed": "Se le avisó a su agencia inmobiliaria.",
+      "changeAsked": "Usted pidió otro mentor.",
+      "points": "Acepta puntos",
+      "balance": "{{points}} puntos (valen {{value}})",
+      "others": "Otros mentores de su agencia inmobiliaria",
+      "otherNote": "Nunca se muestran mentores de otras agencias inmobiliarias."
     }
   }
 }

@@ -267,6 +267,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('switch', 'switch')->middleware('throttle:5,1,api-licence-switch')->name('switch');
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
+    Route::post('mentors/change', [SwitchController::class, 'changeMentor'])->middleware('throttle:5,1,api-mentors-change')->name('api.mentors.change');
     // My listings (B10.1): MLS listings through the agent's confirmed member records.
     Route::prefix('listings')->name('api.listings.')->controller(ListingsController::class)->group(function () {
         Route::get('/', 'index')->name('index');

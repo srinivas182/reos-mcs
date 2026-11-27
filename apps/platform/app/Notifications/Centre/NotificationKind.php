@@ -75,6 +75,8 @@ enum NotificationKind: string
     case PostDecision = 'post_decision';
     /** A milestone made into a free post, at most one a day (B12.3). */
     case Celebration = 'celebration';
+    /** A mentor assigned, or a change asked for (A13.1a). */
+    case Mentoring = 'mentoring';
 
     public const INBOX = 'inbox';
 
@@ -131,7 +133,7 @@ enum NotificationKind: string
             self::NewDevice, self::AccountDeletion, self::PrivacyRequest => 'account',
             self::PurchaseReceipt, self::PaymentFailed, self::MembershipLink => 'billing',
             self::Message, self::Announcement, self::MessagesReported => 'messages',
-            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer => 'learning',
+            self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer, self::Mentoring => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
             self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration => 'deals',

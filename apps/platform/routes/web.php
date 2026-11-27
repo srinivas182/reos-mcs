@@ -71,6 +71,7 @@ use App\Http\Controllers\Licence\LicenceJourneyPageController;
 use App\Http\Controllers\Licence\PassesAndOffersPageController;
 use App\Http\Controllers\Listings\AgentPublicPageController;
 use App\Http\Controllers\Listings\ListingsPageController;
+use App\Http\Controllers\Mentoring\MentorProgramController;
 use App\Http\Controllers\Mentors\MentorsPageController;
 use App\Http\Controllers\Messaging\AnnouncementController;
 use App\Http\Controllers\Messaging\AttachmentController;
@@ -460,6 +461,15 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
         Route::put('connections/{connection}/mapping', 'mapping')->whereNumber('connection')->middleware('throttle:20,1,brokerage-integrations-map')->name('mapping');
     });
 // Advertising policy (B12.1, broker screen 35): Texas rules, the brokerage's rules and banned phrases, brand kit, approvals.
+// The brokerage's mentor program (A13.1a, broker screens 21–23).
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/mentors')->name('organisation.mentors.')
+    ->controller(MentorProgramController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('{mentor}', 'update')->whereNumber('mentor')->middleware('throttle:30,1,mentor-program')->name('update');
+        Route::get('agents/{agent}/matches', 'matches')->whereNumber('agent')->name('matches');
+        Route::post('assign', 'assign')->middleware('throttle:30,1,mentor-program')->name('assign');
+    });
+
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/advertising')->name('organisation.advertising.')
     ->controller(AdvertisingController::class)->group(function () {
         Route::get('/', 'index')->name('index');

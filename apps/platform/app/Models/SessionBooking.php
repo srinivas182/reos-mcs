@@ -33,6 +33,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $rating_comment
  * @property Carbon|null $rated_at
  * @property Carbon|null $tasks_sent_at
+ * @property string $paid_with card, points or free (an assigned mentor; A13.1a)
+ * @property int|null $points points spent (1 point = 1 cent inside REOS)
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read User $student
@@ -48,7 +50,7 @@ final class SessionBooking extends Model
     public const TAGS = ['clear', 'patient', 'knowledgeable', 'on_time', 'helpful_examples'];
 
     /** @var list<string> */
-    protected $fillable = ['uuid', 'student_id', 'instructor_id', 'video_session_id', 'order_id', 'starts_at', 'ends_at', 'minutes', 'topic', 'status', 'price_cents', 'held_until', 'cancelled_at', 'cancelled_by', 'refunded_at', 'rating', 'rating_tags', 'rating_comment', 'rated_at', 'tasks_sent_at'];
+    protected $fillable = ['uuid', 'student_id', 'instructor_id', 'video_session_id', 'order_id', 'starts_at', 'ends_at', 'minutes', 'topic', 'status', 'price_cents', 'held_until', 'cancelled_at', 'cancelled_by', 'refunded_at', 'rating', 'rating_tags', 'rating_comment', 'rated_at', 'tasks_sent_at', 'paid_with', 'points'];
 
     /** @return BelongsTo<User, $this> */
     public function student(): BelongsTo

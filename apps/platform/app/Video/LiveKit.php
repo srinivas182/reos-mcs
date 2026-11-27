@@ -183,10 +183,16 @@ final readonly class LiveKit
             return false;
         }
 
+        // Expiry is checked against the app's clock (the same one that stamps everything else).
+        $previous = JWT::$timestamp;
+        JWT::$timestamp = now()->getTimestamp();
+
         try {
             $claims = (array) JWT::decode(preg_replace('/^Bearer\s+/i', '', $authorization) ?? '', new Key($keys['api_secret'], 'HS256'));
         } catch (Throwable) {
             return false;
+        } finally {
+            JWT::$timestamp = $previous;
         }
 
         return ($claims['iss'] ?? null) === $keys['api_key']

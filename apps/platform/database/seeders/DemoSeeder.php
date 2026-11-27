@@ -19,6 +19,7 @@ use Database\Seeders\Demo\DemoContent;
 use Database\Seeders\Demo\DemoGateways;
 use Database\Seeders\Demo\DemoLicences;
 use Database\Seeders\Demo\DemoListings;
+use Database\Seeders\Demo\DemoMentoring;
 use Database\Seeders\Demo\DemoMessages;
 use Database\Seeders\Demo\DemoPayouts;
 use Database\Seeders\Demo\DemoReleases;
@@ -104,6 +105,8 @@ final class DemoSeeder extends Seeder
         app(DemoListings::class)->seed();
         // Lone Star Realty's sample policy manual for the virtual broker (A12.1).
         app(DemoVirtualBroker::class)->seed();
+        // Lone Star Realty's mentor program: Dana Brooks is James Miller's mentor (A13.1a).
+        app(DemoMentoring::class)->seed();
     }
 
     private function organisation(string $name): Organisation
