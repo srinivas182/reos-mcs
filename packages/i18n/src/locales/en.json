@@ -90,7 +90,8 @@
     "podAndChallenges": "Pod and challenges",
     "goalsAndRewards": "Goals and rewards",
     "pointsRates": "Points",
-    "brokerRewards": "Goals and rewards"
+    "brokerRewards": "Goals and rewards",
+    "agentFeedback": "Feedback from agents"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2324,7 +2325,9 @@
         "daily_goals.updated": "Daily goals changed",
         "points_campaign.created": "Bonus campaign created",
         "points_campaign.ended": "Bonus campaign ended",
-        "points.redeemed": "Points used"
+        "points.redeemed": "Points used",
+        "agent_feedback.reported": "Feedback from an agent reported",
+        "agent_feedback.unreported": "Feedback report taken back"
       }
     }
   },
@@ -5474,7 +5477,8 @@
       "contract_review": "Contract reviews",
       "post_approval": "Post approvals",
       "post_decision": "Your broker's decisions on posts",
-      "celebration": "Celebration posts"
+      "celebration": "Celebration posts",
+      "agent_feedback": "Feedback from agents"
     },
     "digest": {
       "subject": {
@@ -9710,6 +9714,61 @@
       "save": "Save",
       "saved": "Points saved.",
       "respa": "Points are earned only from an agent's own activity, never from choosing or recommending a service provider."
+    }
+  },
+  "feedback": {
+    "title": "Feedback from agents",
+    "purpose": "Rate the agents you close with, and see what they say about working with you.",
+    "toRate": "Agents to rate",
+    "toRateHint": "After a closing, rate the other side's agent. They see nothing until three agents have rated them, so your rating can't be traced to you.",
+    "noneToRate": "No one to rate right now",
+    "noneToRateHint": "When you close a deal with another REOS agent on it, you can rate them here.",
+    "closed": "Closed {{date}}",
+    "rate": "Rate {{name}}",
+    "dimensions": {
+      "communication": "Communication",
+      "responsiveness": "Responsiveness",
+      "professionalism": "Professionalism"
+    },
+    "stars_one": "{{count}} star",
+    "stars_other": "{{count}} stars",
+    "comment": "Comment (optional)",
+    "commentHint": "What went well, and what could be better? Don't include client names.",
+    "send": "Send feedback",
+    "sent": "Thanks. Your feedback was sent.",
+    "yours": "Your feedback",
+    "waiting_one": "{{count}} agent has rated you. Your feedback shows once {{needed}} have.",
+    "waiting_other": "{{count}} agents have rated you. Your feedback shows once {{needed}} have.",
+    "none": "No feedback yet",
+    "average": "{{average}} out of 5 from {{count}} agents",
+    "scoreLine": "{{label}}: {{score}}",
+    "tip": "What to work on",
+    "public": "Show my average on my agent page",
+    "publicHint": "Off by default. Only the average and the number of ratings show, and only with three or more.",
+    "publicLine": "{{average}} out of 5 from {{count}} agents they closed with",
+    "respond": "Respond",
+    "yourResponse": "Your response",
+    "saveResponse": "Save response",
+    "report": "Report",
+    "reportReason": "Why are you reporting this?",
+    "reportSend": "Report it",
+    "reported": "Reported. It's left out of your average while REOS support looks.",
+    "reportedBadge": "Reported",
+    "month": "{{month}}",
+    "tips": {
+      "communication": "Agents would like to hear from you more. Send a short update at each step, even when there's no news.",
+      "responsiveness": "Agents noticed slow replies. Try answering other agents the same day, even if it's just to say when you'll know more.",
+      "professionalism": "Agents mentioned how the deal was handled. Keep paperwork complete and on time, and keep every message about the deal."
+    },
+    "notify": {
+      "title": "An agent rated you",
+      "waiting": "Another agent rated you after a closing. Your feedback shows once three agents have.",
+      "shown": "Another agent rated you after a closing. See your feedback.",
+      "open": "Open feedback"
+    },
+    "errors": {
+      "notVerified": "You can rate an agent only after a closing they were on.",
+      "already": "You've already rated this agent for this deal."
     }
   }
 }

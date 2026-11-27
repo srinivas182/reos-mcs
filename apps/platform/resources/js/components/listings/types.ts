@@ -111,6 +111,8 @@ export type PublicAgentPage = {
     brokerage: string | null;
     licences: { state: string; number: string; type: string }[];
     bio: string | null;
+    /** Feedback from agents, shown only if the agent chose it (A13.3b). */
+    peer_rating: { average: number; count: number } | null;
     listings: ListingView[];
     sample: boolean;
     url: string;

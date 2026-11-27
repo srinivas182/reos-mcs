@@ -64,6 +64,7 @@ use App\Http\Controllers\Crm\ContactsPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Deals\DealsPageController;
 use App\Http\Controllers\Deals\SignaturePageController;
+use App\Http\Controllers\Feedback\AgentFeedbackPageController;
 use App\Http\Controllers\Instructor\QuestionsPageController;
 use App\Http\Controllers\Learn\LearnController;
 use App\Http\Controllers\Learn\LessonMediaController;
@@ -494,6 +495,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/challenges')->name('organisation.challenges.')->group(function () {
     Route::get('/', [ChallengesController::class, 'broker'])->name('index');
     Route::post('/', [ChallengesController::class, 'store'])->middleware('throttle:20,1,challenges-store')->name('store');
+});
+
+// Feedback from agents after verified closings (A13.3b, screen 125).
+Route::middleware(['auth', 'verified'])->prefix('feedback')->name('feedback.')->controller(AgentFeedbackPageController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::middleware('throttle:20,1,feedback')->group(function () {
+        Route::post('/', 'store')->name('store');
+        Route::put('visibility', 'visibility')->name('visibility');
+        Route::put('{feedback}/response', 'respond')->whereUuid('feedback')->name('respond');
+        Route::post('{feedback}/report', 'report')->whereUuid('feedback')->name('report');
+    });
 });
 
 // Goals and rewards (A13.3a): the agent's goals, streak and rewards; the broker's targets and bonus campaigns.

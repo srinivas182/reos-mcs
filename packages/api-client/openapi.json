@@ -69,6 +69,1235 @@
                 }
             }
         },
+        "/feedback": {
+            "get": {
+                "operationId": "feedback.index",
+                "description": "Agents I closed with and can rate, and my own feedback: nothing shows until three agents have rated me; then the averages, the comments (no names), and a tip.",
+                "summary": "Feedback",
+                "tags": [
+                    "AgentFeedback"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "to_rate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "deal": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "deal",
+                                                            "property",
+                                                            "closed_at",
+                                                            "agent"
+                                                        ]
+                                                    }
+                                                },
+                                                "mine": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "shown": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "average": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "overall": {
+                                                                    "type": "number"
+                                                                },
+                                                                "communication": {
+                                                                    "type": "number"
+                                                                },
+                                                                "responsiveness": {
+                                                                    "type": "number"
+                                                                },
+                                                                "professionalism": {
+                                                                    "type": "number"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "overall",
+                                                                "communication",
+                                                                "responsiveness",
+                                                                "professionalism"
+                                                            ]
+                                                        },
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "month": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "communication": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "responsiveness": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "professionalism": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "comment": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "response": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reported": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "month",
+                                                                    "communication",
+                                                                    "responsiveness",
+                                                                    "professionalism",
+                                                                    "comment",
+                                                                    "response",
+                                                                    "reported"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "tip": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "dimension": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "communication",
+                                                                        "responsiveness",
+                                                                        "professionalism"
+                                                                    ]
+                                                                },
+                                                                "text": {
+                                                                    "type": "string"
+                                                                },
+                                                                "engine": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "claude",
+                                                                        "template"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "dimension",
+                                                                "text",
+                                                                "engine"
+                                                            ]
+                                                        },
+                                                        "public": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "needed",
+                                                        "shown",
+                                                        "average",
+                                                        "items",
+                                                        "tip",
+                                                        "public"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "to_rate",
+                                                "mine"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "feedback.store",
+                "description": "Rates the other side's agent on a closed deal of mine (they must be a REOS agent on the deal's parties), once.",
+                "summary": "Rate an agent",
+                "tags": [
+                    "AgentFeedback"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RateAgentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "to_rate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "deal": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "deal",
+                                                            "property",
+                                                            "closed_at",
+                                                            "agent"
+                                                        ]
+                                                    }
+                                                },
+                                                "mine": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "shown": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "average": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "overall": {
+                                                                    "type": "number"
+                                                                },
+                                                                "communication": {
+                                                                    "type": "number"
+                                                                },
+                                                                "responsiveness": {
+                                                                    "type": "number"
+                                                                },
+                                                                "professionalism": {
+                                                                    "type": "number"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "overall",
+                                                                "communication",
+                                                                "responsiveness",
+                                                                "professionalism"
+                                                            ]
+                                                        },
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "month": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "communication": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "responsiveness": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "professionalism": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "comment": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "response": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reported": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "month",
+                                                                    "communication",
+                                                                    "responsiveness",
+                                                                    "professionalism",
+                                                                    "comment",
+                                                                    "response",
+                                                                    "reported"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "tip": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "dimension": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "communication",
+                                                                        "responsiveness",
+                                                                        "professionalism"
+                                                                    ]
+                                                                },
+                                                                "text": {
+                                                                    "type": "string"
+                                                                },
+                                                                "engine": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "claude",
+                                                                        "template"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "dimension",
+                                                                "text",
+                                                                "engine"
+                                                            ]
+                                                        },
+                                                        "public": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "needed",
+                                                        "shown",
+                                                        "average",
+                                                        "items",
+                                                        "tip",
+                                                        "public"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "to_rate",
+                                                "mine"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/AuthorizationException"
+                    }
+                }
+            }
+        },
+        "/feedback/visibility": {
+            "put": {
+                "operationId": "feedback.visibility",
+                "description": "Shows my average on my public agent page (only with three ratings or more), or hides it.",
+                "summary": "Show on my agent page",
+                "tags": [
+                    "AgentFeedback"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "public": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "required": [
+                                    "public"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "to_rate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "deal": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "deal",
+                                                            "property",
+                                                            "closed_at",
+                                                            "agent"
+                                                        ]
+                                                    }
+                                                },
+                                                "mine": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "shown": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "average": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "overall": {
+                                                                    "type": "number"
+                                                                },
+                                                                "communication": {
+                                                                    "type": "number"
+                                                                },
+                                                                "responsiveness": {
+                                                                    "type": "number"
+                                                                },
+                                                                "professionalism": {
+                                                                    "type": "number"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "overall",
+                                                                "communication",
+                                                                "responsiveness",
+                                                                "professionalism"
+                                                            ]
+                                                        },
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "month": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "communication": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "responsiveness": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "professionalism": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "comment": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "response": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reported": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "month",
+                                                                    "communication",
+                                                                    "responsiveness",
+                                                                    "professionalism",
+                                                                    "comment",
+                                                                    "response",
+                                                                    "reported"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "tip": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "dimension": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "communication",
+                                                                        "responsiveness",
+                                                                        "professionalism"
+                                                                    ]
+                                                                },
+                                                                "text": {
+                                                                    "type": "string"
+                                                                },
+                                                                "engine": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "claude",
+                                                                        "template"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "dimension",
+                                                                "text",
+                                                                "engine"
+                                                            ]
+                                                        },
+                                                        "public": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "needed",
+                                                        "shown",
+                                                        "average",
+                                                        "items",
+                                                        "tip",
+                                                        "public"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "to_rate",
+                                                "mine"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/feedback/{feedback}/response": {
+            "put": {
+                "operationId": "feedback.respond",
+                "summary": "Respond to a rating",
+                "tags": [
+                    "AgentFeedback"
+                ],
+                "parameters": [
+                    {
+                        "name": "feedback",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "response": {
+                                        "type": "string",
+                                        "minLength": 2,
+                                        "maxLength": 500
+                                    }
+                                },
+                                "required": [
+                                    "response"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "to_rate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "deal": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "deal",
+                                                            "property",
+                                                            "closed_at",
+                                                            "agent"
+                                                        ]
+                                                    }
+                                                },
+                                                "mine": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "shown": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "average": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "overall": {
+                                                                    "type": "number"
+                                                                },
+                                                                "communication": {
+                                                                    "type": "number"
+                                                                },
+                                                                "responsiveness": {
+                                                                    "type": "number"
+                                                                },
+                                                                "professionalism": {
+                                                                    "type": "number"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "overall",
+                                                                "communication",
+                                                                "responsiveness",
+                                                                "professionalism"
+                                                            ]
+                                                        },
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "month": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "communication": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "responsiveness": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "professionalism": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "comment": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "response": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reported": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "month",
+                                                                    "communication",
+                                                                    "responsiveness",
+                                                                    "professionalism",
+                                                                    "comment",
+                                                                    "response",
+                                                                    "reported"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "tip": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "dimension": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "communication",
+                                                                        "responsiveness",
+                                                                        "professionalism"
+                                                                    ]
+                                                                },
+                                                                "text": {
+                                                                    "type": "string"
+                                                                },
+                                                                "engine": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "claude",
+                                                                        "template"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "dimension",
+                                                                "text",
+                                                                "engine"
+                                                            ]
+                                                        },
+                                                        "public": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "needed",
+                                                        "shown",
+                                                        "average",
+                                                        "items",
+                                                        "tip",
+                                                        "public"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "to_rate",
+                                                "mine"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/feedback/{feedback}/report": {
+            "post": {
+                "operationId": "feedback.report",
+                "description": "Reported ratings leave the average until REOS support looks. Send no reason to take the report back (Undo).",
+                "summary": "Report a rating",
+                "tags": [
+                    "AgentFeedback"
+                ],
+                "parameters": [
+                    {
+                        "name": "feedback",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "reason": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "maxLength": 300
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "to_rate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "deal": {
+                                                                "type": "string"
+                                                            },
+                                                            "property": {
+                                                                "type": "string"
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "agent": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "name"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "deal",
+                                                            "property",
+                                                            "closed_at",
+                                                            "agent"
+                                                        ]
+                                                    }
+                                                },
+                                                "mine": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "needed": {
+                                                            "type": "integer"
+                                                        },
+                                                        "shown": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "average": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "overall": {
+                                                                    "type": "number"
+                                                                },
+                                                                "communication": {
+                                                                    "type": "number"
+                                                                },
+                                                                "responsiveness": {
+                                                                    "type": "number"
+                                                                },
+                                                                "professionalism": {
+                                                                    "type": "number"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "overall",
+                                                                "communication",
+                                                                "responsiveness",
+                                                                "professionalism"
+                                                            ]
+                                                        },
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "month": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "communication": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "responsiveness": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "professionalism": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "comment": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "response": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "reported": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "id",
+                                                                    "month",
+                                                                    "communication",
+                                                                    "responsiveness",
+                                                                    "professionalism",
+                                                                    "comment",
+                                                                    "response",
+                                                                    "reported"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "tip": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "dimension": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "communication",
+                                                                        "responsiveness",
+                                                                        "professionalism"
+                                                                    ]
+                                                                },
+                                                                "text": {
+                                                                    "type": "string"
+                                                                },
+                                                                "engine": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "claude",
+                                                                        "template"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "dimension",
+                                                                "text",
+                                                                "engine"
+                                                            ]
+                                                        },
+                                                        "public": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "count",
+                                                        "needed",
+                                                        "shown",
+                                                        "average",
+                                                        "items",
+                                                        "tip",
+                                                        "public"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "to_rate",
+                                                "mine"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/announcements": {
             "get": {
                 "operationId": "announcements.index",
@@ -58125,6 +59354,49 @@
                     "state_rules"
                 ],
                 "title": "QuizTopic"
+            },
+            "RateAgentRequest": {
+                "type": "object",
+                "description": "Rating the other side's agent after a verified closing (A13.3b).",
+                "properties": {
+                    "deal": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "agent": {
+                        "type": "integer"
+                    },
+                    "communication": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5
+                    },
+                    "responsiveness": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5
+                    },
+                    "professionalism": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 5
+                    },
+                    "comment": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    }
+                },
+                "required": [
+                    "deal",
+                    "agent",
+                    "communication",
+                    "responsiveness",
+                    "professionalism"
+                ],
+                "title": "RateAgentRequest"
             },
             "ReadCertificateRequest": {
                 "type": "object",

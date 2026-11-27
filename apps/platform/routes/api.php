@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\Crm\ContactController;
 use App\Http\Controllers\Api\Crm\ContactWorkController;
 use App\Http\Controllers\Api\Deals\DealController;
 use App\Http\Controllers\Api\Deals\SignatureController;
+use App\Http\Controllers\Api\Feedback\AgentFeedbackController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\Instructor\QuestionController as InstructorQuestionController;
 use App\Http\Controllers\Api\Learn\LearnController;
@@ -273,6 +274,15 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
     Route::post('mentors/change', [SwitchController::class, 'changeMentor'])->middleware('throttle:5,1,api-mentors-change')->name('api.mentors.change');
+    // Feedback from agents after verified closings (A13.3b, screen 125).
+    Route::prefix('feedback')->name('api.feedback.')->controller(AgentFeedbackController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->middleware('throttle:20,1,api-feedback')->name('store');
+        Route::put('visibility', 'visibility')->middleware('throttle:20,1,api-feedback')->name('visibility');
+        Route::put('{feedback}/response', 'respond')->whereUuid('feedback')->middleware('throttle:20,1,api-feedback')->name('respond');
+        Route::post('{feedback}/report', 'report')->whereUuid('feedback')->middleware('throttle:20,1,api-feedback')->name('report');
+    });
+
     // Daily goals, points and rewards (A13.3a, screens 111 and 112).
     Route::get('goals/today', [RewardsController::class, 'today'])->middleware('throttle:60,1,api-goals')->name('api.goals.today');
     Route::get('rewards', [RewardsController::class, 'index'])->name('api.rewards.index');

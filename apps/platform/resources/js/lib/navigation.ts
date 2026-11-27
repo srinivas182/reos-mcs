@@ -37,6 +37,7 @@ import {
     UserPlus,
     Trophy,
     Gift,
+    MessageSquareQuote,
 } from 'lucide-react';
 import { dashboard } from '@/routes';
 import { show as brandingShow } from '@/routes/branding';
@@ -61,6 +62,7 @@ import { index as plans } from '@/routes/plans';
 import { show as aiSettings } from '@/routes/ai';
 import { show as pointsRates } from '@/routes/points';
 import { index as rewardsIndex } from '@/routes/rewards';
+import { index as feedbackIndex } from '@/routes/feedback';
 import { index as brokerRewards } from '@/routes/organisation/rewards';
 import { index as providerCategories } from '@/routes/provider-categories';
 import { index as sales } from '@/routes/sales';
@@ -131,6 +133,7 @@ export type NavLabel =
     | 'podAndChallenges'
     | 'brokerRewards'
     | 'goalsAndRewards'
+    | 'agentFeedback'
     | 'pointsRates'
     | 'challenges'
     | 'ceReporting'
@@ -265,6 +268,13 @@ export function roleNavigation(
             planned('serviceProviders'),
             // Daily goals, points and rewards (A13.3a, screens 111 and 112).
             item('goalsAndRewards', Gift, rewardsIndex(), '/rewards'),
+            // Feedback from agents after verified closings (A13.3b, screen 125).
+            item(
+                'agentFeedback',
+                MessageSquareQuote,
+                feedbackIndex(),
+                '/feedback',
+            ),
             item('connections', Plug, connections()),
             item('settings', Settings, profile(), '/settings'),
         ],

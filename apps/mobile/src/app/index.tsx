@@ -204,6 +204,7 @@ export default function HomeScreen() {
       {/* Your mentors (A10.3c, f04): the agent's own brokerage's mentors. */}
       {agent ? <ListRow icon={Users} tone="info" title={t('mentors.title')} subtitle={t('mentors.purposeNone')} onPress={() => router.push('/mentors')} /> : null}
       {agent ? <ListRow icon={Gift} tone="info" title={t('rewards.title')} subtitle={t('rewards.today')} onPress={() => router.push('/goals')} /> : null}
+      {agent ? <ListRow icon={MessageSquare} tone="info" title={t('feedback.title')} subtitle={t('feedback.toRate')} onPress={() => router.push('/feedback')} /> : null}
       {agent ? <ListRow icon={Trophy} tone="info" title={t('pods.title')} subtitle={t('pods.purpose')} onPress={() => router.push('/pod')} /> : null}
       {/* The mentor's workspace (mentor screens 22–24, A13.1b). */}
       {role === 'mentor' ? <ListRow icon={Users} tone="info" title={t('mentoring.workspace.title')} subtitle={t('mentoring.workspace.today')} onPress={() => router.push('/mentoring')} /> : null}
