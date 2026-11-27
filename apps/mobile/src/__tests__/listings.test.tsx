@@ -70,7 +70,7 @@ const overview = (over: Partial<ListingsOverview> = {}): ListingsOverview => ({
   ...over,
 });
 
-const page = { handle: 'james-miller', published: true, bio: null, url: 'https://reos.com/agent/james-miller' };
+const page = { handle: 'james-miller', published: true, bio: null, url: 'https://reos.com/agent/james-miller', waiting: false, note: null };
 /** GET answers by path: the public page's settings, or `data` for everything else. */
 const answer = (data: unknown) => (path: string) => Promise.resolve(ok({ data: path === '/listings/page' ? page : data }));
 

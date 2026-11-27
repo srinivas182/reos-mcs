@@ -91,7 +91,8 @@
     "goalsAndRewards": "Metas y recompensas",
     "pointsRates": "Puntos",
     "brokerRewards": "Metas y recompensas",
-    "agentFeedback": "Opiniones de agentes"
+    "agentFeedback": "Opiniones de agentes",
+    "complianceLog": "Registro de cumplimiento"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2327,7 +2328,10 @@
         "points_campaign.ended": "Campaña de bono terminada",
         "points.redeemed": "Puntos usados",
         "agent_feedback.reported": "Opinión de un agente reportada",
-        "agent_feedback.unreported": "Reporte de opinión retirado"
+        "agent_feedback.unreported": "Reporte de opinión retirado",
+        "agent_page.approved": "Página pública aprobada",
+        "agent_page.returned": "Página pública devuelta",
+        "compliance_log.exported": "Registro de cumplimiento exportado"
       }
     }
   },
@@ -3277,7 +3281,58 @@
       "unclear": "Texto por revisar",
       "banned": "Frases que su agencia inmobiliaria no permite"
     },
-    "share": "Compartir el enlace"
+    "share": "Compartir el enlace",
+    "pageWaiting": "Su página espera la aprobación de su bróker. Se publica en cuanto la apruebe.",
+    "pageReturned": "Su bróker le devolvió la página: {{note}}",
+    "askBroker": {
+      "button": "Enviar a mi bróker en su lugar",
+      "reason": "¿Por qué este texto está bien?",
+      "reasonHint": "Por ejemplo, \"Family Room Ranch es el nombre de la subdivisión.\" Su bróker lo verá junto con la publicación.",
+      "send": "Enviar al bróker",
+      "cancel": "Cancelar"
+    },
+    "agentReason": "Motivo del agente: {{reason}}",
+    "pages": {
+      "title": "Páginas públicas en espera",
+      "none": "No hay páginas en espera",
+      "noneHint": "Cuando sus agentes publiquen su página y su agencia inmobiliaria apruebe los anuncios primero, aparecerá aquí.",
+      "view": "Ver página",
+      "approve": "Aprobar",
+      "return": "Devolver"
+    },
+    "log": {
+      "title": "Registro de cumplimiento",
+      "purpose": "Cada revisión, corrección, aprobación y devolución en cada canal, con quién lo hizo y cuándo.",
+      "agent": "Agente",
+      "channel": "Canal",
+      "action": "Qué pasó",
+      "from": "Desde",
+      "to": "Hasta",
+      "all": "Todos",
+      "apply": "Mostrar",
+      "export": "Exportar CSV",
+      "none": "Todavía no hay registros",
+      "noneHint": "Las revisiones, correcciones y aprobaciones aparecen aquí cuando sus agentes publican y envían.",
+      "when": "Cuándo",
+      "by": "Por",
+      "item": "Elemento",
+      "rules": "Reglas",
+      "channels": {
+        "post": "Publicación social",
+        "video": "Video",
+        "page": "Página pública",
+        "email": "Correo",
+        "text": "Mensaje de texto"
+      },
+      "actions": {
+        "checked": "Revisado, aprobado",
+        "blocked": "Bloqueado",
+        "fixed": "Corregido automáticamente",
+        "sent_to_broker": "Enviado al bróker",
+        "approved": "Aprobado",
+        "sent_back": "Devuelto"
+      }
+    }
   },
   "calendar": {
     "errors": {

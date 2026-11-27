@@ -36,7 +36,7 @@ final class CmaController extends Controller
      *
      * Whether it's published, its address, and my short bio.
      *
-     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string}}
+     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null}}
      */
     public function page(#[CurrentUser] User $user, AgentPages $pages): JsonResponse
     {
@@ -48,7 +48,7 @@ final class CmaController extends Controller
      *
      * It shows my name, brokerage, license numbers, bio and MLS listings, as each MLS allows.
      *
-     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string}}
+     * @response array{data: array{handle: string, published: bool, bio: string|null, url: string, waiting: bool, note: string|null}}
      */
     public function updatePage(AgentPageRequest $request, #[CurrentUser] User $user, AgentPages $pages): JsonResponse
     {

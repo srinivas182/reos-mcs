@@ -21,6 +21,7 @@ use App\Features\Rollouts;
 use App\Http\Middleware\EnsureAdminTwoStep;
 use App\Integrations\IntegrationMode;
 use App\Licences\Ce\CeReporting;
+use App\Models\AgentPage;
 use App\Models\AuditEvent;
 use App\Models\BrokerOffer;
 use App\Models\BrokerQuestion;
@@ -721,6 +722,21 @@ function adminActions(): array
                 'minutes' => 30, 'topic' => 'Pricing', 'status' => 'completed', 'price_cents' => 0, 'rating' => 1, 'rating_comment' => 'Late.', 'rated_at' => now()->subDay(), 'review_status' => 'pending']);
 
             return auditCase($linda, 'POST', "/organisation/mentors/reviews/{$booking->uuid}", ['decision' => 'keep'], tenant: $lone->id);
+        },
+        // Broker: public pages waiting for approval (B13.2).
+        'organisation.advertising.pages.approve' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $james = User::factory()->withRole(Role::Agent, $lone)->create(['name' => 'James Miller']);
+            AgentPage::query()->create(['user_id' => $james->id, 'handle' => 'james-miller', 'published' => false, 'bio' => 'Katy homes.'])->forceFill(['approval_requested_at' => now()])->save();
+
+            return auditCase($linda, 'POST', '/organisation/advertising/pages/james-miller/approve', [], tenant: $lone->id);
+        },
+        'organisation.advertising.pages.return' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $james = User::factory()->withRole(Role::Agent, $lone)->create(['name' => 'James Miller']);
+            AgentPage::query()->create(['user_id' => $james->id, 'handle' => 'james-miller', 'published' => false, 'bio' => 'Katy homes.'])->forceFill(['approval_requested_at' => now()])->save();
+
+            return auditCase($linda, 'POST', '/organisation/advertising/pages/james-miller/return', ['note' => 'Add your license number.'], tenant: $lone->id);
         },
         // Broker: daily goals and bonus campaigns (A13.3a).
         'organisation.rewards.goals' => function () {

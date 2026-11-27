@@ -103,6 +103,9 @@ export type PageSettings = {
     published: boolean;
     bio: string | null;
     url: string;
+    /** Waiting for the broker, and what the broker said when sending it back (B13.2). */
+    waiting: boolean;
+    note: string | null;
 };
 
 /** What the public sees at /agent/{handle}. */

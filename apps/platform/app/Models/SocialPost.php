@@ -29,6 +29,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int|null $approved_by
  * @property CarbonImmutable|null $approved_at
  * @property string|null $approval_note what the broker said when sending it back
+ * @property string|null $approval_reason the agent's reason for sending flagged wording to the broker (B13.2)
  * @property CarbonImmutable|null $planned_on a draft placed on a day of the content calendar (B12.3)
  * @property CarbonImmutable|null $created_at
  * @property CarbonImmutable|null $updated_at
@@ -42,7 +43,7 @@ final class SocialPost extends Model
 
     public const STATUSES = ['draft', 'approval', 'scheduled', 'publishing', 'published', 'partly', 'failed'];
 
-    protected $fillable = ['uuid', 'user_id', 'body', 'media', 'link', 'attribution', 'listing_post_id', 'status', 'scheduled_at', 'published_at', 'approval_requested_at', 'approved_by', 'approved_at', 'approval_note', 'planned_on'];
+    protected $fillable = ['uuid', 'user_id', 'body', 'media', 'link', 'attribution', 'listing_post_id', 'status', 'scheduled_at', 'published_at', 'approval_requested_at', 'approved_by', 'approved_at', 'approval_note', 'approval_reason', 'planned_on'];
 
     protected $attributes = ['media' => '[]'];
 

@@ -6,6 +6,8 @@ namespace App\Social;
 
 use App\Authorization\Role;
 use App\Compliance\ComplianceEngine;
+use App\Compliance\ComplianceLog;
+use App\Compliance\TexasAdRules;
 use App\Enums\OrganisationType;
 use App\Jobs\PublishSocialTarget;
 use App\Mls\ListingPosts;
@@ -42,6 +44,7 @@ use Illuminate\Validation\ValidationException;
  *   that retries.
  *
  * @phpstan-import-type Issue from AdvertisingPolicy
+ * @phpstan-import-type Issue from ComplianceEngine as EngineIssue
  *
  * @phpstan-type Check array{code: string, ok: bool, detail: string|null, citation?: string|null}
  * @phpstan-type TargetRow array{id: int, integration: string, channel: string, target_id: string, name: string, status: string, error: string|null, url: string|null, published_at: string|null, insights: array<string, int>}
@@ -50,6 +53,9 @@ use Illuminate\Validation\ValidationException;
  */
 final readonly class SocialPosts
 {
+    /** Checks the broker can decide instead of the agent fixing (B13.2): wording, not the broker's name or the post's shape. */
+    public const ROUTABLE = ['fair_housing', 'claims', 'banned'];
+
     public const MEDIA_DISK = 'content';
 
     /** Media links handed to the channels stay valid this long. */
@@ -63,6 +69,7 @@ final readonly class SocialPosts
         private AdvertisingPolicy $policy,
         private Memberships $memberships,
         private ComplianceEngine $compliance,
+        private ComplianceLog $log,
     ) {}
 
     /** @return array{stats: array{posts_this_month: int, reach: int, engagement: int, clicks: int}, scheduled: list<PostRow>, posted: list<PostRow>, drafts: list<PostRow>} */
@@ -96,11 +103,11 @@ final readonly class SocialPosts
      * @param  list<Pick>  $picks
      * @return PostRow
      */
-    public function create(User $user, string $body, array $media, ?string $link, array $picks, string $when, ?string $at, ?string $listing): array
+    public function create(User $user, string $body, array $media, ?string $link, array $picks, string $when, ?string $at, ?string $listing, ?string $askBroker = null): array
     {
         $post = new SocialPost(['uuid' => (string) Str::uuid7(), 'user_id' => $user->id]);
 
-        return $this->fill($user, $post, $body, $media, $link, $picks, $when, $at, $listing);
+        return $this->fill($user, $post, $body, $media, $link, $picks, $when, $at, $listing, $askBroker);
     }
 
     /**
@@ -110,7 +117,7 @@ final readonly class SocialPosts
      * @param  list<Pick>  $picks
      * @return PostRow
      */
-    public function update(User $user, string $uuid, string $body, array $media, ?string $link, array $picks, string $when, ?string $at): array
+    public function update(User $user, string $uuid, string $body, array $media, ?string $link, array $picks, string $when, ?string $at, ?string $askBroker = null): array
     {
         $post = $this->find($user, $uuid);
 
@@ -121,7 +128,7 @@ final readonly class SocialPosts
         $listing = $post->listing_post_id === null ? null : ListingPost::query()->find($post->listing_post_id);
         $listingUuid = $listing === null ? null : MlsListing::query()->where('integration', $listing->integration)->where('listing_key', $listing->listing_key)->value('uuid');
 
-        return $this->fill($user, $post, $body, $media, $link, $picks, $when, $at, is_string($listingUuid) ? $listingUuid : null);
+        return $this->fill($user, $post, $body, $media, $link, $picks, $when, $at, is_string($listingUuid) ? $listingUuid : null, $askBroker);
     }
 
     /**
@@ -129,7 +136,7 @@ final readonly class SocialPosts
      *
      * @param  list<string>  $media
      * @param  list<Pick>  $picks
-     * @return array{attribution: string, checks: list<Check>, ok: bool, approval: bool, issues: list<Issue>, review: list<string>}
+     * @return array{attribution: string, checks: list<Check>, ok: bool, approval: bool, issues: list<Issue>, review: list<string>, routable: bool, compliance: list<EngineIssue>}
      */
     public function check(User $user, string $body, array $media, array $picks, ?string $listing): array
     {
@@ -177,6 +184,9 @@ final readonly class SocialPosts
             'approval' => $this->policy->needsApproval($user), 'issues' => $issues,
             // Wording to look at again: not blocked, but a second opinion couldn't settle it.
             'review' => array_values(array_filter(array_map(static fn (array $i): ?string => $i['phrase'], $of('unclear')))),
+            // What can be sent to the broker instead of fixed (B13.2): only wording.
+            'routable' => $this->policy->brokerage($user) !== null && ! array_any($checks, static fn (array $c): bool => ! $c['ok'] && ! in_array($c['code'], self::ROUTABLE, true)),
+            'compliance' => $result['issues'],
         ];
     }
 
@@ -187,7 +197,13 @@ final readonly class SocialPosts
      */
     public function fix(User $user, string $body): array
     {
-        return ['body' => $this->policy->fix($user, $body), 'fixed' => $this->policy->issues($user, $body)];
+        $fixed = $this->policy->issues($user, $body);
+
+        if ($fixed !== []) {
+            $this->log->record($user, 'post', 'fixed', array_map(static fn (array $i): array => ['code' => $i['code'], 'phrase' => $i['phrase'], 'citation' => TexasAdRules::rule($i['code'])->citation, 'severity' => 'block', 'fix' => $i['fix'], 'reason' => null, 'url' => '', 'source' => 'rule'], $fixed));
+        }
+
+        return ['body' => $this->policy->fix($user, $body), 'fixed' => $fixed];
     }
 
     /** Remove a draft or a scheduled post (Undo restores it as a draft). */
@@ -326,7 +342,7 @@ final readonly class SocialPosts
      * @param  list<Pick>  $picks
      * @return PostRow
      */
-    private function fill(User $user, SocialPost $post, string $body, array $media, ?string $link, array $picks, string $when, ?string $at, ?string $listing): array
+    private function fill(User $user, SocialPost $post, string $body, array $media, ?string $link, array $picks, string $when, ?string $at, ?string $listing, ?string $askBroker = null): array
     {
         $listingPost = null;
 
@@ -344,7 +360,14 @@ final readonly class SocialPosts
         $targets = $this->resolve($user, $picks);
         $check = $this->check($user, $body, $media, $picks, $listing);
 
-        if ($when !== 'draft' && ! $check['ok']) {
+        // Routing (B13.2): a flagged post is fixed, or sent to the broker with the agent's reason.
+        // Only wording can go to the broker; the broker's name, targets and lengths must be right.
+        $failing = array_values(array_filter($check['checks'], static fn (array $c): bool => ! $c['ok']));
+        $toBroker = $when !== 'draft' && ! $check['ok'] && $askBroker !== null && trim($askBroker) !== '' && $this->policy->brokerage($user) !== null
+            && array_filter($failing, static fn (array $c): bool => ! in_array($c['code'], self::ROUTABLE, true)) === [];
+
+        if ($when !== 'draft' && ! $check['ok'] && ! $toBroker) {
+            $this->log->record($user, 'post', 'blocked', $check['compliance'], subjectType: 'social_post', subjectId: $post->uuid);
             throw ValidationException::withMessages(['checks' => self::line('social.errors.checks')]);
         }
 
@@ -355,9 +378,9 @@ final readonly class SocialPosts
         }
 
         // The brokerage sees this agent's posts first: they wait for approval, then go now or at their time.
-        $approval = $when !== 'draft' && $check['approval'];
+        $approval = $when !== 'draft' && ($check['approval'] || $toBroker);
 
-        DB::transaction(function () use ($post, $body, $items, $link, $check, $listingPost, $when, $scheduled, $targets, $approval): void {
+        DB::transaction(function () use ($post, $body, $items, $link, $check, $listingPost, $when, $scheduled, $targets, $approval, $toBroker, $askBroker): void {
             $post->forceFill([
                 'body' => $body, 'media' => $items, 'link' => $link, 'attribution' => $check['attribution'], 'listing_post_id' => $listingPost?->id,
                 'status' => match (true) {
@@ -370,6 +393,7 @@ final readonly class SocialPosts
                 // A planned draft leaves the plan once it's scheduled or sent (B12.3).
                 'planned_on' => $when === 'draft' ? $post->planned_on : null,
                 'approval_requested_at' => $approval ? now() : null, 'approved_by' => null, 'approved_at' => null, 'approval_note' => $approval ? null : $post->approval_note,
+                'approval_reason' => $toBroker ? mb_substr(trim((string) $askBroker), 0, 500) : null,
             ])->save();
             $post->targets()->delete();
 
@@ -377,6 +401,10 @@ final readonly class SocialPosts
                 $post->targets()->create([...$target, 'status' => 'queued']);
             }
         });
+
+        if ($when !== 'draft') {
+            $this->log->record($user, 'post', $toBroker ? 'sent_to_broker' : 'checked', $check['compliance'], subjectType: 'social_post', subjectId: $post->uuid, note: $toBroker ? $askBroker : null);
+        }
 
         if ($approval) {
             $brokerage = $this->policy->brokerage($user);

@@ -247,6 +247,21 @@
 - **Routing:** a violation is fixed, or sent to the broker with the reason.
 - **Compliance log (broker web):** every check, fix, approval and send-back, with who did it and when. It can be filtered by agent and channel and exported to CSV.
 - **Done when:** a rule violation is fixed or sent to the broker.
+- **As built, B13.2** (ADR 0058):
+  - **Every channel:**
+    - Banned phrases are checked on every channel (B13.1's engine).
+    - When the brokerage approves ads first, the public page waits for the broker (`agent_pages.approval_requested_at`). The broker approves it or sends it back with a note in Advertising policy. Both decisions are audited.
+  - **Routing:**
+    - When only wording is flagged (`fair_housing`, `claims`, `banned`), the composer on web and phone offers **Send to my broker instead**, with a reason (`ask_broker` → `social_posts.approval_reason`).
+    - The broker's queue shows the flags and the agent's reason.
+    - The broker's name, team names and the post's shape must be fixed; they can't be sent to the broker.
+  - **Compliance log** (`compliance_events`, `App\Compliance\ComplianceLog`):
+    - **Posts:** checked, blocked, fixed, sent to broker, approved and sent back.
+    - **Videos:** checked or blocked at render.
+    - **The page:** checked, blocked, waiting, approved and sent back.
+    - **Emails and texts:** checked or fixed, plus fixed assistant drafts.
+    - **Broker web:** Compliance log at `/organisation/compliance-log`, filtered by agent, channel, action and dates, with Export CSV (audited, and no cell can start a formula).
+  - **Done when:** a Pest test blocks a post with a banned phrase, fixes it, sends it to the broker with a reason, and the broker approves it. The log holds blocked, fixed, sent to broker and approved, with the broker as the actor.
 
 ### B13.3 Candidate studio (Team B)
 

@@ -12,6 +12,10 @@ import {
     update,
 } from '@/routes/organisation/advertising';
 import { settings as organisationSettings } from '@/routes/organisation';
+import {
+    approve as approvePage,
+    returnMethod as returnPage,
+} from '@/routes/organisation/advertising/pages';
 
 /**
  * Advertising policy (B12.1; broker web screen 35 with broker journey
@@ -49,6 +53,14 @@ export default function AdvertisingPolicyPage(props: AdvertisingPage) {
                     onSendBack={(id, note) => {
                         setBusy(true);
                         router.post(sendBack(id).url, { note }, done);
+                    }}
+                    onPage={(id, yes, note) => {
+                        setBusy(true);
+                        router.post(
+                            yes ? approvePage(id).url : returnPage(id).url,
+                            yes ? {} : { note },
+                            done,
+                        );
                     }}
                 />
             </div>

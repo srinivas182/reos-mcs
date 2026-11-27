@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Studio;
 
 use App\Http\Controllers\Controller;
+use App\Mls\AgentPages;
 use App\Models\User;
 use App\Services\StateRules\StateRules;
 use App\Social\PostApprovals;
@@ -27,7 +28,7 @@ use Inertia\Response;
  */
 final class AdvertisingController extends Controller
 {
-    public function index(#[CurrentUser] User $user, AdvertisingPolicy $policy, PostApprovals $approvals, StateRules $rules): Response
+    public function index(#[CurrentUser] User $user, AdvertisingPolicy $policy, PostApprovals $approvals, StateRules $rules, AgentPages $pages): Response
     {
         $brokerage = $approvals->brokerageOf($user);
         $state = ($brokerage->states ?? [])[0] ?? 'TX';
@@ -48,6 +49,8 @@ final class AdvertisingController extends Controller
             'rules' => $policy->rules($brokerage),
             'brand' => ['colour' => $brand->primary?->hex, 'logo' => $brand->toArray()['logo_url'] ?? null],
             'pending' => $approvals->pending($brokerage),
+            // Public pages waiting for the broker (B13.2).
+            'pages' => $pages->pending($brokerage),
         ]);
     }
 
@@ -76,6 +79,21 @@ final class AdvertisingController extends Controller
     {
         $request->validate(['note' => ['required', 'string', 'min:3', 'max:500']]);
         $approvals->sendBack($user, $approvals->brokerageOf($user), $post, $request->string('note')->toString());
+
+        return back()->with('success', __('studio.policy.returned'));
+    }
+
+    public function approvePage(string $page, #[CurrentUser] User $user, PostApprovals $approvals, AgentPages $pages): RedirectResponse
+    {
+        $pages->decide($user, $approvals->brokerageOf($user), $page, true);
+
+        return back()->with('success', __('studio.policy.approved'));
+    }
+
+    public function returnPage(Request $request, string $page, #[CurrentUser] User $user, PostApprovals $approvals, AgentPages $pages): RedirectResponse
+    {
+        $request->validate(['note' => ['required', 'string', 'min:3', 'max:500']]);
+        $pages->decide($user, $approvals->brokerageOf($user), $page, false, $request->string('note')->toString());
 
         return back()->with('success', __('studio.policy.returned'));
     }

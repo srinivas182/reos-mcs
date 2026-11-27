@@ -95,6 +95,16 @@ export function PageCard({
                     {t('listings.page.bioHint')}
                 </p>
             </div>
+            {page.waiting ? (
+                <p className="rounded-reos-md border border-reos-tone-info-fg/30 bg-reos-tone-info-bg p-3 text-base text-reos-tone-info-fg">
+                    {t('compliance.pageWaiting')}
+                </p>
+            ) : null}
+            {page.note ? (
+                <p className="rounded-reos-md border border-reos-tone-warning-fg/30 bg-reos-tone-warning-bg p-3 text-base text-reos-tone-warning-fg">
+                    {t('compliance.pageReturned', { note: page.note })}
+                </p>
+            ) : null}
             {problem ? (
                 <p
                     role="alert"

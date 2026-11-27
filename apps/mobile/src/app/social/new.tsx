@@ -45,6 +45,8 @@ export default function NewPostScreen() {
   const [listingPhotos, setListingPhotos] = useState<{ url: string; caption: string | null }[]>([]);
   const [picks, setPicks] = useState<Pick[]>([]);
   const [when, setWhen] = useState<When>(planned ? 'later' : 'now');
+  const [asking, setAsking] = useState(false);
+  const [reason, setReason] = useState('');
   const [at, setAt] = useState<string | null>(planned);
   const [check, setCheck] = useState<CheckResult | null>(null);
   const [returned, setReturned] = useState<string | null>(null);
@@ -119,10 +121,10 @@ export default function NewPostScreen() {
       setProblem(e instanceof Error ? e.message : String(e));
     }
   };
-  const submit = async () => {
+  const submit = async (askBroker?: string) => {
     setBusy(true);
     try {
-      const saved = await savePost(request(when), editId);
+      const saved = await savePost(askBroker ? { ...request(when), ask_broker: askBroker } : request(when), editId);
       setProblem(null);
       toast({
         message:
@@ -237,6 +239,18 @@ export default function NewPostScreen() {
         />
       ) : null}
       {check && !check.ok && when !== 'draft' ? <Text tone="danger">{t('social.compose.fixFirst')}</Text> : null}
+      {/* Routing (B13.2): flagged wording sent to the broker with a reason instead of fixed. */}
+      {check && !check.ok && check.routable && when !== 'draft' ? (
+        asking ? (
+          <>
+            <TextField label={t('compliance.askBroker.reason')} hint={t('compliance.askBroker.reasonHint')} value={reason} maxLength={500} multiline onChangeText={setReason} />
+            <Button label={t('compliance.askBroker.send')} loading={busy} disabled={busy || reason.trim().length < 3} onPress={() => void submit(reason.trim())} fullWidth />
+            <Button variant="ghost" label={t('compliance.askBroker.cancel')} onPress={() => setAsking(false)} fullWidth />
+          </>
+        ) : (
+          <Button variant="secondary" label={t('compliance.askBroker.button')} onPress={() => setAsking(true)} fullWidth />
+        )
+      ) : null}
       <Button label={label} loading={busy} disabled={busy || (when !== 'draft' && check?.ok !== true) || (when === 'later' && !at)} onPress={() => void submit()} fullWidth />
     </Screen>
   );

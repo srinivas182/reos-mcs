@@ -167,6 +167,9 @@ export default function StudioPage({
                     ? new Date(draft.at).toISOString()
                     : null,
             listing: studioListing ?? listing?.listing ?? null,
+            ask_broker: draft.ask_broker?.trim()
+                ? draft.ask_broker.trim()
+                : null,
         }),
         [listing, studioListing],
     );

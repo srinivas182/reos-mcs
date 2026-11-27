@@ -118,6 +118,8 @@ export type CheckResult = {
     issues: PolicyIssue[];
     /** Unclear wording a second opinion couldn't settle: not blocked, worth a look (B13.1). */
     review: string[];
+    /** Only wording is flagged, so it can go to the broker instead of being fixed (B13.2). */
+    routable?: boolean;
 };
 
 export type Pick = { connection: number; channel: Channel; id: string };
@@ -143,6 +145,8 @@ export type Draft = {
     picks: Pick[];
     when: 'now' | 'later' | 'draft';
     at: string;
+    /** Instead of fixing flagged wording, send it to the broker with this reason (B13.2). */
+    ask_broker?: string;
 };
 
 export const METRICS: Metric[] = [
