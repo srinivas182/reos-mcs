@@ -85,7 +85,9 @@
     "contractReview": "Revisión de contratos",
     "policies": "Políticas",
     "mentorProgram": "Programa de mentores",
-    "mentorWorkspace": "Espacio del mentor"
+    "mentorWorkspace": "Espacio del mentor",
+    "challenges": "Retos",
+    "podAndChallenges": "Grupo y retos"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2313,7 +2315,8 @@
         "mentor.assigned": "Mentor asignado",
         "mentor.change_requested": "Se pidió otro mentor",
         "session_booking.points_returned": "Puntos devueltos por una sesión",
-        "mentor.rating_reviewed": "Calificación baja revisada"
+        "mentor.rating_reviewed": "Calificación baja revisada",
+        "challenge.created": "Reto creado"
       }
     }
   },
@@ -9500,6 +9503,91 @@
       "actions": "Acciones",
       "send": "Enviar a tareas",
       "sent": "Enviado a las tareas de {{name}} con recordatorios."
+    }
+  },
+  "pods": {
+    "name": "Grupo {{goal}} {{n}}",
+    "welcome": "¡Bienvenido a su grupo! Comparta su meta de esta semana y nos vemos en la llamada.",
+    "errors": {
+      "already": "Usted ya está en un grupo.",
+      "full": "Ese grupo ya está completo. Únase de nuevo para que lo emparejemos."
+    },
+    "notify": {
+      "matched": "Usted está en {{name}}",
+      "matchedBody": "Su llamada semanal de 15 minutos es el {{day}} a las {{time}}. Comparta su meta de la semana."
+    },
+    "call": {
+      "title": "Llamada de {{name}}"
+    },
+    "days": {
+      "mon": "lunes",
+      "tue": "martes",
+      "wed": "miércoles",
+      "thu": "jueves",
+      "fri": "viernes",
+      "sat": "sábado",
+      "sun": "domingo"
+    },
+    "title": "Grupo de responsabilidad",
+    "purpose": "Cinco agentes con la misma meta: metas semanales, una llamada de 15 minutos y apoyo entre colegas.",
+    "none": "Todavía no está en un grupo",
+    "noneHint": "Lo emparejamos con agentes de su agencia inmobiliaria con la misma meta, idioma y horario.",
+    "join": "Unirse a un grupo",
+    "waiting": "Buscando su grupo",
+    "waitingHint": "Le avisaremos en cuanto su grupo esté listo, normalmente en una semana.",
+    "cancel": "Dejar de esperar",
+    "callNext": "Próxima llamada {{time}} · 15 minutos",
+    "joinCall": "Entrar a la llamada",
+    "message": "Escribir al grupo",
+    "leave": "Salir del grupo",
+    "left": "Usted salió del grupo.",
+    "week": "Semana del {{date}}",
+    "yourGoal": "Su meta de esta semana",
+    "goalPlaceholder": "Por ejemplo, 20 conversaciones y 2 citas",
+    "saveGoal": "Guardar meta",
+    "saved": "Meta guardada.",
+    "noGoal": "Aún sin meta",
+    "shares": "Lo que comparte",
+    "sharesHint": "Sus números vienen de su actividad y solo se muestran dentro del grupo.",
+    "you": "Usted",
+    "private": "Se comparte solo dentro del grupo.",
+    "challenges": {
+      "title": "Retos",
+      "purpose": "Retos opcionales en su agencia inmobiliaria. Gane por total o por mayor mejora.",
+      "none": "No hay retos ahora",
+      "noneHint": "Su bróker crea los retos aquí.",
+      "join": "Unirse",
+      "leave": "Salir",
+      "joined": "Usted se unió.",
+      "leftOne": "Usted salió del reto.",
+      "total": "Total",
+      "improved": "Mayor mejora",
+      "personalBest": "Mejor marca personal",
+      "ends": "Termina el {{date}}",
+      "ended": "Terminado",
+      "entrants_one": "{{count}} participa",
+      "entrants_other": "{{count}} participan",
+      "metrics": {
+        "conversations": "Conversaciones",
+        "appointments": "Citas",
+        "ce_hours": "Horas de educación continua",
+        "posts": "Publicaciones"
+      },
+      "broker": {
+        "title": "Retos",
+        "purpose": "Cree retos opcionales sobre los números propios de los agentes. Solo aparecen en las tablas los agentes que se unen.",
+        "new": "Nuevo reto",
+        "name": "Nombre",
+        "metric": "Qué cuenta",
+        "starts": "Empieza",
+        "ends": "Termina",
+        "create": "Crear reto"
+      },
+      "created": "Reto creado.",
+      "errors": {
+        "dates": "Elija fechas con un máximo de tres meses de diferencia que no hayan pasado.",
+        "ended": "Este reto ya terminó."
+      }
     }
   }
 }

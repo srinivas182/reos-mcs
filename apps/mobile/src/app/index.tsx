@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { Bell, BookOpen, GraduationCap, Handshake, MessageCircleQuestion, MessageSquare, Milestone, Palette, Users, Video } from 'lucide-react-native';
+import { Bell, BookOpen, GraduationCap, Handshake, MessageCircleQuestion, MessageSquare, Milestone, Palette, Trophy, Users, Video } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -203,6 +203,7 @@ export default function HomeScreen() {
       ) : null}
       {/* Your mentors (A10.3c, f04): the agent's own brokerage's mentors. */}
       {agent ? <ListRow icon={Users} tone="info" title={t('mentors.title')} subtitle={t('mentors.purposeNone')} onPress={() => router.push('/mentors')} /> : null}
+      {agent ? <ListRow icon={Trophy} tone="info" title={t('pods.title')} subtitle={t('pods.purpose')} onPress={() => router.push('/pod')} /> : null}
       {/* The mentor's workspace (mentor screens 22–24, A13.1b). */}
       {role === 'mentor' ? <ListRow icon={Users} tone="info" title={t('mentoring.workspace.title')} subtitle={t('mentoring.workspace.today')} onPress={() => router.push('/mentoring')} /> : null}
       {/* Book an instructor (candidate screen 18) and, for instructors and mentors, their booked sessions (A10.2a). */}

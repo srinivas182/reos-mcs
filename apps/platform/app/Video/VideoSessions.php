@@ -10,6 +10,7 @@ use App\Events\Video\SessionEnded;
 use App\Messaging\Contacts;
 use App\Messaging\Realtime;
 use App\Models\Organisation;
+use App\Models\Pod;
 use App\Models\User;
 use App\Models\VideoSession;
 use App\Models\VideoSessionParticipant;
@@ -354,6 +355,33 @@ final readonly class VideoSessions
         });
 
         Notification::send($this->people($session), new SessionBooked($session, SessionBooked::BOOKED));
+
+        return $session;
+    }
+
+    /**
+     * A pod's weekly call (A13.2): the first member hosts, everyone joins,
+     * and it ends on time like every session.
+     *
+     * @param  non-empty-list<User>  $members
+     */
+    public function podCall(Pod $pod, array $members, string $title, CarbonImmutable $starts, int $minutes): VideoSession
+    {
+        $host = $members[0];
+        $session = DB::transaction(function () use ($pod, $members, $host, $title, $starts, $minutes): VideoSession {
+            $session = VideoSession::query()->create([
+                'uuid' => (string) Str::uuid(), 'organisation_id' => $pod->organisation_id, 'pod_id' => $pod->id, 'host_id' => $host->id, 'kind' => VideoSession::POD_CALL,
+                'title' => mb_substr($title, 0, 120), 'agenda' => null, 'starts_at' => $starts->utc(), 'ends_at' => $starts->utc()->addMinutes($minutes),
+            ]);
+
+            foreach ($members as $i => $member) {
+                $session->participants()->create(['user_id' => $member->id, 'role' => $i === 0 ? VideoSessionParticipant::HOST : VideoSessionParticipant::GUEST]);
+            }
+
+            return $session;
+        });
+
+        Notification::send($this->people($session, except: $host->id), new SessionBooked($session, SessionBooked::BOOKED));
 
         return $session;
     }

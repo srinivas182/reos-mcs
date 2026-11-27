@@ -48,6 +48,8 @@ use App\Http\Controllers\Api\Notifications\TextsController as ApiTextsController
 use App\Http\Controllers\Api\Onboarding\FreeQuizController;
 use App\Http\Controllers\Api\Onboarding\OnboardingController;
 use App\Http\Controllers\Api\Onboarding\StateController;
+use App\Http\Controllers\Api\Pods\BrokerageChallengeController;
+use App\Http\Controllers\Api\Pods\PodController;
 use App\Http\Controllers\Api\Practice\ChallengeController;
 use App\Http\Controllers\Api\Practice\CoachController;
 use App\Http\Controllers\Api\Practice\FlashcardController;
@@ -270,6 +272,20 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('mentors', [SwitchController::class, 'mentors'])->name('api.mentors');
     Route::post('mentors/change', [SwitchController::class, 'changeMentor'])->middleware('throttle:5,1,api-mentors-change')->name('api.mentors.change');
+    // Accountability pods and brokerage challenges (A13.2, screen 131).
+    Route::prefix('pod')->name('api.pod.')->controller(PodController::class)->group(function () {
+        Route::get('/', 'show')->name('show');
+        Route::post('join', 'join')->middleware('throttle:10,1,api-pod')->name('join');
+        Route::post('leave', 'leave')->middleware('throttle:10,1,api-pod')->name('leave');
+        Route::post('rejoin', 'rejoin')->middleware('throttle:10,1,api-pod')->name('rejoin');
+        Route::put('goal', 'goal')->middleware('throttle:30,1,api-pod')->name('goal');
+        Route::put('share', 'share')->middleware('throttle:30,1,api-pod')->name('share');
+    });
+    Route::prefix('challenges')->name('api.challenges.')->controller(BrokerageChallengeController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('{challenge}/join', 'join')->whereUuid('challenge')->middleware('throttle:30,1,api-challenges')->name('join');
+        Route::post('{challenge}/leave', 'leave')->whereUuid('challenge')->middleware('throttle:30,1,api-challenges')->name('leave');
+    });
     // The mentor's workspace (A13.1b, mentor screens 22–24).
     Route::prefix('mentoring')->name('api.mentoring.')->controller(MentorWorkspaceController::class)->group(function () {
         Route::get('today', 'today')->name('today');

@@ -156,6 +156,11 @@ export default function MentorsScreen() {
           ) : null}
           <Button
             variant="secondary"
+            label={t("pods.title")}
+            onPress={() => router.push("/pod")}
+          />
+          <Button
+            variant="secondary"
             label={t("mentors.instructors")}
             onPress={() => router.push("/bookings")}
           />

@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int $id
  * @property string $uuid
  * @property int|null $organisation_id
+ * @property int|null $pod_id a pod's weekly call (A13.2)
  * @property int $host_id
  * @property string $kind one_on_one or live_class
  * @property string $title
@@ -49,6 +50,9 @@ final class VideoSession extends Model
 
     public const LIVE_CLASS = 'live_class';
 
+    /** A pod's weekly 15-minute call (A13.2). */
+    public const POD_CALL = 'pod_call';
+
     public const SCHEDULED = 'scheduled';
 
     public const LIVE = 'live';
@@ -63,7 +67,7 @@ final class VideoSession extends Model
     /** A live class: up to 100 people watching. */
     public const MAX_GUESTS = 100;
 
-    protected $fillable = ['uuid', 'organisation_id', 'host_id', 'kind', 'title', 'agenda', 'starts_at', 'ends_at', 'status', 'started_at', 'ended_at', 'reminded_at', 'notes', 'notes_updated_by', 'notes_updated_at', 'whiteboard', 'whiteboard_image', 'whiteboard_updated_at'];
+    protected $fillable = ['uuid', 'organisation_id', 'pod_id', 'host_id', 'kind', 'title', 'agenda', 'starts_at', 'ends_at', 'status', 'started_at', 'ended_at', 'reminded_at', 'notes', 'notes_updated_by', 'notes_updated_at', 'whiteboard', 'whiteboard_image', 'whiteboard_updated_at'];
 
     protected function casts(): array
     {

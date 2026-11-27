@@ -72,6 +72,7 @@ use App\Http\Controllers\Licence\LicenceJourneyPageController;
 use App\Http\Controllers\Licence\PassesAndOffersPageController;
 use App\Http\Controllers\Listings\AgentPublicPageController;
 use App\Http\Controllers\Listings\ListingsPageController;
+use App\Http\Controllers\Mentoring\ChallengesController;
 use App\Http\Controllers\Mentoring\MentorProgramController;
 use App\Http\Controllers\Mentoring\MentorWorkspacePageController;
 use App\Http\Controllers\Mentors\MentorsPageController;
@@ -473,6 +474,25 @@ Route::middleware(['auth', 'verified'])->prefix('mentoring')->name('mentoring.')
         Route::post('notes/{note}/restore', 'restoreNote')->whereUuid('note')->middleware('throttle:60,1,mentoring-notes')->name('notes.restore');
         Route::post('{agent}/goals', 'addGoal')->whereNumber('agent')->middleware('throttle:30,1,mentoring-goals')->name('goals.store');
     });
+});
+
+// Pods and challenges (A13.2): the agent's pod page, and the broker's challenges.
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('pod', [ChallengesController::class, 'agent'])->name('pod.index');
+    Route::controller(ChallengesController::class)->prefix('pod')->name('pod.')->group(function () {
+        Route::post('join', 'join')->middleware('throttle:10,1,pod')->name('join');
+        Route::post('leave', 'leave')->middleware('throttle:10,1,pod')->name('leave');
+        Route::post('rejoin', 'rejoin')->middleware('throttle:10,1,pod')->name('rejoin');
+        Route::put('goal', 'goal')->middleware('throttle:30,1,pod')->name('goal');
+    });
+    Route::controller(ChallengesController::class)->prefix('brokerage-challenges')->name('brokerage-challenges.')->group(function () {
+        Route::post('{challenge}/join', 'joinChallenge')->whereUuid('challenge')->middleware('throttle:30,1,challenges')->name('join');
+        Route::post('{challenge}/leave', 'leaveChallenge')->whereUuid('challenge')->middleware('throttle:30,1,challenges')->name('leave');
+    });
+});
+Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/challenges')->name('organisation.challenges.')->group(function () {
+    Route::get('/', [ChallengesController::class, 'broker'])->name('index');
+    Route::post('/', [ChallengesController::class, 'store'])->middleware('throttle:20,1,challenges-store')->name('store');
 });
 
 // The brokerage's mentor program (A13.1a, broker screens 21–23).
