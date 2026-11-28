@@ -1,3 +1,9 @@
+import { BrokerBriefCard } from '@/components/brokerage/reports';
+import type { BrokerBrief } from '@/components/brokerage/types';
+import { index as approvalsIndex } from '@/routes/approvals';
+import { index as ceComplianceIndex } from '@/routes/ce-compliance';
+import { index as oversightIndex } from '@/routes/oversight';
+import { index as reportsIndex } from '@/routes/reports';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { LayoutDashboard } from 'lucide-react';
 import { firstName } from '@/lib/person-name';
@@ -68,6 +74,7 @@ export default function Dashboard({
     mode = null,
     agentToday = null,
     brokerSetup = null,
+    brokerBrief = null,
 }: {
     today?: CalendarDay | null;
     ce?: CeRequirement | null;
@@ -78,6 +85,8 @@ export default function Dashboard({
     agentToday?: AgentTodayData | null;
     /** The brokerage's setup checklist (brokers, A15.1a). */
     brokerSetup?: BrokerageSetupData | null;
+    /** The broker's morning brief (A16.3). */
+    brokerBrief?: BrokerBrief | null;
 }) {
     const { t } = useTranslation();
     const { auth, sessions } = usePage().props;
@@ -103,6 +112,17 @@ export default function Dashboard({
                 />
                 {brokerSetup && brokerSetup.done < brokerSetup.total ? (
                     <SetupChecklist setup={brokerSetup} />
+                ) : null}
+                {brokerBrief ? (
+                    <BrokerBriefCard
+                        brief={brokerBrief}
+                        links={{
+                            oversight: oversightIndex().url,
+                            approvals: approvalsIndex().url,
+                            ce: ceComplianceIndex().url,
+                            reports: reportsIndex().url,
+                        }}
+                    />
                 ) : null}
                 {mode ? (
                     <ModeCard

@@ -119,6 +119,7 @@ use App\Http\Controllers\Organisation\DomainController;
 use App\Http\Controllers\Organisation\InvitationController;
 use App\Http\Controllers\Organisation\OversightPagesController;
 use App\Http\Controllers\Organisation\PoliciesPageController;
+use App\Http\Controllers\Organisation\ReportsPageController;
 use App\Http\Controllers\Organisation\SettingsController;
 use App\Http\Controllers\Organisation\SsoController;
 use App\Http\Controllers\Payouts\EarningsController;
@@ -570,6 +571,8 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::post('organisation/ce/remind', [CeComplianceController::class, 'remind'])->middleware('throttle:5,1,ce-remind')->name('ce-compliance.remind');
     Route::post('organisation/ce/assign', [CeComplianceController::class, 'assign'])->middleware('throttle:20,1,ce-assign')->name('ce-compliance.assign');
     Route::post('organisation/sponsorships/release', [CeComplianceController::class, 'release'])->middleware('throttle:10,1,sponsorship-release')->name('sponsorships.release');
+    // Reports (A16.3): closings matched to the transaction tool, and training.
+    Route::get('organisation/reports', ReportsPageController::class)->name('reports.index');
     // One approvals queue (A15.3): posts, public pages and escalated questions.
     Route::get('organisation/approvals', ApprovalsPageController::class)->name('approvals.index');
     Route::post('organisation/approvals/{kind}/{item}', [ApprovalsController::class, 'act'])->whereIn('kind', ['post', 'page', 'question'])->where('item', '[A-Za-z0-9-]{1,80}')->middleware('throttle:60,1,approvals-act')->name('approvals.act');
@@ -865,6 +868,8 @@ Route::middleware(['auth', 'verified', RequireFlag::class.':messages'])->prefix(
     Route::get('/', [AnnouncementController::class, 'index'])->name('index');
     Route::post('/', [AnnouncementController::class, 'store'])->middleware('throttle:10,1,announcements-send')->name('store');
     Route::post('{announcement}/read', [AnnouncementController::class, 'read'])->whereUuid('announcement')->middleware('throttle:120,1,announcements-read')->name('read');
+    Route::get('{announcement}/readers', [AnnouncementController::class, 'readers'])->whereUuid('announcement')->name('readers');
+    Route::post('{announcement}/remind', [AnnouncementController::class, 'remind'])->whereUuid('announcement')->middleware('throttle:10,1,announcements-remind')->name('remind');
 });
 
 // Booking 1-on-1 sessions (A10.2a): the pages, and the same JSON as the API.

@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property array{roles?: list<string>, teams?: list<int>, states?: list<string>} $audience
  * @property int $recipients_count
  * @property Carbon $sent_at
+ * @property Carbon|null $reminded_at When the unread were last reminded (A16.3)
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read User|null $author
@@ -33,7 +34,7 @@ final class Announcement extends Model
 
     protected function casts(): array
     {
-        return ['audience' => 'array', 'recipients_count' => 'integer', 'sent_at' => 'datetime'];
+        return ['audience' => 'array', 'recipients_count' => 'integer', 'sent_at' => 'datetime', 'reminded_at' => 'datetime'];
     }
 
     /** @return BelongsTo<User, $this> */

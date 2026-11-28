@@ -2,6 +2,7 @@ import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import {
     BookOpen,
+    ChartColumn,
     CalendarDays,
     Building2,
     CreditCard,
@@ -94,6 +95,7 @@ import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as approvalsIndex } from '@/routes/approvals';
 import { index as ceComplianceIndex } from '@/routes/ce-compliance';
+import { index as reportsIndex } from '@/routes/reports';
 import { index as oversightIndex } from '@/routes/oversight';
 import { index as policiesIndex } from '@/routes/policies';
 import { show as providerJoin } from '@/routes/provider-join';
@@ -155,6 +157,7 @@ export type NavLabel =
     | 'approvals'
     | 'oversight'
     | 'ceCompliance'
+    | 'brokerageReports'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -422,7 +425,13 @@ export function roleNavigation(
             // Recruiting: candidates who asked for broker offers (A10.3b).
             item('recruiting', UserPlus, recruitingIndex(), '/recruiting'),
             planned('teamsAndRouting'),
-            planned('reports'),
+            // Closings matched to the transaction tool, and training (A16.3).
+            item(
+                'brokerageReports',
+                ChartColumn,
+                reportsIndex(),
+                '/organisation/reports',
+            ),
             item('brokerageIntegrations', Plug, brokerageIntegrationsIndex()),
             item('brokerageSettings', Building2, organisationSettings()),
         ],

@@ -204,4 +204,62 @@ final readonly class Announcements
     {
         return array_values([$organisation->id, ...Organisation::query()->where('parent_id', $organisation->id)->pluck('id')->map(static fn (mixed $id): int => is_numeric($id) ? (int) $id : 0)->all()]);
     }
+
+    /**
+     * Who has read an announcement and who hasn't (A16.3), for its organisation's admin.
+     *
+     * @return array{id: string, title: string, recipients: int, read: int, reminded_at: string|null, can_remind: bool, people: list<array{name: string, read_at: string|null}>}
+     */
+    public function readers(User $admin, string $uuid): array
+    {
+        $sender = $this->sender($admin);
+        abort_if($sender === null, 403);
+        $organisation = $sender->organisation;
+
+        return $this->tenancy->run($organisation->id, static function () use ($organisation, $uuid): array {
+            $announcement = Announcement::query()->where('organisation_id', $organisation->id)->where('uuid', $uuid)->firstOrFail();
+            $people = AnnouncementRecipient::query()->where('announcement_id', $announcement->id)->join('users', 'users.id', '=', 'announcement_recipients.user_id')
+                ->orderByRaw('announcement_recipients.read_at is null desc')->orderBy('users.name')->limit(2000)
+                ->get(['users.name', 'announcement_recipients.read_at']);
+            $read = $people->whereNotNull('read_at')->count();
+
+            return [
+                'id' => $announcement->uuid, 'title' => $announcement->title, 'recipients' => $people->count(), 'read' => $read,
+                'reminded_at' => $announcement->reminded_at?->toIso8601String(),
+                'can_remind' => $read < $people->count() && ($announcement->reminded_at === null || $announcement->reminded_at->lt(now()->subDay())),
+                'people' => array_values($people->map(static fn (AnnouncementRecipient $r): array => [
+                    'name' => is_string($n = $r->getAttribute('name')) ? $n : '', 'read_at' => $r->read_at?->toIso8601String(),
+                ])->all()),
+            ];
+        });
+    }
+
+    /**
+     * Reminds everyone who hasn't read it yet, once a day at most (A16.3). Returns how many.
+     */
+    public function remindUnread(User $admin, string $uuid): int
+    {
+        $sender = $this->sender($admin);
+        abort_if($sender === null, 403);
+        $organisation = $sender->organisation;
+        [$announcement, $unread] = $this->tenancy->run($organisation->id, static function () use ($organisation, $uuid): array {
+            $announcement = Announcement::query()->where('organisation_id', $organisation->id)->where('uuid', $uuid)->firstOrFail();
+
+            return [$announcement, AnnouncementRecipient::query()->where('announcement_id', $announcement->id)->whereNull('read_at')->pluck('user_id')->all()];
+        });
+
+        if ($announcement->reminded_at !== null && $announcement->reminded_at->gt(now()->subDay())) {
+            throw ValidationException::withMessages(['announcement' => __('announcements.receipts.errors.once')]);
+        }
+
+        if ($unread === []) {
+            return 0;
+        }
+
+        Notification::send(User::query()->whereIn('id', $unread)->get(), new NewAnnouncement($announcement, true));
+        $this->tenancy->run($organisation->id, static fn () => $announcement->forceFill(['reminded_at' => now()])->save());
+        $this->audit->record('announcement.reminded', 'announcement', $announcement->uuid, ['unread' => count($unread)], $admin, $organisation->id);
+
+        return count($unread);
+    }
 }

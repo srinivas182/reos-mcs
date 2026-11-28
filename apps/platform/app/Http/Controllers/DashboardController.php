@@ -8,6 +8,7 @@ use App\Agents\AgentModes;
 use App\Agents\AgentToday;
 use App\Authorization\Role;
 use App\Brokerage\BrokerageSetup;
+use App\Brokerage\BrokerBriefs;
 use App\Content\Approvals\CourseApprovals;
 use App\Content\Builder\InstructorDashboard;
 use App\Enums\OrganisationType;
@@ -66,6 +67,8 @@ final class DashboardController extends Controller
             /** Reviews, sessions, pass rate, today and the most-missed topics (instructors, screen 42, A7.2). */
             'teaching' => $teaches === null ? null : $teaching->for($user, $teaches),
             /** The brokerage's setup checklist (brokers, broker journey screens 1–6, A15.1a). */
+            /** The broker's morning brief: who needs help, deals at risk, approvals, CE due, closings (A16.3). */
+            'brokerBrief' => app(BrokerBriefs::class)->shows($user) ? app(BrokerBriefs::class)->for($user) : null,
             'brokerSetup' => $membership !== null && BrokerageSetup::shows($user, $membership->organisation, $membership->role) ? app(BrokerageSetup::class)->for($membership->organisation) : null,
         ]);
     }
