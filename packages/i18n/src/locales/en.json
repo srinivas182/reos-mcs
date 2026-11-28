@@ -101,7 +101,8 @@
     "farming": "Farming",
     "approvals": "Approvals",
     "providerJoin": "Joining",
-    "serviceProviders": "Service providers"
+    "serviceProviders": "Service providers",
+    "oversight": "Agents and deals"
   },
   "tour": {
     "stepOf": "Step {{step}} of {{total}}",
@@ -2369,7 +2370,9 @@
         "provider_licence.rechecked": "Provider license re-checked",
         "provider_licence.document_viewed": "Viewed a provider's photo ID",
         "provider.profile_published": "Provider profile published",
-        "provider.profile_blocked": "Provider profile held for wording"
+        "provider.profile_blocked": "Provider profile held for wording",
+        "oversight.settings": "Changed when agents are flagged",
+        "oversight.profile_viewed": "Viewed an agent's summary"
       }
     }
   },
@@ -11225,6 +11228,80 @@
         "review": "Review",
         "back": "Approvals"
       }
+    },
+    "oversight": {
+      "title": "Agents and deals",
+      "purpose": "Who may need help and which deals are at risk. You see counts and stages, never your agents' clients.",
+      "teamPurpose": "Who in {{team}} may need help and which deals are at risk.",
+      "counts": "{{needHelp}} of {{agents}} agents may need help · {{deals}} deals at risk",
+      "needHelp": "Agents who may need help",
+      "allGood": "Everyone is on track",
+      "allGoodHint": "No agent has a signal right now. REOS checks again every day.",
+      "risk": "Deals at risk",
+      "noRisk": "No deals at risk",
+      "noRiskHint": "Deals show here when a key date is close or missed, or nothing has moved for 30 days.",
+      "signals": {
+        "quiet": "Quiet for {{days}} days",
+        "no_deal": "No deal in {{days}} days",
+        "ce_behind": "CE behind",
+        "plan_behind": "Plan behind",
+        "deadline_missed": "Missed a deadline",
+        "new": "New agent"
+      },
+      "reasons": {
+        "date_soon": "Key date within 72 hours",
+        "date_missed": "Key date missed",
+        "stuck": "No movement for 30 days"
+      },
+      "lastActive": "Last active {{date}}",
+      "neverActive": "Not active yet",
+      "deals": "{{active}} active · {{underContract}} under contract · {{closed}} closed in 90 days",
+      "ceDue": "CE: {{hours}} hours left, due {{date}}",
+      "ceDone": "CE complete for this renewal",
+      "sae": "SAE (first renewal)",
+      "open": "Open {{name}}",
+      "nextDate": "Next: {{kind}} on {{date}}",
+      "privacy": "Privacy: you see counts and stages. Client names, contacts, parties and notes stay with the agent. Addresses show only for deals under contract.",
+      "profile": {
+        "plan": "Plan",
+        "planWeek": "Week {{week}} of {{weeks}} · {{done}} of {{total}} tasks done",
+        "month": "This month",
+        "conversations": "Conversations",
+        "appointments": "Appointments",
+        "posts": "Posts",
+        "ceHours": "CE hours",
+        "deals": "Deals",
+        "noDeals": "No deals yet",
+        "licences": "Licences",
+        "back": "All agents",
+        "dealRow": "{{stage}} · {{side}} · {{place}}"
+      },
+      "stages": {
+        "active": "Active",
+        "under_contract": "Under contract",
+        "closed": "Closed",
+        "cancelled": "Cancelled"
+      },
+      "sides": {
+        "buy": "Buyer",
+        "sell": "Seller",
+        "lease": "Lease",
+        "both": "Both sides"
+      },
+      "settings": {
+        "title": "When to flag an agent",
+        "quiet": "Quiet after (days)",
+        "noDeal": "No deal after (days)",
+        "new": "New for (days)",
+        "save": "Save",
+        "saved": "Saved."
+      },
+      "mine": {
+        "title": "What my broker sees",
+        "purpose": "Your broker sees this summary of your work, never your clients, contacts or notes.",
+        "none": "You're not with a brokerage."
+      },
+      "onTrack": "On track"
     }
   }
 }

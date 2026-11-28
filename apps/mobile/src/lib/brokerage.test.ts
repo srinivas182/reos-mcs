@@ -1,4 +1,4 @@
-import { checkRule, chooseSeats, clearItem, detailText, firstOpen, inviteAll, itemsFor, lookupLicence, ready, type Approvals } from './brokerage';
+import { loadBrokerView, needingHelp, type OversightBoard, checkRule, chooseSeats, clearItem, detailText, firstOpen, inviteAll, itemsFor, lookupLicence, ready, type Approvals } from './brokerage';
 
 const mockApi = { GET: jest.fn(), POST: jest.fn(), PUT: jest.fn() };
 jest.mock('@/lib/api', () => ({ api: () => mockApi }));
@@ -56,7 +56,7 @@ describe('approvals on the phone (A15.3)', () => {
     ],
   } as Approvals;
 
-  it('filters the queue and reads an item\'s detail', () => {
+  it("filters the queue and reads an item's detail", () => {
     expect(itemsFor(queue, 'question').map((i) => i.id)).toEqual(['q1']);
     expect(itemsFor(queue, 'all')).toHaveLength(2);
     expect(detailText(queue.items[0], 'body')).toBe('Open house Saturday.');
@@ -71,5 +71,21 @@ describe('approvals on the phone (A15.3)', () => {
     mockApi.POST.mockResolvedValueOnce({ data: undefined, error: { errors: { text: ['Add a note so the agent knows what to change.'] } } });
     await expect(clearItem(queue.items[0], 'return', '', true)).rejects.toThrow('Add a note so the agent knows what to change.');
     expect(mockApi.POST).toHaveBeenLastCalledWith('/organisation/approvals/{kind}/{item}', { params: { path: { kind: 'post', item: 'p1' } }, body: { action: 'return', text: '', add_to_knowledge: false } });
+  });
+});
+
+describe('agents and deals on the phone (A16.1)', () => {
+  it('lists agents with a real signal, not just new ones', async () => {
+    const board = {
+      agents: [
+        { id: 1, signals: ['new'] },
+        { id: 2, signals: ['quiet', 'new'] },
+        { id: 3, signals: [] },
+      ],
+    } as unknown as OversightBoard;
+    expect(needingHelp(board).map((a) => a.id)).toEqual([2]);
+    mockApi.GET.mockResolvedValueOnce({ data: { data: null } });
+    await expect(loadBrokerView()).resolves.toBeNull();
+    expect(mockApi.GET).toHaveBeenLastCalledWith('/me/broker-view');
   });
 });

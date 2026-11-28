@@ -1072,6 +1072,12 @@ function adminActions(): array
 
             return auditCase($linda, 'PUT', "/organisation/staff/{$office->id}", ['duties' => ['approve_posts']], $lone->id);
         },
+        // Broker: when agents are flagged (A16.1).
+        'oversight.settings' => function () {
+            [$lone, $linda] = auditBrokerage();
+
+            return auditCase($linda, 'PUT', '/organisation/oversight/settings', ['quiet_days' => 10, 'no_deal_days' => 60, 'new_days' => 90], $lone->id);
+        },
         // Broker: one approvals queue (A15.3).
         'approvals.act' => function () {
             [$lone, $linda] = auditBrokerage();

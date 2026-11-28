@@ -39987,6 +39987,1129 @@
                 }
             }
         },
+        "/organisation/oversight": {
+            "get": {
+                "operationId": "brokerage.oversight",
+                "description": "Each agent with the reasons they may need help, and the deals with a key date close, missed, or no movement for 30 days. Counts and stages only: never clients, contacts or notes. A team leader sees their team.",
+                "summary": "Agents needing help and deals at risk",
+                "tags": [
+                    "Oversight"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "settings": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "quiet_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "no_deal_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "new_days": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "quiet_days",
+                                                        "no_deal_days",
+                                                        "new_days"
+                                                    ]
+                                                },
+                                                "can_change": {
+                                                    "type": "boolean"
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "agents": {
+                                                            "type": "integer"
+                                                        },
+                                                        "need_help": {
+                                                            "type": "integer"
+                                                        },
+                                                        "deals_at_risk": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "agents",
+                                                        "need_help",
+                                                        "deals_at_risk"
+                                                    ]
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "team": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "goal": {
+                                                                "type": "string"
+                                                            },
+                                                            "last_active": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "signals": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "quiet",
+                                                                        "no_deal",
+                                                                        "ce_behind",
+                                                                        "plan_behind",
+                                                                        "deadline_missed",
+                                                                        "new"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "deals": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "active": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "under_contract": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "closed_90": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "active",
+                                                                    "under_contract",
+                                                                    "closed_90"
+                                                                ]
+                                                            },
+                                                            "ce": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "due_on": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "hours_left": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "first_renewal": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "complete": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "due_on",
+                                                                    "hours_left",
+                                                                    "first_renewal",
+                                                                    "complete"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "team",
+                                                            "goal",
+                                                            "last_active",
+                                                            "signals",
+                                                            "deals",
+                                                            "ce"
+                                                        ]
+                                                    }
+                                                },
+                                                "at_risk": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reasons": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "date_soon",
+                                                                        "date_missed",
+                                                                        "stuck"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "next_date": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "kind",
+                                                                    "due_on"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "agent",
+                                                            "agent_id",
+                                                            "stage",
+                                                            "city",
+                                                            "address",
+                                                            "reasons",
+                                                            "next_date"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "settings",
+                                                "can_change",
+                                                "counts",
+                                                "agents",
+                                                "at_risk"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/oversight/agents/{member}": {
+            "get": {
+                "operationId": "brokerage.oversight.agent",
+                "description": "Plan, activity this month, deals by stage (the address only under contract), licences and CE. Viewing is audited.",
+                "summary": "An agent, as their broker sees them",
+                "tags": [
+                    "Oversight"
+                ],
+                "parameters": [
+                    {
+                        "name": "member",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "agent": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "team": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "last_active": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "signals": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "quiet",
+                                                                    "no_deal",
+                                                                    "ce_behind",
+                                                                    "plan_behind",
+                                                                    "deadline_missed",
+                                                                    "new"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "deals": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "active": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "under_contract": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "closed_90": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "active",
+                                                                "under_contract",
+                                                                "closed_90"
+                                                            ]
+                                                        },
+                                                        "ce": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "due_on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "hours_left": {
+                                                                    "type": "number"
+                                                                },
+                                                                "first_renewal": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "complete": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "due_on",
+                                                                "hours_left",
+                                                                "first_renewal",
+                                                                "complete"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "team",
+                                                        "goal",
+                                                        "last_active",
+                                                        "signals",
+                                                        "deals",
+                                                        "ce"
+                                                    ]
+                                                },
+                                                "plan": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "week": {
+                                                            "type": "integer"
+                                                        },
+                                                        "weeks": {
+                                                            "type": "integer"
+                                                        },
+                                                        "done": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "goal",
+                                                        "week",
+                                                        "weeks",
+                                                        "done",
+                                                        "total"
+                                                    ]
+                                                },
+                                                "activity": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "conversations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "appointments": {
+                                                            "type": "integer"
+                                                        },
+                                                        "posts": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ce_hours": {
+                                                            "type": "number"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "conversations",
+                                                        "appointments",
+                                                        "posts",
+                                                        "ce_hours"
+                                                    ]
+                                                },
+                                                "deals": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "side": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "stage",
+                                                            "side",
+                                                            "city",
+                                                            "address",
+                                                            "closed_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "licences": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "state": {
+                                                                "type": "string"
+                                                            },
+                                                            "number": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "expires_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "state",
+                                                            "number",
+                                                            "status",
+                                                            "expires_on"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "agent",
+                                                "plan",
+                                                "activity",
+                                                "deals",
+                                                "licences"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/oversight/settings": {
+            "put": {
+                "operationId": "brokerage.oversight.settings",
+                "description": "The designated broker only.",
+                "summary": "Change the \"needs help\" thresholds",
+                "tags": [
+                    "Oversight"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OversightSettingsRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "brokerage": {
+                                                    "type": "string"
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "brokerage",
+                                                        "team"
+                                                    ]
+                                                },
+                                                "team": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "settings": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "quiet_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "no_deal_days": {
+                                                            "type": "integer"
+                                                        },
+                                                        "new_days": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "quiet_days",
+                                                        "no_deal_days",
+                                                        "new_days"
+                                                    ]
+                                                },
+                                                "can_change": {
+                                                    "type": "boolean"
+                                                },
+                                                "counts": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "agents": {
+                                                            "type": "integer"
+                                                        },
+                                                        "need_help": {
+                                                            "type": "integer"
+                                                        },
+                                                        "deals_at_risk": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "agents",
+                                                        "need_help",
+                                                        "deals_at_risk"
+                                                    ]
+                                                },
+                                                "agents": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "team": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "goal": {
+                                                                "type": "string"
+                                                            },
+                                                            "last_active": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "signals": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "quiet",
+                                                                        "no_deal",
+                                                                        "ce_behind",
+                                                                        "plan_behind",
+                                                                        "deadline_missed",
+                                                                        "new"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "deals": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "active": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "under_contract": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "closed_90": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "active",
+                                                                    "under_contract",
+                                                                    "closed_90"
+                                                                ]
+                                                            },
+                                                            "ce": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "due_on": {
+                                                                        "type": [
+                                                                            "string",
+                                                                            "null"
+                                                                        ]
+                                                                    },
+                                                                    "hours_left": {
+                                                                        "type": "number"
+                                                                    },
+                                                                    "first_renewal": {
+                                                                        "type": "boolean"
+                                                                    },
+                                                                    "complete": {
+                                                                        "type": "boolean"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "due_on",
+                                                                    "hours_left",
+                                                                    "first_renewal",
+                                                                    "complete"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "team",
+                                                            "goal",
+                                                            "last_active",
+                                                            "signals",
+                                                            "deals",
+                                                            "ce"
+                                                        ]
+                                                    }
+                                                },
+                                                "at_risk": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent": {
+                                                                "type": "string"
+                                                            },
+                                                            "agent_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "reasons": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string",
+                                                                    "enum": [
+                                                                        "date_soon",
+                                                                        "date_missed",
+                                                                        "stuck"
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "next_date": {
+                                                                "type": [
+                                                                    "object",
+                                                                    "null"
+                                                                ],
+                                                                "properties": {
+                                                                    "kind": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "due_on": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "required": [
+                                                                    "kind",
+                                                                    "due_on"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "agent",
+                                                            "agent_id",
+                                                            "stage",
+                                                            "city",
+                                                            "address",
+                                                            "reasons",
+                                                            "next_date"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "brokerage",
+                                                "scope",
+                                                "team",
+                                                "settings",
+                                                "can_change",
+                                                "counts",
+                                                "agents",
+                                                "at_risk"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/me/broker-view": {
+            "get": {
+                "operationId": "me.broker-view",
+                "description": "My own profile exactly as my broker sees it, or null when I'm not in a brokerage.",
+                "summary": "What my broker sees",
+                "tags": [
+                    "Oversight"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": [
+                                                "object",
+                                                "null"
+                                            ],
+                                            "properties": {
+                                                "agent": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "team": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "last_active": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ]
+                                                        },
+                                                        "signals": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "quiet",
+                                                                    "no_deal",
+                                                                    "ce_behind",
+                                                                    "plan_behind",
+                                                                    "deadline_missed",
+                                                                    "new"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "deals": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "active": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "under_contract": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "closed_90": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "active",
+                                                                "under_contract",
+                                                                "closed_90"
+                                                            ]
+                                                        },
+                                                        "ce": {
+                                                            "type": [
+                                                                "object",
+                                                                "null"
+                                                            ],
+                                                            "properties": {
+                                                                "due_on": {
+                                                                    "type": [
+                                                                        "string",
+                                                                        "null"
+                                                                    ]
+                                                                },
+                                                                "hours_left": {
+                                                                    "type": "number"
+                                                                },
+                                                                "first_renewal": {
+                                                                    "type": "boolean"
+                                                                },
+                                                                "complete": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "due_on",
+                                                                "hours_left",
+                                                                "first_renewal",
+                                                                "complete"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "name",
+                                                        "team",
+                                                        "goal",
+                                                        "last_active",
+                                                        "signals",
+                                                        "deals",
+                                                        "ce"
+                                                    ]
+                                                },
+                                                "plan": {
+                                                    "type": [
+                                                        "object",
+                                                        "null"
+                                                    ],
+                                                    "properties": {
+                                                        "goal": {
+                                                            "type": "string"
+                                                        },
+                                                        "week": {
+                                                            "type": "integer"
+                                                        },
+                                                        "weeks": {
+                                                            "type": "integer"
+                                                        },
+                                                        "done": {
+                                                            "type": "integer"
+                                                        },
+                                                        "total": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "goal",
+                                                        "week",
+                                                        "weeks",
+                                                        "done",
+                                                        "total"
+                                                    ]
+                                                },
+                                                "activity": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "conversations": {
+                                                            "type": "integer"
+                                                        },
+                                                        "appointments": {
+                                                            "type": "integer"
+                                                        },
+                                                        "posts": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ce_hours": {
+                                                            "type": "number"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "conversations",
+                                                        "appointments",
+                                                        "posts",
+                                                        "ce_hours"
+                                                    ]
+                                                },
+                                                "deals": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "stage": {
+                                                                "type": "string"
+                                                            },
+                                                            "side": {
+                                                                "type": "string"
+                                                            },
+                                                            "city": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "address": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "closed_at": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "stage",
+                                                            "side",
+                                                            "city",
+                                                            "address",
+                                                            "closed_at"
+                                                        ]
+                                                    }
+                                                },
+                                                "licences": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "state": {
+                                                                "type": "string"
+                                                            },
+                                                            "number": {
+                                                                "type": "string"
+                                                            },
+                                                            "status": {
+                                                                "type": "string"
+                                                            },
+                                                            "expires_on": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "state",
+                                                            "number",
+                                                            "status",
+                                                            "expires_on"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "agent",
+                                                "plan",
+                                                "activity",
+                                                "deals",
+                                                "licences"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/licence-journey/news": {
             "post": {
                 "operationId": "licence.news",
@@ -73822,6 +74945,36 @@
                     "team"
                 ],
                 "title": "OrganisationType"
+            },
+            "OversightSettingsRequest": {
+                "type": "object",
+                "description": "The brokerage's \"needs help\" thresholds (A16.1).",
+                "properties": {
+                    "quiet_days": {
+                        "type": "integer",
+                        "description": "Days without a sign-in, conversation or appointment.",
+                        "minimum": 3,
+                        "maximum": 60
+                    },
+                    "no_deal_days": {
+                        "type": "integer",
+                        "description": "Days without a new, open or closed deal.",
+                        "minimum": 30,
+                        "maximum": 365
+                    },
+                    "new_days": {
+                        "type": "integer",
+                        "description": "How long an agent counts as new.",
+                        "minimum": 30,
+                        "maximum": 365
+                    }
+                },
+                "required": [
+                    "quiet_days",
+                    "no_deal_days",
+                    "new_days"
+                ],
+                "title": "OversightSettingsRequest"
             },
             "ParseVoiceRequest": {
                 "type": "object",

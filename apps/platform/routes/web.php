@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Ask\AskController;
 use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\ApprovalsController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\OversightController;
 use App\Http\Controllers\Api\Brokerage\PoliciesController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
 use App\Http\Controllers\Api\Brokerage\SeatsController;
@@ -114,6 +115,7 @@ use App\Http\Controllers\Organisation\BrandingController;
 use App\Http\Controllers\Organisation\BrokerageIntegrationsController;
 use App\Http\Controllers\Organisation\DomainController;
 use App\Http\Controllers\Organisation\InvitationController;
+use App\Http\Controllers\Organisation\OversightPagesController;
 use App\Http\Controllers\Organisation\PoliciesPageController;
 use App\Http\Controllers\Organisation\SettingsController;
 use App\Http\Controllers\Organisation\SsoController;
@@ -557,6 +559,10 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     // People and permissions, and Brokerage › Policies (A15.2): the page, and the same actions as the API.
     Route::put('organisation/staff/{member}', [StaffController::class, 'update'])->whereNumber('member')->middleware('throttle:30,1,staff-update')->name('staff.update');
     Route::get('organisation/policies', PoliciesPageController::class)->name('policies.index');
+    // Agent oversight (A16.1): who needs help, deals at risk, an agent's profile.
+    Route::get('organisation/oversight', [OversightPagesController::class, 'index'])->name('oversight.index');
+    Route::get('organisation/oversight/agents/{member}', [OversightPagesController::class, 'show'])->whereNumber('member')->name('oversight.agent');
+    Route::put('organisation/oversight/settings', [OversightController::class, 'settings'])->middleware('throttle:20,1,oversight-settings')->name('oversight.settings');
     // One approvals queue (A15.3): posts, public pages and escalated questions.
     Route::get('organisation/approvals', ApprovalsPageController::class)->name('approvals.index');
     Route::post('organisation/approvals/{kind}/{item}', [ApprovalsController::class, 'act'])->whereIn('kind', ['post', 'page', 'question'])->where('item', '[A-Za-z0-9-]{1,80}')->middleware('throttle:60,1,approvals-act')->name('approvals.act');

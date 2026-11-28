@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Bookings\BookingController;
 use App\Http\Controllers\Api\Brokerage\ApprovalsController;
 use App\Http\Controllers\Api\Brokerage\BrokerageSetupController;
 use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
+use App\Http\Controllers\Api\Brokerage\OversightController;
 use App\Http\Controllers\Api\Brokerage\PoliciesController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
 use App\Http\Controllers\Api\Brokerage\SeatsController;
@@ -608,6 +609,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // People and permissions, and brokerage rules checked against TREC (A15.2).
     Route::get('organisation/staff', [StaffController::class, 'index'])->name('api.brokerage.staff');
     Route::put('organisation/staff/{member}', [StaffController::class, 'update'])->whereNumber('member')->middleware('throttle:30,1,api-staff')->name('api.brokerage.staff.update');
+    // Agent oversight (A16.1): agents needing help, deals at risk, an agent's profile with privacy rules.
+    Route::get('organisation/oversight', [OversightController::class, 'index'])->name('api.brokerage.oversight');
+    Route::get('organisation/oversight/agents/{member}', [OversightController::class, 'show'])->whereNumber('member')->name('api.brokerage.oversight.agent');
+    Route::put('organisation/oversight/settings', [OversightController::class, 'settings'])->middleware('throttle:20,1,api-oversight-settings')->name('api.brokerage.oversight.settings');
+    Route::get('me/broker-view', [OversightController::class, 'mine'])->name('api.me.broker-view');
     Route::get('organisation/approvals', [ApprovalsController::class, 'index'])->name('api.brokerage.approvals');
     Route::post('organisation/approvals/{kind}/{item}', [ApprovalsController::class, 'act'])->whereIn('kind', ['post', 'page', 'question'])->where('item', '[A-Za-z0-9-]{1,80}')->middleware('throttle:60,1,api-approvals-act')->name('api.brokerage.approvals.act');
     Route::put('organisation/approvals/settings', [ApprovalsController::class, 'settings'])->middleware('throttle:20,1,api-approvals-settings')->name('api.brokerage.approvals.settings');

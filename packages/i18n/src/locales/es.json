@@ -101,7 +101,8 @@
     "farming": "Prospección por zona",
     "approvals": "Aprobaciones",
     "providerJoin": "Inscripción",
-    "serviceProviders": "Proveedores de servicios"
+    "serviceProviders": "Proveedores de servicios",
+    "oversight": "Agentes y operaciones"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2369,7 +2370,9 @@
         "provider_licence.rechecked": "Se volvió a verificar la licencia del proveedor",
         "provider_licence.document_viewed": "Se vio la identificación con foto de un proveedor",
         "provider.profile_published": "Se publicó el perfil del proveedor",
-        "provider.profile_blocked": "Se retuvo el perfil del proveedor por la redacción"
+        "provider.profile_blocked": "Se retuvo el perfil del proveedor por la redacción",
+        "oversight.settings": "Se cambió cuándo se señala a los agentes",
+        "oversight.profile_viewed": "Se vio el resumen de un agente"
       }
     }
   },
@@ -11225,6 +11228,80 @@
         "review": "Revisar",
         "back": "Aprobaciones"
       }
+    },
+    "oversight": {
+      "title": "Agentes y operaciones",
+      "purpose": "Quién podría necesitar ayuda y qué operaciones están en riesgo. Usted ve cantidades y etapas, nunca los clientes de sus agentes.",
+      "teamPurpose": "Quién en {{team}} podría necesitar ayuda y qué operaciones están en riesgo.",
+      "counts": "{{needHelp}} de {{agents}} agentes podrían necesitar ayuda · {{deals}} operaciones en riesgo",
+      "needHelp": "Agentes que podrían necesitar ayuda",
+      "allGood": "Todos van bien",
+      "allGoodHint": "Ningún agente tiene una señal en este momento. REOS revisa de nuevo todos los días.",
+      "risk": "Operaciones en riesgo",
+      "noRisk": "No hay operaciones en riesgo",
+      "noRiskHint": "Las operaciones aparecen aquí cuando una fecha clave está cerca o ya pasó, o si no hay avance en 30 días.",
+      "signals": {
+        "quiet": "Sin actividad por {{days}} días",
+        "no_deal": "Sin operaciones en {{days}} días",
+        "ce_behind": "Atrasado en educación continua",
+        "plan_behind": "Atrasado en su plan",
+        "deadline_missed": "Venció una fecha límite",
+        "new": "Agente nuevo"
+      },
+      "reasons": {
+        "date_soon": "Fecha clave en menos de 72 horas",
+        "date_missed": "Fecha clave vencida",
+        "stuck": "Sin avance en 30 días"
+      },
+      "lastActive": "Activo por última vez el {{date}}",
+      "neverActive": "Aún sin actividad",
+      "deals": "{{active}} activas · {{underContract}} bajo contrato · {{closed}} cerradas en 90 días",
+      "ceDue": "Educación continua: faltan {{hours}} horas, vence el {{date}}",
+      "ceDone": "Educación continua completa para esta renovación",
+      "sae": "SAE (primera renovación)",
+      "open": "Abrir a {{name}}",
+      "nextDate": "Siguiente: {{kind}} el {{date}}",
+      "privacy": "Privacidad: usted ve cantidades y etapas. Los nombres de clientes, contactos, partes y notas se quedan con el agente. Las direcciones solo aparecen en operaciones bajo contrato.",
+      "profile": {
+        "plan": "Plan",
+        "planWeek": "Semana {{week}} de {{weeks}} · {{done}} de {{total}} tareas listas",
+        "month": "Este mes",
+        "conversations": "Conversaciones",
+        "appointments": "Citas",
+        "posts": "Publicaciones",
+        "ceHours": "Horas de educación continua",
+        "deals": "Operaciones",
+        "noDeals": "Aún no hay operaciones",
+        "licences": "Licencias",
+        "back": "Todos los agentes",
+        "dealRow": "{{stage}} · {{side}} · {{place}}"
+      },
+      "stages": {
+        "active": "Activa",
+        "under_contract": "Bajo contrato",
+        "closed": "Cerrada",
+        "cancelled": "Cancelada"
+      },
+      "sides": {
+        "buy": "Comprador",
+        "sell": "Vendedor",
+        "lease": "Arrendamiento",
+        "both": "Ambas partes"
+      },
+      "settings": {
+        "title": "Cuándo señalar a un agente",
+        "quiet": "Sin actividad después de (días)",
+        "noDeal": "Sin operaciones después de (días)",
+        "new": "Nuevo durante (días)",
+        "save": "Guardar",
+        "saved": "Guardado."
+      },
+      "mine": {
+        "title": "Lo que ve mi bróker",
+        "purpose": "Su bróker ve este resumen de su trabajo, nunca sus clientes, contactos ni notas.",
+        "none": "Usted no está en una correduría."
+      },
+      "onTrack": "Van bien"
     }
   }
 }

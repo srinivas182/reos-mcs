@@ -136,3 +136,33 @@ export function detailText(item: ApprovalItem, key: string): string | null {
 
   return typeof v === 'string' && v !== '' ? v : null;
 }
+
+export type OversightBoard = Got<'/organisation/oversight'>['data'];
+export type OversightAgent = OversightBoard['agents'][number];
+export type OversightProfile = Got<'/organisation/oversight/agents/{member}'>['data'];
+export type OversightSignal = OversightAgent['signals'][number];
+
+/** Agents needing help and deals at risk (A16.1). */
+export async function loadOversight(): Promise<OversightBoard | null> {
+  const { data } = await api().GET('/organisation/oversight');
+
+  return data ? data.data : null;
+}
+
+export async function loadOversightAgent(id: number): Promise<OversightProfile | null> {
+  const { data } = await api().GET('/organisation/oversight/agents/{member}', { params: { path: { member: id } } });
+
+  return data ? data.data : null;
+}
+
+/** What my broker sees (A16.1): my own summary, exactly as my broker sees it. */
+export async function loadBrokerView(): Promise<OversightProfile | null> {
+  const { data } = await api().GET('/me/broker-view');
+
+  return data ? data.data : null;
+}
+
+/** Agents with a real signal (a new agent alone isn't one). */
+export function needingHelp(board: OversightBoard): OversightAgent[] {
+  return board.agents.filter((a) => a.signals.some((s) => s !== 'new'));
+}
