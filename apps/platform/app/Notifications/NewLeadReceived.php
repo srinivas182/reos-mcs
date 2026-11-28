@@ -11,7 +11,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 /** Someone signed in at an open house or wrote from the agent's page (B14.3a); opens the contact. */
 final class NewLeadReceived extends CentreNotification
 {
-    /** @param 'open_house'|'page' $source */
+    /** @param 'open_house'|'page'|'team' $source */
     public function __construct(public readonly string $source, public readonly string $name, public readonly string $contact) {}
 
     public function kind(): NotificationKind

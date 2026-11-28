@@ -2,6 +2,7 @@ import type { InertiaLinkProps } from '@inertiajs/react';
 import type { LucideIcon } from 'lucide-react';
 import {
     BookOpen,
+    Route,
     ChartColumn,
     Inbox,
     CalendarDays,
@@ -99,6 +100,7 @@ import { index as ceComplianceIndex } from '@/routes/ce-compliance';
 import { index as providerAgents } from '@/routes/provider-agents';
 import { index as providerNetworkIndex } from '@/routes/provider-network';
 import { index as reportsIndex } from '@/routes/reports';
+import { index as teamIndex, leads as teamLeads } from '@/routes/team';
 import { index as oversightIndex } from '@/routes/oversight';
 import { index as policiesIndex } from '@/routes/policies';
 import { show as providerJoin } from '@/routes/provider-join';
@@ -163,6 +165,8 @@ export type NavLabel =
     | 'brokerageReports'
     | 'agentsInMyAreas'
     | 'providerRequests'
+    | 'teamsAndRouting'
+    | 'teamLeads'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -331,6 +335,8 @@ export function roleNavigation(
             item('podAndChallenges', Trophy, podIndex(), '/pod'),
             // Verified providers (B15.3): licence checked, areas and services.
             item('serviceProviders', Handshake, providersIndex(), '/providers'),
+            // Team leads to claim and split sheets to sign (A17.3).
+            item('teamLeads', Inbox, teamLeads(), '/team/leads'),
             // Requests from providers, connections and my choices (B16.2).
             item(
                 'providerRequests',
@@ -442,7 +448,8 @@ export function roleNavigation(
             ),
             // Recruiting: candidates who asked for broker offers (A10.3b).
             item('recruiting', UserPlus, recruitingIndex(), '/recruiting'),
-            planned('teamsAndRouting'),
+            // Lead routing, the rotation and split sheets (A17.3), for team leaders.
+            item('teamsAndRouting', Route, teamIndex(), '/team'),
             // Closings matched to the transaction tool, and training (A16.3).
             item(
                 'brokerageReports',

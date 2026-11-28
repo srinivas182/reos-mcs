@@ -106,7 +106,9 @@
     "ceCompliance": "Cumplimiento de educación continua",
     "brokerageReports": "Informes",
     "agentsInMyAreas": "Agentes en mis zonas",
-    "providerRequests": "Solicitudes de proveedores"
+    "providerRequests": "Solicitudes de proveedores",
+    "teamsAndRouting": "Equipo y asignación",
+    "teamLeads": "Prospectos del equipo"
   },
   "tour": {
     "stepOf": "Paso {{step}} de {{total}}",
@@ -2396,7 +2398,16 @@
         "recruiting.sponsorship_started": "Patrocinó la ayuda de IA de un candidato",
         "recruiting.sponsorship_cap": "Cambió un límite de IA patrocinada",
         "recruiting.sponsorship_ended": "Terminó la ayuda de IA patrocinada de un candidato",
-        "recruiting.agent_invited": "Invitó a un agente a conversar"
+        "recruiting.agent_invited": "Invitó a un agente a conversar",
+        "team.routing_changed": "Cambió las reglas de asignación de prospectos",
+        "team.rotation_changed": "Cambió la rotación de prospectos",
+        "team.lead_claim": "Reclamó un prospecto del equipo",
+        "team.lead_round_robin": "Asignó un prospecto del equipo por turno",
+        "team.lead_fallback": "Reasignó un prospecto del equipo no reclamado",
+        "team.lead_leader": "Envió un prospecto del equipo al líder",
+        "team.agreement_changed": "Cambió el acuerdo del equipo",
+        "team.split_sent": "Envió una hoja de reparto",
+        "team.split_signed": "Firmó una hoja de reparto"
       }
     }
   },
@@ -5740,7 +5751,8 @@
       "approval_overdue": "Aprobaciones que esperan demasiado",
       "course_assigned": "Cursos que asigna su correduría",
       "sponsorship": "Cambios de patrocinio",
-      "provider_request": "Solicitudes de contacto de proveedores"
+      "provider_request": "Solicitudes de contacto de proveedores",
+      "split_sheet": "Hojas de reparto para firmar"
     },
     "digest": {
       "subject": {
@@ -11067,7 +11079,8 @@
       "open_house": "{{name}} se registró en su casa abierta",
       "page": "{{name}} le escribió desde su página",
       "body": "Ya está en sus contactos, con un seguimiento para mañana.",
-      "open": "Abrir contacto"
+      "open": "Abrir contacto",
+      "team": "{{name}} es un nuevo prospecto del equipo para usted"
     },
     "referrals": {
       "self": "No puede referirse un cliente a usted mismo.",
@@ -11718,6 +11731,113 @@
       "atRisk_other": "{{count}} operaciones en riesgo",
       "ceDue_one": "{{count}} agente con CE pendiente",
       "ceDue_other": "{{count}} agentes con CE pendiente"
+    }
+  },
+  "teams": {
+    "routing": {
+      "title": "Asignación de prospectos",
+      "purpose": "Haga llegar cada prospecto al agente correcto rápidamente. Los prospectos reclamados van al CRM del agente con una tarea de seguimiento.",
+      "method": "Método",
+      "methods": {
+        "first_to_claim": "El primero en reclamar",
+        "round_robin": "Por turnos"
+      },
+      "claimMinutes": "Tiempo para reclamar (minutos)",
+      "fallback": "Si nadie reclama",
+      "fallbacks": {
+        "round_robin": "El siguiente agente en turno",
+        "leader": "El líder del equipo"
+      },
+      "offStart": "Inicio de horario fuera de oficina",
+      "offEnd": "Fin de horario fuera de oficina",
+      "sources": "Fuentes a las que aplica (ninguna marcada: todas)",
+      "sourceNames": {
+        "website": "Sitio web",
+        "zillow": "Zillow",
+        "realtor_com": "Realtor.com",
+        "open_house": "Casa abierta",
+        "referral": "Referido",
+        "other": "Otra"
+      },
+      "save": "Guardar reglas",
+      "saved": "Reglas guardadas.",
+      "rotation": "Agentes en rotación",
+      "inRotation": "{{name}} en rotación",
+      "leads": "Prospectos recientes",
+      "leadsEmpty": "Aún no hay prospectos del equipo",
+      "leadsEmptyHint": "Agregue un prospecto o conecte una fuente. Cada uno se asigna según sus reglas.",
+      "addLead": "Agregar un prospecto",
+      "leadName": "Nombre",
+      "leadEmail": "Correo",
+      "leadPhone": "Teléfono",
+      "leadSource": "Fuente",
+      "leadLanguage": "Idioma",
+      "route": "Asignar prospecto",
+      "statuses": {
+        "offered": "Esperando que lo reclamen",
+        "claimed": "Reclamado por {{agent}}",
+        "assigned": "Asignado a {{agent}}",
+        "leader": "Con el líder del equipo"
+      },
+      "offHoursReply": "Respuesta fuera de horario enviada",
+      "claim": "Reclamar",
+      "claimFor": "Reclamar a {{name}}",
+      "claimed": "Es suyo. {{name}} está en sus contactos con una tarea de seguimiento.",
+      "claimBy": "Reclamar antes de las {{time}}",
+      "offered": "Prospectos para reclamar",
+      "offeredEmpty": "No hay prospectos para reclamar ahora",
+      "offeredEmptyHint": "Cuando su equipo recibe un prospecto, usted tiene unos minutos para reclamarlo.",
+      "offerTitle": "Nuevo prospecto para {{team}}: reclámelo",
+      "offerBody": "El primero en reclamarlo en {{minutes}} minutos se lo queda.",
+      "note": "Prospecto del equipo {{team}} ({{source}}). {{message}}",
+      "draft": "Hola, {{name}}. Gracias por comunicarse con {{team}}. ¿Cuándo es un buen momento para hablar?",
+      "autoReply": "Gracias por comunicarse con {{team}}. Un agente le llamará a primera hora de la mañana, o responda con un buen horario para llamarle.",
+      "errors": {
+        "taken": "Otro agente reclamó este prospecto primero.",
+        "expired": "Se acabó el tiempo para reclamar este prospecto."
+      }
+    },
+    "splits": {
+      "title": "Hojas de reparto",
+      "purpose": "Repartos del equipo según su acuerdo, firmados en la aplicación. Los pagos se hacen en su herramienta de contabilidad.",
+      "agreement": "Acuerdo del equipo",
+      "brokeragePercent": "Parte de la agencia (%)",
+      "teamPercent": "Parte del equipo (%)",
+      "agentPercent": "El agente recibe el {{percent}}%",
+      "saveAgreement": "Guardar acuerdo",
+      "new": "Nueva hoja de reparto",
+      "agent": "Agente",
+      "property": "Propiedad",
+      "closingOn": "Fecha de cierre",
+      "gross": "Comisión bruta ($)",
+      "send": "Enviar para firma",
+      "line": "{{property}} · cierre el {{date}} · bruto {{gross}}",
+      "shares": "Agencia {{brokerage}} · equipo {{team}} · agente {{agent}}",
+      "statuses": {
+        "sent": "Esperando firma",
+        "signed": "Firmada",
+        "questioned": "Pregunta enviada"
+      },
+      "exported": "En QuickBooks",
+      "sign": "Firmar",
+      "signFor": "Firmar el reparto de {{property}}",
+      "signed": "Firmada. Su líder de equipo puede verla.",
+      "ask": "Hacer una pregunta",
+      "askFor": "Hacer una pregunta sobre {{property}}",
+      "questionLabel": "Su pregunta",
+      "questionBody": "Sobre la hoja de reparto de {{property}}: {{text}}",
+      "empty": "Aún no hay hojas de reparto",
+      "emptyHint": "Aquí aparecen las hojas de reparto de los cierres de su equipo.",
+      "notifyTitle": "Hoja de reparto para firmar: {{property}}",
+      "notifyBody": "De {{team}}, según su acuerdo de equipo.",
+      "errors": {
+        "over": "Las partes de la agencia y del equipo no pueden sumar más del 100%.",
+        "signed": "Esta hoja de reparto ya está firmada."
+      }
+    },
+    "leads": {
+      "title": "Prospectos del equipo",
+      "purpose": "Reclame los prospectos del equipo antes de que se acabe el tiempo y firme sus hojas de reparto."
     }
   }
 }

@@ -100,6 +100,7 @@ use App\Http\Controllers\Api\Studio\CandidateStudioController;
 use App\Http\Controllers\Api\Studio\CelebrationController;
 use App\Http\Controllers\Api\Studio\StudioController;
 use App\Http\Controllers\Api\Studio\VideoController;
+use App\Http\Controllers\Api\Teams\TeamController;
 use App\Http\Controllers\Api\Todos\TodoController;
 use App\Http\Controllers\Api\VideoPractice\VideoPracticeController;
 use App\Http\Controllers\Api\VirtualBroker\VirtualBrokerController;
@@ -637,6 +638,20 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('organisation/staff', [StaffController::class, 'index'])->name('api.brokerage.staff');
     Route::put('organisation/staff/{member}', [StaffController::class, 'update'])->whereNumber('member')->middleware('throttle:30,1,api-staff')->name('api.brokerage.staff.update');
     // Agent oversight (A16.1): agents needing help, deals at risk, an agent's profile with privacy rules.
+    // Teams (A17.3): lead routing with claim timers and fallback, and split sheets.
+    Route::prefix('team')->name('api.team.')->controller(TeamController::class)->group(function () {
+        Route::get('routing', 'routing')->name('routing');
+        Route::put('routing', 'rules')->middleware('throttle:20,1,api-team-routing')->name('routing.rules');
+        Route::put('routing/members/{agent}', 'member')->whereNumber('agent')->middleware('throttle:60,1,api-team-routing')->name('routing.member');
+        Route::post('leads', 'lead')->middleware('throttle:60,1,api-team-leads')->name('leads.store');
+        Route::post('leads/{offer}/claim', 'claim')->whereUuid('offer')->middleware('throttle:60,1,api-team-claim')->name('leads.claim');
+        Route::get('mine', 'mine')->name('mine');
+        Route::get('splits', 'splits')->name('splits');
+        Route::put('agreement', 'agreement')->middleware('throttle:20,1,api-team-agreement')->name('agreement');
+        Route::post('splits', 'sendSplit')->middleware('throttle:30,1,api-team-splits')->name('splits.store');
+        Route::post('splits/{sheet}/sign', 'sign')->whereUuid('sheet')->middleware('throttle:30,1,api-team-splits')->name('splits.sign');
+        Route::post('splits/{sheet}/question', 'question')->whereUuid('sheet')->middleware('throttle:10,1,api-team-splits')->name('splits.question');
+    });
     // Recruiting (A17.2): sponsored AI help, and licensed agents open to a move.
     Route::get('organisation/recruiting/agents', [ApiRecruitingController::class, 'agents'])->name('api.brokerage.recruiting.agents');
     Route::post('organisation/recruiting/agents/{agent}/invite', [ApiRecruitingController::class, 'invite'])->whereNumber('agent')->middleware('throttle:20,1,api-recruiting-invite')->name('api.brokerage.recruiting.invite');

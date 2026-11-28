@@ -7254,6 +7254,170 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/team/routing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lead routing (team leader) */
+        get: operations["team.routing"];
+        /** Change the routing rules */
+        put: operations["team.routing.rules"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/routing/members/{agent}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** An agent in or out of the rotation */
+        put: operations["team.routing.member"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a lead for the team
+         * @description It's routed at once: offered to claim, or assigned in turn.
+         */
+        post: operations["team.leads.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/leads/{offer}/claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Claim a team lead (agent)
+         * @description The first to claim in time gets it, in their CRM with a follow-up task. 422 when it's taken or the time is up.
+         */
+        post: operations["team.leads.claim"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** My team leads and split sheets (agent) */
+        get: operations["team.mine"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/splits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Split sheets and the team agreement (team leader) */
+        get: operations["team.splits"];
+        put?: never;
+        /** Send a split sheet for a closing */
+        post: operations["team.splits.store"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/agreement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Change the team agreement */
+        put: operations["team.agreement"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/splits/{sheet}/sign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign a split sheet (agent) */
+        post: operations["team.splits.sign"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/team/splits/{sheet}/question": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ask about a split sheet (agent)
+         * @description Opens a chat with the team leader.
+         */
+        post: operations["team.splits.question"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/me/phone": {
         parameters: {
             query?: never;
@@ -7843,6 +8007,14 @@ export interface components {
             /** Format: email */
             email?: string | null;
             areas?: string[] | null;
+        };
+        /**
+         * AgreementRequest
+         * @description The team agreement (A17.3): the brokerage's and the team's percent; the agent gets the rest.
+         */
+        AgreementRequest: {
+            brokerage_percent: number;
+            team_percent: number;
         };
         /**
          * AnswerQuestionRequest
@@ -9315,6 +9487,28 @@ export interface components {
             lines: string;
         };
         /**
+         * RotationMemberRequest
+         * @description An agent in the rotation (A17.3): on or off, and the languages they take.
+         */
+        RotationMemberRequest: {
+            active: boolean;
+            languages: ("en" | "es")[];
+        };
+        /**
+         * RoutingRulesRequest
+         * @description Lead routing rules (A17.3): sources, method, claim time, fallback and off hours.
+         */
+        RoutingRulesRequest: {
+            sources: ("website" | "zillow" | "realtor_com" | "open_house" | "referral" | "other")[];
+            /** @enum {string} */
+            method: "first_to_claim" | "round_robin";
+            claim_minutes: number;
+            /** @enum {string} */
+            fallback: "round_robin" | "leader";
+            off_start: string;
+            off_end: string;
+        };
+        /**
          * RulesRequest
          * @description Accepting the network rules: the version the provider read (B15.2).
          */
@@ -9593,6 +9787,26 @@ export interface components {
             user: components["schemas"]["MeResource"];
         };
         /**
+         * SplitQuestionRequest
+         * @description A question about a split sheet (A17.3), sent to the team leader.
+         */
+        SplitQuestionRequest: {
+            text: string;
+        };
+        /**
+         * SplitSheetRequest
+         * @description A split sheet for a closing (A17.3).
+         */
+        SplitSheetRequest: {
+            agent_id: number;
+            property: string;
+            /** Format: date-time */
+            closing_on: string;
+            gross_cents: number;
+            /** @enum {string|null} */
+            lead_source?: "website" | "zillow" | "realtor_com" | "open_house" | "referral" | "other" | null;
+        };
+        /**
          * SponsorCapRequest
          * @description A candidate's sponsored AI cap (A17.2).
          */
@@ -9691,6 +9905,21 @@ export interface components {
                 /** Format: date-time */
                 signed_in_at?: string | null;
             }[];
+        };
+        /**
+         * TeamLeadRequest
+         * @description A lead for the team (A17.3), added by the team leader or from a source.
+         */
+        TeamLeadRequest: {
+            /** @enum {string} */
+            source: "website" | "zillow" | "realtor_com" | "open_house" | "referral" | "other";
+            name: string;
+            /** Format: email */
+            email?: string | null;
+            phone?: string | null;
+            /** @enum {string|null} */
+            language?: "en" | "es" | null;
+            message?: string | null;
         };
         /**
          * TextNumberRequest
@@ -9871,6 +10100,7 @@ export type SchemaActiveRoleRequest = components['schemas']['ActiveRoleRequest']
 export type SchemaAddContactRequest = components['schemas']['AddContactRequest'];
 export type SchemaAddLicenceRequest = components['schemas']['AddLicenceRequest'];
 export type SchemaAgentPageRequest = components['schemas']['AgentPageRequest'];
+export type SchemaAgreementRequest = components['schemas']['AgreementRequest'];
 export type SchemaAnswerQuestionRequest = components['schemas']['AnswerQuestionRequest'];
 export type SchemaAppConfigResource = components['schemas']['AppConfigResource'];
 export type SchemaApprovalActionRequest = components['schemas']['ApprovalActionRequest'];
@@ -9976,6 +10206,8 @@ export type SchemaReviewProviderRequest = components['schemas']['ReviewProviderR
 export type SchemaReviewVideoRequest = components['schemas']['ReviewVideoRequest'];
 export type SchemaRole = components['schemas']['Role'];
 export type SchemaRosterContactsRequest = components['schemas']['RosterContactsRequest'];
+export type SchemaRotationMemberRequest = components['schemas']['RotationMemberRequest'];
+export type SchemaRoutingRulesRequest = components['schemas']['RoutingRulesRequest'];
 export type SchemaRulesRequest = components['schemas']['RulesRequest'];
 export type SchemaSaveCalendarEventRequest = components['schemas']['SaveCalendarEventRequest'];
 export type SchemaSaveCertificateRequest = components['schemas']['SaveCertificateRequest'];
@@ -9994,6 +10226,8 @@ export type SchemaSessionOfferRequest = components['schemas']['SessionOfferReque
 export type SchemaShareContactsRequest = components['schemas']['ShareContactsRequest'];
 export type SchemaShareRequest = components['schemas']['ShareRequest'];
 export type SchemaSignInResource = components['schemas']['SignInResource'];
+export type SchemaSplitQuestionRequest = components['schemas']['SplitQuestionRequest'];
+export type SchemaSplitSheetRequest = components['schemas']['SplitSheetRequest'];
 export type SchemaSponsorCapRequest = components['schemas']['SponsorCapRequest'];
 export type SchemaStartConnectionRequest = components['schemas']['StartConnectionRequest'];
 export type SchemaStartConversationRequest = components['schemas']['StartConversationRequest'];
@@ -10002,6 +10236,7 @@ export type SchemaStartRolePlayRequest = components['schemas']['StartRolePlayReq
 export type SchemaStateResource = components['schemas']['StateResource'];
 export type SchemaStateStatus = components['schemas']['StateStatus'];
 export type SchemaSyncVisitsRequest = components['schemas']['SyncVisitsRequest'];
+export type SchemaTeamLeadRequest = components['schemas']['TeamLeadRequest'];
 export type SchemaTextNumberRequest = components['schemas']['TextNumberRequest'];
 export type SchemaTextSwitchRequest = components['schemas']['TextSwitchRequest'];
 export type SchemaTodoResource = components['schemas']['TodoResource'];
@@ -33457,6 +33692,545 @@ export interface operations {
                 };
             };
             401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.routing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            team: string;
+                            rules: {
+                                sources: string[];
+                                /** @enum {string} */
+                                method: "first_to_claim" | "round_robin";
+                                claim_minutes: number;
+                                /** @enum {string} */
+                                fallback: "round_robin" | "leader";
+                                off_start: string;
+                                off_end: string;
+                            };
+                            members: {
+                                id: number;
+                                name: string;
+                                active: boolean;
+                                languages: string[];
+                                last_assigned_at: string | null;
+                            }[];
+                            leads: {
+                                id: string;
+                                source: string;
+                                name: string;
+                                language: string | null;
+                                status: string;
+                                how: string | null;
+                                agent: string | null;
+                                claim_by: string | null;
+                                created_at: string;
+                                auto_reply: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "team.routing.rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoutingRulesRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            team: string;
+                            rules: {
+                                sources: string[];
+                                /** @enum {string} */
+                                method: "first_to_claim" | "round_robin";
+                                claim_minutes: number;
+                                /** @enum {string} */
+                                fallback: "round_robin" | "leader";
+                                off_start: string;
+                                off_end: string;
+                            };
+                            members: {
+                                id: number;
+                                name: string;
+                                active: boolean;
+                                languages: string[];
+                                last_assigned_at: string | null;
+                            }[];
+                            leads: {
+                                id: string;
+                                source: string;
+                                name: string;
+                                language: string | null;
+                                status: string;
+                                how: string | null;
+                                agent: string | null;
+                                claim_by: string | null;
+                                created_at: string;
+                                auto_reply: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.routing.member": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                agent: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RotationMemberRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            team: string;
+                            rules: {
+                                sources: string[];
+                                /** @enum {string} */
+                                method: "first_to_claim" | "round_robin";
+                                claim_minutes: number;
+                                /** @enum {string} */
+                                fallback: "round_robin" | "leader";
+                                off_start: string;
+                                off_end: string;
+                            };
+                            members: {
+                                id: number;
+                                name: string;
+                                active: boolean;
+                                languages: string[];
+                                last_assigned_at: string | null;
+                            }[];
+                            leads: {
+                                id: string;
+                                source: string;
+                                name: string;
+                                language: string | null;
+                                status: string;
+                                how: string | null;
+                                agent: string | null;
+                                claim_by: string | null;
+                                created_at: string;
+                                auto_reply: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.leads.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TeamLeadRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.leads.claim": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                offer: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                            contact: string | null;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.mine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        offered: {
+                            id: string;
+                            source: string;
+                            name: string;
+                            language: string | null;
+                            status: string;
+                            how: string | null;
+                            agent: string | null;
+                            claim_by: string | null;
+                            created_at: string;
+                            auto_reply: string | null;
+                        }[];
+                        splits: {
+                            id: string;
+                            agent: string;
+                            property: string;
+                            closing_on: string;
+                            lead_source: string | null;
+                            gross: number;
+                            brokerage: number;
+                            team: number;
+                            agent_share: number;
+                            status: string;
+                            signed_at: string | null;
+                            exported_at: string | null;
+                        }[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+        };
+    };
+    "team.splits": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            team: string;
+                            agreement: {
+                                brokerage_percent: number;
+                                team_percent: number;
+                                agent_percent: number;
+                            };
+                            sheets: {
+                                id: string;
+                                agent: string;
+                                property: string;
+                                closing_on: string;
+                                lead_source: string | null;
+                                gross: number;
+                                brokerage: number;
+                                team: number;
+                                agent_share: number;
+                                status: string;
+                                signed_at: string | null;
+                                exported_at: string | null;
+                            }[];
+                            agents: {
+                                id: number;
+                                name: string;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "team.splits.store": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SplitSheetRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.agreement": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AgreementRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage_percent: number;
+                            team_percent: number;
+                            agent_percent: number;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.splits.sign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            id: string;
+                            status: string;
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "team.splits.question": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sheet: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SplitQuestionRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        conversation: string;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
             /** @description Too many requests */
             429: {
                 headers: {

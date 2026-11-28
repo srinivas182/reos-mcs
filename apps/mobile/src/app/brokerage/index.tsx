@@ -55,6 +55,7 @@ export default function BrokerageScreen() {
           <ListRow icon={UserMinus} title={t('brokerage.sponsorship.title')} subtitle={t('brokerage.sponsorship.purpose')} onPress={() => router.push('/brokerage/sponsorship')} />
           <ListRow icon={Sun} title={t('brokerage.brief.title')} subtitle={t('brokerage.brief.openOversight')} onPress={() => router.push('/brokerage/brief')} />
           <ListRow icon={ChartColumn} title={t('brokerage.reports.title')} subtitle={t('brokerage.reports.purpose')} onPress={() => router.push('/brokerage/reports')} />
+          <ListRow icon={Users} title={t('teams.routing.title')} subtitle={t('teams.routing.purpose')} onPress={() => router.push('/team')} />
           <ListRow icon={UserPlus} title={t('recruiting.title')} subtitle={t('recruiting.agents.purpose')} onPress={() => router.push('/brokerage/recruiting')} />
           <ListRow icon={TriangleAlert} title={t('brokerage.oversight.title')} subtitle={t('brokerage.oversight.purpose')} onPress={() => router.push('/brokerage/oversight')} />
           <ListRow icon={ClipboardCheck} title={t('brokerage.approvals.title')} subtitle={t('brokerage.approvals.purpose')} onPress={() => router.push('/brokerage/approvals')} />

@@ -95,6 +95,9 @@ enum NotificationKind: string
     /** A verified provider asks to connect (B16.1). */
     case ProviderRequest = 'provider_request';
 
+    /** A split sheet to sign (A17.3). */
+    case SplitSheet = 'split_sheet';
+
     public const INBOX = 'inbox';
 
     public const PUSH = 'push';
@@ -153,7 +156,7 @@ enum NotificationKind: string
             self::SessionBooked, self::SessionStarting, self::ClassCheck, self::ClassReport, self::ExamReminder, self::PassNews, self::BrokerOffer, self::LicenceFound, self::CeRenewal, self::StateRulesChanged, self::StateWentLive, self::WeeklyReport, self::Challenge, self::StudentQuestion, self::InstructorAnswer, self::Mentoring, self::CourseAssigned => 'learning',
             self::Invitation, self::SeatsRequested, self::BrokerAsked, self::SupportAccess, self::ApprovalExpiring, self::AvatarConsentEnded, self::ContentReview, self::PolicyQuestion, self::PostApproval, self::ApprovalOverdue, self::Sponsorship => 'organisation',
             self::IntegrationPaused, self::FlagRolledBack, self::ConnectionNeedsReconnect => 'tools',
-            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration, self::AgentFeedback, self::NewLead, self::Referral, self::InviteReward => 'deals',
+            self::DealDeadline, self::SignatureCompleted, self::MorningBrief, self::PolicyAnswer, self::ContractReview, self::PostDecision, self::Celebration, self::AgentFeedback, self::NewLead, self::Referral, self::InviteReward, self::SplitSheet => 'deals',
         };
     }
 
