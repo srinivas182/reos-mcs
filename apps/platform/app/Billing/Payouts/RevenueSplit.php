@@ -83,10 +83,10 @@ final readonly class RevenueSplit
     /** A refunded order: unpaid shares are cancelled; paid ones are taken back from the payee's Stripe account. */
     public function reverse(Order $order): void
     {
-        $lines = PayoutLine::query()->with('payout.account')->where('order_id', $order->id)->whereIn('status', [PayoutLineStatus::Pending, PayoutLineStatus::Paid])->get();
+        $lines = PayoutLine::query()->with('payout.account')->where('order_id', $order->id)->whereIn('status', [PayoutLineStatus::Pending, PayoutLineStatus::Held, PayoutLineStatus::Paid])->get();
 
         foreach ($lines as $line) {
-            if ($line->status === PayoutLineStatus::Pending) {
+            if ($line->status === PayoutLineStatus::Pending || $line->status === PayoutLineStatus::Held) {
                 $line->forceFill(['status' => PayoutLineStatus::Cancelled])->save();
 
                 continue;

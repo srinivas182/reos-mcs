@@ -355,8 +355,10 @@
         "pending": "próximo pago",
         "paid": "pagado",
         "cancelled": "reembolsado",
-        "reversed": "recuperado"
-      }
+        "reversed": "recuperado",
+        "held": "después de la sesión"
+      },
+      "held": "{{amount}} más cuando se realicen sus sesiones pagadas con puntos."
     }
   },
   "tabs": {
@@ -5005,7 +5007,8 @@
       "nextPayout": "Próximo pago · {{date}}",
       "lines": "Lo que ganó",
       "emptyTitle": "Aún no hay ganancias",
-      "empty": "Su parte de cada venta de curso o sesión aparece aquí en cuanto se paga."
+      "empty": "Su parte de cada venta de curso o sesión aparece aquí en cuanto se paga.",
+      "held": "Más {{amount}} por sesiones pagadas con puntos, que se pagan cuando se realicen."
     },
     "roles": {
       "seller": "Venta de la escuela",
@@ -5016,7 +5019,8 @@
       "pending": "Próximo pago",
       "paid": "Pagado",
       "cancelled": "Reembolsado",
-      "reversed": "Recuperado"
+      "reversed": "Recuperado",
+      "held": "Después de la sesión"
     },
     "simulator": {
       "eyebrow": "Simulador",
@@ -10158,7 +10162,9 @@
       "reviewsHint": "Las calificaciones bajas con comentario solo cuentan cuando usted las conserva.",
       "keep": "Conservar",
       "hide": "Ocultar",
-      "noReviews": "No hay calificaciones por revisar"
+      "noReviews": "No hay calificaciones por revisar",
+      "pointsFunded_one": "{{count}} sesión pagada con puntos con sus mentores este mes · {{amount}} financiados por su agencia",
+      "pointsFunded_other": "{{count}} sesiones pagadas con puntos con sus mentores este mes · {{amount}} financiados por su agencia"
     },
     "agent": {
       "assigned": "Su mentor",

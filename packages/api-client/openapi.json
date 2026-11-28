@@ -27888,6 +27888,9 @@
                                         "pending": {
                                             "type": "integer"
                                         },
+                                        "held": {
+                                            "type": "integer"
+                                        },
                                         "next_payout": {
                                             "type": "string"
                                         },
@@ -27948,6 +27951,7 @@
                                                         "type": "string",
                                                         "enum": [
                                                             "pending",
+                                                            "held",
                                                             "paid",
                                                             "cancelled",
                                                             "reversed"
@@ -28010,6 +28014,7 @@
                                         "net_this_month",
                                         "fee_percent",
                                         "pending",
+                                        "held",
                                         "next_payout",
                                         "account",
                                         "lines",

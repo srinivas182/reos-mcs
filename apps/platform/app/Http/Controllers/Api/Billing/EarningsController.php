@@ -24,7 +24,7 @@ final class EarningsController extends Controller
      * payouts are set up (`ready`, `onboarding`, `needsInfo`, or null).
      * Instructors and mentors only (404 for other roles).
      *
-     * @response array{month: string, net_this_month: int, fee_percent: int, pending: int, next_payout: string, account: array{kind: 'express'|'standard', state: 'ready'|'onboarding'|'needsInfo', requirements: int}|null, lines: list<array{id: int, product: string, role: 'seller'|'instructor'|'mentor', amount: int, status: 'pending'|'paid'|'cancelled'|'reversed', date: string|null}>, payouts: list<array{id: string, amount: int, status: 'sent'|'failed'|'sending', date: string|null}>}
+     * @response array{month: string, net_this_month: int, fee_percent: int, pending: int, held: int, next_payout: string, account: array{kind: 'express'|'standard', state: 'ready'|'onboarding'|'needsInfo', requirements: int}|null, lines: list<array{id: int, product: string, role: 'seller'|'instructor'|'mentor', amount: int, status: 'pending'|'held'|'paid'|'cancelled'|'reversed', date: string|null}>, payouts: list<array{id: string, amount: int, status: 'sent'|'failed'|'sending', date: string|null}>}
      */
     public function __invoke(#[CurrentUser] User $user, ActiveRole $roles, PayoutStatements $statements): JsonResponse
     {

@@ -11,6 +11,7 @@ use App\Billing\Ledger\MoneyPostings;
 use App\Billing\Ledger\Points;
 use App\Billing\OrderStatus;
 use App\Billing\Payouts\PayeeRole;
+use App\Billing\Payouts\PayoutLineStatus;
 use App\Billing\Payouts\RevenueSplit;
 use App\Billing\PriceInterval;
 use App\Billing\ProductKind;
@@ -20,6 +21,7 @@ use App\Enums\StateStatus;
 use App\Mentoring\MentorDirectory;
 use App\Models\Order;
 use App\Models\Organisation;
+use App\Models\PayoutLine;
 use App\Models\Price;
 use App\Models\Product;
 use App\Models\ProductSplit;
@@ -396,12 +398,24 @@ final readonly class SessionBookings
             ->update(['status' => 'cancelled', 'cancelled_at' => now()]);
     }
 
-    /** Ended sessions are complete (for rating and tasks). */
+    /**
+     * Ended sessions are complete (for rating and tasks), and the mentor's
+     * share of a points session is released for the next payout (A17.1).
+     */
     public function complete(): int
     {
-        return SessionBooking::query()->where('status', 'confirmed')->where('ends_at', '<=', now())
+        $done = SessionBooking::query()->where('status', 'confirmed')->where('ends_at', '<=', now())
             ->whereHas('session', static fn ($q) => $q->whereHas('participants', static fn ($p) => $p->where('role', VideoSessionParticipant::HOST)->whereNotNull('first_joined_at')))
-            ->update(['status' => 'completed']);
+            ->get(['id', 'order_id', 'paid_with']);
+
+        if ($done->isEmpty()) {
+            return 0;
+        }
+
+        SessionBooking::query()->whereIn('id', $done->modelKeys())->update(['status' => 'completed']);
+        PayoutLine::query()->whereIn('order_id', $done->where('paid_with', 'points')->pluck('order_id')->filter())->where('status', PayoutLineStatus::Held)->update(['status' => PayoutLineStatus::Pending]);
+
+        return $done->count();
     }
 
     /** @param  list<string>  $tags */
@@ -500,7 +514,16 @@ final readonly class SessionBookings
         ]);
         $booking->forceFill(['order_id' => $order->id])->save();
         $this->split->record($order);
+        // The mentor's share waits for the session to happen (A17.1, decision 2).
+        PayoutLine::query()->where('order_id', $order->id)->where('status', PayoutLineStatus::Pending)->update(['status' => PayoutLineStatus::Held]);
         $this->money->orderPaid($order);
+
+        // The brokerage funds points spent on its mentors (A17.1, decision 1).
+        $host = $price->product->seller_organisation_id === null ? null : Organisation::query()->find($price->product->seller_organisation_id);
+
+        if ($host !== null) {
+            $this->points->fundSession($host, $booking->price_cents, "session:{$booking->uuid}");
+        }
     }
 
     private function refund(SessionBooking $booking, User $actor, string $reason): void
@@ -514,6 +537,12 @@ final readonly class SessionBookings
         // Points come back as points, and the mentor's share is taken back (A13.1a).
         if ($booking->paid_with === 'points') {
             $this->points->giveBack($booking->student, (int) $booking->points, "session:{$booking->uuid}");
+            $host = $order->product->seller_organisation_id === null ? null : Organisation::query()->find($order->product->seller_organisation_id);
+
+            if ($host !== null) {
+                $this->points->unfundSession($host, (int) $booking->points, "session:{$booking->uuid}");
+            }
+
             $order->forceFill(['status' => OrderStatus::Refunded])->save();
             $this->split->reverse($order);
             $this->money->fullRefund($order);
