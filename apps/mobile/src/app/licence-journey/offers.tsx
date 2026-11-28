@@ -40,9 +40,7 @@ export default function OffersScreen() {
       <Text tone="muted">{t('licence.offers.purposeShort')}</Text>
       {problem ? <Callout tone="danger" title={problem} live /> : null}
       {offers && !offers.opted_in ? <EmptyState icon={<Icon icon={Building2} color="action" size={32} />} title={t('licence.offers.off')} description={t('licence.offers.offBody')} /> : null}
-      {offers && offers.opted_in && offers.offers.length === 0 ? (
-        <EmptyState icon={<Icon icon={Building2} color="action" size={32} />} title={t('licence.offers.empty')} description={t('licence.offers.emptyBody')} />
-      ) : null}
+      {offers && offers.opted_in && offers.offers.length === 0 ? <EmptyState icon={<Icon icon={Building2} color="action" size={32} />} title={t('licence.offers.empty')} description={t('licence.offers.emptyBody')} /> : null}
       {(offers?.offers ?? []).map((o) => (
         <Card key={o.id}>
           <Text variant="bodyLarge" weight="semibold">
@@ -53,6 +51,7 @@ export default function OffersScreen() {
             <Chip tone="neutral" label={t('licence.offers.office', { city: o.office_city })} />
             {o.fit ? <Chip tone="success" label={t('licence.offers.fit')} /> : null}
             {o.mentoring ? <Chip tone="info" label={t('licence.offers.mentoring')} /> : null}
+            {o.ai_help ? <Chip tone="info" label={t('licence.offers.aiHelp')} /> : null}
           </View>
           <Text>{`${o.monthly_fee_cents === 0 ? t('licence.offers.noFee') : t('licence.offers.fee', { fee: dollars(o.monthly_fee_cents, i18n.language) })}${o.fees ? ` · ${o.fees}` : ''}`}</Text>
           {o.training ? <Text>{`${t('licence.offers.training')}: ${o.training}`}</Text> : null}

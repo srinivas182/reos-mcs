@@ -44058,6 +44058,15 @@
                                                             "mentoring": {
                                                                 "type": "boolean"
                                                             },
+                                                            "ai_help": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "ai_credits": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "message": {
                                                                 "type": [
                                                                     "string",
@@ -44120,6 +44129,8 @@
                                                             "fees",
                                                             "training",
                                                             "mentoring",
+                                                            "ai_help",
+                                                            "ai_credits",
                                                             "message",
                                                             "status",
                                                             "rating",
@@ -44238,6 +44249,15 @@
                                                             "mentoring": {
                                                                 "type": "boolean"
                                                             },
+                                                            "ai_help": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "ai_credits": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "message": {
                                                                 "type": [
                                                                     "string",
@@ -44300,6 +44320,8 @@
                                                             "fees",
                                                             "training",
                                                             "mentoring",
+                                                            "ai_help",
+                                                            "ai_credits",
                                                             "message",
                                                             "status",
                                                             "rating",
@@ -44426,6 +44448,15 @@
                                                             "mentoring": {
                                                                 "type": "boolean"
                                                             },
+                                                            "ai_help": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "ai_credits": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "message": {
                                                                 "type": [
                                                                     "string",
@@ -44488,6 +44519,8 @@
                                                             "fees",
                                                             "training",
                                                             "mentoring",
+                                                            "ai_help",
+                                                            "ai_credits",
                                                             "message",
                                                             "status",
                                                             "rating",
@@ -44614,6 +44647,15 @@
                                                             "mentoring": {
                                                                 "type": "boolean"
                                                             },
+                                                            "ai_help": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "ai_credits": {
+                                                                "type": [
+                                                                    "integer",
+                                                                    "null"
+                                                                ]
+                                                            },
                                                             "message": {
                                                                 "type": [
                                                                     "string",
@@ -44676,6 +44718,8 @@
                                                             "fees",
                                                             "training",
                                                             "mentoring",
+                                                            "ai_help",
+                                                            "ai_credits",
                                                             "message",
                                                             "status",
                                                             "rating",
@@ -56570,6 +56614,379 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/recruiting/agents": {
+            "get": {
+                "operationId": "brokerage.recruiting.agents",
+                "description": "Agents who turned on \"Open to recruiting\", licensed in the brokerage's states and not with it: first name and initial, closings in 12 months, focus and why they match. Their broker is never told.",
+                "summary": "Licensed agents open to a move",
+                "tags": [
+                    "Recruiting"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "closings": {
+                                                        "type": "integer"
+                                                    },
+                                                    "focus": {
+                                                        "type": "string"
+                                                    },
+                                                    "reasons": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "closings",
+                                                                "city",
+                                                                "new"
+                                                            ]
+                                                        }
+                                                    },
+                                                    "invited_at": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "conversation": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "name",
+                                                    "closings",
+                                                    "focus",
+                                                    "reasons",
+                                                    "invited_at",
+                                                    "conversation"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/recruiting/agents/{agent}/invite": {
+            "post": {
+                "operationId": "brokerage.recruiting.invite",
+                "description": "Opens a private chat in Messages (once every 90 days).",
+                "summary": "Invite an agent to talk",
+                "tags": [
+                    "Recruiting"
+                ],
+                "parameters": [
+                    {
+                        "name": "agent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InviteAgentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "conversation": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "conversation"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/organisation/recruiting/sponsorships": {
+            "get": {
+                "operationId": "brokerage.recruiting.sponsorships",
+                "description": "The brokerage's credit pool and each sponsored candidate's cap, use and status.",
+                "summary": "Sponsored AI help",
+                "tags": [
+                    "Recruiting"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "pool": {
+                                                    "type": "integer"
+                                                },
+                                                "candidates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "candidate": {
+                                                                "type": "string"
+                                                            },
+                                                            "cap": {
+                                                                "type": "integer"
+                                                            },
+                                                            "used": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "active",
+                                                                    "used_up",
+                                                                    "ended"
+                                                                ]
+                                                            },
+                                                            "end_reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "since": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "candidate",
+                                                            "cap",
+                                                            "used",
+                                                            "status",
+                                                            "end_reason",
+                                                            "since"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "pool",
+                                                "candidates"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/organisation/recruiting/sponsorships/{sponsorship}": {
+            "put": {
+                "operationId": "brokerage.recruiting.cap",
+                "summary": "Change a candidate's cap",
+                "tags": [
+                    "Recruiting"
+                ],
+                "parameters": [
+                    {
+                        "name": "sponsorship",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SponsorCapRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "pool": {
+                                                    "type": "integer"
+                                                },
+                                                "candidates": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string"
+                                                            },
+                                                            "candidate": {
+                                                                "type": "string"
+                                                            },
+                                                            "cap": {
+                                                                "type": "integer"
+                                                            },
+                                                            "used": {
+                                                                "type": "integer"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "active",
+                                                                    "used_up",
+                                                                    "ended"
+                                                                ]
+                                                            },
+                                                            "end_reason": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "since": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "candidate",
+                                                            "cap",
+                                                            "used",
+                                                            "status",
+                                                            "end_reason",
+                                                            "since"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "pool",
+                                                "candidates"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Error overview."
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -78009,6 +78426,20 @@
                 ],
                 "title": "IdentitySignInRequest"
             },
+            "InviteAgentRequest": {
+                "type": "object",
+                "description": "Invite a licensed agent to talk (A17.2): an optional first message.",
+                "properties": {
+                    "message": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 1000
+                    }
+                },
+                "title": "InviteAgentRequest"
+            },
             "InviteCodeRequest": {
                 "type": "object",
                 "description": "The invite code someone who signed up in the app was given (B14.3b).",
@@ -80908,6 +81339,21 @@
                     "user"
                 ],
                 "title": "SignInResource"
+            },
+            "SponsorCapRequest": {
+                "type": "object",
+                "description": "A candidate's sponsored AI cap (A17.2).",
+                "properties": {
+                    "cap": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 5000
+                    }
+                },
+                "required": [
+                    "cap"
+                ],
+                "title": "SponsorCapRequest"
             },
             "StartConnectionRequest": {
                 "type": "object",

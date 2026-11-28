@@ -100,6 +100,10 @@ export type OfferRow = {
     fees: string | null;
     training: string | null;
     mentoring: boolean;
+    /** Sponsored AI study help (A17.2): the candidate sees only that it's included. */
+    ai_help?: boolean;
+    /** The credits, for the brokerage only. */
+    ai_credits?: number | null;
     message: string | null;
     status: 'open' | 'accepted' | 'declined' | 'withdrawn';
     rating: number | null;

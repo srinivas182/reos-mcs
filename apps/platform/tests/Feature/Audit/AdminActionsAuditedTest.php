@@ -26,6 +26,7 @@ use App\Models\AgentPage;
 use App\Models\AuditEvent;
 use App\Models\BrokerOffer;
 use App\Models\BrokerQuestion;
+use App\Models\CandidateSponsorship;
 use App\Models\CeCompletion;
 use App\Models\CeReport;
 use App\Models\Connection;
@@ -56,12 +57,14 @@ use App\Models\State;
 use App\Models\SupportAccessGrant;
 use App\Models\User;
 use App\Privacy\ConsentMethod;
+use App\Privacy\ConsentPurpose;
 use App\Rewards\PointRates;
 use App\Services\Ai\AiSettings;
 use App\Services\Content\Courses;
 use App\Services\Content\LessonFiles;
 use App\Services\Content\Lessons;
 use App\Services\Licences\Licences;
+use App\Services\Privacy\Consents;
 use App\Services\Privacy\PrivacyRequests;
 use App\Services\StateRules\StateRules;
 use App\Services\Tenancy\Invitations;
@@ -841,6 +844,24 @@ function adminActions(): array
             $offer = BrokerOffer::query()->create(['uuid' => (string) Str::uuid(), 'brokerage_id' => $lone->id, 'candidate_id' => $ana->id, 'office_city' => 'Katy', 'split_percent' => 70, 'monthly_fee_cents' => 0, 'mentoring' => true, 'status' => 'open']);
 
             return auditCase($linda, 'POST', "/recruiting/offers/{$offer->uuid}/withdraw", tenant: $lone->id);
+        },
+        // Recruiting (A17.2): a sponsored AI cap, and inviting an agent open to a move.
+        'recruiting.cap' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $ana = User::factory()->withRole(Role::Candidate, Organisation::platform())->create();
+            $s = CandidateSponsorship::query()->create(['uuid' => (string) Str::uuid7(), 'brokerage_id' => $lone->id, 'candidate_id' => $ana->id, 'cap' => 100]);
+
+            return auditCase($linda, 'PUT', "/recruiting/sponsorships/{$s->uuid}", ['cap' => 50], tenant: $lone->id);
+        },
+        'recruiting.invite' => function () {
+            [$lone, $linda] = auditBrokerage();
+            $lone->forceFill(['states' => ['TX']])->save();
+            $other = Organisation::factory()->ofType(OrganisationType::Brokerage)->create();
+            $omar = User::factory()->withRole(Role::Agent, $other)->create(['name' => 'Omar Haddad']);
+            Licence::query()->create(['user_id' => $omar->id, 'state_code' => 'TX', 'type' => LicenceType::SalesAgent, 'number' => '0701234', 'status' => LicenceStatus::Active, 'licensed_on' => '2019-03-01', 'expires_on' => '2027-12-31', 'holder_name' => 'Omar Haddad', 'verified_by' => 'simulator', 'verified_at' => now()]);
+            app(Consents::class)->grant($omar, ConsentPurpose::Recruiting, ConsentMethod::Web);
+
+            return auditCase($linda, 'POST', "/recruiting/agents/{$omar->id}/invite", ['message' => 'Hi'], tenant: $lone->id);
         },
         // School: 1-on-1 session price limits (A10.2d).
         'school.instructors.session-limits' => function () {

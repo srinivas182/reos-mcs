@@ -628,6 +628,9 @@ Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisat
     Route::get('/', 'index')->name('index');
     Route::put('candidates/{candidate}/offer', 'offer')->whereNumber('candidate')->middleware('throttle:30,1,recruiting-offer')->name('offer');
     Route::post('offers/{offer}/withdraw', 'withdraw')->whereUuid('offer')->middleware('throttle:30,1,recruiting-withdraw')->name('withdraw');
+    // Sponsored AI help and licensed agents open to a move (A17.2).
+    Route::put('sponsorships/{sponsorship}', 'cap')->whereUuid('sponsorship')->middleware('throttle:30,1,recruiting-cap')->name('cap');
+    Route::post('agents/{agent}/invite', 'invite')->whereNumber('agent')->middleware('throttle:20,1,recruiting-invite')->name('invite');
 });
 // Brokerage integrations (B8.2, broker screen 40): which tools agents may use, the brokerage's own CRM, its mapping.
 Route::middleware(['auth', 'verified', EnsureAdminTwoStep::class, 'can:organisation.manage'])->prefix('organisation/integrations')->name('brokerage-integrations.')

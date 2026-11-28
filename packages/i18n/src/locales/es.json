@@ -2392,7 +2392,11 @@
         "provider.contacts_unshared": "Dejó de compartir sus contactos con una conexión",
         "provider.blocked": "Bloqueó una conexión",
         "provider.agent_connected": "Se conectó con un proveedor",
-        "provider.reviewed": "Reseñó a un proveedor"
+        "provider.reviewed": "Reseñó a un proveedor",
+        "recruiting.sponsorship_started": "Patrocinó la ayuda de IA de un candidato",
+        "recruiting.sponsorship_cap": "Cambió un límite de IA patrocinada",
+        "recruiting.sponsorship_ended": "Terminó la ayuda de IA patrocinada de un candidato",
+        "recruiting.agent_invited": "Invitó a un agente a conversar"
       }
     }
   },
@@ -8379,7 +8383,8 @@
         "declined": ":name rechazó su oferta",
         "open": "Abrir REOS"
       },
-      "purposeShort": "Ofertas de corredurías de su estado, primero las que mejor encajan: una oficina en su ciudad, la calificación de sus mentores y luego las condiciones."
+      "purposeShort": "Ofertas de corredurías de su estado, primero las que mejor encajan: una oficina en su ciudad, la calificación de sus mentores y luego las condiciones.",
+      "aiHelp": "Incluye ayuda de estudio con IA patrocinada"
     },
     "switch": {
       "title": "Ingrese su número de licencia",
@@ -8455,10 +8460,50 @@
       "training": "Capacitación",
       "mentoring": "Mentoría para agentes nuevos",
       "message": "Mensaje",
-      "send": "Enviar oferta"
+      "send": "Enviar oferta",
+      "aiCredits": "Ayuda de IA patrocinada (créditos, 0 si no hay)",
+      "aiCreditsHint": "Los créditos salen del fondo de su agencia. El candidato ve que la ayuda está patrocinada, nunca las cifras."
     },
     "contact": "{{email}} · {{phone}}",
-    "sent": "Oferta enviada."
+    "sent": "Oferta enviada.",
+    "sponsored": {
+      "title": "Ayuda de IA patrocinada",
+      "purpose": "Créditos que su agencia da a los candidatos que aceptaron su oferta. El patrocinio termina cuando aprueban o eligen otro patrocinador.",
+      "pool": "Saldo del fondo: {{credits}} créditos",
+      "usage": "{{used}} de {{cap}} créditos usados",
+      "cap": "Límite para {{name}}",
+      "save": "Guardar límite",
+      "empty": "Aún no hay candidatos patrocinados",
+      "emptyHint": "Agregue ayuda de IA a una oferta. Empieza cuando el candidato la acepta.",
+      "statuses": {
+        "active": "Activo",
+        "used_up": "Límite alcanzado",
+        "ended": "Terminado"
+      },
+      "reasons": {
+        "passed": "Aprobó el examen",
+        "other_sponsor": "Eligió otro patrocinador",
+        "withdrawn": "Retirado"
+      }
+    },
+    "agents": {
+      "title": "Agentes con licencia abiertos a un cambio",
+      "purpose": "Agentes que activaron \"Abierto a reclutamiento\". Su corredor actual nunca se entera.",
+      "closings_one": "{{count}} cierre en 12 meses",
+      "closings_other": "{{count}} cierres en 12 meses",
+      "reasons": {
+        "closings": "Gran productor",
+        "city": "Trabaja donde trabajan sus agentes",
+        "new": "Agente reciente"
+      },
+      "invite": "Invitar a conversar",
+      "inviteFor": "Invitar a conversar con {{name}}",
+      "invited": "Invitado el {{date}}",
+      "message": "Primer mensaje (opcional)",
+      "hello": "Hola, le escribe {{brokerage}}. Usted indicó que está abierto a un cambio y nos encantaría conversar.",
+      "empty": "Aún no hay agentes abiertos a un cambio",
+      "emptyHint": "Los agentes aparecen aquí cuando activan \"Abierto a reclutamiento\" en Configuración › Privacidad."
+    }
   },
   "mentors": {
     "title": "Sus mentores",

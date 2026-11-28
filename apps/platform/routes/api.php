@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\Brokerage\BrokerVerificationController;
 use App\Http\Controllers\Api\Brokerage\CeComplianceController;
 use App\Http\Controllers\Api\Brokerage\OversightController;
 use App\Http\Controllers\Api\Brokerage\PoliciesController;
+use App\Http\Controllers\Api\Brokerage\RecruitingController as ApiRecruitingController;
 use App\Http\Controllers\Api\Brokerage\ReportsController;
 use App\Http\Controllers\Api\Brokerage\RosterController;
 use App\Http\Controllers\Api\Brokerage\SeatsController;
@@ -636,6 +637,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('organisation/staff', [StaffController::class, 'index'])->name('api.brokerage.staff');
     Route::put('organisation/staff/{member}', [StaffController::class, 'update'])->whereNumber('member')->middleware('throttle:30,1,api-staff')->name('api.brokerage.staff.update');
     // Agent oversight (A16.1): agents needing help, deals at risk, an agent's profile with privacy rules.
+    // Recruiting (A17.2): sponsored AI help, and licensed agents open to a move.
+    Route::get('organisation/recruiting/agents', [ApiRecruitingController::class, 'agents'])->name('api.brokerage.recruiting.agents');
+    Route::post('organisation/recruiting/agents/{agent}/invite', [ApiRecruitingController::class, 'invite'])->whereNumber('agent')->middleware('throttle:20,1,api-recruiting-invite')->name('api.brokerage.recruiting.invite');
+    Route::get('organisation/recruiting/sponsorships', [ApiRecruitingController::class, 'sponsorships'])->name('api.brokerage.recruiting.sponsorships');
+    Route::put('organisation/recruiting/sponsorships/{sponsorship}', [ApiRecruitingController::class, 'cap'])->whereUuid('sponsorship')->middleware('throttle:30,1,api-recruiting-cap')->name('api.brokerage.recruiting.cap');
     Route::get('organisation/oversight', [OversightController::class, 'index'])->name('api.brokerage.oversight');
     Route::get('organisation/oversight/agents/{member}', [OversightController::class, 'show'])->whereNumber('member')->name('api.brokerage.oversight.agent');
     Route::put('organisation/oversight/settings', [OversightController::class, 'settings'])->middleware('throttle:20,1,api-oversight-settings')->name('api.brokerage.oversight.settings');

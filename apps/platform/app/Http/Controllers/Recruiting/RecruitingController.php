@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Licences\Journey\BrokerOffers;
 use App\Models\BrokerOffer;
 use App\Models\User;
+use App\Recruiting\OpenAgents;
+use App\Recruiting\SponsoredHelp;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,14 +24,35 @@ use Inertia\Response;
  */
 final class RecruitingController extends Controller
 {
-    public function index(#[CurrentUser] User $user, BrokerOffers $offers): Response
+    public function index(#[CurrentUser] User $user, BrokerOffers $offers, SponsoredHelp $help, OpenAgents $agents): Response
     {
         $brokerage = $offers->brokerageOf($user);
 
         return Inertia::render('recruiting/index', [
             'brokerage' => ['name' => $brokerage->name, 'states' => $brokerage->states ?? []],
             'candidates' => $offers->candidates($brokerage),
+            // Sponsored AI help and licensed agents open to a move (A17.2, screens 26 and 27).
+            'sponsored' => $help->board($brokerage),
+            'agents' => $agents->list($brokerage),
         ]);
+    }
+
+    /** Change a candidate's sponsored AI cap (A17.2, screen 26). */
+    public function cap(Request $request, string $sponsorship, #[CurrentUser] User $user, BrokerOffers $offers, SponsoredHelp $help): RedirectResponse
+    {
+        $request->validate(['cap' => ['required', 'integer', 'min:0', 'max:'.SponsoredHelp::MAX_CAP]]);
+        $help->setCap($offers->brokerageOf($user), $user, $sponsorship, $request->integer('cap'));
+
+        return back();
+    }
+
+    /** Invite a licensed agent open to a move to talk: a private chat (A17.2, screen 27). */
+    public function invite(Request $request, int $agent, #[CurrentUser] User $user, BrokerOffers $offers, OpenAgents $agents): RedirectResponse
+    {
+        $request->validate(['message' => ['nullable', 'string', 'max:1000']]);
+        $conversation = $agents->invite($offers->brokerageOf($user), $user, $agent, $request->string('message')->toString());
+
+        return redirect()->route('messages.index', ['c' => $conversation]);
     }
 
     public function offer(Request $request, int $candidate, #[CurrentUser] User $user, BrokerOffers $offers): RedirectResponse
@@ -41,6 +64,7 @@ final class RecruitingController extends Controller
             'fees' => ['nullable', 'string', 'max:300'],
             'training' => ['nullable', 'string', 'max:500'],
             'mentoring' => ['required', 'boolean'],
+            'ai_credits' => ['nullable', 'integer', 'min:0', 'max:'.SponsoredHelp::MAX_CAP],
             'message' => ['nullable', 'string', 'max:1000'],
         ]);
         $text = static fn (string $key): ?string => is_string($data[$key] ?? null) && trim($data[$key]) !== '' ? trim($data[$key]) : null;
@@ -52,6 +76,7 @@ final class RecruitingController extends Controller
             'fees' => $text('fees'),
             'training' => $text('training'),
             'mentoring' => $request->boolean('mentoring'),
+            'ai_credits' => $request->integer('ai_credits'),
             'message' => $text('message'),
         ]);
 

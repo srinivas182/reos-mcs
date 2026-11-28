@@ -10,6 +10,7 @@ use App\Enums\OrganisationType;
 use App\Models\Organisation;
 use App\Models\PodMember;
 use App\Models\ProviderRequest;
+use App\Models\RecruitingInvite;
 use App\Models\User;
 use App\Services\Authorization\ActiveRole;
 use App\Services\Authorization\Memberships;
@@ -102,6 +103,12 @@ final readonly class Relationships
         foreach (ProviderRequest::query()->where('status', ProviderRequest::ACCEPTED)->where(static fn ($q) => $q->where('agent_id', $user->id)->orWhere('provider_id', $user->id))->limit(500)->get(['agent_id', 'provider_id']) as $connection) {
             $agentSide = $connection->agent_id === $user->id;
             $found[$agentSide ? $connection->provider_id : $connection->agent_id] ??= ['role' => $agentSide ? Role::Provider : Role::Agent, 'organisation' => ''];
+        }
+
+        // A broker and a licensed agent the brokerage invited to talk (A17.2).
+        foreach (RecruitingInvite::query()->where(static fn ($q) => $q->where('agent_id', $user->id)->orWhere('broker_id', $user->id))->limit(500)->get(['agent_id', 'broker_id']) as $invite) {
+            $agentSide = $invite->agent_id === $user->id;
+            $found[$agentSide ? $invite->broker_id : $invite->agent_id] ??= ['role' => $agentSide ? Role::Broker : Role::Agent, 'organisation' => ''];
         }
 
         // Blocked either way: not offered (B6.1b).
