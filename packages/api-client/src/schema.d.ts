@@ -4207,6 +4207,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/organisation/oversight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Agents needing help and deals at risk
+         * @description Each agent with the reasons they may need help, and the deals with a key date close, missed, or no movement for 30 days. Counts and stages only: never clients, contacts or notes. A team leader sees their team.
+         */
+        get: operations["brokerage.oversight"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/oversight/agents/{member}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * An agent, as their broker sees them
+         * @description Plan, activity this month, deals by stage (the address only under contract), licences and CE. Viewing is audited.
+         */
+        get: operations["brokerage.oversight.agent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organisation/oversight/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Change the "needs help" thresholds
+         * @description The designated broker only.
+         */
+        put: operations["brokerage.oversight.settings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/broker-view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * What my broker sees
+         * @description My own profile exactly as my broker sees it, or null when I'm not in a brokerage.
+         */
+        get: operations["me.broker-view"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/licence-journey/news": {
         parameters: {
             query?: never;
@@ -8284,6 +8364,18 @@ export interface components {
          */
         OrganisationType: "platform" | "brokerage" | "school" | "association" | "provider_business" | "team";
         /**
+         * OversightSettingsRequest
+         * @description The brokerage's "needs help" thresholds (A16.1).
+         */
+        OversightSettingsRequest: {
+            /** @description Days without a sign-in, conversation or appointment. */
+            quiet_days: number;
+            /** @description Days without a new, open or closed deal. */
+            no_deal_days: number;
+            /** @description How long an agent counts as new. */
+            new_days: number;
+        };
+        /**
          * ParseVoiceRequest
          * @description What someone said, to turn into to-dos (B4.3).
          */
@@ -9200,6 +9292,7 @@ export type SchemaOnboardingRequest = components['schemas']['OnboardingRequest']
 export type SchemaOnboardingResource = components['schemas']['OnboardingResource'];
 export type SchemaOpenHouseRequest = components['schemas']['OpenHouseRequest'];
 export type SchemaOrganisationType = components['schemas']['OrganisationType'];
+export type SchemaOversightSettingsRequest = components['schemas']['OversightSettingsRequest'];
 export type SchemaParseVoiceRequest = components['schemas']['ParseVoiceRequest'];
 export type SchemaPhoneContactsRequest = components['schemas']['PhoneContactsRequest'];
 export type SchemaPhoneStartRequest = components['schemas']['PhoneStartRequest'];
@@ -22742,6 +22835,303 @@ export interface operations {
                     };
                 };
             };
+        };
+    };
+    "brokerage.oversight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            settings: {
+                                quiet_days: number;
+                                no_deal_days: number;
+                                new_days: number;
+                            };
+                            can_change: boolean;
+                            counts: {
+                                agents: number;
+                                need_help: number;
+                                deals_at_risk: number;
+                            };
+                            agents: {
+                                id: number;
+                                name: string;
+                                team: string | null;
+                                goal: string;
+                                last_active: string | null;
+                                signals: ("quiet" | "no_deal" | "ce_behind" | "plan_behind" | "deadline_missed" | "new")[];
+                                deals: {
+                                    active: number;
+                                    under_contract: number;
+                                    closed_90: number;
+                                };
+                                ce: {
+                                    due_on: string | null;
+                                    hours_left: number;
+                                    first_renewal: boolean;
+                                    complete: boolean;
+                                } | null;
+                            }[];
+                            at_risk: {
+                                id: string;
+                                agent: string;
+                                agent_id: number;
+                                stage: string;
+                                city: string | null;
+                                address: string | null;
+                                reasons: ("date_soon" | "date_missed" | "stuck")[];
+                                next_date: {
+                                    kind: string;
+                                    due_on: string;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.oversight.agent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                member: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            agent: {
+                                id: number;
+                                name: string;
+                                team: string | null;
+                                goal: string;
+                                last_active: string | null;
+                                signals: ("quiet" | "no_deal" | "ce_behind" | "plan_behind" | "deadline_missed" | "new")[];
+                                deals: {
+                                    active: number;
+                                    under_contract: number;
+                                    closed_90: number;
+                                };
+                                ce: {
+                                    due_on: string | null;
+                                    hours_left: number;
+                                    first_renewal: boolean;
+                                    complete: boolean;
+                                } | null;
+                            };
+                            plan: {
+                                goal: string;
+                                week: number;
+                                weeks: number;
+                                done: number;
+                                total: number;
+                            } | null;
+                            activity: {
+                                conversations: number;
+                                appointments: number;
+                                posts: number;
+                                ce_hours: number;
+                            };
+                            deals: {
+                                id: string;
+                                stage: string;
+                                side: string;
+                                city: string | null;
+                                address: string | null;
+                                closed_at: string | null;
+                            }[];
+                            licences: {
+                                state: string;
+                                number: string;
+                                status: string;
+                                expires_on: string | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+        };
+    };
+    "brokerage.oversight.settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OversightSettingsRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            brokerage: string;
+                            /** @enum {string} */
+                            scope: "brokerage" | "team";
+                            team: string | null;
+                            settings: {
+                                quiet_days: number;
+                                no_deal_days: number;
+                                new_days: number;
+                            };
+                            can_change: boolean;
+                            counts: {
+                                agents: number;
+                                need_help: number;
+                                deals_at_risk: number;
+                            };
+                            agents: {
+                                id: number;
+                                name: string;
+                                team: string | null;
+                                goal: string;
+                                last_active: string | null;
+                                signals: ("quiet" | "no_deal" | "ce_behind" | "plan_behind" | "deadline_missed" | "new")[];
+                                deals: {
+                                    active: number;
+                                    under_contract: number;
+                                    closed_90: number;
+                                };
+                                ce: {
+                                    due_on: string | null;
+                                    hours_left: number;
+                                    first_renewal: boolean;
+                                    complete: boolean;
+                                } | null;
+                            }[];
+                            at_risk: {
+                                id: string;
+                                agent: string;
+                                agent_id: number;
+                                stage: string;
+                                city: string | null;
+                                address: string | null;
+                                reasons: ("date_soon" | "date_missed" | "stuck")[];
+                                next_date: {
+                                    kind: string;
+                                    due_on: string;
+                                } | null;
+                            }[];
+                        };
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            422: components["responses"]["ValidationException"];
+            /** @description Too many requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @description Error overview. */
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    "me.broker-view": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            agent: {
+                                id: number;
+                                name: string;
+                                team: string | null;
+                                goal: string;
+                                last_active: string | null;
+                                signals: ("quiet" | "no_deal" | "ce_behind" | "plan_behind" | "deadline_missed" | "new")[];
+                                deals: {
+                                    active: number;
+                                    under_contract: number;
+                                    closed_90: number;
+                                };
+                                ce: {
+                                    due_on: string | null;
+                                    hours_left: number;
+                                    first_renewal: boolean;
+                                    complete: boolean;
+                                } | null;
+                            };
+                            plan: {
+                                goal: string;
+                                week: number;
+                                weeks: number;
+                                done: number;
+                                total: number;
+                            } | null;
+                            activity: {
+                                conversations: number;
+                                appointments: number;
+                                posts: number;
+                                ce_hours: number;
+                            };
+                            deals: {
+                                id: string;
+                                stage: string;
+                                side: string;
+                                city: string | null;
+                                address: string | null;
+                                closed_at: string | null;
+                            }[];
+                            licences: {
+                                state: string;
+                                number: string;
+                                status: string;
+                                expires_on: string | null;
+                            }[];
+                        } | null;
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
         };
     };
     "licence.news": {

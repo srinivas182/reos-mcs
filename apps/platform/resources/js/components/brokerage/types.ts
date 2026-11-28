@@ -157,3 +157,80 @@ export type ApprovalsQueueData = {
     };
     items: ApprovalItem[];
 };
+
+export type OversightSignal =
+    | 'quiet'
+    | 'no_deal'
+    | 'ce_behind'
+    | 'plan_behind'
+    | 'deadline_missed'
+    | 'new';
+
+export type OversightAgent = {
+    id: number;
+    name: string;
+    team: string | null;
+    goal: string;
+    last_active: string | null;
+    signals: OversightSignal[];
+    deals: { active: number; under_contract: number; closed_90: number };
+    ce: {
+        due_on: string | null;
+        hours_left: number;
+        first_renewal: boolean;
+        complete: boolean;
+    } | null;
+};
+
+export type RiskDeal = {
+    id: string;
+    agent: string;
+    agent_id: number;
+    stage: string;
+    city: string | null;
+    address: string | null;
+    reasons: ('date_soon' | 'date_missed' | 'stuck')[];
+    next_date: { kind: string; due_on: string } | null;
+};
+
+export type OversightBoardData = {
+    brokerage: string;
+    scope: 'brokerage' | 'team';
+    team: string | null;
+    settings: { quiet_days: number; no_deal_days: number; new_days: number };
+    can_change: boolean;
+    counts: { agents: number; need_help: number; deals_at_risk: number };
+    agents: OversightAgent[];
+    at_risk: RiskDeal[];
+};
+
+export type OversightProfile = {
+    agent: OversightAgent;
+    plan: {
+        goal: string;
+        week: number;
+        weeks: number;
+        done: number;
+        total: number;
+    } | null;
+    activity: {
+        conversations: number;
+        appointments: number;
+        posts: number;
+        ce_hours: number;
+    };
+    deals: {
+        id: string;
+        stage: string;
+        side: string;
+        city: string | null;
+        address: string | null;
+        closed_at: string | null;
+    }[];
+    licences: {
+        state: string;
+        number: string;
+        status: string;
+        expires_on: string | null;
+    }[];
+};

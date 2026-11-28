@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
-import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Gift, GraduationCap, IdCard, Languages, Map, MapPin, Handshake, Megaphone, Plug, ShieldCheck, Users, Wallet, Wrench } from 'lucide-react-native';
+import { ArrowLeftRight, Bell, Camera, Building2, Compass, DoorOpen, Download, Eye, Gift, GraduationCap, IdCard, Languages, Map, MapPin, Handshake, Megaphone, Plug, ShieldCheck, Users, Wallet, Wrench } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -105,6 +105,8 @@ export default function MeScreen() {
         {current?.role === 'provider' ? <MenuRow icon={IdCard} title={t('providers.profile.title')} onPress={() => router.push('/provider/profile')} /> : null}
         {/* Verified providers (B15.3), for agents and brokers. */}
         {current?.role === 'agent' || current?.role === 'broker' ? <MenuRow icon={Handshake} title={t('providers.directory.title')} onPress={() => router.push('/providers')} /> : null}
+        {/* What my broker sees (A16.1): the agent's own summary, as their broker sees it. */}
+        {current?.role === 'agent' ? <MenuRow icon={Eye} title={t('brokerage.oversight.mine.title')} onPress={() => router.push('/me/broker-view')} /> : null}
         {/* My posts and results (B11, screen 169). */}
         {current?.role === 'agent' ? <MenuRow icon={Megaphone} title={t('social.posts.title')} onPress={() => router.push('/social')} /> : null}
         {current?.role === 'agent' ? <MenuRow icon={Camera} title={t('studio.brand.title')} onPress={() => router.push('/social/brand')} /> : null}

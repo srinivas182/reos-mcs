@@ -1,6 +1,6 @@
 import * as WebBrowser from 'expo-web-browser';
 import { router, useFocusEffect } from 'expo-router';
-import { CheckCircle2, Circle, ClipboardCheck, ScrollText, Users, Wallet } from 'lucide-react-native';
+import { CheckCircle2, Circle, ClipboardCheck, ScrollText, TriangleAlert, Users, Wallet } from 'lucide-react-native';
 import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,6 +51,7 @@ export default function BrokerageScreen() {
           ))}
           <SectionTitle>{t('brokerage.roster.title')}</SectionTitle>
           <ListRow icon={Users} title={t('brokerage.roster.title')} subtitle={t('brokerage.roster.purpose')} onPress={() => router.push('/brokerage/roster')} />
+          <ListRow icon={TriangleAlert} title={t('brokerage.oversight.title')} subtitle={t('brokerage.oversight.purpose')} onPress={() => router.push('/brokerage/oversight')} />
           <ListRow icon={ClipboardCheck} title={t('brokerage.approvals.title')} subtitle={t('brokerage.approvals.purpose')} onPress={() => router.push('/brokerage/approvals')} />
           <ListRow icon={ScrollText} title={t('brokerage.policies.title')} subtitle={t('brokerage.policies.purpose')} onPress={() => router.push('/brokerage/policies')} />
           <ListRow icon={Wallet} title={t('brokerage.seats.title')} subtitle={t('brokerage.seats.purpose')} onPress={() => router.push('/brokerage/seats')} />

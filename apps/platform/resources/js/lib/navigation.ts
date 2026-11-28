@@ -17,6 +17,7 @@ import {
     Map as MapIcon,
     Megaphone,
     ClipboardCheck,
+    TriangleAlert,
     IdCard,
     MessageCircleQuestion,
     MessageSquare,
@@ -92,6 +93,7 @@ import { index as virtualBroker } from '@/routes/virtual-broker';
 import { index as contractReview } from '@/routes/contracts';
 import { index as brokerVirtualBroker } from '@/routes/organisation/virtual-broker';
 import { index as approvalsIndex } from '@/routes/approvals';
+import { index as oversightIndex } from '@/routes/oversight';
 import { index as policiesIndex } from '@/routes/policies';
 import { show as providerJoin } from '@/routes/provider-join';
 import { show as providerProfile } from '@/routes/provider-profile';
@@ -150,6 +152,7 @@ export type NavLabel =
     | 'contractReview'
     | 'policies'
     | 'approvals'
+    | 'oversight'
     | 'providerJoin'
     | 'serviceProviders'
     | 'profile'
@@ -358,6 +361,13 @@ export function roleNavigation(
                 '/organisation/approvals',
             ),
             item('agents', Users, agentsIndex()),
+            // Agents needing help and deals at risk (A16.1).
+            item(
+                'oversight',
+                TriangleAlert,
+                oversightIndex(),
+                '/organisation/oversight',
+            ),
             planned('ceCompliance'),
             // Teach the virtual broker and answer agents (A12.1, screen 34).
             item(

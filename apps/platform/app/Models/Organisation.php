@@ -42,6 +42,7 @@ use Illuminate\Support\Str;
  * @property array<string, string|null>|null $brand Logo, colour, app label and email sender (see App\Tenancy\Brand)
  * @property string|null $trec_number The TREC brokerage licence a brokerage tenant stands for (A15.1a)
  * @property array{fallback_hours?: int}|null $approval_settings The approvals queue's office admin fallback, in working hours (A15.3)
+ * @property array{quiet_days?: int, no_deal_days?: int, new_days?: int}|null $oversight_settings The brokerage's "needs help" thresholds (A16.1)
  * @property int|null $parent_id
  * @property int|null $session_max_30_cents Most its instructors may charge for 30 minutes (A10.2d)
  * @property int|null $session_max_60_cents Most its instructors may charge for 60 minutes (A10.2d)
@@ -135,6 +136,7 @@ final class Organisation extends Model
             'brand' => 'array',
             'virtual_broker' => 'array',
             'approval_settings' => 'array',
+            'oversight_settings' => 'array',
             'advertising' => 'array',
         ];
     }

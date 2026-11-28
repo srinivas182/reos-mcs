@@ -30,4 +30,31 @@ final readonly class BrokerageAccess
 
         return $membership->organisation;
     }
+
+    /**
+     * The brokerage, and the team for a team leader (A16.1): a team leader
+     * works with their own team's agents only.
+     *
+     * @return array{0: Organisation, 1: Organisation|null}
+     */
+    public function scope(User $user): array
+    {
+        $membership = $this->roles->for($user);
+
+        if ($membership === null || $membership->role !== Role::Broker) {
+            throw new NotFoundHttpException;
+        }
+
+        $org = $membership->organisation;
+
+        if ($org->type === OrganisationType::Team && $org->parent !== null && $org->parent->type === OrganisationType::Brokerage) {
+            return [$org->parent, $org];
+        }
+
+        if ($org->type !== OrganisationType::Brokerage) {
+            throw new NotFoundHttpException;
+        }
+
+        return [$org, null];
+    }
 }
